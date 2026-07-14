@@ -1994,11 +1994,6 @@ public enum L10n {
     }
   }
 
-  public enum Intents {
-    /// Select a server before picking this value.
-    public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
-  }
-
   public enum Kiosk {
     /// Lock the app into a single dashboard for wall panels and shared devices.
     public static var body: String { return L10n.tr("Localizable", "kiosk.body") }
@@ -3910,9 +3905,135 @@ public enum L10n {
     public enum Debugging {
       /// Debugging
       public static var title: String { return L10n.tr("Localizable", "settings.debugging.title") }
+      public enum CachedEntityData {
+        /// Delete cached entity data?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.alert_title") }
+        /// Delete Entity Data
+        public static var deleteButton: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.delete_button") }
+        /// Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.message") }
+        /// Delete cached entity data
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.title") }
+      }
+      public enum ClearAllowedTags {
+        /// Clear approved NFC tags?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.clear_allowed_tags.alert_title") }
+        /// Clear Tags
+        public static var clearButton: String { return L10n.tr("Localizable", "settings.debugging.clear_allowed_tags.clear_button") }
+        /// Removes all NFC tags that this app has approved. You will need to approve those tags again before using them.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.clear_allowed_tags.message") }
+        /// Clear approved NFC tags
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.clear_allowed_tags.title") }
+      }
+      public enum ClearWebCache {
+        /// Clear web view cache?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.clear_web_cache.alert_title") }
+        /// Clear Cache
+        public static var clearButton: String { return L10n.tr("Localizable", "settings.debugging.clear_web_cache.clear_button") }
+        /// Clears cached web content for the Home Assistant frontend. Frontend resources will be reloaded as needed.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.clear_web_cache.message") }
+        /// Clear web view cache
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.clear_web_cache.title") }
+      }
+      public enum ComponentsLibrary {
+        /// Components Library
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.components_library.title") }
+      }
       public enum CriticalSection {
         /// Make sure you are aware that these operations cannot be reverted.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
+      }
+      public enum DatabaseTransfer {
+        /// Imports replace local %@ and remove imported server references that do not exist in this app.
+        public static func footer(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.database_transfer.footer", String(describing: p1))
+        }
+        /// Database Import/Export
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.title") }
+        public enum Error {
+          /// Database transfer failed
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.title") }
+          /// Select a Home Assistant feature export file.
+          public static var unsupportedFeatureFile: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.unsupported_feature_file") }
+          /// Select a JSON export file.
+          public static var unsupportedFile: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.unsupported_file") }
+          /// This file contains %@. Import it from %@ settings instead.
+          public static func wrongFeatureFile(_ p1: Any, _ p2: Any) -> String {
+            return L10n.tr("Localizable", "settings.debugging.database_transfer.error.wrong_feature_file", String(describing: p1), String(describing: p2))
+          }
+        }
+        public enum Export {
+          /// Export
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.title") }
+          public enum Confirmation {
+            /// Export
+            public static var button: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.button") }
+            /// Export %@ to a JSON file.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.message", String(describing: p1))
+            }
+            /// Export %@?
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.title", String(describing: p1))
+            }
+          }
+          public enum Progress {
+            /// Exporting %@
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.progress.title", String(describing: p1))
+            }
+          }
+          public enum Success {
+            /// %@ export file is ready to share.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.success.message", String(describing: p1))
+            }
+            /// Export ready
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.success.title") }
+          }
+        }
+        public enum Import {
+          /// Import
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.title") }
+          public enum Confirmation {
+            /// Import
+            public static var button: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.button") }
+            /// This replaces local %@ with the selected export file.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.message", String(describing: p1))
+            }
+            /// Import %@?
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.title", String(describing: p1))
+            }
+          }
+          public enum Progress {
+            /// Importing %@
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.progress.title", String(describing: p1))
+            }
+          }
+          public enum Success {
+            /// Imported %li record(s).
+            public static func message(_ p1: Int) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.success.message", p1)
+            }
+            /// Import complete
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.success.title") }
+          }
+        }
+        public enum Part {
+          /// app quick actions
+          public static var appIconShortcuts: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.app_icon_shortcuts") }
+          /// CarPlay configuration
+          public static var carplayConfiguration: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.carplay_configuration") }
+          /// complications
+          public static var complications: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.complications") }
+          /// custom widgets
+          public static var customWidgets: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.custom_widgets") }
+          /// watch configuration
+          public static var watchConfiguration: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.watch_configuration") }
+        }
       }
       public enum DeleteKeychain {
         /// yyyy-MM-dd
@@ -3929,6 +4050,18 @@ public enum L10n {
         }
         /// Delete keychain completely
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.title") }
+      }
+      public enum DeleteSavedCredentials {
+        /// Delete saved credentials?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.delete_saved_credentials.alert_title") }
+        /// Delete Credentials
+        public static var deleteButton: String { return L10n.tr("Localizable", "settings.debugging.delete_saved_credentials.delete_button") }
+        /// Removes saved credentials and keychain items for this app. Type %@ to confirm.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.delete_saved_credentials.message", String(describing: p1))
+        }
+        /// Delete saved credentials
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.delete_saved_credentials.title") }
       }
       public enum Header {
         /// Let's fix that 🐞
@@ -3988,6 +4121,60 @@ public enum L10n {
         /// App restart required
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.keychain_restart_required.title") }
       }
+      public enum MediaPlayback {
+        /// Select which frontend media types require a user action before playback.
+        public static var footer: String { return L10n.tr("Localizable", "settings.debugging.media_playback.footer") }
+        /// WKWebView Media Playback
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.media_playback.title") }
+        public enum RestartRequired {
+          /// Force close and reopen the app for this change to take effect.
+          public static var message: String { return L10n.tr("Localizable", "settings.debugging.media_playback.restart_required.message") }
+          /// Force close required
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.media_playback.restart_required.title") }
+        }
+      }
+      public enum ReceiveDebugNotifications {
+        /// Receive debug notifications
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
+      }
+      public enum ResetApp {
+        /// Delete all app data?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.reset_app.alert_title") }
+        /// Deleted all app data from debug settings
+        public static var clientEvent: String { return L10n.tr("Localizable", "settings.debugging.reset_app.client_event") }
+        /// Delete App Data
+        public static var deleteButton: String { return L10n.tr("Localizable", "settings.debugging.reset_app.delete_button") }
+        /// Removes servers, tokens, settings, and local app data from this device. This cannot be undone.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.reset_app.message") }
+        /// Delete all app data
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.reset_app.title") }
+        public enum Toast {
+          /// Clearing local databases and caches
+          public static var clearingDatabases: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.clearing_databases") }
+          /// Disconnecting %@
+          public static func disconnecting(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.debugging.reset_app.toast.disconnecting", String(describing: p1))
+          }
+          /// Finishing reset
+          public static var finishing: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.finishing") }
+          /// Preparing reset
+          public static var preparing: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.preparing") }
+          /// %@ %li%%
+          public static func progress(_ p1: Any, _ p2: Int) -> String {
+            return L10n.tr("Localizable", "settings.debugging.reset_app.toast.progress", String(describing: p1), p2)
+          }
+          /// Removing saved servers
+          public static var removingServers: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.removing_servers") }
+          /// Resetting push registration
+          public static var resettingPushRegistration: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.resetting_push_registration") }
+          /// Revoking token for %@
+          public static func revokingToken(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.debugging.reset_app.toast.revoking_token", String(describing: p1))
+          }
+          /// Deleting app data
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.reset_app.toast.title") }
+        }
+      }
       public enum ShakeDisclaimer {
         /// Now when you shake the app you can access debug features.
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer.title") }
@@ -3999,6 +4186,10 @@ public enum L10n {
       public enum Thread {
         /// Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.thread.footer") }
+      }
+      public enum WebViewEmptyStateTimeout {
+        /// Web view empty state timeout
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.web_view_empty_state_timeout.title") }
       }
     }
     public enum DetailsSection {

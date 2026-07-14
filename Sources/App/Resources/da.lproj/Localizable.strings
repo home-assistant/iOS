@@ -544,7 +544,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "improv.wifi.alert.password_placeholder" = "Adgangskode";
 "improv.wifi.alert.ssid_placeholder" = "Netværksnavn";
 "improv.wifi.alert.title" = "Opret forbindelse til WiFi";
-"intents.server_required_for_value" = "Vælg en server, før du vælger denne værdi.";
 "kiosk.accept_remote_commands.footer" = "Når denne funktion er aktiveret, reagerer enheden på kiosk-kommandoer, der sendes via push-notifikationer, f.eks. at vise eller skjule pauseskærmen.";
 "kiosk.accept_remote_commands.title" = "Acceptér fjernkommandoer til kiosken";
 "kiosk.active.title" = "Kiosk-tilstand aktiv";

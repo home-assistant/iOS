@@ -26,23 +26,37 @@ func resetStores() {
     let bundleId = Bundle.main.bundleIdentifier!
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
+    prefs.removePersistentDomain(forName: AppConstants.AppGroupID)
 
     do {
-        try Current.database().write { db in
-            _ = try AppZone.deleteAll(db)
-            _ = try NotificationCategory.deleteAll(db)
-            _ = try WatchComplication.deleteAll(db)
-            _ = try LocationHistoryEntry.deleteAll(db)
-            _ = try LocationError.deleteAll(db)
-        }
+        try Current.database().eraseAllData()
     } catch {
-        Current.Log.error("Failed to reset database: \(error)")
+        Current.Log.error("Error when trying to delete everything from the app database: \(error)")
     }
+
+    Current.notificationHistoryStore.clearAllEntries()
+    removeAppCache(at: AppConstants.widgetsCacheURL)
+    removeAppCache(at: AppConstants.watchMagicItemsInfo)
 
     // Clearing the app group defaults above also clears the Realm→GRDB
     // migration flag, so drop the legacy store too or the importer would
     // repopulate GRDB from it on the next launch.
     RealmToGRDBMigration.deleteLegacyStore()
+
+    Current.clientEventStore.addEvent(ClientEvent(
+        text: L10n.Settings.Debugging.ResetApp.clientEvent,
+        type: .settings
+    ))
+}
+
+private func removeAppCache(at url: URL) {
+    guard FileManager.default.fileExists(atPath: url.path) else { return }
+
+    do {
+        try FileManager.default.removeItem(at: url)
+    } catch {
+        Current.Log.error("Error when trying to delete app cache at \(url.path): \(error)")
+    }
 }
 
 func deleteKeychainCompletely() throws {

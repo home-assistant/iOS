@@ -148,6 +148,7 @@ public class LegacyModelManager: ServerObserver {
 
             try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIdentifiers)
             try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIdentifiers)
+            try? AssistPipelines.deleteOrphans(keepingServerIds: serverIdentifiers)
 
             do {
                 try Current.database().write { db in

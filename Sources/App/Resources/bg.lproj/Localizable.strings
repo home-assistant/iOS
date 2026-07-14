@@ -544,7 +544,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "improv.wifi.alert.password_placeholder" = "Password";
 "improv.wifi.alert.ssid_placeholder" = "Network Name";
 "improv.wifi.alert.title" = "Connect to WiFi";
-"intents.server_required_for_value" = "Изберете сървър, преди да изберете тази стойност.";
 "kiosk.accept_remote_commands.footer" = "When enabled, this device responds to kiosk commands sent through push notifications, such as showing or hiding the screensaver.";
 "kiosk.accept_remote_commands.title" = "Accept kiosk remote commands";
 "kiosk.active.title" = "Kiosk Mode Active";
