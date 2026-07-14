@@ -1669,6 +1669,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.source" = "Source";
 "watch.complications.builder.source_custom" = "Custom template";
 "watch.complications.builder.source_entity" = "Entity";
+"watch.complications.builder.source_entity_subtitle" = "Display entity state";
+"watch.complications.builder.source_template" = "Template";
+"watch.complications.builder.source_template_subtitle" = "Admin role required";
 "watch.complications.builder.style" = "Style";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Text color";

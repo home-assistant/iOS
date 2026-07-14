@@ -5591,6 +5591,12 @@ public enum L10n {
         public static var sourceCustom: String { return L10n.tr("Localizable", "watch.complications.builder.source_custom") }
         /// Entity
         public static var sourceEntity: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity") }
+        /// Display entity state
+        public static var sourceEntitySubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity_subtitle") }
+        /// Template
+        public static var sourceTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.source_template") }
+        /// Admin role required
+        public static var sourceTemplateSubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_template_subtitle") }
         /// Style
         public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
         /// Templates
