@@ -10,6 +10,9 @@ public enum WatchUserDefaultsKey: String {
     /// `WatchConfig.lastModified` of the config the watch and iPhone last agreed on — the baseline for
     /// offline-edit conflict detection.
     case lastConfigSyncModified
+    /// Opaque per-table digests the phone issued with the last applied database mirror; echoed on
+    /// the next sync request so the phone can omit unchanged tables (delta sync).
+    case databaseMirrorDigests
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -50,6 +53,23 @@ public final class WatchUserDefaults {
                 userDefaults.set(newValue, forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
             } else {
                 userDefaults.removeObject(forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
+            }
+        }
+    }
+
+    // MARK: - Database mirror digests (delta sync)
+
+    /// Digest map issued by the phone with the last applied database mirror. Opaque to the watch —
+    /// stored verbatim and echoed on the next sync request. `nil` until the first sync (the phone
+    /// then sends the full snapshot).
+    public var databaseMirrorDigests: [String: String]? {
+        get { userDefaults.dictionary(forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)
+            as? [String: String] }
+        set {
+            if let newValue {
+                userDefaults.set(newValue, forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)
+            } else {
+                userDefaults.removeObject(forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)
             }
         }
     }

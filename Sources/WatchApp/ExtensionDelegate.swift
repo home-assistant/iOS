@@ -227,7 +227,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
             if blob.identifier == WatchDatabaseMirror.blobIdentifier {
-                self?.applyPushedDatabaseMirror(blob.content)
+                self?.applyPushedDatabaseMirror(blob.content, metadata: blob.metadata)
             }
 
             self?.endWatchConnectivityBackgroundTaskIfNecessary()
@@ -318,7 +318,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
-    private func applyPushedDatabaseMirror(_ data: Data) {
+    private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
@@ -334,6 +334,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
             do {
                 try mirror.apply()
+                // The push carries the phone's digests in the transfer metadata; storing them keeps
+                // the next interactive delta sync accurate instead of re-fetching everything.
+                if let digests = metadata?[WatchDatabaseMirror.digestsKey] as? [String: String] {
+                    WatchUserDefaults.shared.databaseMirrorDigests = digests
+                }
                 Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",

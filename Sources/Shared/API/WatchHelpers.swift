@@ -228,8 +228,11 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         let data: Data
+        let digests: [String: String]
         do {
-            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+            let snapshot = try WatchDatabaseMirror.snapshot()
+            data = try snapshot.encodeForWatch()
+            digests = snapshot.tableDigests()
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
             Current.clientEventStore.addEvent(.init(
@@ -243,9 +246,12 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         lastPushedData = data
+        // The digests travel in the file-transfer metadata so the watch can store them after
+        // applying this full mirror — keeping its next delta sync request accurate.
         Communicator.shared.transfer(HAWatchConnectivity.Blob(
             identifier: WatchDatabaseMirror.blobIdentifier,
-            content: data
+            content: data,
+            metadata: [WatchDatabaseMirror.digestsKey: digests]
         )) { result in
             if case let .failure(error) = result {
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")

@@ -515,8 +515,18 @@ final class WatchCommunicatorService {
             databaseSyncChunks.removeAll()
         }
         let data: Data
+        let digests: [String: String]
         do {
-            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+            var mirror = try WatchDatabaseMirror.snapshot()
+            digests = mirror.tableDigests()
+            // Delta sync: a watch that echoes previously-issued digests receives only the tables
+            // that changed since (nil = retain). Watches that send no digests — older builds or a
+            // first sync — get the full snapshot.
+            if let stored = message.content[WatchDatabaseMirror.digestsKey] as? [String: String],
+               !stored.isEmpty {
+                mirror = mirror.omittingTables(matching: stored, currentDigests: digests)
+            }
+            data = try mirror.encodeForWatch()
         } catch {
             Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
             message.reply(.init(identifier: responseId, content: ["error": true]))
@@ -547,6 +557,8 @@ final class WatchCommunicatorService {
             "transferId": transferId,
             "totalChunks": chunks.count,
             "totalBytes": data.count,
+            // The watch stores these after a successful apply and echoes them on the next sync.
+            WatchDatabaseMirror.digestsKey: digests,
         ]))
     }
 

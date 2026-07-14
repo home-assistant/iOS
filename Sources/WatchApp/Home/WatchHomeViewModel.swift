@@ -336,6 +336,9 @@ final class WatchHomeViewModel: ObservableObject {
     private var syncTransferId: String?
     private var syncTotalChunks = 0
     private var syncAccumulated = Data()
+    /// Digests issued with the sync-start reply; stored as the new baseline only after the mirror
+    /// actually applies, so a failed sync keeps requesting the same tables.
+    private var syncResponseDigests: [String: String]?
 
     /// Kick off a full database sync. Requires the phone reachable (interactive request/reply); if it
     /// isn't, surface a friendly message rather than hang, and still try the config pull from cache.
@@ -346,8 +349,14 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         resetSyncState()
+        // Echo the digests from the last applied mirror so the phone can omit unchanged tables.
+        var content: [String: Any] = [:]
+        if let digests = WatchUserDefaults.shared.databaseMirrorDigests {
+            content[WatchDatabaseMirror.digestsKey] = digests
+        }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirror.rawValue,
+            content: content,
             reply: { [weak self] message in
                 Task { @MainActor in self?.handleDatabaseSyncStart(message) }
             }
@@ -378,6 +387,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncTransferId = transferId
         syncTotalChunks = totalChunks
         syncAccumulated = Data()
+        syncResponseDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
         Current.clientEventStore.addEvent(.init(
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
             type: .database
@@ -432,6 +442,7 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishDatabaseSync() {
         let data = syncAccumulated
+        let responseDigests = syncResponseDigests
         resetSyncState()
         let mirror: WatchDatabaseMirror
         do {
@@ -442,6 +453,8 @@ final class WatchHomeViewModel: ObservableObject {
         }
         do {
             try mirror.apply()
+            // Only a successfully applied mirror advances the delta-sync baseline.
+            WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
             Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
             Current.clientEventStore.addEvent(.init(
                 text: "Apple Watch database sync applied (\(data.count) bytes)",
@@ -490,6 +503,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncTransferId = nil
         syncTotalChunks = 0
         syncAccumulated = Data()
+        syncResponseDigests = nil
         syncProgress = nil
     }
 
