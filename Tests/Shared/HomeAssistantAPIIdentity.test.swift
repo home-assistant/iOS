@@ -137,7 +137,7 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
     }
 
     func testCertificateAwareSessionAttachesDelegateWithoutClientCertificate() {
-        let server = ServerFixture.withRemoteConnection
+        let server = makeServer(clientCertificate: nil)
         XCTAssertNil(server.info.connection.clientCertificate)
         XCTAssertFalse(server.info.connection.securityExceptions.hasExceptions)
 
@@ -148,18 +148,41 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
     }
 
     func testCertificateAwareSessionAttachesDelegateWithClientCertificate() {
-        let server = ServerFixture.withRemoteConnection
-        server.update { info in
-            info.connection.clientCertificate = ClientCertificate(
-                keychainIdentifier: "com.ha-ios.mtls.identity.test",
-                displayName: "Test"
-            )
-        }
+        let server = makeServer(clientCertificate: ClientCertificate(
+            keychainIdentifier: "com.ha-ios.mtls.identity.test",
+            displayName: "Test"
+        ))
 
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         defer { session.finishTasksAndInvalidate() }
 
         XCTAssertTrue(session.delegate is HAURLSessionDelegate)
+    }
+
+    private func makeServer(clientCertificate: ClientCertificate?) -> Server {
+        var info = ServerInfo(
+            name: "Certificate Server",
+            connection: .init(
+                externalURL: URL(string: "https://external.example.com"),
+                internalURL: nil,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "webhook-id",
+                webhookSecret: nil,
+                internalSSIDs: nil,
+                internalHardwareAddresses: nil,
+                isLocalPushEnabled: false,
+                securityExceptions: .init(exceptions: []),
+                connectionAccessSecurityLevel: .undefined,
+                clientCertificate: clientCertificate
+            ),
+            token: .init(accessToken: "access-token", refreshToken: "refresh-token", expiration: Date()),
+            version: "2026.4.1"
+        )
+        return Server(identifier: "certificate-test", getter: { info }, setter: { newInfo in
+            info = newInfo
+            return true
+        })
     }
 }
 
