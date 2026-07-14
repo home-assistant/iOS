@@ -331,6 +331,18 @@ public extension AppZone {
             Current.Log.error("Failed to save zone \(identifier): \(error.localizedDescription)")
         }
     }
+
+    func setInRegion(_ inRegion: Bool) {
+        do {
+            try Current.database().write { db in
+                _ = try AppZone
+                    .filter(Column(DatabaseTables.AppZone.identifier.rawValue) == identifier)
+                    .updateAll(db, Column(DatabaseTables.AppZone.inRegion.rawValue).set(to: inRegion))
+            }
+        } catch {
+            Current.Log.error("Failed to update in-region state for zone \(identifier): \(error.localizedDescription)")
+        }
+    }
 }
 
 // MARK: - UpdatableModel

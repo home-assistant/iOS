@@ -175,9 +175,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                 return ignore(.ignoredSSID(currentSSID))
             }
 
-            var updatedZone = zone
-            updatedZone.inRegion = state == .inside
-            updatedZone.save()
+            zone.setInRegion(state == .inside)
 
             if region is CLBeaconRegion, state == .outside {
                 return ignore(.beaconExitIgnored)
