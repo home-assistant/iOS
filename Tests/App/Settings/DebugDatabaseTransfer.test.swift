@@ -86,33 +86,35 @@ struct DebugDatabaseTransferTests {
         let modelManager = NoOpModelManager()
         let appDatabaseUpdater = RecordingAppDatabaseUpdater()
 
-        try await withTransferTestWorld(database: sourceDatabase) { _ in
-            let url = try DebugDatabaseTransfer.exportURL(part: .carPlayConfiguration)
+        let url = try withTransferTestWorld(database: sourceDatabase) { _ in
+            try DebugDatabaseTransfer.exportURL(part: .carPlayConfiguration)
+        }
 
-            try await withTransferTestWorld(
-                database: destinationDatabase,
-                modelManager: modelManager,
-                appDatabaseUpdater: appDatabaseUpdater
-            ) { database in
-                let summary = try await DebugDatabaseTransfer.importPayload(from: url, part: .carPlayConfiguration)
+        try await withTransferTestWorld(
+            database: destinationDatabase,
+            modelManager: modelManager,
+            appDatabaseUpdater: appDatabaseUpdater
+        ) { database in
+            let summary = try await DebugDatabaseTransfer.importPayload(from: url, part: .carPlayConfiguration)
 
-                #expect(summary.carPlayConfigurations == 1)
-                #expect(summary.totalRecords == 1)
-                #expect(modelManager.cleanupCallCount == 1)
-                #expect(appDatabaseUpdater.updatedServerIds == [validServerId])
+            #expect(summary.carPlayConfigurations == 1)
+            #expect(summary.totalRecords == 1)
+            #expect(modelManager.cleanupCallCount == 1)
+            #expect(appDatabaseUpdater.updatedServerIds == [validServerId])
 
-                let carPlayConfig = try #requiretry (CarPlayConfig.config())
-                #expect(carPlayConfig.quickAccessItems.map(\.id) == ["imported-valid"])
-                #expect(carPlayConfig.quickAccessItems.map(\.serverId) == [validServerId])
+            let storedCarPlayConfig = try CarPlayConfig.config()
+            let carPlayConfig = try #require(storedCarPlayConfig)
+            #expect(carPlayConfig.quickAccessItems.map(\.id) == ["imported-valid"])
+            #expect(carPlayConfig.quickAccessItems.map(\.serverId) == [validServerId])
 
-                let watchConfig = try #requiretry (WatchConfig.config())
-                #expect(watchConfig.items.map(\.id) == ["watch-valid"])
+            let storedWatchConfig = try WatchConfig.config()
+            let watchConfig = try #require(storedWatchConfig)
+            #expect(watchConfig.items.map(\.id) == ["watch-valid"])
 
-                let carPlayCount = try await database.read { db in try CarPlayConfig.fetchCount(db) }
-                let watchCount = try await database.read { db in try WatchConfig.fetchCount(db) }
-                #expect(carPlayCount == 1)
-                #expect(watchCount == 1)
-            }
+            let carPlayCount = try await database.read { db in try CarPlayConfig.fetchCount(db) }
+            let watchCount = try await database.read { db in try WatchConfig.fetchCount(db) }
+            #expect(carPlayCount == 1)
+            #expect(watchCount == 1)
         }
     }
 
@@ -149,10 +151,10 @@ struct DebugDatabaseTransferTests {
         try await work(database)
     }
 
-    private func withTransferTestWorld(
+    private func withTransferTestWorld<T>(
         database: DatabaseQueue? = nil,
-        perform work: (DatabaseQueue) throws -> Void
-    ) throws {
+        perform work: (DatabaseQueue) throws -> T
+    ) throws -> T {
         let database = try database ?? makeTransferDatabase()
         let previousDatabase = Current.database
         let previousServers = Current.servers
@@ -168,7 +170,7 @@ struct DebugDatabaseTransferTests {
             Current.servers = previousServers
         }
 
-        try work(database)
+        return try work(database)
     }
 
     private func makeTransferDatabase() throws -> DatabaseQueue {
