@@ -2,7 +2,7 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
-    var embedInOwnNavigation = true
+    var embedInOwnNavigation: Bool = true
 
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false

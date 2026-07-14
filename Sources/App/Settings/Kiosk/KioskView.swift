@@ -19,9 +19,10 @@ struct ConditionalContainerView: View {
                     .navigationDestination(isPresented: $appSettings.isPresented) {
                         SettingsView(embedInOwnNavigation: false)
                             .injectingViewControllerProvider()
-                            .onDisappear {
-                                Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
-                            }
+                    }
+                    .onChange(of: appSettings.isPresented) { isPresented in
+                        guard !isPresented else { return }
+                        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
                     }
             }
         }
