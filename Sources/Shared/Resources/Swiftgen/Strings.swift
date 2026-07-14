@@ -6842,6 +6842,14 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
       }
     }
+    public enum ContentSource {
+      /// Entity
+      public static var entity: String { return L10n.tr("Localizable", "widgets.content_source.entity") }
+      /// Template
+      public static var template: String { return L10n.tr("Localizable", "widgets.content_source.template") }
+      /// Source
+      public static var title: String { return L10n.tr("Localizable", "widgets.content_source.title") }
+    }
     public enum Controls {
       public enum Assist {
         /// Open Assist in Home Assistant app
@@ -7160,8 +7168,12 @@ public enum L10n {
         public static var gaugeType: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type") }
         /// Max Label Template
         public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.max_label_template") }
+        /// Maximum Value
+        public static var maxValue: String { return L10n.tr("Localizable", "widgets.gauge.parameters.max_value") }
         /// Min Label Template
         public static var minLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.min_label_template") }
+        /// Minimum Value
+        public static var minValue: String { return L10n.tr("Localizable", "widgets.gauge.parameters.min_value") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_script") }
         /// Script
@@ -7201,6 +7213,12 @@ public enum L10n {
         /// Server
         public static var title: String { return L10n.tr("Localizable", "widgets.param.server.title") }
       }
+    }
+    public enum Parameters {
+      /// Attribute
+      public static var attribute: String { return L10n.tr("Localizable", "widgets.parameters.attribute") }
+      /// Entity
+      public static var entity: String { return L10n.tr("Localizable", "widgets.parameters.entity") }
     }
     public enum Preview {
       public enum Custom {

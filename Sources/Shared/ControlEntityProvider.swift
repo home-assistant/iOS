@@ -114,6 +114,33 @@ public final class ControlEntityProvider {
         return entitiesPerServer
     }
 
+    /// Fetches the raw `attributes` dictionary for an entity over the REST `/states` endpoint. Used by
+    /// the widgets' entity source to list an entity's attributes and read the chosen one's value.
+    public func attributes(server: Server, entityId: String) async -> [String: Any]? {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch attributes data")
+            return nil
+        }
+
+        let result = await withCheckedContinuation { continuation in
+            connection.send(.init(
+                type: .rest(.get, "states/\(entityId)"),
+                shouldRetry: true
+            )) { result in
+                continuation.resume(returning: result)
+            }
+        }
+
+        guard let data = try? result.get(), case let .dictionary(state) = data else {
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to get attributes: \(error)")
+            }
+            return nil
+        }
+
+        return state["attributes"] as? [String: Any]
+    }
+
     public func state(server: Server, entityId: String) async -> State? {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch state data")
