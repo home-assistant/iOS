@@ -10,10 +10,7 @@ struct ConditionalContainerView: View {
     @State private var showKioskSettings = false
 
     var body: some View {
-        if Current.isCatalyst {
-            content
-                .sheet(isPresented: $appSettings.isSheetPresented) { settingsSheet }
-        } else {
+        if UIDevice.current.userInterfaceIdiom == .phone {
             NavigationStack {
                 content
                     .toolbar(.hidden, for: .navigationBar)
@@ -23,6 +20,9 @@ struct ConditionalContainerView: View {
                     }
             }
             .sheet(isPresented: $appSettings.isSheetPresented) { settingsSheet }
+        } else {
+            content
+                .sheet(isPresented: $appSettings.isSheetPresented) { settingsSheet }
         }
     }
 

@@ -47,7 +47,7 @@ struct ContainerView: View {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
             coordinator.onShowSettings = { pushOntoNavigationStack in
-                if pushOntoNavigationStack, !Current.isCatalyst {
+                if pushOntoNavigationStack, UIDevice.current.userInterfaceIdiom == .phone {
                     AppSettingsPresenter.shared.isPushPresented = true
                 } else {
                     AppSettingsPresenter.shared.isSheetPresented = true
