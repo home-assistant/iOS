@@ -48,6 +48,51 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {
+        switch configuration.source {
+        case .entity:
+            return try await entityEntry(for: configuration)
+        case .template:
+            return try await templateEntry(for: configuration)
+        }
+    }
+
+    /// Builds the widget from a single picked entity's live state, fetched over the REST `/states`
+    /// endpoint (no admin required). Upper line is the entity name, lower line is the formatted
+    /// state with its unit, and the rectangular detail line shows the entity's area when known.
+    private func entityEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
+        guard let entity = configuration.entity else {
+            Current.Log.error("Failed to fetch data for details widget: No entity selected")
+            throw WidgetDetailsDataError.noEntity
+        }
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
+            ?? configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Failed to fetch data for details widget: No servers exist")
+            throw WidgetDetailsDataError.noServers
+        }
+        guard let resolved = await WidgetEntityAttributes.resolvedValue(
+            entityId: entity.entityId,
+            attribute: configuration.attribute?.id,
+            server: server
+        ) else {
+            Current.Log.error("Failed to fetch value for details widget entity \(entity.entityId)")
+            throw WidgetDetailsDataError.apiError
+        }
+
+        let lowerText = resolved.unit.map { "\(resolved.value) \($0)" } ?? resolved.value
+        let areaName = entity.areaName?.isEmpty == false ? entity.areaName : nil
+
+        return .init(
+            upperText: entity.displayString,
+            lowerText: lowerText,
+            detailsText: areaName,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    private func templateEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for details widget: No servers exist")
@@ -132,6 +177,7 @@ struct WidgetDetailsEntry: TimelineEntry {
 
 enum WidgetDetailsDataError: Error {
     case noServers
+    case noEntity
     case apiError
     case badResponse
 }

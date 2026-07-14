@@ -71,6 +71,64 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
+        switch configuration.source {
+        case .entity:
+            return try await entityEntry(for: configuration)
+        case .template:
+            return try await templateEntry(for: configuration)
+        }
+    }
+
+    /// Builds the gauge from a single picked entity's live state, fetched over the REST `/states`
+    /// endpoint (no admin required). The 0…1 fill maps the numeric state across the configured
+    /// `minValue`…`maxValue` range; labels are generated from the state, unit and range.
+    private func entityEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
+        guard let entity = configuration.entity else {
+            Current.Log.error("Failed to fetch data for gauge widget: No entity selected")
+            throw WidgetGaugeDataError.noEntity
+        }
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
+            ?? configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Failed to fetch data for gauge widget: No servers exist")
+            throw WidgetGaugeDataError.noServers
+        }
+        guard let resolved = await WidgetEntityAttributes.resolvedValue(
+            entityId: entity.entityId,
+            attribute: configuration.attribute?.id,
+            server: server
+        ) else {
+            Current.Log.error("Failed to fetch value for gauge widget entity \(entity.entityId)")
+            throw WidgetGaugeDataError.apiError
+        }
+
+        let numericValue = Double(resolved.value.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let range = configuration.maxValue - configuration.minValue
+        let fraction = range != 0 ? Swift.min(Swift.max((numericValue - configuration.minValue) / range, 0), 1) : 0
+
+        let valueLabel = resolved.unit.map { "\(resolved.value) \($0)" } ?? resolved.value
+
+        return .init(
+            gaugeType: configuration.gaugeType,
+
+            value: fraction,
+
+            valueLabel: valueLabel,
+            label: configuration.gaugeType == .singleLabel ? entity.displayString : nil,
+            min: configuration.gaugeType == .normal ? Self.formatBound(configuration.minValue) : nil,
+            max: configuration.gaugeType == .normal ? Self.formatBound(configuration.maxValue) : nil,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    /// Trims a trailing `.0` so whole-number bounds read as "100" rather than "100.0".
+    private static func formatBound(_ value: Double) -> String {
+        value == value.rounded() && abs(value) < 1e15 ? String(Int(value)) : String(value)
+    }
+
+    private func templateEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for gauge widget: No servers exist")
@@ -172,6 +230,7 @@ struct WidgetGaugeEntry: TimelineEntry {
 
 enum WidgetGaugeDataError: Error {
     case noServers
+    case noEntity
     case apiError
     case badResponse
 }

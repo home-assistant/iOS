@@ -393,6 +393,9 @@ public extension Version {
     static let updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
     static let conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
+    /// render_template accepts `report_errors`, so template errors arrive as subscription events
+    /// instead of being logged only server-side.
+    static let canReportTemplateErrors: Version = .init(major: 2023, minor: 9)
     static let externalBusCommandAutomationEditor: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     static let canUseAppThemeForStatusBar: Version = .init(major: 2024, minor: 7)
     /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor

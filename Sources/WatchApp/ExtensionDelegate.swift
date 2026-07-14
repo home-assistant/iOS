@@ -869,6 +869,10 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         var rawState = ""
         var attributes: [String: Any] = [:]
         var customGaugeFraction: Double?
+        // Rendered by the color templates (custom-template kind); each overrides its static color.
+        var gaugeColorHex: String?
+        var iconColorHex: String?
+        var textColorHex: String?
         // Whether we obtained fresh live data this pass. When false the caller keeps the last-known
         // snapshot instead of overwriting it with a value-less one.
         var isLive = false
@@ -937,6 +941,16 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 customGaugeFraction = min(max(Double(raw), 0), 1)
                 isLive = true
             }
+            // Colors are cosmetic: they never count as live data, and an invalid render just keeps
+            // the static color it would have overridden.
+            func renderColor(_ template: String?) async -> String? {
+                guard let template,
+                      let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) else { return nil }
+                return WatchComplicationConfig.normalizedHexColor(from: rendered)
+            }
+            gaugeColorHex = await renderColor(config.customGaugeColorTemplate)
+            iconColorHex = await renderColor(config.customIconColorTemplate)
+            textColorHex = await renderColor(config.customTextColorTemplate)
             if !isLive {
                 failureReason = "template render failed"
             }
@@ -968,7 +982,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             let range = config.gaugeRange(for: family)
             perFamily[family.rawValue] = PerFamily(
                 fraction: fraction(for: family),
-                tint: config.tint(for: family),
+                tint: gaugeColorHex ?? config.tint(for: family),
                 showValue: config.showsValue(for: family),
                 showName: config.showsName(for: family),
                 showIcon: config.showsIcon(for: family),
@@ -977,13 +991,13 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
-                textColor: config.textColor(for: family)
+                textColor: textColorHex ?? config.textColor(for: family)
             )
         }
 
         let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
         // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
-        let color = config.iconColor.map { UIColor(hex: $0) } ?? AppConstants.tintColor
+        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let iconData = config.iconName
             .map { MaterialDesignIcons(serversideValueNamed: $0).image(ofSize: iconRenderSize, color: color) }?
             .pngData()

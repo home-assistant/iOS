@@ -21,12 +21,14 @@ struct EntityPicker: View {
         selectedServerId: String? = nil,
         selectedEntity: Binding<HAAppEntity?>,
         domainFilter: [Domain]?,
-        mode: Mode = .button
+        mode: Mode = .button,
+        initialSearchTerm: String? = nil
     ) {
         self._selectedEntity = selectedEntity
         self._viewModel = .init(wrappedValue: EntityPickerViewModel(
             domainFilter: domainFilter,
-            selectedServerId: selectedServerId
+            selectedServerId: selectedServerId,
+            initialSearchTerm: initialSearchTerm
         ))
         self.mode = mode
     }

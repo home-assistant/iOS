@@ -180,8 +180,15 @@ extension OnboardingServersListViewModel: SensorObserver {
 
 extension OnboardingServersListViewModel: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
-        if state == .complete, shouldDismissOnSuccess {
-            shouldDismiss = true
+        guard state == .complete else { return }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if shouldDismissOnSuccess {
+                shouldDismiss = true
+            }
+            if let onboardingServer {
+                Current.appDatabaseUpdater.update(server: onboardingServer, forceUpdate: true)
+            }
         }
     }
 }
