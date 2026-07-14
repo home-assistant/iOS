@@ -8,6 +8,10 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case pushActionResponse = "PushActionResponse"
     case assistPipelinesFetchResponse
     case assistAudioDataResponse
+    /// Phone → watch: per-chunk acknowledgement of `assistAudioDataChunked`, carrying
+    /// `{acknowledged, chunkIndex, totalChunks}`. The watch sends the next chunk only after
+    /// receiving this, so audio streams with backpressure instead of flooding the session.
+    case assistAudioChunkAck
     case assistSTTResponse
     case assistIntentEndResponse
     case assistTTSResponse
