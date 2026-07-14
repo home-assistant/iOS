@@ -29,9 +29,11 @@ final class OnboardingServersListViewModel: ObservableObject {
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
     private let shouldDismissOnSuccess: Bool
+    private let onboardingStyle: OnboardingStyle
 
-    init(shouldDismissOnSuccess: Bool) {
+    init(shouldDismissOnSuccess: Bool, onboardingStyle: OnboardingStyle) {
         self.shouldDismissOnSuccess = shouldDismissOnSuccess
+        self.onboardingStyle = onboardingStyle
         discovery.observer = self
         Current.sensors.register(observer: self)
         Current.onboardingObservation.register(observer: self)
@@ -180,8 +182,12 @@ extension OnboardingServersListViewModel: SensorObserver {
 
 extension OnboardingServersListViewModel: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
-        if state == .complete, shouldDismissOnSuccess {
+        guard state == .complete else { return }
+        if shouldDismissOnSuccess {
             shouldDismiss = true
+        }
+        if onboardingStyle == .secondary, let onboardingServer {
+            Current.appDatabaseUpdater.update(server: onboardingServer, forceUpdate: true)
         }
     }
 }

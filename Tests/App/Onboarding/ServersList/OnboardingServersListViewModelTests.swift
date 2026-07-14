@@ -9,7 +9,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false, onboardingStyle: .initial)
         assert(sut.discoveredInstances.isEmpty)
         assert((mockBonjour.observer as? OnboardingServersListViewModel) != nil)
     }
@@ -19,7 +19,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false, onboardingStyle: .initial)
 
         sut.startDiscovery()
         assert(sut.discoveredInstances.isEmpty)
@@ -31,7 +31,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false, onboardingStyle: .initial)
 
         sut.stopDiscovery()
         assert(mockBonjour.stopCalled)
@@ -42,7 +42,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false, onboardingStyle: .initial)
 
         sut.resetFlow()
         assert(sut.currentlyInstanceLoading == nil)

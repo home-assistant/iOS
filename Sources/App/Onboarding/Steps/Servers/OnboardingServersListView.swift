@@ -60,7 +60,10 @@ struct OnboardingServersListView: View {
         self.prefillURL = prefillURL
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
+            .init(wrappedValue: OnboardingServersListViewModel(
+                shouldDismissOnSuccess: shouldDismissOnSuccess,
+                onboardingStyle: onboardingStyle
+            ))
         self.onboardingStyle = onboardingStyle
     }
 
