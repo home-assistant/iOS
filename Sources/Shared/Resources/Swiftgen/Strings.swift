@@ -5630,6 +5630,8 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
       }
       public enum Root {
+        /// Duplicate
+        public static var duplicate: String { return L10n.tr("Localizable", "watch.complications.root.duplicate") }
         /// Show entity state and gauges on your watch face.
         public static var headerSubtitle: String { return L10n.tr("Localizable", "watch.complications.root.header_subtitle") }
         /// Legacy complications
