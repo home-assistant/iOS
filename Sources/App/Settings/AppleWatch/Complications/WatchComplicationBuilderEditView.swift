@@ -184,7 +184,7 @@ struct WatchComplicationBuilderEditView: View {
                     AllFamiliesComplicationPreview(
                         config: viewModel.config,
                         server: server,
-                        selectedFamily: $viewModel.config.widgetFamily,
+                        selectedFamily: viewModel.config.widgetFamily,
                         onUnit: { viewModel.entityUnit = $0 },
                         onAttributes: { viewModel.entityAttributeKeys = $0 },
                         onValueIsNumeric: { viewModel.valueIsNumeric = $0 }
@@ -199,8 +199,6 @@ struct WatchComplicationBuilderEditView: View {
                     .onDisappear {
                         withAnimation { isInlinePreviewVisible = false }
                     }
-                } footer: {
-                    Text(L10n.Watch.Complications.Builder.previewFooter)
                 }
             }
 
@@ -325,17 +323,23 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            // Step 3 (template): enter the template, then the shared options reveal below.
+            // Step 3 (template): enter the templates, then the shared options reveal below. One
+            // section per field, so each template gets a title explaining what it feeds.
             if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty {
                 Section {
                     TextField(text: stringBinding(\.customTextTemplate)) {
                         Text(verbatim: "{{ states('sensor.x') }}")
                     }
+                } header: {
+                    Text(L10n.Watch.Complications.Builder.textTemplate)
+                }
+
+                Section {
                     TextField(text: stringBinding(\.customGaugeTemplate)) {
                         Text(verbatim: "{{ … }} → 0–1")
                     }
                 } header: {
-                    Text(L10n.Watch.Complications.Builder.templates)
+                    Text(L10n.Watch.Complications.Builder.gaugeTemplate)
                 }
             }
 
@@ -417,8 +421,8 @@ struct WatchComplicationBuilderEditView: View {
                     }
 
                 } header: {
-                    // Family switcher, so the size being customized can be changed without scrolling
-                    // back up to the preview.
+                    // Family switcher: selects the size being customized, which is also the size the
+                    // floating mini preview shows.
                     Picker(selection: $viewModel.config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
@@ -478,7 +482,7 @@ struct WatchComplicationBuilderEditView: View {
                     AllFamiliesComplicationPreview(
                         config: viewModel.config,
                         server: server,
-                        selectedFamily: $viewModel.config.widgetFamily,
+                        selectedFamily: viewModel.config.widgetFamily,
                         showsOnlySelectedFamily: true,
                         onUnit: { viewModel.entityUnit = $0 },
                         onAttributes: { viewModel.entityAttributeKeys = $0 },
@@ -632,6 +636,24 @@ struct WatchComplicationBuilderEditView: View {
             iconName: "mdi:battery",
             gaugeMin: 0,
             gaugeMax: 100
+        ))
+    }
+}
+
+#Preview("Editing existing template complication") {
+    // The template flow: one titled section per template field.
+    // swiftlint:disable prohibit_environment_assignment
+    Current.servers = FakeServerManager(initial: 1)
+    // swiftlint:enable prohibit_environment_assignment
+    let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
+    return NavigationView {
+        WatchComplicationBuilderEditView(existing: WatchComplicationConfig(
+            serverId: serverId,
+            kind: .customTemplate,
+            name: "Solar",
+            iconName: "mdi:solar-power",
+            customTextTemplate: "{{ states('sensor.solar_power') }}",
+            customGaugeTemplate: "{{ states('sensor.solar_fraction') }}"
         ))
     }
 }

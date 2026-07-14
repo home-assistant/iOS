@@ -10,7 +10,9 @@ import SwiftUI
 struct AllFamiliesComplicationPreview: View {
     let config: WatchComplicationConfig
     let server: Server
-    @Binding var selectedFamily: WatchComplicationConfig.Family
+    /// The family shown by the single-family (floating) mode — the size being customized, driven by
+    /// the editor's segmented size picker. The full face ignores it and shows every family equally.
+    let selectedFamily: WatchComplicationConfig.Family
     var showsOnlySelectedFamily = false
 
     /// Outer bezel radius of the compact single-family face — exposed so the floating panel's
@@ -39,7 +41,7 @@ struct AllFamiliesComplicationPreview: View {
     init(
         config: WatchComplicationConfig,
         server: Server,
-        selectedFamily: Binding<WatchComplicationConfig.Family>,
+        selectedFamily: WatchComplicationConfig.Family,
         showsOnlySelectedFamily: Bool = false,
         onUnit: @escaping (String?) -> Void = { _ in },
         onAttributes: @escaping ([String]) -> Void = { _ in },
@@ -47,7 +49,7 @@ struct AllFamiliesComplicationPreview: View {
     ) {
         self.config = config
         self.server = server
-        self._selectedFamily = selectedFamily
+        self.selectedFamily = selectedFamily
         self.showsOnlySelectedFamily = showsOnlySelectedFamily
         self.onUnit = onUnit
         self.onAttributes = onAttributes
@@ -140,13 +142,13 @@ struct AllFamiliesComplicationPreview: View {
                             .frame(width: 214, height: 270)
                             .overlay {
                                 ZStack {
-                                    familyButton(.circular)
+                                    preview(for: .circular)
                                         .position(x: 58, y: 68)
-                                    familyButton(.corner)
+                                    preview(for: .corner)
                                         .position(x: 156, y: 68)
-                                    familyButton(.rectangular)
+                                    preview(for: .rectangular)
                                         .position(x: 107, y: 148)
-                                    familyButton(.inline)
+                                    preview(for: .inline)
                                         .position(x: 107, y: 226)
                                 }
                                 .frame(width: 214, height: 270)
@@ -170,36 +172,6 @@ struct AllFamiliesComplicationPreview: View {
         // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
         // reliably, so the preview updates on entity change without needing to tap a family first.
         .task(id: fetchKey) { refresh() }
-    }
-
-    @ViewBuilder
-    private func familyButton(_ family: WatchComplicationConfig.Family) -> some View {
-        Button {
-            selectedFamily = family
-        } label: {
-            preview(for: family)
-                .padding(DesignSystem.Spaces.half)
-                .overlay {
-                    if selectedFamily == family {
-                        switch family {
-                        case .circular, .corner:
-                            Circle()
-                                .stroke(Color.accentColor, lineWidth: 2)
-                                .padding(10)
-                        case .rectangular:
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .stroke(Color.accentColor, lineWidth: 2)
-                        case .inline:
-                            Capsule()
-                                .stroke(Color.accentColor, lineWidth: 2)
-                        }
-                    }
-                }
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(verbatim: family.title))
-        .accessibilityAddTraits(selectedFamily == family ? .isSelected : [])
     }
 
     @ViewBuilder
@@ -307,7 +279,7 @@ struct AllFamiliesComplicationPreview: View {
             AllFamiliesComplicationPreview(
                 config: WatchComplicationConfig(serverId: "preview"),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.circular)
+                selectedFamily: .circular
             )
 
             AllFamiliesComplicationPreview(
@@ -335,7 +307,7 @@ struct AllFamiliesComplicationPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.corner)
+                selectedFamily: .corner
             )
 
             AllFamiliesComplicationPreview(
@@ -355,7 +327,7 @@ struct AllFamiliesComplicationPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.rectangular)
+                selectedFamily: .rectangular
             )
         }
         .padding()
@@ -368,7 +340,7 @@ struct AllFamiliesComplicationPreview: View {
             AllFamiliesComplicationPreview(
                 config: WatchComplicationConfig(serverId: "preview", name: "Solar"),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(family),
+                selectedFamily: family,
                 showsOnlySelectedFamily: true
             )
         }

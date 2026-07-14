@@ -5539,6 +5539,8 @@ public enum L10n {
         public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
         /// Gauge range (optional)
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
+        /// Gauge template
+        public static var gaugeTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_template") }
         /// Icon
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
@@ -5603,6 +5605,8 @@ public enum L10n {
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color
         public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
+        /// Text template
+        public static var textTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.text_template") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
         /// Unit

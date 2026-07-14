@@ -1644,6 +1644,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.entity" = "Entity";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
+"watch.complications.builder.gauge_template" = "Gauge template";
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.icon_color" = "Icon color";
 "watch.complications.builder.maximum" = "Maximum";
@@ -1675,6 +1676,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.style" = "Style";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Text color";
+"watch.complications.builder.text_template" = "Text template";
 "watch.complications.builder.title" = "Complications";
 "watch.complications.builder.unit" = "Unit";
 "watch.complications.builder.unit_automatic" = "Automatic";
