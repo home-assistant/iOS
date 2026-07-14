@@ -28,10 +28,18 @@ final class WatchCommunicatorService {
     /// gave up) and dropped, so they can't leak memory or corrupt a later recording.
     private static let audioChunkSessionTimeout: TimeInterval = 60
 
-    /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls one by one.
+    /// One in-progress database sync: the ordered chunks plus which indices have been served, so
+    /// the buffer is freed once every chunk went out at least once — the watch pipelines its
+    /// requests, so "the last index was requested" no longer implies the others were answered.
+    private struct DatabaseSyncTransfer {
+        var chunks: [Data]
+        var servedIndices: Set<Int> = []
+    }
+
+    /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls.
     /// Only one sync is ever meaningful at a time (there is one paired watch), so starting a new sync
     /// frees any previous buffer — a watch that died mid-pull must not leak the encoded mirror.
-    private var databaseSyncChunks: [String: [Data]] = [:]
+    private var databaseSyncChunks: [String: DatabaseSyncTransfer] = [:]
 
     private var didBecomeActiveObserver: NSObjectProtocol?
     private var databaseUpdatedObserver: NSObjectProtocol?
@@ -544,7 +552,7 @@ final class WatchCommunicatorService {
         if chunks.isEmpty { chunks = [Data()] }
 
         let transferId = UUID().uuidString
-        databaseSyncChunks[transferId] = chunks
+        databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: chunks)
         // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
         // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails the
         // whole sync on the watch), so a buffer still around after this long is abandoned.
@@ -562,23 +570,27 @@ final class WatchCommunicatorService {
         ]))
     }
 
-    /// Serve one chunk of an in-progress database sync. The last chunk request frees the buffer.
+    /// Serve one chunk of an in-progress database sync. The buffer is freed once every chunk has
+    /// been served at least once.
     private func watchDatabaseMirrorSyncChunk(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseId = InteractiveImmediateResponses.watchDatabaseMirrorChunkResponse.rawValue
         guard let transferId = message.content["transferId"] as? String,
               let index = message.content["index"] as? Int,
-              let chunks = databaseSyncChunks[transferId],
-              index >= 0, index < chunks.count else {
+              var transfer = databaseSyncChunks[transferId],
+              index >= 0, index < transfer.chunks.count else {
             Current.Log.error("Invalid watch DB sync chunk request")
             message.reply(.init(identifier: responseId, content: ["error": true]))
             return
         }
         message.reply(.init(identifier: responseId, content: [
             "index": index,
-            "chunkData": chunks[index],
+            "chunkData": transfer.chunks[index],
         ]))
-        if index == chunks.count - 1 {
+        transfer.servedIndices.insert(index)
+        if transfer.servedIndices.count == transfer.chunks.count {
             databaseSyncChunks.removeValue(forKey: transferId)
+        } else {
+            databaseSyncChunks[transferId] = transfer
         }
     }
 

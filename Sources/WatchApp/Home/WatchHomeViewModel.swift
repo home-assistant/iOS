@@ -331,14 +331,22 @@ final class WatchHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Chunked database sync (watch-driven, ordered, acknowledged)
+    // MARK: - Chunked database sync (watch-driven, pipelined, assembled in index order)
 
     private var syncTransferId: String?
     private var syncTotalChunks = 0
-    private var syncAccumulated = Data()
+    /// Received chunks by index; assembled in order once complete, so replies may arrive out of
+    /// order without corrupting the payload.
+    private var syncChunks: [Int: Data] = [:]
+    /// Next chunk index that hasn't been requested yet.
+    private var syncNextIndexToRequest = 0
     /// Digests issued with the sync-start reply; stored as the new baseline only after the mirror
     /// actually applies, so a failed sync keeps requesting the same tables.
     private var syncResponseDigests: [String: String]?
+    /// How many chunk requests may be outstanding at once. Overlapping requests hide the
+    /// per-message round-trip latency that made the sync strictly serial (one full round trip per
+    /// 30 KB chunk).
+    private static let syncPipelineWindow = 3
 
     /// Kick off a full database sync. Requires the phone reachable (interactive request/reply); if it
     /// isn't, surface a friendly message rather than hang, and still try the config pull from cache.
@@ -386,7 +394,8 @@ final class WatchHomeViewModel: ObservableObject {
         }
         syncTransferId = transferId
         syncTotalChunks = totalChunks
-        syncAccumulated = Data()
+        syncChunks = [:]
+        syncNextIndexToRequest = 0
         syncResponseDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
         Current.clientEventStore.addEvent(.init(
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
@@ -394,20 +403,33 @@ final class WatchHomeViewModel: ObservableObject {
         ))
         setLoadingStatus(L10n.Watch.Sync.progress(0, totalChunks))
         syncProgress = 0
-        pullChunk(index: 0)
+        requestChunksUpToWindow()
+    }
+
+    /// Keep up to `syncPipelineWindow` chunk requests in flight, requesting indices in order.
+    @MainActor
+    private func requestChunksUpToWindow() {
+        guard let transferId = syncTransferId else { return }
+        while syncNextIndexToRequest < syncTotalChunks,
+              syncNextIndexToRequest - syncChunks.count < Self.syncPipelineWindow {
+            pullChunk(index: syncNextIndexToRequest, transferId: transferId)
+            syncNextIndexToRequest += 1
+        }
     }
 
     @MainActor
-    private func pullChunk(index: Int) {
-        guard let transferId = syncTransferId else { return }
+    private func pullChunk(index: Int, transferId: String) {
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirrorChunk.rawValue,
             content: ["transferId": transferId, "index": index],
             reply: { [weak self] message in
-                Task { @MainActor in self?.handleChunk(message, index: index) }
+                Task { @MainActor in self?.handleChunk(message, index: index, transferId: transferId) }
             }
         ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
+                // Only the transfer that's still running may fail the sync; a straggler error from
+                // a transfer that already failed (which reset the state) is just noise.
+                guard self?.syncTransferId == transferId else { return }
                 Current.Log.error("Database sync chunk \(index) failed: \(error.localizedDescription)")
                 self?.failSync(
                     L10n.Watch.Sync.Error.generic,
@@ -418,7 +440,9 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int) {
+    private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int, transferId: String) {
+        // A late reply from a transfer that already failed or was replaced must not corrupt this one.
+        guard syncTransferId == transferId else { return }
         guard message.content["error"] == nil, let chunk = message.content["chunkData"] as? Data else {
             let phoneError = message.content["error"] as? String
             failSync(
@@ -428,20 +452,21 @@ final class WatchHomeViewModel: ObservableObject {
             )
             return
         }
-        syncAccumulated.append(chunk)
-        let received = index + 1
+        syncChunks[index] = chunk
+        let received = syncChunks.count
         setLoadingStatus(L10n.Watch.Sync.progress(received, syncTotalChunks))
         syncProgress = Double(received) / Double(syncTotalChunks)
-        if received < syncTotalChunks {
-            pullChunk(index: received)
-        } else {
+        if received == syncTotalChunks {
             finishDatabaseSync()
+        } else {
+            requestChunksUpToWindow()
         }
     }
 
     @MainActor
     private func finishDatabaseSync() {
-        let data = syncAccumulated
+        let chunks = syncChunks
+        let data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
         let responseDigests = syncResponseDigests
         resetSyncState()
         let mirror: WatchDatabaseMirror
@@ -502,7 +527,8 @@ final class WatchHomeViewModel: ObservableObject {
     private func resetSyncState() {
         syncTransferId = nil
         syncTotalChunks = 0
-        syncAccumulated = Data()
+        syncChunks = [:]
+        syncNextIndexToRequest = 0
         syncResponseDigests = nil
         syncProgress = nil
     }
