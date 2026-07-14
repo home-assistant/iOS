@@ -70,8 +70,10 @@ struct OnboardingServersListViewModelTests {
             sut.onboardingStateDidChange(to: .complete)
         }
 
-        #expect(recorder.updates.map(\.serverId) == [server.identifier.rawValue])
-        #expect(recorder.updates.allSatisfy(\.forceUpdate))
+        let updatedServerIds = recorder.updates.map(\.serverId)
+        let usedForceUpdate = recorder.updates.allSatisfy(\.forceUpdate)
+        #expect(updatedServerIds == [server.identifier.rawValue])
+        #expect(usedForceUpdate)
     }
 
     @Test @MainActor func testOnboardingCompletionWithoutServerDoesNotUpdateDatabase() async {
