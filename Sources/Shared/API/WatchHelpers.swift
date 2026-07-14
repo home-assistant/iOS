@@ -55,6 +55,28 @@ public extension HomeAssistantAPI {
         return content
     }
 
+    /// Sync the context unless it exceeds `updateApplicationContext`'s payload ceiling. On iOS the
+    /// only keys are the complication tables, which the database mirror also carries — and
+    /// `transferFile` has no size cap — so an oversized context is delivered through a mirror push
+    /// instead of failing.
+    private static func syncRespectingSizeLimit(_ context: HAWatchConnectivity.Context) throws {
+        #if os(iOS)
+        if let size = WatchConnectivityManager.estimatePayloadSize(of: context.content),
+           size > WatchMessageSizeLimits.applicationContext {
+            Current.Log.error(
+                "Watch context is \(size) bytes, above the ~262 KB ceiling; delivering via database mirror push instead"
+            )
+            Current.clientEventStore.addEvent(.init(
+                text: "Watch context too large to sync (\(size) bytes); scheduled database mirror push instead",
+                type: .database
+            ))
+            WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
+            return
+        }
+        #endif
+        try Communicator.shared.sync(context)
+    }
+
     static func SyncWatchContext() async -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
@@ -66,7 +88,7 @@ public extension HomeAssistantAPI {
         let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
 
         do {
-            try Communicator.shared.sync(context)
+            try syncRespectingSizeLimit(context)
             Current.Log.info("updated context")
             Current.clientEventStore.addEvent(.init(
                 text: "Synced watch context to Apple Watch (updateApplicationContext)",
@@ -112,7 +134,7 @@ public extension HomeAssistantAPI {
         }
         let context = await HAWatchConnectivity.Context(content: watchContext())
         do {
-            try Communicator.shared.sync(context)
+            try syncRespectingSizeLimit(context)
             Current.Log.info("Watch reload: context synced")
             return .success
         } catch {
