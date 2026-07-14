@@ -14,11 +14,23 @@ final class WatchCommunicatorService {
     private var assistService: AssistServiceProtocol?
     private var pendingAudioData: Data?
 
-    // [sessionKey: [chunkIndex: Data]]
-    private var audioChunks: [String: [Int: Data]] = [:]
-    private var audioChunkCounts: [String: Int] = [:]
+    /// One in-progress chunked audio upload from the watch.
+    private struct AudioChunkSession {
+        var chunks: [Int: Data] = [:]
+        var totalChunks: Int
+        var lastChunkAt: Date
+    }
+
+    /// In-progress audio uploads keyed by the watch's per-recording id (or `serverId_pipelineId`
+    /// for watch builds that predate the recording id).
+    private var audioChunkSessions: [String: AudioChunkSession] = [:]
+    /// Partial uploads that stop receiving chunks for this long are abandoned (the watch retried or
+    /// gave up) and dropped, so they can't leak memory or corrupt a later recording.
+    private static let audioChunkSessionTimeout: TimeInterval = 60
 
     /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls one by one.
+    /// Only one sync is ever meaningful at a time (there is one paired watch), so starting a new sync
+    /// frees any previous buffer — a watch that died mid-pull must not leak the encoded mirror.
     private var databaseSyncChunks: [String: [Data]] = [:]
 
     private var didBecomeActiveObserver: NSObjectProtocol?
@@ -290,30 +302,37 @@ final class WatchCommunicatorService {
             Current.Log.error("Invalid chunked message data")
             return
         }
-        let sessionKey = serverId + "_" + pipelineId
-        if audioChunks[sessionKey] == nil {
-            audioChunks[sessionKey] = [:]
-        }
-        audioChunks[sessionKey]?[chunkIndex] = chunkData
-        audioChunkCounts[sessionKey] = totalChunks
+        // Older watch builds don't send a recordingId; fall back to the legacy key so they keep working.
+        let sessionKey = (message.content["recordingId"] as? String) ?? (serverId + "_" + pipelineId)
 
-        // Reply acknowledging receipt of this chunk
-        message.reply(.init(identifier: "assistAudioChunkAck", content: [
+        // Drop partial uploads that went quiet before starting/continuing this one.
+        let now = Current.date()
+        let staleKeys = audioChunkSessions.filter {
+            now.timeIntervalSince($0.value.lastChunkAt) >= Self.audioChunkSessionTimeout
+        }.keys
+        for staleKey in staleKeys {
+            Current.Log.warning("Dropping abandoned assist audio upload \(staleKey)")
+            audioChunkSessions.removeValue(forKey: staleKey)
+        }
+
+        var session = audioChunkSessions[sessionKey]
+            ?? AudioChunkSession(totalChunks: totalChunks, lastChunkAt: now)
+        session.chunks[chunkIndex] = chunkData
+        session.totalChunks = totalChunks
+        session.lastChunkAt = now
+        audioChunkSessions[sessionKey] = session
+
+        // Acknowledge this chunk; the watch sends the next one only after receiving this.
+        message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioChunkAck.rawValue, content: [
             "acknowledged": true,
             "chunkIndex": chunkIndex,
             "totalChunks": totalChunks,
         ]))
 
-        // Check if all chunks are received
-        if let receivedChunks = audioChunks[sessionKey],
-           receivedChunks.count == totalChunks {
-            // Assemble data in order
-            let sortedChunks = receivedChunks.keys.sorted().compactMap { receivedChunks[$0] }
+        if session.chunks.count == totalChunks {
+            let sortedChunks = session.chunks.keys.sorted().compactMap { session.chunks[$0] }
             let combinedData = sortedChunks.reduce(Data(), +)
-            // Clean up
-            audioChunks.removeValue(forKey: sessionKey)
-            audioChunkCounts.removeValue(forKey: sessionKey)
-            // Call assistAudioData
+            audioChunkSessions.removeValue(forKey: sessionKey)
             assistAudioData(message: message.toImmediateMessage(), data: combinedData)
         }
     }
@@ -373,10 +392,17 @@ final class WatchCommunicatorService {
                 }
             }
 
-            completion([
-                "config": watchConfig.encodeForWatch(),
-                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
-            ])
+            var content: [String: Any] = [
+                "magicItemsInfo": magicItemsInfo.compactMap { try? $0.encodeForWatch() },
+            ]
+            do {
+                content["config"] = try watchConfig.encodeForWatch()
+            } catch {
+                // Without the config key the watch treats the reply as a decode failure and keeps
+                // its cached config — never as an authoritative empty one.
+                Current.Log.error("Failed to encode watch config for reply: \(error.localizedDescription)")
+            }
+            completion(content)
         }
     }
 
@@ -385,16 +411,19 @@ final class WatchCommunicatorService {
     /// we answer the same way so the config survives the phone being backgrounded/locked. No
     /// reachability required on either side.
     private func respondToGuaranteedWatchConfigRequest() {
+        // The types are spelled out: `.init` here is ambiguous between ImmediateMessage (requires
+        // reachability — would defeat this whole flow) and GuaranteedMessage, and used to compile as
+        // the latter only because Swift prefers the overload without defaulted arguments.
         do {
             if let config: WatchConfig = try Current.database().read({ db in try WatchConfig.fetchOne(db) }) {
                 buildWatchConfigResponseContent(watchConfig: config) { content in
-                    Communicator.shared.send(.init(
+                    Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
                         identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
                         content: content
                     ))
                 }
             } else {
-                Communicator.shared.send(.init(
+                Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
                     identifier: InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
                 ))
             }
@@ -432,10 +461,14 @@ final class WatchCommunicatorService {
                     }
                 return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }
-            message.reply(.init(
-                identifier: responseIdentifier,
-                content: ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
-            ))
+            let content: [String: Any]
+            do {
+                content = try ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
+            } catch {
+                Current.Log.error("Failed to encode available items for watch: \(error.localizedDescription)")
+                content = ["error": true]
+            }
+            message.reply(.init(identifier: responseIdentifier, content: content))
         }
     }
 
@@ -474,6 +507,10 @@ final class WatchCommunicatorService {
     /// cap, which is exactly why the payload itself is chunked rather than returned inline.
     private func watchDatabaseMirrorSyncStart(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseId = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+        if !databaseSyncChunks.isEmpty {
+            Current.Log.info("Dropping \(databaseSyncChunks.count) abandoned watch DB sync buffer(s)")
+            databaseSyncChunks.removeAll()
+        }
         let data: Data
         do {
             data = try WatchDatabaseMirror.snapshot().encodeForWatch()
@@ -495,6 +532,13 @@ final class WatchCommunicatorService {
 
         let transferId = UUID().uuidString
         databaseSyncChunks[transferId] = chunks
+        // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
+        // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails the
+        // whole sync on the watch), so a buffer still around after this long is abandoned.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
+            guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
+            Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
+        }
         Current.Log.info("Watch DB sync start: \(chunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
         message.reply(.init(identifier: responseId, content: [
             "transferId": transferId,

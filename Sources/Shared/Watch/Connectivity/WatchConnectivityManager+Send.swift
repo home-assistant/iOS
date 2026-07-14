@@ -7,6 +7,28 @@ public extension WatchConnectivityManager {
     /// guarantees a UI that blocks on the reply can never spin forever.
     static let interactiveReplyTimeout: TimeInterval = 30
 
+    /// Estimated on-wire bytes of a payload dictionary (binary property list, which is what
+    /// WCSession serializes to), or `nil` when the payload isn't property-list-serializable.
+    static func estimatePayloadSize(of content: [String: Any]) -> Int? {
+        guard PropertyListSerialization.propertyList(content, isValidFor: .binary) else { return nil }
+        return (try? PropertyListSerialization.data(
+            fromPropertyList: content,
+            format: .binary,
+            options: 0
+        ))?.count
+    }
+
+    /// Log when an envelope exceeds `sendMessage`'s payload ceiling. The transfer will most likely
+    /// fail with an opaque delivery error (or a silent reply timeout on the counterpart), and this
+    /// ties that failure to the offending message and its size.
+    static func warnIfExceedsMessageLimit(_ envelope: [String: Any], identifier: String) {
+        guard let size = estimatePayloadSize(of: envelope),
+              size > WatchMessageSizeLimits.interactiveMessage else { return }
+        Current.Log.error(
+            "WatchConnectivity payload for \(identifier) is \(size) bytes, above the ~65 KB sendMessage ceiling; delivery will likely fail"
+        )
+    }
+
     /// Interactive request/reply. Requires the counterpart immediately reachable. The response envelope
     /// is decoded back into an `ImmediateMessage` and delivered to `message.reply`. `errorHandler` fires
     /// at most once, on delivery failure or after `timeout` seconds with no reply.
@@ -27,6 +49,8 @@ public extension WatchConnectivityManager {
             errorHandler?(HAWatchConnectivity.ConnectivityError.notReachable)
             return
         }
+
+        Self.warnIfExceedsMessageLimit(message.jsonRepresentation(), identifier: message.identifier)
 
         // At most one of {delivery error, timeout} may call errorHandler; a reply cancels the timeout.
         let errorGate = WatchConnectivityOnceFlag()
@@ -67,6 +91,7 @@ public extension WatchConnectivityManager {
             errorHandler?(HAWatchConnectivity.ConnectivityError.notReachable)
             return
         }
+        Self.warnIfExceedsMessageLimit(message.jsonRepresentation(), identifier: message.identifier)
         session.sendMessageProxy(message.jsonRepresentation(), replyHandler: nil, errorHandler: errorHandler)
     }
 

@@ -76,6 +76,16 @@ public final class WatchConnectivityManager: NSObject {
         session?.hasContentPendingProxy ?? false
     }
 
+    /// Whether a guaranteed message with this identifier is still queued for delivery
+    /// (`transferUserInfo` not yet handed to the counterpart). Lets callers skip enqueueing a
+    /// duplicate — WCSession queues every transfer verbatim and would deliver them all.
+    public func hasOutstandingGuaranteedMessage(identifier: String) -> Bool {
+        guard let session else { return false }
+        return session.outstandingUserInfoTransfersProxy.contains {
+            HAWatchConnectivity.GuaranteedMessage(content: $0)?.identifier == identifier
+        }
+    }
+
     public var mostRecentlyReceivedContext: HAWatchConnectivity.Context {
         receivedContextLock.lock()
         let cached = cachedReceivedContext

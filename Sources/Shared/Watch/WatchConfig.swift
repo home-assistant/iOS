@@ -69,17 +69,16 @@ public enum WatchLayout: String, Codable, CaseIterable, DatabaseValueConvertible
 }
 
 public protocol WatchCodable: Codable {
-    func encodeForWatch() -> Data
+    func encodeForWatch() throws -> Data
     static func decodeForWatch(_ data: Data) -> Self?
 }
 
 public extension WatchCodable {
-    func encodeForWatch() -> Data {
-        do {
-            return try PropertyListEncoder().encode(self)
-        } catch {
-            fatalError("Faield to encode watch config for watch transfer, error: \(error.localizedDescription)")
-        }
+    /// Encode for a WatchConnectivity transfer. A failure throws so the sender can skip the
+    /// transfer (and log why) instead of crashing — a codec problem in a communication path must
+    /// never take the app down.
+    func encodeForWatch() throws -> Data {
+        try PropertyListEncoder().encode(self)
     }
 
     static func decodeForWatch(_ data: Data) -> Self? {

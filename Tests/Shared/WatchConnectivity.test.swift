@@ -12,6 +12,7 @@ private final class FakeWCSession: WCSessionProtocol {
     var hasContentPendingProxy = false
     var applicationContextProxy: [String: Any] = [:]
     var receivedApplicationContextProxy: [String: Any] = [:]
+    var outstandingUserInfoTransfersProxy: [[String: Any]] = []
 
     var didActivate = false
     var sentMessages: [(

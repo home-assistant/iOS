@@ -99,7 +99,11 @@ final class ReplyBox {
         lock.unlock()
 
         if let handlerToCall {
-            handlerToCall(response.jsonRepresentation())
+            let envelope = response.jsonRepresentation()
+            // Replies share sendMessage's payload ceiling; an oversized one surfaces on the
+            // counterpart only as a reply timeout, so name the culprit here.
+            WatchConnectivityManager.warnIfExceedsMessageLimit(envelope, identifier: response.identifier)
+            handlerToCall(envelope)
         } else {
             Current.Log.error("WatchConnectivity reply invoked more than once for \(response.identifier)")
         }
