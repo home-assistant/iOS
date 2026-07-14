@@ -21,7 +21,8 @@ public struct EntityFuzzySearchIndex {
 
         var areaNames: [String: String] = [:]
         var floorNames: [String: String] = [:]
-        if let areas = try? AppArea.fetchAreas(for: serverId) {
+        do {
+            let areas = try AppArea.fetchAreas(for: serverId)
             for area in areas {
                 for entityId in area.entities {
                     areaNames[entityId] = area.name
@@ -30,6 +31,8 @@ public struct EntityFuzzySearchIndex {
                     }
                 }
             }
+        } catch {
+            Current.Log.error("Failed to fetch areas for entity fuzzy search: \(error)")
         }
 
         let deviceNames = Self.deviceNames(for: serverId)
