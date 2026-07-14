@@ -131,10 +131,15 @@ public final class ControlEntityProvider {
             }
         }
 
-        guard let data = try? result.get(), case let .dictionary(state) = data else {
+        guard let data = try? result.get() else {
             if case let .failure(error) = result {
                 Current.Log.error("Failed to get attributes: \(error)")
             }
+            return nil
+        }
+
+        guard case let .dictionary(state) = data else {
+            Current.Log.error("Failed to get attributes: bad response data")
             return nil
         }
 

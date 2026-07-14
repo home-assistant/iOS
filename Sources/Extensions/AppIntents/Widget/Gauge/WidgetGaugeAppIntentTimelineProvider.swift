@@ -85,7 +85,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     private func entityEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
         guard let entity = configuration.entity else {
             Current.Log.error("Failed to fetch data for gauge widget: No entity selected")
-            throw WidgetGaugeDataError.noServers
+            throw WidgetGaugeDataError.noEntity
         }
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
             ?? configuration.server.getServer() ?? Current.servers.all.first else {
@@ -230,6 +230,7 @@ struct WidgetGaugeEntry: TimelineEntry {
 
 enum WidgetGaugeDataError: Error {
     case noServers
+    case noEntity
     case apiError
     case badResponse
 }

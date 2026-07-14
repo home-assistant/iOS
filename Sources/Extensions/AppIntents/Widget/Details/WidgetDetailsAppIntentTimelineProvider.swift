@@ -62,7 +62,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     private func entityEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
         guard let entity = configuration.entity else {
             Current.Log.error("Failed to fetch data for details widget: No entity selected")
-            throw WidgetDetailsDataError.noServers
+            throw WidgetDetailsDataError.noEntity
         }
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
             ?? configuration.server.getServer() ?? Current.servers.all.first else {
@@ -177,6 +177,7 @@ struct WidgetDetailsEntry: TimelineEntry {
 
 enum WidgetDetailsDataError: Error {
     case noServers
+    case noEntity
     case apiError
     case badResponse
 }
