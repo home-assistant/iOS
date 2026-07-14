@@ -67,6 +67,9 @@ struct CarPlayConfigurationView: View {
             itemsSection
             troubleshootingSection
             resetView
+            DebugDatabaseTransferSection(part: .carPlayConfiguration) {
+                viewModel.loadConfig()
+            }
         }
         .navigationTitle("CarPlay")
         .navigationBarTitleDisplayMode(.inline)

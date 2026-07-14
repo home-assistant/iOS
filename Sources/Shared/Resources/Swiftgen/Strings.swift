@@ -3948,6 +3948,98 @@ public enum L10n {
         /// Make sure you are aware that these operations cannot be reverted.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
       }
+      public enum DatabaseTransfer {
+        /// Imports replace local %@ and remove imported server references that do not exist in this app.
+        public static func footer(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.database_transfer.footer", String(describing: p1))
+        }
+        /// Database Import/Export
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.title") }
+        public enum Error {
+          /// Database transfer failed
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.title") }
+          /// Select a Home Assistant feature export file.
+          public static var unsupportedFeatureFile: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.unsupported_feature_file") }
+          /// Select a JSON export file.
+          public static var unsupportedFile: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.error.unsupported_file") }
+          /// This file contains %@. Import it from %@ settings instead.
+          public static func wrongFeatureFile(_ p1: Any, _ p2: Any) -> String {
+            return L10n.tr("Localizable", "settings.debugging.database_transfer.error.wrong_feature_file", String(describing: p1), String(describing: p2))
+          }
+        }
+        public enum Export {
+          /// Export
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.title") }
+          public enum Confirmation {
+            /// Export
+            public static var button: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.button") }
+            /// Export %@ to a JSON file.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.message", String(describing: p1))
+            }
+            /// Export %@?
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.confirmation.title", String(describing: p1))
+            }
+          }
+          public enum Progress {
+            /// Exporting %@
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.progress.title", String(describing: p1))
+            }
+          }
+          public enum Success {
+            /// %@ export file is ready to share.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.export.success.message", String(describing: p1))
+            }
+            /// Export ready
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.export.success.title") }
+          }
+        }
+        public enum Import {
+          /// Import
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.title") }
+          public enum Confirmation {
+            /// Import
+            public static var button: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.button") }
+            /// This replaces local %@ with the selected export file.
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.message", String(describing: p1))
+            }
+            /// Import %@?
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.confirmation.title", String(describing: p1))
+            }
+          }
+          public enum Progress {
+            /// Importing %@
+            public static func title(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.progress.title", String(describing: p1))
+            }
+          }
+          public enum Success {
+            /// Imported %li record(s).
+            public static func message(_ p1: Int) -> String {
+              return L10n.tr("Localizable", "settings.debugging.database_transfer.import.success.message", p1)
+            }
+            /// Import complete
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.import.success.title") }
+          }
+        }
+        public enum Part {
+          /// app quick actions
+          public static var appIconShortcuts: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.app_icon_shortcuts") }
+          /// CarPlay configuration
+          public static var carplayConfiguration: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.carplay_configuration") }
+          /// complications
+          public static var complications: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.complications") }
+          /// custom widgets
+          public static var customWidgets: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.custom_widgets") }
+          /// watch configuration
+          public static var watchConfiguration: String { return L10n.tr("Localizable", "settings.debugging.database_transfer.part.watch_configuration") }
+        }
+      }
       public enum DeleteKeychain {
         /// yyyy-MM-dd
         public static var datePlaceholder: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.date_placeholder") }
