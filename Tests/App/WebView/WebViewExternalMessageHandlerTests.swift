@@ -42,6 +42,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         wait(for: [settingsShown], timeout: 1)
         XCTAssertTrue(coordinator.showSettingsCalled)
+        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
