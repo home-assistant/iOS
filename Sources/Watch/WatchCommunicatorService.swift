@@ -392,10 +392,17 @@ final class WatchCommunicatorService {
                 }
             }
 
-            completion([
-                "config": watchConfig.encodeForWatch(),
-                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
-            ])
+            var content: [String: Any] = [
+                "magicItemsInfo": magicItemsInfo.compactMap { try? $0.encodeForWatch() },
+            ]
+            do {
+                content["config"] = try watchConfig.encodeForWatch()
+            } catch {
+                // Without the config key the watch treats the reply as a decode failure and keeps
+                // its cached config — never as an authoritative empty one.
+                Current.Log.error("Failed to encode watch config for reply: \(error.localizedDescription)")
+            }
+            completion(content)
         }
     }
 
@@ -451,10 +458,14 @@ final class WatchCommunicatorService {
                     }
                 return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }
-            message.reply(.init(
-                identifier: responseIdentifier,
-                content: ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
-            ))
+            let content: [String: Any]
+            do {
+                content = try ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
+            } catch {
+                Current.Log.error("Failed to encode available items for watch: \(error.localizedDescription)")
+                content = ["error": true]
+            }
+            message.reply(.init(identifier: responseIdentifier, content: content))
         }
     }
 

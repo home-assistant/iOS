@@ -275,7 +275,7 @@ struct WatchConfigAvailableItems_test {
             .init(serverId: "server2", serverName: "Cabin", candidates: []),
         ])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchConfigAvailableItems.decodeForWatch(data))
 
         #expect(decoded.servers.count == 2)
@@ -327,7 +327,7 @@ struct WatchDatabaseMirror_test {
         )
         let original = WatchDatabaseMirror(entities: [entity], areas: [area], pipelines: [pipelines])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
 
         #expect(decoded.entities == [entity])
@@ -356,7 +356,7 @@ struct WatchConfigLayout_test {
 
     @Test func encodeForWatchRoundTripPreservesLayout() throws {
         let original = WatchConfig(items: [], layout: .grid)
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchConfig.decodeForWatch(data))
         #expect(decoded.resolvedLayout == .grid)
     }

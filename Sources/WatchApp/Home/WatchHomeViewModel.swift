@@ -288,9 +288,19 @@ final class WatchHomeViewModel: ObservableObject {
             adopt(phoneConfig: nil, itemsInfo: [])
             return
         }
+        let configData: Data
+        do {
+            configData = try config.encodeForWatch()
+        } catch {
+            // The local copy stays as-is; it'll sync (or conflict-prompt) on the next reload.
+            Current.Log.error("Failed to encode local watch config for push: \(error.localizedDescription)")
+            loadCache()
+            updateLoading(isLoading: false)
+            return
+        }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
-            content: ["config": config.encodeForWatch()],
+            content: ["config": configData],
             reply: { [weak self] message in
                 Task { @MainActor in self?.adoptPushReply(message) }
             }

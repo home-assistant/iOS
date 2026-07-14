@@ -59,9 +59,17 @@ final class WatchSettingsViewModel: ObservableObject {
 
     private func syncToPhone(_ config: WatchConfig) {
         guard Communicator.shared.currentReachability == .immediatelyReachable else { return }
+        let configData: Data
+        do {
+            configData = try config.encodeForWatch()
+        } catch {
+            // The local copy is already saved; it'll sync on the next reload.
+            Current.Log.error("Failed to encode watch layout for sync: \(error.localizedDescription)")
+            return
+        }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
-            content: ["config": config.encodeForWatch()],
+            content: ["config": configData],
             reply: { [weak self] message in
                 DispatchQueue.main.async { self?.handleLayoutSyncResponse(message) }
             }
