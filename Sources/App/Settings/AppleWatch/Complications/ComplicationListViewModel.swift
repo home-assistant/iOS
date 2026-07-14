@@ -84,6 +84,9 @@ final class ComplicationListViewModel: ObservableObject {
         }
         NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
+        // Current watch builds only read complications from the database mirror (the context keys
+        // are legacy), so the deletion must also reach the watch through a mirror push.
+        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
         reload()
     }
 

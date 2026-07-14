@@ -84,6 +84,9 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             Self.updateComplications()
             #else
             HomeAssistantAPI.syncWatchContext()
+            // Current watch builds only read complications from the database mirror (the context
+            // keys are legacy), so freshly rendered templates must also go out via a mirror push.
+            WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
             #endif
         }.map { _ in
             WebhookResponseHandlerResult.default

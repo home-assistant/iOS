@@ -19,7 +19,13 @@ public extension HomeAssistantAPI {
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
+        //
+        // DEPRECATED wire path: current watch builds ignore these context keys entirely — the
+        // complication tables reach the watch through the database mirror (transferFile/chunked
+        // pull) and land in GRDB directly. They're still sent for one release cycle so older watch
+        // builds keep receiving complications; remove them (and reassess whether the iOS context
+        // sync is needed at all) after that.
+        //
         // Only attach them when the read actually succeeds: sending an empty array on a read failure
         // would look authoritative to the watch and wipe its existing complications. A successful read
         // that happens to be empty IS authoritative (that is how deleting the last one propagates).
