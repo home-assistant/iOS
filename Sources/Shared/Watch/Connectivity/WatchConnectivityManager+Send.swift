@@ -52,22 +52,29 @@ public extension WatchConnectivityManager {
 
         Self.warnIfExceedsMessageLimit(message.jsonRepresentation(), identifier: message.identifier)
 
-        // At most one of {delivery error, timeout} may call errorHandler; a reply cancels the timeout.
+        // At most one of {delivery error, timeout} may call errorHandler; a reply or delivery error
+        // cancels the pending timeout so it doesn't linger (retaining the handlers) for the full
+        // window after the send already resolved — chunked flows create one of these per chunk.
         let errorGate = WatchConnectivityOnceFlag()
+        var timeoutWork: DispatchWorkItem?
         if timeout > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+            let work = DispatchWorkItem {
                 if errorGate.trySet() {
                     errorHandler?(HAWatchConnectivity.ConnectivityError.replyTimedOut)
                 }
             }
+            timeoutWork = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: work)
         }
 
         session.sendMessageProxy(message.jsonRepresentation(), replyHandler: { responseEnvelope in
             errorGate.markResolved()
+            timeoutWork?.cancel()
             let response = HAWatchConnectivity.ImmediateMessage(content: responseEnvelope)
                 ?? HAWatchConnectivity.ImmediateMessage(identifier: message.identifier, content: responseEnvelope)
             message.reply(response)
         }, errorHandler: { error in
+            timeoutWork?.cancel()
             if errorGate.trySet() {
                 errorHandler?(error)
             }
