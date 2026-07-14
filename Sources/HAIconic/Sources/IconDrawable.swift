@@ -90,6 +90,11 @@ public protocol IconDrawable {
     static func unregister()
 }
 
+private enum IconFontRegistration {
+    static let lock = NSLock()
+    static var registeredFamilyNames: Set<String> = []
+}
+
 /** This extension adds the required default implementation for Iconic to work. */
 extension IconDrawable {
 
@@ -167,6 +172,12 @@ extension IconDrawable {
 
         if let font = UIFont(name: familyName, size: size) {
             return font
+        }
+
+        register()
+
+        if let font = UIFont(name: familyName, size: size) {
+            return font
         } else {
             assertionFailure("Failed to get font for IconDrawable familyName: \(familyName). font(ofSize fontSize: CGFloat) -> UIFont")
             return .systemFont(ofSize: defaultSize)
@@ -174,9 +185,16 @@ extension IconDrawable {
     }
 
     public static func register() {
+        IconFontRegistration.lock.lock()
+        defer { IconFontRegistration.lock.unlock() }
+
+        if IconFontRegistration.registeredFamilyNames.contains(familyName) {
+            return
+        }
 
         // No need to register the font more than once
         if UIFont.familyNames.map({ $0.replacingOccurrences(of: " ", with: "") }).contains(familyName) {
+            IconFontRegistration.registeredFamilyNames.insert(familyName)
             return
         }
 
@@ -204,9 +222,11 @@ extension IconDrawable {
             } else {
                 let message = "Failed registering font with the postscript name '\(fontName)' at path '\(url)' with error: \(String(describing: error))."
                 assertionFailure(message)
+                return
             }
         }
 
+        IconFontRegistration.registeredFamilyNames.insert(familyName)
     }
 
     public static func unregister() {
@@ -237,4 +257,3 @@ extension IconDrawable {
         return extensions.compactMap { bundle.url(forResource: familyName, withExtension: $0) }.first
     }
 }
-

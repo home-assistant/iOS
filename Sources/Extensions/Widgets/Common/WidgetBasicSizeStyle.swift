@@ -46,6 +46,7 @@ public enum WidgetBasicSizeStyle: CaseIterable {
             size = 15
         }
 
+        MaterialDesignIcons.register()
         return .custom(MaterialDesignIcons.familyName, size: size)
     }
 

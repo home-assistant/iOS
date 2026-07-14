@@ -15,10 +15,6 @@ enum WidgetLauncher {
 
 @available(iOS 17.0, *)
 struct WidgetsBundle17: WidgetBundle {
-    init() {
-        MaterialDesignIcons.register()
-    }
-
     var body: some Widget {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOSApplicationExtension 17.2, *) {
@@ -39,10 +35,6 @@ struct WidgetsBundle17: WidgetBundle {
 
 @available(iOS 18.0, *)
 struct WidgetsBundle18: WidgetBundle {
-    init() {
-        MaterialDesignIcons.register()
-    }
-
     var body: some Widget {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         HALiveActivityConfiguration()
