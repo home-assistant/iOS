@@ -32,6 +32,22 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
 
     /// Nested opt-in under "Customize": reveals the color pickers.
     @Published var useCustomColors: Bool
+    /// Opt-in for the template flow: the colors come from templates rendering hex strings — one per
+    /// static color picker. Turning it off clears the stored templates so the static colors apply
+    /// again.
+    @Published var useTemplateColor: Bool {
+        didSet {
+            guard !useTemplateColor else { return }
+            config.customGaugeColorTemplate = nil
+            config.customIconColorTemplate = nil
+            config.customTextColorTemplate = nil
+        }
+    }
+
+    /// Live evaluation state of every template field (loading → result/error), reported by the
+    /// preview's renderers — drives the callout shown over the field being edited and the color
+    /// swatches next to the color template fields.
+    @Published var templateOutputs = TemplateRenderer.Outputs()
 
     let isNew: Bool
 
@@ -54,6 +70,16 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         self.isCustomizing = initial.showsCustomized()
         self.useCustomColors = initial.iconColor != nil
             || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false)
+        self.useTemplateColor = [
+            initial.customGaugeColorTemplate, initial.customIconColorTemplate, initial.customTextColorTemplate,
+        ].contains { !($0 ?? "").isEmpty }
+    }
+
+    /// A color template's evaluated color as a normalized hex string, or nil while loading, on
+    /// failure, or when the render isn't a valid hex — drives the swatch next to that field.
+    static func evaluatedHex(from output: TemplateRenderer.Output) -> String? {
+        guard case let .success(rendered) = output, !rendered.isEmpty else { return nil }
+        return WatchComplicationConfig.normalizedHexColor(from: rendered)
     }
 
     var server: Server? {

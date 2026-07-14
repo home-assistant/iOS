@@ -25,6 +25,16 @@ final class TemplateRenderer: ObservableObject {
         }
     }
 
+    /// Snapshot of every builder template's evaluation state, reported to the editor as one value so
+    /// it can drive the callout over whichever template field is being edited.
+    struct Outputs: Equatable {
+        var text: Output = .idle
+        var gauge: Output = .idle
+        var gaugeColor: Output = .idle
+        var iconColor: Output = .idle
+        var textColor: Output = .idle
+    }
+
     @Published private(set) var output: Output = .idle
 
     private let displayResult: (Any) throws -> String
@@ -32,9 +42,16 @@ final class TemplateRenderer: ObservableObject {
     private var subscriptionToken: HACancellable?
     private var debounceTimer: Timer?
     private var template: String = ""
+    /// How long after the last edit the template is (re-)evaluated.
+    private let debounceInterval: TimeInterval
 
-    init(server: Server, displayResult: @escaping (Any) throws -> String = { String(describing: $0) }) {
+    init(
+        server: Server,
+        debounceInterval: TimeInterval = Current.isCatalyst ? 0.5 : 1.0,
+        displayResult: @escaping (Any) throws -> String = { String(describing: $0) }
+    ) {
         self.server = server
+        self.debounceInterval = debounceInterval
         self.displayResult = displayResult
     }
 
@@ -78,7 +95,7 @@ final class TemplateRenderer: ObservableObject {
 
         output = .loading
 
-        let delay: TimeInterval = skipDelay ? 0 : (Current.isCatalyst ? 0.5 : 1.0)
+        let delay: TimeInterval = skipDelay ? 0 : debounceInterval
         debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
             self?.startSubscription()
         }

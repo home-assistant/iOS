@@ -25,6 +25,13 @@ struct AllFamiliesComplicationPreview: View {
     /// Reports whether the current value (state or chosen attribute) is numeric, so the editor can hide
     /// the decimals picker for non-numeric values.
     var onValueIsNumeric: (Bool) -> Void = { _ in }
+    /// Reports every builder template's evaluation state (loading → result/error) as one snapshot,
+    /// so the editor can drive the callout over the template field being edited and the color
+    /// swatches next to the color template fields.
+    var onTemplateOutputs: (TemplateRenderer.Outputs) -> Void = { _ in }
+
+    /// How long after the last edit builder templates are (re-)evaluated.
+    private static let templateDebounce: TimeInterval = 2
 
     @State private var entityState = ""
     @State private var entityAttributes: [String: Any] = [:]
@@ -37,6 +44,9 @@ struct AllFamiliesComplicationPreview: View {
     // Template rendering, used only for the custom-template kind.
     @StateObject private var valueRenderer: TemplateRenderer
     @StateObject private var gaugeRenderer: TemplateRenderer
+    @StateObject private var gaugeColorRenderer: TemplateRenderer
+    @StateObject private var iconColorRenderer: TemplateRenderer
+    @StateObject private var textColorRenderer: TemplateRenderer
 
     init(
         config: WatchComplicationConfig,
@@ -45,7 +55,8 @@ struct AllFamiliesComplicationPreview: View {
         showsOnlySelectedFamily: Bool = false,
         onUnit: @escaping (String?) -> Void = { _ in },
         onAttributes: @escaping ([String]) -> Void = { _ in },
-        onValueIsNumeric: @escaping (Bool) -> Void = { _ in }
+        onValueIsNumeric: @escaping (Bool) -> Void = { _ in },
+        onTemplateOutputs: @escaping (TemplateRenderer.Outputs) -> Void = { _ in }
     ) {
         self.config = config
         self.server = server
@@ -54,15 +65,40 @@ struct AllFamiliesComplicationPreview: View {
         self.onUnit = onUnit
         self.onAttributes = onAttributes
         self.onValueIsNumeric = onValueIsNumeric
-        _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
-        _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
+        self.onTemplateOutputs = onTemplateOutputs
+        let makeRenderer = { TemplateRenderer(server: server, debounceInterval: Self.templateDebounce) }
+        _valueRenderer = StateObject(wrappedValue: makeRenderer())
+        _gaugeRenderer = StateObject(wrappedValue: makeRenderer())
+        _gaugeColorRenderer = StateObject(wrappedValue: makeRenderer())
+        _iconColorRenderer = StateObject(wrappedValue: makeRenderer())
+        _textColorRenderer = StateObject(wrappedValue: makeRenderer())
     }
 
     private var fetchKey: String {
         [
             config.kind.rawValue, config.serverId, config.entityId ?? "",
             config.customTextTemplate ?? "", config.customGaugeTemplate ?? "",
+            config.customGaugeColorTemplate ?? "", config.customIconColorTemplate ?? "",
+            config.customTextColorTemplate ?? "",
         ].joined(separator: "|")
+    }
+
+    /// All template evaluation states as one snapshot, for the editor callback.
+    private var templateOutputs: TemplateRenderer.Outputs {
+        TemplateRenderer.Outputs(
+            text: valueRenderer.output,
+            gauge: gaugeRenderer.output,
+            gaugeColor: gaugeColorRenderer.output,
+            iconColor: iconColorRenderer.output,
+            textColor: textColorRenderer.output
+        )
+    }
+
+    /// A color renderer's evaluated color, normalized — nil while loading, on failure, or when the
+    /// render isn't a valid hex string. Overrides its static color, like on the watch.
+    private func evaluatedHex(_ renderer: TemplateRenderer) -> String? {
+        guard case let .success(rendered) = renderer.output, !rendered.isEmpty else { return nil }
+        return WatchComplicationConfig.normalizedHexColor(from: rendered)
     }
 
     /// True before the user has chosen a data source — the preview then shows sample (mock) content.
@@ -172,6 +208,10 @@ struct AllFamiliesComplicationPreview: View {
         // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
         // reliably, so the preview updates on entity change without needing to tap a family first.
         .task(id: fetchKey) { refresh() }
+        // Surface the template evaluation states to the editor (callout + color swatches).
+        .onChange(of: templateOutputs) { newValue in
+            onTemplateOutputs(newValue)
+        }
     }
 
     @ViewBuilder
@@ -195,6 +235,11 @@ struct AllFamiliesComplicationPreview: View {
         case .customTemplate:
             var familyConfig = config
             familyConfig.widgetFamily = family
+            // Rendered color templates override their static colors, like on the watch.
+            var options = familyConfig.options(for: family)
+            if let hex = evaluatedHex(gaugeColorRenderer) { options.tint = hex }
+            if let hex = evaluatedHex(textColorRenderer) { options.textColor = hex }
+            familyConfig.setOptions(options, for: family)
             let value: String = {
                 if case let .success(rendered) = valueRenderer.output { return rendered }
                 return ""
@@ -206,7 +251,7 @@ struct AllFamiliesComplicationPreview: View {
             }()
             var iconImage: Image?
             if familyConfig.showsIcon(for: family), let iconName = config.iconName {
-                let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
+                let color = (evaluatedHex(iconColorRenderer) ?? config.iconColor).map { UIColor(hex: $0) } ?? .white
                 iconImage = Image(
                     uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
                         .image(ofSize: CGSize(width: 64, height: 64), color: color)
@@ -231,6 +276,9 @@ struct AllFamiliesComplicationPreview: View {
         case .customTemplate:
             valueRenderer.updateTemplate(config.customTextTemplate ?? "")
             gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
+            gaugeColorRenderer.updateTemplate(config.customGaugeColorTemplate ?? "")
+            iconColorRenderer.updateTemplate(config.customIconColorTemplate ?? "")
+            textColorRenderer.updateTemplate(config.customTextColorTemplate ?? "")
         }
     }
 

@@ -217,6 +217,61 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
+    // MARK: - Template color
+
+    @Test func templateColorOptInFollowsExistingConfig() throws {
+        try withBuilderTestWorld { _ in
+            // Any one of the three color templates counts as opted in.
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                kind: .customTemplate,
+                customTextTemplate: "{{ 1 }}",
+                customIconColorTemplate: "{{ '#FF0000' }}"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+            #expect(viewModel.useTemplateColor)
+            #expect(WatchComplicationBuilderEditViewModel(existing: nil).useTemplateColor == false)
+        }
+    }
+
+    @Test func disablingTemplateColorClearsAllColorTemplates() throws {
+        try withBuilderTestWorld { _ in
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                kind: .customTemplate,
+                customTextTemplate: "{{ 1 }}",
+                customGaugeColorTemplate: "{{ '#00FF00' }}",
+                customIconColorTemplate: "{{ '#0000FF' }}",
+                customTextColorTemplate: "{{ '#FF0000' }}"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+
+            viewModel.useTemplateColor = false
+            #expect(viewModel.config.customGaugeColorTemplate == nil)
+            #expect(viewModel.config.customIconColorTemplate == nil)
+            #expect(viewModel.config.customTextColorTemplate == nil)
+        }
+    }
+
+    @Test func evaluatedHexReflectsRenderState() {
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("#ff9500")) == "#FF9500")
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("not a color")) == nil)
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("")) == nil)
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .loading) == nil)
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .failure("boom")) == nil)
+        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .idle) == nil)
+    }
+
+    @Test func normalizedHexColorAcceptsValidHexOnly() {
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "#ff9500") == "#FF9500")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "ff9500") == "#FF9500")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "  '#FF9500AA'  ") == "#FF9500AA")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "\"#64D2FF\"") == "#64D2FF")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "red") == nil)
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "#FF95") == nil)
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "") == nil)
+    }
+
     // MARK: - Save
 
     @Test func savePersistsConfigAndPostsChangeNotification() throws {

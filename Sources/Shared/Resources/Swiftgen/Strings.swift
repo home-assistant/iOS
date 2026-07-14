@@ -5519,6 +5519,8 @@ public enum L10n {
       public enum Builder {
         /// Gauge color
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
+        /// Color from template
+        public static var colorFromTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.color_from_template") }
         /// Colors
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Custom colors
@@ -5601,6 +5603,12 @@ public enum L10n {
         public static var sourceTemplateSubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_template_subtitle") }
         /// Style
         public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
+        /// Color
+        public static var templateColor: String { return L10n.tr("Localizable", "watch.complications.builder.template_color") }
+        /// Evaluating template…
+        public static var templateEvaluating: String { return L10n.tr("Localizable", "watch.complications.builder.template_evaluating") }
+        /// Result is not a hex color (e.g. #FF9500)
+        public static var templateInvalidHex: String { return L10n.tr("Localizable", "watch.complications.builder.template_invalid_hex") }
         /// Templates
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color
