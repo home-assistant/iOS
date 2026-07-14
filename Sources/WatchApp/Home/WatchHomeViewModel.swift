@@ -504,9 +504,13 @@ final class WatchHomeViewModel: ObservableObject {
             if watchConfig.items.isEmpty {
                 displayError(message: L10n.Watch.Config.Cache.Error.message)
             }
-            updateLoading(isLoading: false)
+            finishCacheLoad()
             return
         }
+
+        // Put the database-backed config on screen immediately. Item metadata can resolve a moment later,
+        // but the user should not see the empty state while cached rows already exist.
+        updateConfig(config: config, magicItemsInfo: magicItemsInfo)
 
         let provider = Current.magicItemProvider()
         provider.loadInformation { [weak self] _ in
@@ -523,25 +527,30 @@ final class WatchHomeViewModel: ObservableObject {
                 }
                 self.updateConfig(config: config, magicItemsInfo: infos)
                 self.resetError()
-                self.updateLoading(isLoading: false)
+                self.finishCacheLoad()
             }
         }
     }
 
+    @MainActor
     private func updateConfig(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) {
-        DispatchQueue.main.async { [weak self] in
-            self?.watchConfig = config
-            self?.magicItemsInfo = magicItemsInfo
-            self?.configVersion = UUID()
+        watchConfig = config
+        self.magicItemsInfo = magicItemsInfo
+        configVersion = UUID()
 
-            if config.assist.showAssist,
-               config.assist.serverId != nil,
-               config.assist.pipelineId != nil {
-                self?.showAssist = true
-            } else {
-                self?.showAssist = false
-            }
+        if config.assist.showAssist,
+           config.assist.serverId != nil,
+           config.assist.pipelineId != nil {
+            showAssist = true
+        } else {
+            showAssist = false
         }
+    }
+
+    @MainActor
+    private func finishCacheLoad() {
+        guard !isSyncInFlight else { return }
+        updateLoading(isLoading: false)
     }
 
     private func updateLoading(isLoading: Bool) {
