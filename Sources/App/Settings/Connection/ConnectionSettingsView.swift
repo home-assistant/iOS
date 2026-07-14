@@ -500,9 +500,15 @@ struct ConnectionSettingsView: View {
     private var activateSection: some View {
         Button {
             viewModel.activateServer()
+            dismissAppSettings()
         } label: {
             Text(L10n.Settings.ConnectionSection.activateServer)
         }
+    }
+
+    private func dismissAppSettings() {
+        AppSettingsPresenter.shared.isSheetPresented = false
+        AppSettingsPresenter.shared.isPushPresented = false
     }
 
     // MARK: - Delete Section
