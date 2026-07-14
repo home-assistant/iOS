@@ -7,17 +7,6 @@ import ClockKit
 import WatchKit
 #endif
 
-public enum WatchContext: String, CaseIterable {
-    case servers
-    case complications
-    case complicationConfigs
-    case activeFamilies
-    case watchModel
-    case watchVersion
-    case watchBattery
-    case watchBatteryState
-}
-
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static func watchContext() async -> HAWatchConnectivity.Content {

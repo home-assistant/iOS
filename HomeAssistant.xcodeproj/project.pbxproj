@@ -260,6 +260,8 @@
 		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
 		DE51600000000000000000E3 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E2 /* HAModels */; };
 		DE51600000000000000000E5 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E4 /* HAModels */; };
+		CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */; };
+		CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */; };
 		DE51600000000000000000F3 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F2 /* HANetworking */; };
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
@@ -2081,6 +2083,7 @@
 				DE51600000000000000000D5 /* HAIconic in Frameworks */,
 				DE51600000000000000000F5 /* HANetworking in Frameworks */,
 				DE51600000000000000000E5 /* HAModels in Frameworks */,
+				CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
@@ -2115,6 +2118,7 @@
 				DE51600000000000000000D3 /* HAIconic in Frameworks */,
 				DE51600000000000000000F3 /* HANetworking in Frameworks */,
 				DE51600000000000000000E3 /* HAModels in Frameworks */,
+				CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */,
 				DE51600000000000000000C3 /* HAUtilities in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
@@ -2925,6 +2929,7 @@
 				DE51600000000000000000D4 /* HAIconic */,
 				DE51600000000000000000F4 /* HANetworking */,
 				DE51600000000000000000E4 /* HAModels */,
+				CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
@@ -3042,6 +3047,7 @@
 				DE51600000000000000000D2 /* HAIconic */,
 				DE51600000000000000000F2 /* HANetworking */,
 				DE51600000000000000000E2 /* HAModels */,
+				CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */,
 				DE51600000000000000000C2 /* HAUtilities */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
 				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
@@ -3317,6 +3323,7 @@
 				DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */,
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
+				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
@@ -5141,6 +5148,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAIconic;
 		};
+		CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAWatchCommunicationMessages;
+		};
 		DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAModels;
@@ -5761,6 +5772,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */;
 			productName = HAIconic;
+		};
+		CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
+		};
+		CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
 		};
 		DE51600000000000000000E2 /* HAModels */ = {
 			isa = XCSwiftPackageProductDependency;
