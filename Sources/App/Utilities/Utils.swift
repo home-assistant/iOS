@@ -1,6 +1,6 @@
 import Foundation
+import GRDB
 import KeychainAccess
-import RealmSwift
 import SafariServices
 import Security
 import Shared
@@ -38,7 +38,10 @@ func resetStores() {
     removeAppCache(at: AppConstants.widgetsCacheURL)
     removeAppCache(at: AppConstants.watchMagicItemsInfo)
 
-    Realm.reset()
+    // Clearing the app group defaults above also clears the Realm→GRDB
+    // migration flag, so drop the legacy store too or the importer would
+    // repopulate GRDB from it on the next launch.
+    RealmToGRDBMigration.deleteLegacyStore()
 
     Current.clientEventStore.addEvent(ClientEvent(
         text: L10n.Settings.Debugging.ResetApp.clientEvent,

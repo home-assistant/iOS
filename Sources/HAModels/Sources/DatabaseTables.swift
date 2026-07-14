@@ -28,6 +28,10 @@ public enum GRDBDatabaseTable: String {
     case watchComplication
     // Modern watch complications built from an entity or a custom template; rendered by the watch.
     case watchComplicationConfig
+    case appZone
+    case notificationCategory
+    case locationHistory
+    case locationError
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -259,5 +263,57 @@ public enum DatabaseTables {
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver
+    }
+
+    public enum AppZone: String, CaseIterable {
+        case identifier
+        case entityId
+        case serverIdentifier
+        case friendlyName
+        case latitude
+        case longitude
+        case radius
+        case trackingEnabled
+        case enterNotification
+        case exitNotification
+        case inRegion
+        case isPassive
+        case beaconUUID
+        case beaconMajor
+        case beaconMinor
+        case ssidTrigger
+        case ssidFilter
+    }
+
+    public enum NotificationCategory: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case name
+        case isServerControlled
+        case hiddenPreviewsBodyPlaceholder
+        case categorySummaryFormat
+        case sendDismissActions
+        case hiddenPreviewsShowTitle
+        case hiddenPreviewsShowSubtitle
+        case actions
+    }
+
+    public enum LocationHistory: String, CaseIterable {
+        case id
+        case trigger
+        case zoneIdentifier
+        case latitude
+        case longitude
+        case accuracy
+        case payload
+        case createdAt
+        case accuracyAuthorization
+    }
+
+    public enum LocationError: String, CaseIterable {
+        case id
+        case code
+        case message
+        case createdAt
     }
 }

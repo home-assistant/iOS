@@ -79,6 +79,10 @@ public extension DatabaseQueue {
             NotificationSnoozeActionTable(),
             WatchComplicationTable(),
             WatchComplicationConfigTable(),
+            AppZoneTable(),
+            NotificationCategoryTable(),
+            LocationHistoryTable(),
+            LocationErrorTable(),
         ]
     }
 

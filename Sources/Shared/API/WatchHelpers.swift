@@ -1,7 +1,6 @@
 import Foundation
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 #if os(watchOS)
 import ClockKit
 import WatchKit

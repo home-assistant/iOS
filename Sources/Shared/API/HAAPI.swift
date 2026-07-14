@@ -5,7 +5,6 @@ import HAKit
 import HAKit_PromiseKit
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 import UIKit
 
 public class HomeAssistantAPI {
@@ -685,7 +684,7 @@ public class HomeAssistantAPI {
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        zone: RLMZone?
+        zone: AppZone?
     ) -> Promise<Void> {
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
@@ -698,11 +697,6 @@ public class HomeAssistantAPI {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
-            // The `then` continuation runs on the main queue, matching the thread the Realm zone
-            // object is confined to. The zone could have been deleted while the SSID fetch was in
-            // flight, in which case it must not be touched anymore.
-            let zone = (zone?.isInvalidated == true) ? nil : zone
-
             let update: WebhookUpdateLocation
             let location: CLLocation?
 
@@ -732,19 +726,18 @@ public class HomeAssistantAPI {
                 location = nil
             }
 
-            return firstly {
-                let realm = Current.realm()
-                return when(resolved: realm.reentrantWrite {
-                    let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
+            return firstly { () -> Promise<Void> in
+                let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
 
-                    realm.add(LocationHistoryEntry(
-                        updateType: updateType,
-                        location: location,
-                        zone: zone,
-                        accuracyAuthorization: accuracyAuthorization,
-                        payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
-                    ))
-                }).asVoid()
+                LocationHistoryEntry(
+                    updateType: updateType,
+                    location: location,
+                    zone: zone,
+                    accuracyAuthorization: accuracyAuthorization,
+                    payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
+                ).save()
+
+                return .value(())
             }.map { () -> [String: Any] in
                 let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
                 Current.Log.info("Location update payload: \(payloadDict)")
@@ -770,12 +763,12 @@ public class HomeAssistantAPI {
     private func zones(
         for updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        fallbackZone zone: RLMZone?
-    ) -> [RLMZone] {
+        fallbackZone zone: AppZone?
+    ) -> [AppZone] {
         if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
+            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
         } else if let rawLocation {
-            return RLMZone.zones(of: rawLocation, in: server)
+            return AppZone.zones(of: rawLocation, in: server)
         } else {
             return []
         }
@@ -783,10 +776,10 @@ public class HomeAssistantAPI {
 
     private func locationNameZone(
         for updateType: LocationUpdateTrigger,
-        from zones: [RLMZone],
-        fallbackZone zone: RLMZone?,
+        from zones: [AppZone],
+        fallbackZone zone: AppZone?,
         supportsInZones: Bool
-    ) -> RLMZone? {
+    ) -> AppZone? {
         if supportsInZones {
             return zones.first { !$0.isPassive }
         } else if updateType == .BeaconRegionEnter {
@@ -861,7 +854,7 @@ public class HomeAssistantAPI {
     public func zoneStateEvent(
         region: CLRegion,
         state: CLRegionState,
-        zone: RLMZone
+        zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
         var eventData: [String: Any] = sharedEventDeviceInfo
         eventData["zone"] = zone.entityId

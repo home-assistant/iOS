@@ -8,7 +8,6 @@ import FirebaseMessaging
 import Intents
 import KeychainAccess
 import PromiseKit
-import RealmSwift
 import SafariServices
 import Shared
 import UIKit
@@ -305,7 +304,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func showNotificationCategoryAlertIfNeeded() {
-        guard Current.realm().objects(NotificationCategory.self).isEmpty == false else {
+        guard NotificationCategory.all().isEmpty == false else {
             return
         }
 
@@ -423,8 +422,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupModels() {
-        // Force Realm migration to happen now
-        _ = Realm.live()
+        // Import any legacy Realm data into GRDB before anything reads it
+        RealmToGRDBMigration.migrateIfNeeded()
         NotificationCategory.setupObserver()
     }
 

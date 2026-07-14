@@ -86,7 +86,7 @@ struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
         }
 
         let coordinate = location.coordinate
-        let distance = zone.location.distance(from: location) - zone.Radius
+        let distance = zone.location.distance(from: location) - zone.radius
 
         guard !zone.circularRegion.contains(coordinate), distance > 0 else {
             // this fuzzing is only necessary if the region doesn't contain without accuracy
@@ -94,12 +94,11 @@ struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
             return nil
         }
 
-        let containedZones = Current.realm()
-            .objects(RLMZone.self)
+        let containedZones = AppZone.all()
             .filter {
                 // ignoring accuracy because that is not what matters for this case
                 // allowing the zone we're entering since we know we're not in it but we should be
-                $0.circularRegion.contains(coordinate) || $0 == zone
+                $0.circularRegion.contains(coordinate) || $0.identifier == zone.identifier
             }
 
         guard containedZones.count > 1 else {

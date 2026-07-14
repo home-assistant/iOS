@@ -51,7 +51,7 @@
 		11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */; };
 		1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1182620924F9D2EE000795C6 /* CoreMediaIO.framework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (Weak, ); }; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
-		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
+		11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* AppZone.test.swift */; };
 		119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C786625CF845800D41734 /* LocalizedStrings.test.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -578,7 +578,7 @@
 		11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.test.swift; sourceTree = "<group>"; };
 		1182620924F9D2EE000795C6 /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/CoreMediaIO.framework; sourceTree = DEVELOPER_DIR; };
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
-		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
+		11883CC624C131EE0036A6C6 /* AppZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppZone.test.swift; sourceTree = "<group>"; };
 		118A93322520411100227076 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		119C786625CF845800D41734 /* LocalizedStrings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.test.swift; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
@@ -1012,7 +1012,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Extensions/NSLayoutConstraint+Additions.swift",
-				"Extensions/ObjectMapper+RealmList.swift",
 			);
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 		};
@@ -1020,7 +1019,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Extensions/NSLayoutConstraint+Additions.swift",
-				"Extensions/ObjectMapper+RealmList.swift",
 				"Extensions/View+HA.swift",
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
@@ -1221,7 +1219,7 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/NotificationIdentifierField.swift,
-				Components/RealmResultsObserver.swift,
+				Components/DatabaseResultsObserver.swift,
 				Components/YamlPreviewSection.swift,
 				Connection/ConnectionSettingsView.swift,
 				Connection/ConnectionSettingsViewModel.swift,
@@ -1352,7 +1350,7 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/NotificationIdentifierField.swift,
-				Components/RealmResultsObserver.swift,
+				Components/DatabaseResultsObserver.swift,
 				Components/YamlPreviewSection.swift,
 				Connection/ConnectionSettingsView.swift,
 				Connection/ConnectionSettingsViewModel.swift,
@@ -2436,7 +2434,7 @@
 				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
 				11CB98CC249E637300B05222 /* Version+HA.test.swift */,
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
-				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
+				11883CC624C131EE0036A6C6 /* AppZone.test.swift */,
 				42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
@@ -3841,7 +3839,7 @@
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
-				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
+				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,

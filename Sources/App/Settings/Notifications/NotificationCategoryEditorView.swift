@@ -1,16 +1,14 @@
-import RealmSwift
 import Shared
 import SwiftUI
 import UserNotifications
 
-/// SwiftUI replacement for `NotificationCategoryConfigurator`.
-///
 /// Edits a `NotificationCategory`, its hidden-preview placeholder, category
 /// summary format, and the list of `NotificationAction`s. Supports
 /// reorder/insert/delete for actions (capped at `maxActionsForCategory`), a
 /// live YAML service-call preview, read-only mode when the category is
 /// server-controlled, a help link in the toolbar and a preview-notification
-/// action.
+/// action. All edits are held in view state and handed back as a value via
+/// `onDismiss`; the caller persists it.
 struct NotificationCategoryEditorView: View {
     let existingCategory: NotificationCategory?
     let onDismiss: (NotificationCategory?) -> Void
@@ -46,22 +44,22 @@ struct NotificationCategoryEditorView: View {
         self.isNewCategory = (category == nil)
         self.isServerControlled = resolved.isServerControlled
 
-        _name = State(initialValue: resolved.Name)
-        _identifier = State(initialValue: resolved.Identifier)
+        _name = State(initialValue: resolved.name)
+        _identifier = State(initialValue: resolved.identifier)
 
         let placeholderDefault = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-        let placeholder = resolved.HiddenPreviewsBodyPlaceholder ?? ""
+        let placeholder = resolved.hiddenPreviewsBodyPlaceholder ?? ""
         _hiddenPreviewsPlaceholder = State(
             initialValue: placeholder.isEmpty ? placeholderDefault : placeholder
         )
 
         let summaryDefault = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
-        let summary = resolved.CategorySummaryFormat ?? ""
+        let summary = resolved.categorySummaryFormat ?? ""
         _categorySummaryFormat = State(
             initialValue: summary.isEmpty ? summaryDefault : summary
         )
 
-        _actions = State(initialValue: Array(resolved.Actions))
+        _actions = State(initialValue: resolved.actions)
     }
 
     var body: some View {
@@ -146,12 +144,12 @@ struct NotificationCategoryEditorView: View {
             header: Text(L10n.NotificationsConfigurator.Category.Rows.Actions.header),
             footer: Text(isServerControlled ? "" : L10n.NotificationsConfigurator.Category.Rows.Actions.footer)
         ) {
-            ForEach(actions, id: \.uuid) { action in
+            ForEach(actions, id: \.id) { action in
                 Button {
                     editingAction = action
                 } label: {
                     HStack {
-                        Text(action.Title.isEmpty ? action.Identifier : action.Title)
+                        Text(action.title.isEmpty ? action.identifier : action.title)
                             .foregroundColor(.primary)
                         Spacer()
                         if !isServerControlled {
@@ -232,7 +230,7 @@ struct NotificationCategoryEditorView: View {
         if isNewCategory {
             return L10n.NotificationsConfigurator.Category.NavigationBar.title
         }
-        return name.isEmpty ? category.Name : name
+        return name.isEmpty ? category.name : name
     }
 
     private var settingsFooter: String {
@@ -248,55 +246,21 @@ struct NotificationCategoryEditorView: View {
     private var yamlPreview: String {
         // Build a throwaway category with the current form values so the YAML
         // reflects unsaved edits, matching the original Eureka behaviour.
-        let preview = NotificationCategory()
-        preview.Identifier = identifier
-        preview.Name = name
-        for action in actions {
-            preview.Actions.append(action)
-        }
+        var preview = NotificationCategory()
+        preview.identifier = identifier
+        preview.name = name
+        preview.actions = actions
         return preview.exampleServiceCall
     }
 
     // MARK: - Actions mutation
 
     private func deleteActions(at offsets: IndexSet) {
-        let removed = offsets.map { actions[$0] }
         actions.remove(atOffsets: offsets)
-
-        let realm = Current.realm()
-        realm.reentrantWrite {
-            // Remove from the owning list if already persisted.
-            if category.realm != nil {
-                let indexes = category.Actions.enumerated().reduce(into: IndexSet()) { set, val in
-                    if removed.contains(where: { $0.uuid == val.element.uuid }) {
-                        set.insert(val.offset)
-                    }
-                }
-                category.Actions.remove(atOffsets: indexes)
-            } else {
-                for action in removed {
-                    if let index = category.Actions.firstIndex(where: { $0.uuid == action.uuid }) {
-                        category.Actions.remove(at: index)
-                    }
-                }
-            }
-            let uuids = removed.map(\.uuid)
-            realm.delete(realm.objects(NotificationAction.self).filter("uuid IN %@", uuids))
-        }
     }
 
     private func moveActions(from source: IndexSet, to destination: Int) {
         actions.move(fromOffsets: source, toOffset: destination)
-
-        guard category.realm != nil else { return }
-
-        let realm = Current.realm()
-        realm.reentrantWrite {
-            category.Actions.removeAll()
-            for action in actions {
-                category.Actions.append(action)
-            }
-        }
     }
 
     // MARK: - Editor sheet
@@ -309,7 +273,7 @@ struct NotificationCategoryEditorView: View {
                 action: action
             ) { savedAction in
                 if let saved = savedAction {
-                    if let index = actions.firstIndex(where: { $0.uuid == saved.uuid }) {
+                    if let index = actions.firstIndex(where: { $0.id == saved.id }) {
                         actions[index] = saved
                     } else {
                         actions.append(saved)
@@ -331,23 +295,13 @@ struct NotificationCategoryEditorView: View {
     }
 
     private func save() {
-        let realm = Current.realm()
-        let target = existingCategory ?? category
+        var target = existingCategory ?? category
 
-        realm.reentrantWrite {
-            target.Name = name
-            target.Identifier = identifier
-            target.HiddenPreviewsBodyPlaceholder = hiddenPreviewsPlaceholder
-            target.CategorySummaryFormat = categorySummaryFormat
-
-            // Replace action list using current order. This must run for both
-            // managed and unmanaged categories so the caller can persist the
-            // full object graph with `realm.add(_:update:)`.
-            target.Actions.removeAll()
-            for action in actions {
-                target.Actions.append(action)
-            }
-        }
+        target.name = name
+        target.identifier = identifier
+        target.hiddenPreviewsBodyPlaceholder = hiddenPreviewsPlaceholder
+        target.categorySummaryFormat = categorySummaryFormat
+        target.actions = actions
 
         onDismiss(target)
         dismiss()

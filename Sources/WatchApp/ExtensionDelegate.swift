@@ -27,6 +27,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         Current.Log.verbose("didFinishLaunching")
 
+        // Import any legacy Realm data into GRDB before anything reads it
+        RealmToGRDBMigration.migrateIfNeeded()
+
         UNUserNotificationCenter.current().delegate = self
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]

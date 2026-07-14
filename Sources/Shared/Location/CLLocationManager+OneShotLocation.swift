@@ -276,11 +276,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         let failError: Error
 
         if let clErr = error as? CLError {
-            let realm = Current.realm()
-            realm.reentrantWrite {
-                let locErr = LocationError(err: clErr)
-                realm.add(locErr)
-            }
+            LocationError(err: clErr).save()
 
             Current.Log.error("Received CLError: \(clErr)")
             failError = OneShotError.clError(clErr)

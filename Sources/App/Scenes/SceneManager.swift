@@ -165,22 +165,6 @@ final class SceneManager {
     init() {
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
         (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
-
-        // swiftlint:disable prohibit_environment_assignment
-        Current.realmFatalPresentation = { [weak self] viewController in
-            guard let self else { return }
-
-            let under = UIViewController()
-            under.view.backgroundColor = .black
-            under.modalPresentationStyle = .fullScreen
-
-            appCoordinator.done { parent in
-                parent.present(under, animated: false, completion: {
-                    under.present(viewController, animated: true, completion: nil)
-                })
-            }
-        }
-        // swiftlint:enable prohibit_environment_assignment
     }
 
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {

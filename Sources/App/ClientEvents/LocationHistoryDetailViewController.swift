@@ -1,5 +1,5 @@
+import GRDB
 import MapKit
-import RealmSwift
 import Shared
 import SwiftUI
 import UIKit
@@ -58,7 +58,7 @@ final class LocationHistoryDetailViewController: UIViewController {
     }
 
     private var locationHistoryEntries: [LocationHistoryEntry] = []
-    private var token: NotificationToken?
+    private var token: AnyDatabaseCancellable?
     private let map = MKMapView()
 
     init(currentEntry: LocationHistoryEntry) {
@@ -73,7 +73,7 @@ final class LocationHistoryDetailViewController: UIViewController {
     }
 
     deinit {
-        token?.invalidate()
+        token?.cancel()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -90,7 +90,7 @@ final class LocationHistoryDetailViewController: UIViewController {
     private func setUp() {
         setUpObserver()
         title = DateFormatter.localizedString(
-            from: currentEntry.CreatedAt,
+            from: currentEntry.createdAt,
             dateStyle: .short,
             timeStyle: .medium
         )
@@ -98,13 +98,23 @@ final class LocationHistoryDetailViewController: UIViewController {
     }
 
     private func setUpObserver() {
-        let results = Current.realm()
-            .objects(LocationHistoryEntry.self)
-            .sorted(byKeyPath: "CreatedAt", ascending: false)
+        guard token == nil else { return }
 
-        token = results.observe { [weak self] _ in
-            self?.locationHistoryEntries = results.map(LocationHistoryEntry.init)
+        let observation = ValueObservation.tracking { db in
+            try LocationHistoryEntry
+                .order(Column(DatabaseTables.LocationHistory.createdAt.rawValue).desc)
+                .fetchAll(db)
         }
+
+        token = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("couldn't observe location history: \(error)")
+            },
+            onChange: { [weak self] entries in
+                self?.locationHistoryEntries = entries
+            }
+        )
     }
 
     @objc private func center(_ sender: AnyObject?) {
@@ -123,9 +133,9 @@ final class LocationHistoryDetailViewController: UIViewController {
 
         let accuracyNote: String
 
-        if currentEntry.Accuracy == 65 {
+        if currentEntry.accuracy == 65 {
             accuracyNote = " (from Wi-Fi)"
-        } else if currentEntry.Accuracy == 1414 {
+        } else if currentEntry.accuracy == 1414 {
             accuracyNote = " (from cell tower)"
         } else {
             accuracyNote = ""
@@ -133,7 +143,7 @@ final class LocationHistoryDetailViewController: UIViewController {
 
         let accuracyAuthorization: String
 
-        if let authorization = currentEntry.accuracyAuthorization {
+        if let authorization = currentEntry.clAccuracyAuthorization {
             switch authorization {
             case .fullAccuracy: accuracyAuthorization = "full"
             case .reducedAccuracy: accuracyAuthorization = "reduced"
@@ -155,20 +165,20 @@ final class LocationHistoryDetailViewController: UIViewController {
             """
             ## Payload
             ```json
-            \(currentEntry.Payload)
+            \(currentEntry.payload)
             ```
 
             ## Location
-            - Trigger: \(currentEntry.Trigger ?? "(unknown)")
-            - Center: (\(latLongString(currentEntry.Latitude)), \(latLongString(currentEntry.Longitude)))
-            - Accuracy: \(distanceString(currentEntry.Accuracy))\(accuracyNote)
+            - Trigger: \(currentEntry.trigger ?? "(unknown)")
+            - Center: (\(latLongString(currentEntry.latitude)), \(latLongString(currentEntry.longitude)))
+            - Accuracy: \(distanceString(currentEntry.accuracy))\(accuracyNote)
             - Accuracy Authorization: \(accuracyAuthorization)
 
             ## Regions
             """ + "\n"
         )
 
-        let allRegions = Current.realm().objects(RLMZone.self)
+        let allRegions = AppZone.all()
             .flatMap(\.circularRegionsForMonitoring)
             .sorted(by: { a, b in
                 a.distanceWithAccuracy(from: currentEntry.clLocation) < b
@@ -228,7 +238,7 @@ final class LocationHistoryDetailViewController: UIViewController {
         move(.down)
     }
 
-    private static func overlays<T: Collection>(for zones: T) -> [MKOverlay] where T.Element: RLMZone {
+    private static func overlays(for zones: some Collection<AppZone>) -> [MKOverlay] {
         zones.flatMap { zone -> [MKOverlay] in
             var overlays = [MKOverlay]()
 
@@ -238,7 +248,7 @@ final class LocationHistoryDetailViewController: UIViewController {
                 overlays.append(contentsOf: regions.map { RegionCircle(center: $0.center, radius: $0.radius) })
             }
 
-            overlays.append(ZoneCircle(center: zone.center, radius: zone.Radius))
+            overlays.append(ZoneCircle(center: zone.center, radius: zone.radius))
             return overlays
         }
     }
@@ -328,7 +338,7 @@ final class LocationHistoryDetailViewController: UIViewController {
 
     func updateOverlays() {
         map.removeOverlays(map.overlays)
-        map.addOverlays(Self.overlays(for: Current.realm().objects(RLMZone.self)))
+        map.addOverlays(Self.overlays(for: AppZone.all()))
         map.addOverlays(Self.overlays(for: currentEntry.clLocation))
     }
 
@@ -344,9 +354,9 @@ private extension LocationHistoryDetailViewController {
     ) -> Bool {
         switch direction {
         case .up:
-            locationHistoryEntries.first?.CreatedAt != currentEntry.CreatedAt
+            locationHistoryEntries.first?.id != currentEntry.id
         case .down:
-            locationHistoryEntries.last?.CreatedAt != currentEntry.CreatedAt
+            locationHistoryEntries.last?.id != currentEntry.id
         }
     }
 
@@ -355,7 +365,7 @@ private extension LocationHistoryDetailViewController {
     ) {
         guard
             let currentIndex = locationHistoryEntries.firstIndex(where: { entry in
-                entry.CreatedAt == currentEntry.CreatedAt
+                entry.id == currentEntry.id
             }) else { return }
         let newIndex = switch direction {
         case .up: currentIndex - 1
