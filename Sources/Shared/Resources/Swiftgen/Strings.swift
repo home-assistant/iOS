@@ -5611,6 +5611,12 @@ public enum L10n {
         public static var templateInvalidHex: String { return L10n.tr("Localizable", "watch.complications.builder.template_invalid_hex") }
         /// The server didn't return a result. Check the template for errors.
         public static var templateNoResult: String { return L10n.tr("Localizable", "watch.complications.builder.template_no_result") }
+        /// Result
+        public static var templateResult: String { return L10n.tr("Localizable", "watch.complications.builder.template_result") }
+        /// The result appears here once the template is evaluated.
+        public static var templateResultPlaceholder: String { return L10n.tr("Localizable", "watch.complications.builder.template_result_placeholder") }
+        /// More
+        public static var templateSuggestionsMore: String { return L10n.tr("Localizable", "watch.complications.builder.template_suggestions_more") }
         /// Templates
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color

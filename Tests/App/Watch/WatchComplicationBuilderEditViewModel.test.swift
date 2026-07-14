@@ -253,15 +253,6 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
-    @Test func evaluatedHexReflectsRenderState() {
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("#ff9500")) == "#FF9500")
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("not a color")) == nil)
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .success("")) == nil)
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .loading) == nil)
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .failure("boom")) == nil)
-        #expect(WatchComplicationBuilderEditViewModel.evaluatedHex(from: .idle) == nil)
-    }
-
     @Test func normalizedHexColorAcceptsValidHexOnly() {
         #expect(WatchComplicationConfig.normalizedHexColor(from: "#ff9500") == "#FF9500")
         #expect(WatchComplicationConfig.normalizedHexColor(from: "ff9500") == "#FF9500")

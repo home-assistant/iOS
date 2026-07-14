@@ -44,11 +44,6 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         }
     }
 
-    /// Live evaluation state of every template field (loading → result/error), reported by the
-    /// preview's renderers — drives the callout shown over the field being edited and the color
-    /// swatches next to the color template fields.
-    @Published var templateOutputs = TemplateRenderer.Outputs()
-
     let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
@@ -73,13 +68,6 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         self.useTemplateColor = [
             initial.customGaugeColorTemplate, initial.customIconColorTemplate, initial.customTextColorTemplate,
         ].contains { !($0 ?? "").isEmpty }
-    }
-
-    /// A color template's evaluated color as a normalized hex string, or nil while loading, on
-    /// failure, or when the render isn't a valid hex — drives the swatch next to that field.
-    static func evaluatedHex(from output: TemplateRenderer.Output) -> String? {
-        guard case let .success(rendered) = output, !rendered.isEmpty else { return nil }
-        return WatchComplicationConfig.normalizedHexColor(from: rendered)
     }
 
     var server: Server? {

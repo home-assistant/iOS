@@ -7,39 +7,15 @@ import UIKit
 /// logic and save side effects live in `WatchComplicationBuilderEditViewModel`; this view keeps only
 /// presentation state and the bindings into the view model's config.
 struct WatchComplicationBuilderEditView: View {
-    /// The template-editing fields that get the evaluation callout while focused.
-    fileprivate enum TemplateField: Hashable {
-        case text, gauge, gaugeColor, iconColor, textColor
-    }
-
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WatchComplicationBuilderEditViewModel
     @State private var showEntityPicker = false
     /// Whether the inline preview row is on screen. Form recycles offscreen rows, so the row's
     /// appear/disappear tracks scrolling; while it's away the preview floats over the form instead.
     @State private var isInlinePreviewVisible = true
-    /// The template field being edited — the evaluation callout floats over it.
-    @FocusState private var focusedTemplateField: TemplateField?
-    /// Global-space frames of the on-screen template fields, tracked via `onGeometryChange` (not
-    /// anchors/GeometryReader preferences — Form rows live in separate hosting views, where those
-    /// resolve stale or wrong coordinates). The callout overlay converts these back to local space.
-    @State private var templateFieldFrames: [TemplateField: CGRect] = [:]
-    /// Preview-only escape hatch: pretends this field is focused so the callout renders in a
-    /// static preview (a real focus can't be established there).
-    private let initialTemplateFocus: TemplateField?
 
     init(existing: WatchComplicationConfig?) {
-        self.init(existing: existing, initialTemplateFocus: nil)
-    }
-
-    fileprivate init(existing: WatchComplicationConfig?, initialTemplateFocus: TemplateField?) {
         _viewModel = StateObject(wrappedValue: WatchComplicationBuilderEditViewModel(existing: existing))
-        self.initialTemplateFocus = initialTemplateFocus
-    }
-
-    /// The field whose callout is shown: the focused one, or the preview-only override.
-    private var activeTemplateField: TemplateField? {
-        focusedTemplateField ?? initialTemplateFocus
     }
 
     /// Server selection. Animated: picking a server reveals the next step of the flow.
@@ -211,8 +187,7 @@ struct WatchComplicationBuilderEditView: View {
                         selectedFamily: viewModel.config.widgetFamily,
                         onUnit: { viewModel.entityUnit = $0 },
                         onAttributes: { viewModel.entityAttributeKeys = $0 },
-                        onValueIsNumeric: { viewModel.valueIsNumeric = $0 },
-                        onTemplateOutputs: { viewModel.templateOutputs = $0 }
+                        onValueIsNumeric: { viewModel.valueIsNumeric = $0 }
                     )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
@@ -296,6 +271,7 @@ struct WatchComplicationBuilderEditView: View {
                             )
                         }
                         .navigationViewStyle(.stack)
+                        .presentationDragIndicator(.visible)
                     }
 
                     // Choose whether the value shown is the entity's state or one of its attributes.
@@ -349,38 +325,34 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             // Step 3 (template): enter the templates, then the shared options reveal below. The text
-            // template stands in for the display name — same icon + field row as the entity flow —
-            // but the field edits the template that renders the complication's text.
-            if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty {
+            // template stands in for the display name — same icon + row as the entity flow — showing
+            // its rendered result (or the template source) and opening the full editor in a sheet.
+            if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty,
+               let server = viewModel.server {
                 Section {
-                    HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+                    HStack(spacing: DesignSystem.Spaces.two) {
                         IconPicker(
                             selectedIcon: iconBinding,
                             selectedColor: iconColorBinding
                         )
-                        TextField(text: templateBinding(\.customTextTemplate), axis: .vertical) {
-                            Text(verbatim: "{{ states('sensor.x') }}")
-                        }
-                        .lineLimit(1 ... 6)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .focused($focusedTemplateField, equals: .text)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        JinjaTemplateButton(
+                            server: server,
+                            title: L10n.Watch.Complications.Builder.displayName,
+                            text: templateBinding(\.customTextTemplate),
+                            placeholder: "{{ states('sensor.x') }}"
+                        )
                     }
-                    .background(templateFieldFrameReader(.text))
                 } header: {
                     Text(L10n.Watch.Complications.Builder.displayName)
                 }
 
                 Section {
-                    TextField(text: templateBinding(\.customGaugeTemplate), axis: .vertical) {
-                        Text(verbatim: "{{ … }} → 0–1")
-                    }
-                    .lineLimit(1 ... 6)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .focused($focusedTemplateField, equals: .gauge)
-                    .background(templateFieldFrameReader(.gauge))
+                    JinjaTemplateButton(
+                        server: server,
+                        title: L10n.Watch.Complications.Builder.gaugeTemplate,
+                        text: templateBinding(\.customGaugeTemplate),
+                        placeholder: "{{ … }} → 0–1"
+                    )
                 } header: {
                     Text(L10n.Watch.Complications.Builder.gaugeTemplate)
                 }
@@ -501,7 +473,7 @@ struct WatchComplicationBuilderEditView: View {
                             if familyHasProgressBar, viewModel.config.showsGauge(for: currentFamily) {
                                 staticColorPicker(gaugeColorTitle, selection: tintBinding)
                                 if viewModel.useTemplateColor {
-                                    colorTemplateField(.gaugeColor, keyPath: \.customGaugeColorTemplate)
+                                    colorTemplateField(\.customGaugeColorTemplate, title: gaugeColorTitle)
                                 }
                             }
                             if viewModel.config.showsIcon(for: currentFamily) {
@@ -510,7 +482,10 @@ struct WatchComplicationBuilderEditView: View {
                                     selection: iconColorBinding
                                 )
                                 if viewModel.useTemplateColor {
-                                    colorTemplateField(.iconColor, keyPath: \.customIconColorTemplate)
+                                    colorTemplateField(
+                                        \.customIconColorTemplate,
+                                        title: L10n.Watch.Complications.Builder.iconColor
+                                    )
                                 }
                             }
                             staticColorPicker(
@@ -518,7 +493,10 @@ struct WatchComplicationBuilderEditView: View {
                                 selection: textColorBinding
                             )
                             if viewModel.useTemplateColor {
-                                colorTemplateField(.textColor, keyPath: \.customTextColorTemplate)
+                                colorTemplateField(
+                                    \.customTextColorTemplate,
+                                    title: L10n.Watch.Complications.Builder.textColor
+                                )
                             }
                         }
                     } header: {
@@ -547,44 +525,11 @@ struct WatchComplicationBuilderEditView: View {
                         showsOnlySelectedFamily: true,
                         onUnit: { viewModel.entityUnit = $0 },
                         onAttributes: { viewModel.entityAttributeKeys = $0 },
-                        onValueIsNumeric: { viewModel.valueIsNumeric = $0 },
-                        onTemplateOutputs: { viewModel.templateOutputs = $0 }
+                        onValueIsNumeric: { viewModel.valueIsNumeric = $0 }
                     )
                 }
                 .transition(.scale(scale: 0.8).combined(with: .opacity))
             }
-        }
-        // While a template field is being edited, a popover-style callout floats over it with the
-        // live evaluation: a spinner while loading, the rendered result, the error on failure, and
-        // the resulting color for the color templates. Drawn as a form-level overlay (not a real
-        // popover presentation) so it never steals focus from the keyboard while typing, and never
-        // gets clipped by the section shape.
-        .overlay {
-            GeometryReader { proxy in
-                if let field = activeTemplateField,
-                   let globalRect = templateFieldFrames[field],
-                   let output = calloutOutput(for: field) {
-                    let origin = proxy.frame(in: .global).origin
-                    let rect = globalRect.offsetBy(dx: -origin.x, dy: -origin.y)
-                    templateCallout(for: field, output: output)
-                        .alignmentGuide(.leading) { dimensions in
-                            // Centered over the field, clamped so the bubble stays on screen.
-                            let halfWidth = dimensions.width / 2
-                            let centerX = min(
-                                max(rect.midX, halfWidth + DesignSystem.Spaces.two),
-                                proxy.size.width - halfWidth - DesignSystem.Spaces.two
-                            )
-                            return halfWidth - centerX
-                        }
-                        .alignmentGuide(.top) { dimensions in
-                            // Bottom edge (including the arrow) clearly above the field's top.
-                            dimensions.height - (rect.minY - DesignSystem.Spaces.two)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                }
-            }
-            .allowsHitTesting(false)
-            .animation(.default, value: viewModel.templateOutputs)
         }
         .navigationTitle(Text(
             viewModel.isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
@@ -653,120 +598,21 @@ struct WatchComplicationBuilderEditView: View {
             .opacity(viewModel.useTemplateColor ? 0.4 : 1)
     }
 
-    /// A color template field: renders a hex string that overrides the static picker above it. The
-    /// trailing swatch previews the evaluated color once the debounced render succeeds.
-    private func colorTemplateField(
-        _ field: TemplateField,
-        keyPath: WritableKeyPath<WatchComplicationConfig, String?>
-    ) -> some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
-            TextField(text: templateBinding(keyPath), axis: .vertical) {
-                Text(verbatim: "{{ … }} → #RRGGBB")
-            }
-            .lineLimit(1 ... 6)
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.never)
-            .focused($focusedTemplateField, equals: field)
-            if let hex = WatchComplicationBuilderEditViewModel.evaluatedHex(from: templateOutput(for: field)) {
-                Circle()
-                    .fill(Color(uiColor: UIColor(hex: hex)))
-                    .frame(width: 22, height: 22)
-                    .overlay(Circle().strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1))
-            }
-        }
-        .background(templateFieldFrameReader(field))
-    }
-
-    /// Tracks a template field's global frame for the callout overlay.
-    private func templateFieldFrameReader(_ field: TemplateField) -> some View {
-        Color.clear
-            .onGeometryChange(for: CGRect.self) { proxy in
-                proxy.frame(in: .global)
-            } action: { newValue in
-                templateFieldFrames[field] = newValue
-            }
-    }
-
-    private func templateOutput(for field: TemplateField) -> TemplateRenderer.Output {
-        switch field {
-        case .text: return viewModel.templateOutputs.text
-        case .gauge: return viewModel.templateOutputs.gauge
-        case .gaugeColor: return viewModel.templateOutputs.gaugeColor
-        case .iconColor: return viewModel.templateOutputs.iconColor
-        case .textColor: return viewModel.templateOutputs.textColor
-        }
-    }
-
-    /// The output the callout should show for a field, or nil to hide it (nothing evaluated yet, or
-    /// the template is empty).
-    private func calloutOutput(for field: TemplateField) -> TemplateRenderer.Output? {
-        let output = templateOutput(for: field)
-        switch output {
-        case .idle: return nil
-        case let .success(value) where value.isEmpty: return nil
-        default: return output
-        }
-    }
-
-    /// The popover-style bubble floating over the focused template field: loading spinner, rendered
-    /// result, error message, or — for the color templates — the resulting color.
+    /// A color template row: shows the evaluated color (or the template source) and opens the full
+    /// template editor in a sheet. The result overrides the static picker above it.
     @ViewBuilder
-    private func templateCallout(for field: TemplateField, output: TemplateRenderer.Output) -> some View {
-        let isColorField = [.gaugeColor, .iconColor, .textColor].contains(field)
-        Group {
-            switch output {
-            case .idle:
-                EmptyView()
-            case .loading:
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    ProgressView()
-                        .controlSize(.small)
-                    Text(L10n.Watch.Complications.Builder.templateEvaluating)
-                        .foregroundStyle(.secondary)
-                }
-            case let .success(value):
-                if isColorField {
-                    if let hex = WatchComplicationConfig.normalizedHexColor(from: value) {
-                        HStack(spacing: DesignSystem.Spaces.one) {
-                            Circle()
-                                .fill(Color(uiColor: UIColor(hex: hex)))
-                                .frame(width: 16, height: 16)
-                                .overlay(Circle().strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1))
-                            Text(verbatim: hex)
-                                .font(.footnote.monospaced())
-                        }
-                    } else {
-                        Text(L10n.Watch.Complications.Builder.templateInvalidHex)
-                            .foregroundStyle(Color(.systemRed))
-                    }
-                } else {
-                    Text(verbatim: value)
-                        .font(.footnote.monospaced())
-                }
-            case let .failure(message):
-                Text(verbatim: message)
-                    .foregroundStyle(Color(.systemRed))
-            }
-        }
-        .font(.footnote)
-        .lineLimit(4)
-        .multilineTextAlignment(.leading)
-        .fixedSize(horizontal: false, vertical: true)
-        .frame(maxWidth: 260, alignment: .leading)
-        .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
-        .padding(.vertical, DesignSystem.Spaces.one)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf)
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .shadow(color: .black.opacity(0.18), radius: 8, y: 2)
-        )
-        // Popover-style arrow pointing at the field below.
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .frame(width: 12, height: 12)
-                .rotationEffect(.degrees(45))
-                .offset(y: 5)
+    private func colorTemplateField(
+        _ keyPath: WritableKeyPath<WatchComplicationConfig, String?>,
+        title: String
+    ) -> some View {
+        if let server = viewModel.server {
+            JinjaTemplateButton(
+                server: server,
+                title: title,
+                text: templateBinding(keyPath),
+                placeholder: "{{ … }} → #RRGGBB",
+                expectsColor: true
+            )
         }
     }
 
@@ -892,25 +738,5 @@ struct WatchComplicationBuilderEditView: View {
             customTextColorTemplate: "{{ '#FF9500' }}",
             isCustomized: true
         ))
-    }
-}
-
-#Preview("Template evaluation callout") {
-    // The popover-style callout over the template field being edited (focus is simulated — a real
-    // first responder can't be established in a static preview).
-    // swiftlint:disable prohibit_environment_assignment
-    Current.servers = FakeServerManager(initial: 1)
-    // swiftlint:enable prohibit_environment_assignment
-    let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
-    return NavigationView {
-        WatchComplicationBuilderEditView(
-            existing: WatchComplicationConfig(
-                serverId: serverId,
-                kind: .customTemplate,
-                name: "Solar",
-                customTextTemplate: "{{ states('sensor.solar_power') }}"
-            ),
-            initialTemplateFocus: .text
-        )
     }
 }

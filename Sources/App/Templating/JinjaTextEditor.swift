@@ -2,13 +2,19 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// The text view of `JinjaTemplateView`: a `UITextView` (SwiftUI's `TextEditor` can't do either of
-/// these) with live Jinja syntax highlighting and an autocomplete bar above the keyboard. Smart
-/// punctuation is off — smart quotes silently break Jinja.
+/// The text view of the Jinja editor sheet: a `UITextView` (SwiftUI's `TextEditor` can't do live
+/// syntax highlighting) with Jinja colors, cursor reporting for the entity suggestions below, and
+/// an insertion channel for tapped suggestions. Smart punctuation is off — smart quotes silently
+/// break Jinja.
 struct JinjaTextEditor: UIViewRepresentable {
     @Binding var text: String
-    /// Entity ids of the selected server, offered by the autocomplete inside quoted strings.
-    var entityIds: [String] = []
+    /// The current cursor location (UTF-16), reported for the context-aware entity suggestions.
+    @Binding var cursorLocation: Int
+    /// Set by the suggestion pills / entity picker; the editor consumes it, inserts at the cursor,
+    /// and clears it back to nil.
+    @Binding var pendingInsertion: JinjaTemplateSuggestion?
+    /// Focuses the editor (bringing up the keyboard) as soon as it appears.
+    var autoFocus = false
 
     static let font = UIFont.monospacedSystemFont(
         ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
@@ -32,8 +38,12 @@ struct JinjaTextEditor: UIViewRepresentable {
         textView.delegate = context.coordinator
         textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         context.coordinator.textView = textView
-        textView.inputAccessoryView = context.coordinator.makeAccessoryView()
         context.coordinator.applyHighlighting(text)
+        if autoFocus {
+            DispatchQueue.main.async {
+                textView.becomeFirstResponder()
+            }
+        }
         return textView
     }
 
@@ -42,7 +52,12 @@ struct JinjaTextEditor: UIViewRepresentable {
         if uiView.text != text {
             context.coordinator.applyHighlighting(text)
         }
-        context.coordinator.updateSuggestions()
+        if let insertion = pendingInsertion {
+            context.coordinator.insert(insertion)
+            DispatchQueue.main.async {
+                pendingInsertion = nil
+            }
+        }
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
@@ -58,30 +73,19 @@ struct JinjaTextEditor: UIViewRepresentable {
     final class Coordinator: NSObject, UITextViewDelegate {
         var parent: JinjaTextEditor
         weak var textView: UITextView?
-        /// Hosts the SwiftUI suggestion chips inside the keyboard's input accessory area.
-        private let accessoryController = UIHostingController(
-            rootView: JinjaAutocompleteBar(suggestions: [], onSelect: { _ in })
-        )
 
         init(parent: JinjaTextEditor) {
             self.parent = parent
         }
 
-        func makeAccessoryView() -> UIView {
-            let view = accessoryController.view ?? UIView()
-            view.frame = CGRect(x: 0, y: 0, width: 0, height: 44)
-            view.backgroundColor = .clear
-            return view
-        }
-
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
             applyHighlighting(textView.text)
-            updateSuggestions()
+            reportCursor()
         }
 
         func textViewDidChangeSelection(_ textView: UITextView) {
-            updateSuggestions()
+            reportCursor()
         }
 
         /// Re-applies syntax colors, keeping the cursor where it was.
@@ -96,22 +100,10 @@ struct JinjaTextEditor: UIViewRepresentable {
             )
         }
 
-        func updateSuggestions() {
-            guard let textView else { return }
-            let provider = JinjaAutocompleteProvider(entityIds: parent.entityIds)
-            let suggestions = provider.suggestions(
-                text: textView.text,
-                cursorLocation: textView.selectedRange.location
-            )
-            accessoryController.rootView = JinjaAutocompleteBar(suggestions: suggestions) { [weak self] in
-                self?.insert($0)
-            }
-        }
-
-        private func insert(_ suggestion: JinjaTemplateSuggestion) {
+        func insert(_ suggestion: JinjaTemplateSuggestion) {
             guard let textView else { return }
             let nsText = textView.text as NSString
-            let cursor = textView.selectedRange.location
+            let cursor = min(textView.selectedRange.location, nsText.length)
             let replacingCount = min(suggestion.replacingCount, cursor)
             let replaceRange = NSRange(location: cursor - replacingCount, length: replacingCount)
             textView.text = nsText.replacingCharacters(in: replaceRange, with: suggestion.insertion)
@@ -122,7 +114,15 @@ struct JinjaTextEditor: UIViewRepresentable {
                 location: max(0, insertionEnd - suggestion.cursorOffsetFromEnd),
                 length: 0
             )
-            updateSuggestions()
+            reportCursor()
+        }
+
+        private func reportCursor() {
+            guard let textView else { return }
+            let location = textView.selectedRange.location
+            DispatchQueue.main.async { [weak self] in
+                self?.parent.cursorLocation = location
+            }
         }
     }
 }
@@ -130,7 +130,8 @@ struct JinjaTextEditor: UIViewRepresentable {
 #Preview {
     JinjaTextEditor(
         text: .constant("{{ states('sensor.solar_power') | round(1) }} kW"),
-        entityIds: ["sensor.solar_power"]
+        cursorLocation: .constant(0),
+        pendingInsertion: .constant(nil)
     )
     .padding()
 }

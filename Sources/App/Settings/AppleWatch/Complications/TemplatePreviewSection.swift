@@ -25,16 +25,6 @@ final class TemplateRenderer: ObservableObject {
         }
     }
 
-    /// Snapshot of every builder template's evaluation state, reported to the editor as one value so
-    /// it can drive the callout over whichever template field is being edited.
-    struct Outputs: Equatable {
-        var text: Output = .idle
-        var gauge: Output = .idle
-        var gaugeColor: Output = .idle
-        var iconColor: Output = .idle
-        var textColor: Output = .idle
-    }
-
     @Published private(set) var output: Output = .idle
 
     private let displayResult: (Any) throws -> String

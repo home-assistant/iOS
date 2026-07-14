@@ -1,78 +1,55 @@
 import Foundation
 
-/// Computes autocomplete suggestions for a Jinja template at a cursor position, mirroring what the
-/// Home Assistant frontend's template editor offers: entity ids inside quotes, template functions
-/// and keywords inside expressions, filters after a pipe, and expression openers in literal text.
+/// Computes the entity suggestions shown under the Jinja editor, and how a picked entity should be
+/// inserted at the cursor: matching the typed prefix inside an open quote, as a `states('…')` call
+/// inside an expression, or wrapped in a whole `{{ states('…') }}` expression in literal text.
 struct JinjaAutocompleteProvider {
-    /// Entity ids of the selected server, offered inside quoted strings.
+    /// Entity ids of the selected server.
     var entityIds: [String]
 
-    /// Call-style helpers and no-argument functions the frontend's editor completes.
-    static let functions: [String] = [
-        "states('')", "is_state('', '')", "state_attr('', '')", "is_state_attr('', '', '')",
-        "has_value('')", "now()", "utcnow()", "as_timestamp()", "iif()",
-    ]
+    /// The suggestions for the footer pills. Empty until the user is typing an entity id — i.e.
+    /// inside an open quote — then filtered by the typed prefix.
+    func entitySuggestions(text: String, cursorLocation: Int, limit: Int = 5) -> [JinjaTemplateSuggestion] {
+        guard let prefix = quotedPrefix(text: text, cursorLocation: cursorLocation) else { return [] }
+        return entityIds
+            .filter { prefix.isEmpty || $0.localizedCaseInsensitiveContains(prefix) }
+            .prefix(limit)
+            .map { JinjaTemplateSuggestion(
+                label: $0,
+                insertion: $0,
+                replacingCount: (prefix as NSString).length
+            ) }
+    }
 
-    /// Common filters, offered after a `|`.
-    static let filters: [String] = [
-        "round(2)", "int", "float", "abs", "lower", "upper", "title",
-        "replace('', '')", "default('')", "timestamp_custom('%H:%M')",
-    ]
-
-    static let keywords: [String] = [
-        "if", "else", "elif", "endif", "for", "endfor", "in", "and", "or", "not", "is",
-        "true", "false", "none",
-    ]
-
-    /// Suggestions for `text` with the cursor at `cursorLocation` (UTF-16, as UITextView reports).
-    func suggestions(text: String, cursorLocation: Int) -> [JinjaTemplateSuggestion] {
+    /// The text being typed inside an open quote at the cursor — what the pills are filtered by,
+    /// and what the entity picker's search is pre-seeded with.
+    func quotedPrefix(text: String, cursorLocation: Int) -> String? {
         let nsText = text as NSString
-        guard cursorLocation >= 0, cursorLocation <= nsText.length else { return [] }
+        guard cursorLocation >= 0, cursorLocation <= nsText.length else { return nil }
         let before = nsText.substring(to: cursorLocation)
+        guard let expression = openExpression(in: before) else { return nil }
+        return openQuotedPrefix(in: expression)
+    }
 
-        // Outside any expression → offer to open one.
+    /// How to insert a specific entity id (pill tap or entity picker) at the cursor.
+    func entityInsertion(for entityId: String, text: String, cursorLocation: Int) -> JinjaTemplateSuggestion {
+        let nsText = text as NSString
+        let before = nsText.substring(to: min(max(cursorLocation, 0), nsText.length))
+
         guard let expression = openExpression(in: before) else {
-            return [
-                JinjaTemplateSuggestion(label: "{{ }}", insertion: "{{  }}", cursorOffsetFromEnd: 3),
-                JinjaTemplateSuggestion(label: "{% %}", insertion: "{%  %}", cursorOffsetFromEnd: 3),
-            ]
+            // Literal text → a whole expression.
+            return JinjaTemplateSuggestion(label: entityId, insertion: "{{ states('\(entityId)') }}")
         }
-
-        // Inside an open quote → entity ids, filtered by the typed prefix.
-        if let quotedPrefix = openQuotedPrefix(in: expression) {
-            return entityIds
-                .filter { quotedPrefix.isEmpty || $0.localizedCaseInsensitiveContains(quotedPrefix) }
-                .prefix(15)
-                .map { JinjaTemplateSuggestion(
-                    label: $0,
-                    insertion: $0,
-                    replacingCount: (quotedPrefix as NSString).length
-                ) }
+        if let prefix = openQuotedPrefix(in: expression) {
+            // Inside an open quote → the bare id, replacing whatever was typed.
+            return JinjaTemplateSuggestion(
+                label: entityId,
+                insertion: entityId,
+                replacingCount: (prefix as NSString).length
+            )
         }
-
-        let word = trailingWord(in: before)
-        let replacing = (word as NSString).length
-
-        // After a pipe → filters.
-        if isAfterPipe(before, wordLength: replacing) {
-            return Self.filters
-                .filter { word.isEmpty || $0.hasPrefix(word) }
-                .map { JinjaTemplateSuggestion(label: $0, insertion: $0, replacingCount: replacing) }
-        }
-
-        // Plain identifier → functions + keywords. Call-style completions land the cursor inside
-        // the first quotes/parens.
-        return (Self.functions + Self.keywords)
-            .filter { word.isEmpty || $0.hasPrefix(word) }
-            .prefix(15)
-            .map { name in
-                JinjaTemplateSuggestion(
-                    label: name,
-                    insertion: name,
-                    replacingCount: replacing,
-                    cursorOffsetFromEnd: cursorBackOffset(for: name)
-                )
-            }
+        // Inside an expression → a states() call.
+        return JinjaTemplateSuggestion(label: entityId, insertion: "states('\(entityId)')")
     }
 
     /// The content of the innermost expression (`{{ …` or `{% …`) still open at the cursor, or nil
@@ -114,27 +91,5 @@ struct JinjaAutocompleteProvider {
         }
         guard openQuote != nil, let start = prefixStart else { return nil }
         return String(expression[start...])
-    }
-
-    /// The identifier being typed immediately before the cursor.
-    private func trailingWord(in before: String) -> String {
-        String(before.reversed().prefix { $0.isLetter || $0.isNumber || $0 == "_" }.reversed())
-    }
-
-    /// Whether the token before the current word is a Jinja filter pipe.
-    private func isAfterPipe(_ before: String, wordLength: Int) -> Bool {
-        let untilWord = (before as NSString).substring(to: (before as NSString).length - wordLength)
-        guard let last = untilWord.reversed().first(where: { !$0.isWhitespace }) else { return false }
-        return last == "|"
-    }
-
-    /// Where call-style completions should leave the cursor: inside the first quotes, else inside
-    /// the parens, else at the end.
-    private func cursorBackOffset(for completion: String) -> Int {
-        if let range = completion.range(of: "''") {
-            return (String(completion[range.upperBound...]) as NSString).length + 1
-        }
-        if completion.hasSuffix("()") { return 1 }
-        return 0
     }
 }
