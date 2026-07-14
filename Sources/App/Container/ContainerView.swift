@@ -3,13 +3,15 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Drives app Settings navigation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
+/// Drives app Settings presentation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
 /// so that toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear Settings down with the
-/// container it would otherwise be presented from. On iOS Settings is pushed onto the container's navigation
-/// stack; on Catalyst it opens in its own scene.
+/// container it would otherwise be presented from. Settings requested by the frontend external bus is pushed
+/// onto the container's navigation stack; every other entry point (gestures, empty state, …) uses a sheet.
+/// On Catalyst it opens in its own scene.
 final class AppSettingsPresenter: ObservableObject {
     static let shared = AppSettingsPresenter()
-    @Published var isPresented = false
+    @Published var isSheetPresented = false
+    @Published var isPushPresented = false
     private init() {}
 }
 
@@ -44,7 +46,13 @@ struct ContainerView: View {
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
-            coordinator.onShowSettings = { AppSettingsPresenter.shared.isPresented = true }
+            coordinator.onShowSettings = { pushOntoNavigationStack in
+                if pushOntoNavigationStack, !Current.isCatalyst {
+                    AppSettingsPresenter.shared.isPushPresented = true
+                } else {
+                    AppSettingsPresenter.shared.isSheetPresented = true
+                }
+            }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
             coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }

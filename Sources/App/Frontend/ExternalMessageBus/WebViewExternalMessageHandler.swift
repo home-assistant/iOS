@@ -208,7 +208,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: true) }
     }
 
     @MainActor

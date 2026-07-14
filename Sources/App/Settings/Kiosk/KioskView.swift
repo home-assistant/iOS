@@ -12,20 +12,23 @@ struct ConditionalContainerView: View {
     var body: some View {
         if Current.isCatalyst {
             content
+                .sheet(isPresented: $appSettings.isSheetPresented) { settingsSheet }
         } else {
             NavigationStack {
                 content
                     .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(isPresented: $appSettings.isPresented) {
+                    .navigationDestination(isPresented: $appSettings.isPushPresented) {
                         SettingsView(embedInOwnNavigation: false)
                             .injectingViewControllerProvider()
                     }
-                    .onChange(of: appSettings.isPresented) { isPresented in
-                        guard !isPresented else { return }
-                        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
-                    }
             }
+            .sheet(isPresented: $appSettings.isSheetPresented) { settingsSheet }
         }
+    }
+
+    private var settingsSheet: some View {
+        SettingsView()
+            .injectingViewControllerProvider()
     }
 
     private var content: some View {
@@ -40,6 +43,12 @@ struct ConditionalContainerView: View {
         .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
         .onChange(of: scenePhase) { phase in
             if phase == .active { applyKeepScreenOn() }
+        }
+        .onChange(of: appSettings.isSheetPresented) { isPresented in
+            refreshWebViewIfSettingsClosed(isPresented)
+        }
+        .onChange(of: appSettings.isPushPresented) { isPresented in
+            refreshWebViewIfSettingsClosed(isPresented)
         }
         .sheet(isPresented: $showKioskSettings) {
             NavigationView {
@@ -56,6 +65,11 @@ struct ConditionalContainerView: View {
 
     private func applyKeepScreenOn() {
         UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
+    }
+
+    private func refreshWebViewIfSettingsClosed(_ isPresented: Bool) {
+        guard !isPresented else { return }
+        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
     }
 }
 
