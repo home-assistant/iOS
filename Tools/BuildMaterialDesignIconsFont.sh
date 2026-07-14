@@ -17,18 +17,29 @@ FONT_RENAME_COMMIT=77734a1a165d25c8c83b2201c15e268da4a107b6
 
 # updating this requires re-executing swiftgen to pick up the new names
 # failing to keep the MDI and SVG versions in-sync will produce problems, as we use the SVG's JSON for codepoints
-MDI_COMMIT=081279cbda3e72e34a2c2a445a4a92dffa1e0314
-SVG_COMMIT=d022f3ecd4bf33d588b145dd59bb11eac7a23c46
-MDI_VERSION=7.1.96
+MDI_COMMIT=57b567a448bd579892174cd47c47f9e187ea56c6
+SVG_COMMIT=9e04201d4557e729822fb57f62a316c3dea1d4a8
+MDI_VERSION=7.4.47
 
 BUMP=0
 if [ "${1:-}" = "--bump" ]; then
 	BUMP=1
 fi
 
+# Query the GitHub API, authenticating with GITHUB_TOKEN when it is available.
+# Unauthenticated requests share a 60/hour per-IP limit that CI runners routinely
+# exhaust, which returns an error body that parses to an empty result.
+gh_api() {
+	if [ -n "${GITHUB_TOKEN:-}" ]; then
+		curl --silent -H "Authorization: Bearer $GITHUB_TOKEN" "$@"
+	else
+		curl --silent "$@"
+	fi
+}
+
 echo "Checking for latest..."
 
-LATEST=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags | sed -n -e 's/.*"name": "v\([^"]*\)".*/\1/p' | head -1)
+LATEST=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags | sed -n -e 's/.*"name": "v\([^"]*\)".*/\1/p' | head -1)
 echo "Latest available: $LATEST; currently pinned: $MDI_VERSION"
 
 if [ "$BUMP" -eq 1 ]; then
@@ -42,10 +53,10 @@ if [ "$BUMP" -eq 1 ]; then
 	fi
 
 	echo "Resolving commit for MaterialDesign-Webfont v$LATEST..."
-	MDI_COMMIT=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-Webfont/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
+	MDI_COMMIT=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-Webfont/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
 
 	echo "Resolving commit for MaterialDesign-SVG v$LATEST..."
-	SVG_COMMIT=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-SVG/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
+	SVG_COMMIT=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-SVG/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
 
 	if [ -z "$MDI_COMMIT" ] || [ -z "$SVG_COMMIT" ]; then
 		echo "Could not resolve matching commits for v$LATEST in both repositories; aborting."
@@ -69,7 +80,15 @@ else
 fi
 
 echo "Ensuring fonttools is installed via pip..."
-pip3 install --user fonttools
+# Install into a throwaway virtualenv so this works on PEP 668 "externally
+# managed" Python (Homebrew on CI) without needing --break-system-packages,
+# which older local pip versions do not support.
+FONTTOOLS_VENV="$(mktemp -d)"
+trap 'rm -rf "$FONTTOOLS_VENV"' EXIT
+python3 -m venv "$FONTTOOLS_VENV"
+# shellcheck disable=SC1091
+source "$FONTTOOLS_VENV/bin/activate"
+pip install --quiet fonttools
 
 if [ ! -f fontname-$FONT_RENAME_COMMIT.py ]; then
   echo "Downloading the fontname script..."

@@ -146,9 +146,8 @@ jobs:
             ```
 
   test:
-    needs: check-swiftlint-disables
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
@@ -167,21 +166,23 @@ jobs:
             env.DEVELOPER_DIR,
             hashFiles('.ruby-version', '**/Gemfile.lock')) }}
 
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        name: "Cache: DerivedData"
+      # DerivedData is warmed on `main` (the save step below) and only restored
+      # on PRs, so pinned SPM dependencies are compiled once per Package.resolved
+      # and reused instead of recompiled from scratch on every run.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: >-
-            ${{ format('{0}-deriveddata-{1}-{2}-{3}',
+            ${{ format('{0}-deriveddata-{1}-{2}',
             runner.os,
             env.DEVELOPER_DIR,
-            hashFiles('**/Package.resolved'),
-            github.run_id) }}
+            hashFiles('Package.resolved')) }}
           restore-keys: >-
-            ${{ format('{0}-deriveddata-{1}-{2}-',
+            ${{ format('{0}-deriveddata-{1}-',
             runner.os,
-            env.DEVELOPER_DIR,
-            hashFiles('**/Package.resolved')) }}
+            env.DEVELOPER_DIR) }}
 
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
@@ -194,9 +195,25 @@ jobs:
 
       - name: Run tests
         run: bundle exec fastlane test
+        env:
+          CI_ENABLE_COVERAGE: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+
+      # Save the warmed DerivedData only from `main`, and only on a fresh key,
+      # so PR runs never evict the shared base cache other PRs restore from.
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Save: DerivedData"
+        if: github.ref == 'refs/heads/main' && steps.derived_data.outputs.cache-hit != 'true'
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
 
       - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
         name: "Upload Code Coverage"
+        if: github.ref == 'refs/heads/main'
         with:
           xcode: true
           xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult

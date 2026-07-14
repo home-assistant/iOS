@@ -47,31 +47,35 @@ extension Server {
     }
 }
 
-class FakeServerManager: ServerManager {
-    var all = [Server]()
-    var isMirrorRestorePending = false
+/// Fake server registry for tests and Xcode previews (set as `Current.servers`), where no real
+/// server has been onboarded.
+public class FakeServerManager: ServerManager {
+    public var all = [Server]()
+    public var isMirrorRestorePending = false
     var observers = [WeakWrapper]()
 
-    init(initial: Int = 0) {
+    public init(initial: Int = 0) {
         for _ in 0 ..< initial {
             _ = addFake()
         }
     }
 
-    func server(for identifier: Identifier<Server>) -> Server? {
+    public func server(for identifier: Identifier<Server>) -> Server? {
         all.first(where: { $0.identifier == identifier })
     }
 
-    func restoreKeychainFromMirrorIfNeeded() -> Bool {
+    public func restoreKeychainFromMirrorIfNeeded() -> Bool {
         false
     }
 
-    func addFake() -> Server {
+    @discardableResult
+    public func addFake() -> Server {
         let server = Server.fake()
         return add(identifier: server.identifier, serverInfo: server.info)
     }
 
-    func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
+    @discardableResult
+    public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
         if let existing = all.first(where: { $0.identifier == identifier }) {
             existing.update { current in
                 current = serverInfo
@@ -84,11 +88,11 @@ class FakeServerManager: ServerManager {
         }
     }
 
-    func remove(identifier: Identifier<Server>) {
+    public func remove(identifier: Identifier<Server>) {
         all.removeAll(where: { $0.identifier == identifier })
     }
 
-    func removeAll() {
+    public func removeAll() {
         all.removeAll()
     }
 
@@ -102,19 +106,19 @@ class FakeServerManager: ServerManager {
         weak var observer: ServerObserver?
     }
 
-    func add(observer: ServerObserver) {
+    public func add(observer: ServerObserver) {
         if !observers.contains(where: { $0.observer === observer }) {
             observers.append(.init(observer: observer))
         }
     }
 
-    func remove(observer: ServerObserver) {
+    public func remove(observer: ServerObserver) {
         observers.removeAll(where: { $0.observer === observer })
     }
 
-    func restoreState(_ state: Data) {}
+    public func restoreState(_ state: Data) {}
 
-    func restorableState() -> Data {
+    public func restorableState() -> Data {
         Data()
     }
 }

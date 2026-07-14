@@ -262,7 +262,7 @@ struct SettingsNotificationsView: View {
 
 struct SettingsComplicationsView: View {
     var body: some View {
-        ComplicationListView()
+        ComplicationsRootView()
             .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
     }
 }

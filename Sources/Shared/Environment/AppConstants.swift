@@ -206,7 +206,8 @@ public enum AppConstants {
         let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)
 
         guard let groupDir else {
-            fatalError("Unable to get groupDir.")
+            Current.Log.error("Unable to get app group container URL; falling back to temporary directory")
+            return URL(fileURLWithPath: NSTemporaryDirectory())
         }
 
         return groupDir
@@ -390,7 +391,6 @@ public extension Version {
     static let localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static let externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
     static let updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
-    static let fullWebhookSecretKey: Version = .init(major: 2022, minor: 3)
     static let conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
     static let externalBusCommandAutomationEditor: Version = .init(major: 2024, minor: 2, prerelease: "any0")

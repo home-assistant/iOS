@@ -429,6 +429,18 @@ struct DebugView: View {
                 Text("Receive debug notifications")
             }
 
+            Picker(selection: Binding(
+                get: { Current.settingsStore.webViewEmptyStateTimeout },
+                set: { Current.settingsStore.webViewEmptyStateTimeout = $0 }
+            )) {
+                ForEach([5, 10, 15, 20, 30, 60], id: \.self) { seconds in
+                    Text(verbatim: "\(seconds)s").tag(seconds)
+                }
+            } label: {
+                Text(verbatim: "Web view empty state timeout")
+            }
+            .pickerStyle(.menu)
+
         } header: {
             Text(verbatim: L10n.Settings.Developer.header)
         } footer: {

@@ -10,5 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Nákupní seznam";
 "panel::states" = "Přehled";
-"state::default::unavailable" = "N/A";
+"state::default::unavailable" = "Nedostupné";
 "state::default::unknown" = "Neznámý";

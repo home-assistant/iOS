@@ -3,7 +3,6 @@ import CoreLocation
 import Foundation
 import HAKit
 import HAKit_PromiseKit
-import Intents
 import ObjectMapper
 import PromiseKit
 import UIKit
@@ -42,6 +41,8 @@ public class HomeAssistantAPI {
     }
 
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
+    public static let serverVersionDidChangeNotification =
+        Notification.Name(rawValue: "HomeAssistantServerVersionDidChange")
 
     public private(set) var manager: Alamofire.Session!
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
@@ -181,7 +182,7 @@ public class HomeAssistantAPI {
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
     /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
     /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
-    static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+    public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
         if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
             Current.Log.info("[mTLS] Using HAKit certificate provider")
             let certificateProvider = HomeAssistantCertificateProvider(server: server)
@@ -370,10 +371,7 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
-        let intent = FireEventIntent(eventName: eventType, payload: eventData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.sendEphemeral(
+        Current.webhooks.sendEphemeral(
             server: server,
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
@@ -455,14 +453,29 @@ public class HomeAssistantAPI {
         )
 
         return promise.done { [self] config in
+            let previousVersion = server.info.version
+            let fetchedVersion = try? Version(hassVersion: config.Version)
+
             server.update { serverInfo in
                 serverInfo.connection.cloudhookURL = config.CloudhookURL
                 serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
                 serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
                 serverInfo.hassDeviceId = config.hassDeviceId
 
-                if let version = try? Version(hassVersion: config.Version) {
-                    serverInfo.version = version
+                if let fetchedVersion {
+                    serverInfo.version = fetchedVersion
+                }
+            }
+
+            if let fetchedVersion, fetchedVersion != previousVersion {
+                Current.Log
+                    .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
+                let changedServer = server
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Self.serverVersionDidChangeNotification,
+                        object: changedServer
+                    )
                 }
             }
 
@@ -481,10 +494,7 @@ public class HomeAssistantAPI {
         triggerSource: AppTriggerSource,
         shouldLog: Bool = true
     ) -> Promise<Void> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.send(
+        Current.webhooks.send(
             identifier: .serviceCall,
             server: server,
             request: .init(type: "call_service", data: [
@@ -506,10 +516,7 @@ public class HomeAssistantAPI {
         serviceData: [String: Any],
         returnResponse: Bool
     ) -> Promise<CallServiceResponse> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return connection.send(.callService(
+        connection.send(.callService(
             domain: domain,
             service: service,
             serviceData: serviceData,

@@ -14,6 +14,17 @@ public final class WatchConnectivityManager: NSObject {
 
     let completionLock = NSLock()
     var fileCompletions: [ObjectIdentifier: (Result<Void, Error>) -> Void] = [:]
+
+    /// In-memory copy of the most recently received application context.
+    ///
+    /// `WCSession.receivedApplicationContext` is a *blocking* getter: it synchronously waits on
+    /// WCSession's internal operation queue, which can stall for tens of seconds while the session is
+    /// busy processing incoming transfers (observed in the field as background-refresh watchdog kills
+    /// and a generally "hanging" watch app when several syncs ran at once). The cache is primed once
+    /// off-main after activation and kept fresh by the `didReceiveApplicationContext` delegate
+    /// callback, so `mostRecentlyReceivedContext` never blocks the caller.
+    private let receivedContextLock = NSLock()
+    private var cachedReceivedContext: [String: Any]?
     #if os(iOS)
     var complicationCompletions: [ObjectIdentifier: (Result<Int, Error>) -> Void] = [:]
     #endif
@@ -66,7 +77,20 @@ public final class WatchConnectivityManager: NSObject {
     }
 
     public var mostRecentlyReceivedContext: HAWatchConnectivity.Context {
-        HAWatchConnectivity.Context(content: session?.receivedApplicationContextProxy ?? [:])
+        receivedContextLock.lock()
+        let cached = cachedReceivedContext
+        receivedContextLock.unlock()
+        return HAWatchConnectivity.Context(content: cached ?? [:])
+    }
+
+    /// Store the latest received application context; the delegate calls this on receipt and
+    /// `activate()` primes it once from the (blocking) session getter off the caller's thread.
+    func cacheReceivedContext(_ content: [String: Any], overwrite: Bool = true) {
+        receivedContextLock.lock()
+        defer { receivedContextLock.unlock() }
+        if overwrite || cachedReceivedContext == nil {
+            cachedReceivedContext = content
+        }
     }
 
     public var mostRecentlySentContext: HAWatchConnectivity.Context {
@@ -91,10 +115,29 @@ public final class WatchConnectivityManager: NSObject {
         guard let session else { return }
         session.delegateProxy = self
         session.activateProxy()
+        // Prime the received-context cache once, away from the caller's thread: the underlying getter
+        // blocks on WCSession's operation queue (see `cachedReceivedContext`). A context received via
+        // the delegate in the meantime wins over this initial snapshot.
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self, let session = self.session else { return }
+            cacheReceivedContext(session.receivedApplicationContextProxy, overwrite: false)
+        }
     }
 
     func notifyState() { state.notify(sessionState) }
     func notifyReachability() { reachability.notify(currentReachability) }
+
+    /// Re-read and re-broadcast the current session + reachability state to all observers.
+    ///
+    /// watchOS does not reliably emit `sessionReachabilityDidChange` across a suspend→resume, so a
+    /// watch app returning to the foreground can be left observing a stale `isReachable` (typically a
+    /// false "unreachable") until the app is restarted. Calling this on foreground re-reads the live
+    /// value from `WCSession` and pushes it out, so the UI recovers without a restart.
+    public func refreshConnectivityState() {
+        notifyState()
+        notifyReachability()
+    }
+
     #if os(iOS)
     func notifyWatchState() { watchState.notify(currentWatchState) }
     #endif

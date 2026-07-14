@@ -41,16 +41,6 @@
 	<false/>
 	<key>INIntentsSupported</key>
 	<array>
-		<string>CallServiceIntent</string>
-		<string>FireEventIntent</string>
-		<string>GetCameraImageIntent</string>
-		<string>OpenPageIntent</string>
-		<string>RenderTemplateIntent</string>
-		<string>SendLocationIntent</string>
-		<string>UpdateSensorsIntent</string>
-		<string>WidgetOpenPageIntent</string>
-		<string>AssistInAppIntent</string>
-		<string>AssistIntent</string>
 		<string>ReloadWidgetsAppIntent</string>
 		<string>ScriptAppIntent</string>
 	</array>
@@ -135,19 +125,9 @@
 	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>AssistInAppIntent</string>
-		<string>AssistIntent</string>
-		<string>CallServiceIntent</string>
-		<string>FireEventIntent</string>
-		<string>GetCameraImageIntent</string>
 		<string>INSendMessageIntent</string>
-		<string>OpenPageIntent</string>
 		<string>ReloadWidgetsAppIntent</string>
-		<string>RenderTemplateIntent</string>
 		<string>ScriptAppIntent</string>
-		<string>SendLocationIntent</string>
-		<string>UpdateSensorsIntent</string>
-		<string>WidgetOpenPageIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -203,6 +183,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>io.robbie.homeassistant.backgroundfetch</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

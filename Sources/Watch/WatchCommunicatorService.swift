@@ -18,11 +18,18 @@ final class WatchCommunicatorService {
     private var audioChunks: [String: [Int: Data]] = [:]
     private var audioChunkCounts: [String: Int] = [:]
 
+    /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls one by one.
+    private var databaseSyncChunks: [String: [Data]] = [:]
+
     private var didBecomeActiveObserver: NSObjectProtocol?
+    private var databaseUpdatedObserver: NSObjectProtocol?
 
     deinit {
         if let didBecomeActiveObserver {
             NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        if let databaseUpdatedObserver {
+            NotificationCenter.default.removeObserver(databaseUpdatedObserver)
         }
     }
 
@@ -45,6 +52,29 @@ final class WatchCommunicatorService {
         }
 
         setupMessages()
+
+        // Background-delivery (transferUserInfo) requests from the watch. These arrive even when the
+        // phone wasn't immediately reachable when the watch asked, so the config pull no longer depends
+        // on the iPhone being foreground. Currently only the config pull uses this fallback.
+        Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { [weak self] message in
+            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else { return }
+            Current.Log.verbose("Received guaranteed \(message.identifier)")
+            presentWatchInteractionToast(for: messageId)
+            if messageId == .watchConfig {
+                respondToGuaranteedWatchConfigRequest()
+            }
+        }
+
+        // When the iOS app finishes refreshing its local database from a server, proactively push the
+        // updated reference tables to the watch over transferFile so its cached data stays fresh without
+        // the user opening the watch app.
+        databaseUpdatedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishRoutine,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchMirrorPushCoordinator.schedule(reason: .databaseUpdated)
+        }
 
         // Present any client-certificate import the watch requested while the app was backgrounded.
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
@@ -81,6 +111,8 @@ final class WatchCommunicatorService {
                     return
                 }
 
+                presentWatchInteractionToast(for: messageId)
+
                 switch messageId {
                 case .ping:
                     message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
@@ -91,7 +123,9 @@ final class WatchCommunicatorService {
                 case .watchConfigUpdate:
                     watchConfigUpdate(message: message)
                 case .watchDatabaseMirror:
-                    watchDatabaseMirror(message: message)
+                    watchDatabaseMirrorSyncStart(message: message)
+                case .watchDatabaseMirrorChunk:
+                    watchDatabaseMirrorSyncChunk(message: message)
                 case .pushAction:
                     pushAction(message: message)
                 case .assistPipelinesFetch:
@@ -106,6 +140,41 @@ final class WatchCommunicatorService {
                     handleClientCertImportRequest(message: message)
                 }
             }
+    }
+
+    /// Visual-only feedback: when the iPhone app is in the foreground and handles a request from the
+    /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
+    /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
+    private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
+        // Skip keepalives and per-chunk pulls (the sync start already toasts) to avoid spamming.
+        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk else { return }
+        guard #available(iOS 18, *) else { return }
+
+        let message: String
+        switch messageId {
+        case .watchConfig, .watchConfigUpdate, .watchConfigAvailableItems:
+            message = L10n.Watch.Interaction.Toast.config
+        case .serversConfigSync, .clientCertImportRequest:
+            message = L10n.Watch.Interaction.Toast.servers
+        case .watchDatabaseMirror:
+            message = L10n.Watch.Interaction.Toast.database
+        case .magicItemPressed, .pushAction:
+            message = L10n.Watch.Interaction.Toast.action
+        default:
+            message = L10n.Watch.Interaction.Toast.generic
+        }
+
+        Task { @MainActor in
+            guard UIApplication.shared.applicationState == .active else { return }
+            ToastPresenter.shared.show(
+                id: "watch-interaction",
+                symbol: .applewatch,
+                symbolForegroundStyle: (.white, .haPrimary),
+                title: L10n.Watch.Interaction.Toast.title,
+                message: message,
+                duration: 3
+            )
+        }
     }
 
     private func handleServersConfigSync(message: HAWatchConnectivity.InteractiveImmediateMessage) {
@@ -266,7 +335,25 @@ final class WatchCommunicatorService {
     }
 
     private func notifyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage, watchConfig: WatchConfig) {
-        let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
+        buildWatchConfigResponseContent(watchConfig: watchConfig) { content in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
+                content: content
+            ))
+        }
+    }
+
+    private func notifyEmptyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+        message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Resolve the encoded config + magic-item info payload sent to the watch, shared by the interactive
+    /// reply and the background (`transferUserInfo`) responder.
+    private func buildWatchConfigResponseContent(
+        watchConfig: WatchConfig,
+        completion: @escaping ([String: Any]) -> Void
+    ) {
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
             var magicItemsInfo: [MagicItem.Info] = []
@@ -286,16 +373,34 @@ final class WatchCommunicatorService {
                 }
             }
 
-            message.reply(.init(identifier: responseIdentifier, content: [
+            completion([
                 "config": watchConfig.encodeForWatch(),
                 "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
-            ]))
+            ])
         }
     }
 
-    private func notifyEmptyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
-        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
-        message.reply(.init(identifier: responseIdentifier))
+    /// Background-delivery counterpart of `watchConfig(message:)`. The watch enqueues a
+    /// `GuaranteedMessage` (backed by `transferUserInfo`) when the phone isn't immediately reachable;
+    /// we answer the same way so the config survives the phone being backgrounded/locked. No
+    /// reachability required on either side.
+    private func respondToGuaranteedWatchConfigRequest() {
+        do {
+            if let config: WatchConfig = try Current.database().read({ db in try WatchConfig.fetchOne(db) }) {
+                buildWatchConfigResponseContent(watchConfig: config) { content in
+                    Communicator.shared.send(.init(
+                        identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
+                        content: content
+                    ))
+                }
+            } else {
+                Communicator.shared.send(.init(
+                    identifier: InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+                ))
+            }
+        } catch {
+            Current.Log.error("Failed to read watch config for guaranteed request: \(error.localizedDescription)")
+        }
     }
 
     /// Build the list of items the user can add to the watch configuration and reply to the watch.
@@ -360,26 +465,82 @@ final class WatchCommunicatorService {
         }
     }
 
-    /// Reply with a snapshot of the reference GRDB tables the watch needs to configure itself offline.
-    private func watchDatabaseMirror(message: HAWatchConnectivity.InteractiveImmediateMessage) {
-        let responseIdentifier = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+    /// Chunk size for the database sync. Comfortably under WatchConnectivity's per-message ceiling.
+    private static let mirrorChunkByteSize = 30000
+
+    /// Begin a full database sync: snapshot the reference GRDB tables, encode, split into ordered
+    /// chunks held in memory, and tell the watch how many chunks/bytes to expect. The watch then pulls
+    /// each chunk via `watchDatabaseMirrorChunk`. A single interactive reply here can exceed the size
+    /// cap, which is exactly why the payload itself is chunked rather than returned inline.
+    private func watchDatabaseMirrorSyncStart(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseId = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+        let data: Data
         do {
-            let mirror = try WatchDatabaseMirror.snapshot()
-            message.reply(.init(identifier: responseIdentifier, content: ["mirror": mirror.encodeForWatch()]))
+            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
         } catch {
             Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
-            message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
+            message.reply(.init(identifier: responseId, content: ["error": true]))
+            return
+        }
+
+        let chunkSize = Self.mirrorChunkByteSize
+        var chunks: [Data] = []
+        var offset = 0
+        while offset < data.count {
+            let end = min(offset + chunkSize, data.count)
+            chunks.append(data.subdata(in: offset ..< end))
+            offset = end
+        }
+        if chunks.isEmpty { chunks = [Data()] }
+
+        let transferId = UUID().uuidString
+        databaseSyncChunks[transferId] = chunks
+        Current.Log.info("Watch DB sync start: \(chunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
+        message.reply(.init(identifier: responseId, content: [
+            "transferId": transferId,
+            "totalChunks": chunks.count,
+            "totalBytes": data.count,
+        ]))
+    }
+
+    /// Serve one chunk of an in-progress database sync. The last chunk request frees the buffer.
+    private func watchDatabaseMirrorSyncChunk(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseId = InteractiveImmediateResponses.watchDatabaseMirrorChunkResponse.rawValue
+        guard let transferId = message.content["transferId"] as? String,
+              let index = message.content["index"] as? Int,
+              let chunks = databaseSyncChunks[transferId],
+              index >= 0, index < chunks.count else {
+            Current.Log.error("Invalid watch DB sync chunk request")
+            message.reply(.init(identifier: responseId, content: ["error": true]))
+            return
+        }
+        message.reply(.init(identifier: responseId, content: [
+            "index": index,
+            "chunkData": chunks[index],
+        ]))
+        if index == chunks.count - 1 {
+            databaseSyncChunks.removeValue(forKey: transferId)
         }
     }
 
     private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+        // Every failure reply carries a stable code (which the watch maps to a localized message)
+        // plus the technical reason (which the watch records in client events) instead of a bare
+        // `fired: false`.
+        func fail(_ code: MagicItemExecutionFailureCode, _ reason: String) {
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": code.rawValue,
+                "error": reason,
+            ]))
+        }
 
         if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
             let age = Current.date().timeIntervalSince1970 - triggeredAt
             if age > 30 {
                 Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                fail(.staleRequest, "Request expired before reaching the iPhone (\(Int(age))s old)")
                 return
             }
         }
@@ -388,20 +549,20 @@ final class WatchCommunicatorService {
               let itemId = message.content["itemId"] as? String,
               let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.invalidItem, "Invalid item type or id")
             return
         }
 
         // Folders don't execute actions, they are containers
         if type == .folder {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Folders don't execute actions")
             return
         }
 
         guard let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
             Current.Log.warning("Magic item press did not provide valid server info")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.serverNotFound, "Server not found on iPhone")
             return
         }
 
@@ -427,7 +588,7 @@ final class WatchCommunicatorService {
         case .entity:
             guard let domain = MagicItem(id: itemId, serverId: serverId, type: .entity).domain,
                   let mainAction = domain.mainAction else {
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                fail(.notExecutable, "Entity domain has no executable action")
                 return
             }
             callService(
@@ -444,9 +605,9 @@ final class WatchCommunicatorService {
             break
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Assist items are not supported on Watch")
         case .unsupported:
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Unsupported item type")
         }
     }
 
@@ -460,7 +621,11 @@ final class WatchCommunicatorService {
         responseIdentifier: String
     ) {
         guard let api = Current.api(for: server) else {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": MagicItemExecutionFailureCode.noConnection.rawValue,
+                "error": "iPhone has no usable connection for this server",
+            ]))
             Current.Log.error("No API available to call service")
             return
         }
@@ -478,7 +643,11 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
             case let .rejected(error):
                 Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "fired": false,
+                    "errorCode": MagicItemExecutionFailureCode.serviceCallFailed.rawValue,
+                    "error": error.localizedDescription,
+                ]))
             }
         }
     }
@@ -658,8 +827,10 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         HomeAssistantAPI.syncWatchContext()
-        // Servers + client certificates are delivered on demand via the `serversConfigSync` reply
-        // (watch Home refresh); no proactive push needed here.
+        // Also push the reference database (which now carries the servers too) so the new server set
+        // reaches the watch proactively. mTLS client-certificate bundles still flow only through the
+        // on-demand `serversConfigSync` reply (they carry Keychain material kept off the mirror).
+        WatchMirrorPushCoordinator.schedule(reason: .serversChanged)
     }
 }
 

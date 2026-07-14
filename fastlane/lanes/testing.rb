@@ -34,12 +34,18 @@ end
 
 desc 'Run tests'
 lane :test do
+  code_coverage = ENV.key?('CI_ENABLE_COVERAGE') ? (ENV['CI_ENABLE_COVERAGE'] == 'true') : nil
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-Unit',
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,
+    # Run only the `test` action: `build test` compiles every SPM target twice
+    # because the plain `build` action disables testability for packages.
+    skip_build: true,
+    code_coverage: code_coverage,
+    xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
 end

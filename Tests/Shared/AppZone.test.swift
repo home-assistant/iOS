@@ -214,4 +214,47 @@ class AppZoneTests: XCTestCase {
         )
         XCTAssertNil(insideDisabled, "zone with trackingEnabled = false should be excluded")
     }
+
+    func testZonesOfLocationSortsEqualRadiusByDistanceToCenter() throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try AppZoneTable().createIfNeeded(database: database)
+        Current.database = { database }
+        addTeardownBlock { Current.database = previousDatabase }
+
+        let zones = [
+            AppZone(
+                entityId: "far_center",
+                serverIdentifier: "fake1",
+                // gus's, mission bay
+                latitude: 37.774299403042754,
+                longitude: -122.3914772411471,
+                radius: 200.0
+            ),
+            AppZone(
+                entityId: "near_center",
+                serverIdentifier: "fake1",
+                // slightly to the south, so its center is closer to the user below
+                latitude: 37.773399403042754,
+                longitude: -122.3914772411471,
+                radius: 200.0
+            ),
+        ]
+
+        try database.write { db in
+            for zone in zones {
+                try zone.save(db)
+            }
+        }
+
+        let server1 = Server.fake(identifier: "fake1")
+
+        // user sits inside both equal-radius zones but nearer to near_center's center
+        let location = CLLocation(latitude: 37.773399403042754, longitude: -122.3914772411471)
+        XCTAssertEqual(
+            AppZone.zones(of: location, in: server1).map(\.entityId),
+            ["near_center", "far_center"],
+            "equal-radius zones should be ordered by distance to the zone center"
+        )
+    }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import RealmSwift
 import Shared
 import SwiftUI
 import UIKit
@@ -30,7 +31,7 @@ final class ComplicationEditViewModel: ObservableObject {
     @Published var textAreaValues: [String: TextAreaState] = [:]
 
     // Readonly
-    let config: WatchComplication
+    var config: WatchComplication
     let isNew: Bool
 
     var family: ComplicationGroupMember { config.Family }
@@ -154,43 +155,43 @@ final class ComplicationEditViewModel: ObservableObject {
 
     // MARK: - Save / Delete
 
-    /// Persists to the database then asks the API to push the change. The API
-    /// update is fired-and-forget like the original Eureka controller.
+    /// Persists to GRDB then asks the API to push the change. The API update is fired-and-forget like
+    /// the original Eureka controller.
     func save() {
         let server = server
-
         config.name = name.isEmpty ? nil : name
         config.isPublic = isPublic
         config.serverIdentifier = server?.identifier.rawValue
         config.Template = displayTemplate
         config.Data = serializedData()
-        config.save()
 
-        firstly { () -> Promise<Void> in
-            if let server {
-                return Current.api(for: server)?
-                    .updateComplications(passively: false) ??
-                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-        }.cauterize()
+        do {
+            try config.save()
+        } catch {
+            Current.Log.error("Failed to save watch complication: \(error.localizedDescription)")
+        }
+
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        pushUpdate(server: server)
     }
 
     func delete() {
         let server = server
+        do {
+            try config.delete()
+        } catch {
+            Current.Log.error("Failed to delete watch complication: \(error.localizedDescription)")
+        }
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        pushUpdate(server: server)
+    }
 
-        config.delete()
-
-        firstly { () -> Promise<Void> in
-            if let server {
-                return Current.api(for: server)?
-                    .updateComplications(passively: false) ??
-                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-        }.cauterize()
+    private func pushUpdate(server: Server?) {
+        guard let server else { return }
+        (
+            Current.api(for: server)?.updateComplications(passively: false) ??
+                .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+        ).cauterize()
     }
 
     // MARK: - Serialization

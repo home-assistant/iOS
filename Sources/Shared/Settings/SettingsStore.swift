@@ -555,6 +555,18 @@ public class SettingsStore {
         }
     }
 
+    public static let defaultWebViewEmptyStateTimeout = 5
+
+    /// Seconds the frontend can stay disconnected before the web view shows its empty state
+    public var webViewEmptyStateTimeout: Int {
+        get {
+            (prefs.object(forKey: "webViewEmptyStateTimeout") as? Int) ?? Self.defaultWebViewEmptyStateTimeout
+        }
+        set {
+            prefs.set(newValue, forKey: "webViewEmptyStateTimeout")
+        }
+    }
+
     public var mediaTypesRequiringUserActionForPlayback: Set<MediaTypeRequiringUserActionForPlayback> {
         get {
             let rawValues = prefs.stringArray(forKey: "mediaTypesRequiringUserActionForPlayback") ?? [

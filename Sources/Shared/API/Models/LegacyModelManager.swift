@@ -116,13 +116,10 @@ public class LegacyModelManager: ServerObserver {
                 recordType: LocationError.self,
                 createdColumnName: DatabaseTables.LocationError.createdAt.rawValue
             ),
-            // zones are always server-controlled: delete any orphans
             .orphanDelete(
                 recordType: AppZone.self,
                 serverIdentifierColumnName: DatabaseTables.AppZone.serverIdentifier.rawValue
             ),
-            // server-controlled categories are deleted with their server,
-            // locally-created ones are moved to a remaining server
             .orphanDelete(
                 recordType: NotificationCategory.self,
                 serverIdentifierColumnName: DatabaseTables.NotificationCategory.serverIdentifier.rawValue,
@@ -134,10 +131,6 @@ public class LegacyModelManager: ServerObserver {
                 serverIdentifierColumnName: DatabaseTables.NotificationCategory.serverIdentifier.rawValue,
                 condition: (Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == false)
                     .sqlExpression
-            ),
-            .orphanReassign(
-                recordType: WatchComplication.self,
-                serverIdentifierColumnName: DatabaseTables.WatchComplication.serverIdentifier.rawValue
             ),
         ]
     }
@@ -152,6 +145,10 @@ public class LegacyModelManager: ServerObserver {
         cleanupDefinitions = definitions
         workQueue.async {
             let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
+
+            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIdentifiers)
+            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIdentifiers)
+
             do {
                 try Current.database().write { db in
                     for definition in definitions {

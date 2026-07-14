@@ -310,7 +310,11 @@ public extension AppZone {
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
                 // match the smaller zone over the larger
-                zoneA.radius < zoneB.radius
+                if zoneA.radius != zoneB.radius {
+                    return zoneA.radius < zoneB.radius
+                }
+                // tiebreaker: prefer the zone whose center is closer to the user
+                return location.distance(from: zoneA.location) < location.distance(from: zoneB.location)
             }
     }
 

@@ -309,16 +309,18 @@ public enum RealmToGRDBMigration {
         }
 
         let complications: [WatchComplication] = realm.objects(LegacyRealmWatchComplication.self).map { legacy in
-            WatchComplication(
+            var complication = WatchComplication(
                 identifier: legacy.identifier,
                 serverIdentifier: legacy.serverIdentifier,
-                rawFamily: legacy.rawFamily,
-                rawTemplate: legacy.rawTemplate,
-                complicationData: Self.migratingMDIIcon(in: legacy.complicationData),
+                family: ComplicationGroupMember(rawValue: legacy.rawFamily) ?? .modularSmall,
+                template: ComplicationTemplate(rawValue: legacy.rawTemplate),
                 createdAt: legacy.CreatedAt,
                 name: legacy.name,
                 isPublic: legacy.IsPublic
             )
+            complication.complicationData = Self.migratingMDIIcon(in: legacy.complicationData)
+                .flatMap { String(data: $0, encoding: .utf8) }
+            return complication
         }
 
         try Current.database().write { db in

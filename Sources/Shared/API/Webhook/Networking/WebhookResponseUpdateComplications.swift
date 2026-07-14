@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import PromiseKit
 import UserNotifications
 #if os(watchOS)
@@ -20,7 +21,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         true
     }
 
-    static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
+    static func request(for complications: some Sequence<WatchComplication>) -> WebhookRequest? {
         Current.Log.verbose("complications \(complications.map(\.identifier))")
 
         let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
@@ -59,14 +60,23 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 }
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
-        }.map { paired in
-            for (identifier, rendered) in paired {
-                if let complication = WatchComplication.fetch(identifier: identifier) {
-                    Current.Log.verbose("updating \(identifier) with \(rendered)")
-                    complication.updateRawRendered(from: rendered)
-                    complication.save()
-                } else {
-                    Current.Log.error("couldn't find complication for \(identifier)")
+        }.then { paired -> Promise<Void> in
+            Promise { seal in
+                do {
+                    try Current.database().write { db in
+                        for (identifier, rendered) in paired {
+                            if var complication = try WatchComplication.fetchOne(db, key: identifier) {
+                                Current.Log.verbose("updating \(identifier) with \(rendered)")
+                                complication.updateRawRendered(from: rendered)
+                                try complication.update(db)
+                            } else {
+                                Current.Log.error("couldn't find complication for \(identifier)")
+                            }
+                        }
+                    }
+                    seal.fulfill(())
+                } catch {
+                    seal.reject(error)
                 }
             }
         }.done {

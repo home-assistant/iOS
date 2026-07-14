@@ -1,10 +1,9 @@
 import Foundation
-import GRDB
 import PromiseKit
 import Shared
 
-/// Observable view model backing `ComplicationListView`. Observes the
-/// persisted complications via GRDB `ValueObservation`.
+/// Observable view model backing the legacy `ComplicationListView`. Reads complications from GRDB
+/// and refreshes whenever one is created/edited/deleted.
 final class ComplicationListViewModel: ObservableObject {
     @Published private(set) var complicationsByGroup: [ComplicationGroup: [WatchComplication]] = [:]
     @Published private(set) var watchState: HAWatchConnectivity.WatchState = Communicator.shared.currentWatchState
@@ -12,24 +11,45 @@ final class ComplicationListViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showError = false
 
-    private var databaseToken: AnyDatabaseCancellable?
     private var watchStateToken: HAWatchConnectivity.ObservationToken?
     private var updateNotificationToken: NSObjectProtocol?
+    private var didChangeToken: NSObjectProtocol?
 
     init() {
-        observeDatabase()
+        reload()
         observeWatchState()
         observeComplicationsUpdate()
+        self.didChangeToken = NotificationCenter.default.addObserver(
+            forName: WatchComplication.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reload()
+        }
     }
 
     deinit {
-        databaseToken?.cancel()
         if let watchStateToken {
             Communicator.shared.watchState.unobserve(watchStateToken)
         }
         if let updateNotificationToken {
             NotificationCenter.default.removeObserver(updateNotificationToken)
         }
+        if let didChangeToken {
+            NotificationCenter.default.removeObserver(didChangeToken)
+        }
+    }
+
+    func reload() {
+        let complications = (try? WatchComplication.all()) ?? []
+        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
+        for complication in complications {
+            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
+                grouped[group, default: []].append(complication)
+                break
+            }
+        }
+        complicationsByGroup = grouped
     }
 
     // MARK: - Capability
@@ -51,6 +71,22 @@ final class ComplicationListViewModel: ObservableObject {
         Set(complicationsByGroup.values.flatMap { $0 }.map(\.Family))
     }
 
+    // MARK: - Delete
+
+    /// Deletes every legacy complication, then nudges the watch to sync the (now empty) set.
+    func deleteAll() {
+        do {
+            try WatchComplication.replaceAll([])
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            return
+        }
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        HomeAssistantAPI.syncWatchContext()
+        reload()
+    }
+
     // MARK: - Manual update
 
     func updateComplications() {
@@ -67,36 +103,6 @@ final class ComplicationListViewModel: ObservableObject {
                     self?.showError = true
                 }
             }
-    }
-
-    // MARK: - Database observation
-
-    private func observeDatabase() {
-        let observation = ValueObservation.tracking { db in
-            try WatchComplication
-                .order(Column(DatabaseTables.WatchComplication.rawFamily.rawValue))
-                .fetchAll(db)
-        }
-        databaseToken = observation.start(
-            in: Current.database(),
-            onError: { error in
-                Current.Log.error("couldn't observe complications: \(error)")
-            },
-            onChange: { [weak self] complications in
-                self?.rebuildGroups(from: complications)
-            }
-        )
-    }
-
-    private func rebuildGroups(from results: [WatchComplication]) {
-        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
-        for complication in results {
-            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
-                grouped[group, default: []].append(complication)
-                break
-            }
-        }
-        complicationsByGroup = grouped
     }
 
     // MARK: - Watch state observation
