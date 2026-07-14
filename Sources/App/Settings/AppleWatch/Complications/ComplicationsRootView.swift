@@ -1,4 +1,3 @@
-import GRDB
 import Shared
 import SwiftUI
 import UIKit
@@ -7,22 +6,8 @@ import UIKit
 /// an Apple-like header, the list of the user's complications with an add button, and the legacy
 /// complications tucked behind a navigation link.
 struct ComplicationsRootView: View {
-    @State private var configs: [WatchComplicationConfig] = []
-    /// Context line per config (entity `Area • Device`, or "Template"), computed off the DB in `reload`.
-    @State private var subtitles: [String: String] = [:]
-    /// Whether any legacy (ClockKit-era) complications exist — the legacy link is hidden otherwise.
-    @State private var hasLegacy = false
-    @State private var editing: WatchComplicationConfig?
+    @StateObject private var viewModel = ComplicationsRootViewModel()
     @State private var showAdd = false
-    @State private var isReloading = false
-    @State private var reloadAlert: ReloadAlert?
-
-    /// One-off alert describing the result of the manual "Reload" (so it isn't a silent no-op).
-    private struct ReloadAlert: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-    }
 
     var body: some View {
         List {
@@ -31,22 +16,22 @@ struct ComplicationsRootView: View {
 
             Section {
                 Button {
-                    Task { await reload() }
+                    Task { await viewModel.reload() }
                 } label: {
                     HStack {
                         Label(L10n.Watch.Complications.Root.reload, systemSymbol: .arrowClockwise)
-                        if isReloading {
+                        if viewModel.isReloading {
                             Spacer()
                             ProgressView()
                         }
                     }
                 }
-                .disabled(isReloading)
+                .disabled(viewModel.isReloading)
             } footer: {
                 Text(L10n.Watch.Complications.Root.reloadFooter)
             }
 
-            if hasLegacy {
+            if viewModel.hasLegacy {
                 Section {
                     NavigationLink {
                         ComplicationListView()
@@ -62,16 +47,16 @@ struct ComplicationsRootView: View {
             }
 
             DebugDatabaseTransferSection(part: .complications) {
-                load()
+                viewModel.load()
             }
         }
         .sheet(isPresented: $showAdd) {
             NavigationView { WatchComplicationBuilderEditView(existing: nil) }
         }
-        .sheet(item: $editing) { config in
+        .sheet(item: $viewModel.editing) { config in
             NavigationView { WatchComplicationBuilderEditView(existing: config) }
         }
-        .alert(item: $reloadAlert) { alert in
+        .alert(item: $viewModel.reloadAlert) { alert in
             Alert(
                 title: Text(verbatim: alert.title),
                 message: Text(verbatim: alert.message),
@@ -79,35 +64,9 @@ struct ComplicationsRootView: View {
             )
         }
         .navigationTitle(Text(verbatim: ""))
-        .onAppear(perform: load)
+        .onAppear(perform: viewModel.load)
         .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
-            load()
-        }
-    }
-
-    /// Manual reload: pushes the current complications to the watch and reports the result so the user
-    /// isn't left guessing (feedback: silent reload button, and no explanation when the watch is away).
-    @MainActor
-    private func reload() async {
-        isReloading = true
-        let outcome = await HomeAssistantAPI.reloadWatchComplications()
-        isReloading = false
-        switch outcome {
-        case .success:
-            reloadAlert = ReloadAlert(
-                title: L10n.Watch.Complications.Root.reloadSuccessTitle,
-                message: L10n.Watch.Complications.Root.reloadSuccessMessage
-            )
-        case .watchUnavailable:
-            reloadAlert = ReloadAlert(
-                title: L10n.Watch.Complications.Root.reloadUnavailableTitle,
-                message: L10n.Watch.Complications.Root.reloadUnavailableMessage
-            )
-        case let .failed(message):
-            reloadAlert = ReloadAlert(
-                title: L10n.Watch.Complications.Root.reloadFailedTitle,
-                message: message
-            )
+            viewModel.load()
         }
     }
 
@@ -121,9 +80,9 @@ struct ComplicationsRootView: View {
 
     private var yourComplicationsSection: some View {
         Section(L10n.Watch.Complications.Root.yourComplications) {
-            ForEach(configs) { config in
+            ForEach(viewModel.configs) { config in
                 Button {
-                    editing = config
+                    viewModel.editing = config
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.two) {
                         rowIcon(for: config)
@@ -131,7 +90,7 @@ struct ComplicationsRootView: View {
                         VStack(alignment: .leading) {
                             Text(config.displayName)
                                 .foregroundColor(.primary)
-                            if let subtitle = subtitles[config.id] {
+                            if let subtitle = viewModel.subtitles[config.id] {
                                 Text(verbatim: subtitle)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -143,8 +102,15 @@ struct ComplicationsRootView: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .contextMenu {
+                    Button {
+                        viewModel.duplicate(config)
+                    } label: {
+                        Label(L10n.Watch.Complications.Root.duplicate, systemSymbol: .docOnDoc)
+                    }
+                }
             }
-            .onDelete(perform: delete)
+            .onDelete(perform: viewModel.delete)
 
             Button {
                 showAdd = true
@@ -166,37 +132,6 @@ struct ComplicationsRootView: View {
             icon = .gaugeIcon
         }
         return Image(uiImage: icon.image(ofSize: .init(width: 28, height: 28), color: color))
-    }
-
-    private func load() {
-        hasLegacy = !((try? WatchComplication.all()) ?? []).isEmpty
-        let all = (try? WatchComplicationConfig.all()) ?? []
-        configs = all
-        var map: [String: String] = [:]
-        for config in all {
-            switch config.kind {
-            case .entity:
-                guard let entityId = config.entityId else { continue }
-                let key = "\(config.serverId)-\(entityId)"
-                let entity = try? Current.database().read { db in
-                    try HAAppEntity.fetchOne(db, key: key)
-                }
-                map[config.id] = entity?.contextualSubtitle ?? config.entityDisplayName ?? entityId
-            case .customTemplate:
-                map[config.id] = L10n.Watch.Complications.Root.template
-            }
-        }
-        subtitles = map
-    }
-
-    private func delete(at offsets: IndexSet) {
-        for index in offsets {
-            try? configs[index].delete()
-        }
-        NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
-        HomeAssistantAPI.syncWatchContext()
-        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
-        load()
     }
 }
 
