@@ -192,7 +192,7 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.reconcile(with: message) }
             }
-        ), errorHandler: { [weak self] error in
+        ), coalescingKey: InteractiveImmediateMessages.watchConfig.rawValue, errorHandler: { [weak self] error in
             // iPhone unreachable / slow / no reply within the timeout: fall back to the cached config so
             // the screen never hangs, and queue a background pull that survives the phone being asleep.
             Current.Log.error("Watch config request failed: \(error.localizedDescription)")
@@ -351,7 +351,7 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.handleDatabaseSyncStart(message) }
             }
-        ), errorHandler: { [weak self] error in
+        ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
                 self?.failSync(
@@ -396,7 +396,7 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.handleChunk(message, index: index) }
             }
-        ), errorHandler: { [weak self] error in
+        ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync chunk \(index) failed: \(error.localizedDescription)")
                 self?.failSync(

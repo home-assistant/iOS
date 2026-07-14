@@ -499,3 +499,79 @@ struct WatchConnectivityWatchState_test {
     }
 }
 #endif
+
+struct WatchConnectivityQueue_test {
+    private func interactive(_ identifier: String) -> HAWatchConnectivity.InteractiveImmediateMessage {
+        HAWatchConnectivity.InteractiveImmediateMessage(identifier: identifier, reply: { _ in })
+    }
+
+    private func sentIdentifiers(_ fake: FakeWCSession) -> [String] {
+        fake.sentMessages.compactMap { $0.message["identifier"] as? String }
+    }
+
+    @Test func capLimitsConcurrentInteractiveSends() {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        manager.send(interactive("three"))
+        #expect(sentIdentifiers(fake) == ["one", "two"])
+
+        // Resolving an in-flight send hands its slot to the queued one.
+        fake.sentMessages[0].replyHandler?(HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation())
+        #expect(sentIdentifiers(fake) == ["one", "two", "three"])
+    }
+
+    @Test func priorityOrdersQueuedSends() {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("filler1"))
+        manager.send(interactive("filler2"))
+        manager.send(interactive("bulk"), priority: .background)
+        manager.send(interactive("refresh"), priority: .normal)
+        manager.send(interactive("tap"), priority: .userAction)
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        fake.sentMessages[0].replyHandler?(reply)
+        fake.sentMessages[1].replyHandler?(reply)
+        fake.sentMessages[2].replyHandler?(reply)
+        #expect(sentIdentifiers(fake) == ["filler1", "filler2", "tap", "refresh", "bulk"])
+    }
+
+    @Test func coalescingReplacesQueuedSendWithSameKey() {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("filler1"))
+        manager.send(interactive("filler2"))
+        manager.send(interactive("first"), coalescingKey: "config")
+        manager.send(interactive("second"), coalescingKey: "config")
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        fake.sentMessages[0].replyHandler?(reply)
+        fake.sentMessages[1].replyHandler?(reply)
+        // "first" was replaced while queued; only "second" ever reaches the session.
+        #expect(sentIdentifiers(fake) == ["filler1", "filler2", "second"])
+    }
+
+    @Test func failedGuardsReleaseTheirSlots() {
+        let fake = FakeWCSession()
+        fake.isReachableProxy = false
+        let manager = WatchConnectivityManager(session: fake)
+
+        var errors: [Error] = []
+        for identifier in ["a", "b", "c"] {
+            manager.send(interactive(identifier), errorHandler: { errors.append($0) })
+        }
+        // Every guard failure released its slot immediately, so all three errored (none stuck queued).
+        #expect(errors.count == 3)
+        #expect(fake.sentMessages.isEmpty)
+
+        // And the queue is healthy afterwards: a send with reachability restored goes straight out.
+        fake.isReachableProxy = true
+        manager.send(interactive("d"))
+        #expect(sentIdentifiers(fake) == ["d"])
+    }
+}

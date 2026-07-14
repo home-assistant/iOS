@@ -121,7 +121,7 @@ final class WatchAssistService: ObservableObject {
                     )
                 }
             }
-        ), errorHandler: { error in
+        ), priority: .userAction, errorHandler: { error in
             Current.Log.error(
                 "Assist audio chunk \(index + 1)/\(totalChunks) failed: \(error.localizedDescription)"
             )

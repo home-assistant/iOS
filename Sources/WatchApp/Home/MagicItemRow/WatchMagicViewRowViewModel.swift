@@ -107,7 +107,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             .verbose(
                 "Sending \(InteractiveImmediateMessages.magicItemPressed.rawValue) message \(itemMessage)"
             )
-        Communicator.shared.send(itemMessage, errorHandler: { [weak self] error in
+        Communicator.shared.send(itemMessage, priority: .userAction, errorHandler: { [weak self] error in
             Current.Log.error("Received error when sending immediate message \(error)")
             // WatchConnectivity errors are system errors with localized descriptions.
             self?.reportFailure(

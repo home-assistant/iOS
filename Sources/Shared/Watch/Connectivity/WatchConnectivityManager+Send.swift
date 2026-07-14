@@ -32,21 +32,51 @@ public extension WatchConnectivityManager {
     /// Interactive request/reply. Requires the counterpart immediately reachable. The response envelope
     /// is decoded back into an `ImmediateMessage` and delivered to `message.reply`. `errorHandler` fires
     /// at most once, on delivery failure or after `timeout` seconds with no reply.
+    ///
+    /// Sends flow through the outbound queue (`WatchConnectivityManager+SendQueue`): while the
+    /// in-flight cap is reached, `priority` orders the backlog and a queued send sharing
+    /// `coalescingKey` is replaced by this one.
     func send(
         _ message: HAWatchConnectivity.InteractiveImmediateMessage,
         timeout: TimeInterval = WatchConnectivityManager.interactiveReplyTimeout,
+        priority: HAWatchConnectivity.SendPriority = .normal,
+        coalescingKey: String? = nil,
         errorHandler: ((Error) -> Void)? = nil
     ) {
+        enqueueInteractiveSend(priority: priority, coalescingKey: coalescingKey) { [weak self] in
+            guard let self else { return }
+            performInteractiveSend(message, timeout: timeout, errorHandler: errorHandler)
+        }
+    }
+
+    private func performInteractiveSend(
+        _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+        timeout: TimeInterval,
+        errorHandler: ((Error) -> Void)?
+    ) {
+        // Every terminal path must release the queue slot exactly once — including the early
+        // guards, a delivery error, the reply, and the timeout backstop (which always runs even for
+        // `timeout <= 0` callers, so a send whose reply never comes can't hold a slot forever).
+        let slotGate = WatchConnectivityOnceFlag()
+        func finish() {
+            if slotGate.trySet() {
+                interactiveSendDidFinish()
+            }
+        }
+
         guard let session else {
             errorHandler?(HAWatchConnectivity.ConnectivityError.sessionNotSupported)
+            finish()
             return
         }
         guard session.activationStateProxy == .activated else {
             errorHandler?(HAWatchConnectivity.ConnectivityError.sessionNotActivated)
+            finish()
             return
         }
         guard session.isReachableProxy else {
             errorHandler?(HAWatchConnectivity.ConnectivityError.notReachable)
+            finish()
             return
         }
 
@@ -56,28 +86,28 @@ public extension WatchConnectivityManager {
         // cancels the pending timeout so it doesn't linger (retaining the handlers) for the full
         // window after the send already resolved — chunked flows create one of these per chunk.
         let errorGate = WatchConnectivityOnceFlag()
-        var timeoutWork: DispatchWorkItem?
-        if timeout > 0 {
-            let work = DispatchWorkItem {
-                if errorGate.trySet() {
-                    errorHandler?(HAWatchConnectivity.ConnectivityError.replyTimedOut)
-                }
+        let effectiveTimeout = timeout > 0 ? timeout : Self.interactiveReplyTimeout
+        let timeoutWork = DispatchWorkItem {
+            if timeout > 0, errorGate.trySet() {
+                errorHandler?(HAWatchConnectivity.ConnectivityError.replyTimedOut)
             }
-            timeoutWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: work)
+            finish()
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + effectiveTimeout, execute: timeoutWork)
 
         session.sendMessageProxy(message.jsonRepresentation(), replyHandler: { responseEnvelope in
             errorGate.markResolved()
-            timeoutWork?.cancel()
+            timeoutWork.cancel()
+            finish()
             let response = HAWatchConnectivity.ImmediateMessage(content: responseEnvelope)
                 ?? HAWatchConnectivity.ImmediateMessage(identifier: message.identifier, content: responseEnvelope)
             message.reply(response)
         }, errorHandler: { error in
-            timeoutWork?.cancel()
+            timeoutWork.cancel()
             if errorGate.trySet() {
                 errorHandler?(error)
             }
+            finish()
         })
     }
 
