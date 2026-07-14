@@ -135,6 +135,32 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
         XCTAssertEqual(connection.sentRequests.count, 2)
     }
+
+    func testCertificateAwareSessionAttachesDelegateWithoutClientCertificate() {
+        let server = ServerFixture.withRemoteConnection
+        XCTAssertNil(server.info.connection.clientCertificate)
+        XCTAssertFalse(server.info.connection.securityExceptions.hasExceptions)
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+
+        XCTAssertTrue(session.delegate is HAURLSessionDelegate)
+    }
+
+    func testCertificateAwareSessionAttachesDelegateWithClientCertificate() {
+        let server = ServerFixture.withRemoteConnection
+        server.update { info in
+            info.connection.clientCertificate = ClientCertificate(
+                keychainIdentifier: "com.ha-ios.mtls.identity.test",
+                displayName: "Test"
+            )
+        }
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+
+        XCTAssertTrue(session.delegate is HAURLSessionDelegate)
+    }
 }
 
 private final class FakeHAConnection: HAConnection {
