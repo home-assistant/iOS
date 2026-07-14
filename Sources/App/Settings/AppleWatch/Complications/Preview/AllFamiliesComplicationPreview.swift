@@ -25,11 +25,6 @@ struct AllFamiliesComplicationPreview: View {
     /// Reports whether the current value (state or chosen attribute) is numeric, so the editor can hide
     /// the decimals picker for non-numeric values.
     var onValueIsNumeric: (Bool) -> Void = { _ in }
-    /// Reports every builder template's evaluation state (loading → result/error) as one snapshot,
-    /// so the editor can drive the callout over the template field being edited and the color
-    /// swatches next to the color template fields.
-    var onTemplateOutputs: (TemplateRenderer.Outputs) -> Void = { _ in }
-
     /// How long after the last edit builder templates are (re-)evaluated.
     private static let templateDebounce: TimeInterval = 2
 
@@ -37,6 +32,8 @@ struct AllFamiliesComplicationPreview: View {
     @State private var entityAttributes: [String: Any] = [:]
     @State private var isFetching = false
     @State private var lastFetchKey: String?
+    /// Whether the initial (post-mount) evaluation already ran — see the `task` in `body`.
+    @State private var hasEvaluated = false
     /// Natural size of the selected family's preview, measured to compute the zoom-to-fit scale in
     /// the single-family (floating) mode.
     @State private var selectedPreviewSize: CGSize = .zero
@@ -55,8 +52,7 @@ struct AllFamiliesComplicationPreview: View {
         showsOnlySelectedFamily: Bool = false,
         onUnit: @escaping (String?) -> Void = { _ in },
         onAttributes: @escaping ([String]) -> Void = { _ in },
-        onValueIsNumeric: @escaping (Bool) -> Void = { _ in },
-        onTemplateOutputs: @escaping (TemplateRenderer.Outputs) -> Void = { _ in }
+        onValueIsNumeric: @escaping (Bool) -> Void = { _ in }
     ) {
         self.config = config
         self.server = server
@@ -65,7 +61,6 @@ struct AllFamiliesComplicationPreview: View {
         self.onUnit = onUnit
         self.onAttributes = onAttributes
         self.onValueIsNumeric = onValueIsNumeric
-        self.onTemplateOutputs = onTemplateOutputs
         let makeRenderer = { TemplateRenderer(server: server, debounceInterval: Self.templateDebounce) }
         _valueRenderer = StateObject(wrappedValue: makeRenderer())
         _gaugeRenderer = StateObject(wrappedValue: makeRenderer())
@@ -81,17 +76,6 @@ struct AllFamiliesComplicationPreview: View {
             config.customGaugeColorTemplate ?? "", config.customIconColorTemplate ?? "",
             config.customTextColorTemplate ?? "",
         ].joined(separator: "|")
-    }
-
-    /// All template evaluation states as one snapshot, for the editor callback.
-    private var templateOutputs: TemplateRenderer.Outputs {
-        TemplateRenderer.Outputs(
-            text: valueRenderer.output,
-            gauge: gaugeRenderer.output,
-            gaugeColor: gaugeColorRenderer.output,
-            iconColor: iconColorRenderer.output,
-            textColor: textColorRenderer.output
-        )
     }
 
     /// A color renderer's evaluated color, normalized — nil while loading, on failure, or when the
@@ -207,10 +191,11 @@ struct AllFamiliesComplicationPreview: View {
         .environment(\.colorScheme, .dark)
         // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
         // reliably, so the preview updates on entity change without needing to tap a family first.
-        .task(id: fetchKey) { refresh() }
-        // Surface the template evaluation states to the editor (callout + color swatches).
-        .onChange(of: templateOutputs) { newValue in
-            onTemplateOutputs(newValue)
+        // The first evaluation after (re)mounting skips the typing debounce, so the preview shows
+        // rendered results promptly (Form recycles this row while the user edits further down).
+        .task(id: fetchKey) {
+            refresh(skipInitialDelay: !hasEvaluated)
+            hasEvaluated = true
         }
     }
 
@@ -265,7 +250,7 @@ struct AllFamiliesComplicationPreview: View {
 
     // MARK: - Data loading
 
-    private func refresh() {
+    private func refresh(skipInitialDelay: Bool = false) {
         switch config.kind {
         case .entity:
             if fetchKey != lastFetchKey {
@@ -274,11 +259,11 @@ struct AllFamiliesComplicationPreview: View {
                 reportDerived()
             }
         case .customTemplate:
-            valueRenderer.updateTemplate(config.customTextTemplate ?? "")
-            gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
-            gaugeColorRenderer.updateTemplate(config.customGaugeColorTemplate ?? "")
-            iconColorRenderer.updateTemplate(config.customIconColorTemplate ?? "")
-            textColorRenderer.updateTemplate(config.customTextColorTemplate ?? "")
+            valueRenderer.updateTemplate(config.customTextTemplate ?? "", skipDelay: skipInitialDelay)
+            gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "", skipDelay: skipInitialDelay)
+            gaugeColorRenderer.updateTemplate(config.customGaugeColorTemplate ?? "", skipDelay: skipInitialDelay)
+            iconColorRenderer.updateTemplate(config.customIconColorTemplate ?? "", skipDelay: skipInitialDelay)
+            textColorRenderer.updateTemplate(config.customTextColorTemplate ?? "", skipDelay: skipInitialDelay)
         }
     }
 

@@ -1678,6 +1678,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.template_color" = "Color";
 "watch.complications.builder.template_evaluating" = "Evaluating template…";
 "watch.complications.builder.template_invalid_hex" = "Result is not a hex color (e.g. #FF9500)";
+"watch.complications.builder.template_no_result" = "The server didn't return a result. Check the template for errors.";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Text color";
 "watch.complications.builder.text_template" = "Text template";

@@ -169,6 +169,12 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
+		42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */; };
+		42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */; };
+		42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */; };
+		42DF1957300650AE003B7FA1 /* JinjaAutocompleteBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1956300650AE003B7FA1 /* JinjaAutocompleteBar.swift */; };
+		42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */; };
+		42DF195B300650E7003B7FA1 /* JinjaTemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195A300650E7003B7FA1 /* JinjaTemplateView.swift */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
@@ -607,6 +613,12 @@
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
+		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
+		42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.swift; sourceTree = "<group>"; };
+		42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaSyntaxHighlighter.swift; sourceTree = "<group>"; };
+		42DF1956300650AE003B7FA1 /* JinjaAutocompleteBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteBar.swift; sourceTree = "<group>"; };
+		42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTextEditor.swift; sourceTree = "<group>"; };
+		42DF195A300650E7003B7FA1 /* JinjaTemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateView.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
@@ -2174,6 +2186,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		42DF194F30065055003B7FA1 /* Templating */ = {
+			isa = PBXGroup;
+			children = (
+				42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */,
+				42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */,
+				42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */,
+				42DF1956300650AE003B7FA1 /* JinjaAutocompleteBar.swift */,
+				42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */,
+				42DF195A300650E7003B7FA1 /* JinjaTemplateView.swift */,
+			);
+			path = Templating;
+			sourceTree = "<group>";
+		};
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -2201,6 +2226,7 @@
 				42EDE943300315A50051FC9B /* LifecycleManager.swift */,
 				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
+				42DF194F30065055003B7FA1 /* Templating */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -3661,6 +3687,12 @@
 			files = (
 				42EDEB10300315A50051FC9B /* AppDelegate.swift in Sources */,
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
+				42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */,
+				42DF195B300650E7003B7FA1 /* JinjaTemplateView.swift in Sources */,
+				42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */,
+				42DF1957300650AE003B7FA1 /* JinjaAutocompleteBar.swift in Sources */,
+				42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */,
+				42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,

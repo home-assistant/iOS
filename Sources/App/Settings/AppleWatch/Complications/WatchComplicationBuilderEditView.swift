@@ -348,23 +348,37 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            // Step 3 (template): enter the templates, then the shared options reveal below. One
-            // section per field, so each template gets a title explaining what it feeds.
+            // Step 3 (template): enter the templates, then the shared options reveal below. The text
+            // template stands in for the display name — same icon + field row as the entity flow —
+            // but the field edits the template that renders the complication's text.
             if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty {
                 Section {
-                    TextField(text: stringBinding(\.customTextTemplate)) {
-                        Text(verbatim: "{{ states('sensor.x') }}")
+                    HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+                        IconPicker(
+                            selectedIcon: iconBinding,
+                            selectedColor: iconColorBinding
+                        )
+                        TextField(text: templateBinding(\.customTextTemplate), axis: .vertical) {
+                            Text(verbatim: "{{ states('sensor.x') }}")
+                        }
+                        .lineLimit(1 ... 6)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .focused($focusedTemplateField, equals: .text)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .focused($focusedTemplateField, equals: .text)
                     .background(templateFieldFrameReader(.text))
                 } header: {
-                    Text(L10n.Watch.Complications.Builder.textTemplate)
+                    Text(L10n.Watch.Complications.Builder.displayName)
                 }
 
                 Section {
-                    TextField(text: stringBinding(\.customGaugeTemplate)) {
+                    TextField(text: templateBinding(\.customGaugeTemplate), axis: .vertical) {
                         Text(verbatim: "{{ … }} → 0–1")
                     }
+                    .lineLimit(1 ... 6)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
                     .focused($focusedTemplateField, equals: .gauge)
                     .background(templateFieldFrameReader(.gauge))
                 } header: {
@@ -373,24 +387,27 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             // Step 4: once the source is fully configured (an entity picked, or a template entered),
-            // the display options reveal: name/icon, then the Customize disclosure.
+            // the display options reveal: name/icon (entity flow — the template flow's display-name
+            // row above edits the text template instead), then the Customize disclosure.
             if viewModel.isSourceConfigured {
-                Section {
-                    // Icon + name on one row, matching MagicItemCustomizationView. The icon is
-                    // auto-derived from the entity and can be overridden here; a blank name falls back
-                    // to the entity name.
-                    HStack(spacing: DesignSystem.Spaces.two) {
-                        IconPicker(
-                            selectedIcon: iconBinding,
-                            selectedColor: iconColorBinding
-                        )
-                        TextField(text: stringBinding(\.name)) {
-                            Text(verbatim: viewModel.namePlaceholder)
+                if viewModel.config.kind == .entity {
+                    Section {
+                        // Icon + name on one row, matching MagicItemCustomizationView. The icon is
+                        // auto-derived from the entity and can be overridden here; a blank name falls
+                        // back to the entity name.
+                        HStack(spacing: DesignSystem.Spaces.two) {
+                            IconPicker(
+                                selectedIcon: iconBinding,
+                                selectedColor: iconColorBinding
+                            )
+                            TextField(text: stringBinding(\.name)) {
+                                Text(verbatim: viewModel.namePlaceholder)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    } header: {
+                        Text(L10n.Watch.Complications.Builder.displayName)
                     }
-                } header: {
-                    Text(L10n.Watch.Complications.Builder.displayName)
                 }
 
                 // Progressive disclosure: keep the initial screen simple (name + source). Everything
@@ -560,8 +577,8 @@ struct WatchComplicationBuilderEditView: View {
                             return halfWidth - centerX
                         }
                         .alignmentGuide(.top) { dimensions in
-                            // Bottom edge just above the field's top.
-                            dimensions.height - (rect.minY - DesignSystem.Spaces.one)
+                            // Bottom edge (including the arrow) clearly above the field's top.
+                            dimensions.height - (rect.minY - DesignSystem.Spaces.two)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
@@ -613,6 +630,22 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Like `stringBinding`, but normalizes iOS smart punctuation (“ ” ‘ ’) to the straight quotes
+    /// Jinja expects — the keyboard substitutes them while typing, silently breaking the template.
+    private func templateBinding(_ keyPath: WritableKeyPath<WatchComplicationConfig, String?>) -> Binding<String> {
+        Binding(
+            get: { viewModel.config[keyPath: keyPath] ?? "" },
+            set: { newValue in
+                let sanitized = newValue
+                    .replacingOccurrences(of: "\u{201C}", with: "\"")
+                    .replacingOccurrences(of: "\u{201D}", with: "\"")
+                    .replacingOccurrences(of: "\u{2018}", with: "'")
+                    .replacingOccurrences(of: "\u{2019}", with: "'")
+                viewModel.config[keyPath: keyPath] = sanitized.isEmpty ? nil : sanitized
+            }
+        )
+    }
+
     /// A static color picker that reads as disabled while template colors drive the complication.
     private func staticColorPicker(_ title: String, selection: Binding<Color>) -> some View {
         ColorPicker(title, selection: selection, supportsOpacity: false)
@@ -626,10 +659,11 @@ struct WatchComplicationBuilderEditView: View {
         _ field: TemplateField,
         keyPath: WritableKeyPath<WatchComplicationConfig, String?>
     ) -> some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            TextField(text: stringBinding(keyPath)) {
+        HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+            TextField(text: templateBinding(keyPath), axis: .vertical) {
                 Text(verbatim: "{{ … }} → #RRGGBB")
             }
+            .lineLimit(1 ... 6)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($focusedTemplateField, equals: field)

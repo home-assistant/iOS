@@ -5609,6 +5609,8 @@ public enum L10n {
         public static var templateEvaluating: String { return L10n.tr("Localizable", "watch.complications.builder.template_evaluating") }
         /// Result is not a hex color (e.g. #FF9500)
         public static var templateInvalidHex: String { return L10n.tr("Localizable", "watch.complications.builder.template_invalid_hex") }
+        /// The server didn't return a result. Check the template for errors.
+        public static var templateNoResult: String { return L10n.tr("Localizable", "watch.complications.builder.template_no_result") }
         /// Templates
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color
