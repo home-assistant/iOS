@@ -135,7 +135,7 @@ private struct CornerVariantsPreview: View {
             AllFamiliesComplicationPreview(
                 config: WatchComplicationConfig(serverId: "preview"),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.circular)
+                selectedFamily: .circular
             )
 
             AllFamiliesComplicationPreview(
@@ -163,7 +163,7 @@ private struct CornerVariantsPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.corner)
+                selectedFamily: .corner
             )
 
             AllFamiliesComplicationPreview(
@@ -183,7 +183,7 @@ private struct CornerVariantsPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.rectangular)
+                selectedFamily: .rectangular
             )
         }
         .padding()

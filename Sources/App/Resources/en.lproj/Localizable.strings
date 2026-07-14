@@ -1633,6 +1633,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.complications.builder.color" = "Gauge color";
+"watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
@@ -1643,6 +1644,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.entity" = "Entity";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
+"watch.complications.builder.gauge_template" = "Gauge template";
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.icon_color" = "Icon color";
 "watch.complications.builder.maximum" = "Maximum";
@@ -1668,9 +1670,20 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.source" = "Source";
 "watch.complications.builder.source_custom" = "Custom template";
 "watch.complications.builder.source_entity" = "Entity";
+"watch.complications.builder.source_entity_subtitle" = "Display entity state";
+"watch.complications.builder.source_template" = "Template";
+"watch.complications.builder.source_template_subtitle" = "Admin role required";
 "watch.complications.builder.style" = "Style";
+"watch.complications.builder.template_color" = "Color";
+"watch.complications.builder.template_evaluating" = "Evaluating template…";
+"watch.complications.builder.template_invalid_hex" = "Result is not a hex color (e.g. #FF9500)";
+"watch.complications.builder.template_no_result" = "The server didn't return a result. Check the template for errors.";
+"watch.complications.builder.template_result" = "Result";
+"watch.complications.builder.template_result_placeholder" = "The result appears here once the template is evaluated.";
+"watch.complications.builder.template_suggestions_more" = "More";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Text color";
+"watch.complications.builder.text_template" = "Text template";
 "watch.complications.builder.title" = "Complications";
 "watch.complications.builder.unit" = "Unit";
 "watch.complications.builder.unit_automatic" = "Automatic";
@@ -2072,6 +2085,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
 "widgets.commonly_used_entities.title" = "Common Controls";
+"widgets.content_source.entity" = "Entity";
+"widgets.content_source.template" = "Template";
+"widgets.content_source.title" = "Source";
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -2170,7 +2186,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacity";
 "widgets.gauge.parameters.gauge_type.normal" = "Normal";
 "widgets.gauge.parameters.max_label_template" = "Max Label Template";
+"widgets.gauge.parameters.max_value" = "Maximum Value";
 "widgets.gauge.parameters.min_label_template" = "Min Label Template";
+"widgets.gauge.parameters.min_value" = "Minimum Value";
 "widgets.gauge.parameters.run_script" = "Run Script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
@@ -2183,6 +2201,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "widgets.param.server.title" = "Server";
+"widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";
 "widgets.preview.empty.create.button" = "Create widget";
