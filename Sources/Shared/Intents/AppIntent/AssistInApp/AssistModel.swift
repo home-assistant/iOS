@@ -187,4 +187,13 @@ public extension AssistPipelines {
             try AssistPipelines.fetchAll(db)
         })
     }
+
+    /// Delete pipelines whose server no longer exists (orphan pipelines).
+    static func deleteOrphans(keepingServerIds serverIds: [String]) throws {
+        _ = try Current.database().write { db in
+            try AssistPipelines
+                .filter(!serverIds.contains(Column(DatabaseTables.AssistPipelines.serverId.rawValue)))
+                .deleteAll(db)
+        }
+    }
 }

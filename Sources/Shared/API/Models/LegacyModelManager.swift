@@ -131,6 +131,7 @@ public class LegacyModelManager: ServerObserver {
             let serverIds = Current.servers.all.map(\.identifier.rawValue)
             try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIds)
             try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIds)
+            try? AssistPipelines.deleteOrphans(keepingServerIds: serverIds)
 
             let realm = Current.realm()
             let writes = definitions.map { definition in
