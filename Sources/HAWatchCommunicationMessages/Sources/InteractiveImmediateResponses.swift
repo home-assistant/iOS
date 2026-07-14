@@ -20,6 +20,8 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case emptyWatchConfigResponse
     /// Phone → watch: reply to `watchConfigAvailableItems`, carrying the encoded
     /// `WatchConfigAvailableItems` (the items the user can add, grouped by server).
+    ///
+    /// - Note: Deprecated wire flow — see `InteractiveImmediateMessages.watchConfigAvailableItems`.
     case watchConfigAvailableItemsResponse
     /// Phone → watch: reply to the `watchDatabaseMirror` start request, carrying `{transferId,
     /// totalChunks, totalBytes}` so the watch can pull the chunks in order and show progress.

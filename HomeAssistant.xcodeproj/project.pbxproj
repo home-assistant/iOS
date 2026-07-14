@@ -238,6 +238,8 @@
 		B7104E0100000000000000C2 /* NotificationHistoryStore.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7104E0100000000000000C1 /* NotificationHistoryStore.test.swift */; };
 		BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */; };
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
+		CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */; };
+		CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */; };
 		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
 		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
 		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
@@ -260,8 +262,6 @@
 		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
 		DE51600000000000000000E3 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E2 /* HAModels */; };
 		DE51600000000000000000E5 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E4 /* HAModels */; };
-		CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */; };
-		CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */; };
 		DE51600000000000000000F3 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F2 /* HANetworking */; };
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
@@ -5134,6 +5134,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
+		CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAWatchCommunicationMessages;
+		};
 		DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HADesignSystem;
@@ -5145,10 +5149,6 @@
 		DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAIconic;
-		};
-		CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/HAWatchCommunicationMessages;
 		};
 		DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */ = {
 			isa = XCLocalSwiftPackageReference;
@@ -5706,6 +5706,16 @@
 			package = CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */;
 			productName = CallbackURLKit;
 		};
+		CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
+		};
+		CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
+		};
 		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
@@ -5770,16 +5780,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */;
 			productName = HAIconic;
-		};
-		CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
-			productName = HAWatchCommunicationMessages;
-		};
-		CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
-			productName = HAWatchCommunicationMessages;
 		};
 		DE51600000000000000000E2 /* HAModels */ = {
 			isa = XCSwiftPackageProductDependency;

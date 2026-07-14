@@ -12,6 +12,11 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     /// Watch → phone: ask the phone for the list of items the user can add to the watch
     /// configuration (scripts/scenes/automations across all servers). The phone owns the entity
     /// database, so it builds the list and replies with `watchConfigAvailableItemsResponse`.
+    ///
+    /// - Note: Deprecated wire flow. The watch has built this list locally from the mirrored
+    ///   database since the database sync shipped and no longer sends this message. The phone
+    ///   handler stays for one release cycle so pre-mirror watch builds keep working; after that,
+    ///   remove this case, `watchConfigAvailableItemsResponse` and the phone handler together.
     case watchConfigAvailableItems
     /// Watch → phone: persist an edited `WatchConfig` (add/reorder/delete/customize done on the
     /// watch). The phone writes it to GRDB and replies with the same payload as `watchConfig`

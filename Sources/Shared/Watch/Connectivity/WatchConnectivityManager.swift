@@ -15,6 +15,22 @@ public final class WatchConnectivityManager: NSObject {
     let completionLock = NSLock()
     var fileCompletions: [ObjectIdentifier: (Result<Void, Error>) -> Void] = [:]
 
+    /// One interactive send waiting for a free in-flight slot. Kept sorted by priority (then FIFO)
+    /// in `pendingInteractiveSends`.
+    struct PendingInteractiveSend {
+        let priority: HAWatchConnectivity.SendPriority
+        let coalescingKey: String?
+        let sequence: Int
+        let perform: () -> Void
+    }
+
+    /// State of the outbound interactive-send queue (see `WatchConnectivityManager+SendQueue`).
+    let sendQueueLock = NSLock()
+    var pendingInteractiveSends: [PendingInteractiveSend] = []
+    var inFlightInteractiveSends = 0
+    var interactiveSendSequence = 0
+    static let maxConcurrentInteractiveSends = 2
+
     /// In-memory copy of the most recently received application context.
     ///
     /// `WCSession.receivedApplicationContext` is a *blocking* getter: it synchronously waits on

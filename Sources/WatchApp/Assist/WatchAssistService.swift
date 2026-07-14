@@ -93,15 +93,15 @@ final class WatchAssistService: ObservableObject {
 
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.assistAudioDataChunked.rawValue,
-            content: [
-                "chunkData": chunkData,
-                "chunkIndex": index,
-                "totalChunks": totalChunks,
-                "sampleRate": sampleRate,
-                "pipelineId": pipelineId,
-                "serverId": serverId,
-                "recordingId": recordingId,
-            ],
+            content: AssistAudioChunkPayload(
+                chunkData: chunkData,
+                chunkIndex: index,
+                totalChunks: totalChunks,
+                sampleRate: sampleRate,
+                pipelineId: pipelineId,
+                serverId: serverId,
+                recordingId: recordingId
+            ).content,
             reply: { [weak self] _ in
                 DispatchQueue.main.async {
                     let next = index + 1
@@ -121,7 +121,7 @@ final class WatchAssistService: ObservableObject {
                     )
                 }
             }
-        ), errorHandler: { error in
+        ), priority: .userAction, errorHandler: { error in
             Current.Log.error(
                 "Assist audio chunk \(index + 1)/\(totalChunks) failed: \(error.localizedDescription)"
             )

@@ -18,7 +18,13 @@ public extension HomeAssistantAPI {
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
+        //
+        // DEPRECATED wire path: current watch builds ignore these context keys entirely — the
+        // complication tables reach the watch through the database mirror (transferFile/chunked
+        // pull) and land in GRDB directly. They're still sent for one release cycle so older watch
+        // builds keep receiving complications; remove them (and reassess whether the iOS context
+        // sync is needed at all) after that.
+        //
         // Only attach them when the read actually succeeds: sending an empty array on a read failure
         // would look authoritative to the watch and wipe its existing complications. A successful read
         // that happens to be empty IS authoritative (that is how deleting the last one propagates).
@@ -227,8 +233,11 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         let data: Data
+        let digests: [String: String]
         do {
-            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+            let snapshot = try WatchDatabaseMirror.snapshot()
+            data = try snapshot.encodeForWatch()
+            digests = snapshot.tableDigests()
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
             Current.clientEventStore.addEvent(.init(
@@ -242,9 +251,12 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         lastPushedData = data
+        // The digests travel in the file-transfer metadata so the watch can store them after
+        // applying this full mirror — keeping its next delta sync request accurate.
         Communicator.shared.transfer(HAWatchConnectivity.Blob(
             identifier: WatchDatabaseMirror.blobIdentifier,
-            content: data
+            content: data,
+            metadata: [WatchDatabaseMirror.digestsKey: digests]
         )) { result in
             if case let .failure(error) = result {
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
