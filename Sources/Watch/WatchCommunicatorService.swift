@@ -29,6 +29,8 @@ final class WatchCommunicatorService {
     private static let audioChunkSessionTimeout: TimeInterval = 60
 
     /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls one by one.
+    /// Only one sync is ever meaningful at a time (there is one paired watch), so starting a new sync
+    /// frees any previous buffer — a watch that died mid-pull must not leak the encoded mirror.
     private var databaseSyncChunks: [String: [Data]] = [:]
 
     private var didBecomeActiveObserver: NSObjectProtocol?
@@ -491,6 +493,10 @@ final class WatchCommunicatorService {
     /// cap, which is exactly why the payload itself is chunked rather than returned inline.
     private func watchDatabaseMirrorSyncStart(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseId = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+        if !databaseSyncChunks.isEmpty {
+            Current.Log.info("Dropping \(databaseSyncChunks.count) abandoned watch DB sync buffer(s)")
+            databaseSyncChunks.removeAll()
+        }
         let data: Data
         do {
             data = try WatchDatabaseMirror.snapshot().encodeForWatch()
@@ -512,6 +518,13 @@ final class WatchCommunicatorService {
 
         let transferId = UUID().uuidString
         databaseSyncChunks[transferId] = chunks
+        // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
+        // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails the
+        // whole sync on the watch), so a buffer still around after this long is abandoned.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
+            guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
+            Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
+        }
         Current.Log.info("Watch DB sync start: \(chunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
         message.reply(.init(identifier: responseId, content: [
             "transferId": transferId,
