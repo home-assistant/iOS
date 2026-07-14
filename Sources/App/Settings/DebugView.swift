@@ -69,6 +69,15 @@ struct DebugView: View {
                     )
                 }
 
+                NavigationLink {
+                    NotificationDebugView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .bell),
+                        title: L10n.SettingsDetails.Notifications.title
+                    )
+                }
+
                 if #available(iOS 17, *), !Current.isCatalyst {
                     NavigationLink {
                         ThreadCredentialsManagementView()

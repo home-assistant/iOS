@@ -72,38 +72,9 @@ public final class ControlEntityProvider {
                             .fetchAll(db)
                     }
                 }
-                if let string {
-                    let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
-                    let areasMap = entities.areasMap(for: server.identifier.rawValue)
-                    entities = entities.filter({ entity in
-                        // `entity.name` is the resolved display name (registry name, falling back to the
-                        // state name), baked in at write time by `AppEntitiesModel`.
-                        let matchName = entity.name.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchEntityId = entity.entityId.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchDeviceName = {
-                            if let deviceName = deviceMap[entity.entityId]?.name {
-                                return deviceName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        let matchAreaName = {
-                            if let areaName = areasMap[entity.entityId]?.name {
-                                return areaName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        return matchName || matchEntityId || matchDeviceName || matchAreaName
-                    })
+                if let string, !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    let index = EntityFuzzySearchIndex(entities: entities, serverId: server.identifier.rawValue)
+                    entities = index.search(string)
                 }
                 entitiesPerServer.append((server, entities))
             } catch {

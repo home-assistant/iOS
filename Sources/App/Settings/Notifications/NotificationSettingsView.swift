@@ -1,4 +1,3 @@
-import PromiseKit
 import Shared
 import SwiftUI
 import UserNotifications
@@ -11,18 +10,6 @@ struct NotificationSettingsView: View {
 
     @StateObject private var viewModel = NotificationSettingsViewModel()
 
-    @State private var showShareSheet = false
-    @State private var shareItems: [Any] = []
-    @State private var resetAlert: ResetAlertInfo?
-    @State private var ratePromise: Promise<RateLimitResponse>?
-    @State private var rateLimitRemaining: Int?
-
-    private struct ResetAlertInfo: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-    }
-
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
@@ -33,7 +20,6 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
-            debugSection
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -48,29 +34,12 @@ struct NotificationSettingsView: View {
         }
         .onAppear {
             viewModel.refreshPermissionStatus()
-            if ratePromise == nil {
-                let promise = NotificationRateLimitViewModel.newPromise()
-                promise.done { response in
-                    rateLimitRemaining = response.rateLimits.remaining
-                }.cauterize()
-                ratePromise = promise
-            }
         }
         .onReceive(
             NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
         ) { _ in
             viewModel.refreshPermissionStatus()
             viewModel.refreshBadgeCount()
-        }
-        .sheet(isPresented: $showShareSheet) {
-            NotificationsShareSheet(activityItems: shareItems)
-        }
-        .alert(item: $resetAlert) { info in
-            Alert(
-                title: Text(info.title),
-                message: Text(info.message),
-                dismissButton: .default(Text(L10n.okLabel))
-            )
         }
     }
 
@@ -150,66 +119,6 @@ struct NotificationSettingsView: View {
         }
     }
 
-    private var debugSection: some View {
-        Section {
-            NavigationLink {
-                NotificationRateLimitView(initialPromise: ratePromise) { response in
-                    rateLimitRemaining = response.rateLimits.remaining
-                }
-            } label: {
-                HStack {
-                    Text(L10n.SettingsDetails.Notifications.RateLimits.header)
-                    Spacer()
-                    if let remaining = rateLimitRemaining {
-                        Text(NumberFormatter.localizedString(from: NSNumber(value: remaining), number: .decimal))
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-
-            NavigationLink {
-                NotificationDebugNotificationsView()
-            } label: {
-                Text(L10n.SettingsDetails.Location.Notifications.header)
-            }
-
-            Button {
-                guard let id = viewModel.pushID else { return }
-                shareItems = [id]
-                showShareSheet = true
-            } label: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
-                        .foregroundColor(.primary)
-                    Text(viewModel.pushIDDisplay)
-                        .foregroundColor(.secondary)
-                        .font(.footnote)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                }
-            }
-
-            Button {
-                viewModel.resetPushID { result in
-                    switch result {
-                    case .success:
-                        break
-                    case let .failure(error):
-                        resetAlert = ResetAlertInfo(
-                            title: L10n.errorLabel,
-                            message: error.localizedDescription
-                        )
-                    }
-                }
-            } label: {
-                Text(L10n.Settings.ResetSection.ResetRow.title)
-                    .foregroundColor(.red)
-            }
-        } header: {
-            Text(L10n.debugSectionLabel)
-        }
-    }
-
     // MARK: - Actions
 
     private func handlePermissionTap() {
@@ -225,18 +134,6 @@ struct NotificationSettingsView: View {
     }
 }
 
-// MARK: - Share Sheet
-
-struct NotificationsShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
-}
-
 // MARK: - View Model
 
 @MainActor
@@ -244,20 +141,10 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var permissionText: String = ""
     @Published var lastPermissionSeen: UNAuthorizationStatus?
     @Published var badgeCountText: String = ""
-    // `Self` can't be referenced from a stored-property initializer in a class; use the
-    // type name explicitly.
-    @Published var pushIDDisplay: String = NotificationSettingsViewModel
-        .displayForPushID(Current.settingsStore.pushID)
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
         }
-    }
-
-    var pushID: String? { Current.settingsStore.pushID }
-
-    private static func displayForPushID(_ id: String?) -> String {
-        id ?? L10n.SettingsDetails.Notifications.PushIdSection.notRegistered
     }
 
     init() {
@@ -288,23 +175,6 @@ final class NotificationSettingsViewModel: ObservableObject {
             return L10n.SettingsDetails.Notifications.Permission.needsRequest
         @unknown default:
             return L10n.SettingsDetails.Notifications.Permission.disabled
-        }
-    }
-
-    // PromiseKit also exports a single-parameter `Result`, so qualify with `Swift.Result`.
-    func resetPushID(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
-        Current.Log.verbose("Resetting push token!")
-        firstly {
-            Current.notificationManager.resetPushID()
-        }.done { [weak self] newToken in
-            self?.pushIDDisplay = Self.displayForPushID(newToken)
-        }.then { _ in
-            when(fulfilled: Current.apis.map { $0.updateRegistration() })
-        }.done { _ in
-            completion(.success(()))
-        }.catch { error in
-            Current.Log.error("Error resetting push token: \(error)")
-            completion(.failure(error))
         }
     }
 }

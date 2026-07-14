@@ -1686,6 +1686,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.legacy.delete_all" = "Delete All Legacy Complications";
 "watch.complications.legacy.delete_all_confirm" = "Delete all legacy complications? This cannot be undone.";
 "watch.complications.legacy.title" = "Legacy Complications";
+"watch.complications.root.duplicate" = "Duplicate";
 "watch.complications.root.header_subtitle" = "Show entity state and gauges on your watch face.";
 "watch.complications.root.legacy" = "Legacy complications";
 "watch.complications.root.legacy_footer" = "Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.";
