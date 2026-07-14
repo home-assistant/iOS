@@ -10,7 +10,11 @@ import WatchKit
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static func watchContext() async -> HAWatchConnectivity.Content {
-        var content: HAWatchConnectivity.Content = Communicator.shared.mostRecentlyReceivedContext.content
+        // Each side sends only the keys it owns (see WatchContext). The sent and received
+        // application contexts are separate dictionaries in WCSession, so nothing is lost by not
+        // echoing the counterpart's keys back — echoing only bloated every update toward the size
+        // cap and could resurrect stale values (e.g. an old battery level bouncing back).
+        var content: HAWatchConnectivity.Content = [:]
 
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
