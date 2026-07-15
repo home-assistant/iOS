@@ -15,7 +15,7 @@ final class HomeAssistantViewModel: ObservableObject {
         }()
 
         static let loaderFadeOutDuration: Duration = .seconds(0.4)
-        static let pullToRefreshThreshold: CGFloat = 96
+        static let pullToRefreshThreshold: CGFloat = 148
         static let pullToRefreshFadeInDelay: Duration = .milliseconds(120)
         static let pullToRefreshFallbackFadeInDelay: Duration = .seconds(1)
     }
@@ -132,7 +132,7 @@ final class HomeAssistantViewModel: ObservableObject {
     func handleWebViewLoaded(_ controller: WebViewController) {
         guard !Current.isCatalyst else { return }
         pullToRefreshObserver = HomeAssistantPullToRefreshObserver(
-            scrollView: controller.webView.scrollView,
+            webView: controller.webView,
             threshold: Constants.pullToRefreshThreshold,
             onStateChange: { [weak self] progress, isRefreshing in
                 self?.pullToRefreshProgress = progress

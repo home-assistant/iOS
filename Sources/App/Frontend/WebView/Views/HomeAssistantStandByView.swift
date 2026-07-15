@@ -44,7 +44,7 @@ struct HomeAssistantStandByView: View {
                 .opacity(contentOpacity)
                 .ignoresSafeArea()
             Rectangle()
-                .fill(.ultraThinMaterial)
+                .fill(.thickMaterial)
                 .opacity(showsEmptyState ? 0 : 1)
                 .ignoresSafeArea()
             VStack(spacing: showsEmptyState ? DesignSystem.Spaces.three : DesignSystem.Spaces.five) {
