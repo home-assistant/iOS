@@ -33,8 +33,8 @@ struct HomeAssistantView: View, WebFrontendView {
     var body: some View {
         ZStack {
             themedStatusBar
-            // Only the web content group fades during pull-to-refresh. The full-screen loader and empty states
-            // stay above it, and the status bar stays stable behind the system status items.
+            // The web content group is separate from the standby overlay and status-bar strip so those layers can
+            // stay stable while the frontend reloads.
             ZStack(alignment: .topLeading) {
                 homeAssistant
                 pullToRefreshIndicator

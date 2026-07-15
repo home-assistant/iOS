@@ -37,17 +37,13 @@ struct HomeAssistantStandByView: View {
 
     var body: some View {
         let showsEmptyState = emptyState != nil
+        let standByContentOpacity = hasAppeared ? 1.0 : 0.0
         let contentOpacity = showsEmptyStateContent ? 1.0 : 0.0
 
         ZStack {
             Color(uiColor: .systemBackground)
-                .opacity(contentOpacity)
                 .ignoresSafeArea()
-            Rectangle()
-                .fill(.thickMaterial)
-                .opacity(showsEmptyState ? 0 : 1)
-                .ignoresSafeArea()
-            VStack(spacing: showsEmptyState ? DesignSystem.Spaces.three : DesignSystem.Spaces.five) {
+            VStack(spacing: showsEmptyState ? DesignSystem.Spaces.three : DesignSystem.Spaces.three) {
                 iconView
                     .frame(
                         width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
@@ -64,6 +60,15 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
                     Spacer()
                 } else {
+                    if Current.servers.all.count > 1 {
+                        Text(server.info.name)
+                            .font(.caption.bold())
+                            .lineLimit(1)
+                            .padding(.horizontal, DesignSystem.Spaces.two)
+                            .padding(.vertical, DesignSystem.Spaces.one)
+                            .background(Color(uiColor: .secondarySystemBackground))
+                            .clipShape(.capsule)
+                    }
                     HAProgressView()
                         .transition(.opacity)
                 }
@@ -71,6 +76,7 @@ struct HomeAssistantStandByView: View {
             .padding(.horizontal, DesignSystem.Spaces.three)
             .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showsEmptyState ? .top : .center)
+            .opacity(standByContentOpacity)
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
@@ -98,7 +104,7 @@ struct HomeAssistantStandByView: View {
         } message: {
             Text(errorMessage ?? "")
         }
-        .opacity(hasAppeared ? 1 : 0)
+        .animation(DesignSystem.Animation.default, value: standByContentOpacity)
         .animation(DesignSystem.Animation.default, value: showsEmptyState)
         .onAppear {
             withAnimation(DesignSystem.Animation.default) {
@@ -322,6 +328,17 @@ struct HomeAssistantStandByView: View {
 #Preview("Loading") {
     HomeAssistantStandByView(
         server: ServerFixture.standard,
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Multiple Servers") {
+    // swiftlint:disable prohibit_environment_assignment
+    Current.servers = FakeServerManager(initial: 2)
+    // swiftlint:enable prohibit_environment_assignment
+    let server = Current.servers.all.first ?? ServerFixture.standard
+    return HomeAssistantStandByView(
+        server: server,
         emptyState: nil
     )
 }
