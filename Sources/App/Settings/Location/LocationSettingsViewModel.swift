@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import GRDB
+import MapKit
 import Shared
 import UIKit
 
@@ -35,6 +36,13 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Zones
 
     @Published private(set) var zones: [LocationZoneItem] = []
+
+    /// Latest one-shot fix used to show each zone's distance from the user.
+    @Published private(set) var currentLocation: CLLocation?
+
+    private let distanceFormatter = with(MKDistanceFormatter()) {
+        $0.unitStyle = .abbreviated
+    }
 
     private let locationManager = CLLocationManager()
     private var zonesToken: AnyDatabaseCancellable?
@@ -83,6 +91,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         locationAuthorizationStatus = locationManager.authorizationStatus
         locationAccuracyAuthorization = locationManager.accuracyAuthorization
         backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+        requestCurrentLocationIfAuthorized()
     }
 
     // MARK: - Permission descriptions
@@ -175,6 +184,50 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         Current.settingsStore.locationSources = sources
     }
 
+    // MARK: - Current location & distances
+
+    /// One-shot location request so zone cards can show how far away each zone is.
+    /// A rough fix is enough for a human-readable distance, and it arrives faster.
+    private func requestCurrentLocationIfAuthorized() {
+        guard [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) else {
+            return
+        }
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestLocation()
+    }
+
+    func formattedDistance(to zone: LocationZoneItem) -> String? {
+        guard let distance = distance(to: zone) else { return nil }
+        return distanceFormatter.string(fromDistance: distance)
+    }
+
+    /// Whether zone rows should identify the server they belong to.
+    var hasMultipleServers: Bool {
+        Current.servers.all.count > 1
+    }
+
+    /// Zones ordered by proximity to the user when a location fix is available,
+    /// alphabetically otherwise.
+    var sortedZones: [LocationZoneItem] {
+        if currentLocation != nil {
+            return zones.sorted {
+                (distance(to: $0) ?? .greatestFiniteMagnitude) < (distance(to: $1) ?? .greatestFiniteMagnitude)
+            }
+        }
+        return zones.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    private func distance(to zone: LocationZoneItem) -> CLLocationDistance? {
+        guard let currentLocation else { return nil }
+        let zoneLocation = CLLocation(
+            latitude: zone.coordinate.latitude,
+            longitude: zone.coordinate.longitude
+        )
+        return currentLocation.distance(from: zoneLocation)
+    }
+
     // MARK: - Zones
 
     private func observeZones() {
@@ -206,7 +259,19 @@ extension LocationSettingsViewModel: CLLocationManagerDelegate {
         Task { @MainActor [weak self] in
             self?.locationAuthorizationStatus = status
             self?.locationAccuracyAuthorization = accuracy
+            self?.requestCurrentLocationIfAuthorized()
         }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor [weak self] in
+            self?.currentLocation = location
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Current.Log.error("Location settings one-shot location failed: \(error.localizedDescription)")
     }
 }
 
@@ -218,6 +283,8 @@ struct LocationZoneItem: Identifiable {
     let trackingEnabled: Bool
     let coordinate: CLLocationCoordinate2D
     let radius: Double
+    let serverIdentifier: String
+    let serverName: String?
     let beaconUUID: String?
     let beaconMajor: String?
     let beaconMinor: String?
@@ -228,6 +295,8 @@ struct LocationZoneItem: Identifiable {
         self.trackingEnabled = zone.trackingEnabled
         self.coordinate = zone.center
         self.radius = zone.radius
+        self.serverIdentifier = zone.serverIdentifier
+        self.serverName = Current.servers.server(forServerIdentifier: zone.serverIdentifier)?.info.name
         self.beaconUUID = zone.beaconUUID
         if let major = zone.beaconMajor {
             self.beaconMajor = String(describing: major)
