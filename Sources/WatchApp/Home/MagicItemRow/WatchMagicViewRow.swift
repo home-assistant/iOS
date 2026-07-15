@@ -70,6 +70,18 @@ struct WatchMagicViewRow: View {
                 Text(verbatim: errorMessage)
             }
         }
+        // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
+        // steps stay readable after the execution finishes.
+        .fullScreenCover(isPresented: $viewModel.showTrace) {
+            if let trace = viewModel.trace {
+                MagicItemExecutionTraceView(
+                    trace: trace,
+                    itemName: viewModel.item.name(info: viewModel.itemInfo)
+                ) {
+                    viewModel.showTrace = false
+                }
+            }
+        }
     }
 
     private var iconColor: UIColor {

@@ -13,6 +13,10 @@ public enum WatchUserDefaultsKey: String {
     /// Opaque per-table digests the phone issued with the last applied database mirror; echoed on
     /// the next sync request so the phone can omit unchanged tables (delta sync).
     case databaseMirrorDigests
+    /// Developer option: shows the "Perform action using" route picker in the watch settings.
+    case allowChoosingMagicItemRoute
+    /// Developer option: presents a live step-by-step log screen while a magic item executes.
+    case verboseItemExecution
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -80,6 +84,27 @@ public final class WatchUserDefaults {
     public var performActionTarget: WatchActionTarget {
         get { string(for: .performActionTarget).flatMap(WatchActionTarget.init(rawValue:)) ?? .auto }
         set { set(newValue.rawValue, key: .performActionTarget) }
+    }
+
+    /// The route actually used to execute magic items. Locked to `.auto` unless the developer
+    /// "Allow choosing route" option is on, so a preference stored before the picker was hidden
+    /// can't keep silently forcing a route.
+    public var effectivePerformActionTarget: WatchActionTarget {
+        allowChoosingMagicItemRoute ? performActionTarget : .auto
+    }
+
+    // MARK: - Developer options
+
+    /// Developer option gating the "Perform action using" picker in the watch settings.
+    public var allowChoosingMagicItemRoute: Bool {
+        get { userDefaults.bool(forKey: WatchUserDefaultsKey.allowChoosingMagicItemRoute.rawValue) }
+        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.allowChoosingMagicItemRoute.rawValue) }
+    }
+
+    /// Developer option: present a live step-by-step log screen while a magic item executes.
+    public var verboseItemExecution: Bool {
+        get { userDefaults.bool(forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
+        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
     }
 
     // MARK: - Per-server URL override (watch-local)
