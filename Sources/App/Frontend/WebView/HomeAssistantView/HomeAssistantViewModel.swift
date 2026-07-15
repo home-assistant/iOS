@@ -57,6 +57,7 @@ final class HomeAssistantViewModel: ObservableObject {
 
         bindObservableChildren()
         bindOverlayState()
+        beginFullScreenLoaderCycle()
     }
 
     deinit {
