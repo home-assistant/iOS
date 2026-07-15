@@ -2,7 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The watch home screen's footer: app version, current SSID, and the edit + settings buttons.
+/// The watch home screen's footer: app version and the edit + settings buttons.
 /// Rendered as the last row of the home list.
 struct WatchHomeFooterView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
@@ -13,7 +13,6 @@ struct WatchHomeFooterView: View {
     var body: some View {
         VStack(spacing: .zero) {
             appVersion
-            ssidLabel
             HStack(spacing: DesignSystem.Spaces.one) {
                 if !isEditing, !viewModel.watchConfig.items.isEmpty {
                     editFooterButton
@@ -54,20 +53,5 @@ struct WatchHomeFooterView: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .listRowBackground(Color.clear)
         .foregroundStyle(.secondary)
-    }
-
-    @ViewBuilder
-    private var ssidLabel: some View {
-        if !viewModel.currentSSID.isEmpty {
-            Label {
-                Text(verbatim: viewModel.currentSSID)
-                    .minimumScaleFactor(0.5)
-            } icon: {
-                Image(systemSymbol: .wifi)
-            }
-            .font(DesignSystem.Font.caption2)
-            .foregroundStyle(.secondary.opacity(0.5))
-            .padding(.vertical, DesignSystem.Spaces.one)
-        }
     }
 }

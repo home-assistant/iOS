@@ -162,11 +162,9 @@ struct WatchHomeView: View {
             startReachabilityObservation()
             Communicator.shared.refreshConnectivityState()
             guard autoLoad else { return }
-            viewModel.startNetworkMonitoring()
-            Task {
-                await viewModel.fetchNetworkInfo()
-                viewModel.initialRoutine()
-            }
+            // Cache-first: render the last-known configuration from GRDB before anything
+            // asynchronous, so a cold open never waits on network state or the sync.
+            viewModel.initialRoutine()
         }
         .onDisappear {
             stopReachabilityObservation()
@@ -175,9 +173,6 @@ struct WatchHomeView: View {
             switch newValue {
             case .active:
                 Communicator.shared.refreshConnectivityState()
-                Task {
-                    await viewModel.fetchNetworkInfo()
-                }
             case .background:
                 break
             case .inactive:
@@ -192,6 +187,12 @@ struct WatchHomeView: View {
         guard reachabilityToken == nil else { return }
         reachabilityToken = Communicator.shared.reachability.observe { reachability in
             updateIPhoneReachability(reachability)
+            // On a cold launch WCSession often reports the phone unreachable until activation
+            // finishes, which skips the automatic sync. With an empty database there is nothing
+            // cached to show, so retry the sync as soon as the phone becomes reachable.
+            if reachability == .immediatelyReachable, viewModel.watchConfig.items.isEmpty {
+                Task { @MainActor in viewModel.requestConfig() }
+            }
         }
     }
 
