@@ -153,64 +153,93 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
-    static var allVisibleCases: [SettingsItem] {
-        allCases.filter { item in
-            if item == .liveActivities {
-                return canShowLiveActivities
-            }
+    var isVisible: Bool {
+        // Filter based on platform
+        #if targetEnvironment(macCatalyst)
+        // Kiosk mode is unsupported on macOS.
+        let hiddenItems: [SettingsItem] = [
+            .servers,
+            .gestures,
+            .kiosk,
+            .watch,
+            .carPlay,
+            .appIconShortcuts,
+            .complications,
+            .nfc,
+            .help,
+            .whatsNew,
+        ]
 
+        if hiddenItems.contains(self) {
+            return false
+        }
+        #endif
+
+        switch self {
+        case .liveActivities:
+            return Self.canShowLiveActivities
+        case .macToolbar:
             // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
-            if item == .macToolbar {
-                return Current.isCatalyst
-            }
-
-            // Filter based on platform
-            #if targetEnvironment(macCatalyst)
-            // Kiosk mode is unsupported on macOS.
-            let hiddenItems: [SettingsItem] = [
-                .servers,
-                .gestures,
-                .kiosk,
-                .watch,
-                .carPlay,
-                .appIconShortcuts,
-                .complications,
-                .nfc,
-                .help,
-                .whatsNew,
-            ]
-
-            if hiddenItems.contains(item) {
-                return false
-            }
-            #endif
-
+            return Current.isCatalyst
+        case .watch, .complications:
+            return Self.isWatchAvailable
+        case .carPlay:
+            return UIDevice.current.userInterfaceIdiom == .phone
+        default:
             return true
         }
     }
 
-    static var generalItems: [SettingsItem] {
-        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
-        if canShowLiveActivities {
-            items.append(.liveActivities)
+    /// Localized synonyms used by the settings search index, in addition to the item title.
+    var searchKeywords: [String] {
+        guard let keywords = localizedSearchKeywords else { return [] }
+        return keywords
+            .components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+    }
+
+    private var localizedSearchKeywords: String? {
+        switch self {
+        case .servers: return L10n.Settings.SearchKeywords.servers
+        case .general: return L10n.Settings.SearchKeywords.general
+        case .macToolbar: return L10n.Settings.SearchKeywords.macToolbar
+        case .gestures: return L10n.Settings.SearchKeywords.gestures
+        case .kiosk: return L10n.Settings.SearchKeywords.kiosk
+        case .location: return L10n.Settings.SearchKeywords.location
+        case .notifications: return L10n.Settings.SearchKeywords.notifications
+        case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
+        case .sensors: return L10n.Settings.SearchKeywords.sensors
+        case .nfc: return L10n.Settings.SearchKeywords.nfc
+        case .widgets: return L10n.Settings.SearchKeywords.widgets
+        case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
+        case .watch: return L10n.Settings.SearchKeywords.watch
+        case .carPlay: return L10n.Settings.SearchKeywords.carPlay
+        case .complications: return L10n.Settings.SearchKeywords.complications
+        case .help: return L10n.Settings.SearchKeywords.help
+        case .privacy: return L10n.Settings.SearchKeywords.privacy
+        case .debugging: return L10n.Settings.SearchKeywords.debugging
+        case .whatsNew: return nil
         }
-        return items
     }
 
-    static var integrationItems: [SettingsItem] {
-        [.sensors, .nfc, .widgets, .appIconShortcuts]
+    func matches(searchQuery: String) -> Bool {
+        let query = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return true }
+        if title.localizedStandardContains(query) {
+            return true
+        }
+        return searchKeywords.contains { $0.localizedStandardContains(query) }
     }
 
-    static var watchItems: [SettingsItem] {
-        [.watch, .complications]
-    }
-
-    static var carPlayItems: [SettingsItem] {
-        [.carPlay]
-    }
-
-    static var helpItems: [SettingsItem] {
-        [.help, .privacy, .debugging]
+    private static var isWatchAvailable: Bool {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
+        if Current.isDebug {
+            return true
+        } else if case .paired = Communicator.shared.currentWatchState {
+            return true
+        }
+        return false
     }
 
     private static var canShowLiveActivities: Bool {
