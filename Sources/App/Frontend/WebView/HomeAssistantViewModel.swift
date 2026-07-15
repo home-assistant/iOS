@@ -9,6 +9,8 @@ final class HomeAssistantViewModel: ObservableObject {
         static let minimumLoaderDuration: Duration = .seconds(1.8)
         static let loaderFadeOutDuration: Duration = .seconds(0.4)
         static let pullToRefreshThreshold: CGFloat = 96
+        static let pullToRefreshFadeInDelay: Duration = .milliseconds(120)
+        static let pullToRefreshFallbackFadeInDelay: Duration = .seconds(1)
     }
 
     let server: Server
@@ -27,7 +29,11 @@ final class HomeAssistantViewModel: ObservableObject {
 
     private let onWebViewController: ((WebViewController) -> Void)?
     private var loaderCycleID = UUID()
+    private var pullToRefreshFadeCycleID = UUID()
     private var loaderMinimumDurationTask: Task<Void, Never>?
+    private var pullToRefreshFadeTask: Task<Void, Never>?
+    private var isWaitingToFadeInAfterPullToRefresh = false
+    private var reduceMotion = false
     private var pullToRefreshObserver: HomeAssistantPullToRefreshObserver?
     private var cancellables = Set<AnyCancellable>()
 
@@ -50,6 +56,7 @@ final class HomeAssistantViewModel: ObservableObject {
 
     deinit {
         loaderMinimumDurationTask?.cancel()
+        pullToRefreshFadeTask?.cancel()
     }
 
     var webViewIgnoredSafeAreaEdges: Edge.Set {
@@ -74,7 +81,12 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
+    func updateReduceMotion(_ reduceMotion: Bool) {
+        self.reduceMotion = reduceMotion
+    }
+
     func fade(to opacity: Double, reduceMotion: Bool) {
+        updateReduceMotion(reduceMotion)
         guard !reduceMotion else {
             contentOpacity = opacity
             return
@@ -86,6 +98,8 @@ final class HomeAssistantViewModel: ObservableObject {
 
     func disappear(reduceMotion: Bool) {
         loaderMinimumDurationTask?.cancel()
+        pullToRefreshFadeTask?.cancel()
+        isWaitingToFadeInAfterPullToRefresh = false
         fade(to: 0, reduceMotion: reduceMotion)
     }
 
@@ -111,14 +125,57 @@ final class HomeAssistantViewModel: ObservableObject {
                 self?.pullToRefreshProgress = progress
                 self?.isPullToRefreshActive = isRefreshing
             },
-            onRefresh: { [weak controller] in
-                Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
-                Current.websiteDataStoreHandler
-                    .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) {
-                        controller?.pullToRefreshActions()
-                    }
+            onRefresh: { [weak self, weak controller] in
+                self?.performPullToRefresh(using: controller)
             }
         )
+    }
+
+    private func performPullToRefresh(using controller: WebViewController?) {
+        beginPullToRefreshFadeOut()
+        Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) {
+                controller?.pullToRefreshActions()
+            }
+    }
+
+    private func beginPullToRefreshFadeOut() {
+        guard !reduceMotion else { return }
+
+        let cycleID = UUID()
+        pullToRefreshFadeCycleID = cycleID
+        isWaitingToFadeInAfterPullToRefresh = true
+        pullToRefreshFadeTask?.cancel()
+
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            contentOpacity = 0
+        }
+
+        pullToRefreshFadeTask = Task { @MainActor in
+            try? await Task.sleep(for: Constants.pullToRefreshFallbackFadeInDelay)
+            guard !Task.isCancelled, pullToRefreshFadeCycleID == cycleID else { return }
+            fadeInAfterPullToRefresh(cycleID: cycleID, delay: .zero)
+        }
+    }
+
+    private func fadeInAfterPullToRefreshIfNeeded() {
+        guard isWaitingToFadeInAfterPullToRefresh, !reduceMotion else { return }
+        fadeInAfterPullToRefresh(cycleID: pullToRefreshFadeCycleID, delay: Constants.pullToRefreshFadeInDelay)
+    }
+
+    private func fadeInAfterPullToRefresh(cycleID: UUID, delay: Duration) {
+        pullToRefreshFadeTask?.cancel()
+        pullToRefreshFadeTask = Task { @MainActor in
+            if delay > .zero {
+                try? await Task.sleep(for: delay)
+            }
+            guard !Task.isCancelled, pullToRefreshFadeCycleID == cycleID else { return }
+            isWaitingToFadeInAfterPullToRefresh = false
+            withAnimation(DesignSystem.Animation.easeInOutFaster) {
+                contentOpacity = 1
+            }
+        }
     }
 
     private func bindObservableChildren() {
@@ -136,6 +193,7 @@ final class HomeAssistantViewModel: ObservableObject {
             .sink { [weak self] isLoading in
                 if isLoading {
                     self?.beginFullScreenLoaderCycle()
+                    self?.fadeInAfterPullToRefreshIfNeeded()
                 } else {
                     self?.pullToRefreshObserver?.finishRefreshing()
                 }

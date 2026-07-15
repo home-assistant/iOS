@@ -16,16 +16,21 @@ struct HomeAssistantView: View, WebFrontendView {
         )
     }
 
-    @ViewBuilder
     private var themedStatusBar: some View {
-        if let color = viewModel.overlayState.statusBarColor {
-            Color(uiColor: color)
-                .ignoresSafeArea()
+        GeometryReader { proxy in
+            if let color = viewModel.overlayState.statusBarColor {
+                Color(uiColor: color)
+                    .frame(height: proxy.safeAreaInsets.top)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .ignoresSafeArea(edges: .top)
+            }
         }
+        .allowsHitTesting(false)
     }
 
     var body: some View {
         ZStack {
+            themedStatusBar
             ZStack(alignment: .topLeading) {
                 homeAssistant
                 pullToRefreshIndicator
@@ -35,12 +40,14 @@ struct HomeAssistantView: View, WebFrontendView {
             noActiveURLState
             standByView
         }
-        .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
         .statusBarHidden(viewModel.chrome.statusBarHidden)
         .persistentSystemOverlays(viewModel.chrome.homeIndicatorHidden ? .hidden : .automatic)
         .onAppear { viewModel.fade(to: 1, reduceMotion: reduceMotion) }
+        .onChange(of: reduceMotion) { reduceMotion in
+            viewModel.updateReduceMotion(reduceMotion)
+        }
         .onDisappear { viewModel.disappear(reduceMotion: reduceMotion) }
     }
 

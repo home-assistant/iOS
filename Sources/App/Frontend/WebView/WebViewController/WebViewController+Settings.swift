@@ -7,6 +7,10 @@ import UIKit
 
 extension WebViewController {
     func styleUI() {
+        styleUI(publishesThemedStatusBar: overlayState?.statusBarColor == nil)
+    }
+
+    func styleUI(publishesThemedStatusBar: Bool) {
         precondition(isViewLoaded && webView != nil)
 
         let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
@@ -20,8 +24,9 @@ extension WebViewController {
             statusBarView.backgroundColor = themedStatusBarColor()
             statusBarView.isOpaque = true
         }
-        // iOS draws the themed status-bar bar in SwiftUI (`HomeAssistantView`) — refresh its colour/visibility.
-        updateThemedStatusBar()
+        if publishesThemedStatusBar {
+            updateThemedStatusBar()
+        }
 
         let headerBackgroundIsLight = cachedColors[.appThemeColor].isLight
         underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent

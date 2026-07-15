@@ -27,4 +27,5 @@ protocol WebViewControllerProtocol: AnyObject {
     func goBack()
     func goForward()
     func styleUI()
+    func styleUI(publishesThemedStatusBar: Bool)
 }

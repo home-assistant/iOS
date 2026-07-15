@@ -27,11 +27,12 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
         scrollView.bounces = true
         scrollView.alwaysBounceVertical = true
         scrollView.panGestureRecognizer.addTarget(self, action: #selector(handlePanGesture(_:)))
-        contentOffsetObservation = scrollView.observe(\.contentOffset, options: [.new]) { [weak self] scrollView, _ in
-            Task { @MainActor in
-                self?.handleContentOffset(scrollView.contentOffset)
+        self.contentOffsetObservation = scrollView
+            .observe(\.contentOffset, options: [.new]) { [weak self] scrollView, _ in
+                Task { @MainActor in
+                    self?.handleContentOffset(scrollView.contentOffset)
+                }
             }
-        }
     }
 
     deinit {
@@ -62,6 +63,15 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
         }
     }
 
+    private func resetScrollPosition() {
+        guard let scrollView else { return }
+        let restingOffset = CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top)
+        UIView.performWithoutAnimation {
+            scrollView.setContentOffset(restingOffset, animated: false)
+            scrollView.layoutIfNeeded()
+        }
+    }
+
     @objc private func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .ended, .cancelled, .failed:
@@ -70,7 +80,9 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
                 return
             }
             isRefreshing = true
-            onStateChange(1, true)
+            didCrossThreshold = false
+            resetScrollPosition()
+            onStateChange(0, false)
             onRefresh()
         default:
             break
