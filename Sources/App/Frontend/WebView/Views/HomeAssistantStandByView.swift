@@ -5,6 +5,13 @@ import SwiftUI
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
 
+    private static let headerAccessorySize = CGSize(width: 44, height: 44)
+    private static let loadingLogoSize = CGSize(width: 115, height: 115)
+    private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
+    private static let reauthenticationIconSize: CGFloat = 56
+    fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
+    fileprivate static let launchScreenLogoPreviewOpacity = 0.55
+
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
@@ -16,8 +23,6 @@ struct HomeAssistantStandByView: View {
     @State private var dismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var hasAppeared = false
-
-    private let headerAccessorySize = CGSize(width: 44, height: 44)
 
     init(
         server: Server,
@@ -44,7 +49,10 @@ struct HomeAssistantStandByView: View {
                 .ignoresSafeArea()
             VStack(spacing: showsEmptyState ? DesignSystem.Spaces.three : DesignSystem.Spaces.five) {
                 iconView
-                    .frame(width: showsEmptyState ? 80 : 96, height: showsEmptyState ? 80 : 96)
+                    .frame(
+                        width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
+                        height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
+                    )
                 if let emptyState {
                     VStack(spacing: DesignSystem.Spaces.one) {
                         Text(emptyState.style.title)
@@ -113,7 +121,7 @@ struct HomeAssistantStandByView: View {
     private var iconView: some View {
         if emptyState?.style == .recoveredServerNeedingReauthentication {
             Image(systemSymbol: .key)
-                .font(.system(size: 56))
+                .font(.system(size: Self.reauthenticationIconSize))
                 .foregroundStyle(Color.haPrimary)
         } else {
             Image(.logo)
@@ -138,7 +146,7 @@ struct HomeAssistantStandByView: View {
         switch accessory {
         case .none:
             Color.clear
-                .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
+                .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
         case .settings:
             ModalReusableButton(
                 icon: .sfSymbol(.gearshape),
@@ -149,7 +157,7 @@ struct HomeAssistantStandByView: View {
             .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
         case .hiddenDismiss:
             Color.clear
-                .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
+                .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
                 .overlay {
                     if isLoading {
                         ProgressView()
@@ -317,6 +325,25 @@ struct HomeAssistantStandByView: View {
         server: ServerFixture.standard,
         emptyState: nil
     )
+}
+
+#Preview("Splash Alignment") {
+    HomeAssistantStandByView(
+        server: ServerFixture.standard,
+        emptyState: nil
+    )
+    .overlay {
+        Image("launchScreen-logo")
+            .resizable()
+            .scaledToFit()
+            .frame(
+                width: HomeAssistantStandByView.launchScreenLogoSize.width,
+                height: HomeAssistantStandByView.launchScreenLogoSize.height
+            )
+            .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
+            .allowsHitTesting(false)
+            .ignoresSafeArea()
+    }
 }
 
 #Preview("Empty State") {
