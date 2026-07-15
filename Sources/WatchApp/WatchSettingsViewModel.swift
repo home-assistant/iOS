@@ -6,6 +6,9 @@ final class WatchSettingsViewModel: ObservableObject {
     @Published private(set) var servers: [Server] = []
     @Published private(set) var lastUpdated: Date?
     @Published private(set) var assistPipelineTitle = L10n.Watch.Config.Assist.selectPipeline
+    /// The Wi-Fi network the watch is currently on, fetched on demand when settings (re)loads.
+    /// Empty when unavailable (e.g. on LTE), which hides the row.
+    @Published private(set) var currentSSID = ""
     /// The home-screen layout (list vs grid). Mirrors the iPhone watch-configuration editor so the user
     /// can switch it directly on the watch. Edits persist locally first and sync to the phone.
     @Published var layout: WatchLayout = WatchConfig().resolvedLayout
@@ -25,6 +28,10 @@ final class WatchSettingsViewModel: ObservableObject {
             self?.lastUpdated = updatedAt
             self?.assistPipelineTitle = assistPipelineTitle
             self?.layout = layout
+        }
+        Task { @MainActor [weak self] in
+            // `currentWiFiSSID()` fetches fresh network information itself.
+            self?.currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
         }
     }
 

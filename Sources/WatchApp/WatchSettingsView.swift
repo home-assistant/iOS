@@ -17,6 +17,7 @@ struct WatchSettingsView: View {
         NavigationView {
             List {
                 serversSection
+                networkSection
                 configurationSection
                 layoutSection
                 performActionSection
@@ -137,6 +138,23 @@ struct WatchSettingsView: View {
             }
         } footer: {
             Text(verbatim: L10n.Watch.Settings.RestartApp.footer)
+        }
+    }
+
+    /// The Wi-Fi network the watch is currently on. Hidden when there's no SSID (e.g. on LTE).
+    @ViewBuilder
+    private var networkSection: some View {
+        if !viewModel.currentSSID.isEmpty {
+            Section {
+                Label {
+                    Text(verbatim: viewModel.currentSSID)
+                        .minimumScaleFactor(0.5)
+                } icon: {
+                    Image(systemSymbol: .wifi)
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            }
         }
     }
 

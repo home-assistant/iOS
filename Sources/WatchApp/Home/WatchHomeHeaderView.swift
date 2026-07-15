@@ -43,7 +43,7 @@ struct WatchHomeHeaderView: View {
             }
         }
         .listRowBackground(Color.clear)
-        .padding(.top, DesignSystem.Spaces.one)
+        .padding(DesignSystem.Spaces.one)
     }
 
     private var doneButton: some View {
@@ -98,10 +98,12 @@ struct WatchHomeHeaderView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
                     if iPhoneNotReachable {
                         Image(systemSymbol: .iphoneSlash)
                             .foregroundStyle(.secondary)
                             .transition(.move(edge: .leading).combined(with: .opacity))
+                            .offset(y: 4)
                     }
                 }
             }
@@ -166,6 +168,16 @@ struct WatchHomeHeaderView: View {
         viewModel: .init(),
         isEditing: .constant(false),
         iPhoneNotReachable: .constant(false),
+        onAssist: {},
+        onAdd: {}
+    )
+}
+
+#Preview("iPhone not reachable") {
+    WatchHomeHeaderView(
+        viewModel: .init(),
+        isEditing: .constant(false),
+        iPhoneNotReachable: .constant(true),
         onAssist: {},
         onAdd: {}
     )
