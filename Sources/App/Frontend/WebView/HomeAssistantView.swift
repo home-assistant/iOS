@@ -10,6 +10,11 @@ import UIKit
 ///
 /// Rendered by `ContainerView` when onboarding is complete; conforms to `WebFrontendView`.
 struct HomeAssistantView: View, WebFrontendView {
+    private enum Constants {
+        static let minimumLoaderDuration: Duration = .seconds(2.5)
+        static let loaderFadeOutDuration: Duration = .seconds(0.5)
+    }
+
     let server: Server
     var onWebViewController: ((WebViewController) -> Void)?
 
@@ -27,6 +32,10 @@ struct HomeAssistantView: View, WebFrontendView {
     @State private var webViewController: WebViewController?
 
     @State private var contentOpacity: Double = 0
+    @State private var isFullScreenLoaderMounted = true
+    @State private var isFullScreenLoaderVisible = true
+    @State private var loaderMinimumDurationElapsed = false
+    @State private var loaderCycleID = UUID()
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -69,6 +78,7 @@ struct HomeAssistantView: View, WebFrontendView {
             }
             .opacity(contentOpacity)
             emptyStates
+            fullScreenLoader
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
@@ -77,6 +87,20 @@ struct HomeAssistantView: View, WebFrontendView {
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
         .onAppear { fade(to: 1) }
         .onDisappear { fade(to: 0) }
+        .onChange(of: overlayState.isLoading) { isLoading in
+            if isLoading {
+                beginFullScreenLoaderCycle()
+            }
+        }
+        .onChange(of: overlayState.connectionState) { _ in
+            updateFullScreenLoaderVisibility()
+        }
+        .task(id: loaderCycleID) {
+            loaderMinimumDurationElapsed = false
+            try? await Task.sleep(for: Constants.minimumLoaderDuration)
+            loaderMinimumDurationElapsed = true
+            updateFullScreenLoaderVisibility()
+        }
     }
 
     private func fade(to opacity: Double) {
@@ -123,11 +147,71 @@ struct HomeAssistantView: View, WebFrontendView {
         }
     }
 
+    @ViewBuilder
+    private var fullScreenLoader: some View {
+        if isFullScreenLoaderMounted, overlayState.emptyState == nil, !overlayState.showsNoActiveURL {
+            FullScreenLoaderView(
+                logo: Image(.logo),
+                retryTitle: L10n.WebView.EmptyState.retryButton,
+                settingsAction: showLoaderSettings,
+                retryAction: retryFullScreenLoader
+            )
+            .opacity(isFullScreenLoaderVisible ? 1 : 0)
+            .allowsHitTesting(isFullScreenLoaderVisible)
+        }
+    }
+
     private func resetWebFrontend() {
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
         webViewController = nil
+        beginFullScreenLoaderCycle()
         webViewResetID = UUID()
+    }
+
+    private func beginFullScreenLoaderCycle() {
+        isFullScreenLoaderMounted = true
+        withAnimation(DesignSystem.Animation.default) {
+            isFullScreenLoaderVisible = true
+        }
+        loaderMinimumDurationElapsed = false
+        overlayState.connectionState = .unknown
+        loaderCycleID = UUID()
+    }
+
+    private func updateFullScreenLoaderVisibility() {
+        guard isFullScreenLoaderMounted,
+              loaderMinimumDurationElapsed,
+              overlayState.connectionState == .connected else { return }
+
+        let finishingCycleID = loaderCycleID
+        withAnimation(DesignSystem.Animation.default) {
+            isFullScreenLoaderVisible = false
+        }
+
+        Task { @MainActor in
+            try? await Task.sleep(for: Constants.loaderFadeOutDuration)
+            guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
+            isFullScreenLoaderMounted = false
+        }
+    }
+
+    private func showLoaderSettings() {
+        if let emptyState = overlayState.emptyState {
+            emptyState.settingsAction()
+        } else {
+            webViewController?.showSettingsViewController()
+        }
+    }
+
+    private func retryFullScreenLoader() {
+        if let emptyState = overlayState.emptyState {
+            emptyState.retryAction()
+        } else if let webViewController {
+            webViewController.retryClearingFrontendCache()
+        } else {
+            resetWebFrontend()
+        }
     }
 
     private func handleWebViewController(_ controller: WebViewController) {

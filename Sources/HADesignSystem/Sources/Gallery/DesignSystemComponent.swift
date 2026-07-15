@@ -18,6 +18,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case bottomSheet
     case floatingPanel
     case progressView
+    case fullScreenLoader
     case pill
 
     public var id: String { rawValue }
@@ -40,6 +41,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .bottomSheet: "Bottom Sheet"
         case .floatingPanel: "Floating Panel"
         case .progressView: "Progress View"
+        case .fullScreenLoader: "Full Screen Loader"
         case .pill: "Pill"
         }
     }
@@ -55,7 +57,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             .inputs
         case .card, .bottomSheet, .floatingPanel:
             .containers
-        case .progressView, .pill:
+        case .progressView, .fullScreenLoader, .pill:
             .indicators
         }
     }
@@ -85,6 +87,23 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                     }
                 }
         case .progressView: HAProgressView(style: .medium)
+        case .fullScreenLoader:
+            ZStack {
+                LinearGradient(
+                    colors: [.blue, .purple, .orange],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                FullScreenLoaderView(
+                    logo: Image(systemName: "house.fill"),
+                    retryTitle: "Retry",
+                    controlsRevealDelay: 2,
+                    settingsAction: {},
+                    retryAction: {}
+                )
+            }
+            .frame(height: 420)
+            .clipped()
         case .pill:
             HStack(spacing: DesignSystem.Spaces.one) {
                 PillView(text: "Selected", selected: true)
