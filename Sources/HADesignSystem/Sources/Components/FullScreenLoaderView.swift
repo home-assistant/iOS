@@ -43,6 +43,11 @@ public struct FullScreenLoaderView: View {
                     .frame(width: 96, height: 96)
                 HAProgressView()
             }
+            .background(
+                RoundedRectangle(cornerRadius: 40)
+                    .frame(width: 130, height: 130)
+                    .blur(radius: 80)
+            )
             if showsDelayedControls {
                 Group {
                     if #available(iOS 26.0, *) {
@@ -120,7 +125,6 @@ private struct FullScreenLoaderPreviewDashboard: View {
                                 .font(DesignSystem.Font.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        .background(Color.black)
                         Spacer(minLength: 0)
                     }
                     .padding(DesignSystem.Spaces.oneAndHalf)
