@@ -4937,6 +4937,10 @@ public enum L10n {
           /// Enter/exit tracked
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.enter_exit_tracked.title") }
         }
+        public enum Filter {
+          /// All servers
+          public static var allServers: String { return L10n.tr("Localizable", "settings_details.location.zones.filter.all_servers") }
+        }
         public enum Location {
           /// Location
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.location.title") }

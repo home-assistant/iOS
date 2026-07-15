@@ -197,12 +197,35 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     }
 
     func formattedDistance(to zone: LocationZoneItem) -> String? {
+        guard let distance = distance(to: zone) else { return nil }
+        return distanceFormatter.string(fromDistance: distance)
+    }
+
+    /// Whether zone rows should identify the server they belong to.
+    var hasMultipleServers: Bool {
+        Current.servers.all.count > 1
+    }
+
+    /// Zones ordered by proximity to the user when a location fix is available,
+    /// alphabetically otherwise.
+    var sortedZones: [LocationZoneItem] {
+        if currentLocation != nil {
+            return zones.sorted {
+                (distance(to: $0) ?? .greatestFiniteMagnitude) < (distance(to: $1) ?? .greatestFiniteMagnitude)
+            }
+        }
+        return zones.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    private func distance(to zone: LocationZoneItem) -> CLLocationDistance? {
         guard let currentLocation else { return nil }
         let zoneLocation = CLLocation(
             latitude: zone.coordinate.latitude,
             longitude: zone.coordinate.longitude
         )
-        return distanceFormatter.string(fromDistance: currentLocation.distance(from: zoneLocation))
+        return currentLocation.distance(from: zoneLocation)
     }
 
     // MARK: - Zones
@@ -260,6 +283,8 @@ struct LocationZoneItem: Identifiable {
     let trackingEnabled: Bool
     let coordinate: CLLocationCoordinate2D
     let radius: Double
+    let serverIdentifier: String
+    let serverName: String?
     let beaconUUID: String?
     let beaconMajor: String?
     let beaconMinor: String?
@@ -270,6 +295,8 @@ struct LocationZoneItem: Identifiable {
         self.trackingEnabled = zone.trackingEnabled
         self.coordinate = zone.center
         self.radius = zone.radius
+        self.serverIdentifier = zone.serverIdentifier
+        self.serverName = Current.servers.server(forServerIdentifier: zone.serverIdentifier)?.info.name
         self.beaconUUID = zone.beaconUUID
         if let major = zone.beaconMajor {
             self.beaconMajor = String(describing: major)

@@ -1471,6 +1471,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.location.zones.directions.title" = "Get directions";
 "settings_details.location.zones.distance.label" = "%@ away";
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
+"settings_details.location.zones.filter.all_servers" = "All servers";
 "settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
 "settings_details.location.zones.header" = "Tracked zones";
 "settings_details.location.zones.location.title" = "Location";

@@ -127,7 +127,7 @@ struct LocationSettingsView: View {
             Section {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
-                        ForEach(viewModel.zones) { zone in
+                        ForEach(viewModel.sortedZones) { zone in
                             NavigationLink {
                                 LocationZoneMapView(
                                     title: zone.name,
@@ -137,7 +137,8 @@ struct LocationSettingsView: View {
                             } label: {
                                 ZoneCardView(
                                     zone: zone,
-                                    distanceText: viewModel.formattedDistance(to: zone)
+                                    distanceText: viewModel.formattedDistance(to: zone),
+                                    serverName: viewModel.hasMultipleServers ? zone.serverName : nil
                                 )
                                 .frame(width: 280)
                             }

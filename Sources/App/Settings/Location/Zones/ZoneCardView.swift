@@ -10,6 +10,8 @@ import SwiftUI
 struct ZoneCardView: View {
     let zone: LocationZoneItem
     let distanceText: String?
+    /// Shown under the zone name; pass only when multiple servers are onboarded.
+    let serverName: String?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -26,8 +28,15 @@ struct ZoneCardView: View {
 
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text(zone.name)
-                        .font(DesignSystem.Font.headline)
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
+                        Text(zone.name)
+                            .font(DesignSystem.Font.headline)
+                        if let serverName {
+                            Text(serverName)
+                                .font(DesignSystem.Font.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                     Spacer()
                     Text(
                         zone.trackingEnabled
@@ -126,7 +135,8 @@ struct ZoneCardView: View {
                     longitude: -122.0090,
                     radius: 100
                 )),
-                distanceText: "1.2 km"
+                distanceText: "1.2 km",
+                serverName: "Home"
             )
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
