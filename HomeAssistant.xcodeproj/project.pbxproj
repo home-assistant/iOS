@@ -1824,7 +1824,6 @@
 		42EDC0723002FC090051FC9B /* Notifications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C13002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Notifications; sourceTree = "<group>"; };
 		42EDC09B3002FC090051FC9B /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C23002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C33002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		42EDC0AD3002FC090051FC9B /* Assets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C43002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C53002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C63002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Assets; sourceTree = "<group>"; };
-		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
 		42EDE685300315A50051FC9B /* Assist */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Assist; sourceTree = "<group>"; };
 		42EDE68E300315A50051FC9B /* BarcodeScanner */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BarcodeScanner; sourceTree = "<group>"; };
 		42EDE699300315A50051FC9B /* Cameras */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Cameras; sourceTree = "<group>"; };
@@ -1842,6 +1841,7 @@
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
+		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
@@ -3002,12 +3002,12 @@
 			);
 			fileSystemSynchronizedGroups = (
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
-				42F467200000000000000001 /* NotificationSender */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				42EDBC003002FBD10051FC9B /* Webhook */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC293002FBD10051FC9B /* Sensors */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
+				42F467200000000000000001 /* NotificationSender */,
 				8881A40916A3424685660E6B /* LiveActivity */,
 			);
 			name = "Tests-Shared";

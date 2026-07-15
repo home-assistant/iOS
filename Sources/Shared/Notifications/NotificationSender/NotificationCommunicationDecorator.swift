@@ -1,6 +1,6 @@
 import Foundation
 import ImageIO
-import Intents
+@preconcurrency import Intents
 import UIKit
 import UserNotifications
 
@@ -74,16 +74,17 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
             sender: person,
             attachments: nil
         )
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             let interaction = INInteraction(intent: intent, response: nil)
             interaction.direction = .incoming
             interaction.donate { error in
                 if let error {
                     Current.Log.error("INInteraction donate failed: \(error)")
                 }
-                continuation.resume(returning: intent)
+                continuation.resume()
             }
         }
+        return intent
     }
 
     private func avatarImage(
