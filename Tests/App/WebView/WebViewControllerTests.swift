@@ -166,6 +166,31 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(handler.cleanCacheCallCount, 0)
     }
 
+    func testFrontendAssetCacheCleanDecisionCleansWhenNeverCleaned() {
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: nil,
+            now: Date(timeIntervalSince1970: 100)
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionSkipsWhenRecentlyCleaned() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertFalse(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval),
+            now: now
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionCleansWhenOlderThanThreeDays() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval - 1),
+            now: now
+        ))
+    }
+
     func testServerErrorResponseDecisionShowsEmptyStateForProxyServerErrors() {
         for statusCode in [500, 502, 503, 521, 522, 523, 524] {
             let decision = WebViewController.decisionForMainFrameErrorResponse(
@@ -264,8 +289,12 @@ final class WebViewControllerTests: XCTestCase {
 
 private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
     private(set) var cleanCacheCallCount = 0
+    private(set) var cleanFrontendAssetCacheIfNeededCallCount = 0
     private(set) var lastDataTypes: Set<String>?
+    var completesFrontendAssetCacheCleanImmediately = true
+    var frontendAssetCacheCleanResult = false
     private var pendingCompletion: (() -> Void)?
+    private var pendingFrontendAssetCacheCompletion: ((Bool) -> Void)?
 
     func cleanCache(dataTypes: Set<String>, completion: (() -> Void)?) {
         cleanCacheCallCount += 1
@@ -273,25 +302,46 @@ private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol
         pendingCompletion = completion
     }
 
+    func cleanFrontendAssetCacheIfNeeded(completion: ((Bool) -> Void)?) {
+        cleanFrontendAssetCacheIfNeededCallCount += 1
+        pendingFrontendAssetCacheCompletion = completion
+        if completesFrontendAssetCacheCleanImmediately {
+            invokePendingFrontendAssetCacheCompletion(didClean: frontendAssetCacheCleanResult)
+        }
+    }
+
     func invokePendingCompletion() {
         let completion = pendingCompletion
         pendingCompletion = nil
         completion?()
+    }
+
+    func invokePendingFrontendAssetCacheCompletion(didClean: Bool) {
+        let completion = pendingFrontendAssetCacheCompletion
+        pendingFrontendAssetCacheCompletion = nil
+        completion?(didClean)
     }
 }
 
 @MainActor
 final class WebViewControllerURLLoadingTests: XCTestCase {
     private var previousRefreshNetworkInformation: (() async -> Void)!
+    private var previousWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol!
+    private var websiteDataStoreHandler: FakeWebsiteDataStoreHandler!
 
     override func setUp() {
         super.setUp()
         previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        previousWebsiteDataStoreHandler = Current.websiteDataStoreHandler
+        websiteDataStoreHandler = FakeWebsiteDataStoreHandler()
         Current.connectivity.refreshNetworkInformation = {}
+        Current.websiteDataStoreHandler = websiteDataStoreHandler
     }
 
     override func tearDown() {
         Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        Current.websiteDataStoreHandler = previousWebsiteDataStoreHandler
+        websiteDataStoreHandler = nil
         super.tearDown()
     }
 
@@ -330,6 +380,36 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         sut.isAppInBackground = { true }
 
         sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    func testLoadActiveURLWaitsForFrontendAssetCacheCleanCheckBeforeLoading() async {
+        let sut = makeSUT()
+        websiteDataStoreHandler.completesFrontendAssetCacheCleanImmediately = false
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 1)
+        XCTAssertNil(sut.loadActiveURLTask)
+
+        websiteDataStoreHandler.invokePendingFrontendAssetCacheCompletion(didClean: true)
+
+        XCTAssertNotNil(sut.loadActiveURLTask)
+        await sut.loadActiveURLTask?.value
+    }
+
+    func testLoadActiveURLRechecksBackgroundStateAfterFrontendAssetCacheCleanCheck() {
+        var isAppInBackground = false
+        let sut = makeSUT()
+        sut.isAppInBackground = { isAppInBackground }
+        websiteDataStoreHandler.completesFrontendAssetCacheCleanImmediately = false
+
+        sut.loadActiveURLIfNeeded()
+        isAppInBackground = true
+        websiteDataStoreHandler.invokePendingFrontendAssetCacheCompletion(didClean: false)
 
         XCTAssertNil(sut.loadActiveURLTask)
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
