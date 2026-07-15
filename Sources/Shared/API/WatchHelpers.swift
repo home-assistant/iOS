@@ -1,32 +1,30 @@
 import Foundation
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 #if os(watchOS)
 import ClockKit
 import WatchKit
 #endif
 
-public enum WatchContext: String, CaseIterable {
-    case servers
-    case complications
-    case complicationConfigs
-    case activeFamilies
-    case watchModel
-    case watchVersion
-    case watchBattery
-    case watchBatteryState
-}
-
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static func watchContext() async -> HAWatchConnectivity.Content {
-        var content: HAWatchConnectivity.Content = Communicator.shared.mostRecentlyReceivedContext.content
+        // Each side sends only the keys it owns (see WatchContext). The sent and received
+        // application contexts are separate dictionaries in WCSession, so nothing is lost by not
+        // echoing the counterpart's keys back — echoing only bloated every update toward the size
+        // cap and could resurrect stale values (e.g. an old battery level bouncing back).
+        var content: HAWatchConnectivity.Content = [:]
 
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
+        //
+        // DEPRECATED wire path: current watch builds ignore these context keys entirely — the
+        // complication tables reach the watch through the database mirror (transferFile/chunked
+        // pull) and land in GRDB directly. They're still sent for one release cycle so older watch
+        // builds keep receiving complications; remove them (and reassess whether the iOS context
+        // sync is needed at all) after that.
+        //
         // Only attach them when the read actually succeeds: sending an empty array on a read failure
         // would look authoritative to the watch and wipe its existing complications. A successful read
         // that happens to be empty IS authoritative (that is how deleting the last one propagates).
@@ -62,6 +60,28 @@ public extension HomeAssistantAPI {
         return content
     }
 
+    /// Sync the context unless it exceeds `updateApplicationContext`'s payload ceiling. On iOS the
+    /// only keys are the complication tables, which the database mirror also carries — and
+    /// `transferFile` has no size cap — so an oversized context is delivered through a mirror push
+    /// instead of failing.
+    private static func syncRespectingSizeLimit(_ context: HAWatchConnectivity.Context) throws {
+        #if os(iOS)
+        if let size = WatchConnectivityManager.estimatePayloadSize(of: context.content),
+           size > WatchMessageSizeLimits.applicationContext {
+            Current.Log.error(
+                "Watch context is \(size) bytes, above the ~262 KB ceiling; delivering via database mirror push instead"
+            )
+            Current.clientEventStore.addEvent(.init(
+                text: "Watch context too large to sync (\(size) bytes); scheduled database mirror push instead",
+                type: .database
+            ))
+            WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
+            return
+        }
+        #endif
+        try Communicator.shared.sync(context)
+    }
+
     static func SyncWatchContext() async -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
@@ -73,7 +93,7 @@ public extension HomeAssistantAPI {
         let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
 
         do {
-            try Communicator.shared.sync(context)
+            try syncRespectingSizeLimit(context)
             Current.Log.info("updated context")
             Current.clientEventStore.addEvent(.init(
                 text: "Synced watch context to Apple Watch (updateApplicationContext)",
@@ -119,7 +139,7 @@ public extension HomeAssistantAPI {
         }
         let context = await HAWatchConnectivity.Context(content: watchContext())
         do {
-            try Communicator.shared.sync(context)
+            try syncRespectingSizeLimit(context)
             Current.Log.info("Watch reload: context synced")
             return .success
         } catch {
@@ -213,8 +233,11 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         let data: Data
+        let digests: [String: String]
         do {
-            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+            let snapshot = try WatchDatabaseMirror.snapshot()
+            data = try snapshot.encodeForWatch()
+            digests = snapshot.tableDigests()
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
             Current.clientEventStore.addEvent(.init(
@@ -228,9 +251,12 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         lastPushedData = data
+        // The digests travel in the file-transfer metadata so the watch can store them after
+        // applying this full mirror — keeping its next delta sync request accurate.
         Communicator.shared.transfer(HAWatchConnectivity.Blob(
             identifier: WatchDatabaseMirror.blobIdentifier,
-            content: data
+            content: data,
+            metadata: [WatchDatabaseMirror.digestsKey: digests]
         )) { result in
             if case let .failure(error) = result {
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")

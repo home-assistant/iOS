@@ -8,6 +8,7 @@
 @_exported import HAIconic
 @_exported import HAModels
 @_exported import HANetworking
+@_exported import HAWatchCommunicationMessages
 #if os(iOS)
 @_exported import HAUtilities
 #endif

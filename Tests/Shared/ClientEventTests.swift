@@ -1,5 +1,4 @@
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import UserNotifications
 import XCTest

@@ -20,7 +20,7 @@
 "component::alarm_control_panel::title" = "Larmkontrollpanel";
 "component::alert::entity_component::_::state::idle" = "Inaktiv";
 "component::alert::entity_component::_::state::on" = "Aktiv";
-"component::alert::title" = "Varna";
+"component::alert::title" = "Alert";
 "component::assist_satellite::title" = "Assist satellit";
 "component::automation::entity_component::_::state::off" = "Av";
 "component::automation::entity_component::_::state::on" = "På";

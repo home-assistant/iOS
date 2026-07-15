@@ -1,29 +1,25 @@
-import RealmSwift
+import GRDB
 import Shared
 import SwiftUI
 
-/// SwiftUI replacement for `NotificationCategoryListViewController`.
-///
 /// Shows local and server-controlled notification categories in separate
 /// sections, supports inserting / deleting local categories, and navigates to
-/// `NotificationCategoryEditorView` for editing. The server-controlled section
-/// is observed via a Realm notification token through `RealmResultsObserver`.
+/// `NotificationCategoryEditorView` for editing. Both sections are observed
+/// via GRDB `ValueObservation` through `DatabaseResultsObserver`.
 struct NotificationCategoryListView: View {
-    @StateObject private var localCategories = RealmResultsObserver<NotificationCategory>(
-        collection: AnyRealmCollection(
-            Current.realm().objects(NotificationCategory.self)
-                .filter("isServerControlled == NO")
-                .sorted(byKeyPath: "Identifier")
-        )
-    )
+    @StateObject private var localCategories = DatabaseResultsObserver<NotificationCategory> { db in
+        try NotificationCategory
+            .filter(Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == false)
+            .order(Column(DatabaseTables.NotificationCategory.identifier.rawValue))
+            .fetchAll(db)
+    }
 
-    @StateObject private var serverCategories = RealmResultsObserver<NotificationCategory>(
-        collection: AnyRealmCollection(
-            Current.realm().objects(NotificationCategory.self)
-                .filter("isServerControlled == YES")
-                .sorted(byKeyPath: "Identifier")
-        )
-    )
+    @StateObject private var serverCategories = DatabaseResultsObserver<NotificationCategory> { db in
+        try NotificationCategory
+            .filter(Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == true)
+            .order(Column(DatabaseTables.NotificationCategory.identifier.rawValue))
+            .fetchAll(db)
+    }
 
     @State private var editingCategory: NotificationCategory?
     @State private var showingNewCategory = false
@@ -60,12 +56,12 @@ struct NotificationCategoryListView: View {
 
     private var localSection: some View {
         Section(header: Text(L10n.SettingsDetails.Notifications.Categories.header)) {
-            ForEach(localCategories.items, id: \.Identifier) { category in
+            ForEach(localCategories.items, id: \.identifier) { category in
                 Button {
                     editingCategory = category
                 } label: {
                     HStack {
-                        Text(category.Name.isEmpty ? category.Identifier : category.Name)
+                        Text(category.name.isEmpty ? category.identifier : category.name)
                             .foregroundColor(.primary)
                         Spacer()
                         Image(systemSymbol: .chevronRight)
@@ -97,12 +93,12 @@ struct NotificationCategoryListView: View {
                 Text(L10n.SettingsDetails.Notifications.CategoriesSynced.empty)
                     .foregroundColor(.secondary)
             } else {
-                ForEach(serverCategories.items, id: \.Identifier) { category in
+                ForEach(serverCategories.items, id: \.identifier) { category in
                     Button {
                         editingCategory = category
                     } label: {
                         HStack {
-                            Text(category.Name.isEmpty ? category.Identifier : category.Name)
+                            Text(category.name.isEmpty ? category.identifier : category.name)
                                 .foregroundColor(.primary)
                             Spacer()
                             Image(systemSymbol: .chevronRight)
@@ -119,16 +115,13 @@ struct NotificationCategoryListView: View {
 
     private func deleteLocal(at offsets: IndexSet) {
         let removed = offsets.map { localCategories.items[$0] }
-        let identifiers = removed.map(\.Identifier)
+        let identifiers = removed.map(\.identifier)
 
         guard !identifiers.isEmpty else { return }
 
         Current.Log.verbose("Deleting local notification categories: \(identifiers)")
 
-        let realm = Current.realm()
-        realm.reentrantWrite {
-            realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", identifiers))
-        }
+        NotificationCategory.delete(identifiers: identifiers)
     }
 
     @ViewBuilder
@@ -136,10 +129,7 @@ struct NotificationCategoryListView: View {
         NavigationView {
             NotificationCategoryEditorView(category: category) { savedCategory in
                 if let saved = savedCategory {
-                    let realm = Current.realm()
-                    realm.reentrantWrite {
-                        realm.add(saved, update: .all)
-                    }
+                    saved.save()
                 }
                 editingCategory = nil
                 showingNewCategory = false

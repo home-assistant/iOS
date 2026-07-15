@@ -51,7 +51,7 @@
 		11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */; };
 		1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1182620924F9D2EE000795C6 /* CoreMediaIO.framework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (Weak, ); }; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
-		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
+		11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* AppZone.test.swift */; };
 		119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C786625CF845800D41734 /* LocalizedStrings.test.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -162,6 +162,7 @@
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
+		42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */; };
 		42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */; };
 		42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CAF2FFD4BD5002457D9 /* ObjectMapper */; };
 		42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CB12FFD4BE5002457D9 /* ObjectMapper */; };
@@ -169,6 +170,14 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
+		42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */; };
+		42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */; };
+		42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */; };
+		42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */; };
+		42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */; };
+		42DF97B430066D95003B7FA1 /* JinjaTemplateEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */; };
+		42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */; };
+		42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
@@ -229,6 +238,8 @@
 		B7104E0100000000000000C2 /* NotificationHistoryStore.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7104E0100000000000000C1 /* NotificationHistoryStore.test.swift */; };
 		BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */; };
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
+		CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */; };
+		CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */; };
 		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
 		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
 		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
@@ -254,6 +265,7 @@
 		DE51600000000000000000F3 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F2 /* HANetworking */; };
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
+		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -566,7 +578,7 @@
 		11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.test.swift; sourceTree = "<group>"; };
 		1182620924F9D2EE000795C6 /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/CoreMediaIO.framework; sourceTree = DEVELOPER_DIR; };
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
-		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
+		11883CC624C131EE0036A6C6 /* AppZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppZone.test.swift; sourceTree = "<group>"; };
 		118A93322520411100227076 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		119C786625CF845800D41734 /* LocalizedStrings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.test.swift; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
@@ -604,8 +616,17 @@
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
+		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
+		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
+		42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.swift; sourceTree = "<group>"; };
+		42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaSyntaxHighlighter.swift; sourceTree = "<group>"; };
+		42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTextEditor.swift; sourceTree = "<group>"; };
+		42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.test.swift; sourceTree = "<group>"; };
+		42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateEditorSheet.swift; sourceTree = "<group>"; };
+		42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateButton.swift; sourceTree = "<group>"; };
+		42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntitySuggestionsView.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
@@ -654,6 +675,7 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -698,12 +720,16 @@
 				AppIntents/UpdateLocationAppIntent.swift,
 				AppIntents/UpdateSensorsAppIntent.swift,
 				AppIntents/Widget/Details/WidgetDetailsAppIntent.swift,
+				AppIntents/Widget/Details/WidgetDetailsAttributeAppEntity.swift,
 				AppIntents/Widget/Gauge/WidgetGaugeAppIntent.swift,
 				AppIntents/Widget/Gauge/WidgetGaugeAppIntentTimelineProvider.swift,
+				AppIntents/Widget/Gauge/WidgetGaugeAttributeAppEntity.swift,
 				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
 				AppIntents/Widget/Script/WidgetScriptsAppIntent.swift,
 				AppIntents/Widget/Sensor/WidgetSensorsAppIntent.swift,
 				AppIntents/Widget/Sensor/WidgetSensorsConfig.swift,
+				AppIntents/Widget/WidgetContentSourceAppEnum.swift,
+				AppIntents/Widget/WidgetEntityAttributes.swift,
 				Widgets/Assist/AssistAppIntent.swift,
 				Widgets/Assist/Control/ControlAssistValueProvider.swift,
 				Widgets/Common/TileCardStyleModifier.swift,
@@ -986,7 +1012,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Extensions/NSLayoutConstraint+Additions.swift",
-				"Extensions/ObjectMapper+RealmList.swift",
 			);
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 		};
@@ -994,7 +1019,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Extensions/NSLayoutConstraint+Additions.swift",
-				"Extensions/ObjectMapper+RealmList.swift",
 				"Extensions/View+HA.swift",
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
@@ -1169,6 +1193,8 @@
 				AppleWatch/Complications/ComplicationFamilySelectView.swift,
 				AppleWatch/Complications/ComplicationListView.swift,
 				AppleWatch/Complications/ComplicationListViewModel.swift,
+				AppleWatch/Complications/ComplicationsRootView.swift,
+				AppleWatch/Complications/ComplicationsRootViewModel.swift,
 				AppleWatch/Complications/IconSearchPicker.swift,
 				AppleWatch/Complications/LoadingButton.swift,
 				AppleWatch/Complications/Preview/AllFamiliesComplicationPreview.swift,
@@ -1180,6 +1206,8 @@
 				AppleWatch/Complications/Preview/RectangularGaugePreview.swift,
 				AppleWatch/Complications/Preview/WatchComplicationLivePreview.swift,
 				AppleWatch/Complications/TemplatePreviewSection.swift,
+				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
+				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationView.swift,
@@ -1191,7 +1219,7 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/NotificationIdentifierField.swift,
-				Components/RealmResultsObserver.swift,
+				Components/DatabaseResultsObserver.swift,
 				Components/YamlPreviewSection.swift,
 				Connection/ConnectionSettingsView.swift,
 				Connection/ConnectionSettingsViewModel.swift,
@@ -1199,6 +1227,8 @@
 				Connection/ConnectionURLViewModel.swift,
 				DatabaseExplorer/DatabaseExplorerView.swift,
 				DatabaseExplorer/DatabaseTableDetailView.swift,
+				DebugDatabaseTransfer.swift,
+				DebugDatabaseTransferSection.swift,
 				DebugView.swift,
 				EntityPicker/EntityFilterPickerView.swift,
 				EntityPicker/EntityPicker.swift,
@@ -1245,12 +1275,15 @@
 				Notifications/NotificationCategoryEditorView.swift,
 				Notifications/NotificationCategoryListView.swift,
 				Notifications/NotificationDebugNotificationsView.swift,
+				Notifications/NotificationDebugView.swift,
+				Notifications/NotificationDebugViewModel.swift,
 				Notifications/NotificationHistoryView.swift,
 				Notifications/NotificationRateLimitsAPI.swift,
 				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
+				Notifications/NotificationsShareSheet.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
@@ -1291,6 +1324,8 @@
 				AppleWatch/Complications/ComplicationFamilySelectView.swift,
 				AppleWatch/Complications/ComplicationListView.swift,
 				AppleWatch/Complications/ComplicationListViewModel.swift,
+				AppleWatch/Complications/ComplicationsRootView.swift,
+				AppleWatch/Complications/ComplicationsRootViewModel.swift,
 				AppleWatch/Complications/IconSearchPicker.swift,
 				AppleWatch/Complications/LoadingButton.swift,
 				AppleWatch/Complications/Preview/AllFamiliesComplicationPreview.swift,
@@ -1302,6 +1337,8 @@
 				AppleWatch/Complications/Preview/RectangularGaugePreview.swift,
 				AppleWatch/Complications/Preview/WatchComplicationLivePreview.swift,
 				AppleWatch/Complications/TemplatePreviewSection.swift,
+				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
+				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationView.swift,
@@ -1313,7 +1350,7 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/NotificationIdentifierField.swift,
-				Components/RealmResultsObserver.swift,
+				Components/DatabaseResultsObserver.swift,
 				Components/YamlPreviewSection.swift,
 				Connection/ConnectionSettingsView.swift,
 				Connection/ConnectionSettingsViewModel.swift,
@@ -1321,6 +1358,8 @@
 				Connection/ConnectionURLViewModel.swift,
 				DatabaseExplorer/DatabaseExplorerView.swift,
 				DatabaseExplorer/DatabaseTableDetailView.swift,
+				DebugDatabaseTransfer.swift,
+				DebugDatabaseTransferSection.swift,
 				DebugView.swift,
 				EntityPicker/EntityFilterPickerView.swift,
 				EntityPicker/EntityPicker.swift,
@@ -1367,12 +1406,15 @@
 				Notifications/NotificationCategoryEditorView.swift,
 				Notifications/NotificationCategoryListView.swift,
 				Notifications/NotificationDebugNotificationsView.swift,
+				Notifications/NotificationDebugView.swift,
+				Notifications/NotificationDebugViewModel.swift,
 				Notifications/NotificationHistoryView.swift,
 				Notifications/NotificationRateLimitsAPI.swift,
 				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
+				Notifications/NotificationsShareSheet.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
@@ -1419,6 +1461,13 @@
 				DeviceRegistryEntry.swift,
 				DeviceWrapper.swift,
 				DeviceWrapperBatteryObserver.swift,
+				EntityFuzzySearch/BitapSearcher.swift,
+				EntityFuzzySearch/EntityFuzzySearchIndex.swift,
+				EntityFuzzySearch/FuzzyDocument.swift,
+				EntityFuzzySearch/FuzzyFieldNorm.swift,
+				EntityFuzzySearch/FuzzyKey.swift,
+				EntityFuzzySearch/FuzzySearcher.swift,
+				EntityFuzzySearch/FuzzyTextNormalizer.swift,
 				Environment.swift,
 				FocusStatusWrapper.swift,
 				HomeViewConfigurationTable.swift,
@@ -2033,6 +2082,7 @@
 				DE51600000000000000000D5 /* HAIconic in Frameworks */,
 				DE51600000000000000000F5 /* HANetworking in Frameworks */,
 				DE51600000000000000000E5 /* HAModels in Frameworks */,
+				CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
@@ -2067,6 +2117,7 @@
 				DE51600000000000000000D3 /* HAIconic in Frameworks */,
 				DE51600000000000000000F3 /* HANetworking in Frameworks */,
 				DE51600000000000000000E3 /* HAModels in Frameworks */,
+				CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */,
 				DE51600000000000000000C3 /* HAUtilities in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
@@ -2163,6 +2214,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		42DF194F30065055003B7FA1 /* Templating */ = {
+			isa = PBXGroup;
+			children = (
+				42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */,
+				42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */,
+				42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */,
+				42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */,
+				42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */,
+				42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */,
+				42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */,
+				42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */,
+			);
+			path = Templating;
+			sourceTree = "<group>";
+		};
+		42DF97B0300669B9003B7FA1 /* Templating */ = {
+			isa = PBXGroup;
+			children = (
+				42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */,
+			);
+			path = Templating;
+			sourceTree = "<group>";
+		};
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -2188,7 +2262,9 @@
 				42EDE941300315A50051FC9B /* HAApp.swift */,
 				42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */,
 				42EDE943300315A50051FC9B /* LifecycleManager.swift */,
+				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
+				42DF194F30065055003B7FA1 /* Templating */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2274,6 +2350,7 @@
 				42EDBBCD3002FBC90051FC9B /* WebView */,
 				42EDBBB63002FBC90051FC9B /* Widgets */,
 				42EDBBAD3002FBC90051FC9B /* ZoneManager */,
+				42DF97B0300669B9003B7FA1 /* Templating */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2359,7 +2436,7 @@
 				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
 				11CB98CC249E637300B05222 /* Version+HA.test.swift */,
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
-				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
+				11883CC624C131EE0036A6C6 /* AppZone.test.swift */,
 				42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
@@ -2852,6 +2929,7 @@
 				DE51600000000000000000D4 /* HAIconic */,
 				DE51600000000000000000F4 /* HANetworking */,
 				DE51600000000000000000E4 /* HAModels */,
+				CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
@@ -2969,6 +3047,7 @@
 				DE51600000000000000000D2 /* HAIconic */,
 				DE51600000000000000000F2 /* HANetworking */,
 				DE51600000000000000000E2 /* HAModels */,
+				CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */,
 				DE51600000000000000000C2 /* HAUtilities */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
 				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
@@ -3245,6 +3324,7 @@
 				DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */,
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
+				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
@@ -3651,9 +3731,18 @@
 			files = (
 				42EDEB10300315A50051FC9B /* AppDelegate.swift in Sources */,
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
+				42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */,
+				42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */,
+				42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */,
+				42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
+				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
+				42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
+				42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */,
+				42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */,
+				42DF97B430066D95003B7FA1 /* JinjaTemplateEditorSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3661,6 +3750,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
@@ -3752,7 +3842,7 @@
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
-				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
+				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
@@ -5047,6 +5137,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
+		CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAWatchCommunicationMessages;
+		};
 		DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HADesignSystem;
@@ -5614,6 +5708,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */;
 			productName = CallbackURLKit;
+		};
+		CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
+		};
+		CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
+			productName = HAWatchCommunicationMessages;
 		};
 		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;

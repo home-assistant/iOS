@@ -16,6 +16,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case textField
     case card
     case bottomSheet
+    case floatingPanel
     case progressView
     case pill
 
@@ -37,6 +38,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .textField: "Text Field"
         case .card: "Card"
         case .bottomSheet: "Bottom Sheet"
+        case .floatingPanel: "Floating Panel"
         case .progressView: "Progress View"
         case .pill: "Pill"
         }
@@ -51,7 +53,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             .controls
         case .textField:
             .inputs
-        case .card, .bottomSheet:
+        case .card, .bottomSheet, .floatingPanel:
             .containers
         case .progressView, .pill:
             .indicators
@@ -74,6 +76,14 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .textField: HATextField(placeholder: "Placeholder", text: .constant("Example"))
         case .card: CardView { Text("Card content").frame(maxWidth: .infinity, alignment: .leading) }
         case .bottomSheet: BottomSheetGalleryDemo()
+        case .floatingPanel:
+            Color.clear
+                .frame(height: 320)
+                .overlay {
+                    FloatingPanel(initialCorner: .topTrailing) {
+                        Text("Drag me").padding()
+                    }
+                }
         case .progressView: HAProgressView(style: .medium)
         case .pill:
             HStack(spacing: DesignSystem.Spaces.one) {

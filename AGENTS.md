@@ -9,6 +9,13 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 - **Build System**: Xcode 26.2+, Swift Package Manager
 - **Project**: Open `HomeAssistant.xcodeproj` directly (dependencies are managed via Swift Package Manager)
 
+## Non-Negotiable Conventions
+
+These apply to every change, even if you don't load the matching skill:
+
+- **One type per file**: each `struct`/`class`/`enum` lives in its own file named after the type — never stack multiple top-level types (especially SwiftUI `View` structs) in one file. Small `private` helper types nested inside the type are the only exception. Every SwiftUI view ships with a `#Preview`. See [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) for the full UI rules.
+- **SwiftUI confirmations stay on the trigger**: apply `.confirmationDialog` directly to the `Button` that opens it, not to a parent `List`, `Section`, or container view. This keeps confirmation ownership local and avoids dialogs firing from unrelated controls.
+
 ## Skills
 
 | Skill | Load it when you are… |

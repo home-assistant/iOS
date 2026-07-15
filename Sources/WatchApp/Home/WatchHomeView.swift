@@ -13,6 +13,8 @@ struct WatchHomeView: View {
     @State private var openFolderId: String?
     @State private var isEditing = false
     @State private var activeSheet: HomeSheet?
+    @State private var iPhoneNotReachable = false
+    @State private var reachabilityToken: HAWatchConnectivity.ObservationToken?
     /// Latched copy of the sync error so the alert stays up until the user acts. The view model's
     /// `showError` gets cleared by later syncs (`clearError()`/`loadCache`), which would otherwise
     /// auto-dismiss the alert and make it flash by.
@@ -156,6 +158,9 @@ struct WatchHomeView: View {
                 AssistDefaultComplication.pendingLaunch = false
                 showAssist = true
             }
+            updateIPhoneReachability(Communicator.shared.currentReachability)
+            startReachabilityObservation()
+            Communicator.shared.refreshConnectivityState()
             guard autoLoad else { return }
             viewModel.startNetworkMonitoring()
             Task {
@@ -163,9 +168,13 @@ struct WatchHomeView: View {
                 viewModel.initialRoutine()
             }
         }
+        .onDisappear {
+            stopReachabilityObservation()
+        }
         .onChange(of: scenePhase) { newValue in
             switch newValue {
             case .active:
+                Communicator.shared.refreshConnectivityState()
                 Task {
                     await viewModel.fetchNetworkInfo()
                 }
@@ -179,12 +188,32 @@ struct WatchHomeView: View {
         }
     }
 
+    private func startReachabilityObservation() {
+        guard reachabilityToken == nil else { return }
+        reachabilityToken = Communicator.shared.reachability.observe { reachability in
+            updateIPhoneReachability(reachability)
+        }
+    }
+
+    private func stopReachabilityObservation() {
+        guard let reachabilityToken else { return }
+        Communicator.shared.reachability.unobserve(reachabilityToken)
+        self.reachabilityToken = nil
+    }
+
+    private func updateIPhoneReachability(_ reachability: HAWatchConnectivity.Reachability) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            iPhoneNotReachable = reachability == .notReachable
+        }
+    }
+
     @ViewBuilder
     private var content: some View {
         List {
             WatchHomeHeaderView(
                 viewModel: viewModel,
                 isEditing: $isEditing,
+                iPhoneNotReachable: $iPhoneNotReachable,
                 onAssist: { showAssist = true },
                 onAdd: { activeSheet = .add }
             )

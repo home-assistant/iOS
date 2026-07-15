@@ -1,6 +1,6 @@
 import Foundation
+import GRDB
 import KeychainAccess
-import RealmSwift
 import SafariServices
 import Security
 import Shared
@@ -26,8 +26,37 @@ func resetStores() {
     let bundleId = Bundle.main.bundleIdentifier!
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
+    prefs.removePersistentDomain(forName: AppConstants.AppGroupID)
 
-    Realm.reset()
+    do {
+        try Current.database().eraseAllData()
+    } catch {
+        Current.Log.error("Error when trying to delete everything from the app database: \(error)")
+    }
+
+    Current.notificationHistoryStore.clearAllEntries()
+    removeAppCache(at: AppConstants.widgetsCacheURL)
+    removeAppCache(at: AppConstants.watchMagicItemsInfo)
+
+    // Clearing the app group defaults above also clears the Realm→GRDB
+    // migration flag, so drop the legacy store too or the importer would
+    // repopulate GRDB from it on the next launch.
+    RealmToGRDBMigration.deleteLegacyStore()
+
+    Current.clientEventStore.addEvent(ClientEvent(
+        text: L10n.Settings.Debugging.ResetApp.clientEvent,
+        type: .settings
+    ))
+}
+
+private func removeAppCache(at url: URL) {
+    guard FileManager.default.fileExists(atPath: url.path) else { return }
+
+    do {
+        try FileManager.default.removeItem(at: url)
+    } catch {
+        Current.Log.error("Error when trying to delete app cache at \(url.path): \(error)")
+    }
 }
 
 func deleteKeychainCompletely() throws {

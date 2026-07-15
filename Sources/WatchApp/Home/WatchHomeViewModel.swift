@@ -113,9 +113,14 @@ final class WatchHomeViewModel: ObservableObject {
     /// it wasn't immediately reachable. Used as a fallback when the interactive request can't run or
     /// times out.
     private func enqueueGuaranteedConfigPull() {
-        Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
-            identifier: InteractiveImmediateMessages.watchConfig.rawValue
-        ))
+        let identifier = InteractiveImmediateMessages.watchConfig.rawValue
+        // Every reload while unreachable would otherwise queue another transferUserInfo, and the
+        // phone would answer each with a full config payload once it wakes.
+        guard !Communicator.shared.hasOutstandingGuaranteedMessage(identifier: identifier) else {
+            Current.Log.info("Skipping guaranteed config pull: one is already queued")
+            return
+        }
+        Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(identifier: identifier))
     }
 
     func startNetworkMonitoring() {
@@ -187,7 +192,7 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.reconcile(with: message) }
             }
-        ), errorHandler: { [weak self] error in
+        ), coalescingKey: InteractiveImmediateMessages.watchConfig.rawValue, errorHandler: { [weak self] error in
             // iPhone unreachable / slow / no reply within the timeout: fall back to the cached config so
             // the screen never hangs, and queue a background pull that survives the phone being asleep.
             Current.Log.error("Watch config request failed: \(error.localizedDescription)")
@@ -288,9 +293,19 @@ final class WatchHomeViewModel: ObservableObject {
             adopt(phoneConfig: nil, itemsInfo: [])
             return
         }
+        let configData: Data
+        do {
+            configData = try config.encodeForWatch()
+        } catch {
+            // The local copy stays as-is; it'll sync (or conflict-prompt) on the next reload.
+            Current.Log.error("Failed to encode local watch config for push: \(error.localizedDescription)")
+            loadCache()
+            updateLoading(isLoading: false)
+            return
+        }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
-            content: ["config": config.encodeForWatch()],
+            content: ["config": configData],
             reply: { [weak self] message in
                 Task { @MainActor in self?.adoptPushReply(message) }
             }
@@ -316,11 +331,22 @@ final class WatchHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Chunked database sync (watch-driven, ordered, acknowledged)
+    // MARK: - Chunked database sync (watch-driven, pipelined, assembled in index order)
 
     private var syncTransferId: String?
     private var syncTotalChunks = 0
-    private var syncAccumulated = Data()
+    /// Received chunks by index; assembled in order once complete, so replies may arrive out of
+    /// order without corrupting the payload.
+    private var syncChunks: [Int: Data] = [:]
+    /// Next chunk index that hasn't been requested yet.
+    private var syncNextIndexToRequest = 0
+    /// Digests issued with the sync-start reply; stored as the new baseline only after the mirror
+    /// actually applies, so a failed sync keeps requesting the same tables.
+    private var syncResponseDigests: [String: String]?
+    /// How many chunk requests may be outstanding at once. Overlapping requests hide the
+    /// per-message round-trip latency that made the sync strictly serial (one full round trip per
+    /// 30 KB chunk).
+    private static let syncPipelineWindow = 3
 
     /// Kick off a full database sync. Requires the phone reachable (interactive request/reply); if it
     /// isn't, surface a friendly message rather than hang, and still try the config pull from cache.
@@ -331,12 +357,18 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         resetSyncState()
+        // Echo the digests from the last applied mirror so the phone can omit unchanged tables.
+        var content: [String: Any] = [:]
+        if let digests = WatchUserDefaults.shared.databaseMirrorDigests {
+            content[WatchDatabaseMirror.digestsKey] = digests
+        }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirror.rawValue,
+            content: content,
             reply: { [weak self] message in
                 Task { @MainActor in self?.handleDatabaseSyncStart(message) }
             }
-        ), errorHandler: { [weak self] error in
+        ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
                 self?.failSync(
@@ -362,27 +394,42 @@ final class WatchHomeViewModel: ObservableObject {
         }
         syncTransferId = transferId
         syncTotalChunks = totalChunks
-        syncAccumulated = Data()
+        syncChunks = [:]
+        syncNextIndexToRequest = 0
+        syncResponseDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
         Current.clientEventStore.addEvent(.init(
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
             type: .database
         ))
         setLoadingStatus(L10n.Watch.Sync.progress(0, totalChunks))
         syncProgress = 0
-        pullChunk(index: 0)
+        requestChunksUpToWindow()
+    }
+
+    /// Keep up to `syncPipelineWindow` chunk requests in flight, requesting indices in order.
+    @MainActor
+    private func requestChunksUpToWindow() {
+        guard let transferId = syncTransferId else { return }
+        while syncNextIndexToRequest < syncTotalChunks,
+              syncNextIndexToRequest - syncChunks.count < Self.syncPipelineWindow {
+            pullChunk(index: syncNextIndexToRequest, transferId: transferId)
+            syncNextIndexToRequest += 1
+        }
     }
 
     @MainActor
-    private func pullChunk(index: Int) {
-        guard let transferId = syncTransferId else { return }
+    private func pullChunk(index: Int, transferId: String) {
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirrorChunk.rawValue,
             content: ["transferId": transferId, "index": index],
             reply: { [weak self] message in
-                Task { @MainActor in self?.handleChunk(message, index: index) }
+                Task { @MainActor in self?.handleChunk(message, index: index, transferId: transferId) }
             }
-        ), errorHandler: { [weak self] error in
+        ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
+                // Only the transfer that's still running may fail the sync; a straggler error from
+                // a transfer that already failed (which reset the state) is just noise.
+                guard self?.syncTransferId == transferId else { return }
                 Current.Log.error("Database sync chunk \(index) failed: \(error.localizedDescription)")
                 self?.failSync(
                     L10n.Watch.Sync.Error.generic,
@@ -393,7 +440,9 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int) {
+    private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int, transferId: String) {
+        // A late reply from a transfer that already failed or was replaced must not corrupt this one.
+        guard syncTransferId == transferId else { return }
         guard message.content["error"] == nil, let chunk = message.content["chunkData"] as? Data else {
             let phoneError = message.content["error"] as? String
             failSync(
@@ -403,20 +452,22 @@ final class WatchHomeViewModel: ObservableObject {
             )
             return
         }
-        syncAccumulated.append(chunk)
-        let received = index + 1
+        syncChunks[index] = chunk
+        let received = syncChunks.count
         setLoadingStatus(L10n.Watch.Sync.progress(received, syncTotalChunks))
         syncProgress = Double(received) / Double(syncTotalChunks)
-        if received < syncTotalChunks {
-            pullChunk(index: received)
-        } else {
+        if received == syncTotalChunks {
             finishDatabaseSync()
+        } else {
+            requestChunksUpToWindow()
         }
     }
 
     @MainActor
     private func finishDatabaseSync() {
-        let data = syncAccumulated
+        let chunks = syncChunks
+        let data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
+        let responseDigests = syncResponseDigests
         resetSyncState()
         let mirror: WatchDatabaseMirror
         do {
@@ -427,6 +478,8 @@ final class WatchHomeViewModel: ObservableObject {
         }
         do {
             try mirror.apply()
+            // Only a successfully applied mirror advances the delta-sync baseline.
+            WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
             Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
             Current.clientEventStore.addEvent(.init(
                 text: "Apple Watch database sync applied (\(data.count) bytes)",
@@ -474,7 +527,9 @@ final class WatchHomeViewModel: ObservableObject {
     private func resetSyncState() {
         syncTransferId = nil
         syncTotalChunks = 0
-        syncAccumulated = Data()
+        syncChunks = [:]
+        syncNextIndexToRequest = 0
+        syncResponseDigests = nil
         syncProgress = nil
     }
 
@@ -504,9 +559,13 @@ final class WatchHomeViewModel: ObservableObject {
             if watchConfig.items.isEmpty {
                 displayError(message: L10n.Watch.Config.Cache.Error.message)
             }
-            updateLoading(isLoading: false)
+            finishCacheLoad()
             return
         }
+
+        // Put the database-backed config on screen immediately. Item metadata can resolve a moment later,
+        // but the user should not see the empty state while cached rows already exist.
+        updateConfig(config: config, magicItemsInfo: magicItemsInfo)
 
         let provider = Current.magicItemProvider()
         provider.loadInformation { [weak self] _ in
@@ -523,25 +582,30 @@ final class WatchHomeViewModel: ObservableObject {
                 }
                 self.updateConfig(config: config, magicItemsInfo: infos)
                 self.resetError()
-                self.updateLoading(isLoading: false)
+                self.finishCacheLoad()
             }
         }
     }
 
+    @MainActor
     private func updateConfig(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) {
-        DispatchQueue.main.async { [weak self] in
-            self?.watchConfig = config
-            self?.magicItemsInfo = magicItemsInfo
-            self?.configVersion = UUID()
+        watchConfig = config
+        self.magicItemsInfo = magicItemsInfo
+        configVersion = UUID()
 
-            if config.assist.showAssist,
-               config.assist.serverId != nil,
-               config.assist.pipelineId != nil {
-                self?.showAssist = true
-            } else {
-                self?.showAssist = false
-            }
+        if config.assist.showAssist,
+           config.assist.serverId != nil,
+           config.assist.pipelineId != nil {
+            showAssist = true
+        } else {
+            showAssist = false
         }
+    }
+
+    @MainActor
+    private func finishCacheLoad() {
+        guard !isSyncInFlight else { return }
+        updateLoading(isLoading: false)
     }
 
     private func updateLoading(isLoading: Bool) {

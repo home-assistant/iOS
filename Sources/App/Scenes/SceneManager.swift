@@ -41,7 +41,7 @@ protocol AppCoordinator: AnyObject {
     var window: UIWindow? { get }
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
     func show(alert: ServerAlert)
-    func showSettings()
+    func showSettings(pushOntoNavigationStack: Bool)
     func showAssistSettings()
     func showDownloadManager(_ viewModel: DownloadManagerViewModel)
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID])
@@ -69,6 +69,10 @@ protocol AppCoordinator: AnyObject {
 extension AppCoordinator {
     func present(_ viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
+    }
+
+    func showSettings() {
+        showSettings(pushOntoNavigationStack: false)
     }
 
     /// Convenience matching the old default arguments (`skipConfirm`/`avoidUnnecessaryReload` = false).
@@ -161,22 +165,6 @@ final class SceneManager {
     init() {
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
         (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
-
-        // swiftlint:disable prohibit_environment_assignment
-        Current.realmFatalPresentation = { [weak self] viewController in
-            guard let self else { return }
-
-            let under = UIViewController()
-            under.view.backgroundColor = .black
-            under.modalPresentationStyle = .fullScreen
-
-            appCoordinator.done { parent in
-                parent.present(under, animated: false, completion: {
-                    under.present(viewController, animated: true, completion: nil)
-                })
-            }
-        }
-        // swiftlint:enable prohibit_environment_assignment
     }
 
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {

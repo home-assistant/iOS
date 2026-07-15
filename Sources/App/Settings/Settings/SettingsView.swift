@@ -2,6 +2,8 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
+    var embedInOwnNavigation: Bool = true
+
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
@@ -86,16 +88,20 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var iOSView: some View {
-        iOSViewModern
+        if embedInOwnNavigation {
+            NavigationStack {
+                iOSNavigationContent
+            }
+        } else {
+            iOSNavigationContent
+        }
     }
 
-    private var iOSViewModern: some View {
-        NavigationStack {
-            iOSListContent
-                .navigationDestination(for: SettingsItem.self) { item in
-                    item.destinationView
-                }
-        }
+    private var iOSNavigationContent: some View {
+        iOSListContent
+            .navigationDestination(for: SettingsItem.self) { item in
+                item.destinationView
+            }
     }
 
     private var iOSListContent: some View {
@@ -219,7 +225,7 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
+                if embedInOwnNavigation, !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
                     CloseButton {
                         dismiss()
                     }

@@ -275,7 +275,7 @@ struct WatchConfigAvailableItems_test {
             .init(serverId: "server2", serverName: "Cabin", candidates: []),
         ])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchConfigAvailableItems.decodeForWatch(data))
 
         #expect(decoded.servers.count == 2)
@@ -327,18 +327,79 @@ struct WatchDatabaseMirror_test {
         )
         let original = WatchDatabaseMirror(entities: [entity], areas: [area], pipelines: [pipelines])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
 
         #expect(decoded.entities == [entity])
         #expect(decoded.areas == [area])
-        #expect(decoded.pipelines.count == 1)
-        #expect(decoded.pipelines.first?.serverId == "server1")
-        #expect(decoded.pipelines.first?.pipelines.first?.id == "pref")
+        #expect(decoded.pipelines?.count == 1)
+        #expect(decoded.pipelines?.first?.serverId == "server1")
+        #expect(decoded.pipelines?.first?.pipelines.first?.id == "pref")
     }
 
     @Test func decodeInvalidDataReturnsNil() {
         #expect(WatchDatabaseMirror.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
+    }
+
+    @Test func partialMirrorRoundTripsNilTablesAsRetain() throws {
+        // A delta payload: only areas carried, everything else omitted (nil = retain on the watch).
+        let area = AppArea(
+            id: "server1-kitchen",
+            serverId: "server1",
+            areaId: "kitchen",
+            name: "Kitchen",
+            aliases: [],
+            picture: nil,
+            icon: nil,
+            sortOrder: 0,
+            entities: []
+        )
+        let original = WatchDatabaseMirror(entities: nil, areas: [area], pipelines: nil)
+
+        let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(original.encodeForWatch())
+        #expect(decoded.entities == nil)
+        #expect(decoded.areas == [area])
+        #expect(decoded.pipelines == nil)
+    }
+
+    @Test func digestsMatchForEqualContentAndDifferOtherwise() {
+        let entity = HAAppEntity(
+            id: "server1-script.a",
+            entityId: "script.a",
+            serverId: "server1",
+            domain: "script",
+            name: "A",
+            icon: nil,
+            rawDeviceClass: nil
+        )
+        let mirror = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
+        let same = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
+        var changed = mirror
+        changed.entities = []
+
+        #expect(mirror.tableDigests()["entities"] == same.tableDigests()["entities"])
+        #expect(mirror.tableDigests()["entities"] != changed.tableDigests()["entities"])
+        // nil groups produce no digest, so they can never match and are always carried.
+        #expect(WatchDatabaseMirror(entities: nil, areas: [], pipelines: []).tableDigests()["entities"] == nil)
+    }
+
+    @Test func omittingTablesDropsOnlyPositiveDigestMatches() {
+        let mirror = WatchDatabaseMirror(entities: [], areas: [], pipelines: [])
+        let digests = mirror.tableDigests()
+
+        // Watch echoes matching digests for entities+areas but a stale one for pipelines.
+        var stored = digests
+        stored["pipelines"] = "stale"
+        let delta = mirror.omittingTables(matching: stored, currentDigests: digests)
+        #expect(delta.entities == nil)
+        #expect(delta.areas == nil)
+        #expect(delta.pipelines?.isEmpty == true)
+
+        // No stored digests at all → nothing is omitted.
+        let full = mirror.omittingTables(matching: [:], currentDigests: digests)
+        #expect(full.entities == [])
+        #expect(full.areas == [])
+        #expect(full.pipelines?.isEmpty == true)
     }
 }
 
@@ -356,7 +417,7 @@ struct WatchConfigLayout_test {
 
     @Test func encodeForWatchRoundTripPreservesLayout() throws {
         let original = WatchConfig(items: [], layout: .grid)
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchConfig.decodeForWatch(data))
         #expect(decoded.resolvedLayout == .grid)
     }

@@ -72,38 +72,9 @@ public final class ControlEntityProvider {
                             .fetchAll(db)
                     }
                 }
-                if let string {
-                    let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
-                    let areasMap = entities.areasMap(for: server.identifier.rawValue)
-                    entities = entities.filter({ entity in
-                        // `entity.name` is the resolved display name (registry name, falling back to the
-                        // state name), baked in at write time by `AppEntitiesModel`.
-                        let matchName = entity.name.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchEntityId = entity.entityId.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchDeviceName = {
-                            if let deviceName = deviceMap[entity.entityId]?.name {
-                                return deviceName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        let matchAreaName = {
-                            if let areaName = areasMap[entity.entityId]?.name {
-                                return areaName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        return matchName || matchEntityId || matchDeviceName || matchAreaName
-                    })
+                if let string, !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    let index = EntityFuzzySearchIndex(entities: entities, serverId: server.identifier.rawValue)
+                    entities = index.search(string)
                 }
                 entitiesPerServer.append((server, entities))
             } catch {
@@ -112,6 +83,38 @@ public final class ControlEntityProvider {
         }
 
         return entitiesPerServer
+    }
+
+    /// Fetches the raw `attributes` dictionary for an entity over the REST `/states` endpoint. Used by
+    /// the widgets' entity source to list an entity's attributes and read the chosen one's value.
+    public func attributes(server: Server, entityId: String) async -> [String: Any]? {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch attributes data")
+            return nil
+        }
+
+        let result = await withCheckedContinuation { continuation in
+            connection.send(.init(
+                type: .rest(.get, "states/\(entityId)"),
+                shouldRetry: true
+            )) { result in
+                continuation.resume(returning: result)
+            }
+        }
+
+        guard let data = try? result.get() else {
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to get attributes: \(error)")
+            }
+            return nil
+        }
+
+        guard case let .dictionary(state) = data else {
+            Current.Log.error("Failed to get attributes: bad response data")
+            return nil
+        }
+
+        return state["attributes"] as? [String: Any]
     }
 
     public func state(server: Server, entityId: String) async -> State? {

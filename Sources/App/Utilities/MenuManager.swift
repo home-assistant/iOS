@@ -1,7 +1,6 @@
 import Foundation
 import HAKit
 import PromiseKit
-import RealmSwift
 import Shared
 import UIKit
 

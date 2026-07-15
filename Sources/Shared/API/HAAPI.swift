@@ -5,7 +5,6 @@ import HAKit
 import HAKit_PromiseKit
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 import UIKit
 
 public class HomeAssistantAPI {
@@ -162,10 +161,9 @@ public class HomeAssistantAPI {
         self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
-        // Use custom delegate that supports client certificates (mTLS)
-        let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? ClientCertificateSessionDelegate(server: server)
-            : SessionDelegate()
+        // Attached unconditionally (see makeCertificateAwareURLSession): the delegate resolves the
+        // client certificate fresh at challenge time rather than gating on an init-time snapshot.
+        let sessionDelegate: SessionDelegate = ClientCertificateSessionDelegate(server: server)
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -181,18 +179,18 @@ public class HomeAssistantAPI {
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
-    /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
-    /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
+    /// exceptions (mTLS). Reused by HAKit's REST calls and, on watchOS, by direct REST execution.
+    ///
+    /// The provider is attached unconditionally and resolves the certificate fresh at challenge
+    /// time. The certificate is not always present in the server-config snapshot when the session
+    /// is built (e.g. the config was just restored from a source that did not carry it, or a
+    /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
+    /// session construction on that snapshot would leave the session permanently without the
+    /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
     public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
-        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            Current.Log.info("[mTLS] Using HAKit certificate provider")
-            let certificateProvider = HomeAssistantCertificateProvider(server: server)
-            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-            return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
-        } else {
-            Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            return URLSession(configuration: .ephemeral)
-        }
+        let certificateProvider = HomeAssistantCertificateProvider(server: server)
+        let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+        return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
     }
 
     public static func apiAvailabilityCheck(for server: Server, timeout: TimeInterval = 5) async -> Bool {
@@ -686,7 +684,7 @@ public class HomeAssistantAPI {
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        zone: RLMZone?
+        zone: AppZone?
     ) -> Promise<Void> {
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
@@ -699,11 +697,6 @@ public class HomeAssistantAPI {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
-            // The `then` continuation runs on the main queue, matching the thread the Realm zone
-            // object is confined to. The zone could have been deleted while the SSID fetch was in
-            // flight, in which case it must not be touched anymore.
-            let zone = (zone?.isInvalidated == true) ? nil : zone
-
             let update: WebhookUpdateLocation
             let location: CLLocation?
 
@@ -733,19 +726,18 @@ public class HomeAssistantAPI {
                 location = nil
             }
 
-            return firstly {
-                let realm = Current.realm()
-                return when(resolved: realm.reentrantWrite {
-                    let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
+            return firstly { () -> Promise<Void> in
+                let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
 
-                    realm.add(LocationHistoryEntry(
-                        updateType: updateType,
-                        location: location,
-                        zone: zone,
-                        accuracyAuthorization: accuracyAuthorization,
-                        payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
-                    ))
-                }).asVoid()
+                LocationHistoryEntry(
+                    updateType: updateType,
+                    location: location,
+                    zone: zone,
+                    accuracyAuthorization: accuracyAuthorization,
+                    payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
+                ).save()
+
+                return .value(())
             }.map { () -> [String: Any] in
                 let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
                 Current.Log.info("Location update payload: \(payloadDict)")
@@ -771,12 +763,12 @@ public class HomeAssistantAPI {
     private func zones(
         for updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        fallbackZone zone: RLMZone?
-    ) -> [RLMZone] {
+        fallbackZone zone: AppZone?
+    ) -> [AppZone] {
         if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
+            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
         } else if let rawLocation {
-            return RLMZone.zones(of: rawLocation, in: server)
+            return AppZone.zones(of: rawLocation, in: server)
         } else {
             return []
         }
@@ -784,10 +776,10 @@ public class HomeAssistantAPI {
 
     private func locationNameZone(
         for updateType: LocationUpdateTrigger,
-        from zones: [RLMZone],
-        fallbackZone zone: RLMZone?,
+        from zones: [AppZone],
+        fallbackZone zone: AppZone?,
         supportsInZones: Bool
-    ) -> RLMZone? {
+    ) -> AppZone? {
         if supportsInZones {
             return zones.first { !$0.isPassive }
         } else if updateType == .BeaconRegionEnter {
@@ -862,7 +854,7 @@ public class HomeAssistantAPI {
     public func zoneStateEvent(
         region: CLRegion,
         state: CLRegionState,
-        zone: RLMZone
+        zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
         var eventData: [String: Any] = sharedEventDeviceInfo
         eventData["zone"] = zone.entityId

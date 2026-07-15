@@ -1,6 +1,6 @@
 import CoreLocation
 import Foundation
-import RealmSwift
+import GRDB
 import Shared
 import UIKit
 
@@ -37,7 +37,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     @Published private(set) var zones: [LocationZoneItem] = []
 
     private let locationManager = CLLocationManager()
-    private var zonesToken: NotificationToken?
+    private var zonesToken: AnyDatabaseCancellable?
     private var backgroundRefreshObserver: NSObjectProtocol?
 
     override init() {
@@ -72,7 +72,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     }
 
     deinit {
-        zonesToken?.invalidate()
+        zonesToken?.cancel()
         if let backgroundRefreshObserver {
             NotificationCenter.default.removeObserver(backgroundRefreshObserver)
         }
@@ -178,18 +178,22 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Zones
 
     private func observeZones() {
-        let results = Current.realm().objects(RLMZone.self)
-        // Realm calls this back on the thread the observation was set up on (main).
-        // Map to value-type snapshots synchronously (eagerly into an Array — Realm's
-        // `.map` returns a `LazyMapSequence`, not `[T]`), then hop to MainActor to
-        // publish.
-        zonesToken = results.observe { [weak self] _ in
-            let snapshot = Array(results).map(LocationZoneItem.init)
-            Task { @MainActor [weak self] in
-                self?.zones = snapshot
-            }
+        let observation = ValueObservation.tracking { db in
+            try AppZone.fetchAll(db)
         }
-        zones = Array(results).map(LocationZoneItem.init)
+        // .immediate delivers the initial value synchronously (we are created on
+        // the main queue), matching the previous Realm behavior of populating
+        // the zones before first render; changes also arrive on the main queue.
+        zonesToken = observation.start(
+            in: Current.database(),
+            scheduling: .immediate,
+            onError: { error in
+                Current.Log.error("couldn't observe zones: \(error)")
+            },
+            onChange: { [weak self] zones in
+                self?.zones = zones.map(LocationZoneItem.init)
+            }
+        )
     }
 }
 
@@ -218,19 +222,19 @@ struct LocationZoneItem: Identifiable {
     let beaconMajor: String?
     let beaconMinor: String?
 
-    init(zone: RLMZone) {
+    init(zone: AppZone) {
         self.id = zone.identifier
-        self.name = zone.Name
-        self.trackingEnabled = zone.TrackingEnabled
+        self.name = zone.name
+        self.trackingEnabled = zone.trackingEnabled
         self.coordinate = zone.center
-        self.radius = zone.Radius
-        self.beaconUUID = zone.BeaconUUID
-        if let major = zone.BeaconMajor.value {
+        self.radius = zone.radius
+        self.beaconUUID = zone.beaconUUID
+        if let major = zone.beaconMajor {
             self.beaconMajor = String(describing: major)
         } else {
             self.beaconMajor = nil
         }
-        if let minor = zone.BeaconMinor.value {
+        if let minor = zone.beaconMinor {
             self.beaconMinor = String(describing: minor)
         } else {
             self.beaconMinor = nil

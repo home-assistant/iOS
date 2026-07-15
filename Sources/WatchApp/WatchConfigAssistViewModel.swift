@@ -137,10 +137,19 @@ final class WatchConfigAssistViewModel: ObservableObject {
             completion(true)
             return
         }
+        let configData: Data
+        do {
+            configData = try config.encodeForWatch()
+        } catch {
+            Current.Log.error("Failed to encode assist config for sync: \(error.localizedDescription)")
+            // The local copy is already saved; it'll sync on the next reload.
+            completion(true)
+            return
+        }
         isSaving = true
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
-            content: ["config": config.encodeForWatch()],
+            content: ["config": configData],
             reply: { [weak self] message in
                 Task { @MainActor in
                     self?.handleSaveResponse(message, completion: completion)

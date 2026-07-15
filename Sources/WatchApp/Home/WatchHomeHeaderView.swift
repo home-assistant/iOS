@@ -7,6 +7,7 @@ import SwiftUI
 struct WatchHomeHeaderView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
     @Binding var isEditing: Bool
+    @Binding var iPhoneNotReachable: Bool
     let onAssist: () -> Void
     let onAdd: () -> Void
 
@@ -92,10 +93,17 @@ struct WatchHomeHeaderView: View {
                     }
                 }
             } else {
-                Image(uiImage: Asset.logo.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize)
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Image(uiImage: Asset.logo.image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize)
+                    if iPhoneNotReachable {
+                        Image(systemSymbol: .iphoneSlash)
+                            .foregroundStyle(.secondary)
+                            .transition(.move(edge: .leading).combined(with: .opacity))
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
@@ -151,3 +159,15 @@ struct WatchHomeHeaderView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    WatchHomeHeaderView(
+        viewModel: .init(),
+        isEditing: .constant(false),
+        iPhoneNotReachable: .constant(false),
+        onAssist: {},
+        onAdd: {}
+    )
+}
+#endif

@@ -79,6 +79,10 @@ public extension DatabaseQueue {
             NotificationSnoozeActionTable(),
             WatchComplicationTable(),
             WatchComplicationConfigTable(),
+            AppZoneTable(),
+            NotificationCategoryTable(),
+            LocationHistoryTable(),
+            LocationErrorTable(),
         ]
     }
 
@@ -204,8 +208,12 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.showMax.rawValue, .boolean)
                     t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customGaugeColorTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customIconColorTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customTextColorTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
                     t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
+                    t.column(DatabaseTables.WatchComplicationConfig.isCustomized.rawValue, .boolean)
                 }
             }
         } else {

@@ -545,16 +545,6 @@ public class SettingsStore {
         }
     }
 
-    /// Debug option to enable toasts handled by the app instead of the web frontend
-    public var toastsHandledByApp: Bool {
-        get {
-            prefs.bool(forKey: "toastsHandledByApp")
-        }
-        set {
-            prefs.set(newValue, forKey: "toastsHandledByApp")
-        }
-    }
-
     public static let defaultWebViewEmptyStateTimeout = 5
 
     /// Seconds the frontend can stay disconnected before the web view shows its empty state

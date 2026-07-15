@@ -1,12 +1,12 @@
 import Foundation
+import GRDB
 import HAKit
 import PromiseKit
-import RealmSwift
 
 // Legacy manager which was previously used to handle all model updates and cleanup.
-// Now it is used just for zones and notification categories.
+// Now it is used just for zones and notification categories, persisted in GRDB.
 public class LegacyModelManager: ServerObserver {
-    private var notificationTokens = [NotificationToken]()
+    private var observationTokens = [AnyDatabaseCancellable]()
     private var hakitTokens = [HACancellable]()
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var cleanupDefinitions = [CleanupDefinition]()
@@ -16,105 +16,122 @@ public class LegacyModelManager: ServerObserver {
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
     static var isAppInForeground: () -> Bool = { false }
 
+    public init() {}
+
     deinit {
         hakitTokens.forEach { $0.cancel() }
-        notificationTokens.forEach { $0.invalidate() }
+        observationTokens.forEach { $0.cancel() }
         NotificationCenter.default.removeObserver(self)
     }
 
-    public func observe<T>(
-        for collection: AnyRealmCollection<T>,
-        handler: @escaping (AnyRealmCollection<T>) -> Promise<Void>
+    /// Observes every row of the given record type, invoking the handler with
+    /// the current values whenever they change (including once initially).
+    public func observe<T: FetchableRecord & TableRecord>(
+        for type: T.Type,
+        handler: @escaping ([T]) -> Promise<Void>
     ) {
-        notificationTokens.append(collection.observe { change in
-            switch change {
-            case .initial:
-                break
-            case .update(let collection, deletions: _, insertions: _, modifications: _):
-                handler(collection).cauterize()
-            case let .error(error):
-                Current.Log.error("failed to watch \(collection): \(error)")
+        let observation = ValueObservation.tracking { db in
+            try T.fetchAll(db)
+        }
+        observationTokens.append(observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("failed to watch \(type): \(error)")
+            },
+            onChange: { values in
+                handler(values).cauterize()
             }
-        })
+        ))
     }
 
-    // Immutable value describing a Realm cleanup pass; safe to hand across queues even though
-    // Realm types themselves aren't Sendable.
     public struct CleanupDefinition: @unchecked Sendable {
-        public enum OrphanMode {
-            case delete(handler: (Realm, [Object]) -> Void)
-            case replace
+        public var cleanup: (Database, [String]) throws -> Void
+
+        public init(cleanup: @escaping (Database, [String]) throws -> Void) {
+            self.cleanup = cleanup
         }
 
-        public enum CleanupType {
-            case age(createdKey: String, duration: Measurement<UnitDuration>)
-            case orphaned(serverIdentifierKey: String, allowedPredicate: NSPredicate, mode: OrphanMode)
-        }
-
-        public var model: Object.Type
-        public var cleanupTypes: [CleanupType]
-
-        public init(
-            model: Object.Type,
-            createdKey: String,
+        /// Deletes rows whose creation date is older than the given duration.
+        public static func age(
+            recordType: (some FetchableRecord & TableRecord).Type,
+            createdColumnName: String,
             duration: Measurement<UnitDuration> = .init(value: 256, unit: .hours)
-        ) {
-            self.model = model
-            self.cleanupTypes = [.age(createdKey: createdKey, duration: duration)]
+        ) -> Self {
+            .init { db, _ in
+                let duration = duration.converted(to: .seconds).value
+                let date = Current.date().addingTimeInterval(-duration)
+                let count = try recordType
+                    .filter(Column(createdColumnName) < date)
+                    .deleteAll(db)
+                if count > 0 {
+                    Current.Log.info("delete \(recordType): \(count)")
+                }
+            }
         }
 
-        init<UM: Object & UpdatableModel>(
-            orphansOf model: UM.Type
-        ) {
-            self.model = model
-            self.cleanupTypes = [
-                .orphaned(
-                    serverIdentifierKey: model.serverIdentifierKey(),
-                    allowedPredicate: model.updateEligiblePredicate,
-                    mode: .delete(handler: { realm, objects in
-                        if let objects = objects as? [UM] {
-                            model.willDelete(objects: objects, server: nil, realm: realm)
-                        } else {
-                            preconditionFailure("invalid object type passed into delete handler")
-                        }
-                    })
-                ),
-                .orphaned(
-                    serverIdentifierKey: model.serverIdentifierKey(),
-                    allowedPredicate: NSCompoundPredicate(notPredicateWithSubpredicate: model.updateEligiblePredicate),
-                    mode: .replace
-                ),
-            ]
+        /// Deletes rows which belong to servers that no longer exist.
+        public static func orphanDelete(
+            recordType: (some FetchableRecord & TableRecord).Type,
+            serverIdentifierColumnName: String,
+            condition: SQLExpression? = nil
+        ) -> Self {
+            .init { db, serverIdentifiers in
+                var request = recordType.filter(!serverIdentifiers.contains(Column(serverIdentifierColumnName)))
+                if let condition {
+                    request = request.filter(condition)
+                }
+                let count = try request.deleteAll(db)
+                if count > 0 {
+                    Current.Log.info("delete \(recordType): \(count)")
+                }
+            }
         }
 
-        public init(
-            orphansOf model: Object.Type,
-            serverIdentifierKey: String,
-            allowedPredicate: NSPredicate,
-            mode: OrphanMode
-        ) {
-            self.model = model
-            self.cleanupTypes = [
-                .orphaned(
-                    serverIdentifierKey: serverIdentifierKey,
-                    allowedPredicate: allowedPredicate,
-                    mode: mode
-                ),
-            ]
+        /// Reassigns rows which belong to servers that no longer exist to the
+        /// first remaining server.
+        public static func orphanReassign(
+            recordType: (some FetchableRecord & TableRecord).Type,
+            serverIdentifierColumnName: String,
+            condition: SQLExpression? = nil
+        ) -> Self {
+            .init { db, serverIdentifiers in
+                guard let replacement = serverIdentifiers.first else { return }
+                var request = recordType.filter(!serverIdentifiers.contains(Column(serverIdentifierColumnName)))
+                if let condition {
+                    request = request.filter(condition)
+                }
+                let count = try request.updateAll(db, Column(serverIdentifierColumnName).set(to: replacement))
+                if count > 0 {
+                    Current.Log.info("migrate \(recordType): \(count) to \(replacement)")
+                }
+            }
         }
 
         public static let defaults: [Self] = [
-            CleanupDefinition(
-                model: LocationHistoryEntry.self,
-                createdKey: #keyPath(LocationHistoryEntry.CreatedAt)
+            .age(
+                recordType: LocationHistoryEntry.self,
+                createdColumnName: DatabaseTables.LocationHistory.createdAt.rawValue
             ),
-            CleanupDefinition(
-                model: LocationError.self,
-                createdKey: #keyPath(LocationError.CreatedAt)
+            .age(
+                recordType: LocationError.self,
+                createdColumnName: DatabaseTables.LocationError.createdAt.rawValue
             ),
-            CleanupDefinition(orphansOf: RLMZone.self),
-            CleanupDefinition(orphansOf: NotificationCategory.self),
-            // WatchComplication moved to GRDB; its server-orphan handling now lives in the GRDB layer.
+            .orphanDelete(
+                recordType: AppZone.self,
+                serverIdentifierColumnName: DatabaseTables.AppZone.serverIdentifier.rawValue
+            ),
+            .orphanDelete(
+                recordType: NotificationCategory.self,
+                serverIdentifierColumnName: DatabaseTables.NotificationCategory.serverIdentifier.rawValue,
+                condition: (Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == true)
+                    .sqlExpression
+            ),
+            .orphanReassign(
+                recordType: NotificationCategory.self,
+                serverIdentifierColumnName: DatabaseTables.NotificationCategory.serverIdentifier.rawValue,
+                condition: (Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == false)
+                    .sqlExpression
+            ),
         ]
     }
 
@@ -127,69 +144,26 @@ public class LegacyModelManager: ServerObserver {
 
         cleanupDefinitions = definitions
         workQueue.async {
-            // GRDB-backed watch complications/configs: drop rows for servers that no longer exist.
-            let serverIds = Current.servers.all.map(\.identifier.rawValue)
-            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIds)
-            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIds)
+            let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
 
-            let realm = Current.realm()
-            let writes = definitions.map { definition in
-                realm.reentrantWrite {
-                    self.cleanup(using: definition, realm: realm)
+            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIdentifiers)
+            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIdentifiers)
+            try? AssistPipelines.deleteOrphans(keepingServerIds: serverIdentifiers)
+
+            do {
+                try Current.database().write { db in
+                    for definition in definitions {
+                        try definition.cleanup(db, serverIdentifiers)
+                    }
                 }
+                seal.fulfill(())
+            } catch {
+                Current.Log.error("cleanup failed: \(error)")
+                seal.reject(error)
             }
-
-            when(fulfilled: writes).pipe(to: seal.resolve)
         }
 
         return promise
-    }
-
-    private func cleanup(
-        using definition: CleanupDefinition,
-        realm: Realm
-    ) {
-        let deleteObjects = { (_ objects: Results<Object>) in
-            if objects.isEmpty == false {
-                Current.Log.info("delete \(definition.model): \(objects.count)")
-                realm.delete(objects)
-            }
-        }
-
-        for cleanupType in definition.cleanupTypes {
-            switch cleanupType {
-            case let .age(createdKey: createdKey, duration: duration):
-                let duration = duration.converted(to: .seconds).value
-                let date = Current.date().addingTimeInterval(-duration)
-                deleteObjects(
-                    realm
-                        .objects(definition.model)
-                        .filter("%K < %@", createdKey, date)
-                )
-            case let .orphaned(
-                serverIdentifierKey: serverIdentifierKey,
-                allowedPredicate: allowedPredicate,
-                mode: mode
-            ):
-                let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
-                let objects = realm.objects(definition.model)
-                    .filter(allowedPredicate)
-                    .filter("not %K in %@", serverIdentifierKey, serverIdentifiers)
-
-                switch mode {
-                case let .delete(handler):
-                    handler(realm, Array(objects))
-                    deleteObjects(objects)
-                case .replace:
-                    if let replacement = Current.servers.all.first, !objects.isEmpty {
-                        Current.Log.info("migrate \(definition.model): \(objects.count) to \(replacement.identifier)")
-                        for object in objects {
-                            object[serverIdentifierKey] = replacement.identifier.rawValue
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public struct SubscribeDefinition {
@@ -201,7 +175,7 @@ public class LegacyModelManager: ServerObserver {
         ) -> [HACancellable]
 
         static func states<
-            UM: Object & UpdatableModel
+            UM: UpdatableModel
         >(
             domain: String,
             type: UM.Type
@@ -249,7 +223,7 @@ public class LegacyModelManager: ServerObserver {
         }
 
         public static let defaults: [Self] = [
-            .states(domain: "zone", type: RLMZone.self),
+            .states(domain: "zone", type: AppZone.self),
         ]
     }
 
@@ -285,6 +259,10 @@ public class LegacyModelManager: ServerObserver {
             _ modelManager: LegacyModelManager
         ) -> Promise<Void>
 
+        public init(update: @escaping (HomeAssistantAPI, DispatchQueue, LegacyModelManager) -> Promise<Void>) {
+            self.update = update
+        }
+
         public static let defaults: [Self] = [
             FetchDefinition(update: { api, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
@@ -307,83 +285,83 @@ public class LegacyModelManager: ServerObserver {
         }).asVoid()
     }
 
-    enum StoreError: Error {
-        case missingPrimaryKey
-    }
-
-    func store<UM: Object & UpdatableModel>(
-        type realmObjectType: UM.Type,
+    func store<UM: UpdatableModel>(
+        type recordType: UM.Type,
         from server: Server,
         sourceModels: some Collection<UM.Source>
     ) -> Promise<Void> {
-        let realm = Current.realm()
-        return realm.reentrantWrite {
-            guard let realmPrimaryKey = realmObjectType.primaryKey() else {
-                Current.Log.error("invalid realm object type: \(realmObjectType)")
-                throw StoreError.missingPrimaryKey
+        Promise { seal in
+            workQueue.async {
+                do {
+                    try Current.database().write { db in
+                        try Self.store(type: recordType, from: server, sourceModels: sourceModels, db: db)
+                    }
+                    seal.fulfill(())
+                } catch {
+                    Current.Log.error("store of \(recordType) failed: \(error)")
+                    seal.reject(error)
+                }
             }
+        }
+    }
 
-            let allObjects = realm.objects(UM.self)
-                .filter(UM.updateEligiblePredicate)
-                .filter("%K = %@", UM.serverIdentifierKey(), server.identifier.rawValue)
+    private static func store<UM: UpdatableModel>(
+        type recordType: UM.Type,
+        from server: Server,
+        sourceModels: some Collection<UM.Source>,
+        db: Database
+    ) throws {
+        var request = UM
+            .filter(Column(UM.serverIdentifierColumnName) == server.identifier.rawValue)
+        if let condition = UM.updateEligibleCondition {
+            request = request.filter(condition)
+        }
 
-            let existingIDs = Set(allObjects.compactMap { $0[realmPrimaryKey] as? String })
-            let incomingIDs = Set(sourceModels.map {
-                UM.primaryKey(sourceIdentifier: $0.primaryKey, serverIdentifier: server.identifier.rawValue)
-            })
+        let existing = try request.fetchAll(db)
+        let existingIDs = Set(existing.map(\.primaryKeyValue))
+        let incomingIDs = Set(sourceModels.map {
+            UM.primaryKey(sourceIdentifier: $0.primaryKey, serverIdentifier: server.identifier.rawValue)
+        })
 
-            let deletedIDs = existingIDs.subtracting(incomingIDs)
-            let newIDs = incomingIDs.subtracting(existingIDs)
+        let deletedIDs = existingIDs.subtracting(incomingIDs)
+        let newIDs = incomingIDs.subtracting(existingIDs)
 
-            let deleteObjects = allObjects
-                .filter("%K in %@", realmPrimaryKey, deletedIDs)
+        Current.Log.verbose(
+            [
+                "updating \(UM.self)",
+                "server(\(server.identifier))",
+                "from(\(existingIDs.count))",
+                "eligible(\(incomingIDs.count))",
+                "deleted(\(deletedIDs.count))",
+                "new(\(newIDs.count))",
+            ].joined(separator: " ")
+        )
 
-            Current.Log.verbose(
-                [
-                    "updating \(UM.self)",
-                    "server(\(server.identifier))",
-                    "from(\(existingIDs.count))",
-                    "eligible(\(incomingIDs.count))",
-                    "deleted(\(deleteObjects.count))",
-                    "ignored(\(deletedIDs.count - deleteObjects.count))",
-                    "new(\(newIDs.count))",
-                ].joined(separator: " ")
+        for model in sourceModels {
+            let fullPrimaryKey = UM.primaryKey(
+                sourceIdentifier: model.primaryKey,
+                serverIdentifier: server.identifier.rawValue
             )
 
-            let updatedModels: [UM] = sourceModels.compactMap { model in
-                let updating: UM
+            var updating: UM
 
-                let fullPrimaryKey = UM.primaryKey(
-                    sourceIdentifier: model.primaryKey,
-                    serverIdentifier: server.identifier.rawValue
-                )
-
-                if let existing = realm.object(ofType: UM.self, forPrimaryKey: fullPrimaryKey) {
-                    updating = existing
-                } else {
-                    Current.Log.verbose("creating \(fullPrimaryKey)")
-                    updating = UM()
-                }
-
-                if updating.realm == nil {
-                    updating.setValue(fullPrimaryKey, forKey: realmPrimaryKey)
-                } else {
-                    assert(updating.value(forKey: realmPrimaryKey) as? String == fullPrimaryKey)
-                }
-
-                updating.setValue(server.identifier.rawValue, forKey: UM.serverIdentifierKey())
-
-                if updating.update(with: model, server: server, using: realm) {
-                    return updating
-                } else {
-                    return nil
-                }
+            if let existing = try UM.filter(Column(UM.primaryKeyColumnName) == fullPrimaryKey).fetchOne(db) {
+                updating = existing
+            } else {
+                Current.Log.verbose("creating \(fullPrimaryKey)")
+                updating = UM(primaryKey: fullPrimaryKey, serverIdentifier: server.identifier.rawValue)
             }
 
-            realm.add(updatedModels, update: .all)
-            UM.didUpdate(objects: updatedModels, server: server, realm: realm)
-            UM.willDelete(objects: Array(deleteObjects), server: server, realm: realm)
-            realm.delete(deleteObjects)
+            if updating.update(with: model, server: server) {
+                try updating.save(db)
+            }
+        }
+
+        if !deletedIDs.isEmpty {
+            try UM
+                .filter(Column(UM.serverIdentifierColumnName) == server.identifier.rawValue)
+                .filter(deletedIDs.contains(Column(UM.primaryKeyColumnName)))
+                .deleteAll(db)
         }
     }
 

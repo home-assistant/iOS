@@ -65,11 +65,10 @@ public class GeocoderSensor: SensorProvider {
             var attributes = Self.attributes(for: placemarks)
 
             if let location = request.location {
-                let insideZones = Current.realm().objects(RLMZone.self)
-                    .filter(RLMZone.trackablePredicate)
-                    .sorted(byKeyPath: "Radius")
+                let insideZones = AppZone.trackableZones()
+                    .sorted(by: { $0.radius < $1.radius })
                     .filter { $0.circularRegion.contains(location.coordinate) }
-                    .map { $0.FriendlyName ?? $0.Name }
+                    .map(\.name)
                     .filter { $0 != "" }
 
                 if let zone = insideZones.first,

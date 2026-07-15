@@ -6,6 +6,7 @@ import UIKit
 /// Test double for `AppCoordinator`, recording the presentation calls the web frontend routes through it.
 final class MockAppCoordinator: AppCoordinator {
     private(set) var showSettingsCalled = false
+    private(set) var showSettingsPushedOntoNavigationStack = false
     private(set) var showAssistSettingsCalled = false
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
@@ -16,8 +17,9 @@ final class MockAppCoordinator: AppCoordinator {
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {}
     func show(alert: ServerAlert) {}
 
-    func showSettings() {
+    func showSettings(pushOntoNavigationStack: Bool) {
         showSettingsCalled = true
+        showSettingsPushedOntoNavigationStack = pushOntoNavigationStack
         onShowSettings?()
     }
 

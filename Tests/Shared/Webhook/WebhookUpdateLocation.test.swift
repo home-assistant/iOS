@@ -29,13 +29,13 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testNameOfZoneWhenSet() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        let zone = with(RLMZone()) {
-            $0.entityId = "zone.given_name"
-            $0.serverIdentifier = "server1"
-            $0.Latitude = -2.34
-            $0.Longitude = -5.67
-            $0.Radius = 88.8
-        }
+        let zone = AppZone(
+            entityId: "zone.given_name",
+            serverIdentifier: "server1",
+            latitude: -2.34,
+            longitude: -5.67,
+            radius: 88.8
+        )
 
         let model = WebhookUpdateLocation(trigger: .BeaconRegionEnter, usingNameOf: zone)
         let json = model.toJSON()
@@ -52,14 +52,14 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testNameOfZoneWithInZones() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        let zone = with(RLMZone()) {
-            $0.entityId = "zone.given_name"
-            $0.serverIdentifier = "server1"
-        }
-        let otherZone = with(RLMZone()) {
-            $0.entityId = "zone.other_name"
-            $0.serverIdentifier = "server1"
-        }
+        let zone = AppZone(
+            entityId: "zone.given_name",
+            serverIdentifier: "server1"
+        )
+        let otherZone = AppZone(
+            entityId: "zone.other_name",
+            serverIdentifier: "server1"
+        )
 
         let model = WebhookUpdateLocation(trigger: .GPSRegionEnter, usingNameOf: zone, inZones: [zone, otherZone])
         let json = model.toJSON()
@@ -95,13 +95,13 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -120,14 +120,14 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-                $0.isPassive = true
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8,
+                isPassive: true
+            )
         )
 
         let json = model.toJSON()
@@ -148,13 +148,13 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -176,13 +176,13 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.home"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.home",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -203,13 +203,13 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -231,14 +231,14 @@ class WebhookUpdateLocationTests: XCTestCase {
         let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-                $0.isPassive = true
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8,
+                isPassive: true
+            )
         )
 
         let json = model.toJSON()
@@ -272,13 +272,13 @@ class WebhookUpdateLocationTests: XCTestCase {
                 speedAccuracy: 109,
                 timestamp: now.addingTimeInterval(-110)
             ),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -311,13 +311,13 @@ class WebhookUpdateLocationTests: XCTestCase {
                 speedAccuracy: 109,
                 timestamp: now.addingTimeInterval(-110)
             ),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -351,13 +351,13 @@ class WebhookUpdateLocationTests: XCTestCase {
                 speedAccuracy: 109,
                 timestamp: now.addingTimeInterval(-110)
             ),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -390,13 +390,13 @@ class WebhookUpdateLocationTests: XCTestCase {
                 speedAccuracy: 109,
                 timestamp: now.addingTimeInterval(-110)
             ),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()
@@ -429,13 +429,13 @@ class WebhookUpdateLocationTests: XCTestCase {
                 speedAccuracy: 109,
                 timestamp: now.addingTimeInterval(-110)
             ),
-            zone: with(RLMZone()) {
-                $0.entityId = "zone.given_name"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = -2.34
-                $0.Longitude = -5.67
-                $0.Radius = 88.8
-            }
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            )
         )
 
         let json = model.toJSON()

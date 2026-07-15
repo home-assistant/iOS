@@ -1,6 +1,5 @@
 import Foundation
 import HAKit
-import RealmSwift
 import Shared
 
 final class CarPlayQuickAccessViewModel {

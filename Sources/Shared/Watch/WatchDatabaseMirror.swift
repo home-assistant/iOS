@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import GRDB
 
@@ -16,10 +17,16 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// Blob identifier used when the phone proactively *pushes* the mirror to the watch over
     /// `transferFile` (background-capable), in addition to the watch-initiated chunked pull.
     public static let blobIdentifier = "watchDatabaseMirror.push"
+    /// Key under which sync requests, sync-start replies and push metadata carry the per-table
+    /// digest map used for delta syncs (see `tableDigests()`).
+    public static let digestsKey = "digests"
 
-    public var entities: [HAAppEntity]
-    public var areas: [AppArea]
-    public var pipelines: [AssistPipelines]
+    /// The reference tables. All optional with the same retain semantics as the complication
+    /// fields below: `nil` means "this sync did not carry the table" — either a delta sync where
+    /// the table was unchanged, or an older/partial payload — and the watch keeps its local rows.
+    public var entities: [HAAppEntity]?
+    public var areas: [AppArea]?
+    public var pipelines: [AssistPipelines]?
     /// Legacy complications + modern configs so the watch reload routine is another chance to receive
     /// them (in addition to the background WatchConnectivity context push).
     ///
@@ -41,9 +48,9 @@ public struct WatchDatabaseMirror: WatchCodable {
     public var servers: Data?
 
     public init(
-        entities: [HAAppEntity],
-        areas: [AppArea],
-        pipelines: [AssistPipelines],
+        entities: [HAAppEntity]?,
+        areas: [AppArea]?,
+        pipelines: [AssistPipelines]?,
         complications: [WatchComplication]? = nil,
         complicationConfigs: [WatchComplicationConfig]? = nil,
         complicationEntities: [EntityRegistryListForDisplay.Entity] = [],
@@ -68,9 +75,13 @@ public struct WatchDatabaseMirror: WatchCodable {
     // `nil` (retain existing rows); only a value that actually decodes is treated as authoritative.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.entities = try container.decode([HAAppEntity].self, forKey: .entities)
-        self.areas = try container.decode([AppArea].self, forKey: .areas)
-        self.pipelines = try container.decode([AssistPipelines].self, forKey: .pipelines)
+        // The reference tables are optional for delta syncs: a missing key means "unchanged since
+        // the digests the watch echoed" and the local rows are retained. Present-but-corrupt data
+        // still throws — unlike the complication fields these are always encoded by builds that
+        // send them at all.
+        self.entities = try container.decodeIfPresent([HAAppEntity].self, forKey: .entities)
+        self.areas = try container.decodeIfPresent([AppArea].self, forKey: .areas)
+        self.pipelines = try container.decodeIfPresent([AssistPipelines].self, forKey: .pipelines)
         self.complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
             .flatMap { $0 }
         self.complicationConfigs = (try? container.decodeIfPresent(
@@ -132,38 +143,116 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// registry rows are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
+            try applyReferenceTables(in: db)
+            try applyComplicationTables(in: db)
+        }
+    }
+
+    private func applyReferenceTables(in db: Database) throws {
+        // Every table follows the same rule: present (even empty) is authoritative and
+        // replaces the local rows; absent means the sync didn't carry it — retain.
+        if let entities {
             try HAAppEntity.deleteAll(db)
             for entity in entities {
                 try entity.insert(db)
             }
+        }
+        if let areas {
             try AppArea.deleteAll(db)
             for area in areas {
                 try area.insert(db)
             }
+        }
+        if let pipelines {
             try AssistPipelines.deleteAll(db)
             for pipeline in pipelines {
                 try pipeline.insert(db)
             }
-            // Only replace the complication tables when this sync actually carried them. A `nil` here is
-            // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
-            if let complications {
-                try WatchComplication.deleteAll(db)
-                for complication in complications {
-                    try complication.insert(db)
-                }
-            }
-            if let complicationConfigs {
-                try WatchComplicationConfig.deleteAll(db)
-                for config in complicationConfigs {
-                    try config.insert(db)
-                }
-            }
-            // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
-            // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
-            // Replace on conflict to upsert just these rows without wiping the rest of the registry.
-            for entity in complicationEntities {
-                try entity.insert(db, onConflict: .replace)
+        }
+    }
+
+    private func applyComplicationTables(in db: Database) throws {
+        // Only replace the complication tables when this sync actually carried them. A `nil` here is
+        // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
+        if let complications {
+            try WatchComplication.deleteAll(db)
+            for complication in complications {
+                try complication.insert(db)
             }
         }
+        if let complicationConfigs {
+            try WatchComplicationConfig.deleteAll(db)
+            for config in complicationConfigs {
+                try config.insert(db)
+            }
+        }
+        // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
+        // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
+        // Replace on conflict to upsert just these rows without wiping the rest of the registry.
+        for entity in complicationEntities {
+            try entity.insert(db, onConflict: .replace)
+        }
+    }
+
+    // MARK: - Delta sync digests
+
+    /// Opaque per-table digests of this snapshot, generated and compared ONLY on the phone
+    /// (property-list encoding isn't guaranteed byte-stable across devices, so the watch never
+    /// computes these — it stores the map verbatim and echoes it on the next sync request).
+    /// A group that is `nil` produces no digest, can never "match", and is always carried.
+    public func tableDigests() -> [String: String] {
+        let encoder = PropertyListEncoder()
+        var digests: [String: String] = [:]
+        if let entities, let data = try? encoder.encode(entities) {
+            digests["entities"] = Self.digest(of: [data])
+        }
+        if let areas, let data = try? encoder.encode(areas) {
+            digests["areas"] = Self.digest(of: [data])
+        }
+        if let pipelines, let data = try? encoder.encode(pipelines) {
+            digests["pipelines"] = Self.digest(of: [data])
+        }
+        // The complication tables travel and change together; one digest covers all three.
+        if let complications, let complicationConfigs,
+           let complicationsData = try? encoder.encode(complications),
+           let configsData = try? encoder.encode(complicationConfigs),
+           let entitiesData = try? encoder.encode(complicationEntities) {
+            digests["complications"] = Self.digest(of: [complicationsData, configsData, entitiesData])
+        }
+        if let servers {
+            digests["servers"] = Self.digest(of: [servers])
+        }
+        return digests
+    }
+
+    private static func digest(of datas: [Data]) -> String {
+        var hasher = SHA256()
+        for data in datas {
+            hasher.update(data: data)
+        }
+        return Data(hasher.finalize()).base64EncodedString()
+    }
+
+    /// A copy with every table whose digest positively matches the watch's stored digests omitted
+    /// (`nil` = retain on the watch). Groups without a digest on either side are always carried.
+    public func omittingTables(
+        matching storedDigests: [String: String],
+        currentDigests: [String: String]
+    ) -> WatchDatabaseMirror {
+        func matches(_ key: String) -> Bool {
+            guard let current = currentDigests[key], let stored = storedDigests[key] else { return false }
+            return current == stored
+        }
+        var copy = self
+        if matches("entities") { copy.entities = nil }
+        if matches("areas") { copy.areas = nil }
+        if matches("pipelines") { copy.pipelines = nil }
+        if matches("complications") {
+            copy.complications = nil
+            copy.complicationConfigs = nil
+            copy.complicationEntities = []
+        }
+        if matches("servers") { copy.servers = nil }
+        return copy
     }
 }

@@ -183,6 +183,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>io.robbie.homeassistant.backgroundfetch</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

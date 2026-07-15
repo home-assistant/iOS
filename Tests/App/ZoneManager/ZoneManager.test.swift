@@ -1,8 +1,8 @@
 import CoreLocation
 import Foundation
+import GRDB
 @testable import HomeAssistant
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import XCTest
 
@@ -30,7 +30,8 @@ final class MockClientEventStore: ClientEventStoreProtocol {
 }
 
 class ZoneManagerTests: XCTestCase {
-    private var realm: Realm!
+    private var database: DatabaseQueue!
+    private var previousDatabase: (() -> DatabaseQueue)!
     private var collector: FakeCollector!
     private var processor: FakeProcessor!
     private var regionFilter: FakeRegionFilter!
@@ -53,9 +54,10 @@ class ZoneManagerTests: XCTestCase {
         Current.settingsStore.locationSources.zone = true
         Current.settingsStore.locationSources.significantLocationChange = true
 
-        let executionIdentifier = UUID().uuidString
-
-        realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
+        database = try DatabaseQueue()
+        try AppZoneTable().createIfNeeded(database: database)
+        previousDatabase = Current.database
+        Current.database = { self.database }
 
         let servers = FakeServerManager(initial: 2)
         let server1 = servers.all[0]
@@ -66,7 +68,6 @@ class ZoneManagerTests: XCTestCase {
 
         loggedEvents = []
         Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
-        Current.realm = { self.realm }
         Current.clientEventStore = MockClientEventStore(addEventAction: { event in
             self.loggedEvents.append(event)
         })
@@ -78,10 +79,10 @@ class ZoneManagerTests: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
-
-        Current.realm = Realm.live
+        Current.database = previousDatabase
         Current.clientEventStore.clearAllEvents()
+
+        super.tearDown()
     }
 
     private func newZoneManager() -> ZoneManager {
@@ -93,36 +94,48 @@ class ZoneManagerTests: XCTestCase {
         )
     }
 
-    private func addedZones(_ toAdd: [RLMZone]) throws -> [RLMZone] {
-        try realm.write {
-            realm.add(toAdd)
-            return toAdd
+    private func addedZones(_ toAdd: [AppZone]) throws -> [AppZone] {
+        try database.write { db in
+            for zone in toAdd {
+                try zone.save(db)
+            }
         }
+        return toAdd
     }
 
-    func testStartingWithNoRegionsAddsFromRealm() throws {
+    /// Waits for the zone observation (delivered asynchronously on the main
+    /// queue) to propagate, until the given condition holds.
+    private func waitForZoneSync(
+        _ condition: @escaping () -> Bool,
+        timeout: TimeInterval = 10
+    ) {
+        let expectation = expectation(for: NSPredicate(block: { _, _ in condition() }), evaluatedWith: nil)
+        wait(for: [expectation], timeout: timeout)
+    }
+
+    func testStartingWithNoRegionsAddsFromDatabase() throws {
         var removedRegions = [CLRegion]()
         var addedRegions = [CLRegion]()
         var zones = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "home"
-                $0.serverIdentifier = apis[0].server.identifier.rawValue
-                $0.Latitude = 37.1234
-                $0.Longitude = -122.4567
-                $0.Radius = 50.0
-                $0.TrackingEnabled = true
-                $0.BeaconUUID = UUID().uuidString
-                $0.BeaconMajor.value = 123
-                $0.BeaconMinor.value = 456
-            },
-            with(RLMZone()) {
-                $0.entityId = "work"
-                $0.serverIdentifier = apis[1].server.identifier.rawValue
-                $0.Latitude = 37.2345
-                $0.Longitude = -122.5678
-                $0.Radius = 100
-                $0.TrackingEnabled = true
-            },
+            AppZone(
+                entityId: "home",
+                serverIdentifier: apis[0].server.identifier.rawValue,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 50.0,
+                trackingEnabled: true,
+                beaconUUID: UUID().uuidString,
+                beaconMajor: 123,
+                beaconMinor: 456
+            ),
+            AppZone(
+                entityId: "work",
+                serverIdentifier: apis[1].server.identifier.rawValue,
+                latitude: 37.2345,
+                longitude: -122.5678,
+                radius: 100,
+                trackingEnabled: true
+            ),
         ])
         var currentRegions: Set<CLRegion> {
             Set(zones.flatMap(\.regionsForMonitoring))
@@ -137,13 +150,17 @@ class ZoneManagerTests: XCTestCase {
         )
 
         // mutate a zone
-        try realm.write {
-            removedRegions.append(contentsOf: zones[1].regionsForMonitoring)
-            zones[1].Latitude += 0.02
-            addedRegions.append(contentsOf: zones[1].regionsForMonitoring)
+        removedRegions.append(contentsOf: zones[1].regionsForMonitoring)
+        zones[1].latitude += 0.02
+        addedRegions.append(contentsOf: zones[1].regionsForMonitoring)
+
+        try database.write { [zone = zones[1]] db in
+            try zone.save(db)
         }
 
-        realm.refresh()
+        waitForZoneSync { [locationManager] in
+            locationManager!.monitoredRegions == currentRegions
+        }
 
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
@@ -151,13 +168,15 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(collector.ignoringNextStates, Set(addedRegions))
 
         // remove a zone
-        try realm.write {
-            let toRemove = zones.popLast()!
-            removedRegions.append(contentsOf: toRemove.regionsForMonitoring)
-            realm.delete(toRemove)
+        let toRemove = zones.popLast()!
+        removedRegions.append(contentsOf: toRemove.regionsForMonitoring)
+        _ = try database.write { db in
+            try toRemove.delete(db)
         }
 
-        realm.refresh()
+        waitForZoneSync { [locationManager] in
+            locationManager!.monitoredRegions == currentRegions
+        }
 
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
@@ -180,11 +199,6 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(locationManager.stopMonitoringRegions, [startRegion])
         XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
 
-        realm.refresh()
-
-        XCTAssertEqual(locationManager.stopMonitoringRegions, [startRegion])
-        XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
-
         withExtendedLifetime(manager) { /* silences unused variable */ }
     }
 
@@ -192,41 +206,47 @@ class ZoneManagerTests: XCTestCase {
         let s1: String = apis[0].server.identifier.rawValue
         let s2: String = apis[1].server.identifier.rawValue
 
-        let zones = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "home"
-                $0.serverIdentifier = s1
-                $0.Latitude = 37.1234
-                $0.Longitude = -122.4567
-                $0.Radius = 100
-                $0.TrackingEnabled = false
-            },
-            with(RLMZone()) {
-                $0.entityId = "work"
-                $0.serverIdentifier = s2
-                $0.Latitude = 37.2345
-                $0.Longitude = -122.5678
-                $0.Radius = 150
-                $0.TrackingEnabled = true
-            },
+        var zones = try addedZones([
+            AppZone(
+                entityId: "home",
+                serverIdentifier: s1,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 100,
+                trackingEnabled: false
+            ),
+            AppZone(
+                entityId: "work",
+                serverIdentifier: s2,
+                latitude: 37.2345,
+                longitude: -122.5678,
+                radius: 150,
+                trackingEnabled: true
+            ),
         ])
 
         let manager = newZoneManager()
         XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s2)/work"]))
 
-        try realm.write {
-            zones[0].TrackingEnabled = true
+        zones[0].trackingEnabled = true
+        try database.write { [zone = zones[0]] db in
+            try zone.save(db)
         }
 
-        realm.refresh()
+        waitForZoneSync { [locationManager] in
+            Set(locationManager!.monitoredRegions.map(\.identifier)) == Set(["\(s2)/work", "\(s1)/home"])
+        }
 
         XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s2)/work", "\(s1)/home"]))
 
-        try realm.write {
-            zones[1].TrackingEnabled = false
+        zones[1].trackingEnabled = false
+        try database.write { [zone = zones[1]] db in
+            try zone.save(db)
         }
 
-        realm.refresh()
+        waitForZoneSync { [locationManager] in
+            Set(locationManager!.monitoredRegions.map(\.identifier)) == Set(["\(s1)/home"])
+        }
 
         XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s1)/home"]))
 
@@ -235,25 +255,25 @@ class ZoneManagerTests: XCTestCase {
 
     func testFilterChangesOnLocationChange() throws {
         let zones = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "home"
-                $0.serverIdentifier = apis[0].server.identifier.rawValue
-                $0.Latitude = 37.1234
-                $0.Longitude = -122.4567
-                $0.Radius = 50.0
-                $0.TrackingEnabled = true
-                $0.BeaconUUID = UUID().uuidString
-                $0.BeaconMajor.value = 123
-                $0.BeaconMinor.value = 456
-            },
-            with(RLMZone()) {
-                $0.entityId = "work"
-                $0.serverIdentifier = apis[1].server.identifier.rawValue
-                $0.Latitude = 37.2345
-                $0.Longitude = -122.5678
-                $0.Radius = 100
-                $0.TrackingEnabled = true
-            },
+            AppZone(
+                entityId: "home",
+                serverIdentifier: apis[0].server.identifier.rawValue,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 50.0,
+                trackingEnabled: true,
+                beaconUUID: UUID().uuidString,
+                beaconMajor: 123,
+                beaconMinor: 456
+            ),
+            AppZone(
+                entityId: "work",
+                serverIdentifier: apis[1].server.identifier.rawValue,
+                latitude: 37.2345,
+                longitude: -122.5678,
+                radius: 100,
+                trackingEnabled: true
+            ),
         ])
 
         XCTAssertEqual(locationManager.monitoredRegions.count, 0)
@@ -307,25 +327,25 @@ class ZoneManagerTests: XCTestCase {
 
     func testLocationUpdateSource() throws {
         let zones = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "home"
-                $0.serverIdentifier = apis[0].server.identifier.rawValue
-                $0.Latitude = 37.1234
-                $0.Longitude = -122.4567
-                $0.Radius = 50.0
-                $0.TrackingEnabled = true
-                $0.BeaconUUID = UUID().uuidString
-                $0.BeaconMajor.value = 123
-                $0.BeaconMinor.value = 456
-            },
-            with(RLMZone()) {
-                $0.entityId = "work"
-                $0.serverIdentifier = apis[1].server.identifier.rawValue
-                $0.Latitude = 37.2345
-                $0.Longitude = -122.5678
-                $0.Radius = 100
-                $0.TrackingEnabled = true
-            },
+            AppZone(
+                entityId: "home",
+                serverIdentifier: apis[0].server.identifier.rawValue,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 50.0,
+                trackingEnabled: true,
+                beaconUUID: UUID().uuidString,
+                beaconMajor: 123,
+                beaconMinor: 456
+            ),
+            AppZone(
+                entityId: "work",
+                serverIdentifier: apis[1].server.identifier.rawValue,
+                latitude: 37.2345,
+                longitude: -122.5678,
+                radius: 100,
+                trackingEnabled: true
+            ),
         ])
 
         Current.settingsStore.locationSources.zone = false
@@ -357,14 +377,14 @@ class ZoneManagerTests: XCTestCase {
             identifier: "dogs"
         )
         let zone = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "zone.zid"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Latitude = 42.2222
-                $0.Longitude = 43.3333
-                $0.Radius = 100
-                $0.TrackingEnabled = true
-            },
+            AppZone(
+                entityId: "zone.zid",
+                serverIdentifier: api.server.identifier.rawValue,
+                latitude: 42.2222,
+                longitude: 43.3333,
+                radius: 100,
+                trackingEnabled: true
+            ),
         ])[0]
         processor.promiseToReturn = .value(())
 
@@ -399,14 +419,14 @@ class ZoneManagerTests: XCTestCase {
             identifier: "zone.zid@868"
         )
         let zone = try addedZones([
-            with(RLMZone()) {
-                $0.entityId = "zone.zid"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Latitude = 42.2222
-                $0.Longitude = 43.3333
-                $0.Radius = 99
-                $0.TrackingEnabled = true
-            },
+            AppZone(
+                entityId: "zone.zid",
+                serverIdentifier: api.server.identifier.rawValue,
+                latitude: 42.2222,
+                longitude: 43.3333,
+                radius: 99,
+                trackingEnabled: true
+            ),
         ])[0]
         processor.promiseToReturn = .value(())
 
@@ -529,11 +549,11 @@ private class FakeProcessor: ZoneManagerProcessor {
 }
 
 private class FakeRegionFilter: ZoneManagerRegionFilter {
-    var lastAskedZones: AnyCollection<RLMZone>?
+    var lastAskedZones: AnyCollection<AppZone>?
     var regionsBlock: (() -> AnyCollection<CLRegion>)?
 
     func regions(
-        from zones: AnyCollection<RLMZone>,
+        from zones: AnyCollection<AppZone>,
         currentRegions: AnyCollection<CLRegion>,
         lastLocation: CLLocation?
     ) -> AnyCollection<CLRegion> {

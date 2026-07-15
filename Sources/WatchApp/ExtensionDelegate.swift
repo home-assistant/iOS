@@ -27,6 +27,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         Current.Log.verbose("didFinishLaunching")
 
+        // Import any legacy Realm data into GRDB before anything reads it
+        RealmToGRDBMigration.migrateIfNeeded()
+
         UNUserNotificationCenter.current().delegate = self
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
@@ -227,17 +230,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
             if blob.identifier == WatchDatabaseMirror.blobIdentifier {
-                self?.applyPushedDatabaseMirror(blob.content)
+                self?.applyPushedDatabaseMirror(blob.content, metadata: blob.metadata)
             }
 
             self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.context.observations.store[.init(queue: .main)] = { [weak self] context in
-            Current.Log.verbose("Received context: \(context)")
-
-            self?.updateContext(context.content)
-        }
+        // No context observer: complication data reaches the watch exclusively through the database
+        // mirror (chunked pull + background transferFile push), which writes straight into GRDB —
+        // the watch no longer decodes any JSON payloads. Older phones still send complications in
+        // the application context; those keys are simply ignored.
 
         Communicator.shared.complicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
@@ -293,32 +295,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
     }
 
-    private func updateContext(_ content: HAWatchConnectivity.Content) {
-        // Complications arrive from the phone as Codable JSON `Data` over the background context, and
-        // also via the watch database mirror on reload. Both write into GRDB — the single source the
-        // snapshot writer reads from. Contexts are delivered while the app is backgrounded, so the
-        // writes run under an expiring activity (see performProtectedDatabaseWork).
-        Self.performProtectedDatabaseWork(reason: "watch-context-write") {
-            if let data = content["complications"] as? Data,
-               let complications = try? JSONDecoder().decode([WatchComplication].self, from: data) {
-                Current.Log.verbose("Updating \(complications.count) legacy complications from context")
-                WatchWidgetComplicationSnapshotStore.replaceLegacyComplications(complications)
-            }
-            if let data = content["complicationConfigs"] as? Data,
-               let configs = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
-                Current.Log.verbose("Updating \(configs.count) complication configs from context")
-                WatchWidgetComplicationSnapshotStore.replaceConfigs(configs)
-            }
-        } completion: { [weak self] in
-            WatchWidgetComplicationSnapshotStore.update()
-            self?.updateComplications()
-        }
-    }
-
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
-    private func applyPushedDatabaseMirror(_ data: Data) {
+    private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
@@ -334,6 +314,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
             do {
                 try mirror.apply()
+                // The push carries the phone's digests in the transfer metadata; storing them keeps
+                // the next interactive delta sync accurate instead of re-fetching everything.
+                if let digests = metadata?[WatchDatabaseMirror.digestsKey] as? [String: String] {
+                    WatchUserDefaults.shared.databaseMirrorDigests = digests
+                }
                 Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
@@ -346,12 +331,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     type: .database
                 ))
             }
-        } completion: {
+        } completion: { [weak self] in
             // The mirror also carries the servers; keep them in step with the reference tables.
             WatchServerSync.applyMirroredServers(mirror.servers)
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
+            // The mirror is now the only complication delivery path, so it also reloads the ClockKit
+            // timelines (previously done when the application context arrived).
+            self?.updateComplications()
         }
     }
 
@@ -464,25 +452,7 @@ enum WatchWidgetComplicationSnapshotStore {
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     static let recordsKey = "watchComplicationRefreshRecords"
 
-    /// Replace the watch's legacy complications in GRDB (from the background context or the mirror).
-    static func replaceLegacyComplications(_ complications: [WatchComplication]) {
-        do {
-            try WatchComplication.replaceAll(complications)
-        } catch {
-            Current.Log.error("Failed to store legacy complications: \(error)")
-        }
-    }
-
-    /// Replace the watch's modern complication configs in GRDB.
-    static func replaceConfigs(_ configs: [WatchComplicationConfig]) {
-        do {
-            try WatchComplicationConfig.replaceAll(configs)
-        } catch {
-            Current.Log.error("Failed to store complication configs: \(error)")
-        }
-    }
-
-    /// Fire-and-forget refresh for synchronous callers (launch, context receipt, home sync).
+    /// Fire-and-forget refresh for synchronous callers (launch, mirror receipt, home sync).
     static func update() {
         Task { await refresh() }
     }
@@ -869,6 +839,10 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         var rawState = ""
         var attributes: [String: Any] = [:]
         var customGaugeFraction: Double?
+        // Rendered by the color templates (custom-template kind); each overrides its static color.
+        var gaugeColorHex: String?
+        var iconColorHex: String?
+        var textColorHex: String?
         // Whether we obtained fresh live data this pass. When false the caller keeps the last-known
         // snapshot instead of overwriting it with a value-less one.
         var isLive = false
@@ -937,6 +911,16 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 customGaugeFraction = min(max(Double(raw), 0), 1)
                 isLive = true
             }
+            // Colors are cosmetic: they never count as live data, and an invalid render just keeps
+            // the static color it would have overridden.
+            func renderColor(_ template: String?) async -> String? {
+                guard let template,
+                      let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) else { return nil }
+                return WatchComplicationConfig.normalizedHexColor(from: rendered)
+            }
+            gaugeColorHex = await renderColor(config.customGaugeColorTemplate)
+            iconColorHex = await renderColor(config.customIconColorTemplate)
+            textColorHex = await renderColor(config.customTextColorTemplate)
             if !isLive {
                 failureReason = "template render failed"
             }
@@ -968,7 +952,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             let range = config.gaugeRange(for: family)
             perFamily[family.rawValue] = PerFamily(
                 fraction: fraction(for: family),
-                tint: config.tint(for: family),
+                tint: gaugeColorHex ?? config.tint(for: family),
                 showValue: config.showsValue(for: family),
                 showName: config.showsName(for: family),
                 showIcon: config.showsIcon(for: family),
@@ -977,13 +961,13 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
-                textColor: config.textColor(for: family)
+                textColor: textColorHex ?? config.textColor(for: family)
             )
         }
 
         let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
         // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
-        let color = config.iconColor.map { UIColor(hex: $0) } ?? AppConstants.tintColor
+        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let iconData = config.iconName
             .map { MaterialDesignIcons(serversideValueNamed: $0).image(ofSize: iconRenderSize, color: color) }?
             .pngData()

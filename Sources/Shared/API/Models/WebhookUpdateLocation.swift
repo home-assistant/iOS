@@ -30,7 +30,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         }
     }
 
-    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?, inZones: [RLMZone]? = nil) {
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: AppZone?, inZones: [AppZone]? = nil) {
         self.init(trigger: trigger)
         self.locationName = zone?.deviceTrackerName ?? LocationNames.NotHome.rawValue
         self.inZones = inZones?.map(\.entityId)
@@ -39,8 +39,8 @@ public struct WebhookUpdateLocation: ImmutableMappable {
     public init(
         trigger: LocationUpdateTrigger,
         location: CLLocation?,
-        zone: RLMZone?,
-        inZones: [RLMZone]? = nil,
+        zone: AppZone?,
+        inZones: [AppZone]? = nil,
         currentSSID: String? = nil
     ) {
         self.init(trigger: trigger)
@@ -76,14 +76,14 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         } else if let zone {
             if trigger != .BeaconRegionExit {
                 self.location = zone.center
-                self.horizontalAccuracy = zone.Radius
+                self.horizontalAccuracy = zone.radius
             }
 
             #if os(iOS)
             // https://github.com/home-assistant/iOS/issues/32
-            if let currentSSID, zone.SSIDTrigger.contains(currentSSID) {
+            if let currentSSID, zone.ssidTrigger.contains(currentSSID) {
                 self.location = zone.center
-                self.locationName = zone.Name
+                self.locationName = zone.name
                 return
             }
             #endif
@@ -100,7 +100,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
             } else {
                 switch trigger {
                 case .BeaconRegionEnter where !zone.isPassive:
-                    self.locationName = zone.Name
+                    self.locationName = zone.name
                 case .BeaconRegionExit:
                     break
                 default:

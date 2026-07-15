@@ -4,10 +4,20 @@ import SwiftUI
 /// Shows the complication in all four WidgetKit families at once, arranged like an Apple Watch face,
 /// so the user sees every size simultaneously instead of flipping a size picker. Fetches the entity
 /// state once and renders every family from that single fetch.
+///
+/// With `showsOnlySelectedFamily` it instead renders just the selected family, centered and zoomed
+/// to fit a compact fake watch screen — the shape used by the floating (picture-in-picture) preview.
 struct AllFamiliesComplicationPreview: View {
     let config: WatchComplicationConfig
     let server: Server
-    @Binding var selectedFamily: WatchComplicationConfig.Family
+    /// The family shown by the single-family (floating) mode — the size being customized, driven by
+    /// the editor's segmented size picker. The full face ignores it and shows every family equally.
+    let selectedFamily: WatchComplicationConfig.Family
+    var showsOnlySelectedFamily = false
+
+    /// Outer bezel radius of the compact single-family face — exposed so the floating panel's
+    /// chrome can use a concentric radius that matches the fake watch shape.
+    static let compactBezelCornerRadius: CGFloat = 46
     /// Reports the entity's unit (nil when none), so the editor can offer the "Show unit" toggle.
     var onUnit: (String?) -> Void = { _ in }
     /// Reports the entity's attribute names (sorted), offered as value sources.
@@ -15,39 +25,64 @@ struct AllFamiliesComplicationPreview: View {
     /// Reports whether the current value (state or chosen attribute) is numeric, so the editor can hide
     /// the decimals picker for non-numeric values.
     var onValueIsNumeric: (Bool) -> Void = { _ in }
+    /// How long after the last edit builder templates are (re-)evaluated.
+    private static let templateDebounce: TimeInterval = 2
 
     @State private var entityState = ""
     @State private var entityAttributes: [String: Any] = [:]
     @State private var isFetching = false
     @State private var lastFetchKey: String?
+    /// Whether the initial (post-mount) evaluation already ran — see the `task` in `body`.
+    @State private var hasEvaluated = false
+    /// Natural size of the selected family's preview, measured to compute the zoom-to-fit scale in
+    /// the single-family (floating) mode.
+    @State private var selectedPreviewSize: CGSize = .zero
 
     // Template rendering, used only for the custom-template kind.
     @StateObject private var valueRenderer: TemplateRenderer
     @StateObject private var gaugeRenderer: TemplateRenderer
+    @StateObject private var gaugeColorRenderer: TemplateRenderer
+    @StateObject private var iconColorRenderer: TemplateRenderer
+    @StateObject private var textColorRenderer: TemplateRenderer
 
     init(
         config: WatchComplicationConfig,
         server: Server,
-        selectedFamily: Binding<WatchComplicationConfig.Family>,
+        selectedFamily: WatchComplicationConfig.Family,
+        showsOnlySelectedFamily: Bool = false,
         onUnit: @escaping (String?) -> Void = { _ in },
         onAttributes: @escaping ([String]) -> Void = { _ in },
         onValueIsNumeric: @escaping (Bool) -> Void = { _ in }
     ) {
         self.config = config
         self.server = server
-        self._selectedFamily = selectedFamily
+        self.selectedFamily = selectedFamily
+        self.showsOnlySelectedFamily = showsOnlySelectedFamily
         self.onUnit = onUnit
         self.onAttributes = onAttributes
         self.onValueIsNumeric = onValueIsNumeric
-        _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
-        _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
+        let makeRenderer = { TemplateRenderer(server: server, debounceInterval: Self.templateDebounce) }
+        _valueRenderer = StateObject(wrappedValue: makeRenderer())
+        _gaugeRenderer = StateObject(wrappedValue: makeRenderer())
+        _gaugeColorRenderer = StateObject(wrappedValue: makeRenderer())
+        _iconColorRenderer = StateObject(wrappedValue: makeRenderer())
+        _textColorRenderer = StateObject(wrappedValue: makeRenderer())
     }
 
     private var fetchKey: String {
         [
             config.kind.rawValue, config.serverId, config.entityId ?? "",
             config.customTextTemplate ?? "", config.customGaugeTemplate ?? "",
+            config.customGaugeColorTemplate ?? "", config.customIconColorTemplate ?? "",
+            config.customTextColorTemplate ?? "",
         ].joined(separator: "|")
+    }
+
+    /// A color renderer's evaluated color, normalized — nil while loading, on failure, or when the
+    /// render isn't a valid hex string. Overrides its static color, like on the watch.
+    private func evaluatedHex(_ renderer: TemplateRenderer) -> String? {
+        guard case let .success(rendered) = renderer.output, !rendered.isEmpty else { return nil }
+        return WatchComplicationConfig.normalizedHexColor(from: rendered)
     }
 
     /// True before the user has chosen a data source — the preview then shows sample (mock) content.
@@ -60,86 +95,108 @@ struct AllFamiliesComplicationPreview: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 72, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color(white: 0.28), Color(white: 0.1)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+        Group {
+            if showsOnlySelectedFamily {
+                // Compact single-family face for the floating preview: the current family only,
+                // centered and zoomed to fit the screen.
+                let screenSize = CGSize(width: 140, height: 176)
+                let available = CGSize(width: screenSize.width - 24, height: screenSize.height - 24)
+                // Capped so tiny content (e.g. the inline capsule) isn't blown up absurdly.
+                let fitScale: CGFloat = selectedPreviewSize == .zero ? 1 : min(
+                    1.5,
+                    available.width / max(selectedPreviewSize.width, 1),
+                    available.height / max(selectedPreviewSize.height, 1)
+                )
+                ZStack {
+                    RoundedRectangle(cornerRadius: Self.compactBezelCornerRadius, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(white: 0.28), Color(white: 0.1)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
-                    .frame(width: 244, height: 300)
-                    .shadow(color: .black.opacity(0.25), radius: 14, y: 8)
+                        .frame(width: screenSize.width + 16, height: screenSize.height + 16)
 
-                RoundedRectangle(cornerRadius: 64, style: .continuous)
-                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
-                    .frame(width: 230, height: 286)
-
-                RoundedRectangle(cornerRadius: 58, style: .continuous)
-                    .fill(Color.black)
-                    .frame(width: 214, height: 270)
-                    .overlay {
-                        ZStack {
-                            familyButton(.circular)
-                                .position(x: 58, y: 68)
-                            familyButton(.corner)
-                                .position(x: 156, y: 68)
-                            familyButton(.rectangular)
-                                .position(x: 107, y: 148)
-                            familyButton(.inline)
-                                .position(x: 107, y: 226)
+                    RoundedRectangle(cornerRadius: 40, style: .continuous)
+                        .fill(Color.black)
+                        .frame(width: screenSize.width, height: screenSize.height)
+                        .overlay {
+                            preview(for: selectedFamily)
+                                // Ideal size, so flexible content (the inline capsule) isn't squashed
+                                // by the small screen proposal before it gets scaled to fit.
+                                .fixedSize()
+                                .background(
+                                    GeometryReader { proxy in
+                                        Color.clear
+                                            .onAppear { selectedPreviewSize = proxy.size }
+                                            .onChange(of: proxy.size) { newSize in
+                                                selectedPreviewSize = newSize
+                                            }
+                                    }
+                                )
+                                .scaleEffect(fitScale)
                         }
-                        .frame(width: 214, height: 270)
-                        .clipShape(RoundedRectangle(cornerRadius: 58, style: .continuous))
-                    }
-            }
-            .frame(width: 260, height: 316)
+                        .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
+                }
+            } else {
+                ZStack(alignment: .topTrailing) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 72, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color(white: 0.28), Color(white: 0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 244, height: 300)
+                            .shadow(color: .black.opacity(0.25), radius: 14, y: 8)
 
-            if isFetching {
-                ProgressView()
-                    .controlSize(.small)
-                    .tint(.white)
-                    .padding(DesignSystem.Spaces.two)
+                        RoundedRectangle(cornerRadius: 64, style: .continuous)
+                            .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                            .frame(width: 230, height: 286)
+
+                        RoundedRectangle(cornerRadius: 58, style: .continuous)
+                            .fill(Color.black)
+                            .frame(width: 214, height: 270)
+                            .overlay {
+                                ZStack {
+                                    preview(for: .circular)
+                                        .position(x: 58, y: 68)
+                                    preview(for: .corner)
+                                        .position(x: 156, y: 68)
+                                    preview(for: .rectangular)
+                                        .position(x: 107, y: 148)
+                                    preview(for: .inline)
+                                        .position(x: 107, y: 226)
+                                }
+                                .frame(width: 214, height: 270)
+                                .clipShape(RoundedRectangle(cornerRadius: 58, style: .continuous))
+                            }
+                    }
+                    .frame(width: 260, height: 316)
+
+                    if isFetching {
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(.white)
+                            .padding(DesignSystem.Spaces.two)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, DesignSystem.Spaces.two)
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, DesignSystem.Spaces.two)
         .environment(\.colorScheme, .dark)
         // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
         // reliably, so the preview updates on entity change without needing to tap a family first.
-        .task(id: fetchKey) { refresh() }
-    }
-
-    @ViewBuilder
-    private func familyButton(_ family: WatchComplicationConfig.Family) -> some View {
-        Button {
-            selectedFamily = family
-        } label: {
-            preview(for: family)
-                .padding(DesignSystem.Spaces.half)
-                .overlay {
-                    if selectedFamily == family {
-                        switch family {
-                        case .circular, .corner:
-                            Circle()
-                                .stroke(Color.accentColor, lineWidth: 2)
-                                .padding(10)
-                        case .rectangular:
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .stroke(Color.accentColor, lineWidth: 2)
-                        case .inline:
-                            Capsule()
-                                .stroke(Color.accentColor, lineWidth: 2)
-                        }
-                    }
-                }
-                .contentShape(Rectangle())
+        // The first evaluation after (re)mounting skips the typing debounce, so the preview shows
+        // rendered results promptly (Form recycles this row while the user edits further down).
+        .task(id: fetchKey) {
+            refresh(skipInitialDelay: !hasEvaluated)
+            hasEvaluated = true
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(verbatim: family.title))
-        .accessibilityAddTraits(selectedFamily == family ? .isSelected : [])
     }
 
     @ViewBuilder
@@ -163,6 +220,11 @@ struct AllFamiliesComplicationPreview: View {
         case .customTemplate:
             var familyConfig = config
             familyConfig.widgetFamily = family
+            // Rendered color templates override their static colors, like on the watch.
+            var options = familyConfig.options(for: family)
+            if let hex = evaluatedHex(gaugeColorRenderer) { options.tint = hex }
+            if let hex = evaluatedHex(textColorRenderer) { options.textColor = hex }
+            familyConfig.setOptions(options, for: family)
             let value: String = {
                 if case let .success(rendered) = valueRenderer.output { return rendered }
                 return ""
@@ -174,7 +236,7 @@ struct AllFamiliesComplicationPreview: View {
             }()
             var iconImage: Image?
             if familyConfig.showsIcon(for: family), let iconName = config.iconName {
-                let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
+                let color = (evaluatedHex(iconColorRenderer) ?? config.iconColor).map { UIColor(hex: $0) } ?? .white
                 iconImage = Image(
                     uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
                         .image(ofSize: CGSize(width: 64, height: 64), color: color)
@@ -188,7 +250,7 @@ struct AllFamiliesComplicationPreview: View {
 
     // MARK: - Data loading
 
-    private func refresh() {
+    private func refresh(skipInitialDelay: Bool = false) {
         switch config.kind {
         case .entity:
             if fetchKey != lastFetchKey {
@@ -197,8 +259,11 @@ struct AllFamiliesComplicationPreview: View {
                 reportDerived()
             }
         case .customTemplate:
-            valueRenderer.updateTemplate(config.customTextTemplate ?? "")
-            gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
+            valueRenderer.updateTemplate(config.customTextTemplate ?? "", skipDelay: skipInitialDelay)
+            gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "", skipDelay: skipInitialDelay)
+            gaugeColorRenderer.updateTemplate(config.customGaugeColorTemplate ?? "", skipDelay: skipInitialDelay)
+            iconColorRenderer.updateTemplate(config.customIconColorTemplate ?? "", skipDelay: skipInitialDelay)
+            textColorRenderer.updateTemplate(config.customTextColorTemplate ?? "", skipDelay: skipInitialDelay)
         }
     }
 
@@ -247,7 +312,7 @@ struct AllFamiliesComplicationPreview: View {
             AllFamiliesComplicationPreview(
                 config: WatchComplicationConfig(serverId: "preview"),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.circular)
+                selectedFamily: .circular
             )
 
             AllFamiliesComplicationPreview(
@@ -275,7 +340,7 @@ struct AllFamiliesComplicationPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.corner)
+                selectedFamily: .corner
             )
 
             AllFamiliesComplicationPreview(
@@ -295,10 +360,24 @@ struct AllFamiliesComplicationPreview: View {
                     return config
                 }(),
                 server: ServerFixture.standard,
-                selectedFamily: .constant(.rectangular)
+                selectedFamily: .rectangular
             )
         }
         .padding()
     }
+}
+
+#Preview("Floating (single family)") {
+    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spaces.three) {
+        ForEach(WatchComplicationConfig.Family.allCases) { family in
+            AllFamiliesComplicationPreview(
+                config: WatchComplicationConfig(serverId: "preview", name: "Solar"),
+                server: ServerFixture.standard,
+                selectedFamily: family,
+                showsOnlySelectedFamily: true
+            )
+        }
+    }
+    .padding()
 }
 #endif

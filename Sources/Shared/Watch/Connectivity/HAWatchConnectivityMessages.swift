@@ -5,10 +5,14 @@ public extension HAWatchConnectivity {
     struct ImmediateMessage {
         public let identifier: String
         public let content: Content
+        /// Protocol version of the build that sent this message; `nil` for messages from builds
+        /// that predate versioning (and for locally constructed, not-yet-sent messages).
+        public let senderVersion: Int?
 
         public init(identifier: String, content: Content = [:]) {
             self.identifier = identifier
             self.content = content
+            self.senderVersion = nil
         }
 
         init?(content envelope: Content) {
@@ -18,10 +22,15 @@ public extension HAWatchConnectivity {
             }
             self.identifier = identifier
             self.content = payload
+            self.senderVersion = envelope[PayloadKey.version] as? Int
         }
 
         func jsonRepresentation() -> Content {
-            [PayloadKey.identifier: identifier, PayloadKey.content: content]
+            [
+                PayloadKey.identifier: identifier,
+                PayloadKey.content: content,
+                PayloadKey.version: WatchProtocolVersion.current,
+            ]
         }
     }
 
@@ -32,11 +41,15 @@ public extension HAWatchConnectivity {
 
         public let identifier: String
         public let content: Content
+        /// Protocol version of the build that sent this message; `nil` for messages from builds
+        /// that predate versioning (and for locally constructed, not-yet-sent messages).
+        public let senderVersion: Int?
         public let reply: Reply
 
         public init(identifier: String, content: Content = [:], reply: @escaping Reply) {
             self.identifier = identifier
             self.content = content
+            self.senderVersion = nil
             self.reply = reply
         }
 
@@ -47,12 +60,17 @@ public extension HAWatchConnectivity {
             }
             self.identifier = identifier
             self.content = payload
+            self.senderVersion = envelope[PayloadKey.version] as? Int
             let box = ReplyBox(wcReplyHandler)
             self.reply = { box.reply($0) }
         }
 
         func jsonRepresentation() -> Content {
-            [PayloadKey.identifier: identifier, PayloadKey.content: content]
+            [
+                PayloadKey.identifier: identifier,
+                PayloadKey.content: content,
+                PayloadKey.version: WatchProtocolVersion.current,
+            ]
         }
     }
 
@@ -60,10 +78,14 @@ public extension HAWatchConnectivity {
     struct GuaranteedMessage {
         public let identifier: String
         public let content: Content
+        /// Protocol version of the build that sent this message; `nil` for messages from builds
+        /// that predate versioning (and for locally constructed, not-yet-sent messages).
+        public let senderVersion: Int?
 
         public init(identifier: String, content: Content = [:]) {
             self.identifier = identifier
             self.content = content
+            self.senderVersion = nil
         }
 
         init?(content envelope: Content) {
@@ -73,10 +95,15 @@ public extension HAWatchConnectivity {
             }
             self.identifier = identifier
             self.content = payload
+            self.senderVersion = envelope[PayloadKey.version] as? Int
         }
 
         func jsonRepresentation() -> Content {
-            [PayloadKey.identifier: identifier, PayloadKey.content: content]
+            [
+                PayloadKey.identifier: identifier,
+                PayloadKey.content: content,
+                PayloadKey.version: WatchProtocolVersion.current,
+            ]
         }
     }
 }
@@ -99,7 +126,11 @@ final class ReplyBox {
         lock.unlock()
 
         if let handlerToCall {
-            handlerToCall(response.jsonRepresentation())
+            let envelope = response.jsonRepresentation()
+            // Replies share sendMessage's payload ceiling; an oversized one surfaces on the
+            // counterpart only as a reply timeout, so name the culprit here.
+            WatchConnectivityManager.warnIfExceedsMessageLimit(envelope, identifier: response.identifier)
+            handlerToCall(envelope)
         } else {
             Current.Log.error("WatchConnectivity reply invoked more than once for \(response.identifier)")
         }

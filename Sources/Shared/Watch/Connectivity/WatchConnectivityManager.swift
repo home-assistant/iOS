@@ -15,6 +15,22 @@ public final class WatchConnectivityManager: NSObject {
     let completionLock = NSLock()
     var fileCompletions: [ObjectIdentifier: (Result<Void, Error>) -> Void] = [:]
 
+    /// One interactive send waiting for a free in-flight slot. Kept sorted by priority (then FIFO)
+    /// in `pendingInteractiveSends`.
+    struct PendingInteractiveSend {
+        let priority: HAWatchConnectivity.SendPriority
+        let coalescingKey: String?
+        let sequence: Int
+        let perform: () -> Void
+    }
+
+    /// State of the outbound interactive-send queue (see `WatchConnectivityManager+SendQueue`).
+    let sendQueueLock = NSLock()
+    var pendingInteractiveSends: [PendingInteractiveSend] = []
+    var inFlightInteractiveSends = 0
+    var interactiveSendSequence = 0
+    static let maxConcurrentInteractiveSends = 2
+
     /// In-memory copy of the most recently received application context.
     ///
     /// `WCSession.receivedApplicationContext` is a *blocking* getter: it synchronously waits on
@@ -74,6 +90,16 @@ public final class WatchConnectivityManager: NSObject {
 
     public var hasPendingDataToBeReceived: Bool {
         session?.hasContentPendingProxy ?? false
+    }
+
+    /// Whether a guaranteed message with this identifier is still queued for delivery
+    /// (`transferUserInfo` not yet handed to the counterpart). Lets callers skip enqueueing a
+    /// duplicate — WCSession queues every transfer verbatim and would deliver them all.
+    public func hasOutstandingGuaranteedMessage(identifier: String) -> Bool {
+        guard let session else { return false }
+        return session.outstandingUserInfoTransfersProxy.contains {
+            HAWatchConnectivity.GuaranteedMessage(content: $0)?.identifier == identifier
+        }
     }
 
     public var mostRecentlyReceivedContext: HAWatchConnectivity.Context {

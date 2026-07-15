@@ -160,6 +160,34 @@ class BarometerSensorTests: XCTestCase {
         XCTAssertEqual(handlers.count, startCountAfterSetup)
     }
 
+    func testConcurrentSensorsShareASingleAltimeterRead() throws {
+        // Two servers' sensor sweeps run concurrently; each instantiates a BarometerSensor that
+        // shares one signaler (via the same dependencies). Without coalescing, the second sweep's
+        // startRelativeAltitudeUpdates orphaned the first sweep's handler, so the first sweep's
+        // promise never resolved and that server never got an update_sensor_states webhook — the
+        // multi-server "only the last server updates" bug (issue #5100).
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handlers = [CMAltitudeHandler]()
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in handlers.append(handler) }
+        Current.barometer.stopUpdates = {}
+
+        let promiseA = BarometerSensor(request: request).sensors()
+        let promiseB = BarometerSensor(request: request).sensors()
+
+        // Only one altimeter session is started; the second sweep reuses the first's in-flight read.
+        XCTAssertEqual(handlers.count, 1)
+
+        // Delivering data to the single handler resolves both sweeps with the same reading.
+        handlers.first?(FakeAltitudeData(pressureValue: 101.0), nil)
+
+        let sensorsA = try hang(promiseA)
+        let sensorsB = try hang(promiseB)
+        XCTAssertEqual(sensorsA[0].State as? Double, 1010.0) // 101.0 kPa * 10
+        XCTAssertEqual(sensorsB[0].State as? Double, 1010.0)
+    }
+
     func testSignalerStartsAndStopsUpdates() {
         Current.barometer.isAuthorized = { true }
         Current.barometer.isAvailable = { true }
