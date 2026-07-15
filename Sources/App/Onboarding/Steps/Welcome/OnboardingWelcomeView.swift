@@ -64,7 +64,11 @@ struct OnboardingWelcomeView: View {
 
     private var continueButtonBlock: some View {
         VStack {
-            NavigationLink(destination: OnboardingServersListView(onboardingStyle: .initial)) {
+            // Pushed pages get their own hosting controller, so the `ViewControllerProvider` injected at the
+            // onboarding root (`embeddedInHostingController()`) does not reach them — re-inject it here or the
+            // servers list crashes on first access.
+            NavigationLink(destination: OnboardingServersListView(onboardingStyle: .initial)
+                .injectingViewControllerProvider()) {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
