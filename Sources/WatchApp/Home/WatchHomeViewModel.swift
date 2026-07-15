@@ -1,5 +1,4 @@
 import Foundation
-import Network
 import PromiseKit
 import Shared
 import SwiftUI
@@ -24,11 +23,14 @@ final class WatchHomeViewModel: ObservableObject {
     /// Set when the user taps reload but the iPhone isn't reachable, so the view can explain why instead
     /// of appearing to do nothing.
     @Published var showNotReachableAlert = false
-    @Published var currentSSID: String = ""
     @Published private(set) var homeType: WatchHomeType = .undefined
 
     @Published var watchConfig: WatchConfig = .init()
     @Published var magicItemsInfo: [MagicItem.Info] = []
+    /// Whether the database actually holds a config row. False until the first successful cache
+    /// read of a synced config — used to auto-retry the sync when the database is truly empty,
+    /// without re-syncing for a config that legitimately has no items.
+    private(set) var hasCachedConfig = false
     /// Changes every time a new config is fetched, used as a `.id()` modifier on lists to force re-render.
     @Published var configVersion = UUID()
     /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
@@ -44,8 +46,6 @@ final class WatchHomeViewModel: ObservableObject {
     /// syncs surface an error alert.
     private var isSyncUserInitiated = false
 
-    private var networkPathMonitor: NWPathMonitor?
-    private let networkMonitorQueue = DispatchQueue(label: "WatchHomeNetworkPathMonitor")
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
 
@@ -89,7 +89,6 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     deinit {
-        networkPathMonitor?.cancel()
         if let guaranteedObserver {
             Communicator.shared.guaranteedMessage.unobserve(guaranteedObserver)
         }
@@ -123,29 +122,14 @@ final class WatchHomeViewModel: ObservableObject {
         Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(identifier: identifier))
     }
 
-    func startNetworkMonitoring() {
-        guard networkPathMonitor == nil else { return }
-        let monitor = NWPathMonitor()
-        monitor.pathUpdateHandler = { [weak self] _ in
-            Task { @MainActor in
-                await self?.fetchNetworkInfo()
-            }
-        }
-        monitor.start(queue: networkMonitorQueue)
-        networkPathMonitor = monitor
-    }
-
-    @MainActor
-    func fetchNetworkInfo() async {
-        // `currentWiFiSSID()` fetches fresh network information itself.
-        currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
-    }
-
     @MainActor
     func initialRoutine() {
-        // First display whatever is in cache
+        // Cache-first: the last-known configuration renders synchronously from GRDB, so a cold open
+        // never waits on (or gets blanked by) the sync below.
         loadCache()
-        // Now fetch new data in the background (shows loading indicator only for this fetch)
+        // Then refresh from the phone in the background. This is also what populates an empty
+        // database (fresh install / wiped local data) — only the header shows progress, the cached
+        // rows stay on screen throughout.
         isLoading = true
         requestConfig()
     }
@@ -543,14 +527,26 @@ final class WatchHomeViewModel: ObservableObject {
     /// resolved live by `MagicItemProvider` against the mirrored reference tables. No JSON cache: this
     /// mirrors how the iPhone watch-configuration editor resolves item info.
     @MainActor
-    func loadCache() {
-        let config: WatchConfig
+    func loadCache(isRetry: Bool = false) {
+        let fetchedConfig: WatchConfig?
         do {
-            config = try Current.database().read { db in try WatchConfig.fetchOne(db) } ?? WatchConfig()
+            fetchedConfig = try Current.database().read { db in try WatchConfig.fetchOne(db) }
         } catch {
             // A transient read failure must not blank the home screen: keep whatever config is
             // currently rendered (possibly from an earlier successful read) — the cache is only ever
             // replaced by data that actually loaded. Only alert when there's nothing on screen at all.
+            // A cold open can race another process (the watch widget extension) holding the SQLite
+            // lock, making this read time out even though the table has data. Retry once quietly —
+            // a successful retry should not leave an error in the log or the client events.
+            if !isRetry {
+                Current.Log.info(
+                    "Watch config cache read failed, retrying once: \(error.localizedDescription)"
+                )
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    Task { @MainActor in self?.loadCache(isRetry: true) }
+                }
+                return
+            }
             Current.Log.error("Failed to fetch watch config from database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
                 text: "Failed to read watch config cache: \(error.localizedDescription)",
@@ -562,6 +558,10 @@ final class WatchHomeViewModel: ObservableObject {
             finishCacheLoad()
             return
         }
+        // Distinguishes "no config synced yet" (no row) from a config that legitimately has no
+        // items, so the reachability retry only fires when the database is actually empty.
+        hasCachedConfig = fetchedConfig != nil
+        let config = fetchedConfig ?? WatchConfig()
 
         // Put the database-backed config on screen immediately. Item metadata can resolve a moment later,
         // but the user should not see the empty state while cached rows already exist.
