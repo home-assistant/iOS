@@ -64,6 +64,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 mainServerItem,
                 layoutItem,
                 tabsItem,
+                showAddEditButtonsItem,
                 troubleshootingItem,
             ]),
         ])
@@ -113,6 +114,20 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         item.accessoryType = .disclosureIndicator
         item.handler = { [weak self] _, completion in
             self?.presentTabsSelection()
+            completion()
+        }
+        return item
+    }
+
+    private var showAddEditButtonsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title,
+            detailText: nil,
+            image: viewModel.showAddEditButtons ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self] _, completion in
+            self?.viewModel.toggleShowAddEditButtons()
             completion()
         }
         return item

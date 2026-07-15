@@ -41,5 +41,20 @@ struct CarPlayConfigTests {
             ),
         ], "CarPlay config has wrong items config")
         #expect(carPlayConfig?.quickAccessLayout == nil, "CarPlay config quick access layout should default to nil")
+        #expect(
+            carPlayConfig?.showAddEditButtons == nil,
+            "CarPlay config showAddEditButtons should be nil when column is absent"
+        )
+        #expect(
+            carPlayConfig?.resolvedShowAddEditButtons == true,
+            "CarPlay config should show Add/Edit buttons by default"
+        )
+    }
+
+    @Test func showAddEditButtonsDefaultsToVisible() {
+        #expect(CarPlayConfig().showAddEditButtons == nil)
+        #expect(CarPlayConfig().resolvedShowAddEditButtons == true)
+        #expect(CarPlayConfig(showAddEditButtons: false).resolvedShowAddEditButtons == false)
+        #expect(CarPlayConfig(showAddEditButtons: true).resolvedShowAddEditButtons == true)
     }
 }

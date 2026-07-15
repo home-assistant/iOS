@@ -846,6 +846,14 @@ public enum L10n {
       }
     }
     public enum Config {
+      public enum QuickAccess {
+        public enum ShowAddEditButtons {
+          /// Show buttons to add and edit Quick Access items directly from the car.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.config.quick_access.show_add_edit_buttons.footer") }
+          /// Show Add and Edit buttons
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.quick_access.show_add_edit_buttons.title") }
+        }
+      }
       public enum Tabs {
         /// Tabs
         public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.title") }
@@ -1137,6 +1145,12 @@ public enum L10n {
           /// Don't require confirmation
           public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.confirmation.no_confirmation") }
         }
+      }
+      public enum Empty {
+        /// Add items in the Home Assistant app on your iPhone.
+        public static var body: String { return L10n.tr("Localizable", "carPlay.quick_access.empty.body") }
+        /// No Quick Access items
+        public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.empty.title") }
       }
       public enum Execute {
         /// Executing...

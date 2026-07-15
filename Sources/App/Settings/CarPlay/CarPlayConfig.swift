@@ -7,17 +7,20 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .settings]
     public var quickAccessItems: [MagicItem] = []
     public var quickAccessLayout: CarPlayQuickAccessLayout?
+    public var showAddEditButtons: Bool?
 
     public init(
         id: String = CarPlayConfig.carPlayConfigId,
         tabs: [CarPlayTab] = [.quickAccess, .areas, .settings],
         quickAccessItems: [MagicItem] = [],
-        quickAccessLayout: CarPlayQuickAccessLayout? = nil
+        quickAccessLayout: CarPlayQuickAccessLayout? = nil,
+        showAddEditButtons: Bool? = nil
     ) {
         self.id = id
         self.tabs = tabs
         self.quickAccessItems = quickAccessItems
         self.quickAccessLayout = quickAccessLayout
+        self.showAddEditButtons = showAddEditButtons
     }
 
     public var resolvedQuickAccessLayout: CarPlayQuickAccessLayout {
@@ -26,6 +29,10 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         }
 
         return quickAccessItems.isEmpty ? .grid : .list
+    }
+
+    public var resolvedShowAddEditButtons: Bool {
+        showAddEditButtons ?? true
     }
 
     public static func config() throws -> CarPlayConfig? {
