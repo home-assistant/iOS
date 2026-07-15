@@ -35,6 +35,12 @@ final class HomeAssistantViewModel: ObservableObject {
     @Published var isPullToRefreshActive = false
 
     private let onWebViewController: ((WebViewController) -> Void)?
+
+    // Animation flow lives here rather than in `WebViewController`:
+    // - Pull-to-refresh fades the hosted web content out, then starts the normal web view refresh path.
+    // - `overlayState.isLoading` mounts the full-screen standby loader and fades the web content back in behind it.
+    // - The standby loader remains mounted until both the minimum duration has elapsed and the frontend reconnects.
+    // - Empty-state content waits for the same minimum duration so transient reload failures don't flash immediately.
     private var loaderCycleID = UUID()
     private var pullToRefreshFadeCycleID = UUID()
     private var loaderMinimumDurationTask: Task<Void, Never>?
@@ -139,6 +145,8 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     private func performPullToRefresh(using controller: WebViewController?) {
+        // Keep the web-view reload semantics centralized in `WebViewController`; this view model only owns the
+        // native transition that hides the current page until the full-screen loader is ready.
         beginPullToRefreshFadeOut()
         Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
         Current.websiteDataStoreHandler
@@ -217,6 +225,8 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     private func beginFullScreenLoaderCycle() {
+        // A load cycle starts optimistic: show the standby loader, hold empty-state content back, and wait for
+        // the frontend connection state to confirm whether we can fade the loader away or should show an error.
         let cycleID = UUID()
         loaderMinimumDurationTask?.cancel()
         isFullScreenLoaderMounted = true
