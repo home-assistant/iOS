@@ -135,6 +135,16 @@ public class PedometerSensor: SensorProvider {
             }
         }
 
+        private var stateClass: SensorStateClass {
+            switch self {
+            case .distance, .floorsAscended, .floorsDescended, .steps:
+                // These accumulate over the day and reset to 0 at the start of each day.
+                return .totalIncreasing
+            case .averageActivePace, .currentPace, .currentCadence:
+                return .measurement
+            }
+        }
+
         func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> Promise<WebhookSensor> {
             guard let intVal = keyPath.intValue(on: data) else {
                 return .init(error: PedometerError.noData)
@@ -145,7 +155,8 @@ public class PedometerSensor: SensorProvider {
                 uniqueID: rawValue,
                 icon: icon(serverVersion: request.serverVersion),
                 state: intVal,
-                unit: unit
+                unit: unit,
+                stateClass: stateClass
             ))
         }
     }
