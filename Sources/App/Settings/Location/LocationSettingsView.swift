@@ -145,6 +145,14 @@ struct LocationSettingsView: View {
                             .buttonStyle(.plain)
                         }
                     }
+                    .padding(.horizontal, DesignSystem.Spaces.two)
+                }
+                .modify { view in
+                    if #available(iOS 17.0, *) {
+                        view.scrollClipDisabled()
+                    } else {
+                        view
+                    }
                 }
                 .listRowInsets(EdgeInsets(
                     top: DesignSystem.Spaces.one,
@@ -173,6 +181,13 @@ struct LocationSettingsView: View {
                 }
             } footer: {
                 Text(L10n.SettingsDetails.Location.Zones.footer)
+            }
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view.listSectionMargins(.horizontal, .zero)
+                } else {
+                    view
+                }
             }
         }
     }
