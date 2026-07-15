@@ -31,6 +31,8 @@ struct ZoneCardView: View {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
                         Text(zone.name)
                             .font(DesignSystem.Font.headline)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
                         if let serverName {
                             Text(serverName)
                                 .font(DesignSystem.Font.caption)
