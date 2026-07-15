@@ -188,9 +188,10 @@ struct WatchHomeView: View {
         reachabilityToken = Communicator.shared.reachability.observe { reachability in
             updateIPhoneReachability(reachability)
             // On a cold launch WCSession often reports the phone unreachable until activation
-            // finishes, which skips the automatic sync. With an empty database there is nothing
-            // cached to show, so retry the sync as soon as the phone becomes reachable.
-            if reachability == .immediatelyReachable, viewModel.watchConfig.items.isEmpty {
+            // finishes, which skips the automatic sync. With an empty database (no config row —
+            // not merely a config without items) there is nothing cached to show, so retry the
+            // sync as soon as the phone becomes reachable.
+            if reachability == .immediatelyReachable, !viewModel.hasCachedConfig {
                 Task { @MainActor in viewModel.requestConfig() }
             }
         }
