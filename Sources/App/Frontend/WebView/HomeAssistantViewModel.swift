@@ -8,6 +8,7 @@ final class HomeAssistantViewModel: ObservableObject {
     private enum Constants {
         static let minimumLoaderDuration: Duration = .seconds(1.8)
         static let loaderFadeOutDuration: Duration = .seconds(0.4)
+        static let pullToRefreshThreshold: CGFloat = 96
     }
 
     let server: Server
@@ -21,10 +22,13 @@ final class HomeAssistantViewModel: ObservableObject {
     @Published var isFullScreenLoaderMounted = true
     @Published var isFullScreenLoaderVisible = true
     @Published var loaderMinimumDurationElapsed = false
+    @Published var pullToRefreshProgress: CGFloat = 0
+    @Published var isPullToRefreshActive = false
 
     private let onWebViewController: ((WebViewController) -> Void)?
     private var loaderCycleID = UUID()
     private var loaderMinimumDurationTask: Task<Void, Never>?
+    private var pullToRefreshObserver: HomeAssistantPullToRefreshObserver?
     private var cancellables = Set<AnyCancellable>()
 
     init(
@@ -54,6 +58,10 @@ final class HomeAssistantViewModel: ObservableObject {
 
     var shouldShowStandByView: Bool {
         isFullScreenLoaderMounted || overlayState.emptyState != nil
+    }
+
+    var showsPullToRefresh: Bool {
+        pullToRefreshProgress > 0 || isPullToRefreshActive
     }
 
     var displayedEmptyState: WebFrontendOverlayState.EmptyStateContent? {
@@ -94,6 +102,25 @@ final class HomeAssistantViewModel: ObservableObject {
         onWebViewController?(controller)
     }
 
+    func handleWebViewLoaded(_ controller: WebViewController) {
+        guard !Current.isCatalyst else { return }
+        pullToRefreshObserver = HomeAssistantPullToRefreshObserver(
+            scrollView: controller.webView.scrollView,
+            threshold: Constants.pullToRefreshThreshold,
+            onStateChange: { [weak self] progress, isRefreshing in
+                self?.pullToRefreshProgress = progress
+                self?.isPullToRefreshActive = isRefreshing
+            },
+            onRefresh: { [weak controller] in
+                Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
+                Current.websiteDataStoreHandler
+                    .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) {
+                        controller?.pullToRefreshActions()
+                    }
+            }
+        )
+    }
+
     private func bindObservableChildren() {
         overlayState.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
@@ -109,6 +136,8 @@ final class HomeAssistantViewModel: ObservableObject {
             .sink { [weak self] isLoading in
                 if isLoading {
                     self?.beginFullScreenLoaderCycle()
+                } else {
+                    self?.pullToRefreshObserver?.finishRefreshing()
                 }
             }
             .store(in: &cancellables)

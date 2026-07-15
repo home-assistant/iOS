@@ -17,7 +17,9 @@ extension WebViewController {
     /// Shows the disconnected/unauthenticated empty state as a SwiftUI overlay in `HomeAssistantView` (via
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     func showEmptyState() {
-        overlayState?.emptyState = makeEmptyStateContent()
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.emptyState = makeEmptyStateContent()
+        }
         if connectionState == .disconnected || connectionState == .unknown {
             reconnectManager?.start { [weak self] in
                 self?.recoverDisconnectedFrontend()
@@ -28,7 +30,9 @@ extension WebViewController {
     }
 
     @objc func hideEmptyState() {
-        overlayState?.emptyState = nil
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.emptyState = nil
+        }
         reconnectManager?.stop()
     }
 
@@ -49,6 +53,10 @@ extension WebViewController {
 
     func retryClearingFrontendCache() {
         Current.Log.info("Resetting frontend cache for \(server.identifier) before empty-state retry")
+        overlayState?.isLoading = true
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.emptyState = nil
+        }
         Current.websiteDataStoreHandler
             .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
                 self?.recoverDisconnectedFrontend()

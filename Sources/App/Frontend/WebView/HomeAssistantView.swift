@@ -28,6 +28,7 @@ struct HomeAssistantView: View, WebFrontendView {
         ZStack {
             ZStack(alignment: .topLeading) {
                 homeAssistant
+                pullToRefreshIndicator
                 macTitleBar
             }
             .opacity(viewModel.contentOpacity)
@@ -47,12 +48,27 @@ struct HomeAssistantView: View, WebFrontendView {
         FrontendView(
             server: viewModel.server,
             onWebViewController: viewModel.handleWebViewController,
+            onWebViewLoaded: viewModel.handleWebViewLoaded,
             resetFrontendAction: viewModel.resetWebFrontend,
             reconnectManager: viewModel.reconnectManager,
             overlayState: viewModel.overlayState
         )
         .id(viewModel.webViewResetID)
         .ignoresSafeArea(edges: viewModel.webViewIgnoredSafeAreaEdges)
+    }
+
+    @ViewBuilder
+    private var pullToRefreshIndicator: some View {
+        if viewModel.showsPullToRefresh {
+            HomeAssistantPullToRefreshView(
+                progress: viewModel.pullToRefreshProgress,
+                isRefreshing: viewModel.isPullToRefreshActive
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.top, DesignSystem.Spaces.two)
+            .allowsHitTesting(false)
+            .transition(.opacity)
+        }
     }
 
     // MARK: - macOS

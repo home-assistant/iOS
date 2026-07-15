@@ -41,7 +41,6 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        refreshControl.endRefreshing()
         overlayState?.isLoading = false
         if didHandleServerErrorResponse {
             didHandleServerErrorResponse = false
@@ -60,7 +59,6 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        refreshControl.endRefreshing()
         overlayState?.isLoading = false
 
         if didHandleServerErrorResponse {
@@ -96,7 +94,6 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        refreshControl.endRefreshing()
         overlayState?.isLoading = false
         latestLoadError = nil
 

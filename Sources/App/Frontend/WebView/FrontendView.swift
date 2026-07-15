@@ -8,6 +8,7 @@ struct FrontendView: UIViewControllerRepresentable {
     let server: Server
     var restorationType: WebViewRestorationType?
     var onWebViewController: ((WebViewController) -> Void)?
+    var onWebViewLoaded: ((WebViewController) -> Void)?
     var resetFrontendAction: (() -> Void)?
     var reconnectManager: WebViewReconnectManager?
     let overlayState: WebFrontendOverlayState
@@ -16,6 +17,7 @@ struct FrontendView: UIViewControllerRepresentable {
         server: Server,
         restorationType: WebViewRestorationType? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil,
+        onWebViewLoaded: ((WebViewController) -> Void)? = nil,
         resetFrontendAction: (() -> Void)? = nil,
         reconnectManager: WebViewReconnectManager? = nil,
         overlayState: WebFrontendOverlayState
@@ -23,6 +25,7 @@ struct FrontendView: UIViewControllerRepresentable {
         self.server = server
         self.restorationType = restorationType
         self.onWebViewController = onWebViewController
+        self.onWebViewLoaded = onWebViewLoaded
         self.resetFrontendAction = resetFrontendAction
         self.reconnectManager = reconnectManager
         self.overlayState = overlayState
@@ -45,6 +48,7 @@ struct FrontendView: UIViewControllerRepresentable {
         controller.overlayState = overlayState
         controller.resetFrontendAction = resetFrontendAction
         controller.reconnectManager = reconnectManager
+        controller.onWebViewLoaded = onWebViewLoaded
         return controller
     }
 }

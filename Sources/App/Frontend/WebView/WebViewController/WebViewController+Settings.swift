@@ -23,8 +23,6 @@ extension WebViewController {
         // iOS draws the themed status-bar bar in SwiftUI (`HomeAssistantView`) — refresh its colour/visibility.
         updateThemedStatusBar()
 
-        refreshControl.tintColor = cachedColors[.primaryColor]
-
         let headerBackgroundIsLight = cachedColors[.appThemeColor].isLight
         underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
 
@@ -79,23 +77,6 @@ extension WebViewController {
             guard let self else { return }
             overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()
         }
-    }
-
-    func setupPullToRefresh() {
-        if !Current.isCatalyst {
-            // refreshing is handled by menu/keyboard shortcuts
-            refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
-            webView.scrollView.addSubview(refreshControl)
-            webView.scrollView.bounces = true
-        }
-    }
-
-    @objc func pullToRefresh(_ sender: UIRefreshControl) {
-        Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
-        Current.websiteDataStoreHandler
-            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
-                self?.pullToRefreshActions()
-            }
     }
 
     func pullToRefreshActions() {
