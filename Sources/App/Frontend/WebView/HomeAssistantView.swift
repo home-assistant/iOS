@@ -36,6 +36,7 @@ struct HomeAssistantView: View, WebFrontendView {
     @State private var isFullScreenLoaderVisible = true
     @State private var loaderMinimumDurationElapsed = false
     @State private var loaderCycleID = UUID()
+    @State private var loaderMinimumDurationTask: Task<Void, Never>?
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -77,8 +78,8 @@ struct HomeAssistantView: View, WebFrontendView {
                 macTitleBar
             }
             .opacity(contentOpacity)
-            emptyStates
-            fullScreenLoader
+            noActiveURLState
+            standByView
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
@@ -86,7 +87,10 @@ struct HomeAssistantView: View, WebFrontendView {
         .statusBarHidden(chrome.statusBarHidden)
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
         .onAppear { fade(to: 1) }
-        .onDisappear { fade(to: 0) }
+        .onDisappear {
+            loaderMinimumDurationTask?.cancel()
+            fade(to: 0)
+        }
         .onChange(of: overlayState.isLoading) { isLoading in
             if isLoading {
                 beginFullScreenLoaderCycle()
@@ -95,10 +99,7 @@ struct HomeAssistantView: View, WebFrontendView {
         .onChange(of: overlayState.connectionState) { _ in
             updateFullScreenLoaderVisibility()
         }
-        .task(id: loaderCycleID) {
-            loaderMinimumDurationElapsed = false
-            try? await Task.sleep(for: Constants.minimumLoaderDuration)
-            loaderMinimumDurationElapsed = true
+        .onReceive(overlayState.$emptyState) { _ in
             updateFullScreenLoaderVisibility()
         }
     }
@@ -126,39 +127,41 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     @ViewBuilder
-    private var emptyStates: some View {
+    private var noActiveURLState: some View {
         if overlayState.showsNoActiveURL {
             ConnectionSecurityLevelBlockView(server: server)
                 .transition(.opacity)
-        } else if let emptyState = overlayState.emptyState {
-            WebViewEmptyStateView(
-                style: emptyState.style,
-                server: emptyState.server,
-                isLoading: overlayState.isLoading,
-                showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
-                availableReauthURLTypes: emptyState.availableReauthURLTypes,
-                retryAction: emptyState.retryAction,
-                settingsAction: emptyState.settingsAction,
-                errorDetailsAction: emptyState.errorDetailsAction,
-                reauthAction: emptyState.reauthAction,
-                dismissAction: emptyState.dismissAction
-            )
-            .transition(.opacity)
         }
     }
 
     @ViewBuilder
-    private var fullScreenLoader: some View {
-        if isFullScreenLoaderMounted, overlayState.emptyState == nil, !overlayState.showsNoActiveURL {
-            FullScreenLoaderView(
-                logo: Image(.logo),
-                retryTitle: L10n.WebView.EmptyState.retryButton,
+    private var standByView: some View {
+        if shouldShowStandByView, !overlayState.showsNoActiveURL {
+            HomeAssistantStandByView(
+                server: server,
+                emptyState: displayedEmptyState,
+                isLoading: overlayState.isLoading,
+                loadingCycleID: loaderCycleID,
                 settingsAction: showLoaderSettings,
                 retryAction: retryFullScreenLoader
             )
-            .opacity(isFullScreenLoaderVisible ? 1 : 0)
-            .allowsHitTesting(isFullScreenLoaderVisible)
+            .opacity(standByOpacity)
+            .allowsHitTesting(standByOpacity > 0)
         }
+    }
+
+    private var shouldShowStandByView: Bool {
+        isFullScreenLoaderMounted || overlayState.emptyState != nil
+    }
+
+    private var displayedEmptyState: WebFrontendOverlayState.EmptyStateContent? {
+        guard let emptyState = overlayState.emptyState else { return nil }
+        guard isFullScreenLoaderMounted else { return emptyState }
+        return loaderMinimumDurationElapsed ? emptyState : nil
+    }
+
+    private var standByOpacity: Double {
+        overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
     private func resetWebFrontend() {
@@ -170,19 +173,36 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     private func beginFullScreenLoaderCycle() {
+        let cycleID = UUID()
+        loaderMinimumDurationTask?.cancel()
         isFullScreenLoaderMounted = true
         withAnimation(DesignSystem.Animation.default) {
             isFullScreenLoaderVisible = true
         }
         loaderMinimumDurationElapsed = false
         overlayState.connectionState = .unknown
-        loaderCycleID = UUID()
+        loaderCycleID = cycleID
+        loaderMinimumDurationTask = Task { @MainActor in
+            try? await Task.sleep(for: Constants.minimumLoaderDuration)
+            guard !Task.isCancelled, loaderCycleID == cycleID else { return }
+            withAnimation(DesignSystem.Animation.default) {
+                loaderMinimumDurationElapsed = true
+            }
+            updateFullScreenLoaderVisibility()
+        }
     }
 
     private func updateFullScreenLoaderVisibility() {
-        guard isFullScreenLoaderMounted,
-              loaderMinimumDurationElapsed,
-              overlayState.connectionState == .connected else { return }
+        guard isFullScreenLoaderMounted, loaderMinimumDurationElapsed else { return }
+
+        if overlayState.emptyState != nil {
+            withAnimation(DesignSystem.Animation.default) {
+                isFullScreenLoaderVisible = true
+            }
+            return
+        }
+
+        guard isFullScreenLoaderVisible, overlayState.connectionState == .connected else { return }
 
         let finishingCycleID = loaderCycleID
         withAnimation(DesignSystem.Animation.default) {
