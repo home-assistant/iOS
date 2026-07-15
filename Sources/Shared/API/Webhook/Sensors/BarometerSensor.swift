@@ -53,6 +53,73 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         latestPressureKpa = nil
         isObserving = false
     }
+
+    private let oneShotLock = NSLock()
+    private var pendingOneShot: Promise<CMAltitudeData>?
+
+    /// Performs a single relative-altitude read, coalescing concurrent callers onto one
+    /// `CMAltimeter` session.
+    ///
+    /// `CMAltimeter.startRelativeAltitudeUpdates(to:withHandler:)` keeps only a single handler on
+    /// the shared altimeter (`Current.barometer`), so a second concurrent `start` orphans the first
+    /// caller's handler — which then never fires. Because sensor generation waits for *every*
+    /// provider (`when(resolved:)`), that orphaned read leaves the whole payload promise unresolved
+    /// and no `update_sensor_states` webhook is ever sent for that server. In a multi-server setup
+    /// the servers' sweeps are dispatched in list order, so the first (default) server was
+    /// deterministically starved while the last one worked. See issue #5100.
+    ///
+    /// Sharing one in-flight read fixes that, and a timeout guarantees the promise always settles
+    /// even if the hardware never reports (which would otherwise hang the sweep forever).
+    func oneShotReading() -> Promise<CMAltitudeData> {
+        let lock = oneShotLock
+        lock.lock()
+        if let pendingOneShot {
+            lock.unlock()
+            return pendingOneShot
+        }
+
+        let (promise, seal) = Promise<CMAltitudeData>.pending()
+        pendingOneShot = promise
+        lock.unlock()
+
+        let queue = OperationQueue()
+        queue.name = "barometer-sensor"
+        queue.maxConcurrentOperationCount = 1
+
+        var timeoutWork: DispatchWorkItem?
+        var resolved = false
+        // Called from the altimeter handler and from the timeout; the lock serializes them so the
+        // promise resolves exactly once and the shared slot is cleared for the next read.
+        let finish: (CMAltitudeData?, Error?) -> Void = { [weak self] data, error in
+            lock.lock()
+            let alreadyResolved = resolved
+            resolved = true
+            if self?.pendingOneShot === promise {
+                self?.pendingOneShot = nil
+            }
+            lock.unlock()
+
+            guard !alreadyResolved else { return }
+            timeoutWork?.cancel()
+            Current.barometer.stopUpdates()
+
+            if let data {
+                seal.fulfill(data)
+            } else {
+                seal.reject(error ?? BarometerSensor.BarometerError.noData)
+            }
+        }
+
+        let work = DispatchWorkItem { finish(nil, BarometerSensor.BarometerError.noData) }
+        timeoutWork = work
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 5, execute: work)
+
+        Current.barometer.startUpdatesOnQueueHandler(queue) { data, error in
+            finish(data, error)
+        }
+
+        return promise
+    }
 }
 
 public class BarometerSensor: SensorProvider {
@@ -79,9 +146,18 @@ public class BarometerSensor: SensorProvider {
             return .init(error: BarometerError.noData)
         }
 
-        return firstly {
-            latestBarometerData()
-        }.map { data in
+        guard Current.barometer.isAuthorized() else {
+            return .init(error: BarometerError.unauthorized)
+        }
+
+        guard Current.barometer.isAvailable() else {
+            Current.Log.warning("Barometer is not available")
+            return .init(error: BarometerError.unavailable)
+        }
+
+        // Route through the signaler so concurrent per-server sweeps share a single altimeter
+        // read instead of orphaning each other's handler (see `oneShotReading`, issue #5100).
+        return signaler.oneShotReading().map { data in
             [Self.pressureSensor(fromKpa: data.pressure.doubleValue)]
         }
     }
@@ -97,41 +173,5 @@ public class BarometerSensor: SensorProvider {
             state: round(pressureHpa * 100) / 100,
             unit: "hPa"
         )
-    }
-
-    private func latestBarometerData() -> Promise<CMAltitudeData> {
-        guard Current.barometer.isAuthorized() else {
-            return .init(error: BarometerError.unauthorized)
-        }
-
-        guard Current.barometer.isAvailable() else {
-            Current.Log.warning("Barometer is not available")
-            return .init(error: BarometerError.unavailable)
-        }
-
-        let (promise, seal) = Promise<CMAltitudeData>.pending()
-        let queue = OperationQueue()
-        queue.name = "barometer-sensor"
-        queue.maxConcurrentOperationCount = 1
-
-        // startRelativeAltitudeUpdates is a streaming API, so an in-flight callback
-        // could arrive after stopUpdates(). Guard against double-resolving the promise,
-        // and ensure late callbacks become no-ops before stopping updates.
-        var resolved = false
-        Current.barometer.startUpdatesOnQueueHandler(queue) { data, error in
-            guard !resolved else { return }
-            resolved = true
-            Current.barometer.stopUpdates()
-
-            if let data {
-                seal.fulfill(data)
-            } else if let error {
-                seal.reject(error)
-            } else {
-                seal.reject(BarometerError.noData)
-            }
-        }
-
-        return promise
     }
 }
