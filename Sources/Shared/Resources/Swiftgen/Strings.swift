@@ -4903,6 +4903,8 @@ public enum L10n {
       public enum Zones {
         /// To disable location tracking add track_ios: false to each zones settings or under customize.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.location.zones.footer") }
+        /// Tracked zones
+        public static var header: String { return L10n.tr("Localizable", "settings_details.location.zones.header") }
         public enum Beacon {
           public enum PropNotSet {
             /// Not set
@@ -4921,6 +4923,16 @@ public enum L10n {
           /// iBeacon UUID
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.beacon_uuid.title") }
         }
+        public enum Directions {
+          /// Get directions
+          public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.directions.title") }
+        }
+        public enum Distance {
+          /// %@ away
+          public static func label(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.location.zones.distance.label", String(describing: p1))
+          }
+        }
         public enum EnterExitTracked {
           /// Enter/exit tracked
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.enter_exit_tracked.title") }
@@ -4930,12 +4942,28 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.location.title") }
         }
         public enum Radius {
+          /// Radius: %li m
+          public static func detail(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.location.zones.radius.detail", p1)
+          }
           /// %li m
           public static func label(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings_details.location.zones.radius.label", p1)
           }
           /// Radius
           public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.radius.title") }
+        }
+        public enum ShowAll {
+          /// Show all
+          public static var title: String { return L10n.tr("Localizable", "settings_details.location.zones.show_all.title") }
+        }
+        public enum TrackingDisabled {
+          /// Not tracked
+          public static var label: String { return L10n.tr("Localizable", "settings_details.location.zones.tracking_disabled.label") }
+        }
+        public enum TrackingEnabled {
+          /// Tracked
+          public static var label: String { return L10n.tr("Localizable", "settings_details.location.zones.tracking_enabled.label") }
         }
       }
     }

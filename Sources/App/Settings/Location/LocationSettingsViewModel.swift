@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import GRDB
+import MapKit
 import Shared
 import UIKit
 
@@ -35,6 +36,13 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Zones
 
     @Published private(set) var zones: [LocationZoneItem] = []
+
+    /// Latest one-shot fix used to show each zone's distance from the user.
+    @Published private(set) var currentLocation: CLLocation?
+
+    private let distanceFormatter = with(MKDistanceFormatter()) {
+        $0.unitStyle = .abbreviated
+    }
 
     private let locationManager = CLLocationManager()
     private var zonesToken: AnyDatabaseCancellable?
@@ -83,6 +91,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         locationAuthorizationStatus = locationManager.authorizationStatus
         locationAccuracyAuthorization = locationManager.accuracyAuthorization
         backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+        requestCurrentLocationIfAuthorized()
     }
 
     // MARK: - Permission descriptions
@@ -175,6 +184,27 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         Current.settingsStore.locationSources = sources
     }
 
+    // MARK: - Current location & distances
+
+    /// One-shot location request so zone cards can show how far away each zone is.
+    /// A rough fix is enough for a human-readable distance, and it arrives faster.
+    private func requestCurrentLocationIfAuthorized() {
+        guard [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) else {
+            return
+        }
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestLocation()
+    }
+
+    func formattedDistance(to zone: LocationZoneItem) -> String? {
+        guard let currentLocation else { return nil }
+        let zoneLocation = CLLocation(
+            latitude: zone.coordinate.latitude,
+            longitude: zone.coordinate.longitude
+        )
+        return distanceFormatter.string(fromDistance: currentLocation.distance(from: zoneLocation))
+    }
+
     // MARK: - Zones
 
     private func observeZones() {
@@ -206,7 +236,19 @@ extension LocationSettingsViewModel: CLLocationManagerDelegate {
         Task { @MainActor [weak self] in
             self?.locationAuthorizationStatus = status
             self?.locationAccuracyAuthorization = accuracy
+            self?.requestCurrentLocationIfAuthorized()
         }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor [weak self] in
+            self?.currentLocation = location
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Current.Log.error("Location settings one-shot location failed: \(error.localizedDescription)")
     }
 }
 

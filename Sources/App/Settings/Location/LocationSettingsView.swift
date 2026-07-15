@@ -11,14 +11,14 @@ struct LocationSettingsView: View {
     @State private var showManualUpdateError = false
     @State private var manualUpdateErrorMessage = ""
     @State private var isUpdatingLocation = false
+    @State private var showAllZones = false
 
     var body: some View {
         Form {
+            zoneSections
             permissionsSection
             locationHistorySection
             updateSourcesSection
-            zoneSections
-            zonesFooterSection
         }
         .navigationTitle(L10n.SettingsDetails.Location.title)
         .onAppear {
@@ -123,75 +123,55 @@ struct LocationSettingsView: View {
 
     @ViewBuilder
     private var zoneSections: some View {
-        ForEach(viewModel.zones) { zone in
-            Section {
-                Toggle(
-                    L10n.SettingsDetails.Location.Zones.EnterExitTracked.title,
-                    isOn: .constant(zone.trackingEnabled)
-                )
-                .disabled(true)
-
-                NavigationLink {
-                    LocationZoneMapView(
-                        title: zone.name,
-                        coordinate: zone.coordinate,
-                        radius: zone.radius
-                    )
-                } label: {
-                    HStack {
-                        Text(L10n.SettingsDetails.Location.Zones.Location.title)
-                        Spacer()
-                        Text(zone.formattedCoordinate)
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                HStack {
-                    Text(L10n.SettingsDetails.Location.Zones.Radius.title)
-                    Spacer()
-                    Text(L10n.SettingsDetails.Location.Zones.Radius.label(Int(zone.radius)))
-                        .foregroundColor(.secondary)
-                }
-
-                if let beaconUUID = zone.beaconUUID {
-                    HStack {
-                        Text(L10n.SettingsDetails.Location.Zones.BeaconUuid.title)
-                        Spacer()
-                        Text(beaconUUID)
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                if let beaconMajor = zone.beaconMajor {
-                    HStack {
-                        Text(L10n.SettingsDetails.Location.Zones.BeaconMajor.title)
-                        Spacer()
-                        Text(beaconMajor)
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                if let beaconMinor = zone.beaconMinor {
-                    HStack {
-                        Text(L10n.SettingsDetails.Location.Zones.BeaconMinor.title)
-                        Spacer()
-                        Text(beaconMinor)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            } header: {
-                Text(zone.name)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var zonesFooterSection: some View {
         if !viewModel.zones.isEmpty {
             Section {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
+                        ForEach(viewModel.zones) { zone in
+                            NavigationLink {
+                                LocationZoneMapView(
+                                    title: zone.name,
+                                    coordinate: zone.coordinate,
+                                    radius: zone.radius
+                                )
+                            } label: {
+                                ZoneCardView(
+                                    zone: zone,
+                                    distanceText: viewModel.formattedDistance(to: zone)
+                                )
+                                .frame(width: 280)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .listRowInsets(EdgeInsets(
+                    top: DesignSystem.Spaces.one,
+                    leading: .zero,
+                    bottom: DesignSystem.Spaces.one,
+                    trailing: .zero
+                ))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .background(
+                    NavigationLink(isActive: $showAllZones) {
+                        ZonesListView(viewModel: viewModel)
+                    } label: {
+                        EmptyView()
+                    }
+                    .opacity(0)
+                )
+            } header: {
+                HStack {
+                    Text(L10n.SettingsDetails.Location.Zones.header)
+                    Spacer()
+                    Button(L10n.SettingsDetails.Location.Zones.ShowAll.title) {
+                        showAllZones = true
+                    }
+                    .font(DesignSystem.Font.footnote)
+                }
+            } footer: {
                 Text(L10n.SettingsDetails.Location.Zones.footer)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
             }
         }
     }
@@ -320,6 +300,7 @@ extension LocationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Zone.title),
             SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Background.title),
             SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Significant.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.Zones.header),
         ]
     }
 }
