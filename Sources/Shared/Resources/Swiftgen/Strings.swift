@@ -6080,6 +6080,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.interaction.toast.title") }
       }
     }
+    public enum ItemExecutionTrace {
+      /// Running…
+      public static var running: String { return L10n.tr("Localizable", "watch.item_execution_trace.running") }
+      /// Execution Log
+      public static var title: String { return L10n.tr("Localizable", "watch.item_execution_trace.title") }
+    }
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
@@ -6645,6 +6651,28 @@ public enum L10n {
           public static var message: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.confirm.message") }
           /// Delete local data?
           public static var title: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.confirm.title") }
+        }
+      }
+      public enum Developer {
+        /// Developer
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.title") }
+        public enum AllowChoosingRoute {
+          /// Shows the "Perform action using" picker in Settings. When off, actions always use automatic routing.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.footer") }
+          /// Allow choosing route
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
+        }
+        public enum VerboseExecution {
+          /// Shows a live log describing every step while an item runs.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.verbose_execution.footer") }
+          /// Verbose item execution
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.verbose_execution.title") }
+        }
+        public enum Warning {
+          /// These options are for debugging. Only use them when guided by a developer.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.developer.warning.message") }
+          /// Warning
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.warning.title") }
         }
       }
       public enum NoItems {

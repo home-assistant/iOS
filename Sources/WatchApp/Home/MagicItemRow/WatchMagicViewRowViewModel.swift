@@ -31,6 +31,10 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published var showConfirmationDialog = false
     /// Set when an execution fails, so the failure isn't silent. Presented as an alert by the row.
     @Published var errorMessage: String?
+    /// Live log of the current execution, set only when the developer "Verbose item execution"
+    /// option is on. Presented full-screen by the row while it runs.
+    @Published private(set) var trace: MagicItemExecutionTrace?
+    @Published var showTrace = false
 
     @Published private(set) var item: MagicItem
     @Published private(set) var itemInfo: MagicItem.Info
@@ -57,6 +61,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     private func executeItemAction() {
         errorMessage = nil
         state = .loading
+        if WatchUserDefaults.shared.verboseItemExecution {
+            trace = MagicItemExecutionTrace()
+            showTrace = true
+        } else {
+            trace = nil
+        }
         executeMagicItem { [weak self] response in
             DispatchQueue.main.async { [weak self] in
                 self?.state = response.rowState
@@ -73,6 +83,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private func executeMagicItemUsingiPhone(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
         Current.Log.verbose("Signaling magic item pressed via phone")
+        trace?.log(.info, "Sending to iPhone over Watch Connectivity…")
         let itemMessage = HAWatchConnectivity.InteractiveImmediateMessage(
             identifier: InteractiveImmediateMessages.magicItemPressed.rawValue,
             content: [
@@ -84,6 +95,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             reply: { [weak self] message in
                 Current.Log.verbose("Received reply dictionary \(message)")
                 if message.content["fired"] as? Bool == true {
+                    self?.trace?.log(.success, "iPhone confirmed the action ran")
                     completion(true)
                 } else {
                     // The iPhone replies with a stable code plus a technical reason. The reason feeds
@@ -126,9 +138,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             return
         }
         Current.Log.info("Executing watch magic item directly via API")
+        trace?.log(.info, "Executing via REST from the watch on \"\(server.info.name)\"…")
 
         magicItem.execute(on: server, source: .Watch) { [weak self] success, error in
-            if !success {
+            if success {
+                self?.trace?.log(.success, "Server accepted the request")
+            } else {
                 // These errors implement LocalizedError (connection / TLS / HTTP body / "no active
                 // URL"), so their descriptions are fit for the alert.
                 self?.reportFailure(
@@ -152,6 +167,10 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             type: .serviceCall,
             payload: ["item": item.id, "server": item.serverId, "route": route, "reason": detail]
         ))
+        trace?.log(.error, "\(route) route failed: \(detail)")
+        // The verbose trace screen already shows the failure; presenting the alert underneath the
+        // full-screen cover would just fight it.
+        guard trace == nil else { return }
         let message = alertMessage ?? L10n.Watch.Home.Run.Error.message
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
@@ -168,31 +187,64 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    /// Resolve where to run the action from the user's "Perform action using" preference: always the
-    /// iPhone, always the Watch (direct), or automatically. In `auto` the Watch is preferred: it pings
-    /// Home Assistant directly and runs the action itself when reachable, otherwise it relays through
-    /// the paired iPhone (which errors if the iPhone isn't reachable either).
+    /// Resolve where to run the action. Routing is automatic — the Watch pings Home Assistant
+    /// directly and runs the action itself when reachable, otherwise it relays through the paired
+    /// iPhone (which errors if the iPhone isn't reachable either). A forced iPhone/Watch route only
+    /// applies when the developer "Allow choosing route" option re-enables the preference.
     private func routeExecution(
         magicItem: MagicItem,
         timeTriggered: Date,
         completion: @escaping (MagicItemResponse) -> Void
     ) async {
-        switch WatchUserDefaults.shared.performActionTarget {
+        let target = WatchUserDefaults.shared.effectivePerformActionTarget
+        await logExecutionContext(magicItem: magicItem, target: target)
+        switch target {
         case .iPhone:
             executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .appleWatch:
             await Current.connectivity.refreshNetworkInformation()
             executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .auto:
+            trace?.log(.info, "Pinging Home Assistant directly from the watch…")
+            let pingStarted = Current.date()
             if let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }),
                await HomeAssistantAPI.apiAvailabilityCheck(for: server) {
                 Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")
+                trace?.log(.success, "Reached Home Assistant in \(elapsedText(since: pingStarted))")
                 executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
             } else {
                 Current.Log.info("Auto: Watch cannot reach Home Assistant directly, relaying via iPhone")
+                trace?.log(
+                    .error,
+                    "No direct answer after \(elapsedText(since: pingStarted)) — relaying via iPhone"
+                )
                 executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
             }
         }
+    }
+
+    /// Snapshot of everything relevant to routing, recorded at the start of a verbose trace.
+    private func logExecutionContext(magicItem: MagicItem, target: WatchActionTarget) async {
+        guard let trace else { return }
+        let serverName = Current.servers.all
+            .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
+            ?? "unknown (id \(magicItem.serverId))"
+        trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on \"\(serverName)\"")
+        if WatchUserDefaults.shared.allowChoosingMagicItemRoute {
+            trace.log(.info, "Route preference (developer): \(target.rawValue)")
+        } else {
+            trace.log(.info, "Route: auto")
+        }
+        trace.log(.info, "iPhone reachability: \(Communicator.shared.currentReachability)")
+        if let ssid = await Current.connectivity.currentWiFiSSID() {
+            trace.log(.info, "Watch Wi-Fi: \(ssid)")
+        } else {
+            trace.log(.info, "No Wi-Fi on watch (traffic may proxy via iPhone or LTE)")
+        }
+    }
+
+    private func elapsedText(since date: Date) -> String {
+        String(format: "%.2fs", Current.date().timeIntervalSince(date))
     }
 
     private func executeViaWatch(
@@ -222,10 +274,17 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     ) {
         // Avoid haptics in background
         guard isLessThan30Seconds(from: timeTriggered) else {
+            trace?.log(.error, "Result arrived after 30s — ignored (\(success ? "success" : "failure"))")
+            trace?.finish()
             completion(.tookLonger)
             return
         }
         cancelTimeout()
+        trace?.log(
+            success ? .success : .error,
+            "Finished \(success ? "successfully" : "with failure") in \(elapsedText(since: timeTriggered))"
+        )
+        trace?.finish()
         completion(success ? .success : .failed)
     }
 
@@ -237,7 +296,8 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {
         timeoutWorkItem?.cancel()
 
-        timeoutWorkItem = DispatchWorkItem {
+        timeoutWorkItem = DispatchWorkItem { [weak self] in
+            self?.trace?.log(.info, "Still waiting after 4s — row resets while execution continues")
             completion(.tookLonger)
         }
 

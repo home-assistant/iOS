@@ -9,6 +9,9 @@ import SwiftUI
 struct WatchSettingsView: View {
     @StateObject private var viewModel = WatchSettingsViewModel()
     @State private var performActionTarget = WatchUserDefaults.shared.performActionTarget
+    /// Developer option: routing is always automatic unless this re-enables the picker. Refreshed
+    /// on appear so toggling it in the Developer screen reflects here on pop.
+    @State private var allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
     @State private var showDeleteLocalDataConfirmation = false
     @State private var showDeleteLocalDataResult = false
     @State private var deleteLocalDataSucceeded = false
@@ -20,10 +23,16 @@ struct WatchSettingsView: View {
                 networkSection
                 configurationSection
                 layoutSection
-                performActionSection
+                if allowChoosingRoute {
+                    performActionSection
+                }
                 troubleshootingSection
                 deleteLocalDataSection
                 restartAppSection
+            }
+            .onAppear {
+                allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
+                performActionTarget = WatchUserDefaults.shared.performActionTarget
             }
             .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
             .alert(
@@ -239,6 +248,14 @@ private struct WatchTroubleshootingView: View {
                     WatchClientEventsView()
                 } label: {
                     Label(L10n.Watch.Settings.ClientEvents.title, systemSymbol: .listBulletRectangle)
+                }
+            }
+
+            Section {
+                NavigationLink {
+                    WatchDeveloperSettingsView()
+                } label: {
+                    Label(L10n.Watch.Settings.Developer.title, systemSymbol: .hammer)
                 }
             }
         }
