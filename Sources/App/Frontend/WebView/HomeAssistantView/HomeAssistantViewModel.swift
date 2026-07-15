@@ -13,6 +13,7 @@ final class HomeAssistantViewModel: ObservableObject {
                 .seconds(1.8)
             }
         }()
+
         static let loaderFadeOutDuration: Duration = .seconds(0.4)
         static let pullToRefreshThreshold: CGFloat = 96
         static let pullToRefreshFadeInDelay: Duration = .milliseconds(120)

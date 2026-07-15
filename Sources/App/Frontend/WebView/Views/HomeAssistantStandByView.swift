@@ -71,7 +71,6 @@ struct HomeAssistantStandByView: View {
             .padding(.horizontal, DesignSystem.Spaces.three)
             .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showsEmptyState ? .top : .center)
-
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
