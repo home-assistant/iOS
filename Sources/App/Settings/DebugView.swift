@@ -929,3 +929,17 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
 #Preview {
     DebugView()
 }
+
+extension DebugView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.EventLog.title),
+            SettingsSearchEntry(L10n.Settings.LocationHistory.title),
+            SettingsSearchEntry(L10n.Settings.DatabaseExplorer.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.CachedEntityData.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.ClearWebCache.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.ResetApp.title),
+            SettingsSearchEntry(L10n.Settings.Developer.ShowLogFiles.title),
+        ]
+    }
+}

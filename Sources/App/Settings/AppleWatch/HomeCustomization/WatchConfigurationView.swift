@@ -280,3 +280,16 @@ struct WatchConfigurationView: View {
             })
     }
 }
+
+extension WatchConfigurationView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Watch.Configuration.Layout.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.Items.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.AddItem.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.AddFolder.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.ShowAssist.title),
+            SettingsSearchEntry(L10n.Watch.Labels.SelectedPipeline.title),
+        ]
+    }
+}

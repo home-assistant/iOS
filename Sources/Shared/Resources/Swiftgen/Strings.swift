@@ -4388,6 +4388,82 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_web_cache.title") }
       }
     }
+    public enum Search {
+      /// Search settings
+      public static var prompt: String { return L10n.tr("Localizable", "settings.search.prompt") }
+      public enum NoResults {
+        /// Check the spelling or try a different search.
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.search.no_results.subtitle") }
+        /// No results for “%@”
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.search.no_results.title", String(describing: p1))
+        }
+      }
+    }
+    public enum SearchKeywords {
+      /// quick actions, home screen, long press, launcher
+      public static var appIconShortcuts: String { return L10n.tr("Localizable", "settings.search_keywords.app_icon_shortcuts") }
+      /// car, vehicle, driving, dashboard
+      public static var carPlay: String { return L10n.tr("Localizable", "settings.search_keywords.car_play") }
+      /// watch face, apple watch, glance
+      public static var complications: String { return L10n.tr("Localizable", "settings.search_keywords.complications") }
+      /// logs, diagnostics, export, database, troubleshooting, reset
+      public static var debugging: String { return L10n.tr("Localizable", "settings.search_keywords.debugging") }
+      /// appearance, theme, app icon, browser, links, display, launch
+      public static var general: String { return L10n.tr("Localizable", "settings.search_keywords.general") }
+      /// swipe, tap, navigation, shortcuts
+      public static var gestures: String { return L10n.tr("Localizable", "settings.search_keywords.gestures") }
+      /// documentation, support, guide, companion
+      public static var help: String { return L10n.tr("Localizable", "settings.search_keywords.help") }
+      /// wall mount, tablet, screen, always on, auto lock
+      public static var kiosk: String { return L10n.tr("Localizable", "settings.search_keywords.kiosk") }
+      /// dynamic island, lock screen, timers
+      public static var liveActivities: String { return L10n.tr("Localizable", "settings.search_keywords.live_activities") }
+      /// gps, zones, tracking, presence, background updates
+      public static var location: String { return L10n.tr("Localizable", "settings.search_keywords.location") }
+      /// menu bar, entities, mac, desktop
+      public static var macToolbar: String { return L10n.tr("Localizable", "settings.search_keywords.mac_toolbar") }
+      /// tags, stickers, scan, automation
+      public static var nfc: String { return L10n.tr("Localizable", "settings.search_keywords.nfc") }
+      /// push, alerts, sounds, badge, critical, categories
+      public static var notifications: String { return L10n.tr("Localizable", "settings.search_keywords.notifications") }
+      /// analytics, crash reports, data collection, consent
+      public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
+      /// battery, motion, pedometer, focus, device data
+      public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
+      /// connection, url, account, instance, add server
+      public static var servers: String { return L10n.tr("Localizable", "settings.search_keywords.servers") }
+      /// apple watch, watchos, configuration
+      public static var watch: String { return L10n.tr("Localizable", "settings.search_keywords.watch") }
+      /// home screen, lock screen, custom widgets
+      public static var widgets: String { return L10n.tr("Localizable", "settings.search_keywords.widgets") }
+    }
+    public enum Sections {
+      public enum CustomizeExperience {
+        /// Customize your experience
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.customize_experience.header") }
+      }
+      public enum HelpSupport {
+        /// Help & support
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.help_support.header") }
+      }
+      public enum OtherDevices {
+        /// Apple Watch & CarPlay
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.other_devices.header") }
+      }
+      public enum QuickAccess {
+        /// Quick access
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.quick_access.header") }
+      }
+      public enum ShareFromDevice {
+        /// Share from this device
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.share_from_device.header") }
+      }
+      public enum StayInformed {
+        /// Stay informed
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.stay_informed.header") }
+      }
+    }
     public enum ServerSelect {
       /// Server
       public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }
