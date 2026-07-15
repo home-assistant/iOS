@@ -8,17 +8,13 @@ struct HomeAssistantStandByView: View {
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
-    let controlsRevealDelay: TimeInterval
-    let loadingCycleID: UUID
-    let settingsAction: () -> Void
-    let retryAction: () -> Void
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
     @State private var dismissTapCount = 0
-    @State private var showsDelayedControls = false
+    @State private var showsEmptyStateContent = false
     @State private var hasAppeared = false
 
     private let headerAccessorySize = CGSize(width: 44, height: 44)
@@ -26,25 +22,17 @@ struct HomeAssistantStandByView: View {
     init(
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
-        isLoading: Bool = false,
-        controlsRevealDelay: TimeInterval = 5,
-        loadingCycleID: UUID = UUID(),
-        settingsAction: @escaping () -> Void,
-        retryAction: @escaping () -> Void
+        isLoading: Bool = false
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
-        self.controlsRevealDelay = controlsRevealDelay
-        self.loadingCycleID = loadingCycleID
-        self.settingsAction = settingsAction
-        self.retryAction = retryAction
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
     var body: some View {
         let showsEmptyState = emptyState != nil
-        let contentOpacity = showsEmptyState ? 1.0 : 0.0
+        let contentOpacity = showsEmptyStateContent ? 1.0 : 0.0
 
         ZStack {
             Color(uiColor: .systemBackground)
@@ -76,31 +64,6 @@ struct HomeAssistantStandByView: View {
             .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showsEmptyState ? .top : .center)
 
-            if !showsEmptyState, showsDelayedControls {
-                Group {
-                    if #available(iOS 26.0, *) {
-                        SettingsButton(action: settingsAction)
-                            .padding(DesignSystem.Spaces.one)
-                            .glassEffect(.regular.interactive(), in: Circle())
-                    } else {
-                        SettingsButton(action: settingsAction)
-                            .padding(DesignSystem.Spaces.one)
-                            .background(.regularMaterial, in: Circle())
-                    }
-                }
-                .padding(DesignSystem.Spaces.two)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .transition(.opacity)
-
-                Button(emptyState?.style.primaryButtonTitle ?? WebViewEmptyStateStyle.disconnected.primaryButtonTitle) {
-                    retryAction()
-                }
-                .buttonStyle(.primaryButton)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                .padding(.bottom, DesignSystem.Spaces.two)
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .transition(.opacity)
-            }
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
@@ -130,16 +93,16 @@ struct HomeAssistantStandByView: View {
         }
         .opacity(hasAppeared ? 1 : 0)
         .animation(DesignSystem.Animation.default, value: showsEmptyState)
-        .animation(DesignSystem.Animation.default, value: showsDelayedControls)
         .onAppear {
             withAnimation(DesignSystem.Animation.default) {
                 hasAppeared = true
+                showsEmptyStateContent = emptyState != nil
             }
         }
-        .task(id: loadingCycleID) {
-            showsDelayedControls = false
-            try? await Task.sleep(for: .seconds(controlsRevealDelay))
-            showsDelayedControls = true
+        .onChange(of: emptyState != nil) { showsEmptyState in
+            withAnimation(DesignSystem.Animation.default) {
+                showsEmptyStateContent = showsEmptyState
+            }
         }
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
@@ -352,9 +315,7 @@ struct HomeAssistantStandByView: View {
 #Preview("Loading") {
     HomeAssistantStandByView(
         server: ServerFixture.standard,
-        emptyState: nil,
-        settingsAction: {},
-        retryAction: {}
+        emptyState: nil
     )
 }
 
@@ -371,8 +332,6 @@ struct HomeAssistantStandByView: View {
             errorDetailsAction: {},
             reauthAction: { _ in },
             dismissAction: {}
-        ),
-        settingsAction: {},
-        retryAction: {}
+        )
     )
 }

@@ -11,8 +11,8 @@ import UIKit
 /// Rendered by `ContainerView` when onboarding is complete; conforms to `WebFrontendView`.
 struct HomeAssistantView: View, WebFrontendView {
     private enum Constants {
-        static let minimumLoaderDuration: Duration = .seconds(2.5)
-        static let loaderFadeOutDuration: Duration = .seconds(0.5)
+        static let minimumLoaderDuration: Duration = .seconds(1.8)
+        static let loaderFadeOutDuration: Duration = .seconds(0.4)
     }
 
     let server: Server
@@ -140,10 +140,7 @@ struct HomeAssistantView: View, WebFrontendView {
             HomeAssistantStandByView(
                 server: server,
                 emptyState: displayedEmptyState,
-                isLoading: overlayState.isLoading,
-                loadingCycleID: loaderCycleID,
-                settingsAction: showLoaderSettings,
-                retryAction: retryFullScreenLoader
+                isLoading: overlayState.isLoading
             )
             .opacity(standByOpacity)
             .allowsHitTesting(standByOpacity > 0)
@@ -216,23 +213,6 @@ struct HomeAssistantView: View, WebFrontendView {
         }
     }
 
-    private func showLoaderSettings() {
-        if let emptyState = overlayState.emptyState {
-            emptyState.settingsAction()
-        } else {
-            webViewController?.showSettingsViewController()
-        }
-    }
-
-    private func retryFullScreenLoader() {
-        if let emptyState = overlayState.emptyState {
-            emptyState.retryAction()
-        } else if let webViewController {
-            webViewController.retryClearingFrontendCache()
-        } else {
-            resetWebFrontend()
-        }
-    }
 
     private func handleWebViewController(_ controller: WebViewController) {
         Task { @MainActor in
