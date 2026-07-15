@@ -172,6 +172,7 @@ struct WatchHomeHeaderView: View {
         onAdd: {}
     )
 }
+
 #Preview("iPhone not reachable") {
     WatchHomeHeaderView(
         viewModel: .init(),
