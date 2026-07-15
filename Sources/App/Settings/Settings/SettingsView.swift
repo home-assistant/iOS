@@ -254,7 +254,7 @@ struct SettingsView: View {
             // Servers live in their own list normally, so surface them as a plain row when searching.
             if SettingsItem.servers.isVisible, SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
                 Section {
-                    settingsItemRow(.servers)
+                    settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
                 }
             }
             settingsSections(matching: trimmedSearchQuery)
@@ -270,7 +270,7 @@ struct SettingsView: View {
             if !items.isEmpty {
                 Section(header: Text(section.header)) {
                     ForEach(items, id: \.self) { item in
-                        settingsItemRow(item)
+                        settingsItemRow(item, searchQuery: searchQuery)
                     }
                 }
             }
@@ -278,7 +278,8 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func settingsItemRow(_ item: SettingsItem) -> some View {
+    private func settingsItemRow(_ item: SettingsItem, searchQuery: String? = nil) -> some View {
+        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) }
         if item == .help {
             Button {
                 if let url = URL(string: "https://companion.home-assistant.io") {
@@ -286,14 +287,14 @@ struct SettingsView: View {
                 }
             } label: {
                 HStack {
-                    settingsItemLabel(item)
+                    settingsItemLabel(item, subtitle: subtitle)
                     Spacer()
                     item.accessoryIcon
                 }
             }
         } else {
             NavigationLink(destination: item.destinationView) {
-                settingsItemLabel(item)
+                settingsItemLabel(item, subtitle: subtitle)
             }
         }
     }
@@ -317,12 +318,19 @@ struct SettingsView: View {
         .listRowBackground(Color.clear)
     }
 
-    private func settingsItemLabel(_ item: SettingsItem) -> some View {
+    private func settingsItemLabel(_ item: SettingsItem, subtitle: String? = nil) -> some View {
         Label {
-            HStack(spacing: DesignSystem.Spaces.one) {
-                Text(item.title)
-                if item == .liveActivities || item == .complications {
-                    LabsLabel()
+            VStack(alignment: .leading) {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Text(item.title)
+                    if item == .liveActivities || item == .complications {
+                        LabsLabel()
+                    }
+                }
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                 }
             }
         } icon: {

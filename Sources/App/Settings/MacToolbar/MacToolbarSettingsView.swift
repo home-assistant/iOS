@@ -130,3 +130,12 @@ final class MacToolbarSettingsViewModel: ObservableObject {
         }
     }
 }
+
+extension MacToolbarSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.MacToolbar.EntitiesSection.header),
+            SettingsSearchEntry(L10n.Settings.MacToolbar.HowToAdd.header),
+        ]
+    }
+}

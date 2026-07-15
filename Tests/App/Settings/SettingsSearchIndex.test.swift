@@ -42,4 +42,35 @@ struct SettingsSearchIndexTests {
     func emptyQueryMatches() {
         #expect(SettingsItem.general.matches(searchQuery: "  "))
     }
+
+    @Test("Every screen-backed entry provides content search entries")
+    func allScreensProvideContentEntries() {
+        // Help is an external link and What's New is a modal, so they have no screen content.
+        for item in SettingsItem.allCases where ![.help, .whatsNew].contains(item) {
+            #expect(!item.contentSearchEntries.isEmpty, "\(item.rawValue) has no content search entries")
+        }
+    }
+
+    @Test("Screen content matches produce a subtitle")
+    func contentMatchesProduceSubtitle() {
+        // "Page zoom" is a row inside the General screen.
+        let subtitle = SettingsItem.general.contentMatchesSubtitle(searchQuery: "zoom")
+        #expect(subtitle?.localizedStandardContains("zoom") == true)
+        #expect(SettingsItem.general.matches(searchQuery: "zoom"))
+    }
+
+    @Test("Queries matching only the item title produce no subtitle")
+    func titleOnlyMatchHasNoSubtitle() {
+        #expect(SettingsItem.privacy.contentMatchesSubtitle(searchQuery: "privacy") == nil)
+        #expect(SettingsItem.privacy.matches(searchQuery: "privacy"))
+    }
+
+    @Test("Subtitle lists at most three matched rows")
+    func subtitleCapsMatchedRows() {
+        for item in SettingsItem.allCases {
+            if let subtitle = item.contentMatchesSubtitle(searchQuery: "e") {
+                #expect(subtitle.components(separatedBy: ", ").count <= 3)
+            }
+        }
+    }
 }

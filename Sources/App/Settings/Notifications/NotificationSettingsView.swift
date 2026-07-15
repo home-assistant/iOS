@@ -178,3 +178,16 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 }
+
+extension NotificationSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.Permission.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.History.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.SnoozeActions.header),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.Sounds.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
+        ]
+    }
+}

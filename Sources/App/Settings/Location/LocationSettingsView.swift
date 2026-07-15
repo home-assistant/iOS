@@ -308,3 +308,18 @@ private struct ZoneMapRepresentable: UIViewRepresentable {
         LocationSettingsView()
     }
 }
+
+extension LocationSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.SettingsDetails.Location.LocationPermission.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.LocationAccuracy.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.BackgroundRefresh.title),
+            SettingsSearchEntry(L10n.Settings.LocationHistory.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.updateLocation),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Zone.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Background.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.Updates.Significant.title),
+        ]
+    }
+}

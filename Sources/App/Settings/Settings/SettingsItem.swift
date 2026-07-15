@@ -223,13 +223,65 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
+    /// Searchable rows provided by the destination screen, so screen content is
+    /// indexed by the root settings search.
+    var contentSearchEntries: [SettingsSearchEntry] {
+        switch self {
+        case .servers: return ServersListView.settingsSearchEntries
+        case .general: return GeneralSettingsView.settingsSearchEntries
+        case .macToolbar: return MacToolbarSettingsView.settingsSearchEntries
+        case .gestures: return GesturesSetupView.settingsSearchEntries
+        case .kiosk: return KioskSettingsView.settingsSearchEntries
+        case .location: return LocationSettingsView.settingsSearchEntries
+        case .notifications: return NotificationSettingsView.settingsSearchEntries
+        case .liveActivities:
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if #available(iOS 17.2, *) {
+                return LiveActivitySettingsView.settingsSearchEntries
+            }
+            return []
+            #else
+            return []
+            #endif
+        case .sensors: return SensorListView.settingsSearchEntries
+        case .nfc: return TagsView.settingsSearchEntries
+        case .widgets: return CustomWidgetsListView.settingsSearchEntries
+        case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries
+        case .watch: return WatchConfigurationView.settingsSearchEntries
+        case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
+        case .complications: return ComplicationsRootView.settingsSearchEntries
+        case .privacy: return PrivacyView.settingsSearchEntries
+        case .debugging: return DebugView.settingsSearchEntries
+        case .help, .whatsNew: return []
+        }
+    }
+
+    /// The destination screen rows matching the given query, surfaced as the
+    /// subtitle of this item in search results.
+    func contentMatches(searchQuery: String) -> [SettingsSearchEntry] {
+        let query = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return [] }
+        return contentSearchEntries.filter { $0.matches(searchQuery: query) }
+    }
+
+    /// A short listing of matched screen rows, shown as the row subtitle in
+    /// search results, or nil when the query matches no screen content.
+    func contentMatchesSubtitle(searchQuery: String) -> String? {
+        let matched = contentMatches(searchQuery: searchQuery)
+        guard !matched.isEmpty else { return nil }
+        return matched.prefix(3).map(\.title).joined(separator: ", ")
+    }
+
     func matches(searchQuery: String) -> Bool {
         let query = searchQuery.trimmingCharacters(in: .whitespaces)
         guard !query.isEmpty else { return true }
         if title.localizedStandardContains(query) {
             return true
         }
-        return searchKeywords.contains { $0.localizedStandardContains(query) }
+        if searchKeywords.contains(where: { $0.localizedStandardContains(query) }) {
+            return true
+        }
+        return !contentMatches(searchQuery: query).isEmpty
     }
 
     private static var isWatchAvailable: Bool {

@@ -184,3 +184,16 @@ struct SensorListView: View {
         }
     }
 }
+
+extension SensorListView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.SettingsSensors.PeriodicUpdate.title),
+            SettingsSearchEntry(L10n.SettingsSensors.Permissions.header),
+            SettingsSearchEntry(L10n.SettingsDetails.Location.MotionPermission.title),
+            SettingsSearchEntry(L10n.SettingsSensors.FocusPermission.title),
+            SettingsSearchEntry(L10n.SettingsSensors.Sensors.header),
+            SettingsSearchEntry(L10n.SettingsSensors.Sensors.enableAll),
+        ]
+    }
+}

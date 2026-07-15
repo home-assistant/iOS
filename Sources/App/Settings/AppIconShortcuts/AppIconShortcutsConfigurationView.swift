@@ -140,3 +140,13 @@ struct AppIconShortcutsConfigurationView: View {
 #Preview {
     AppIconShortcutsConfigurationView()
 }
+
+extension AppIconShortcutsConfigurationView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.AppIconShortcuts.Items.title),
+            SettingsSearchEntry(L10n.Settings.AppIconShortcuts.AddItem.title),
+            SettingsSearchEntry(L10n.Settings.AppIconShortcuts.Reset.title),
+        ]
+    }
+}

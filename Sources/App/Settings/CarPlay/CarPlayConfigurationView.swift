@@ -356,3 +356,14 @@ struct CarPlayConfigurationView: View {
 #Preview {
     CarPlayConfigurationView()
 }
+
+extension CarPlayConfigurationView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.CarPlay.Navigation.Tab.quickAccess),
+            SettingsSearchEntry(L10n.Carplay.Tab.QuickAccess.layout),
+            SettingsSearchEntry(L10n.CarPlay.Config.Tabs.title),
+            SettingsSearchEntry(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title),
+        ]
+    }
+}

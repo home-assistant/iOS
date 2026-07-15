@@ -965,3 +965,18 @@ private struct ActivitySnapshot: Identifiable {
     }
 }
 #endif
+
+#if os(iOS) && !targetEnvironment(macCatalyst)
+@available(iOS 17.2, *)
+extension LiveActivitySettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.LiveActivity.FrequentUpdates.title),
+            SettingsSearchEntry(L10n.LiveActivity.Section.active),
+            SettingsSearchEntry(L10n.LiveActivity.EndAll.button),
+            SettingsSearchEntry(L10n.LiveActivity.Sync.button),
+            SettingsSearchEntry(L10n.LiveActivity.Samples.title),
+        ]
+    }
+}
+#endif

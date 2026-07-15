@@ -210,3 +210,18 @@ private extension View {
         KioskSettingsView()
     }
 }
+
+extension KioskSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Kiosk.enabled),
+            SettingsSearchEntry(L10n.Kiosk.Authentication.title),
+            SettingsSearchEntry(L10n.Kiosk.AcceptRemoteCommands.title),
+            SettingsSearchEntry(L10n.Kiosk.Display.dashboard),
+            SettingsSearchEntry(L10n.Kiosk.keepScreenOn),
+            SettingsSearchEntry(L10n.Kiosk.removeHeaderAndSidebar),
+            SettingsSearchEntry(L10n.Kiosk.hideStatusBar),
+            SettingsSearchEntry(L10n.Kiosk.Screensaver.title),
+        ]
+    }
+}

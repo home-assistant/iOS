@@ -319,3 +319,18 @@ struct GeneralSettingsView: View {
     }
     .navigationViewStyle(.stack)
 }
+
+extension GeneralSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.SettingsDetails.General.AppIcon.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.OpenInBrowser.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.OpenInPrivateTab.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.PromptToOpenUrls.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.PageZoom.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.PinchToZoom.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.FullScreen.title),
+        ]
+    }
+}
