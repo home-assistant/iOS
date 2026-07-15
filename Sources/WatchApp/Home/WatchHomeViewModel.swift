@@ -27,6 +27,10 @@ final class WatchHomeViewModel: ObservableObject {
 
     @Published var watchConfig: WatchConfig = .init()
     @Published var magicItemsInfo: [MagicItem.Info] = []
+    /// Whether the database actually holds a config row. False until the first successful cache
+    /// read of a synced config — used to auto-retry the sync when the database is truly empty,
+    /// without re-syncing for a config that legitimately has no items.
+    private(set) var hasCachedConfig = false
     /// Changes every time a new config is fetched, used as a `.id()` modifier on lists to force re-render.
     @Published var configVersion = UUID()
     /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
@@ -524,33 +528,40 @@ final class WatchHomeViewModel: ObservableObject {
     /// mirrors how the iPhone watch-configuration editor resolves item info.
     @MainActor
     func loadCache(isRetry: Bool = false) {
-        let config: WatchConfig
+        let fetchedConfig: WatchConfig?
         do {
-            config = try Current.database().read { db in try WatchConfig.fetchOne(db) } ?? WatchConfig()
+            fetchedConfig = try Current.database().read { db in try WatchConfig.fetchOne(db) }
         } catch {
             // A transient read failure must not blank the home screen: keep whatever config is
             // currently rendered (possibly from an earlier successful read) — the cache is only ever
             // replaced by data that actually loaded. Only alert when there's nothing on screen at all.
-            Current.Log.error("Failed to fetch watch config from database, error: \(error.localizedDescription)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Failed to read watch config cache: \(error.localizedDescription)",
-                type: .database
-            ))
             // A cold open can race another process (the watch widget extension) holding the SQLite
-            // lock, making this read time out even though the table has data. Retry once before
-            // surfacing anything, so existing data never shows as an error/empty state.
+            // lock, making this read time out even though the table has data. Retry once quietly —
+            // a successful retry should not leave an error in the log or the client events.
             if !isRetry {
+                Current.Log.info(
+                    "Watch config cache read failed, retrying once: \(error.localizedDescription)"
+                )
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                     Task { @MainActor in self?.loadCache(isRetry: true) }
                 }
                 return
             }
+            Current.Log.error("Failed to fetch watch config from database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to read watch config cache: \(error.localizedDescription)",
+                type: .database
+            ))
             if watchConfig.items.isEmpty {
                 displayError(message: L10n.Watch.Config.Cache.Error.message)
             }
             finishCacheLoad()
             return
         }
+        // Distinguishes "no config synced yet" (no row) from a config that legitimately has no
+        // items, so the reachability retry only fires when the database is actually empty.
+        hasCachedConfig = fetchedConfig != nil
+        let config = fetchedConfig ?? WatchConfig()
 
         // Put the database-backed config on screen immediately. Item metadata can resolve a moment later,
         // but the user should not see the empty state while cached rows already exist.
