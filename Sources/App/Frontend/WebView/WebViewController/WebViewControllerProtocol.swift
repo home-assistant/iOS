@@ -29,3 +29,9 @@ protocol WebViewControllerProtocol: AnyObject {
     func styleUI()
     func styleUI(publishesThemedStatusBar: Bool)
 }
+
+extension WebViewControllerProtocol {
+    func styleUI(publishesThemedStatusBar: Bool) {
+        styleUI()
+    }
+}

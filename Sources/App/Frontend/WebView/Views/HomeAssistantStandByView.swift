@@ -235,7 +235,7 @@ struct HomeAssistantStandByView: View {
                 case .unauthenticated:
                     emptyState.reauthAction(selectedReauthURLType)
                 case .recoveredServerNeedingReauthentication:
-                    break
+                    emptyState.reauthAction(selectedReauthURLType)
                 }
             }) {
                 Text(emptyState.style.primaryButtonTitle)

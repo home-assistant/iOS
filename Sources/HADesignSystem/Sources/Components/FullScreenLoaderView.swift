@@ -1,5 +1,6 @@
 #if !os(watchOS)
 import HAIconic
+import SFSafeSymbols
 import SwiftUI
 
 /// A full-screen loader layered on top of content that is still getting ready (e.g. the web frontend):
@@ -73,8 +74,14 @@ public struct FullScreenLoaderView: View {
             }
         }
         .task {
-            try? await Task.sleep(for: .seconds(controlsRevealDelay))
-            showsDelayedControls = true
+            do {
+                try await Task.sleep(for: .seconds(controlsRevealDelay))
+                showsDelayedControls = true
+            } catch is CancellationError {
+                return
+            } catch {
+                return
+            }
         }
     }
 }
@@ -82,15 +89,15 @@ public struct FullScreenLoaderView: View {
 /// Preview-only stand-in for the web frontend: a grid of Home Assistant-style dashboard tiles,
 /// so the previews show how the loader's blur reads over real-looking content.
 private struct FullScreenLoaderPreviewDashboard: View {
-    private let tiles: [(icon: String, color: Color, name: String, state: String)] = [
-        ("lightbulb.fill", .yellow, "Living Room", "On"),
-        ("thermometer.medium", .orange, "Thermostat", "21.5℃"),
-        ("lock.fill", .green, "Front Door", "Locked"),
-        ("video.fill", .blue, "Doorbell", "Idle"),
-        ("speaker.wave.2.fill", .purple, "Speaker", "Playing"),
-        ("fan.fill", .teal, "Bedroom Fan", "Off"),
-        ("blinds.horizontal.closed", .brown, "Blinds", "Closed"),
-        ("bolt.fill", .red, "Energy", "1.2 kW"),
+    private let tiles: [(icon: SFSymbol, color: Color, name: String, state: String)] = [
+        (.lightbulbFill, .yellow, "Living Room", "On"),
+        (.thermometerMedium, .orange, "Thermostat", "21.5℃"),
+        (.lockFill, .green, "Front Door", "Locked"),
+        (.videoFill, .blue, "Doorbell", "Idle"),
+        (.speakerWave2Fill, .purple, "Speaker", "Playing"),
+        (.wind, .teal, "Bedroom Fan", "Off"),
+        (.blindsHorizontalClosed, .brown, "Blinds", "Closed"),
+        (.boltFill, .red, "Energy", "1.2 kW"),
     ]
 
     var body: some View {
@@ -101,7 +108,7 @@ private struct FullScreenLoaderPreviewDashboard: View {
             ) {
                 ForEach(tiles, id: \.name) { tile in
                     HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
-                        Image(systemName: tile.icon)
+                        Image(systemSymbol: tile.icon)
                             .foregroundStyle(tile.color)
                             .frame(width: 36, height: 36)
                             .background(tile.color.opacity(0.2))
@@ -113,6 +120,7 @@ private struct FullScreenLoaderPreviewDashboard: View {
                                 .font(DesignSystem.Font.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        .background(Color.black)
                         Spacer(minLength: 0)
                     }
                     .padding(DesignSystem.Spaces.oneAndHalf)
@@ -131,7 +139,7 @@ private struct FullScreenLoaderPreviewDashboard: View {
     return ZStack {
         FullScreenLoaderPreviewDashboard()
         FullScreenLoaderView(
-            logo: Image(systemName: "house.fill"),
+            logo: Image(systemSymbol: .houseFill),
             retryTitle: "Retry",
             settingsAction: {},
             retryAction: {}
@@ -144,7 +152,7 @@ private struct FullScreenLoaderPreviewDashboard: View {
     return ZStack {
         FullScreenLoaderPreviewDashboard()
         FullScreenLoaderView(
-            logo: Image(systemName: "house.fill"),
+            logo: Image(systemSymbol: .houseFill),
             retryTitle: "Retry",
             controlsRevealDelay: 0,
             settingsAction: {},
@@ -163,7 +171,7 @@ private struct FullScreenLoaderPreviewToggleHarness: View {
             FullScreenLoaderPreviewDashboard()
             if showsLoader {
                 FullScreenLoaderView(
-                    logo: Image(systemName: "house.fill"),
+                    logo: Image(systemSymbol: .houseFill),
                     retryTitle: "Retry",
                     settingsAction: {},
                     retryAction: {}

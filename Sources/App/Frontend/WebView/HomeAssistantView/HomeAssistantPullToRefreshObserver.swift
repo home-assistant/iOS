@@ -37,6 +37,9 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
 
     deinit {
         contentOffsetObservation?.invalidate()
+        MainActor.assumeIsolated {
+            scrollView?.panGestureRecognizer.removeTarget(self, action: #selector(handlePanGesture(_:)))
+        }
     }
 
     func finishRefreshing() {
@@ -82,7 +85,7 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
             isRefreshing = true
             didCrossThreshold = false
             resetScrollPosition()
-            onStateChange(0, false)
+            onStateChange(1, true)
             onRefresh()
         default:
             break

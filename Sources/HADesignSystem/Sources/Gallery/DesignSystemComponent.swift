@@ -1,4 +1,5 @@
 #if !os(watchOS)
+import SFSafeSymbols
 import SwiftUI
 
 public enum DesignSystemComponent: String, CaseIterable, Identifiable {
@@ -95,7 +96,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                     endPoint: .bottomTrailing
                 )
                 FullScreenLoaderView(
-                    logo: Image(systemName: "house.fill"),
+                    logo: Image(systemSymbol: .houseFill),
                     retryTitle: "Retry",
                     controlsRevealDelay: 2,
                     settingsAction: {},
