@@ -73,6 +73,17 @@ extension WebViewController {
             return
         }
 
+        Current.websiteDataStoreHandler.cleanFrontendAssetCacheIfNeeded { [weak self] _ in
+            self?.continueLoadingActiveURLIfNeeded()
+        }
+    }
+
+    private func continueLoadingActiveURLIfNeeded() {
+        guard !isAppInBackground() else {
+            Current.Log.info("not loading, in background")
+            return
+        }
+
         var previousAttemptHung = false
         if let inFlightTask = loadActiveURLTask {
             let startDate = loadActiveURLTaskStartDate ?? .distantPast
