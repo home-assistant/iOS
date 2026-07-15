@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 @testable import Shared
 import Testing
 
@@ -57,5 +58,44 @@ struct DeviceRegistryTests {
         // Validate computed properties
         #expect(firstEntry.displayName == "Home Assistant Core")
         #expect(firstEntry.isDisabled == false)
+    }
+
+    @Test("Entry with a non-string identifier tuple still decodes")
+    func decodeEntryWithNonStringIdentifier() throws {
+        let data = HAData(value: [
+            "id": "abc123",
+            "name": "Weird Device",
+            "identifiers": [["mqtt", 42]],
+            "connections": [["mac", 99]],
+        ])
+
+        let entry = try DeviceRegistryEntry(data: data)
+
+        #expect(entry.id == "abc123")
+        #expect(entry.name == "Weird Device")
+        #expect(entry.identifiers == nil)
+        #expect(entry.connections == nil)
+    }
+
+    @Test("A single malformed entry does not fail the whole registry array")
+    func decodeArrayWithOneMalformedEntry() throws {
+        let data = HAData(value: [
+            [
+                "id": "good",
+                "name": "Good Device",
+                "identifiers": [["hassio", "core"]],
+            ],
+            [
+                "id": "bad",
+                "name": "Bad Device",
+                "identifiers": [["mqtt", 42]],
+            ],
+        ])
+
+        let entries = try [DeviceRegistryEntry](data: data)
+
+        #expect(entries.count == 2)
+        #expect(entries.first?.identifiers == [["hassio", "core"]])
+        #expect(entries.last?.identifiers == nil)
     }
 }
