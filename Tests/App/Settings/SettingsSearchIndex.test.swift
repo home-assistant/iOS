@@ -1,5 +1,4 @@
 @testable import HomeAssistant
-@testable import Shared
 import Testing
 
 struct SettingsSearchIndexTests {
@@ -47,6 +46,8 @@ struct SettingsSearchIndexTests {
     func allScreensProvideContentEntries() {
         // Help is an external link and What's New is a modal, so they have no screen content.
         for item in SettingsItem.allCases where ![.help, .whatsNew].contains(item) {
+            // Live Activities entries are only available alongside their screen.
+            if item == .liveActivities, #unavailable(iOS 17.2) { continue }
             #expect(!item.contentSearchEntries.isEmpty, "\(item.rawValue) has no content search entries")
         }
     }

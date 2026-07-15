@@ -242,7 +242,7 @@ struct SettingsView: View {
     }
 
     private var hasSearchResults: Bool {
-        if SettingsItem.servers.isVisible, SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
+        if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
             return true
         }
         return SettingsSection.allCases.contains { !$0.items(matching: trimmedSearchQuery).isEmpty }
@@ -251,8 +251,9 @@ struct SettingsView: View {
     @ViewBuilder
     private var searchResultsContent: some View {
         if hasSearchResults {
-            // Servers live in their own list normally, so surface them as a plain row when searching.
-            if SettingsItem.servers.isVisible, SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
+            // Servers live in their own list normally (including the Catalyst sidebar, where the
+            // item is not "visible"), so surface them as a plain row when searching.
+            if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
                 Section {
                     settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
                 }

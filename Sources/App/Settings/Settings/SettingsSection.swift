@@ -1,5 +1,4 @@
 import Shared
-import SwiftUI
 
 /// Groups settings entries by the objective a user has when opening the app settings,
 /// e.g. customizing the app, staying informed or getting help.
