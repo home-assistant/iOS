@@ -67,6 +67,7 @@ extension WebViewController: WebViewControllerProtocol {
             requestedState
         }
         connectionState = resolvedState
+        overlayState?.connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
         switch resolvedState {

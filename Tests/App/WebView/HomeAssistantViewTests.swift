@@ -47,4 +47,19 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(resetCalled)
         XCTAssertIdentical(controller.reconnectManager, reconnectManager)
     }
+
+    func testHomeAssistantViewModelStartsWithStandbyLoaderUntilFrontendConnects() {
+        let overlayState = WebFrontendOverlayState()
+        overlayState.connectionState = .connected
+
+        let sut = HomeAssistantViewModel(
+            server: Server.fake(),
+            overlayState: overlayState
+        )
+
+        XCTAssertTrue(sut.shouldShowStandByView)
+        XCTAssertEqual(sut.standByOpacity, 1)
+        XCTAssertEqual(overlayState.connectionState, .unknown)
+        XCTAssertFalse(sut.loaderMinimumDurationElapsed)
+    }
 }
