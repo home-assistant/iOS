@@ -89,8 +89,8 @@ private final class LegacyRealmWatchComplication: Object {
 /// opened again; a future release can then drop the RealmSwift dependency and
 /// this file, and delete the legacy store directory.
 public enum RealmToGRDBMigration {
-    static let migrationCompletedKey = "hasCompletedRealmToGRDBMigration"
-    static let migrationAttemptsKey = "realmToGRDBMigrationAttempts"
+    static let migrationCompletedKey = "hasCompletedRealmToGRDBMigrationV2"
+    static let migrationAttemptsKey = "realmToGRDBMigrationAttemptsV2"
     static let maxMigrationAttempts = 3
 
     public static func migrateIfNeeded() {
@@ -182,9 +182,10 @@ public enum RealmToGRDBMigration {
         // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
         // 26 - 2022-08-13 v2022.x bumping mdi version
         // 29 - 2026-05-27 v2026.x Remove legacy iOS action Realm models
+        // 30 - 2026-07-11 v2026.x Migrate watch complications from Realm to GRDB (#5036)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 29,
+            schemaVersion: 30,
             migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating legacy realm from \(oldVersion)")
                 if oldVersion < 9 {

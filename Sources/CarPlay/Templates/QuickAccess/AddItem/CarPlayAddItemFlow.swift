@@ -228,23 +228,31 @@ final class CarPlayAddItemFlow {
     }
 
     private func commit(server: Server, entity: HAAppEntity, requiresConfirmation: Bool) {
-        viewModel.addEntityToQuickAccess(
-            entityId: entity.entityId,
-            serverId: server.identifier.rawValue,
-            requiresConfirmation: requiresConfirmation
-        )
-        interfaceController?.dismissTemplate(animated: true, completion: nil)
-        interfaceController?.popToRootTemplate(animated: true, completion: nil)
-        onFinish()
+        // Save only after the dismiss/pop transitions settle: the scene observes the config table and may
+        // replace the root template on change, which blanks the CarPlay screen if a transition is in flight.
+        interfaceController?.dismissTemplate(animated: true) { [weak self] _, _ in
+            self?.interfaceController?.popToRootTemplate(animated: true) { _, _ in
+                guard let self else { return }
+                self.viewModel.addEntityToQuickAccess(
+                    entityId: entity.entityId,
+                    serverId: server.identifier.rawValue,
+                    requiresConfirmation: requiresConfirmation
+                )
+                self.onFinish()
+            }
+        }
     }
 
     private func commitAssistPipeline(server: Server, pipeline: Pipeline) {
-        viewModel.addAssistPipelineToQuickAccess(
-            pipeline: pipeline,
-            serverId: server.identifier.rawValue
-        )
-        interfaceController?.popToRootTemplate(animated: true, completion: nil)
-        onFinish()
+        // Same transition-then-save ordering as `commit`; see the comment there.
+        interfaceController?.popToRootTemplate(animated: true) { [weak self] _, _ in
+            guard let self else { return }
+            viewModel.addAssistPipelineToQuickAccess(
+                pipeline: pipeline,
+                serverId: server.identifier.rawValue
+            )
+            onFinish()
+        }
     }
 
     private func section(header: String, rows: [CPListItem], emptyMessage: String? = nil) -> CPListSection {

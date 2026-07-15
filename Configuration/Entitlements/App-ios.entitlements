@@ -30,5 +30,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX)</string>
 	</array>
+	<key>com.apple.developer.carplay-driving-task</key>
+	<true/>
 </dict>
 </plist>
