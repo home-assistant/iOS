@@ -35,11 +35,13 @@ struct HomeAssistantView: View, WebFrontendView {
             // reloads.
             ZStack(alignment: .topLeading) {
                 themedStatusBar
+                    .opacity(viewModel.webViewContentOpacity)
                 homeAssistant
+                    .opacity(viewModel.webViewContentOpacity)
                 pullToRefreshIndicator
                 macTitleBar
+                    .opacity(viewModel.webViewContentOpacity)
             }
-            .opacity(viewModel.webViewContentOpacity)
             noActiveURLState
             standByView
         }
