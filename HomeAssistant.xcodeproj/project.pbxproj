@@ -240,7 +240,6 @@
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
 		CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */; };
 		CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */; };
-		FADE000000000000000000A5 /* HAAPI in Frameworks */ = {isa = PBXBuildFile; productRef = FADE000000000000000000A4 /* HAAPI */; };
 		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
 		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
 		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
@@ -267,6 +266,7 @@
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
+		FADE000000000000000000A5 /* HAAPI in Frameworks */ = {isa = PBXBuildFile; productRef = FADE000000000000000000A4 /* HAAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5154,10 +5154,6 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAWatchCommunicationMessages;
 		};
-		FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/HAAPI;
-		};
 		DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HADesignSystem;
@@ -5177,6 +5173,10 @@
 		DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HANetworking;
+		};
+		FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAAPI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -5736,11 +5736,6 @@
 			package = CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */;
 			productName = HAWatchCommunicationMessages;
 		};
-		FADE000000000000000000A4 /* HAAPI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */;
-			productName = HAAPI;
-		};
 		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
@@ -5845,6 +5840,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
+		};
+		FADE000000000000000000A4 /* HAAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */;
+			productName = HAAPI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -19,7 +19,8 @@ import Testing
         let frames = transport.sentFrames
         #expect(commandType(in: frames[0]) == "auth")
         #expect(commandType(in: frames[1]) == "get_config")
-        #expecttry (#require(commandID(in: frames[1])) >= 1)
+        let commandId = try #require(commandID(in: frames[1]))
+        #expect(commandId >= 1)
         await connection.disconnect()
     }
 
@@ -43,8 +44,10 @@ import Testing
         transport.enqueue("{\"id\": \(secondID), \"type\": \"result\", \"success\": true, \"result\": \"B\"}")
         transport.enqueue("{\"id\": \(firstID), \"type\": \"result\", \"success\": true, \"result\": \"A\"}")
 
-        #expecttry await (first.value == .string("A"))
-        #expecttry await (second.value == .string("B"))
+        let firstResult = try await first.value
+        let secondResult = try await second.value
+        #expect(firstResult == .string("A"))
+        #expect(secondResult == .string("B"))
         await connection.disconnect()
     }
 

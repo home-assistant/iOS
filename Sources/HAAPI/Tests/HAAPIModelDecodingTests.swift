@@ -90,7 +90,8 @@ import Testing
             type: "call_service",
             data: ["domain": "light", "service": "turn_on"]
         )
-        let object = try #requiretry (jsonObject(in: message.encodedText()))
+        let text = try message.encodedText()
+        let object = try #require(jsonObject(in: text))
         #expect(object["id"] as? Int == 5)
         #expect(object["type"] as? String == "call_service")
         #expect(object["domain"] as? String == "light")

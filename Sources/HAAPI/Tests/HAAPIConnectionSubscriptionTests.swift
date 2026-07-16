@@ -30,7 +30,8 @@ import Testing
 
         try await waitUntil { await events.count == 2 }
         try await Task.sleep(for: .milliseconds(20))
-        #expectawait (events.elements == [.object(["n": .int(1)]), .object(["n": .int(2)])])
+        let received = await events.elements
+        #expect(received == [.object(["n": .int(1)]), .object(["n": .int(2)])])
 
         consumer.cancel()
         await connection.disconnect()

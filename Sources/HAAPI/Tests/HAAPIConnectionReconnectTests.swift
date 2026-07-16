@@ -36,7 +36,8 @@ import Testing
 
         transport2.enqueue("{\"id\": \(secondID), \"type\": \"event\", \"event\": 2}")
         try await waitUntil { await events.count == 2 }
-        #expectawait (events.elements == [.int(1), .int(2)])
+        let received = await events.elements
+        #expect(received == [.int(1), .int(2)])
         #expect(factory.makeCount == 2)
 
         consumer.cancel()
@@ -58,7 +59,8 @@ import Testing
         try await waitUntil { transport1.sentFrames.contains { commandType(in: $0) == "slow_command" } }
         transport1.failNow()
 
-        #expecttry await (pending.value == .string("answered-after-reconnect"))
+        let result = try await pending.value
+        #expect(result == .string("answered-after-reconnect"))
         #expect(factory.makeCount == 2)
         await connection.disconnect()
     }

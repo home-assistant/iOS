@@ -56,9 +56,15 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
                 continue
             }
             // A server with no reachable URL is skipped, not failed: its existing rows stay
-            // untouched and usable.
+            // untouched and usable. Common cause: internal-only http URL on a "most secure"
+            // server — the watch can't verify the home network, so the user must set the
+            // per-server "Always use" URL override in the watch settings.
             guard await server.activeURL() != nil else {
                 outcomes.append(.init(serverId: serverId, status: .skipped(reason: "no reachable URL")))
+                Current.Log.info(
+                    "Direct watch sync skipped server \(server.info.name) (\(serverId)): no reachable URL — "
+                        + "consider the watch's per-server URL override"
+                )
                 continue
             }
             do {
@@ -78,6 +84,18 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
                 ))
             }
         }
+        // One summary line per run so partial coverage (a skipped/failed server among successes)
+        // is always visible in the log, not just the per-server events above.
+        let summary = outcomes
+            .map { outcome -> String in
+                switch outcome.status {
+                case .success: "\(outcome.serverId)=success"
+                case let .skipped(reason): "\(outcome.serverId)=skipped(\(reason))"
+                case let .failed(reason): "\(outcome.serverId)=failed(\(reason))"
+                }
+            }
+            .joined(separator: ", ")
+        Current.Log.info("Direct watch sync finished: [\(summary.isEmpty ? "no servers" : summary)]")
         if outcomes.contains(where: { $0.status == .success }) {
             NotificationCenter.default.post(name: .watchDirectDatabaseSyncDidFinish, object: nil)
         }
