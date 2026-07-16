@@ -69,7 +69,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var shouldShowStandByView: Bool {
-        isFullScreenLoaderMounted || overlayState.emptyState != nil
+        isFullScreenLoaderMounted || overlayState.emptyState != nil || isPullToRefreshActive
     }
 
     var webViewContentOpacity: Double {
@@ -92,7 +92,10 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var standByOpacity: Double {
-        overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
+        if isPullToRefreshActive {
+            return 1
+        }
+        return overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
     func updateReduceMotion(_ reduceMotion: Bool) {
@@ -134,8 +137,17 @@ final class HomeAssistantViewModel: ObservableObject {
             webView: controller.webView,
             threshold: Constants.pullToRefreshThreshold,
             onStateChange: { [weak self] progress, isRefreshing in
-                self?.pullToRefreshProgress = progress
-                self?.isPullToRefreshActive = isRefreshing
+                guard let self else { return }
+
+                if isPullToRefreshActive != isRefreshing {
+                    withAnimation(DesignSystem.Animation.default) {
+                        self.pullToRefreshProgress = progress
+                        self.isPullToRefreshActive = isRefreshing
+                    }
+                } else {
+                    pullToRefreshProgress = progress
+                    isPullToRefreshActive = isRefreshing
+                }
             },
             onRefresh: { [weak self, weak controller] in
                 self?.performPullToRefresh(using: controller)

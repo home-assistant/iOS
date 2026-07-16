@@ -107,6 +107,11 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
         lastHapticProgressStep = step
     }
 
+    private func currentPullDistance() -> CGFloat {
+        guard let scrollView else { return 0 }
+        return max(0, -(scrollView.contentOffset.y + scrollView.adjustedContentInset.top))
+    }
+
     private func resetScrollPosition() {
         guard let scrollView else { return }
         let restingOffset = CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top)
@@ -118,8 +123,8 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
 
     @objc private func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
-        case .ended, .cancelled, .failed:
-            guard didCrossThreshold, !isRefreshing else {
+        case .ended:
+            guard didCrossThreshold, currentPullDistance() >= threshold, !isRefreshing else {
                 didCrossThreshold = false
                 return
             }
@@ -131,6 +136,8 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
             resetScrollPosition()
             onStateChange(1, true)
             onRefresh()
+        case .cancelled, .failed:
+            didCrossThreshold = false
         default:
             break
         }
