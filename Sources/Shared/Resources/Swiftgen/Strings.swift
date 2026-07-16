@@ -1332,6 +1332,20 @@ public enum L10n {
   }
 
   public enum Connection {
+    public enum ActiveUrlType {
+      public enum Toast {
+        /// Using the external URL.
+        public static var external: String { return L10n.tr("Localizable", "connection.active_url_type.toast.external") }
+        /// Using the internal URL.
+        public static var `internal`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.internal") }
+        /// No active URL is currently available for this server.
+        public static var `none`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.none") }
+        /// Using Cloud Remote UI URL.
+        public static var remoteUi: String { return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui") }
+        /// Connection type
+        public static var title: String { return L10n.tr("Localizable", "connection.active_url_type.toast.title") }
+      }
+    }
     public enum Error {
       /// Uh oh! Looks like we are unable to establish a connection.
       public static var genericTitle: String { return L10n.tr("Localizable", "connection.error.generic_title") }

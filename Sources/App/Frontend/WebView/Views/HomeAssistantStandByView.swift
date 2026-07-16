@@ -6,9 +6,12 @@ struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
 
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
-    private static let loadingLogoSize = CGSize(width: 115, height: 115)
+    private static let loadingLogoSize = CGSize(width: 110, height: 110)
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
+    private static let serverPillHeight: CGFloat = 30
+    private static let delayedSettingsButtonDelay: Duration = .seconds(5)
+    private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
 
@@ -22,7 +25,27 @@ struct HomeAssistantStandByView: View {
     @State private var errorMessage: String?
     @State private var dismissTapCount = 0
     @State private var showsEmptyStateContent = false
+    @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
+
+    private var showsEmptyState: Bool { emptyState != nil }
+    private var loadingContentOffset: CGFloat { showsEmptyState ? 0 : -DesignSystem.Spaces.eight }
+    private var standByContentOpacity: Double { hasAppeared ? 1.0 : 0.0 }
+    private var contentOpacity: Double { showsEmptyStateContent ? 1.0 : 0.0 }
+    private var configuredURLTypes: [ConnectionInfo.URLType] {
+        [.internal, .external, .remoteUI].filter { urlType in
+            switch urlType {
+            case .remoteUI:
+                server.info.connection.useCloud && server.info.connection.address(for: urlType) != nil
+            case .internal, .external:
+                server.info.connection.address(for: urlType) != nil
+            case .none:
+                false
+            }
+        }
+    }
+
+    private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
     init(
         server: Server,
@@ -36,47 +59,29 @@ struct HomeAssistantStandByView: View {
     }
 
     var body: some View {
-        let showsEmptyState = emptyState != nil
-        let standByContentOpacity = hasAppeared ? 1.0 : 0.0
-        let contentOpacity = showsEmptyStateContent ? 1.0 : 0.0
-
-        ZStack {
-            Color(uiColor: .systemBackground)
-                .ignoresSafeArea()
-            VStack(spacing: showsEmptyState ? DesignSystem.Spaces.three : DesignSystem.Spaces.three) {
+        ZStack(alignment: .bottom) {
+            VStack(spacing: DesignSystem.Spaces.three) {
                 iconView
-                    .frame(
-                        width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
-                        height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
-                    )
                 if let emptyState {
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        Text(emptyState.style.title)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        bodyText(for: emptyState)
-                    }
-                    .opacity(contentOpacity)
-                    .transition(.opacity)
-                    Spacer()
+                    emptyStateBody(for: emptyState)
                 } else {
-                    if Current.servers.all.count > 1 {
-                        Text(server.info.name)
-                            .font(.caption.bold())
-                            .lineLimit(1)
-                            .padding(.horizontal, DesignSystem.Spaces.two)
-                            .padding(.vertical, DesignSystem.Spaces.one)
-                            .background(Color(uiColor: .secondarySystemBackground))
-                            .clipShape(.capsule)
-                    }
-                    HAProgressView()
-                        .transition(.opacity)
+                    currentServerPill
                 }
             }
             .padding(.horizontal, DesignSystem.Spaces.three)
             .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showsEmptyState ? .top : .center)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: showsEmptyState ? .top : .center
+            )
+            .offset(y: loadingContentOffset)
             .opacity(standByContentOpacity)
+            progressView
+        }
+        .background(Color(uiColor: .systemBackground))
+        .overlay(alignment: .topTrailing) {
+            delayedSettingsButton
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
@@ -120,19 +125,163 @@ struct HomeAssistantStandByView: View {
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
+        .task(id: showsEmptyState) {
+            showsDelayedSettingsButton = false
+            guard !showsEmptyState else { return }
+            try? await Task.sleep(for: Self.delayedSettingsButtonDelay)
+            guard !Task.isCancelled, !showsEmptyState else { return }
+            withAnimation(DesignSystem.Animation.default) {
+                showsDelayedSettingsButton = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var progressView: some View {
+        if emptyState == nil {
+            HAProgressView()
+                .transition(.opacity)
+                .padding(.bottom, DesignSystem.Spaces.ten)
+        }
+    }
+
+    @ViewBuilder
+    private var delayedSettingsButton: some View {
+        if !showsEmptyState, showsDelayedSettingsButton {
+            ModalReusableButton(
+                icon: .sfSymbol(.gearshape),
+                action: openSettings
+            )
+            .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
+            .padding()
+            .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private func emptyStateBody(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
+        VStack(spacing: DesignSystem.Spaces.one) {
+            Text(emptyState.style.title)
+                .font(.title2)
+                .fontWeight(.semibold)
+            bodyText(for: emptyState)
+        }
+        .opacity(contentOpacity)
+        .transition(.opacity)
+        Spacer()
+    }
+
+    @ViewBuilder
+    private var currentServerPill: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer {
+                currentServerPillContent
+            }
+        } else {
+            currentServerPillContent
+        }
+    }
+
+    private var currentServerPillContent: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            Text(server.info.name)
+                .font(.caption.bold())
+                .lineLimit(1)
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                .frame(height: Self.serverPillHeight)
+                .modify { view in
+                    if #available(iOS 26.0, *) {
+                        view.glassEffect(.regular.interactive(), in: .capsule)
+                    } else {
+                        view
+                            .background(Color(uiColor: .secondarySystemBackground))
+                            .clipShape(.capsule)
+                    }
+                }
+            if showsConnectionTypeIndicator {
+                connectionTypeIndicator
+            }
+        }
+    }
+
+    private var connectionTypeIndicator: some View {
+        Button(action: showConnectionTypeToast) {
+            Image(systemSymbol: connectionTypeIndicatorIcon)
+                .font(.caption2.bold())
+                .foregroundStyle(Color.haPrimary)
+                .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
+                .modify { view in
+                    if #available(iOS 26.0, *) {
+                        view.glassEffect(.regular.interactive(), in: .circle)
+                    } else {
+                        view
+                            .background(Color(uiColor: .secondarySystemBackground))
+                            .clipShape(.circle)
+                    }
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(L10n.Connection.ActiveUrlType.Toast.title)
+    }
+
+    private var connectionTypeIndicatorIcon: SFSymbol {
+        switch server.info.connection.activeURLType {
+        case .internal:
+            .houseFill
+        case .remoteUI:
+            .cloudFill
+        case .external:
+            .network
+        case .none:
+            .wifiExclamationmark
+        }
+    }
+
+    private var connectionTypeToastMessage: String {
+        switch server.info.connection.activeURLType {
+        case .internal:
+            L10n.Connection.ActiveUrlType.Toast.internal
+        case .remoteUI:
+            L10n.Connection.ActiveUrlType.Toast.remoteUi
+        case .external:
+            L10n.Connection.ActiveUrlType.Toast.external
+        case .none:
+            L10n.Connection.ActiveUrlType.Toast.none
+        }
+    }
+
+    private func showConnectionTypeToast() {
+        if #available(iOS 18, *) {
+            ToastPresenter.shared.show(
+                id: Self.connectionTypeToastID,
+                symbol: connectionTypeIndicatorIcon,
+                symbolForegroundStyle: (.white, .haPrimary),
+                title: L10n.Connection.ActiveUrlType.Toast.title,
+                message: connectionTypeToastMessage,
+                duration: 4
+            )
+        } else {
+            Current.Log.verbose("Not showing connection type toast, Toast not available on this OS version.")
+        }
     }
 
     @ViewBuilder
     private var iconView: some View {
-        if emptyState?.style == .recoveredServerNeedingReauthentication {
-            Image(systemSymbol: .key)
-                .font(.system(size: Self.reauthenticationIconSize))
-                .foregroundStyle(Color.haPrimary)
-        } else {
-            Image(.logo)
-                .resizable()
-                .scaledToFit()
+        Group {
+            if emptyState?.style == .recoveredServerNeedingReauthentication {
+                Image(systemSymbol: .key)
+                    .font(.system(size: Self.reauthenticationIconSize))
+                    .foregroundStyle(Color.haPrimary)
+            } else {
+                Image(.logo)
+                    .resizable()
+                    .scaledToFit()
+            }
         }
+        .frame(
+            width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
+            height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
+        )
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
@@ -310,6 +459,12 @@ struct HomeAssistantStandByView: View {
         }
     }
 
+    private func openSettings() {
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.showSettings()
+        }
+    }
+
     private func resolvedLeadingHeaderAccessory(
         for emptyState: WebFrontendOverlayState.EmptyStateContent
     ) -> WebViewEmptyStateStyle.HeaderAccessory {
@@ -325,9 +480,105 @@ struct HomeAssistantStandByView: View {
     }
 }
 
-#Preview("Loading") {
+private extension HomeAssistantStandByView {
+    static func previewServer(
+        name: String,
+        configuredURLTypes: [ConnectionInfo.URLType],
+        activeURLType: ConnectionInfo.URLType
+    ) -> Server {
+        var info = ServerFixture.withRemoteConnection.info
+        info.remoteName = name
+        for urlType in [ConnectionInfo.URLType.internal, .external, .remoteUI] {
+            info.connection.set(
+                address: configuredURLTypes.contains(urlType) ? previewURL(for: urlType) : nil,
+                for: urlType
+            )
+        }
+        info.connection.useCloud = configuredURLTypes.contains(.remoteUI)
+        info.connection.overrideActiveURLType = activeURLType
+        _ = info.connection.evaluateActiveURL()
+
+        return Server(identifier: .init(rawValue: "preview-\(name)"), getter: {
+            info
+        }, setter: { newInfo in
+            info = newInfo
+            return true
+        })
+    }
+
+    static func previewURL(for urlType: ConnectionInfo.URLType) -> URL? {
+        switch urlType {
+        case .internal:
+            URL(string: "http://homeassistant.local:8123")
+        case .external:
+            URL(string: "https://example.duckdns.org")
+        case .remoteUI:
+            URL(string: "https://ui.nabu.casa")
+        case .none:
+            nil
+        }
+    }
+
+    static func previewEmptyState(
+        style: WebViewEmptyStateStyle,
+        server: Server,
+        showsErrorDetailsButton: Bool = false,
+        availableReauthURLTypes: [ConnectionInfo.URLType] = []
+    ) -> WebFrontendOverlayState.EmptyStateContent {
+        WebFrontendOverlayState.EmptyStateContent(
+            style: style,
+            server: server,
+            showsErrorDetailsButton: showsErrorDetailsButton,
+            availableReauthURLTypes: availableReauthURLTypes,
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: {},
+            reauthAction: { _ in },
+            dismissAction: {}
+        )
+    }
+}
+
+#Preview("Loading Single URL") {
     HomeAssistantStandByView(
-        server: ServerFixture.standard,
+        server: HomeAssistantStandByView.previewServer(
+            name: "Single URL",
+            configuredURLTypes: [.external],
+            activeURLType: .external
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Internal URL") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Internal URL",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .internal
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading External URL") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "External URL",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .external
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Remote UI") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Remote UI",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .remoteUI
+        ),
         emptyState: nil
     )
 }
@@ -362,19 +613,62 @@ struct HomeAssistantStandByView: View {
     }
 }
 
-#Preview("Empty State") {
-    HomeAssistantStandByView(
-        server: ServerFixture.standard,
-        emptyState: WebFrontendOverlayState.EmptyStateContent(
+#Preview("Disconnected") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Disconnected",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(style: .disconnected, server: server)
+    )
+}
+
+#Preview("Disconnected Error Details") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Error Details",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
             style: .disconnected,
-            server: ServerFixture.standard,
-            showsErrorDetailsButton: false,
-            availableReauthURLTypes: [],
-            retryAction: {},
-            settingsAction: {},
-            errorDetailsAction: {},
-            reauthAction: { _ in },
-            dismissAction: {}
+            server: server,
+            showsErrorDetailsButton: true
+        )
+    )
+}
+
+#Preview("Unauthenticated") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Needs Login",
+        configuredURLTypes: [.internal, .external, .remoteUI],
+        activeURLType: .remoteUI
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .unauthenticated,
+            server: server,
+            availableReauthURLTypes: [.remoteUI, .external, .internal]
+        )
+    )
+}
+
+#Preview("Recovered Reauthentication") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Recovered Server",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .internal
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .recoveredServerNeedingReauthentication,
+            server: server,
+            availableReauthURLTypes: [.external, .internal]
         )
     )
 }

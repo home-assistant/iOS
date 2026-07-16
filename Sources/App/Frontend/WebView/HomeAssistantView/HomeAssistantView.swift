@@ -16,8 +16,7 @@ struct HomeAssistantView: View, WebFrontendView {
         )
     }
 
-    // The themed status-bar strip is rendered outside the web-view opacity group so reloads don't blink or
-    // resize it. It keeps the last frontend-provided colour until WebKit sends a new theme-colour update.
+    // The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
     private var themedStatusBar: some View {
         GeometryReader { proxy in
             if let color = viewModel.overlayState.statusBarColor {
@@ -32,15 +31,15 @@ struct HomeAssistantView: View, WebFrontendView {
 
     var body: some View {
         ZStack {
-            themedStatusBar
-            // The web content group is separate from the standby overlay and status-bar strip so those layers can
-            // stay stable while the frontend reloads.
+            // The frontend content group is separate from the standby overlay so it can fade with pull-to-refresh and
+            // reloads.
             ZStack(alignment: .topLeading) {
+                themedStatusBar
                 homeAssistant
                 pullToRefreshIndicator
                 macTitleBar
             }
-            .opacity(viewModel.contentOpacity)
+            .opacity(viewModel.webViewContentOpacity)
             noActiveURLState
             standByView
         }
