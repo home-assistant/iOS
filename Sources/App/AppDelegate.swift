@@ -124,6 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
+        RemindersSyncManager.shared.start()
 
         return true
     }

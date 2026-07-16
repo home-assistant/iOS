@@ -3594,6 +3594,63 @@ public enum L10n {
     }
   }
 
+  public enum RemindersSync {
+    public enum Add {
+      /// Sync direction
+      public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
+      /// These lists are already being synced.
+      public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
+      /// Reminders list
+      public static var remindersList: String { return L10n.tr("Localizable", "reminders_sync.add.reminders_list") }
+      /// Server
+      public static var server: String { return L10n.tr("Localizable", "reminders_sync.add.server") }
+      /// Add List Sync
+      public static var title: String { return L10n.tr("Localizable", "reminders_sync.add.title") }
+      /// Home Assistant list
+      public static var todoList: String { return L10n.tr("Localizable", "reminders_sync.add.todo_list") }
+    }
+    public enum Direction {
+      /// Two-way
+      public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.direction.both_ways") }
+      /// Reminders to Home Assistant
+      public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.direction.to_home_assistant") }
+      /// Home Assistant to Reminders
+      public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.direction.to_reminders") }
+    }
+    public enum Settings {
+      /// Add list sync
+      public static var addList: String { return L10n.tr("Localizable", "reminders_sync.settings.add_list") }
+      /// Last synced %@
+      public static func lastSynced(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "reminders_sync.settings.last_synced_%@", String(describing: p1))
+      }
+      /// Not synced yet
+      public static var neverSynced: String { return L10n.tr("Localizable", "reminders_sync.settings.never_synced") }
+      /// Open Settings
+      public static var openSettings: String { return L10n.tr("Localizable", "reminders_sync.settings.open_settings") }
+      /// Keep Apple Reminders lists and Home Assistant to-do lists in sync.
+      public static var subtitle: String { return L10n.tr("Localizable", "reminders_sync.settings.subtitle") }
+      /// Sync now
+      public static var syncNow: String { return L10n.tr("Localizable", "reminders_sync.settings.sync_now") }
+      /// Syncing…
+      public static var syncing: String { return L10n.tr("Localizable", "reminders_sync.settings.syncing") }
+      public enum AccessDenied {
+        /// Allow full access to Reminders in the system Settings app to sync your lists.
+        public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.body") }
+        /// Reminders access needed
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
+      }
+      public enum Empty {
+        /// No lists are synced yet. Add a list sync to keep an Apple Reminders list and a Home Assistant to-do list in step.
+        public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.empty.body") }
+      }
+      public enum SyncedLists {
+        /// Synced lists
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.synced_lists.header") }
+      }
+    }
+  }
+
   public enum RoomView {
     public enum Section {
       /// Hidden
@@ -4382,6 +4439,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.navigation_bar.about_button.title") }
       }
     }
+    public enum RemindersSync {
+      /// Reminders Sync
+      public static var title: String { return L10n.tr("Localizable", "settings.reminders_sync.title") }
+    }
     public enum ResetSection {
       public enum ResetAlert {
         /// Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.
@@ -4443,6 +4504,8 @@ public enum L10n {
       public static var notifications: String { return L10n.tr("Localizable", "settings.search_keywords.notifications") }
       /// analytics, crash reports, data collection, consent
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
+      /// reminders, todo, to-do, tasks, lists, shopping list, sync
+      public static var remindersSync: String { return L10n.tr("Localizable", "settings.search_keywords.reminders_sync") }
       /// battery, motion, pedometer, focus, device data
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
