@@ -4,6 +4,7 @@ import UIKit
 
 struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var viewModel: HomeAssistantViewModel
+    @Namespace private var pullToRefreshLogoNamespace
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -35,11 +36,13 @@ struct HomeAssistantView: View, WebFrontendView {
             // reloads.
             ZStack(alignment: .topLeading) {
                 themedStatusBar
+                    .opacity(viewModel.webViewContentOpacity)
                 homeAssistant
+                    .opacity(viewModel.webViewContentOpacity)
                 pullToRefreshIndicator
                 macTitleBar
+                    .opacity(viewModel.webViewContentOpacity)
             }
-            .opacity(viewModel.webViewContentOpacity)
             noActiveURLState
             standByView
         }
@@ -69,10 +72,11 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @ViewBuilder
     private var pullToRefreshIndicator: some View {
-        if viewModel.showsPullToRefresh {
+        if viewModel.showsPullToRefresh, !viewModel.isPullToRefreshActive {
             HomeAssistantPullToRefreshView(
                 progress: viewModel.pullToRefreshProgress,
-                isRefreshing: viewModel.isPullToRefreshActive
+                isRefreshing: viewModel.isPullToRefreshActive,
+                logoNamespace: pullToRefreshLogoNamespace
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, DesignSystem.Spaces.two)
@@ -111,7 +115,9 @@ struct HomeAssistantView: View, WebFrontendView {
             HomeAssistantStandByView(
                 server: viewModel.server,
                 emptyState: viewModel.displayedEmptyState,
-                isLoading: viewModel.overlayState.isLoading
+                isLoading: viewModel.overlayState.isLoading,
+                logoNamespace: pullToRefreshLogoNamespace,
+                logoIsMatchedGeometrySource: !viewModel.isPullToRefreshActive
             )
             .transition(.opacity)
             .opacity(viewModel.standByOpacity)
