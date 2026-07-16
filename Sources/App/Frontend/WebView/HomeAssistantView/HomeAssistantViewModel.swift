@@ -95,6 +95,14 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
+    private func didReachLoaderReadyState(_ connectionState: FrontEndConnectionState) -> Bool {
+        if server.info.version >= .frontendLoadedExternalBus {
+            connectionState == .loaded
+        } else {
+            connectionState.isReadyForDisplay
+        }
+    }
+
     func updateReduceMotion(_ reduceMotion: Bool) {
         self.reduceMotion = reduceMotion
     }
@@ -173,11 +181,15 @@ final class HomeAssistantViewModel: ObservableObject {
             .store(in: &cancellables)
 
         overlayState.$connectionState
-            .sink { [weak self] _ in self?.updateFullScreenLoaderVisibility() }
+            .sink { [weak self] connectionState in
+                self?.updateFullScreenLoaderVisibility(connectionState: connectionState)
+            }
             .store(in: &cancellables)
 
         overlayState.$emptyState
-            .sink { [weak self] _ in self?.updateFullScreenLoaderVisibility() }
+            .sink { [weak self] emptyState in
+                self?.updateFullScreenLoaderVisibility(hasEmptyState: emptyState != nil)
+            }
             .store(in: &cancellables)
     }
 
@@ -203,17 +215,21 @@ final class HomeAssistantViewModel: ObservableObject {
         }
     }
 
-    private func updateFullScreenLoaderVisibility() {
+    private func updateFullScreenLoaderVisibility(
+        connectionState: FrontEndConnectionState? = nil,
+        hasEmptyState: Bool? = nil
+    ) {
         guard isFullScreenLoaderMounted, loaderMinimumDurationElapsed else { return }
 
-        if overlayState.emptyState != nil {
+        if hasEmptyState ?? (overlayState.emptyState != nil) {
             withAnimation(DesignSystem.Animation.default) {
                 isFullScreenLoaderVisible = true
             }
             return
         }
 
-        guard isFullScreenLoaderVisible, overlayState.connectionState == .connected else { return }
+        guard isFullScreenLoaderVisible,
+              didReachLoaderReadyState(connectionState ?? overlayState.connectionState) else { return }
 
         let finishingCycleID = loaderCycleID
         withAnimation(DesignSystem.Animation.default) {
