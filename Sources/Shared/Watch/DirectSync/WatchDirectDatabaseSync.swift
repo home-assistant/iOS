@@ -60,7 +60,10 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
             // server — the watch can't verify the home network, so the user must set the
             // per-server "Always use" URL override in the watch settings.
             guard await server.activeURL() != nil else {
-                outcomes.append(.init(serverId: serverId, status: .skipped(reason: "no reachable URL")))
+                outcomes.append(.init(
+                    serverId: serverId,
+                    status: .skipped(reason: WatchDirectSyncOutcome.noReachableURLReason)
+                ))
                 Current.Log.info(
                     "Direct watch sync skipped server \(server.info.name) (\(serverId)): no reachable URL — "
                         + "consider the watch's per-server URL override"

@@ -36,6 +36,10 @@ final class WatchHomeViewModel: ObservableObject {
     /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
     /// user to choose which to keep.
     @Published var pendingConflict: ConfigConflict?
+    /// Set when a server was skipped by the direct sync because its only URL is internal and the
+    /// watch can't verify the home network. The UI asks the user whether to use that URL anyway
+    /// (which sets the existing per-server "Always use" override).
+    @Published var internalURLPrompt: WatchInternalURLPromptContext?
 
     /// True while a config/database sync is running. A second `requestConfig` is ignored until it
     /// finishes, so repeated reload taps can't stack several syncs (each holding a 30s reply timeout)
@@ -197,6 +201,9 @@ final class WatchHomeViewModel: ObservableObject {
     private func runDirectSync(userInitiated: Bool) {
         Task { [weak self] in
             let outcomes = await Current.watchDirectDatabaseSync.syncAll(force: userInitiated)
+            await MainActor.run {
+                self?.offerInternalURLIfNeeded(for: outcomes)
+            }
             guard userInitiated else { return }
             guard !outcomes.contains(where: { $0.status == .success }) else { return }
             let allFailed = !outcomes.isEmpty && outcomes.allSatisfy {
@@ -213,6 +220,56 @@ final class WatchHomeViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    // MARK: - Internal URL consent prompt
+
+    /// A server skipped for "no reachable URL" that HAS an internal URL is only unreachable
+    /// because the watch can't verify the home network. Ask the user (once — "No" is remembered)
+    /// whether to use that URL anyway; "Yes" sets the same per-server override as the settings
+    /// picker. One prompt at a time; further servers get asked on subsequent syncs.
+    @MainActor
+    private func offerInternalURLIfNeeded(for outcomes: [WatchDirectSyncOutcome]) {
+        guard internalURLPrompt == nil else { return }
+        let skippedIds = outcomes.compactMap { outcome -> String? in
+            guard case let .skipped(reason) = outcome.status,
+                  reason == WatchDirectSyncOutcome.noReachableURLReason else { return nil }
+            return outcome.serverId
+        }
+        guard !skippedIds.isEmpty else { return }
+        for server in Current.servers.all where skippedIds.contains(server.identifier.rawValue) {
+            let serverId = server.identifier.rawValue
+            guard let internalURL = server.info.connection.internalURL,
+                  WatchUserDefaults.shared.urlOverrideRawValue(forServerId: serverId) == nil,
+                  !WatchUserDefaults.shared.internalURLPromptDeclined(forServerId: serverId) else { continue }
+            internalURLPrompt = WatchInternalURLPromptContext(
+                serverId: serverId,
+                serverName: server.info.name,
+                internalURL: internalURL
+            )
+            return
+        }
+    }
+
+    /// "Yes": persist the internal URL as this server's override (same storage the settings
+    /// picker uses), re-resolve the live servers, and sync right away.
+    @MainActor
+    func acceptInternalURLPrompt(_ prompt: WatchInternalURLPromptContext) {
+        internalURLPrompt = nil
+        WatchUserDefaults.shared.setURLOverrideRawValue(
+            ConnectionInfo.URLType.internal.rawValue,
+            forServerId: prompt.serverId
+        )
+        WatchServerSync.applyURLOverrides()
+        Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+    }
+
+    /// "No": remember the decline so the prompt never nags again; the settings URL override
+    /// remains the way to opt in later.
+    @MainActor
+    func declineInternalURLPrompt(_ prompt: WatchInternalURLPromptContext) {
+        internalURLPrompt = nil
+        WatchUserDefaults.shared.setInternalURLPromptDeclined(true, forServerId: prompt.serverId)
     }
 
     /// Pull the watch config from the phone and reconcile it (adopt / push offline edits / conflict).

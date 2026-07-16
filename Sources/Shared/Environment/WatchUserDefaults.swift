@@ -129,6 +129,24 @@ public final class WatchUserDefaults {
         }
     }
 
+    // MARK: - Internal URL consent prompt
+
+    // Whether the user answered "No" to the home screen's "use your internal URL through the
+    // phone's connection?" prompt for a server. Stored so a decline is honored permanently
+    // instead of re-asking on every sync; the settings URL override remains the way to opt in
+    // later.
+    private func internalURLPromptDeclinedKey(forServerId serverId: String) -> String {
+        "internalURLPromptDeclined.\(serverId)"
+    }
+
+    public func internalURLPromptDeclined(forServerId serverId: String) -> Bool {
+        userDefaults.bool(forKey: internalURLPromptDeclinedKey(forServerId: serverId))
+    }
+
+    public func setInternalURLPromptDeclined(_ declined: Bool, forServerId serverId: String) {
+        userDefaults.set(declined, forKey: internalURLPromptDeclinedKey(forServerId: serverId))
+    }
+
     // MARK: - Assist pipeline display name
 
     public var assistPipelineName: String? {

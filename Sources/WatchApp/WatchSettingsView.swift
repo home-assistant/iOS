@@ -198,9 +198,12 @@ struct WatchSettingsView: View {
 }
 
 /// The list of synchronized servers, pushed from the settings "Servers" row so the small settings
-/// screen stays compact. Each server opens its read-only detail.
+/// screen stays compact. Each server opens its read-only detail. A server the watch can't
+/// currently resolve a URL for gets a "Needs attention" warning row that explains the situation
+/// (no sync, no complication updates) and offers the internal-URL opt-in.
 private struct WatchServersListView: View {
     @ObservedObject var viewModel: WatchSettingsViewModel
+    @State private var attentionContext: WatchInternalURLPromptContext?
 
     var body: some View {
         List {
@@ -214,9 +217,44 @@ private struct WatchServersListView: View {
                         Image(systemSymbol: .network)
                     }
                 }
+                if viewModel.serversNeedingAttention.contains(server.identifier.rawValue) {
+                    Button {
+                        attentionContext = WatchInternalURLPromptContext(
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            internalURL: server.info.connection.internalURL
+                        )
+                    } label: {
+                        Label {
+                            Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                .font(.footnote)
+                        } icon: {
+                            Image(systemSymbol: .exclamationmarkTriangleFill)
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+                }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
+        .sheet(item: $attentionContext) { context in
+            WatchInternalURLInfoView(
+                prompt: context,
+                onUse: {
+                    attentionContext = nil
+                    WatchUserDefaults.shared.setURLOverrideRawValue(
+                        ConnectionInfo.URLType.internal.rawValue,
+                        forServerId: context.serverId
+                    )
+                    WatchServerSync.applyURLOverrides()
+                    Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+                    viewModel.reload()
+                },
+                onNotNow: {
+                    attentionContext = nil
+                }
+            )
+        }
     }
 }
 

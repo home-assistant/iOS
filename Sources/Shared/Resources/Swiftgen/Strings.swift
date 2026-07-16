@@ -6202,6 +6202,30 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.interaction.toast.title") }
       }
     }
+    public enum InternalUrlPrompt {
+      /// Learn More
+      public static var learnMore: String { return L10n.tr("Localizable", "watch.internal_url_prompt.learn_more") }
+      /// Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?
+      public static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.internal_url_prompt.message", String(describing: p1))
+      }
+      /// Use Internal URL?
+      public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.title") }
+      public enum Info {
+        /// When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.
+        /// 
+        /// While no URL is considered safe, this server's data won't sync to the watch and its complications won't update.
+        public static var message: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.message") }
+        /// Not Now
+        public static var notNow: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.not_now") }
+        /// Internal URL & Security
+        public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.title") }
+        /// Use %@
+        public static func use(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.internal_url_prompt.info.use", String(describing: p1))
+        }
+      }
+    }
     public enum ItemExecutionTrace {
       /// Running…
       public static var running: String { return L10n.tr("Localizable", "watch.item_execution_trace.running") }
@@ -6820,6 +6844,10 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.restart_app.footer") }
         /// Restart App
         public static var title: String { return L10n.tr("Localizable", "watch.settings.restart_app.title") }
+      }
+      public enum Server {
+        /// Needs attention
+        public static var needsAttention: String { return L10n.tr("Localizable", "watch.settings.server.needs_attention") }
       }
       public enum Servers {
         /// Servers

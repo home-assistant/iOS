@@ -2077,8 +2077,16 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.troubleshooting.connection.message" = "The connection between your iPhone and Apple Watch can sometimes get stuck. Restarting both devices usually fixes it.";
 "watch.settings.troubleshooting.connection.title" = "Connection Issues";
 "watch.settings.troubleshooting.title" = "Troubleshooting";
+"watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
 "watch.settings.url_override.title" = "Always use";
+"watch.internal_url_prompt.title" = "Use Internal URL?";
+"watch.internal_url_prompt.message" = "Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?";
+"watch.internal_url_prompt.learn_more" = "Learn More";
+"watch.internal_url_prompt.info.title" = "Internal URL & Security";
+"watch.internal_url_prompt.info.message" = "When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.\n\nWhile no URL is considered safe, this server's data won't sync to the watch and its complications won't update.";
+"watch.internal_url_prompt.info.use" = "Use %@";
+"watch.internal_url_prompt.info.not_now" = "Not Now";
 "watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.data" = "Received incomplete data from iPhone. Please try again.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";
