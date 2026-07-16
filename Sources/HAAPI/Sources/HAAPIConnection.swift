@@ -14,6 +14,10 @@ public actor HAAPIConnection {
 
     var transport: (any HAAPITransport)?
     var supervisorTask: Task<Void, Never>?
+    /// Identifies the current supervisor run. A cancelled supervisor can outlive `disconnect()` +
+    /// `connect()` by a few suspensions; its cleanup paths compare against this so they never
+    /// clear state (task reference, transport, heartbeat) that already belongs to a newer run.
+    var supervisorRunID: UUID?
     var heartbeatTask: Task<Void, Never>?
     var reconnectAttempt = 0
     var nextCommandID = 1
@@ -52,7 +56,9 @@ public actor HAAPIConnection {
     public func connect() {
         guard supervisorTask == nil else { return }
         reconnectAttempt = 0
-        supervisorTask = Task { await runSupervisor() }
+        let runID = UUID()
+        supervisorRunID = runID
+        supervisorTask = Task { await runSupervisor(runID: runID) }
     }
 
     /// Stops the loop, closes the socket, fails pending requests and finishes subscription
@@ -60,6 +66,7 @@ public actor HAAPIConnection {
     public func disconnect() {
         supervisorTask?.cancel()
         supervisorTask = nil
+        supervisorRunID = nil
         stopHeartbeat()
         transport?.close(code: .normalClosure)
         transport = nil

@@ -2,11 +2,19 @@ import Foundation
 
 // The connect/auth/reconnect supervisor and the heartbeat.
 extension HAAPIConnection {
-    func runSupervisor() async {
-        defer { supervisorTask = nil }
+    func runSupervisor(runID: UUID) async {
+        // Only clear the reference if it still belongs to this run: after `disconnect()` +
+        // `connect()`, this (cancelled) supervisor may finish AFTER a new one started, and must
+        // not wipe the new run's task reference.
+        defer {
+            if supervisorRunID == runID {
+                supervisorTask = nil
+                supervisorRunID = nil
+            }
+        }
         while !Task.isCancelled {
             do {
-                try await runConnection()
+                try await runConnection(runID: runID)
                 return
             } catch {
                 if error is CancellationError || Task.isCancelled {
@@ -35,7 +43,7 @@ extension HAAPIConnection {
 
     /// One full connection attempt: connect, authenticate, serve until the socket dies.
     /// Only returns by throwing (or via cancellation).
-    private func runConnection() async throws {
+    private func runConnection(runID: UUID) async throws {
         setState(.connecting)
         let url: URL
         do {
@@ -53,9 +61,14 @@ extension HAAPIConnection {
         let transport = transportFactory.makeTransport(request: request, session: session)
         self.transport = transport
         defer {
-            stopHeartbeat()
+            // Always close the transport this attempt opened, but only touch the shared state
+            // (heartbeat, transport reference) while this run is still the current one — a stale
+            // run's late cleanup must not tear down a newer session's.
             transport.close(code: .normalClosure)
-            self.transport = nil
+            if supervisorRunID == runID {
+                stopHeartbeat()
+                self.transport = nil
+            }
         }
 
         try await authenticate(on: transport)

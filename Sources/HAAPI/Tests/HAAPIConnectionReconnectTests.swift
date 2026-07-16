@@ -65,6 +65,31 @@ import Testing
         await connection.disconnect()
     }
 
+    @Test func reconnectAfterDisconnectStartsFreshSession() async throws {
+        // disconnect() + immediate connect(): the cancelled supervisor's late cleanup must not
+        // clear the new run's task/transport/heartbeat (guarded by the supervisor run id).
+        let transport1 = MockTransport.authenticating()
+        let transport2 = MockTransport.authenticating()
+        let factory = MockTransportFactory(transports: [transport1, transport2])
+        let connection = HAAPIConnection(configuration: testConfiguration(), transportFactory: factory)
+
+        await connection.connect()
+        try await waitForConnected(connection)
+        await connection.disconnect()
+        await connection.connect()
+        try await waitForConnected(connection)
+
+        // The new session must be fully functional (transport wired, requests answered)...
+        let result = try await connection.send(command: "after_reconnect")
+        #expect(result == .null)
+        #expect(factory.makeCount == 2)
+        // ...and stay connected after the old supervisor has long finished.
+        try await Task.sleep(for: .milliseconds(50))
+        if case .connected = await connection.state {} else {
+            Issue.record("Expected the reconnected session to stay connected")
+        }
+    }
+
     @Test func backoffAttemptsGrowAndResetAfterSuccess() async throws {
         let dead1 = MockTransport()
         dead1.failNow()
