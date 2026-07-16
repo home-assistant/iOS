@@ -18,6 +18,7 @@ struct HomeAssistantStandByView: View {
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
+    let onGestureAction: ((HAGestureAction) -> Void)?
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -50,11 +51,13 @@ struct HomeAssistantStandByView: View {
     init(
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
-        isLoading: Bool = false
+        isLoading: Bool = false,
+        onGestureAction: ((HAGestureAction) -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
+        self.onGestureAction = onGestureAction
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -78,6 +81,13 @@ struct HomeAssistantStandByView: View {
             .offset(y: loadingContentOffset)
             .opacity(standByContentOpacity)
             progressView
+        }
+        // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
+        // while buttons keep priority.
+        .background {
+            if let onGestureAction {
+                WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
+            }
         }
         .background(Color(uiColor: .systemBackground))
         .overlay(alignment: .topLeading) {
