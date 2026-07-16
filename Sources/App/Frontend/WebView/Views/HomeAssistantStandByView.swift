@@ -5,12 +5,11 @@ import SwiftUI
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
 
-    private static let logoAnimationID = "pull-to-refresh-logo"
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
-    private static let serverPillHeight: CGFloat = 30
+    private static let serverPillHeight: CGFloat = 38
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
@@ -19,8 +18,7 @@ struct HomeAssistantStandByView: View {
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
-    let logoNamespace: Namespace.ID?
-    let logoIsMatchedGeometrySource: Bool
+    let onGestureAction: ((HAGestureAction) -> Void)?
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -54,14 +52,12 @@ struct HomeAssistantStandByView: View {
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
         isLoading: Bool = false,
-        logoNamespace: Namespace.ID? = nil,
-        logoIsMatchedGeometrySource: Bool = true
+        onGestureAction: ((HAGestureAction) -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
-        self.logoNamespace = logoNamespace
-        self.logoIsMatchedGeometrySource = logoIsMatchedGeometrySource
+        self.onGestureAction = onGestureAction
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -86,8 +82,15 @@ struct HomeAssistantStandByView: View {
             .opacity(standByContentOpacity)
             progressView
         }
+        // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
+        // while buttons keep priority.
+        .background {
+            if let onGestureAction {
+                WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
+            }
+        }
         .background(Color(uiColor: .systemBackground))
-        .overlay(alignment: .topTrailing) {
+        .overlay(alignment: .topLeading) {
             delayedSettingsButton
         }
         .safeAreaInset(edge: .top) {
@@ -290,17 +293,6 @@ struct HomeAssistantStandByView: View {
             width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
             height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
         )
-        .modify { view in
-            if let logoNamespace {
-                view.matchedGeometryEffect(
-                    id: Self.logoAnimationID,
-                    in: logoNamespace,
-                    isSource: logoIsMatchedGeometrySource
-                )
-            } else {
-                view
-            }
-        }
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {

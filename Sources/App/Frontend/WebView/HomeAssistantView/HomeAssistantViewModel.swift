@@ -69,7 +69,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var shouldShowStandByView: Bool {
-        isFullScreenLoaderMounted || overlayState.emptyState != nil || isPullToRefreshActive
+        isFullScreenLoaderMounted || overlayState.emptyState != nil
     }
 
     var webViewContentOpacity: Double {
@@ -92,10 +92,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var standByOpacity: Double {
-        if isPullToRefreshActive {
-            return 1
-        }
-        return overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
+        overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
     private func didReachLoaderReadyState(_ connectionState: FrontEndConnectionState) -> Bool {
@@ -145,17 +142,8 @@ final class HomeAssistantViewModel: ObservableObject {
             webView: controller.webView,
             threshold: Constants.pullToRefreshThreshold,
             onStateChange: { [weak self] progress, isRefreshing in
-                guard let self else { return }
-
-                if isPullToRefreshActive != isRefreshing {
-                    withAnimation(DesignSystem.Animation.default) {
-                        self.pullToRefreshProgress = progress
-                        self.isPullToRefreshActive = isRefreshing
-                    }
-                } else {
-                    pullToRefreshProgress = progress
-                    isPullToRefreshActive = isRefreshing
-                }
+                self?.pullToRefreshProgress = progress
+                self?.isPullToRefreshActive = isRefreshing
             },
             onRefresh: { [weak self, weak controller] in
                 self?.performPullToRefresh(using: controller)

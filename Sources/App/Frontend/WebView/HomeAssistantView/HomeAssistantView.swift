@@ -4,7 +4,6 @@ import UIKit
 
 struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var viewModel: HomeAssistantViewModel
-    @Namespace private var pullToRefreshLogoNamespace
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -72,11 +71,10 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @ViewBuilder
     private var pullToRefreshIndicator: some View {
-        if viewModel.showsPullToRefresh, !viewModel.isPullToRefreshActive {
+        if viewModel.showsPullToRefresh {
             HomeAssistantPullToRefreshView(
                 progress: viewModel.pullToRefreshProgress,
-                isRefreshing: viewModel.isPullToRefreshActive,
-                logoNamespace: pullToRefreshLogoNamespace
+                isRefreshing: viewModel.isPullToRefreshActive
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, DesignSystem.Spaces.two)
@@ -116,8 +114,9 @@ struct HomeAssistantView: View, WebFrontendView {
                 server: viewModel.server,
                 emptyState: viewModel.displayedEmptyState,
                 isLoading: viewModel.overlayState.isLoading,
-                logoNamespace: pullToRefreshLogoNamespace,
-                logoIsMatchedGeometrySource: !viewModel.isPullToRefreshActive
+                onGestureAction: { action in
+                    viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
+                }
             )
             .transition(.opacity)
             .opacity(viewModel.standByOpacity)
