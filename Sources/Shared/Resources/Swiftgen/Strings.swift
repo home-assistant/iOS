@@ -1334,13 +1334,13 @@ public enum L10n {
   public enum Connection {
     public enum ActiveUrlType {
       public enum Toast {
-        /// Using the external URL for remote access to this server.
+        /// Using the external URL.
         public static var external: String { return L10n.tr("Localizable", "connection.active_url_type.toast.external") }
-        /// Using the internal URL because this device appears to be on your configured home network.
+        /// Using the internal URL.
         public static var `internal`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.internal") }
         /// No active URL is currently available for this server.
         public static var `none`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.none") }
-        /// Using Home Assistant Cloud Remote UI for this server.
+        /// Using Cloud Remote UI URL.
         public static var remoteUi: String { return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui") }
         /// Connection type
         public static var title: String { return L10n.tr("Localizable", "connection.active_url_type.toast.title") }
