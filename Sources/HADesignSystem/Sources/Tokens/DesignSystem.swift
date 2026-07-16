@@ -44,6 +44,10 @@ public enum DesignSystem {
         public static let eight: CGFloat = 64
         public static let nine: CGFloat = 72
         public static let ten: CGFloat = 80
+        public static let eleven: CGFloat = 96
+        public static let twelve: CGFloat = 112
+        public static let thirteen: CGFloat = 128
+        public static let fourteen: CGFloat = 144
     }
 
     public enum CornerRadius {

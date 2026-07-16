@@ -141,7 +141,7 @@ struct HomeAssistantStandByView: View {
         if emptyState == nil {
             HAProgressView()
                 .transition(.opacity)
-                .padding(.bottom, DesignSystem.Spaces.ten)
+                .padding(.bottom, DesignSystem.Spaces.fourteen)
         }
     }
 
@@ -185,7 +185,8 @@ struct HomeAssistantStandByView: View {
     private var currentServerPillContent: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
             Text(server.info.name)
-                .font(.caption.bold())
+                .font(.headline)
+                .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .padding(.horizontal, DesignSystem.Spaces.two)
                 .frame(height: Self.serverPillHeight)
@@ -207,7 +208,7 @@ struct HomeAssistantStandByView: View {
     private var connectionTypeIndicator: some View {
         Button(action: showConnectionTypeToast) {
             Image(systemSymbol: connectionTypeIndicatorIcon)
-                .font(.caption2.bold())
+                .font(.headline)
                 .foregroundStyle(Color.haPrimary)
                 .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
                 .modify { view in
