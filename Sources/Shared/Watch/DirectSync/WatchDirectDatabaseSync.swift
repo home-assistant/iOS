@@ -99,6 +99,7 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
             }
             .joined(separator: ", ")
         Current.Log.info("Direct watch sync finished: [\(summary.isEmpty ? "no servers" : summary)]")
+        updateNoReachableURLServerIds(from: outcomes)
         if outcomes.contains(where: { $0.status == .success }) {
             NotificationCenter.default.post(name: .watchDirectDatabaseSyncDidFinish, object: nil)
         }
@@ -108,6 +109,21 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
     private func shouldSync(serverId: String) -> Bool {
         guard let last = lock.withLock({ lastSyncByServer[serverId] }) else { return true }
         return Date().timeIntervalSince(last) >= baseThrottleSeconds
+    }
+
+    private func updateNoReachableURLServerIds(from outcomes: [WatchDirectSyncOutcome]) {
+        var serverIds = WatchUserDefaults.shared.directSyncNoReachableURLServerIds
+        for outcome in outcomes {
+            switch outcome.status {
+            case .success:
+                serverIds.remove(outcome.serverId)
+            case let .skipped(reason) where reason == WatchDirectSyncOutcome.noReachableURLReason:
+                serverIds.insert(outcome.serverId)
+            case .skipped, .failed:
+                break
+            }
+        }
+        WatchUserDefaults.shared.directSyncNoReachableURLServerIds = serverIds
     }
 
     private static func withTimeout<T: Sendable>(

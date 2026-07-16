@@ -17,6 +17,8 @@ public enum WatchUserDefaultsKey: String {
     case allowChoosingMagicItemRoute
     /// Developer option: presents a live step-by-step log screen while a magic item executes.
     case verboseItemExecution
+    /// Server ids from the last direct sync that had no URL considered safe/reachable on the watch.
+    case directSyncNoReachableURLServerIds
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -145,6 +147,15 @@ public final class WatchUserDefaults {
 
     public func setInternalURLPromptDeclined(_ declined: Bool, forServerId serverId: String) {
         userDefaults.set(declined, forKey: internalURLPromptDeclinedKey(forServerId: serverId))
+    }
+
+    public var directSyncNoReachableURLServerIds: Set<String> {
+        get {
+            Set(userDefaults.stringArray(forKey: WatchUserDefaultsKey.directSyncNoReachableURLServerIds.rawValue) ?? [])
+        }
+        set {
+            userDefaults.set(Array(newValue), forKey: WatchUserDefaultsKey.directSyncNoReachableURLServerIds.rawValue)
+        }
     }
 
     // MARK: - Assist pipeline display name

@@ -38,13 +38,14 @@ final class WatchSettingsViewModel: ObservableObject {
             self?.currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
         }
         Task { [weak self] in
-            var needingAttention: Set<String> = []
+            var needingAttention = WatchUserDefaults.shared.directSyncNoReachableURLServerIds
             for server in all {
+                let serverId = server.identifier.rawValue
                 if await server.activeURL() == nil {
-                    needingAttention.insert(server.identifier.rawValue)
+                    needingAttention.insert(serverId)
                 }
             }
-            await MainActor.run { [needingAttention] in
+            await MainActor.run { [weak self, needingAttention] in
                 self?.serversNeedingAttention = needingAttention
             }
         }

@@ -180,9 +180,19 @@ struct WatchSettingsView: View {
                     WatchServersListView(viewModel: viewModel)
                 } label: {
                     Label {
-                        Text(verbatim: L10n.Watch.Settings.Servers.header)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(verbatim: L10n.Watch.Settings.Servers.header)
+                            if !viewModel.serversNeedingAttention.isEmpty {
+                                Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                    .font(.footnote)
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
                     } icon: {
-                        Image(systemSymbol: .network)
+                        Image(
+                            systemSymbol: viewModel.serversNeedingAttention
+                                .isEmpty ? .network : .exclamationmarkTriangleFill
+                        )
                     }
                 }
             }
