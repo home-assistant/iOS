@@ -72,6 +72,15 @@ final class HomeAssistantViewModel: ObservableObject {
         isFullScreenLoaderMounted || overlayState.emptyState != nil
     }
 
+    var webViewContentOpacity: Double {
+        if overlayState.emptyState != nil || isFullScreenLoaderVisible || isPullToRefreshActive {
+            return 0
+        }
+
+        guard pullToRefreshProgress > 0 else { return contentOpacity }
+        return contentOpacity * Double(1 - min(1, max(0, pullToRefreshProgress)))
+    }
+
     var showsPullToRefresh: Bool {
         pullToRefreshProgress > 0 || isPullToRefreshActive
     }
