@@ -80,7 +80,7 @@ struct HomeAssistantStandByView: View {
             progressView
         }
         .background(Color(uiColor: .systemBackground))
-        .overlay(alignment: .topTrailing) {
+        .overlay(alignment: .topLeading) {
             delayedSettingsButton
         }
         .safeAreaInset(edge: .top) {
