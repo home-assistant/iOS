@@ -10,6 +10,7 @@ struct HomeAssistantStandByView: View {
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 30
+    private static let connectionTypeIndicatorSize: CGFloat = 38
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
@@ -210,7 +211,7 @@ struct HomeAssistantStandByView: View {
             Image(systemSymbol: connectionTypeIndicatorIcon)
                 .font(.headline)
                 .foregroundStyle(Color.haPrimary)
-                .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
+                .frame(width: Self.connectionTypeIndicatorSize, height: Self.connectionTypeIndicatorSize)
                 .modify { view in
                     if #available(iOS 26.0, *) {
                         view.glassEffect(.regular.interactive(), in: .circle)
