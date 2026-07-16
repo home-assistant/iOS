@@ -10,6 +10,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case configScreenShow = "config_screen/show"
     case haptic
     case connectionStatus = "connection-status"
+    case frontendLoaded = "frontend/loaded"
     case tagRead = "tag/read"
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"

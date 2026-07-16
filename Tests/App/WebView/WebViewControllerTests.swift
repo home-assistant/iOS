@@ -252,8 +252,8 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(error.failingURL, url)
     }
 
-    func testInterceptedServerErrorMarksDisconnectedFromConnectedOrUnknown() {
-        for current in [FrontEndConnectionState.connected, .disconnected, .unknown] {
+    func testInterceptedServerErrorMarksDisconnectedFromReadyOrUnknownStates() {
+        for current in [FrontEndConnectionState.connected, .loaded, .disconnected, .unknown] {
             let resolved = WebViewController.connectionStateForInterceptedServerError(current: current)
 
             XCTAssertEqual(resolved, .disconnected, "expected disconnected when current is \(current)")

@@ -9,7 +9,7 @@ extension WebViewController {
         switch connectionState {
         case .authInvalid:
             .unauthenticated
-        case .connected, .disconnected, .unknown:
+        case .connected, .loaded, .disconnected, .unknown:
             .disconnected
         }
     }
