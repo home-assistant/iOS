@@ -7,6 +7,7 @@ import SwiftUI
 struct WatchDeveloperSettingsView: View {
     @State private var allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
     @State private var verboseExecution = WatchUserDefaults.shared.verboseItemExecution
+    @State private var directDatabaseSync = WatchUserDefaults.shared.directDatabaseSyncEnabled
     /// True on entry so the warning alert shows as soon as the screen is pushed.
     @State private var showWarning = true
 
@@ -36,6 +37,21 @@ struct WatchDeveloperSettingsView: View {
                 }
             } footer: {
                 Text(verbatim: L10n.Watch.Settings.Developer.VerboseExecution.footer)
+            }
+
+            Section {
+                Toggle(isOn: $directDatabaseSync) {
+                    Text(verbatim: L10n.Watch.Settings.Developer.DirectSync.title)
+                }
+                .onChange(of: directDatabaseSync) { newValue in
+                    WatchUserDefaults.shared.directDatabaseSyncEnabled = newValue
+                    if newValue {
+                        // Populate immediately so the effect of enabling it is visible.
+                        Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+                    }
+                }
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.Developer.DirectSync.footer)
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Developer.title))

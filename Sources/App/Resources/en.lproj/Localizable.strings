@@ -2061,6 +2061,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.delete_local_data.title" = "Delete Local Data";
 "watch.settings.developer.allow_choosing_route.footer" = "Shows the \"Perform action using\" picker in Settings. When off, actions always use automatic routing.";
 "watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
+"watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
+"watch.settings.developer.direct_sync.title" = "Direct server sync";
 "watch.settings.developer.title" = "Developer";
 "watch.settings.developer.verbose_execution.footer" = "Shows a live log describing every step while an item runs.";
 "watch.settings.developer.verbose_execution.title" = "Verbose item execution";

@@ -31,6 +31,12 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
 
     @discardableResult
     public func syncAll(force: Bool) async -> [WatchDirectSyncOutcome] {
+        // Experimental path, off by default: real watches block URLSessionWebSocketTask for
+        // ordinary apps (TN3135). The developer toggle (watch Settings → Developer) opts in;
+        // otherwise the phone-relayed mirror remains the source of the reference tables.
+        guard WatchUserDefaults.shared.directDatabaseSyncEnabled else {
+            return []
+        }
         // Coalesce concurrent callers (launch + foreground + reload can overlap) onto one run.
         if let running = lock.withLock({ currentTask }) {
             return await running.value

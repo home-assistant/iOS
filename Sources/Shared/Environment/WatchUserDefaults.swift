@@ -17,6 +17,11 @@ public enum WatchUserDefaultsKey: String {
     case allowChoosingMagicItemRoute
     /// Developer option: presents a live step-by-step log screen while a magic item executes.
     case verboseItemExecution
+    /// Developer option: the watch fetches its reference database directly from Home Assistant
+    /// over websocket instead of relying on the iPhone mirror. Off by default: real watches block
+    /// `URLSessionWebSocketTask` for ordinary apps (TN3135), so this only works in specific
+    /// environments (e.g. the simulator).
+    case directDatabaseSyncEnabled
     /// Server ids from the last direct sync that had no URL considered safe/reachable on the watch.
     case directSyncNoReachableURLServerIds
 }
@@ -107,6 +112,14 @@ public final class WatchUserDefaults {
     public var verboseItemExecution: Bool {
         get { userDefaults.bool(forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
         set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
+    }
+
+    /// Developer option: fetch the watch's reference database directly over websocket instead of
+    /// the iPhone mirror. Defaults to false — the phone-relayed mirror is the supported path on
+    /// real hardware (TN3135 blocks websockets for ordinary watch apps).
+    public var directDatabaseSyncEnabled: Bool {
+        get { userDefaults.bool(forKey: WatchUserDefaultsKey.directDatabaseSyncEnabled.rawValue) }
+        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.directDatabaseSyncEnabled.rawValue) }
     }
 
     // MARK: - Per-server URL override (watch-local)

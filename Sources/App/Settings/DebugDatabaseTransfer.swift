@@ -296,6 +296,7 @@ enum DebugDatabaseTransfer {
         case .watchConfiguration:
             Current.Log.info("Syncing watch context after watch configuration import")
             HomeAssistantAPI.syncWatchContext()
+            WatchMirrorPushCoordinator.schedule(reason: .databaseUpdated)
         case .complications:
             Current.Log.info("Posting complication change notifications after import")
             NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)

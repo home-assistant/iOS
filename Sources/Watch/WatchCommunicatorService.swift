@@ -42,10 +42,14 @@ final class WatchCommunicatorService {
     private var databaseSyncChunks: [String: DatabaseSyncTransfer] = [:]
 
     private var didBecomeActiveObserver: NSObjectProtocol?
+    private var databaseUpdatedObserver: NSObjectProtocol?
 
     deinit {
         if let didBecomeActiveObserver {
             NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        if let databaseUpdatedObserver {
+            NotificationCenter.default.removeObserver(databaseUpdatedObserver)
         }
     }
 
@@ -79,6 +83,17 @@ final class WatchCommunicatorService {
             if messageId == .watchConfig {
                 respondToGuaranteedWatchConfigRequest()
             }
+        }
+
+        // When the iOS app finishes refreshing its local database from a server, proactively push the
+        // updated reference tables to the watch over transferFile so its cached data stays fresh without
+        // the user opening the watch app.
+        databaseUpdatedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishRoutine,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchMirrorPushCoordinator.schedule(reason: .databaseUpdated)
         }
 
         // Present any client-certificate import the watch requested while the app was backgrounded.

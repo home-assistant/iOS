@@ -38,6 +38,15 @@ final class WatchSettingsViewModel: ObservableObject {
             self?.currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
         }
         Task { [weak self] in
+            // The "Needs attention" warning belongs to the experimental direct sync: with the
+            // default phone-relayed mirror, reference data arrives regardless of whether the
+            // watch itself can resolve a URL for the server.
+            guard WatchUserDefaults.shared.directDatabaseSyncEnabled else {
+                await MainActor.run { [weak self] in
+                    self?.serversNeedingAttention = []
+                }
+                return
+            }
             var needingAttention = WatchUserDefaults.shared.directSyncNoReachableURLServerIds
             for server in all {
                 let serverId = server.identifier.rawValue

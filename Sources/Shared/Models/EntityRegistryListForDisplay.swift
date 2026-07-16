@@ -71,6 +71,18 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
             }
         }
 
+        /// Registry entries for specific entity ids on a server. Used to include just the precision the
+        /// watch complications need in the database mirror, rather than the whole registry.
+        public static func entries(serverId: String, entityIds: [String]) throws -> [Entity] {
+            guard !entityIds.isEmpty else { return [] }
+            return try Current.database().read { db in
+                try Entity
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                    .filter(entityIds.contains(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue)))
+                    .fetchAll(db)
+            }
+        }
+
         /// The display precision (decimal places) for a single entity, read from the local GRDB registry.
         /// Returns nil when unknown (e.g. the registry row isn't present on this device).
         public static func displayPrecision(serverId: String, entityId: String) -> Int? {

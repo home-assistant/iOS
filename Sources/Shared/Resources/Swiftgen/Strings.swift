@@ -6822,6 +6822,12 @@ public enum L10n {
           /// Allow choosing route
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
         }
+        public enum DirectSync {
+          /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.footer") }
+          /// Direct server sync
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.title") }
+        }
         public enum VerboseExecution {
           /// Shows a live log describing every step while an item runs.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.verbose_execution.footer") }

@@ -23,8 +23,9 @@ struct WatchComplicationSyncTests {
     @Test("Mirror push reasons expose stable raw values and descriptions")
     func reasons() {
         #expect(Set(WatchMirrorPushCoordinator.Reason.allCases.map(\.rawValue)) == [
-            "complicationChanged", "serversChanged",
+            "databaseUpdated", "complicationChanged", "serversChanged",
         ])
+        #expect(WatchMirrorPushCoordinator.Reason.databaseUpdated.logDescription == "database updated")
         #expect(WatchMirrorPushCoordinator.Reason.complicationChanged.logDescription == "complication changed")
         #expect(WatchMirrorPushCoordinator.Reason.serversChanged.logDescription == "servers changed")
     }
@@ -82,12 +83,15 @@ struct WatchComplicationSyncTests {
 
     @Test("Nil complications round-trip as nil (retain); empty arrays stay authoritative")
     func mirrorRetainSemantics() throws {
-        let retain = WatchDatabaseMirror()
+        let retain = WatchDatabaseMirror(entities: [], areas: [], pipelines: [])
         let retainDecoded = try WatchDatabaseMirror.decodeForWatchThrowing(retain.encodeForWatch())
         #expect(retainDecoded.complications == nil)
         #expect(retainDecoded.complicationConfigs == nil)
 
         let authoritative = WatchDatabaseMirror(
+            entities: [],
+            areas: [],
+            pipelines: [],
             complications: [],
             complicationConfigs: []
         )
