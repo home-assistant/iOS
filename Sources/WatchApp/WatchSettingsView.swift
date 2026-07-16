@@ -452,6 +452,7 @@ private struct ComplicationDiagnosticDetailView: View {
 /// Lists the client events recorded on this Watch (sync, database, lifecycle) for on-device debugging.
 private struct WatchClientEventsView: View {
     @State private var events: [ClientEvent] = []
+    @State private var showClearConfirmation = false
 
     var body: some View {
         List {
@@ -460,6 +461,38 @@ private struct WatchClientEventsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Button(role: .destructive) {
+                        showClearConfirmation = true
+                    } label: {
+                        Image(systemSymbol: .trash)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.clear))
+                    .confirmationDialog(
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.title),
+                        isPresented: $showClearConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .cancel) {} label: { Text(verbatim: L10n.cancelLabel) }
+                        Button(role: .destructive) {
+                            Current.clientEventStore.clearAllEvents()
+                            events = []
+                        } label: {
+                            Text(verbatim: L10n.yesLabel)
+                        }
+                    } message: {
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.message)
+                    }
+
+                    ShareLink(item: sharedEventsText) {
+                        Image(systemSymbol: .squareAndArrowUp)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
+                }
+                .buttonStyle(.borderless)
+
                 ForEach(events, id: \.id) { event in
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                         Text(verbatim: event.text)
@@ -473,18 +506,24 @@ private struct WatchClientEventsView: View {
                     }
                     .padding(.vertical, DesignSystem.Spaces.half)
                 }
-
-                Section {
-                    Button(role: .destructive) {
-                        Current.clientEventStore.clearAllEvents()
-                        events = []
-                    } label: {
-                        Label(L10n.Watch.Settings.ClientEvents.clear, systemSymbol: .trash)
-                    }
-                }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
         .onAppear { events = Current.clientEventStore.getEvents().reversed() }
+    }
+
+    private var sharedEventsText: String {
+        ([L10n.Watch.Settings.ClientEvents.title] + events.map { event in
+            var components = [
+                event.text,
+                "\(event.type.rawValue) • \(event.date.formatted(date: .abbreviated, time: .shortened))",
+            ]
+
+            if let payload = event.jsonPayloadDescription, !payload.isEmpty {
+                components.append(payload)
+            }
+
+            return components.joined(separator: "\n")
+        }).joined(separator: "\n\n")
     }
 }

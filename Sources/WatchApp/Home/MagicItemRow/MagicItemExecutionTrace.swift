@@ -10,6 +10,17 @@ final class MagicItemExecutionTrace: ObservableObject {
         case info
         case success
         case error
+
+        var clientEventValue: String {
+            switch self {
+            case .info:
+                return "info"
+            case .success:
+                return "success"
+            case .error:
+                return "error"
+            }
+        }
     }
 
     struct Entry: Identifiable {
@@ -24,7 +35,12 @@ final class MagicItemExecutionTrace: ObservableObject {
     /// a late reply following the UI timeout) and are appended normally.
     @Published private(set) var isFinished = false
 
+    private let recordsClientEvents: Bool
     private let startDate = Current.date()
+
+    init(recordsClientEvents: Bool = true) {
+        self.recordsClientEvents = recordsClientEvents
+    }
 
     /// Seconds since the trace started, shown alongside each entry.
     func elapsed(for entry: Entry) -> String {
@@ -33,6 +49,16 @@ final class MagicItemExecutionTrace: ObservableObject {
 
     func log(_ level: Level, _ message: String) {
         Current.Log.info("[ItemExecutionTrace] \(message)")
+        if recordsClientEvents {
+            Current.clientEventStore.addEvent(.init(
+                text: message,
+                type: .serviceCall,
+                payload: [
+                    "source": "watch_magic_item_verbose_execution",
+                    "level": level.clientEventValue,
+                ]
+            ))
+        }
         DispatchQueue.main.async { [weak self] in
             self?.entries.append(.init(date: Current.date(), level: level, message: message))
         }
