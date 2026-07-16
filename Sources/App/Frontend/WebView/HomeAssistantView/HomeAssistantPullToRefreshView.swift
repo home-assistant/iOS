@@ -2,21 +2,8 @@ import Shared
 import SwiftUI
 
 struct HomeAssistantPullToRefreshView: View {
-    private static let logoAnimationID = "pull-to-refresh-logo"
-
     let progress: CGFloat
     let isRefreshing: Bool
-    let logoNamespace: Namespace.ID?
-
-    init(
-        progress: CGFloat,
-        isRefreshing: Bool,
-        logoNamespace: Namespace.ID? = nil
-    ) {
-        self.progress = progress
-        self.isRefreshing = isRefreshing
-        self.logoNamespace = logoNamespace
-    }
 
     var body: some View {
         ZStack {
@@ -41,17 +28,7 @@ struct HomeAssistantPullToRefreshView: View {
         }
         .frame(width: 42, height: 42)
         .scaleEffect(isRefreshing ? 1 : 0.8 + (0.2 * progress))
-        .modify { view in
-            if let logoNamespace {
-                view.matchedGeometryEffect(
-                    id: Self.logoAnimationID,
-                    in: logoNamespace,
-                    isSource: true
-                )
-            } else {
-                view
-            }
-        }
+        .opacity(isRefreshing ? 1 : progress)
         .accessibilityHidden(true)
     }
 }

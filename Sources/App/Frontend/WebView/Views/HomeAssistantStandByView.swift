@@ -5,7 +5,6 @@ import SwiftUI
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
 
-    private static let logoAnimationID = "pull-to-refresh-logo"
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
@@ -19,8 +18,6 @@ struct HomeAssistantStandByView: View {
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
-    let logoNamespace: Namespace.ID?
-    let logoIsMatchedGeometrySource: Bool
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -53,15 +50,11 @@ struct HomeAssistantStandByView: View {
     init(
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
-        isLoading: Bool = false,
-        logoNamespace: Namespace.ID? = nil,
-        logoIsMatchedGeometrySource: Bool = true
+        isLoading: Bool = false
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
-        self.logoNamespace = logoNamespace
-        self.logoIsMatchedGeometrySource = logoIsMatchedGeometrySource
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -290,17 +283,6 @@ struct HomeAssistantStandByView: View {
             width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
             height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
         )
-        .modify { view in
-            if let logoNamespace {
-                view.matchedGeometryEffect(
-                    id: Self.logoAnimationID,
-                    in: logoNamespace,
-                    isSource: logoIsMatchedGeometrySource
-                )
-            } else {
-                view
-            }
-        }
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
