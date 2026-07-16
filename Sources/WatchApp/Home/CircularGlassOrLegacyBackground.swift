@@ -12,6 +12,7 @@ private struct CircularGlassOrLegacyBackgroundModifier: ViewModifier {
                     .frame(width: 30, height: 30)
                     .padding(DesignSystem.Spaces.half)
                     .glassEffect(.clear.interactive().tint(tint), in: .circle)
+                    .contentShape(Circle())
             } else {
                 content
                     .padding(DesignSystem.Spaces.half)
@@ -41,6 +42,7 @@ extension View {
                         .regular.tint(tint).interactive(),
                         in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
                     )
+                    .contentShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous))
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(
                         top: DesignSystem.Spaces.micro,
@@ -65,10 +67,12 @@ extension View {
             .aspectRatio(1, contentMode: .fit)
             .modify { view in
                 if #available(watchOS 26.0, *) {
-                    view.glassEffect(
-                        .regular.tint(tint).interactive(),
-                        in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
-                    )
+                    view
+                        .glassEffect(
+                            .regular.tint(tint).interactive(),
+                            in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+                        )
+                        .contentShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous))
                 } else {
                     view.background(
                         (tint ?? Color.gray.opacity(0.3))

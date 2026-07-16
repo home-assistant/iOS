@@ -98,6 +98,7 @@ extension View {
                 view
                     .listRowBackground(Color.clear)
                     .buttonStyle(.glass)
+                    .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             } else {
                 view
                     .listRowBackground(Color.gray.opacity(0.3).cornerRadius(14))
