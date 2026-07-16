@@ -372,7 +372,7 @@ extension WebViewController {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 switch connectionState {
-                case .connected:
+                case .connected, .loaded:
                     reload()
                 case .disconnected, .unknown:
                     if overlayState?.emptyState != nil {

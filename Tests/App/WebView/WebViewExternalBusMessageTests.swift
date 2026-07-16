@@ -7,6 +7,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.configScreenShow.rawValue, "config_screen/show")
         XCTAssertEqual(WebViewExternalBusMessage.haptic.rawValue, "haptic")
         XCTAssertEqual(WebViewExternalBusMessage.connectionStatus.rawValue, "connection-status")
+        XCTAssertEqual(WebViewExternalBusMessage.frontendLoaded.rawValue, "frontend/loaded")
         XCTAssertEqual(WebViewExternalBusMessage.tagRead.rawValue, "tag/read")
         XCTAssertEqual(WebViewExternalBusMessage.tagWrite.rawValue, "tag/write")
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
@@ -36,7 +37,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 23)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 24)
     }
 
     func testExternalBusOutgoingMessageKeys() {
