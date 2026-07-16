@@ -73,31 +73,47 @@ enum RemindersSyncPlanner {
                 case .toHomeAssistant:
                     operations.append(.updateTodoItem(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
                 }
-            case (.some, .none):
+            case let (.some(todoItem), .none):
                 // The reminder was deleted.
                 switch direction {
                 case .bothWays, .toHomeAssistant:
                     operations.append(.deleteTodoItem(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
                 case .toReminders:
-                    // Reminders only mirrors HA; restore the deleted reminder.
-                    operations.append(.createReminder(todoItemUid: link.todoItemUid))
+                    // Reminders only mirrors HA; restore the deleted reminder, unless it's
+                    // completed history not worth resurrecting.
+                    if todoItem.isCompleted {
+                        operations.append(.deleteLink(todoItemUid: link.todoItemUid))
+                    } else {
+                        operations.append(.createReminder(todoItemUid: link.todoItemUid))
+                    }
                 }
-            case (.none, .some):
+            case let (.none, .some(reminder)):
                 // The Home Assistant item was deleted.
                 switch direction {
                 case .bothWays, .toReminders:
                     operations.append(.deleteReminder(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
                 case .toHomeAssistant:
-                    // HA only mirrors Reminders; restore the deleted item.
-                    operations.append(.createTodoItem(reminderId: link.reminderId))
+                    // HA only mirrors Reminders; restore the deleted item, unless it's completed
+                    // history not worth resurrecting.
+                    if reminder.isCompleted {
+                        operations.append(.deleteLink(todoItemUid: link.todoItemUid))
+                    } else {
+                        operations.append(.createTodoItem(reminderId: link.reminderId))
+                    }
                 }
             case (.none, .none):
                 operations.append(.deleteLink(todoItemUid: link.todoItemUid))
             }
         }
 
-        var unlinkedTodoUids = todoItems.keys.filter { !linkedUids.contains($0) }.sorted()
-        var unlinkedReminderIds = reminders.keys.filter { !linkedReminderIds.contains($0) }.sorted()
+        // Completed items that were never linked are ignored: they are history, not work to
+        // mirror. Completion still propagates across linked pairs above.
+        var unlinkedTodoUids = todoItems
+            .filter { !linkedUids.contains($0.key) && !$0.value.isCompleted }
+            .keys.sorted()
+        var unlinkedReminderIds = reminders
+            .filter { !linkedReminderIds.contains($0.key) && !$0.value.isCompleted }
+            .keys.sorted()
 
         // Adopt same-titled unlinked pairs first, so linking two lists that already contain the
         // same items doesn't create duplicates on the first sync.

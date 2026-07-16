@@ -312,8 +312,7 @@ final class RemindersSyncManager: ObservableObject {
 
     /// `todo.add_item` doesn't return the created item's `uid`, so items created on the Home
     /// Assistant side are linked by re-fetching the list and matching still-unlinked items by
-    /// title. Completed reminders are completed after the fact, since `add_item` can only create
-    /// open items.
+    /// title.
     private func linkCreatedTodoItems(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
@@ -329,12 +328,6 @@ final class RemindersSyncManager: ObservableObject {
                   let index = unlinkedItems
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
-            if snapshot.isCompleted {
-                try await api.completeTodoItem(
-                    listId: config.todoEntityId,
-                    itemId: item.uid
-                )
-            }
             saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }

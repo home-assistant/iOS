@@ -119,8 +119,8 @@ struct RemindersSyncPlannerTests {
     }
 
     @Test func testAdoptedPairWithDifferentContentIsAlignedPerDirection() {
-        let todoItems = ["todo-1": snapshot(isCompleted: true)]
-        let reminders = ["reminder-1": snapshot(isCompleted: false)]
+        let todoItems = ["todo-1": snapshot(notes: "bring the tote bag")]
+        let reminders = ["reminder-1": snapshot(notes: nil)]
 
         for direction in [RemindersSyncDirection.bothWays, .toReminders] {
             let operations = RemindersSyncPlanner.plan(
@@ -200,6 +200,66 @@ struct RemindersSyncPlannerTests {
             links: [link(snapshot: original)]
         )
         #expect(toHomeAssistant == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    // MARK: - Completed items
+
+    @Test func testUnlinkedCompletedItemsAreNeverSynced() {
+        let completed = snapshot(isCompleted: true)
+        for direction in RemindersSyncDirection.allCases {
+            let operations = RemindersSyncPlanner.plan(
+                direction: direction,
+                todoItems: ["todo-1": completed],
+                reminders: ["reminder-1": snapshot(title: "Other completed", isCompleted: true)],
+                links: []
+            )
+            #expect(operations.isEmpty)
+        }
+    }
+
+    @Test func testUnlinkedCompletedItemsAreNotAdoptedByTitle() {
+        // Same title on both sides, but completed: leave both alone instead of linking them.
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": completed],
+            reminders: ["reminder-1": completed],
+            links: []
+        )
+        #expect(operations.isEmpty)
+    }
+
+    @Test func testCompletingALinkedReminderCompletesTheTodoItem() {
+        let original = snapshot()
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": original],
+            reminders: ["reminder-1": snapshot(isCompleted: true)],
+            links: [link(snapshot: original)]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testOneWayRestoreDropsTheLinkForCompletedItems() {
+        let completed = snapshot(isCompleted: true)
+
+        // Completed reminder whose HA item is gone: don't resurrect it in HA.
+        let toHomeAssistant = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: [:],
+            reminders: ["reminder-1": completed],
+            links: [link(snapshot: completed)]
+        )
+        #expect(toHomeAssistant == [.deleteLink(todoItemUid: "todo-1")])
+
+        // Completed HA item whose reminder is gone: don't resurrect it in Reminders.
+        let toReminders = RemindersSyncPlanner.plan(
+            direction: .toReminders,
+            todoItems: ["todo-1": completed],
+            reminders: [:],
+            links: [link(snapshot: completed)]
+        )
+        #expect(toReminders == [.deleteLink(todoItemUid: "todo-1")])
     }
 
     // MARK: - Deletions
