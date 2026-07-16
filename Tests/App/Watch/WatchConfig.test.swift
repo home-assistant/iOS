@@ -299,42 +299,20 @@ struct WatchConfigAvailableItems_test {
 }
 
 struct WatchDatabaseMirror_test {
-    @Test func encodeDecodeRoundTripPreservesReferenceTables() throws {
-        let entity = HAAppEntity(
-            id: "server1-script.open_gate",
-            entityId: "script.open_gate",
-            serverId: "server1",
-            domain: "script",
-            name: "Open Gate",
-            icon: "mdi:gate",
-            rawDeviceClass: nil
+    @Test func encodeDecodeRoundTripPreservesPhoneOwnedData() throws {
+        let servers = Data([0xAA, 0xBB, 0xCC])
+        let original = WatchDatabaseMirror(
+            complications: [],
+            complicationConfigs: [],
+            servers: servers
         )
-        let area = AppArea(
-            id: "server1-living_room",
-            serverId: "server1",
-            areaId: "living_room",
-            name: "Living Room",
-            aliases: [],
-            picture: nil,
-            icon: nil,
-            sortOrder: 0,
-            entities: ["script.open_gate"]
-        )
-        let pipelines = AssistPipelines(
-            serverId: "server1",
-            preferredPipeline: "pref",
-            pipelines: [Pipeline(id: "pref", name: "Preferred Assistant")]
-        )
-        let original = WatchDatabaseMirror(entities: [entity], areas: [area], pipelines: [pipelines])
 
         let data = try original.encodeForWatch()
         let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
 
-        #expect(decoded.entities == [entity])
-        #expect(decoded.areas == [area])
-        #expect(decoded.pipelines?.count == 1)
-        #expect(decoded.pipelines?.first?.serverId == "server1")
-        #expect(decoded.pipelines?.first?.pipelines.first?.id == "pref")
+        #expect(decoded.complications == [])
+        #expect(decoded.complicationConfigs == [])
+        #expect(decoded.servers == servers)
     }
 
     @Test func decodeInvalidDataReturnsNil() {
@@ -342,64 +320,58 @@ struct WatchDatabaseMirror_test {
     }
 
     @Test func partialMirrorRoundTripsNilTablesAsRetain() throws {
-        // A delta payload: only areas carried, everything else omitted (nil = retain on the watch).
-        let area = AppArea(
-            id: "server1-kitchen",
-            serverId: "server1",
-            areaId: "kitchen",
-            name: "Kitchen",
-            aliases: [],
-            picture: nil,
-            icon: nil,
-            sortOrder: 0,
-            entities: []
-        )
-        let original = WatchDatabaseMirror(entities: nil, areas: [area], pipelines: nil)
+        // A delta payload: only servers carried, complications omitted (nil = retain on the watch).
+        let original = WatchDatabaseMirror(servers: Data([0x01]))
 
         let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(original.encodeForWatch())
-        #expect(decoded.entities == nil)
-        #expect(decoded.areas == [area])
-        #expect(decoded.pipelines == nil)
+        #expect(decoded.complications == nil)
+        #expect(decoded.complicationConfigs == nil)
+        #expect(decoded.servers == Data([0x01]))
     }
 
     @Test func digestsMatchForEqualContentAndDifferOtherwise() {
-        let entity = HAAppEntity(
-            id: "server1-script.a",
-            entityId: "script.a",
-            serverId: "server1",
-            domain: "script",
-            name: "A",
-            icon: nil,
-            rawDeviceClass: nil
+        let mirror = WatchDatabaseMirror(
+            complications: [],
+            complicationConfigs: [],
+            servers: Data([0x01, 0x02])
         )
-        let mirror = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
-        let same = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
+        let same = WatchDatabaseMirror(
+            complications: [],
+            complicationConfigs: [],
+            servers: Data([0x01, 0x02])
+        )
         var changed = mirror
-        changed.entities = []
+        changed.servers = Data([0x03])
 
-        #expect(mirror.tableDigests()["entities"] == same.tableDigests()["entities"])
-        #expect(mirror.tableDigests()["entities"] != changed.tableDigests()["entities"])
+        #expect(mirror.tableDigests()["servers"] == same.tableDigests()["servers"])
+        #expect(mirror.tableDigests()["servers"] != changed.tableDigests()["servers"])
+        #expect(mirror.tableDigests()["complications"] == same.tableDigests()["complications"])
         // nil groups produce no digest, so they can never match and are always carried.
-        #expect(WatchDatabaseMirror(entities: nil, areas: [], pipelines: []).tableDigests()["entities"] == nil)
+        #expect(WatchDatabaseMirror(servers: nil).tableDigests()["servers"] == nil)
+        #expect(WatchDatabaseMirror(complications: nil).tableDigests()["complications"] == nil)
     }
 
     @Test func omittingTablesDropsOnlyPositiveDigestMatches() {
-        let mirror = WatchDatabaseMirror(entities: [], areas: [], pipelines: [])
+        let mirror = WatchDatabaseMirror(
+            complications: [],
+            complicationConfigs: [],
+            servers: Data([0x01])
+        )
         let digests = mirror.tableDigests()
 
-        // Watch echoes matching digests for entities+areas but a stale one for pipelines.
+        // Watch echoes a matching digest for complications but a stale one for servers.
         var stored = digests
-        stored["pipelines"] = "stale"
+        stored["servers"] = "stale"
         let delta = mirror.omittingTables(matching: stored, currentDigests: digests)
-        #expect(delta.entities == nil)
-        #expect(delta.areas == nil)
-        #expect(delta.pipelines?.isEmpty == true)
+        #expect(delta.complications == nil)
+        #expect(delta.complicationConfigs == nil)
+        #expect(delta.servers == Data([0x01]))
 
         // No stored digests at all → nothing is omitted.
         let full = mirror.omittingTables(matching: [:], currentDigests: digests)
-        #expect(full.entities == [])
-        #expect(full.areas == [])
-        #expect(full.pipelines?.isEmpty == true)
+        #expect(full.complications == [])
+        #expect(full.complicationConfigs == [])
+        #expect(full.servers == Data([0x01]))
     }
 }
 

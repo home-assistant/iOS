@@ -6858,6 +6858,8 @@ public enum L10n {
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.
         public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
+        /// Couldn't reach your Home Assistant server from this watch. Check the watch's connection and try again.
+        public static var serverUnreachable: String { return L10n.tr("Localizable", "watch.sync.error.server_unreachable") }
         /// Sync Failed
         public static var title: String { return L10n.tr("Localizable", "watch.sync.error.title") }
         /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.

@@ -190,14 +190,12 @@ public enum WatchMirrorPushCoordinator {
     /// Why a push was requested — a typed value (not a bare string) so triggers, logging and tests all
     /// share the same source of truth.
     public enum Reason: String, CaseIterable {
-        case databaseUpdated
         case complicationChanged
         case serversChanged
 
         /// Human-readable text used in logs and client events.
         public var logDescription: String {
             switch self {
-            case .databaseUpdated: return "database updated"
             case .complicationChanged: return "complication changed"
             case .serversChanged: return "servers changed"
             }
