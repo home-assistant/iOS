@@ -26,6 +26,9 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
     private let lock = NSLock()
     private var lastSyncByServer: [String: Date] = [:]
     private var currentTask: Task<[WatchDirectSyncOutcome], Never>?
+    /// EXPERIMENT: holds a playback audio session open during the run to test whether watchOS's
+    /// audio-streaming exception unlocks the websocket on real hardware (see WatchAudioSessionProbe).
+    private let audioProbe = WatchAudioSessionProbe()
 
     public init() {}
 
@@ -53,6 +56,18 @@ public final class WatchDirectDatabaseSync: WatchDirectDatabaseSyncing {
 
     /// Sequential per server: watch installs are small and this keeps GRDB writer pressure low.
     private func run(force: Bool) async -> [WatchDirectSyncOutcome] {
+        // EXPERIMENT: with the audio-session probe enabled, keep a playback session active for the
+        // whole run so every websocket connect happens inside the audio-streaming window. Stopped
+        // in defer so the session isn't held past the sync.
+        let audioProbeEnabled = WatchUserDefaults.shared.directSyncAudioSessionProbeEnabled
+        if audioProbeEnabled {
+            audioProbe.start()
+        }
+        defer {
+            if audioProbeEnabled {
+                audioProbe.stop()
+            }
+        }
         var outcomes: [WatchDirectSyncOutcome] = []
         for server in Current.servers.all {
             if Task.isCancelled { break }

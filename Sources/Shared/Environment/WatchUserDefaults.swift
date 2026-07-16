@@ -24,6 +24,9 @@ public enum WatchUserDefaultsKey: String {
     case directDatabaseSyncEnabled
     /// Server ids from the last direct sync that had no URL considered safe/reachable on the watch.
     case directSyncNoReachableURLServerIds
+    /// EXPERIMENT: hold a playback audio session open during the direct sync, to test whether
+    /// watchOS's audio-streaming exception unlocks the websocket on real hardware (TN3135).
+    case directSyncAudioSessionProbeEnabled
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -120,6 +123,13 @@ public final class WatchUserDefaults {
     public var directDatabaseSyncEnabled: Bool {
         get { userDefaults.bool(forKey: WatchUserDefaultsKey.directDatabaseSyncEnabled.rawValue) }
         set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.directDatabaseSyncEnabled.rawValue) }
+    }
+
+    /// EXPERIMENT: hold a playback audio session open during the direct sync to test whether the
+    /// audio-streaming exception unlocks the websocket on real hardware. Defaults to false.
+    public var directSyncAudioSessionProbeEnabled: Bool {
+        get { userDefaults.bool(forKey: WatchUserDefaultsKey.directSyncAudioSessionProbeEnabled.rawValue) }
+        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.directSyncAudioSessionProbeEnabled.rawValue) }
     }
 
     // MARK: - Per-server URL override (watch-local)

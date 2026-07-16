@@ -8,6 +8,7 @@ struct WatchDeveloperSettingsView: View {
     @State private var allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
     @State private var verboseExecution = WatchUserDefaults.shared.verboseItemExecution
     @State private var directDatabaseSync = WatchUserDefaults.shared.directDatabaseSyncEnabled
+    @State private var directSyncAudioProbe = WatchUserDefaults.shared.directSyncAudioSessionProbeEnabled
     /// True on entry so the warning alert shows as soon as the screen is pushed.
     @State private var showWarning = true
 
@@ -52,6 +53,23 @@ struct WatchDeveloperSettingsView: View {
                 }
             } footer: {
                 Text(verbatim: L10n.Watch.Settings.Developer.DirectSync.footer)
+            }
+
+            if directDatabaseSync {
+                Section {
+                    Toggle(isOn: $directSyncAudioProbe) {
+                        Text(verbatim: L10n.Watch.Settings.Developer.AudioProbe.title)
+                    }
+                    .onChange(of: directSyncAudioProbe) { newValue in
+                        WatchUserDefaults.shared.directSyncAudioSessionProbeEnabled = newValue
+                        if newValue {
+                            // Re-run so the socket attempt happens inside the audio window.
+                            Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+                        }
+                    }
+                } footer: {
+                    Text(verbatim: L10n.Watch.Settings.Developer.AudioProbe.footer)
+                }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Developer.title))

@@ -6822,6 +6822,12 @@ public enum L10n {
           /// Allow choosing route
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
         }
+        public enum AudioProbe {
+          /// Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
+          /// Audio session probe
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.title") }
+        }
         public enum DirectSync {
           /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.footer") }
