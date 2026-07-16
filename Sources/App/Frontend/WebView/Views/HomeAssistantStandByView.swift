@@ -10,6 +10,7 @@ struct HomeAssistantStandByView: View {
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 30
+    private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
@@ -24,6 +25,7 @@ struct HomeAssistantStandByView: View {
     @State private var errorMessage: String?
     @State private var dismissTapCount = 0
     @State private var showsEmptyStateContent = false
+    @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
 
     private var showsEmptyState: Bool { emptyState != nil }
@@ -31,7 +33,16 @@ struct HomeAssistantStandByView: View {
     private var standByContentOpacity: Double { hasAppeared ? 1.0 : 0.0 }
     private var contentOpacity: Double { showsEmptyStateContent ? 1.0 : 0.0 }
     private var configuredURLTypes: [ConnectionInfo.URLType] {
-        [.internal, .external, .remoteUI].filter { server.info.connection.address(for: $0) != nil }
+        [.internal, .external, .remoteUI].filter { urlType in
+            switch urlType {
+            case .remoteUI:
+                server.info.connection.useCloud && server.info.connection.address(for: urlType) != nil
+            case .internal, .external:
+                server.info.connection.address(for: urlType) != nil
+            case .none:
+                false
+            }
+        }
     }
 
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
@@ -69,6 +80,9 @@ struct HomeAssistantStandByView: View {
             progressView
         }
         .background(Color(uiColor: .systemBackground))
+        .overlay(alignment: .topTrailing) {
+            delayedSettingsButton
+        }
         .safeAreaInset(edge: .top) {
             if let emptyState {
                 header(for: emptyState)
@@ -111,6 +125,15 @@ struct HomeAssistantStandByView: View {
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
+        .task(id: showsEmptyState) {
+            showsDelayedSettingsButton = false
+            guard !showsEmptyState else { return }
+            try? await Task.sleep(for: Self.delayedSettingsButtonDelay)
+            guard !Task.isCancelled, !showsEmptyState else { return }
+            withAnimation(DesignSystem.Animation.default) {
+                showsDelayedSettingsButton = true
+            }
+        }
     }
 
     @ViewBuilder
@@ -119,6 +142,19 @@ struct HomeAssistantStandByView: View {
             HAProgressView()
                 .transition(.opacity)
                 .padding(.bottom, DesignSystem.Spaces.ten)
+        }
+    }
+
+    @ViewBuilder
+    private var delayedSettingsButton: some View {
+        if !showsEmptyState, showsDelayedSettingsButton {
+            ModalReusableButton(
+                icon: .sfSymbol(.gearshape),
+                action: openSettings
+            )
+            .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
+            .padding()
+            .transition(.opacity)
         }
     }
 
@@ -420,6 +456,12 @@ struct HomeAssistantStandByView: View {
     private func selectServer(_ server: Server) {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: server)
+        }
+    }
+
+    private func openSettings() {
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.showSettings()
         }
     }
 
