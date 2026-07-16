@@ -141,7 +141,7 @@ struct HomeAssistantStandByView: View {
         if emptyState == nil {
             HAProgressView()
                 .transition(.opacity)
-                .padding(.bottom, DesignSystem.Spaces.fourteen)
+                .padding(.bottom, DesignSystem.Spaces.eighteen)
         }
     }
 
