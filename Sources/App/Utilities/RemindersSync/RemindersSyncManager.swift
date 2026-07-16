@@ -270,17 +270,17 @@ final class RemindersSyncManager: ObservableObject {
         switch operation {
         case let .createTodoItem(reminderId):
             guard let snapshot = reminderSnapshots[reminderId] else { return nil }
-            _ = try await api.connection.send(.addTodoItem(
+            try await api.addTodoItem(
                 listId: config.todoEntityId,
                 summary: snapshot.title,
                 description: snapshot.notes,
                 dueDate: snapshot.dueDateArgument,
                 dueDateTime: snapshot.dueDateTimeArgument
-            )).promise.async()
+            )
             return reminderId
         case let .updateTodoItem(todoItemUid, reminderId):
             guard let snapshot = reminderSnapshots[reminderId] else { return nil }
-            _ = try await api.connection.send(.updateTodoItem(
+            try await api.updateTodoItem(
                 listId: config.todoEntityId,
                 itemId: todoItemUid,
                 rename: snapshot.title,
@@ -288,14 +288,14 @@ final class RemindersSyncManager: ObservableObject {
                 description: snapshot.notes,
                 dueDate: snapshot.dueDateArgument,
                 dueDateTime: snapshot.dueDateTimeArgument
-            )).promise.async()
+            )
             saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
             return nil
         case let .deleteTodoItem(todoItemUid, _):
-            _ = try await api.connection.send(.removeTodoItem(
+            try await api.removeTodoItem(
                 listId: config.todoEntityId,
                 itemId: todoItemUid
-            )).promise.async()
+            )
             RemindersSyncItemLink.delete(configId: config.id, todoItemUid: todoItemUid)
             return nil
         case let .adoptLink(todoItemUid, reminderId):
@@ -330,18 +330,17 @@ final class RemindersSyncManager: ObservableObject {
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
             if snapshot.isCompleted {
-                _ = try await api.connection.send(.completeTodoItem(
+                try await api.completeTodoItem(
                     listId: config.todoEntityId,
                     itemId: item.uid
-                )).promise.async()
+                )
             }
             saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }
 
     private func fetchTodoItems(api: HomeAssistantAPI, listId: String) async throws -> [TodoListItem] {
-        let response = try await api.connection.send(.getItemFromTodoList(listId: listId)).promise.async()
-        return response.serviceResponse[listId]?.items ?? []
+        try await api.todoListItems(listId: listId)
     }
 
     private func fetchReminders(in calendar: EKCalendar) async -> [EKReminder] {
