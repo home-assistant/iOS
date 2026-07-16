@@ -370,6 +370,11 @@
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
 "connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
+"connection.active_url_type.toast.external" = "Using the external URL.";
+"connection.active_url_type.toast.internal" = "Using the internal URL.";
+"connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
+"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.title" = "Connection type";
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
