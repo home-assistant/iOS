@@ -95,6 +95,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var dateFontWeight: Double
     public var clockFontSize: Double
     public var dateFontSize: Double
+    public var wakeOnCameraMotion: Bool
 
     public init(
         enabled: Bool = false,
@@ -108,7 +109,8 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         clockFontWeight: Double = 0.15,
         dateFontWeight: Double = 0.4,
         clockFontSize: Double = 0.5,
-        dateFontSize: Double = 0.5
+        dateFontSize: Double = 0.5,
+        wakeOnCameraMotion: Bool = false
     ) {
         self.enabled = enabled
         self.mode = mode
@@ -122,6 +124,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.dateFontWeight = dateFontWeight
         self.clockFontSize = clockFontSize
         self.dateFontSize = dateFontSize
+        self.wakeOnCameraMotion = wakeOnCameraMotion
     }
 
     public init(from decoder: Decoder) throws {
@@ -147,6 +150,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
             self.clockFontSize = legacyStyle?.legacyNormalizedFontSize ?? 0.5
         }
         self.dateFontSize = try container.decodeIfPresent(Double.self, forKey: .dateFontSize) ?? 0.5
+        self.wakeOnCameraMotion = try container.decodeIfPresent(Bool.self, forKey: .wakeOnCameraMotion) ?? false
     }
 
     private enum LegacyCodingKeys: String, CodingKey {

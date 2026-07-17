@@ -27,4 +27,6 @@ public enum WebhookSensorId: String, CaseIterable {
     case kioskBrightness
     case kioskVolume
     case kioskScreensaver
+    case motion
+    case cameraStream = "camera_stream"
 }

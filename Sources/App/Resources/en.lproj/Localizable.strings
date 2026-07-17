@@ -650,6 +650,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.show_date" = "Show date";
 "kiosk.screensaver.show_seconds" = "Show seconds";
 "kiosk.screensaver.time_to_start" = "Time to start";
+"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to hide the screensaver when motion is detected. The camera is only active while the screensaver is visible.";
 "kiosk.screensaver.timeout" = "Timeout";
 "kiosk.screensaver.timeout.hours_1" = "1 hour";
 "kiosk.screensaver.timeout.minutes_1" = "1 minute";
@@ -1061,6 +1063,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "room_view.section.visible" = "Visible";
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
+"sensors.camera_stream.setting.stream_port" = "Stream port";
+"sensors.motion.setting.changed_area_threshold" = "Changed area threshold";
+"sensors.motion.setting.clear_delay" = "Clear delay";
+"sensors.motion.setting.frame_rate" = "Frame rate";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "servers_selection.title" = "Servers";
 "settings.app_icon_shortcuts.add_item.title" = "Add item";
