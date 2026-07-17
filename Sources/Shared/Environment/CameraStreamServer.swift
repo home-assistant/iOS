@@ -100,6 +100,7 @@ public final class CameraStreamServer: NSObject {
                 // Restart on the new port.
                 self.stopListener()
                 self.startListener()
+                self.notifyStateChange()
             }
         }
     }
@@ -118,6 +119,7 @@ public final class CameraStreamServer: NSObject {
                 self.stopListener()
             }
             self.updateCameraObservation()
+            self.notifyStateChange()
         }
     }
 
@@ -181,7 +183,6 @@ public final class CameraStreamServer: NSObject {
                 "HTTP/1.1 200 OK",
                 "Content-Type: multipart/x-mixed-replace; boundary=\(Self.boundary)",
                 "Cache-Control: no-cache",
-                "Connection: close",
                 "",
                 "",
             ].joined(separator: "\r\n")
@@ -233,6 +234,10 @@ public final class CameraStreamServer: NSObject {
 
     /// Called by `MotionDetectionManager` with every captured frame (on its
     /// processing queue). Encodes to JPEG once and broadcasts to all clients.
+    ///
+    /// The closure capture retains the `CVPixelBuffer` (CoreVideo objects are
+    /// ARC-managed in Swift), so the buffer stays valid for async encoding; the
+    /// output's `alwaysDiscardsLateVideoFrames` prevents pool starvation.
     public func handle(frame: CVPixelBuffer) {
         encodingQueue.async { [weak self] in
             guard let self, !self.queue.sync(execute: { self.connections.isEmpty }) else { return }

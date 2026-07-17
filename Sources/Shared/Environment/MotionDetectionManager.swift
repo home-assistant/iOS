@@ -6,6 +6,7 @@ public protocol MotionDetectionObserver: AnyObject {
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import AVFoundation
+import HAKit
 import UIKit
 
 /// Detects motion using the device's front camera via simple frame differencing
@@ -15,10 +16,28 @@ import UIKit
 public final class MotionDetectionManager: NSObject {
     // MARK: - Public state
 
-    public private(set) var isMotionDetected = false
-    public private(set) var lastMotionDate: Date?
+    /// Detection state is written on the capture/processing queue and read from
+    /// arbitrary contexts (sensor providers, observers), so it lives behind a lock.
+    private struct DetectionState {
+        var isMotionDetected = false
+        var lastMotionDate: Date?
+        var lastChangedRatio: Double = 0
+    }
+
+    private let detectionState = HAProtected<DetectionState>(value: .init())
+
+    public var isMotionDetected: Bool {
+        detectionState.read { $0.isMotionDetected }
+    }
+
+    public var lastMotionDate: Date? {
+        detectionState.read { $0.lastMotionDate }
+    }
+
     /// Ratio (0...1) of sampled pixels that changed in the last processed frame.
-    public private(set) var lastChangedRatio: Double = 0
+    public var lastChangedRatio: Double {
+        detectionState.read { $0.lastChangedRatio }
+    }
 
     public var canDetectMotion: Bool {
         AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) != nil
@@ -277,7 +296,7 @@ public final class MotionDetectionManager: NSObject {
     // MARK: - Motion state
 
     private func handleMotionFrame() {
-        lastMotionDate = Current.date()
+        detectionState.mutate { $0.lastMotionDate = Current.date() }
 
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -293,9 +312,14 @@ public final class MotionDetectionManager: NSObject {
     }
 
     private func setMotionDetected(_ detected: Bool) {
-        guard detected != isMotionDetected else { return }
-        isMotionDetected = detected
-        notifyObservers()
+        let changed = detectionState.mutate { state -> Bool in
+            guard state.isMotionDetected != detected else { return false }
+            state.isMotionDetected = detected
+            return true
+        }
+        if changed {
+            notifyObservers()
+        }
     }
 }
 
@@ -349,7 +373,7 @@ extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
 
         let changedRatio = Double(changedCount) / Double(samples.count)
-        lastChangedRatio = changedRatio
+        detectionState.mutate { $0.lastChangedRatio = changedRatio }
 
         if changedRatio * 100 >= areaThresholdPercent {
             handleMotionFrame()
