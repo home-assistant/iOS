@@ -157,6 +157,8 @@ final class KioskScreensaverController: ObservableObject {
     private var brightnessBeforeDimming: CGFloat?
     private var idleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var isMotionObserving = false
+    private var isMotionDetected = false
 
     init() {
         Current.kiosk.settingsPublisher
@@ -199,6 +201,7 @@ final class KioskScreensaverController: ObservableObject {
     deinit {
         idleTimer?.invalidate()
         restoreBrightness()
+        Current.motionDetection.unregister(observer: self)
         // The screensaver is no longer on screen once this controller goes away (e.g. kiosk mode disabled).
         Current.kiosk.setScreensaverVisible(false)
     }
@@ -228,14 +231,37 @@ final class KioskScreensaverController: ObservableObject {
         if !isEnabled {
             isActive = false
         }
+        updateMotionObservation()
         restartIdleTimer()
         updateBrightness()
+    }
+
+    /// While enabled with "Wake on camera motion", the controller observes the motion
+    /// detector for the whole kiosk session (registering keeps the camera capture
+    /// session running) so motion counts as activity, like touches: it prevents the
+    /// screensaver from starting, and dismisses it when it is on screen.
+    private func updateMotionObservation() {
+        let shouldObserve = isEnabled
+            && screensaver.wakeOnCameraMotion
+            && Current.motionDetection.canDetectMotion
+        guard shouldObserve != isMotionObserving else { return }
+        isMotionObserving = shouldObserve
+        if shouldObserve {
+            isMotionDetected = Current.motionDetection.isMotionDetected
+            Current.motionDetection.register(observer: self)
+        } else {
+            Current.motionDetection.unregister(observer: self)
+            isMotionDetected = false
+        }
     }
 
     private func restartIdleTimer() {
         idleTimer?.invalidate()
         idleTimer = nil
-        guard isEnabled, !isActive, let interval = screensaver.timeToStart.timeInterval else { return }
+        // Never arm the idle timer while motion is ongoing: it restarts (with the full
+        // interval) once the motion detector reports clear.
+        guard isEnabled, !isActive, !isMotionDetected,
+              let interval = screensaver.timeToStart.timeInterval else { return }
         idleTimer = Timer.scheduledTimer(
             withTimeInterval: interval,
             repeats: false
@@ -279,6 +305,28 @@ final class KioskScreensaverController: ObservableObject {
         UIScreen.main.brightness = brightnessBeforeDimming
         self.brightnessBeforeDimming = nil
         #endif
+    }
+}
+
+// MARK: - MotionDetectionObserver
+
+extension KioskScreensaverController: MotionDetectionObserver {
+    /// Motion is treated as activity, like touches: while motion is ongoing the idle
+    /// timer is held (and an active screensaver is dismissed); when motion clears, the
+    /// idle timer restarts with the full interval.
+    func motionStateDidChange(for manager: MotionDetectionManager) {
+        isMotionDetected = manager.isMotionDetected
+        if isMotionDetected {
+            if isActive {
+                Current.Log.info("Kiosk: motion detected, hiding screensaver")
+                wake()
+            } else {
+                idleTimer?.invalidate()
+                idleTimer = nil
+            }
+        } else {
+            restartIdleTimer()
+        }
     }
 }
 

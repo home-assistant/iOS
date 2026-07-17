@@ -79,37 +79,10 @@ public final class KioskModeManager: ObservableObject {
 
     private let screensaverCommandSubject = PassthroughSubject<KioskScreensaverCommand, Never>()
     private var observation: AnyDatabaseCancellable?
-    private var motionWakeCancellable: AnyCancellable?
-    private var isObservingMotion = false
 
     public init() {
         self.settings = (try? KioskSettings.current()) ?? KioskSettings()
         observe()
-        observeScreensaverForMotionWake()
-    }
-
-    /// While kiosk mode is enabled and the screensaver is visible, observe the camera
-    /// motion detector so that motion dismisses the screensaver. Registering starts the
-    /// camera capture session; unregistering stops it, so the camera only runs while
-    /// the screensaver is on screen.
-    private func observeScreensaverForMotionWake() {
-        motionWakeCancellable = Publishers.CombineLatest($isScreensaverVisible, $settings)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] visible, settings in
-                self?.updateMotionObservation(
-                    shouldObserve: visible && settings.enabled && settings.screensaver.wakeOnCameraMotion
-                )
-            }
-    }
-
-    private func updateMotionObservation(shouldObserve: Bool) {
-        guard shouldObserve != isObservingMotion else { return }
-        isObservingMotion = shouldObserve
-        if shouldObserve {
-            Current.motionDetection.register(observer: self)
-        } else {
-            Current.motionDetection.unregister(observer: self)
-        }
     }
 
     private func observe() {
@@ -137,15 +110,5 @@ public final class KioskModeManager: ObservableObject {
             guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
             Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)
         }
-    }
-}
-
-// MARK: - MotionDetectionObserver
-
-extension KioskModeManager: MotionDetectionObserver {
-    public func motionStateDidChange(for manager: MotionDetectionManager) {
-        guard manager.isMotionDetected else { return }
-        Current.Log.info("Kiosk: motion detected while screensaver visible, hiding screensaver")
-        requestScreensaver(.hide)
     }
 }

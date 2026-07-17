@@ -2258,7 +2258,7 @@ public enum L10n {
       public static var toggle: String { return L10n.tr("Localizable", "kiosk.screensaver.toggle") }
       /// Wake on camera motion
       public static var wakeOnCameraMotion: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion") }
-      /// Uses the front camera to hide the screensaver when motion is detected. The camera is only active while the screensaver is visible.
+      /// Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.
       public static var wakeOnCameraMotionFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion_footer") }
       public enum Clock {
         /// Clock

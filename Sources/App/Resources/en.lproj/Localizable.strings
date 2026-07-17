@@ -651,7 +651,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.show_seconds" = "Show seconds";
 "kiosk.screensaver.time_to_start" = "Time to start";
 "kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
-"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to hide the screensaver when motion is detected. The camera is only active while the screensaver is visible.";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver.timeout" = "Timeout";
 "kiosk.screensaver.timeout.hours_1" = "1 hour";
 "kiosk.screensaver.timeout.minutes_1" = "1 minute";
