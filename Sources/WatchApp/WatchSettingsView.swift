@@ -516,5 +516,4 @@ private struct WatchClientEventsView: View {
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
         .onAppear { events = Current.clientEventStore.getEvents().reversed() }
     }
-
 }
