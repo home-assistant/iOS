@@ -20,7 +20,7 @@ struct ThreadCredentialsSharingView<Model>: View where Model: ThreadCredentialsS
             if viewModel.showOperationSuccess {
                 successView
                     .onAppear {
-                        Haptics.shared.play(.medium)
+                        Haptics.shared.play(.light)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             dismiss()
                         }
