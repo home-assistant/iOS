@@ -48,7 +48,6 @@ struct GeneralSettingsView: View {
                 fullScreen
                 refreshAfterInactive
             }
-            edgeToEdge
         }
         .id(redrawHelper)
     }
@@ -172,29 +171,6 @@ struct GeneralSettingsView: View {
                 redrawView()
             })) {
                 Text(L10n.SettingsDetails.General.FullScreen.title)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var edgeToEdge: some View {
-        if !Current.isCatalyst {
-            Section {
-                Toggle(isOn: .init(get: {
-                    Current.settingsStore.edgeToEdge
-                }, set: { newValue in
-                    Current.settingsStore.edgeToEdge = newValue
-                    redrawView()
-                })) {
-                    Text(L10n.SettingsDetails.General.EdgeToEdge.Enabled.title)
-                }
-            } header: {
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    Text(L10n.SettingsDetails.General.EdgeToEdge.title)
-                    LabsLabel()
-                }
-            } footer: {
-                Text(L10n.SettingsDetails.General.EdgeToEdge.footer)
             }
         }
     }

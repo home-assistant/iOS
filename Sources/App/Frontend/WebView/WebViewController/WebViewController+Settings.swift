@@ -52,18 +52,14 @@ extension WebViewController {
 
         if reason == .settingChange {
             setNeedsUpdateOfHomeIndicatorAutoHidden()
-            updateEdgeToEdgeLayout()
+            // The web view is always edge-to-edge (see `setupWebViewConstraints`); only the SwiftUI themed
+            // status-bar bar reacts to setting changes.
+            updateThemedStatusBar()
         }
     }
 
     @objc func updateWebViewSettingsForNotification() {
         updateWebViewSettings(reason: .settingChange)
-    }
-
-    func updateEdgeToEdgeLayout() {
-        // The web view is always edge-to-edge now (see `setupWebViewConstraints`); only the SwiftUI themed
-        // status-bar bar reacts to the edge-to-edge / full-screen setting.
-        updateThemedStatusBar()
     }
 
     /// The themed colour for the top status-bar area (web app theme, or header background on older cores).
@@ -74,10 +70,15 @@ extension WebViewController {
             : cachedColors[.appThemeColor]
     }
 
-    /// Publishes the themed status-bar bar to SwiftUI. Shown only on iOS when the user hasn't enabled
-    /// edge-to-edge / full-screen; otherwise the web view runs truly edge-to-edge (no bar).
+    /// Publishes the themed status-bar bar to SwiftUI. On iPhone the web view runs truly edge-to-edge
+    /// (no bar) by default when the server core supports it (2026.8+) or full-screen is enabled; the
+    /// bar is drawn for older cores, on iPad, or when the developer "always below status bar" override
+    /// is on.
     func updateThemedStatusBar() {
-        let edgeToEdge = Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen
+        let isPhone = UIDevice.current.userInterfaceIdiom == .phone
+        let coreSupportsEdgeToEdge = server.info.version >= .canDisplayEdgeToEdge
+        let edgeToEdge = (isPhone && coreSupportsEdgeToEdge && !Current.settingsStore.webViewAlwaysBelowStatusBar)
+            || Current.settingsStore.fullScreen
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()

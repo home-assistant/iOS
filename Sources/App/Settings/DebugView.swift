@@ -472,6 +472,16 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
+            if !Current.isCatalyst {
+                Toggle(isOn: .init(get: {
+                    Current.settingsStore.webViewAlwaysBelowStatusBar
+                }, set: { newValue in
+                    Current.settingsStore.webViewAlwaysBelowStatusBar = newValue
+                })) {
+                    Text(L10n.Settings.Developer.WebViewBelowStatusBar.title)
+                }
+            }
+
             Picker(selection: Binding(
                 get: { Current.settingsStore.webViewEmptyStateTimeout },
                 set: { Current.settingsStore.webViewEmptyStateTimeout = $0 }

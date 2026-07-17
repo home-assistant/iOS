@@ -411,6 +411,8 @@ public extension Version {
     static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
     /// Frontend sends `frontend/loaded` when its launch screen is removed from 2026.8.0.
     static let frontendLoadedExternalBus: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
+    /// Frontend handles safe-area insets itself from 2026.8.0, so the app can display edge-to-edge by default.
+    static let canDisplayEdgeToEdge: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

@@ -234,12 +234,14 @@ public class SettingsStore {
         }
     }
 
-    public var edgeToEdge: Bool {
+    /// Debug override: always draw the web view below the iPhone status bar, even on cores that
+    /// support edge-to-edge display (2026.8+).
+    public var webViewAlwaysBelowStatusBar: Bool {
         get {
-            prefs.bool(forKey: "edgeToEdge_experimental")
+            prefs.bool(forKey: "webViewAlwaysBelowStatusBar")
         }
         set {
-            prefs.set(newValue, forKey: "edgeToEdge_experimental")
+            prefs.set(newValue, forKey: "webViewAlwaysBelowStatusBar")
             NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
         }
     }

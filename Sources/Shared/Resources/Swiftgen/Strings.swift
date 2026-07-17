@@ -4329,6 +4329,10 @@ public enum L10n {
         /// Sync Watch Context
         public static var title: String { return L10n.tr("Localizable", "settings.developer.sync_watch_context.title") }
       }
+      public enum WebViewBelowStatusBar {
+        /// Always draw web view below status bar
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.web_view_below_status_bar.title") }
+      }
     }
     public enum EventLog {
       /// Event Log
@@ -4699,16 +4703,6 @@ public enum L10n {
       public enum DeviceName {
         /// Device Name
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.device_name.title") }
-      }
-      public enum EdgeToEdge {
-        /// Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.
-        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.footer") }
-        /// Edge to edge display
-        public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
-        public enum Enabled {
-          /// Enable
-          public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
-        }
       }
       public enum FullScreen {
         /// Full Screen
