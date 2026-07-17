@@ -329,7 +329,6 @@ struct DebugView: View {
 
     private var developerSection: some View {
         Section {
-            #if DEBUG
             NavigationLink {
                 ComponentsLibraryView()
             } label: {
@@ -338,7 +337,6 @@ struct DebugView: View {
                     title: L10n.Settings.Debugging.ComponentsLibrary.title
                 )
             }
-            #endif
 
             NavigationLink {
                 MediaTypesRequiringUserActionForPlaybackView()
