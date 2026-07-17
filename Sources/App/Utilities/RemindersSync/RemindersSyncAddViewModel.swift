@@ -84,6 +84,7 @@ final class RemindersSyncAddViewModel: ObservableObject {
             direction: direction
         ).save()
         RemindersSyncManager.shared.syncNow()
+        RemindersSyncBackgroundRefresher.schedule()
         return true
     }
 }

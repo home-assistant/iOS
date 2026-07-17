@@ -3609,6 +3609,12 @@ public enum L10n {
       /// Home Assistant list
       public static var todoList: String { return L10n.tr("Localizable", "reminders_sync.add.todo_list") }
     }
+    public enum Conflict {
+      /// Home Assistant wins
+      public static var homeAssistant: String { return L10n.tr("Localizable", "reminders_sync.conflict.home_assistant") }
+      /// Reminders wins
+      public static var reminders: String { return L10n.tr("Localizable", "reminders_sync.conflict.reminders") }
+    }
     public enum Direction {
       /// Two-way
       public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.direction.both_ways") }
@@ -3616,6 +3622,40 @@ public enum L10n {
       public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.direction.to_home_assistant") }
       /// Home Assistant to Reminders
       public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.direction.to_reminders") }
+    }
+    public enum History {
+      /// Clear
+      public static var clear: String { return L10n.tr("Localizable", "reminders_sync.history.clear") }
+      /// Syncs that change something will appear here.
+      public static var empty: String { return L10n.tr("Localizable", "reminders_sync.history.empty") }
+      /// Sync history
+      public static var title: String { return L10n.tr("Localizable", "reminders_sync.history.title") }
+      public enum Detail {
+        /// Created Home Assistant item “%@”
+        public static func createdItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.created_item_%@", String(describing: p1))
+        }
+        /// Created reminder “%@”
+        public static func createdReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.created_reminder_%@", String(describing: p1))
+        }
+        /// Deleted Home Assistant item “%@”
+        public static func deletedItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.deleted_item_%@", String(describing: p1))
+        }
+        /// Deleted reminder “%@”
+        public static func deletedReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.deleted_reminder_%@", String(describing: p1))
+        }
+        /// Updated Home Assistant item “%@”
+        public static func updatedItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.updated_item_%@", String(describing: p1))
+        }
+        /// Updated reminder “%@”
+        public static func updatedReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.updated_reminder_%@", String(describing: p1))
+        }
+      }
     }
     public enum Settings {
       /// Add list sync
@@ -3640,9 +3680,29 @@ public enum L10n {
         /// Reminders access needed
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
       }
+      public enum Conflicts {
+        /// Applies to two-way syncs when the same item changed in both apps since the last sync.
+        public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.footer") }
+        /// When both sides changed
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.title") }
+      }
       public enum Empty {
         /// No lists are synced yet. Add a list sync to keep an Apple Reminders list and a Home Assistant to-do list in step.
         public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.empty.body") }
+      }
+      public enum Refresh {
+        /// Background refresh
+        public static var background: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background") }
+        /// iOS decides when background refreshes actually run, based on battery, usage patterns and Low Power Mode. The chosen frequency is a request, not a guarantee.
+        public static var backgroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_footer") }
+        /// Refresh from Home Assistant
+        public static var foreground: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground") }
+        /// How often the app re-checks your Home Assistant lists while it is open. Changes made in Reminders always sync right away.
+        public static var foregroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground_footer") }
+        /// Automatic refresh
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.header") }
+        /// Off
+        public static var off: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.off") }
       }
       public enum SyncedLists {
         /// Synced lists

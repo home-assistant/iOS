@@ -192,6 +192,7 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>io.robbie.homeassistant.backgroundfetch</string>
+		<string>io.robbie.homeassistant.reminderssync</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

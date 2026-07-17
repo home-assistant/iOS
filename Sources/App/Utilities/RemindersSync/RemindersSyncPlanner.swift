@@ -32,6 +32,7 @@ enum RemindersSyncPlanner {
 
     static func plan(
         direction: RemindersSyncDirection,
+        conflictResolution: RemindersSyncConflictResolution = .homeAssistant,
         todoItems: [String: RemindersSyncItemSnapshot],
         reminders: [String: RemindersSyncItemSnapshot],
         links: [LinkState]
@@ -63,10 +64,19 @@ enum RemindersSyncPlanner {
                     if reminderChanged, !todoChanged {
                         operations
                             .append(.updateTodoItem(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
-                    } else {
-                        // Only HA changed, or both changed (conflict): the HA copy wins.
+                    } else if todoChanged, !reminderChanged {
                         operations
                             .append(.updateReminder(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
+                    } else {
+                        // Both changed (or the stored snapshot is stale): the configured side wins.
+                        switch conflictResolution {
+                        case .homeAssistant:
+                            operations
+                                .append(.updateReminder(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
+                        case .reminders:
+                            operations
+                                .append(.updateTodoItem(todoItemUid: link.todoItemUid, reminderId: link.reminderId))
+                        }
                     }
                 case .toReminders:
                     operations.append(.updateReminder(todoItemUid: link.todoItemUid, reminderId: link.reminderId))

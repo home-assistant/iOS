@@ -171,7 +171,7 @@ struct RemindersSyncPlannerTests {
         #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
-    @Test func testConflictingEditsResolveInFavorOfHomeAssistant() {
+    @Test func testConflictingEditsResolveInFavorOfHomeAssistantByDefault() {
         let operations = RemindersSyncPlanner.plan(
             direction: .bothWays,
             todoItems: ["todo-1": snapshot(title: "HA edit")],
@@ -179,6 +179,17 @@ struct RemindersSyncPlannerTests {
             links: [link(snapshot: snapshot())]
         )
         #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testConflictingEditsCanResolveInFavorOfReminders() {
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            conflictResolution: .reminders,
+            todoItems: ["todo-1": snapshot(title: "HA edit")],
+            reminders: ["reminder-1": snapshot(title: "Reminders edit")],
+            links: [link(snapshot: snapshot())]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
     @Test func testOneWaySyncAlwaysOverwritesTheTargetSide() {

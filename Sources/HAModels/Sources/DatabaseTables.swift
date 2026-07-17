@@ -35,6 +35,7 @@ public enum GRDBDatabaseTable: String {
     // Apple Reminders ↔ Home Assistant todo list sync
     case remindersSyncConfig
     case remindersSyncItemLink
+    case remindersSyncHistoryEntry
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -345,5 +346,16 @@ public enum DatabaseTables {
         case lastKnownCompleted
         case lastKnownNotes
         case lastKnownDue
+    }
+
+    // Recorded sync runs. Column names must match `RemindersSyncHistoryEntry`'s stored properties.
+    public enum RemindersSyncHistoryEntry: String, CaseIterable {
+        case id
+        case configId
+        case listLabel
+        case date
+        case success
+        case error
+        case details
     }
 }

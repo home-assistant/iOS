@@ -24,6 +24,7 @@ final class RemindersSyncManager: ObservableObject {
     private var eventStore = EKEventStore()
     private var notificationObservers: [NSObjectProtocol] = []
     private var pendingSyncTask: Task<Void, Never>?
+    private var periodicRefreshTask: Task<Void, Never>?
     /// Our own EventKit writes post `EKEventStoreChanged` too; suppress rescheduling while (and
     /// shortly after) a sync is running so it doesn't feed back into itself.
     private var suppressStoreChangeSync = false
@@ -57,6 +58,32 @@ final class RemindersSyncManager: ObservableObject {
         })
 
         scheduleSync(after: 5)
+        restartPeriodicRefresh()
+    }
+
+    /// Called when the user changes the sync settings: restarts the foreground refresh timer and
+    /// re-requests background refreshes with the new frequency.
+    func settingsChanged() {
+        restartPeriodicRefresh()
+        RemindersSyncBackgroundRefresher.schedule()
+    }
+
+    /// Periodically re-fetches the Home Assistant side while the app is open, since HA-side
+    /// changes don't push a notification the way `EKEventStoreChanged` does for Reminders.
+    private func restartPeriodicRefresh() {
+        periodicRefreshTask?.cancel()
+        let interval = RemindersSyncSettings.current.foregroundRefreshInterval
+        guard interval > 0 else {
+            periodicRefreshTask = nil
+            return
+        }
+        periodicRefreshTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+                guard !Task.isCancelled else { return }
+                await self?.syncAll()
+            }
+        }
     }
 
     var authorizationState: AuthorizationState {
@@ -149,72 +176,141 @@ final class RemindersSyncManager: ObservableObject {
             return
         }
 
-        let todoItems = try await fetchTodoItems(api: api, listId: config.todoEntityId)
-        let reminders = await fetchReminders(in: calendar)
+        var details: [String] = []
+        do {
+            let todoItems = try await fetchTodoItems(api: api, listId: config.todoEntityId)
+            let reminders = await fetchReminders(in: calendar)
 
-        var todoSnapshots: [String: RemindersSyncItemSnapshot] = [:]
-        for item in todoItems {
-            todoSnapshots[item.uid] = RemindersSyncItemSnapshot(todoItem: item)
-        }
-        var remindersById: [String: EKReminder] = [:]
-        var reminderSnapshots: [String: RemindersSyncItemSnapshot] = [:]
-        for reminder in reminders {
-            remindersById[reminder.calendarItemIdentifier] = reminder
-            reminderSnapshots[reminder.calendarItemIdentifier] = RemindersSyncItemSnapshot(reminder: reminder)
-        }
+            var todoSnapshots: [String: RemindersSyncItemSnapshot] = [:]
+            for item in todoItems {
+                todoSnapshots[item.uid] = RemindersSyncItemSnapshot(todoItem: item)
+            }
+            var remindersById: [String: EKReminder] = [:]
+            var reminderSnapshots: [String: RemindersSyncItemSnapshot] = [:]
+            for reminder in reminders {
+                remindersById[reminder.calendarItemIdentifier] = reminder
+                reminderSnapshots[reminder.calendarItemIdentifier] = RemindersSyncItemSnapshot(reminder: reminder)
+            }
 
-        let links = RemindersSyncItemLink.links(configId: config.id).map(RemindersSyncPlanner.LinkState.init(link:))
-        let operations = RemindersSyncPlanner.plan(
-            direction: config.direction,
-            todoItems: todoSnapshots,
-            reminders: reminderSnapshots,
-            links: links
-        )
+            let links = RemindersSyncItemLink.links(configId: config.id)
+                .map(RemindersSyncPlanner.LinkState.init(link:))
+            let operations = RemindersSyncPlanner.plan(
+                direction: config.direction,
+                conflictResolution: RemindersSyncSettings.current.conflictResolution,
+                todoItems: todoSnapshots,
+                reminders: reminderSnapshots,
+                links: links
+            )
 
-        var createdTodoItemReminderIds: [String] = []
-        var needsCommit = false
+            var createdTodoItemReminderIds: [String] = []
+            var needsCommit = false
 
-        for operation in operations {
-            switch operation {
-            case .createReminder, .updateReminder, .deleteReminder:
-                let didWriteStore = try applyReminderOperation(
-                    operation,
-                    config: config,
-                    calendar: calendar,
+            for operation in operations {
+                switch operation {
+                case .createReminder, .updateReminder, .deleteReminder:
+                    let didWriteStore = try applyReminderOperation(
+                        operation,
+                        config: config,
+                        calendar: calendar,
+                        todoSnapshots: todoSnapshots,
+                        remindersById: remindersById
+                    )
+                    needsCommit = needsCommit || didWriteStore
+                case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
+                    let createdFromReminderId = try await applyTodoOperation(
+                        operation,
+                        config: config,
+                        api: api,
+                        todoSnapshots: todoSnapshots,
+                        reminderSnapshots: reminderSnapshots
+                    )
+                    if let createdFromReminderId {
+                        createdTodoItemReminderIds.append(createdFromReminderId)
+                    }
+                }
+                if let line = historyLine(
+                    for: operation,
                     todoSnapshots: todoSnapshots,
-                    remindersById: remindersById
-                )
-                needsCommit = needsCommit || didWriteStore
-            case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
-                let createdFromReminderId = try await applyTodoOperation(
-                    operation,
-                    config: config,
-                    api: api,
-                    todoSnapshots: todoSnapshots,
-                    reminderSnapshots: reminderSnapshots
-                )
-                if let createdFromReminderId {
-                    createdTodoItemReminderIds.append(createdFromReminderId)
+                    reminderSnapshots: reminderSnapshots,
+                    links: links
+                ) {
+                    details.append(line)
                 }
             }
+
+            if needsCommit {
+                try eventStore.commit()
+            }
+
+            if !createdTodoItemReminderIds.isEmpty {
+                try await linkCreatedTodoItems(
+                    config: config,
+                    api: api,
+                    reminderIds: createdTodoItemReminderIds,
+                    reminderSnapshots: reminderSnapshots
+                )
+            }
+        } catch {
+            recordHistory(config: config, error: error, details: details)
+            throw error
         }
 
-        if needsCommit {
-            try eventStore.commit()
-        }
-
-        if !createdTodoItemReminderIds.isEmpty {
-            try await linkCreatedTodoItems(
-                config: config,
-                api: api,
-                reminderIds: createdTodoItemReminderIds,
-                reminderSnapshots: reminderSnapshots
-            )
+        // Unchanged runs aren't recorded, so history stays a log of actual changes.
+        if !details.isEmpty {
+            recordHistory(config: config, error: nil, details: details)
         }
 
         var updated = config
         updated.lastSyncDate = Current.date()
         updated.save()
+    }
+
+    private func recordHistory(config: RemindersSyncConfig, error: Error?, details: [String]) {
+        RemindersSyncHistoryEntry(
+            id: UUID().uuidString,
+            configId: config.id,
+            listLabel: "\(config.reminderListName) ↔ \(config.todoEntityName)",
+            date: Current.date(),
+            success: error == nil,
+            error: error?.localizedDescription,
+            details: details.joined(separator: "\n")
+        ).save()
+    }
+
+    /// A localized, human-readable line for the history log describing one applied operation.
+    /// Link bookkeeping operations return nil, they aren't user-visible changes.
+    private func historyLine(
+        for operation: RemindersSyncOperation,
+        todoSnapshots: [String: RemindersSyncItemSnapshot],
+        reminderSnapshots: [String: RemindersSyncItemSnapshot],
+        links: [RemindersSyncPlanner.LinkState]
+    ) -> String? {
+        func linkTitle(_ todoItemUid: String) -> String {
+            links.first(where: { $0.todoItemUid == todoItemUid })?.snapshot.title ?? todoItemUid
+        }
+
+        switch operation {
+        case let .createReminder(todoItemUid):
+            guard let title = todoSnapshots[todoItemUid]?.title else { return nil }
+            return L10n.RemindersSync.History.Detail.createdReminder(title)
+        case let .updateReminder(todoItemUid, _):
+            guard let title = todoSnapshots[todoItemUid]?.title else { return nil }
+            return L10n.RemindersSync.History.Detail.updatedReminder(title)
+        case let .deleteReminder(todoItemUid, reminderId):
+            let title = reminderSnapshots[reminderId]?.title ?? linkTitle(todoItemUid)
+            return L10n.RemindersSync.History.Detail.deletedReminder(title)
+        case let .createTodoItem(reminderId):
+            guard let title = reminderSnapshots[reminderId]?.title else { return nil }
+            return L10n.RemindersSync.History.Detail.createdItem(title)
+        case let .updateTodoItem(_, reminderId):
+            guard let title = reminderSnapshots[reminderId]?.title else { return nil }
+            return L10n.RemindersSync.History.Detail.updatedItem(title)
+        case let .deleteTodoItem(todoItemUid, _):
+            let title = todoSnapshots[todoItemUid]?.title ?? linkTitle(todoItemUid)
+            return L10n.RemindersSync.History.Detail.deletedItem(title)
+        case .adoptLink, .deleteLink:
+            return nil
+        }
     }
 
     /// Applies an operation that writes to the Reminders side. Returns whether the event store

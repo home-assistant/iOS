@@ -74,6 +74,9 @@ struct RemindersSyncSettingsView: View {
                         .disabled(syncManager.isSyncing)
                     }
                 }
+                refreshSections
+                conflictSection
+                historySection
             }
         }
         .navigationTitle(L10n.Settings.RemindersSync.title)
@@ -92,6 +95,60 @@ struct RemindersSyncSettingsView: View {
         .onChange(of: syncManager.isSyncing) { isSyncing in
             if !isSyncing {
                 viewModel.load()
+            }
+        }
+    }
+
+    private var refreshSections: some View {
+        Group {
+            Section(
+                header: Text(L10n.RemindersSync.Settings.Refresh.header),
+                footer: Text(L10n.RemindersSync.Settings.Refresh.foregroundFooter)
+            ) {
+                Picker(
+                    L10n.RemindersSync.Settings.Refresh.foreground,
+                    selection: $viewModel.settings.foregroundRefreshInterval
+                ) {
+                    ForEach(RemindersSyncSettings.foregroundIntervalOptions, id: \.self) { interval in
+                        Text(RemindersSyncSettings.intervalLabel(interval)).tag(interval)
+                    }
+                }
+            }
+            Section(footer: Text(L10n.RemindersSync.Settings.Refresh.backgroundFooter)) {
+                Picker(
+                    L10n.RemindersSync.Settings.Refresh.background,
+                    selection: $viewModel.settings.backgroundRefreshInterval
+                ) {
+                    ForEach(RemindersSyncSettings.backgroundIntervalOptions, id: \.self) { interval in
+                        Text(RemindersSyncSettings.intervalLabel(interval)).tag(interval)
+                    }
+                }
+            }
+        }
+        .onChange(of: viewModel.settings) { _ in
+            viewModel.saveSettings()
+        }
+    }
+
+    private var conflictSection: some View {
+        Section(footer: Text(L10n.RemindersSync.Settings.Conflicts.footer)) {
+            Picker(
+                L10n.RemindersSync.Settings.Conflicts.title,
+                selection: $viewModel.settings.conflictResolution
+            ) {
+                ForEach(RemindersSyncConflictResolution.allCases) { resolution in
+                    Text(resolution.localizedTitle).tag(resolution)
+                }
+            }
+        }
+    }
+
+    private var historySection: some View {
+        Section {
+            NavigationLink {
+                RemindersSyncHistoryView()
+            } label: {
+                Label(L10n.RemindersSync.History.title, systemSymbol: .clockArrowCirclepath)
             }
         }
     }
