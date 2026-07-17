@@ -3642,6 +3642,12 @@ public enum L10n {
       public static var empty: String { return L10n.tr("Localizable", "reminders_sync.history.empty") }
       /// Sync history
       public static var title: String { return L10n.tr("Localizable", "reminders_sync.history.title") }
+      public enum ClearConfirm {
+        /// Clear History
+        public static var button: String { return L10n.tr("Localizable", "reminders_sync.history.clear_confirm.button") }
+        /// Clear all sync history? This can’t be undone.
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.history.clear_confirm.title") }
+      }
       public enum Detail {
         /// Created Home Assistant item “%@”
         public static func createdItem(_ p1: Any) -> String {

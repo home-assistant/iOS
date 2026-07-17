@@ -1072,6 +1072,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.direction.to_home_assistant" = "One-way: Reminders → Home Assistant";
 "reminders_sync.direction.to_reminders" = "One-way: Home Assistant → Reminders";
 "reminders_sync.history.clear" = "Clear";
+"reminders_sync.history.clear_confirm.button" = "Clear History";
+"reminders_sync.history.clear_confirm.title" = "Clear all sync history? This can’t be undone.";
 "reminders_sync.history.detail.created_item_%@" = "Created Home Assistant item “%@”";
 "reminders_sync.history.detail.created_reminder_%@" = "Created reminder “%@”";
 "reminders_sync.history.detail.deleted_item_%@" = "Deleted Home Assistant item “%@”";

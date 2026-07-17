@@ -6,6 +6,7 @@ import SwiftUI
 /// applied. Only runs that changed something (or failed) are recorded.
 struct RemindersSyncHistoryView: View {
     @State private var entries: [RemindersSyncHistoryEntry] = []
+    @State private var showClearConfirmation = false
 
     var body: some View {
         List {
@@ -42,10 +43,20 @@ struct RemindersSyncHistoryView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(L10n.RemindersSync.History.clear) {
-                    RemindersSyncHistoryEntry.deleteAll()
-                    entries = []
+                    showClearConfirmation = true
                 }
                 .disabled(entries.isEmpty)
+                .confirmationDialog(
+                    L10n.RemindersSync.History.ClearConfirm.title,
+                    isPresented: $showClearConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(L10n.RemindersSync.History.ClearConfirm.button, role: .destructive) {
+                        RemindersSyncHistoryEntry.deleteAll()
+                        entries = []
+                    }
+                    Button(L10n.cancelLabel, role: .cancel) {}
+                }
             }
         }
         .onAppear {
