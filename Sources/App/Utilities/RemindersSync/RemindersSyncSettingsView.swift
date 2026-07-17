@@ -79,8 +79,6 @@ struct RemindersSyncSettingsView: View {
                 historySection
             }
         }
-        .navigationTitle(L10n.Settings.RemindersSync.title)
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddSheet, onDismiss: {
             viewModel.load()
         }) {
