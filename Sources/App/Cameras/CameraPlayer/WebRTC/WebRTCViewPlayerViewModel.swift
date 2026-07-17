@@ -1,9 +1,14 @@
+import AVFoundation
 import Foundation
 import HAKit
 import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WebRTC
+
+private enum CameraEntityFeature {
+    static let twoWayAudio = 4
+}
 
 enum WebRTCSignalType: String {
     case session
@@ -28,13 +33,16 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private let server: Server
     private let cameraEntityId: String
     private let supportsTalkback: Bool
+    private var statesToken: HACancellable?
+
+    var onClientReady: (() -> Void)?
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
     @Published var isMuted: Bool = true
     @Published var isWebRTCUnsupported: Bool = false
-    @Published var isTalkbackSupported: Bool = false
     @Published var isTalking: Bool = false
+    @Published var isTalkbackSupported: Bool = false
 
     /// Invoked on offer rejection or ICE failure. Used by the notification extension to fall back;
     /// the SwiftUI player leaves it `nil` and observes the published properties instead.
@@ -46,7 +54,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         self.supportsTalkback = supportsTalkback
     }
 
-    func toggleTalkback() {}
+    deinit {
+        statesToken?.cancel()
+    }
 
     func toggleMute() {
         guard let webRTCClient else { return }
@@ -62,13 +72,29 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     // MARK: - WebRTC
 
     func start() {
-        webRTCClient = nil
-        webRTCClient = WebRTCClient(iceServers: AppConstants.WebRTC.iceServers)
+        guard supportsTalkback else {
+            connect(withTalkback: false)
+            return
+        }
+        determineTalkbackSupport { [weak self] supported in
+            self?.connect(withTalkback: supported)
+        }
+    }
+
+    private func connect(withTalkback: Bool) {
+        webRTCClient?.closeConnection()
+        sessionId = nil
+        pendingCandidates.removeAll()
+        webRTCClient = WebRTCClient(
+            iceServers: AppConstants.WebRTC.iceServers,
+            supportsTalkback: withTalkback
+        )
         guard let webRTCClient else {
             assertionFailure("WebRTCClient initialization failed")
             return
         }
         webRTCClient.delegate = self
+        onClientReady?()
         webRTCClient.offer { [weak self] sdp in
             guard let self else {
                 assertionFailure("Self is nil in WebRTCViewPlayerViewModel.start")
@@ -98,23 +124,26 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                     self?.onFailure?()
                 }
             } handler: { [weak self] _, data in
-                guard let self else { return }
-                guard let typeString: String = try? data.decode("type") else {
-                    assertionFailure("Failed to decode type from data")
-                    return
-                }
-                let type = WebRTCSignalType(typeString)
-                switch type {
-                case .session:
-                    handleSession(data)
-                case .answer:
-                    handleAnswer(data)
-                case .candidate:
-                    handleCandidate(data)
-                case .unknown:
-                    debugPrint("Unknown type: \(typeString)")
-                }
+                self?.handleSignal(data)
             }
+        }
+    }
+
+    private func handleSignal(_ data: HAData) {
+        guard let typeString: String = try? data.decode("type") else {
+            assertionFailure("Failed to decode type from data")
+            return
+        }
+        let type = WebRTCSignalType(typeString)
+        switch type {
+        case .session:
+            handleSession(data)
+        case .answer:
+            handleAnswer(data)
+        case .candidate:
+            handleCandidate(data)
+        case .unknown:
+            debugPrint("Unknown type: \(typeString)")
         }
     }
 
@@ -192,6 +221,79 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             case let .rejected(error):
                 Current.Log.error("Failed to send candidate: \(error.localizedDescription)")
             }
+        }
+    }
+
+    // MARK: - Talkback
+
+    func toggleTalkback() {
+        if isTalking {
+            stopTalkback()
+        } else {
+            startTalkback()
+        }
+    }
+
+    private func startTalkback() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let granted = await self.requestMicrophonePermission()
+            guard granted else {
+                self.failureReason = L10n.CameraPlayer.Talkback.microphoneDenied
+                return
+            }
+            self.webRTCClient?.setMicrophoneEnabled(true)
+            self.isTalking = true
+        }
+    }
+
+    private func stopTalkback() {
+        webRTCClient?.setMicrophoneEnabled(false)
+        isTalking = false
+    }
+
+    private func requestMicrophonePermission() async -> Bool {
+        await withCheckedContinuation { continuation in
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            } else {
+                AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            }
+        }
+    }
+
+    private func determineTalkbackSupport(completion: @escaping (Bool) -> Void) {
+        guard let api = Current.api(for: server) else {
+            completion(false)
+            return
+        }
+        var finished = false
+        let finish: (Bool) -> Void = { [weak self] supported in
+            Task { @MainActor [weak self] in
+                guard !finished else { return }
+                finished = true
+                self?.statesToken?.cancel()
+                self?.statesToken = nil
+                self?.isTalkbackSupported = supported
+                completion(supported)
+            }
+        }
+        statesToken = api.connection.caches.states().subscribe { [weak self] token, states in
+            guard let self else {
+                token.cancel()
+                return
+            }
+            guard let entity = states[cameraEntityId] else { return }
+            let features = (entity.attributes["supported_features"] as? Int) ?? 0
+            finish((features & CameraEntityFeature.twoWayAudio) != 0)
+        }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            finish(false)
         }
     }
 }
