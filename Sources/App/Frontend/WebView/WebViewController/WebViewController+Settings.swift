@@ -70,10 +70,10 @@ extension WebViewController {
             : cachedColors[.appThemeColor]
     }
 
-    /// Publishes the themed status-bar bar to SwiftUI. On iPhone the web view runs truly edge-to-edge
-    /// (no bar) by default when the server core supports it (2026.8+) or full-screen is enabled; the
-    /// bar is drawn for older cores, on iPad, or when the developer "always below status bar" override
-    /// is on.
+    /// Publishes the themed status-bar strip to SwiftUI. On iPhone the web view runs truly edge-to-edge
+    /// (no strip) by default when the server core supports it (2026.8+) or full-screen is enabled.
+    /// The strip is drawn for older cores, on iPad (unless full-screen is enabled), or when the
+    /// developer "always below status bar" override is on.
     func updateThemedStatusBar() {
         let isPhone = UIDevice.current.userInterfaceIdiom == .phone
         let coreSupportsEdgeToEdge = server.info.version >= .canDisplayEdgeToEdge
