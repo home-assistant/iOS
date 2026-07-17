@@ -57,13 +57,6 @@ struct ConnectionSettingsView: View {
                         Image(systemSymbol: .squareAndArrowUp)
                     }
                     .tint(.haPrimary)
-                    .modify { view in
-                        if #available(iOS 26.0, *), !Current.isCatalyst {
-                            view.buttonStyle(.glassProminent)
-                        } else {
-                            view
-                        }
-                    }
                 }
             }
         }
