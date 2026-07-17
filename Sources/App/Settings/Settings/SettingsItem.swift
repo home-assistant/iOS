@@ -7,6 +7,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case gestures
     case kiosk
     case location
+    case remindersSync
     case notifications
     case liveActivities
     case sensors
@@ -30,6 +31,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .gestures: return L10n.Gestures.Screen.title
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
+        case .remindersSync: return L10n.Settings.RemindersSync.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
@@ -63,6 +65,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .tabletDashboardIcon, size: Self.iconSize)
             case .location:
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
+            case .remindersSync:
+                MaterialDesignIconsImage(icon: .formatListChecksIcon, size: Self.iconSize)
             case .notifications:
                 MaterialDesignIconsImage(icon: .bellOutlineIcon, size: Self.iconSize)
             case .liveActivities:
@@ -117,6 +121,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             KioskSettingsView()
         case .location:
             LocationSettingsView()
+        case .remindersSync:
+            RemindersSyncSettingsView()
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
@@ -168,6 +174,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             .nfc,
             .help,
             .whatsNew,
+            // Sandboxed Catalyst builds lack the calendars entitlement EventKit needs.
+            .remindersSync,
         ]
 
         if hiddenItems.contains(self) {
@@ -178,6 +186,9 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .liveActivities:
             return Self.canShowLiveActivities
+        case .remindersSync:
+            // Labs feature, limited to TestFlight builds while it matures.
+            return Current.isTestFlight
         case .macToolbar:
             // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
             return Current.isCatalyst
@@ -207,6 +218,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .gestures: return L10n.Settings.SearchKeywords.gestures
         case .kiosk: return L10n.Settings.SearchKeywords.kiosk
         case .location: return L10n.Settings.SearchKeywords.location
+        case .remindersSync: return L10n.Settings.SearchKeywords.remindersSync
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
@@ -233,6 +245,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .gestures: return GesturesSetupView.settingsSearchEntries
         case .kiosk: return KioskSettingsView.settingsSearchEntries
         case .location: return LocationSettingsView.settingsSearchEntries
+        case .remindersSync: return RemindersSyncSettingsView.settingsSearchEntries
         case .notifications: return NotificationSettingsView.settingsSearchEntries
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
