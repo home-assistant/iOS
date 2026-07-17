@@ -7,6 +7,9 @@ final class WebViewGestureHandler {
     weak var webView: WebViewControllerProtocol?
 
     func handleGestureAction(_ action: HAGestureAction) {
+        if action != .none {
+            Current.impactFeedback.impactOccurred(style: .medium)
+        }
         switch action {
         case .assist:
             showAssistThroughKeyEvent()
