@@ -7,7 +7,11 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(server: Server, initialPath: String? = nil, onWebViewController: @escaping (WebViewController) -> Void) {
+    init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
+        self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
+    }
+
+    init(server: Server, initialPath: String?, onWebViewController: @escaping (WebViewController) -> Void) {
         _viewModel = StateObject(
             wrappedValue: HomeAssistantViewModel(
                 server: server,
