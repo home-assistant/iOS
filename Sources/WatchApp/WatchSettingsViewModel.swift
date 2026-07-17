@@ -12,6 +12,10 @@ final class WatchSettingsViewModel: ObservableObject {
     /// The home-screen layout (list vs grid). Mirrors the iPhone watch-configuration editor so the user
     /// can switch it directly on the watch. Edits persist locally first and sync to the phone.
     @Published var layout: WatchLayout = WatchConfig().resolvedLayout
+    /// Server ids that currently resolve NO usable URL from the watch (typically internal-only
+    /// servers off a verifiable home network). Their rows show a "Needs attention" warning:
+    /// while in this state the server's data doesn't sync and its complications don't update.
+    @Published private(set) var serversNeedingAttention: Set<String> = []
 
     init() {
         Current.servers.add(observer: self)
@@ -32,6 +36,27 @@ final class WatchSettingsViewModel: ObservableObject {
         Task { @MainActor [weak self] in
             // `currentWiFiSSID()` fetches fresh network information itself.
             self?.currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
+        }
+        Task { [weak self] in
+            // The "Needs attention" warning belongs to the experimental direct sync: with the
+            // default phone-relayed mirror, reference data arrives regardless of whether the
+            // watch itself can resolve a URL for the server.
+            guard WatchUserDefaults.shared.directDatabaseSyncEnabled else {
+                await MainActor.run { [weak self] in
+                    self?.serversNeedingAttention = []
+                }
+                return
+            }
+            var needingAttention = WatchUserDefaults.shared.directSyncNoReachableURLServerIds
+            for server in all {
+                let serverId = server.identifier.rawValue
+                if await server.activeURL() == nil {
+                    needingAttention.insert(serverId)
+                }
+            }
+            await MainActor.run { [weak self, needingAttention] in
+                self?.serversNeedingAttention = needingAttention
+            }
         }
     }
 

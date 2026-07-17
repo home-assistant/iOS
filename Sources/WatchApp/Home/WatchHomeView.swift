@@ -19,6 +19,9 @@ struct WatchHomeView: View {
     /// `showError` gets cleared by later syncs (`clearError()`/`loadCache`), which would otherwise
     /// auto-dismiss the alert and make it flash by.
     @State private var latchedSyncError: String?
+    /// Drives the "Learn more" sheet of the internal-URL consent prompt. Holds the prompt data
+    /// past the alert's dismissal so the sheet can still act on it.
+    @State private var internalURLLearnMore: WatchInternalURLPromptContext?
 
     init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -151,6 +154,43 @@ struct WatchHomeView: View {
             Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
         } message: {
             Text(verbatim: L10n.Watch.Sync.NotReachable.message)
+        }
+        // A server sync was skipped because only the internal URL exists and the watch can't
+        // verify the home network — ask whether to use it anyway ("Yes" persists the same
+        // per-server override as the settings picker; "No" is remembered).
+        .alert(
+            Text(verbatim: L10n.Watch.InternalUrlPrompt.title),
+            isPresented: Binding(
+                get: { viewModel.internalURLPrompt != nil },
+                set: { if !$0 { viewModel.internalURLPrompt = nil } }
+            ),
+            presenting: viewModel.internalURLPrompt
+        ) { prompt in
+            Button(role: .destructive) {
+                viewModel.acceptInternalURLPrompt(prompt)
+            } label: { Text(verbatim: L10n.yesLabel) }
+            Button(role: .cancel) {
+                viewModel.declineInternalURLPrompt(prompt)
+            } label: { Text(verbatim: L10n.noLabel) }
+            Button {
+                viewModel.internalURLPrompt = nil
+                internalURLLearnMore = prompt
+            } label: { Text(verbatim: L10n.Watch.InternalUrlPrompt.learnMore) }
+        } message: { prompt in
+            Text(verbatim: L10n.Watch.InternalUrlPrompt.message(prompt.internalURL?.absoluteString ?? ""))
+        }
+        .sheet(item: $internalURLLearnMore) { prompt in
+            WatchInternalURLInfoView(
+                prompt: prompt,
+                onUse: {
+                    internalURLLearnMore = nil
+                    viewModel.acceptInternalURLPrompt(prompt)
+                },
+                onNotNow: {
+                    // Not a permanent decline: the prompt may ask again on a later sync.
+                    internalURLLearnMore = nil
+                }
+            )
         }
         .onAppear {
             // Consume a launch requested from the complication before this view existed (cold launch).

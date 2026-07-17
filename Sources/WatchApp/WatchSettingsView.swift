@@ -180,9 +180,19 @@ struct WatchSettingsView: View {
                     WatchServersListView(viewModel: viewModel)
                 } label: {
                     Label {
-                        Text(verbatim: L10n.Watch.Settings.Servers.header)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(verbatim: L10n.Watch.Settings.Servers.header)
+                            if !viewModel.serversNeedingAttention.isEmpty {
+                                Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                    .font(.footnote)
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
                     } icon: {
-                        Image(systemSymbol: .network)
+                        Image(
+                            systemSymbol: viewModel.serversNeedingAttention
+                                .isEmpty ? .network : .exclamationmarkTriangleFill
+                        )
                     }
                 }
             }
@@ -198,9 +208,12 @@ struct WatchSettingsView: View {
 }
 
 /// The list of synchronized servers, pushed from the settings "Servers" row so the small settings
-/// screen stays compact. Each server opens its read-only detail.
+/// screen stays compact. Each server opens its read-only detail. A server the watch can't
+/// currently resolve a URL for gets a "Needs attention" warning row that explains the situation
+/// (no sync, no complication updates) and offers the internal-URL opt-in.
 private struct WatchServersListView: View {
     @ObservedObject var viewModel: WatchSettingsViewModel
+    @State private var attentionContext: WatchInternalURLPromptContext?
 
     var body: some View {
         List {
@@ -214,9 +227,44 @@ private struct WatchServersListView: View {
                         Image(systemSymbol: .network)
                     }
                 }
+                if viewModel.serversNeedingAttention.contains(server.identifier.rawValue) {
+                    Button {
+                        attentionContext = WatchInternalURLPromptContext(
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            internalURL: server.info.connection.internalURL
+                        )
+                    } label: {
+                        Label {
+                            Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                .font(.footnote)
+                        } icon: {
+                            Image(systemSymbol: .exclamationmarkTriangleFill)
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+                }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
+        .sheet(item: $attentionContext) { context in
+            WatchInternalURLInfoView(
+                prompt: context,
+                onUse: {
+                    attentionContext = nil
+                    WatchUserDefaults.shared.setURLOverrideRawValue(
+                        ConnectionInfo.URLType.internal.rawValue,
+                        forServerId: context.serverId
+                    )
+                    WatchServerSync.applyURLOverrides()
+                    Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+                    viewModel.reload()
+                },
+                onNotNow: {
+                    attentionContext = nil
+                }
+            )
+        }
     }
 }
 
@@ -485,7 +533,12 @@ private struct WatchClientEventsView: View {
                         Text(verbatim: L10n.ClientEvents.View.ClearConfirm.message)
                     }
 
-                    ShareLink(item: sharedEventsText) {
+                    // Shares a zip of the client events plus the on-watch `Current.Log` files, which
+                    // are otherwise unreachable — the watch has no other way to hand them over.
+                    ShareLink(
+                        item: WatchDiagnosticsArchive(),
+                        preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
+                    ) {
                         Image(systemSymbol: .squareAndArrowUp)
                             .frame(maxWidth: .infinity)
                     }
@@ -510,20 +563,5 @@ private struct WatchClientEventsView: View {
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
         .onAppear { events = Current.clientEventStore.getEvents().reversed() }
-    }
-
-    private var sharedEventsText: String {
-        ([L10n.Watch.Settings.ClientEvents.title] + events.map { event in
-            var components = [
-                event.text,
-                "\(event.type.rawValue) • \(event.date.formatted(date: .abbreviated, time: .shortened))",
-            ]
-
-            if let payload = event.jsonPayloadDescription, !payload.isEmpty {
-                components.append(payload)
-            }
-
-            return components.joined(separator: "\n")
-        }).joined(separator: "\n\n")
     }
 }

@@ -40,6 +40,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published private(set) var itemInfo: MagicItem.Info
 
     private var timeoutWorkItem: DispatchWorkItem?
+    private var watchdogWorkItem: DispatchWorkItem?
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
@@ -183,6 +184,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         startTimeoutTimerWhichResetsState(completion: completion)
         Task { [weak self] in
+            // First evidence the task got scheduled at all — the watch's cooperative thread pool is
+            // tiny, and a starved pool means this line never appears in the trace.
+            self?.trace?.log(.info, "Execution task started")
             await self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         }
     }
@@ -224,18 +228,25 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     /// Snapshot of everything relevant to routing, recorded at the start of a verbose trace.
+    /// Each potentially blocking call (server list, Wi-Fi lookup) is announced before it runs, so a
+    /// hang pinpoints itself: the last entry in the trace names the step that never returned.
     private func logExecutionContext(magicItem: MagicItem, target: WatchActionTarget) async {
         guard let trace else { return }
-        let serverName = Current.servers.all
-            .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
-            ?? "unknown (id \(magicItem.serverId))"
-        trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on \"\(serverName)\"")
+        trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on server id \(magicItem.serverId)")
         if WatchUserDefaults.shared.allowChoosingMagicItemRoute {
             trace.log(.info, "Route preference (developer): \(target.rawValue)")
         } else {
             trace.log(.info, "Route: auto")
         }
         trace.log(.info, "iPhone reachability: \(Communicator.shared.currentReachability)")
+        // Resolving the server name reads the ServerManager cache, which can block on its lock (held
+        // during Keychain writes by server sync) or on cold Keychain/GRDB reads.
+        trace.log(.info, "Resolving server name…")
+        let serverName = Current.servers.all
+            .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
+            ?? "unknown (id \(magicItem.serverId))"
+        trace.log(.info, "Server: \"\(serverName)\"")
+        trace.log(.info, "Checking watch Wi-Fi…")
         if let ssid = await Current.connectivity.currentWiFiSSID() {
             trace.log(.info, "Watch Wi-Fi: \(ssid)")
         } else {
@@ -295,18 +306,41 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {
         timeoutWorkItem?.cancel()
+        watchdogWorkItem?.cancel()
 
         timeoutWorkItem = DispatchWorkItem { [weak self] in
-            self?.trace?.log(.info, "Still waiting after 4s — row resets while execution continues")
+            guard let self else { return }
+            let lastStep = trace?.lastProgressMessage ?? "execution task never started"
+            trace?.log(
+                .info,
+                "Still waiting after 4s — row resets while execution continues (last step: \(lastStep))",
+                isProgress: false
+            )
             completion(.tookLonger)
+        }
+
+        // Second, later checkpoint: if the execution is still silent well past the UI timeout it is
+        // most likely stuck (not just slow), so leave a trace of the step it never came back from.
+        watchdogWorkItem = DispatchWorkItem { [weak self] in
+            guard let self, let trace else { return }
+            let lastStep = trace.lastProgressMessage ?? "execution task never started"
+            trace.log(
+                .error,
+                "Still no result after 15s — execution appears stuck (last step: \(lastStep))",
+                isProgress: false
+            )
         }
 
         if let workItem = timeoutWorkItem {
             DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: workItem)
         }
+        if let workItem = watchdogWorkItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: workItem)
+        }
     }
 
     private func cancelTimeout() {
         timeoutWorkItem?.cancel()
+        watchdogWorkItem?.cancel()
     }
 }
