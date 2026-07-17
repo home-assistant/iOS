@@ -7,16 +7,17 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
+    init(server: Server, initialPath: String? = nil, onWebViewController: @escaping (WebViewController) -> Void) {
         _viewModel = StateObject(
             wrappedValue: HomeAssistantViewModel(
                 server: server,
+                initialPath: initialPath,
                 onWebViewController: onWebViewController
             )
         )
     }
 
-    // The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
+    /// The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
     private var themedStatusBar: some View {
         GeometryReader { proxy in
             if let color = viewModel.overlayState.statusBarColor {
@@ -59,6 +60,7 @@ struct HomeAssistantView: View, WebFrontendView {
     private var homeAssistant: some View {
         FrontendView(
             server: viewModel.server,
+            initialPath: viewModel.initialPath,
             onWebViewController: viewModel.handleWebViewController,
             onWebViewLoaded: viewModel.handleWebViewLoaded,
             resetFrontendAction: viewModel.resetWebFrontend,
