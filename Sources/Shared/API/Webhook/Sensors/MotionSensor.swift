@@ -44,6 +44,10 @@ final class MotionSensor: SensorProvider {
         case unavailable
     }
 
+    private enum UserDefaultsKeys: String {
+        case initialized = "motion_sensor_initialized"
+    }
+
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {
         self.request = request
@@ -56,6 +60,8 @@ final class MotionSensor: SensorProvider {
         guard manager.canDetectMotion else {
             return .init(error: MotionError.unavailable)
         }
+
+        disableOnFirstRun()
 
         let isDetected = manager.isMotionDetected
 
@@ -118,5 +124,15 @@ final class MotionSensor: SensorProvider {
         #else
         return .init(error: MotionError.unavailable)
         #endif
+    }
+
+    /// Sensors are enabled by default, but the camera must never turn on (nor the
+    /// permission prompt appear) without an explicit user opt-in — so unlike other
+    /// sensors, this one starts disabled.
+    private func disableOnFirstRun() {
+        let prefs = Current.settingsStore.prefs
+        guard prefs.object(forKey: UserDefaultsKeys.initialized.rawValue) == nil else { return }
+        prefs.set(true, forKey: UserDefaultsKeys.initialized.rawValue)
+        Current.sensors.setEnabled(false, forUniqueID: WebhookSensorId.motion.rawValue)
     }
 }
