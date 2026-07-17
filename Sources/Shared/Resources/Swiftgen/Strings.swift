@@ -3600,7 +3600,7 @@ public enum L10n {
       public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
       /// These lists are already being synced.
       public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
-      /// On the first sync, items that already exist in both lists are linked by matching titles; everything else is copied according to the sync direction. Completed items are not copied.
+      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.
       public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
       /// Lists to sync
       public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
@@ -3615,9 +3615,9 @@ public enum L10n {
       public enum DirectionFooter {
         /// Changes in either list are applied to the other. If the same item changes in both apps, the Conflicts setting chooses which side is kept.
         public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.both_ways") }
-        /// Apple Reminders is the source of truth: its items and changes overwrite the Home Assistant list. Items that exist only in Home Assistant are left alone.
+        /// Apple Reminders is the source of truth. Its items and changes overwrite the Home Assistant list. Items that only exist in Home Assistant are left alone.
         public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_home_assistant") }
-        /// Home Assistant is the source of truth: its items and changes overwrite the Apple Reminders list. Items that exist only in Reminders are left alone.
+        /// Home Assistant is the source of truth. Its items and changes overwrite the Apple Reminders list. Items that only exist in Reminders are left alone.
         public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_reminders") }
       }
     }
@@ -3630,9 +3630,9 @@ public enum L10n {
     public enum Direction {
       /// Two-way
       public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.direction.both_ways") }
-      /// One-way: Reminders → Home Assistant
+      /// Reminders → Home Assistant
       public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.direction.to_home_assistant") }
-      /// One-way: Home Assistant → Reminders
+      /// Home Assistant → Reminders
       public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.direction.to_reminders") }
     }
     public enum History {
@@ -3699,7 +3699,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
       }
       public enum Conflicts {
-        /// For two-way syncs: if the same item was edited in both apps since the last sync, the version from the side chosen here is kept and the other is overwritten.
+        /// This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.
         public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.footer") }
         /// Conflicts
         public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.header") }
@@ -3707,13 +3707,13 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.title") }
       }
       public enum Empty {
-        /// No lists are synced yet. Add a list sync to keep an Apple Reminders list and a Home Assistant to-do list in step.
+        /// No lists are synced yet. Pick an Apple Reminders list and a Home Assistant to-do list to keep in sync.
         public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.empty.body") }
       }
       public enum Refresh {
         /// Ask iOS to sync every
         public static var background: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background") }
-        /// Nothing syncs while the app is closed or in the background — changes from Apple Reminders and Home Assistant both wait until the app next runs. This setting asks iOS to briefly wake the app to sync, but iOS alone decides if and when that happens, based on battery, Low Power Mode and how often you use the app.
+        /// Nothing syncs while the app is closed or in the background. Changes from Apple Reminders and Home Assistant wait until the app runs again. This setting asks iOS to briefly wake the app to sync, but iOS decides if and when that happens based on battery, Low Power Mode and how often you use the app.
         public static var backgroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_footer") }
         /// While the app is closed
         public static var backgroundHeader: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_header") }
