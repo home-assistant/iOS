@@ -3629,11 +3629,21 @@ public enum L10n {
       }
     }
     public enum CameraStream {
+      /// To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.
+      public static var footer: String { return L10n.tr("Localizable", "sensors.camera_stream.footer") }
       public enum Setting {
+        /// Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.
+        public static var credentialsFooter: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.credentials_footer") }
+        /// Optional
+        public static var credentialsPlaceholder: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.credentials_placeholder") }
         /// Frame rate
         public static var frameRate: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.frame_rate") }
+        /// Password
+        public static var password: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.password") }
         /// Stream port
         public static var streamPort: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.stream_port") }
+        /// Username
+        public static var username: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.username") }
       }
     }
     public enum GeocodedLocation {

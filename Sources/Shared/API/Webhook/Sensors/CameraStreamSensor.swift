@@ -71,6 +71,7 @@ final class CameraStreamSensor: SensorProvider {
             "Clients": server.clientCount,
             "Stream URL": server.streamURL ?? "unavailable (no Wi-Fi address)",
         ]
+        sensor.detailFooter = L10n.Sensors.CameraStream.footer
 
         sensor.Settings = [
             .init(
@@ -95,6 +96,24 @@ final class CameraStreamSensor: SensorProvider {
                     maximum: 65535
                 ),
                 title: L10n.Sensors.CameraStream.Setting.streamPort
+            ),
+            .init(
+                type: .textField(
+                    getter: { server.username },
+                    setter: { server.username = $0 },
+                    placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder
+                ),
+                title: L10n.Sensors.CameraStream.Setting.username
+            ),
+            .init(
+                type: .textField(
+                    getter: { server.password },
+                    setter: { server.password = $0 },
+                    placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder,
+                    isSecure: true
+                ),
+                title: L10n.Sensors.CameraStream.Setting.password,
+                subtitle: L10n.Sensors.CameraStream.Setting.credentialsFooter
             ),
         ]
 

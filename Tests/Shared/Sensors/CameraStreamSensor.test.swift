@@ -55,10 +55,10 @@ class CameraStreamSensorTests: XCTestCase {
         XCTAssertEqual(sensors.count, 1)
 
         XCTAssertEqual(sensors[0].Name, "Camera Stream")
-        XCTAssertEqual(sensors[0].UniqueID, "camera_stream")
+        XCTAssertEqual(sensors[0].UniqueID, "cameraStream")
         XCTAssertEqual(sensors[0].Icon, "mdi:cctv-off")
         XCTAssertEqual(sensors[0].State as? String, "idle")
-        XCTAssertEqual(sensors[0].Settings.count, 1)
+        XCTAssertEqual(sensors[0].Settings.count, 4)
     }
 
     func testStreaming() throws {

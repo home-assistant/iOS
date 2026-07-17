@@ -32,6 +32,12 @@ public struct WebhookSensorSetting {
             minimum: Double = 0,
             maximum: Double = 100
         )
+        case textField(
+            getter: () -> String,
+            setter: (String) -> Void,
+            placeholder: String? = nil,
+            isSecure: Bool = false
+        )
     }
 
     public let type: SettingType
@@ -58,6 +64,10 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var entityCategory: String?
 
     public var Settings: [WebhookSensorSetting] = []
+
+    /// Optional footer shown at the bottom of the sensor detail screen, e.g. setup
+    /// instructions or usage caveats. Local-only: never sent to the server.
+    public var detailFooter: String?
 
     init() {}
 

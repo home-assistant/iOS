@@ -3,6 +3,7 @@ import Foundation
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import CoreImage
 import CoreVideo
+import KeychainAccess
 import Network
 
 /// Serves the front camera frames captured by `MotionDetectionManager` as an MJPEG
@@ -17,17 +18,27 @@ public class CameraStreamServer {
     private enum UserDefaultsKeys: String {
         case port = "camera_stream_port"
         case frameRate = "camera_stream_frame_rate"
+        case username = "camera_stream_username"
     }
+
+    private static let passwordKeychainKey = "camera_stream_password"
+    private static let authRealm = "Home Assistant Camera"
 
     private static let boundary = "hacameraframe"
 
+    /// Encoding in a plain SDR color space stops Core Image from trying (and failing,
+    /// noisily) to build an HDR gain map for the JPEG when the camera delivers
+    /// wide-gamut buffers.
+    private static let sdrColorSpace = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+
+    private let keychain = AppConstants.Keychain
     private let queue = DispatchQueue(label: "camera-stream-server")
     private let encodingQueue = DispatchQueue(label: "camera-stream-encoding")
     private var listener: NWListener?
     private var connections: [ObjectIdentifier: NWConnection] = [:]
     private var active = false
     private var isObservingCamera = false
-    private lazy var ciContext = CIContext()
+    private lazy var ciContext = CIContext(options: [.workingColorSpace: Self.sdrColorSpace])
 
     /// Called (on the main queue) whenever the streaming state changes, so the
     /// Camera Stream sensor can push an update.
@@ -127,6 +138,19 @@ public class CameraStreamServer {
         }
     }
 
+    /// Optional HTTP Basic auth credentials. When both are empty the stream is open
+    /// to anyone on the network; setting either requires clients to authenticate.
+    /// The password is kept in the Keychain rather than UserDefaults.
+    public var username: String {
+        get { Current.settingsStore.prefs.string(forKey: UserDefaultsKeys.username.rawValue) ?? "" }
+        set { Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.username.rawValue) }
+    }
+
+    public var password: String {
+        get { keychain[Self.passwordKeychainKey] ?? "" }
+        set { keychain[Self.passwordKeychainKey] = newValue.isEmpty ? nil : newValue }
+    }
+
     // MARK: - Activation
 
     /// Turns the stream server on or off. While on, the listener accepts clients and
@@ -196,13 +220,20 @@ public class CameraStreamServer {
         }
         connection.start(queue: queue)
 
-        // Read (and discard) the HTTP request, then reply with the multipart header
-        // and keep the connection open for frames.
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] _, _, _, error in
+        // Read the HTTP request, enforce Basic auth if configured, then reply with the
+        // multipart header and keep the connection open for frames.
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] data, _, _, error in
             guard let self, error == nil else {
                 connection.cancel()
                 return
             }
+
+            let request = data.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+            guard Self.isAuthorized(request: request, username: username, password: password) else {
+                sendUnauthorized(on: connection)
+                return
+            }
+
             let header = [
                 "HTTP/1.1 200 OK",
                 "Content-Type: multipart/x-mixed-replace; boundary=\(Self.boundary)",
@@ -230,6 +261,54 @@ public class CameraStreamServer {
         guard connections.removeValue(forKey: ObjectIdentifier(connection)) != nil else { return }
         Current.Log.info("Camera stream: client disconnected (\(connections.count) left)")
         notifyStateChange()
+    }
+
+    // MARK: - Authentication
+
+    /// Whether the request satisfies the configured credentials. With no username and
+    /// no password set, every request is allowed.
+    static func isAuthorized(request: String, username: String, password: String) -> Bool {
+        guard !username.isEmpty || !password.isEmpty else { return true }
+        guard let credentials = basicAuthCredentials(fromRequest: request) else { return false }
+        return credentials.username == username && credentials.password == password
+    }
+
+    /// Extracts `(username, password)` from an `Authorization: Basic <base64>` header
+    /// in the raw HTTP request, or `nil` when absent or malformed.
+    static func basicAuthCredentials(fromRequest request: String) -> (username: String, password: String)? {
+        for line in request.split(whereSeparator: { $0 == "\r" || $0 == "\n" }) {
+            guard let colon = line.firstIndex(of: ":") else { continue }
+            let name = line[..<colon].trimmingCharacters(in: .whitespaces)
+            guard name.caseInsensitiveCompare("Authorization") == .orderedSame else { continue }
+
+            let value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+            let scheme = "Basic "
+            guard value.count > scheme.count, value.lowercased().hasPrefix(scheme.lowercased()) else { return nil }
+
+            let encoded = value.dropFirst(scheme.count).trimmingCharacters(in: .whitespaces)
+            guard let decodedData = Data(base64Encoded: encoded),
+                  let decoded = String(data: decodedData, encoding: .utf8),
+                  let separator = decoded.firstIndex(of: ":") else {
+                return nil
+            }
+            return (String(decoded[..<separator]), String(decoded[decoded.index(after: separator)...]))
+        }
+        return nil
+    }
+
+    private func sendUnauthorized(on connection: NWConnection) {
+        let response = [
+            "HTTP/1.1 401 Unauthorized",
+            "WWW-Authenticate: Basic realm=\"\(Self.authRealm)\"",
+            "Content-Length: 0",
+            "Connection: close",
+            "",
+            "",
+        ].joined(separator: "\r\n")
+        connection.send(content: Data(response.utf8), completion: .contentProcessed { _ in
+            connection.cancel()
+        })
+        Current.Log.info("Camera stream: rejected unauthorized client")
     }
 
     private func notifyStateChange() {
@@ -266,10 +345,10 @@ public class CameraStreamServer {
         encodingQueue.async { [weak self] in
             guard let self, !queue.sync(execute: { self.connections.isEmpty }) else { return }
 
-            let image = CIImage(cvPixelBuffer: frame)
+            let image = CIImage(cvPixelBuffer: frame, options: [.colorSpace: Self.sdrColorSpace])
             guard let jpeg = ciContext.jpegRepresentation(
                 of: image,
-                colorSpace: CGColorSpaceCreateDeviceRGB()
+                colorSpace: Self.sdrColorSpace
             ) else { return }
 
             let part = [
@@ -311,6 +390,8 @@ public class CameraStreamServer {
     public var clientCount: Int { 0 }
     public var port: Int = 8090
     public var streamFrameRate: Double = 15
+    public var username: String = ""
+    public var password: String = ""
 
     public init() {}
 

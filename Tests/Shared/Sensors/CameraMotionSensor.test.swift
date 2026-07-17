@@ -51,7 +51,7 @@ class CameraMotionSensorTests: XCTestCase {
         XCTAssertEqual(sensors.count, 1)
 
         XCTAssertEqual(sensors[0].Name, "Camera Motion")
-        XCTAssertEqual(sensors[0].UniqueID, "camera_motion")
+        XCTAssertEqual(sensors[0].UniqueID, "cameraMotion")
         XCTAssertEqual(sensors[0].Icon, "mdi:motion-sensor")
         XCTAssertEqual(sensors[0].Type, "binary_sensor")
         XCTAssertEqual(sensors[0].State as? Bool, true)

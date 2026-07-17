@@ -20,13 +20,13 @@ struct SensorDetailView: View {
                     set: { newValue in viewModel.setEnabled(newValue) }
                 ))
                 if viewModel.isEnabled, let state = viewModel.stateDescription {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.state, secondText: state)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.state, value: state)
                 }
                 if let deviceClass = viewModel.deviceClass {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.deviceClass, secondText: deviceClass)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.deviceClass, value: deviceClass)
                 }
                 if let icon = viewModel.icon {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.icon, secondText: icon)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.icon, value: icon)
                 }
             }
 
@@ -48,15 +48,10 @@ struct SensorDetailView: View {
                     }
                 }
             }
-        }
-    }
 
-    private func makeInfoRow(firstText: String, secondText: String) -> some View {
-        HStack {
-            Text(firstText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(secondText)
-                .foregroundColor(.secondary)
+            if let footer = viewModel.sensor.detailFooter {
+                Section(footer: Text(footer)) {}
+            }
         }
     }
 
@@ -157,6 +152,16 @@ struct SensorDetailView: View {
                         title: setting.title,
                         minimum: minimum,
                         maximum: maximum,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
+            case let .textField(getter, setter, placeholder, isSecure):
+                return AnyView(
+                    SensorDetailTextFieldRow(
+                        title: setting.title,
+                        placeholder: placeholder ?? "",
+                        isSecure: isSecure,
                         getter: getter,
                         setter: setter
                     )
