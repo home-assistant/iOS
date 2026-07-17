@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import HAKit
 import Shared
@@ -17,6 +18,10 @@ enum WebRTCSignalType: String {
 }
 
 final class WebRTCViewPlayerViewModel: ObservableObject {
+    private enum CameraEntityFeature {
+        static let twoWayAudio = 4
+    }
+
     enum Constants: String {
         case clientConfig = "camera/webrtc/get_client_config"
         case offer = "camera/webrtc/offer"
@@ -70,19 +75,23 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// before coming back to the foreground counts as needing a fresh one.
     private static let backgroundTeardownDelay: TimeInterval = 60
 
+    private static let talkbackSupportTimeout: TimeInterval = 3
+
     struct Timing {
         var connectionTimeout: TimeInterval
         var disconnectedGracePeriod: TimeInterval
         var signalingStallTimeout: TimeInterval
         var connectionWaitTimeout: TimeInterval
         var backgroundTeardownDelay: TimeInterval
+        var talkbackSupportTimeout: TimeInterval = WebRTCViewPlayerViewModel.talkbackSupportTimeout
 
         static let production = Timing(
             connectionTimeout: WebRTCViewPlayerViewModel.connectionTimeout,
             disconnectedGracePeriod: WebRTCViewPlayerViewModel.disconnectedGracePeriod,
             signalingStallTimeout: WebRTCViewPlayerViewModel.signalingStallTimeout,
             connectionWaitTimeout: WebRTCViewPlayerViewModel.connectionWaitTimeout,
-            backgroundTeardownDelay: WebRTCViewPlayerViewModel.backgroundTeardownDelay
+            backgroundTeardownDelay: WebRTCViewPlayerViewModel.backgroundTeardownDelay,
+            talkbackSupportTimeout: WebRTCViewPlayerViewModel.talkbackSupportTimeout
         )
     }
 
@@ -112,8 +121,11 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private let server: Server
     private let cameraEntityId: String
     private let supportsTalkback: Bool
-    private let makeClient: (WebRTCClientConfiguration) -> WebRTCStreamClient
+    private let makeClient: (WebRTCClientConfiguration, _ supportsTalkback: Bool) -> WebRTCStreamClient
+    private let requestMicrophonePermission: () async -> Bool
     private let timing: Timing
+    private var statesToken: HACancellable?
+    private var talkbackSupportTimeoutWorkItem: DispatchWorkItem?
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
@@ -134,13 +146,17 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         server: Server,
         cameraEntityId: String,
         supportsTalkback: Bool = false,
-        makeClient: @escaping (WebRTCClientConfiguration) -> WebRTCStreamClient = { WebRTCClient(configuration: $0) },
+        makeClient: @escaping (WebRTCClientConfiguration, _ supportsTalkback: Bool) -> WebRTCStreamClient = {
+            WebRTCClient(configuration: $0, supportsTalkback: $1)
+        },
+        requestMicrophonePermission: @escaping () async -> Bool = WebRTCViewPlayerViewModel.requestRecordPermission,
         timing: Timing = .production
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.supportsTalkback = supportsTalkback
         self.makeClient = makeClient
+        self.requestMicrophonePermission = requestMicrophonePermission
         self.timing = timing
     }
 
@@ -151,10 +167,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         connectionWaitWorkItem?.cancel()
         signalingStallWorkItem?.cancel()
         connectionGate?.cancel()
+        statesToken?.cancel()
+        talkbackSupportTimeoutWorkItem?.cancel()
         webRTCClient?.closeConnection()
     }
-
-    func toggleTalkback() {}
 
     func toggleMute() {
         guard let webRTCClient else { return }
@@ -188,14 +204,24 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         connectionRetries = 0
         didStallOnSignaling = false
         cancelTimeout()
-        beginConnection()
+        guard supportsTalkback else {
+            beginConnection()
+            return
+        }
+        let token = connectionToken
+        determineTalkbackSupport { [weak self] in
+            guard let self, token == connectionToken else { return }
+            beginConnection()
+        }
     }
 
     func stop() {
         isActive = false
         backgroundedAt = nil
+        isTalking = false
         cancelTimeout()
         cancelDisconnectRecovery()
+        cancelTalkbackSupportLookup()
         tearDownConnection()
     }
 
@@ -304,9 +330,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         // The server answered, so whatever killed the last socket is behind us and a later attempt
         // has no reason to distrust the connection state again.
         didStallOnSignaling = false
-        let client = makeClient(configuration)
+        let client = makeClient(configuration, isTalkbackSupported)
         webRTCClient = client
         client.delegate = self
+        client.setMicrophoneEnabled(isTalking)
         if let renderer {
             client.renderRemoteVideo(to: renderer)
         }
@@ -353,6 +380,86 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 Current.Log.warning("Unknown WebRTC signal type: \(typeString)")
             }
         })
+    }
+
+    // MARK: - Talkback
+
+    func toggleTalkback() {
+        if isTalking {
+            stopTalkback()
+        } else {
+            startTalkback()
+        }
+    }
+
+    private func startTalkback() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let granted = await requestMicrophonePermission()
+            guard granted else {
+                failureReason = L10n.CameraPlayer.Talkback.microphoneDenied
+                return
+            }
+            webRTCClient?.setMicrophoneEnabled(true)
+            isTalking = true
+        }
+    }
+
+    private func stopTalkback() {
+        webRTCClient?.setMicrophoneEnabled(false)
+        isTalking = false
+    }
+
+    static func requestRecordPermission() async -> Bool {
+        await withCheckedContinuation { continuation in
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            } else {
+                AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            }
+        }
+    }
+
+    private func determineTalkbackSupport(completion: @escaping () -> Void) {
+        cancelTalkbackSupportLookup()
+        guard let api = Current.api(for: server) else {
+            isTalkbackSupported = false
+            completion()
+            return
+        }
+        let timeout = DispatchWorkItem { [weak self] in
+            self?.resolveTalkbackSupport(false, completion: completion)
+        }
+        talkbackSupportTimeoutWorkItem = timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.talkbackSupportTimeout, execute: timeout)
+        statesToken = api.connection.caches.states().subscribe { [weak self] _, states in
+            guard let self, let entity = states[cameraEntityId] else { return }
+            let features = (entity.attributes["supported_features"] as? Int) ?? 0
+            DispatchQueue.main.async { [weak self] in
+                self?.resolveTalkbackSupport(
+                    (features & CameraEntityFeature.twoWayAudio) != 0,
+                    completion: completion
+                )
+            }
+        }
+    }
+
+    private func resolveTalkbackSupport(_ supported: Bool, completion: () -> Void) {
+        guard talkbackSupportTimeoutWorkItem != nil else { return }
+        cancelTalkbackSupportLookup()
+        isTalkbackSupported = supported
+        completion()
+    }
+
+    private func cancelTalkbackSupportLookup() {
+        statesToken?.cancel()
+        statesToken = nil
+        talkbackSupportTimeoutWorkItem?.cancel()
+        talkbackSupportTimeoutWorkItem = nil
     }
 
     /// Whether an error from core means this camera has no WebRTC stream type at all, as opposed

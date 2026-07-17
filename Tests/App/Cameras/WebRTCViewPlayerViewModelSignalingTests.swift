@@ -49,7 +49,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         viewModel = WebRTCViewPlayerViewModel(
             server: server,
             cameraEntityId: "camera.front_door",
-            makeClient: { [weak self] configuration in
+            makeClient: { [weak self] configuration, _ in
                 let client = WebRTCFakeStreamClient(configuration: configuration)
                 self?.clients.append(client)
                 return client
