@@ -38,6 +38,11 @@ final class HomeAssistantViewModel: ObservableObject {
     // Empty-state content waits for the same minimum duration so transient reload failures don't flash immediately.
     private var loaderCycleID = UUID()
     private var loaderMinimumDurationTask: Task<Void, Never>?
+
+    // The frontend fires `frontend/loaded` exactly once per page load (it swaps out its `update` method after
+    // firing), so reconnects within a living page only report `connected`. Once we've seen `loaded`, `connected`
+    // is enough to dismiss the loader. A recreated view model implies a fresh page load, which fires it again.
+    private var frontendLoadedOnce = false
     private var reduceMotion = false
     private var pullToRefreshObserver: HomeAssistantPullToRefreshObserver?
     private var cancellables = Set<AnyCancellable>()
@@ -95,12 +100,13 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
+    // On servers that support `frontend/loaded`, the first bootstrap must wait for that event (the frontend's
+    // own launcher screen is still up on plain `connected`).
     private func didReachLoaderReadyState(_ connectionState: FrontEndConnectionState) -> Bool {
-        if server.info.version >= .frontendLoadedExternalBus {
-            connectionState == .loaded
-        } else {
-            connectionState.isReadyForDisplay
+        guard server.info.version >= .frontendLoadedExternalBus else {
+            return connectionState.isReadyForDisplay
         }
+        return connectionState.isReadyForDisplay && frontendLoadedOnce
     }
 
     func updateReduceMotion(_ reduceMotion: Bool) {
@@ -173,6 +179,9 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.$isLoading
             .sink { [weak self] isLoading in
                 if isLoading {
+                    // A provisional navigation (initial load, pull-to-refresh, app-side refresh) loads the
+                    // document from scratch, so a fresh frontend instance will fire `frontend/loaded` again.
+                    self?.frontendLoadedOnce = false
                     self?.beginFullScreenLoaderCycle()
                 } else {
                     self?.pullToRefreshObserver?.finishRefreshing()
@@ -182,7 +191,7 @@ final class HomeAssistantViewModel: ObservableObject {
 
         overlayState.$connectionState
             .sink { [weak self] connectionState in
-                self?.updateFullScreenLoaderVisibility(connectionState: connectionState)
+                self?.handleConnectionStateChange(connectionState)
             }
             .store(in: &cancellables)
 
@@ -191,6 +200,13 @@ final class HomeAssistantViewModel: ObservableObject {
                 self?.updateFullScreenLoaderVisibility(hasEmptyState: emptyState != nil)
             }
             .store(in: &cancellables)
+    }
+
+    private func handleConnectionStateChange(_ connectionState: FrontEndConnectionState) {
+        if connectionState == .loaded {
+            frontendLoadedOnce = true
+        }
+        updateFullScreenLoaderVisibility(connectionState: connectionState)
     }
 
     private func beginFullScreenLoaderCycle() {
@@ -241,5 +257,18 @@ final class HomeAssistantViewModel: ObservableObject {
             guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
             isFullScreenLoaderMounted = false
         }
+    }
+
+    /// Debug escape hatch: repeated taps on the standby logo dismiss the loader without waiting for the
+    /// frontend connection state, so the frontend behind it can be inspected (e.g. when a `frontend/loaded`
+    /// that never arrives keeps the loader up).
+    func forceDismissStandByView() {
+        Current.Log.info("Standby loader dismissed manually via logo taps")
+        loaderMinimumDurationTask?.cancel()
+        loaderMinimumDurationElapsed = true
+        withAnimation(DesignSystem.Animation.default) {
+            isFullScreenLoaderVisible = false
+        }
+        isFullScreenLoaderMounted = false
     }
 }
