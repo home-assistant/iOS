@@ -13,7 +13,7 @@ import Network
 /// the listener runs and the camera capture session is kept alive continuously (not
 /// only while clients are connected), so the stream is instantly available. Like all
 /// camera capture, this only works while the app is in the foreground.
-public final class CameraStreamServer: NSObject {
+public class CameraStreamServer {
     private enum UserDefaultsKeys: String {
         case port = "camera_stream_port"
     }
@@ -31,6 +31,8 @@ public final class CameraStreamServer: NSObject {
     /// Called (on the main queue) whenever the streaming state changes, so the
     /// Camera Stream sensor can push an update.
     public var onStateChange: (() -> Void)?
+
+    public init() {}
 
     // MARK: - State
 
@@ -50,7 +52,7 @@ public final class CameraStreamServer: NSObject {
     /// interface address. `nil` when the device has no Wi-Fi IPv4 address.
     public var streamURL: String? {
         guard let address = Self.localIPAddress() else { return nil }
-        return "http://\(address):\(Int(port))/"
+        return "http://\(address):\(port)/"
     }
 
     /// IPv4 address of the Wi-Fi interface (`en0`), if any.
@@ -85,13 +87,11 @@ public final class CameraStreamServer: NSObject {
 
     // MARK: - Persisted settings
 
-    public var port: Double {
+    public var port: Int {
         get {
             let prefs = Current.settingsStore.prefs
-            if prefs.object(forKey: UserDefaultsKeys.port.rawValue) == nil {
-                return 8090
-            }
-            return prefs.double(forKey: UserDefaultsKeys.port.rawValue)
+            guard prefs.object(forKey: UserDefaultsKeys.port.rawValue) != nil else { return 8090 }
+            return prefs.integer(forKey: UserDefaultsKeys.port.rawValue)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.port.rawValue)
@@ -240,7 +240,7 @@ public final class CameraStreamServer: NSObject {
     /// output's `alwaysDiscardsLateVideoFrames` prevents pool starvation.
     public func handle(frame: CVPixelBuffer) {
         encodingQueue.async { [weak self] in
-            guard let self, !queue.sync(execute: { connections.isEmpty }) else { return }
+            guard let self, !queue.sync(execute: { self.connections.isEmpty }) else { return }
 
             let image = CIImage(cvPixelBuffer: frame)
             guard let jpeg = ciContext.jpegRepresentation(
@@ -280,12 +280,15 @@ extension CameraStreamServer: MotionDetectionObserver {
 #else
 
 /// Stub for platforms without camera capture (watchOS, Mac Catalyst).
-public final class CameraStreamServer: NSObject {
+public class CameraStreamServer {
     public var onStateChange: (() -> Void)?
     public var isActive: Bool { false }
     public var isStreaming: Bool { false }
     public var clientCount: Int { 0 }
-    public var port: Double = 8090
+    public var port: Int = 8090
+
+    public init() {}
+
     public func setActive(_ newValue: Bool) {}
 }
 

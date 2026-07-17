@@ -375,7 +375,7 @@ public class AppEnvironment {
         $0.register(provider: KioskBrightnessSensor.self)
         $0.register(provider: KioskVolumeSensor.self)
         $0.register(provider: KioskScreensaverSensor.self)
-        $0.register(provider: MotionSensor.self)
+        $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
     }
 

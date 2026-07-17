@@ -29,7 +29,7 @@ struct WebhookSensorIdTests {
         assert(WebhookSensorId.kioskBrightness.rawValue == "kioskBrightness")
         assert(WebhookSensorId.kioskVolume.rawValue == "kioskVolume")
         assert(WebhookSensorId.kioskScreensaver.rawValue == "kioskScreensaver")
-        assert(WebhookSensorId.motion.rawValue == "motion")
+        assert(WebhookSensorId.cameraMotion.rawValue == "camera_motion")
         assert(WebhookSensorId.cameraStream.rawValue == "camera_stream")
         assert(
             WebhookSensorId.allCases.count == 28,

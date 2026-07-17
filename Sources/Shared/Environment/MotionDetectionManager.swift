@@ -13,7 +13,7 @@ import UIKit
 /// on the luminance (Y) plane. Designed for kiosk/wall-mounted usage: the capture
 /// session only runs while at least one observer is registered and the app is in
 /// the foreground.
-public final class MotionDetectionManager: NSObject {
+public class MotionDetectionManager: NSObject {
     // MARK: - Public state
 
     /// Detection state is written on the capture/processing queue and read from
@@ -65,11 +65,7 @@ public final class MotionDetectionManager: NSObject {
     /// heat significantly; frame differencing works well down to 1-2 fps.
     public var frameRate: Double {
         get {
-            let prefs = Current.settingsStore.prefs
-            if prefs.object(forKey: UserDefaultsKeys.frameRate.rawValue) == nil {
-                return 10.0
-            }
-            return prefs.double(forKey: UserDefaultsKeys.frameRate.rawValue)
+            storedSetting(for: .frameRate, default: 10.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.frameRate.rawValue)
@@ -83,11 +79,7 @@ public final class MotionDetectionManager: NSObject {
     /// as motion. Lower = more sensitive.
     public var areaThresholdPercent: Double {
         get {
-            let prefs = Current.settingsStore.prefs
-            if prefs.object(forKey: UserDefaultsKeys.areaThreshold.rawValue) == nil {
-                return 2.0
-            }
-            return prefs.double(forKey: UserDefaultsKeys.areaThreshold.rawValue)
+            storedSetting(for: .areaThreshold, default: 2.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.areaThreshold.rawValue)
@@ -98,20 +90,22 @@ public final class MotionDetectionManager: NSObject {
     /// the binary sensor flapping).
     public var clearDelay: Double {
         get {
-            let prefs = Current.settingsStore.prefs
-            if prefs.object(forKey: UserDefaultsKeys.clearDelay.rawValue) == nil {
-                return 30.0
-            }
-            return prefs.double(forKey: UserDefaultsKeys.clearDelay.rawValue)
+            storedSetting(for: .clearDelay, default: 30.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.clearDelay.rawValue)
         }
     }
 
+    private func storedSetting(for key: UserDefaultsKeys, default defaultValue: Double) -> Double {
+        let prefs = Current.settingsStore.prefs
+        guard prefs.object(forKey: key.rawValue) != nil else { return defaultValue }
+        return prefs.double(forKey: key.rawValue)
+    }
+
     /// Per-pixel luminance delta (0-255) above which a pixel counts as changed.
     /// Kept internal: the area threshold is the user-facing sensitivity knob.
-    private let pixelThreshold: Int = 25
+    private static let pixelThreshold = 25
 
     // MARK: - Capture plumbing
 
@@ -295,6 +289,18 @@ public final class MotionDetectionManager: NSObject {
 
     // MARK: - Motion state
 
+    /// Ratio (0...1) of samples whose luminance changed by more than `pixelThreshold`
+    /// between two equally-sized sample buffers; 0 when the buffers can't be compared.
+    static func changedRatio(previous: [UInt8], current: [UInt8]) -> Double {
+        guard !current.isEmpty, previous.count == current.count else { return 0 }
+
+        var changedCount = 0
+        for index in current.indices where abs(Int(current[index]) - Int(previous[index])) > pixelThreshold {
+            changedCount += 1
+        }
+        return Double(changedCount) / Double(current.count)
+    }
+
     private func handleMotionFrame() {
         detectionState.mutate { $0.lastMotionDate = Current.date() }
 
@@ -350,29 +356,17 @@ extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         // Subsample the Y plane into a compact buffer.
         var samples = [UInt8]()
         samples.reserveCapacity((width / sampleStep + 1) * (height / sampleStep + 1))
-        var row = 0
-        while row < height {
-            var column = 0
+        for row in stride(from: 0, to: height, by: sampleStep) {
             let rowStart = row * bytesPerRow
-            while column < width {
+            for column in stride(from: 0, to: width, by: sampleStep) {
                 samples.append(pointer[rowStart + column])
-                column += sampleStep
             }
-            row += sampleStep
         }
 
         defer { previousSamples = samples }
+        guard let previousSamples else { return }
 
-        guard let previous = previousSamples, previous.count == samples.count, !samples.isEmpty else {
-            return
-        }
-
-        var changedCount = 0
-        for index in samples.indices where abs(Int(samples[index]) - Int(previous[index])) > pixelThreshold {
-            changedCount += 1
-        }
-
-        let changedRatio = Double(changedCount) / Double(samples.count)
+        let changedRatio = Self.changedRatio(previous: previousSamples, current: samples)
         detectionState.mutate { $0.lastChangedRatio = changedRatio }
 
         if changedRatio * 100 >= areaThresholdPercent {
@@ -384,8 +378,8 @@ extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 #else
 
 /// Stub for platforms without front-camera capture (watchOS, Mac Catalyst) so the
-/// Shared target compiles everywhere; `MotionSensor` reports unavailable there.
-public final class MotionDetectionManager {
+/// Shared target compiles everywhere; `CameraMotionSensor` reports unavailable there.
+public class MotionDetectionManager {
     public private(set) var isMotionDetected = false
     public var canDetectMotion: Bool { false }
     public var attributes: [String: Any] { [:] }

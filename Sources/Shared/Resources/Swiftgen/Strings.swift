@@ -3614,6 +3614,16 @@ public enum L10n {
         public static var timeUntilIdle: String { return L10n.tr("Localizable", "sensors.active.setting.time_until_idle") }
       }
     }
+    public enum CameraMotion {
+      public enum Setting {
+        /// Changed area threshold
+        public static var changedAreaThreshold: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.changed_area_threshold") }
+        /// Clear delay
+        public static var clearDelay: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.clear_delay") }
+        /// Frame rate
+        public static var frameRate: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.frame_rate") }
+      }
+    }
     public enum CameraStream {
       public enum Setting {
         /// Stream port
@@ -3624,16 +3634,6 @@ public enum L10n {
       public enum Setting {
         /// Use Zone Name
         public static var useZones: String { return L10n.tr("Localizable", "sensors.geocoded_location.setting.use_zones") }
-      }
-    }
-    public enum Motion {
-      public enum Setting {
-        /// Changed area threshold
-        public static var changedAreaThreshold: String { return L10n.tr("Localizable", "sensors.motion.setting.changed_area_threshold") }
-        /// Clear delay
-        public static var clearDelay: String { return L10n.tr("Localizable", "sensors.motion.setting.clear_delay") }
-        /// Frame rate
-        public static var frameRate: String { return L10n.tr("Localizable", "sensors.motion.setting.frame_rate") }
       }
     }
   }

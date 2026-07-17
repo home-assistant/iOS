@@ -42,10 +42,6 @@ final class CameraStreamSensor: SensorProvider {
         case unavailable
     }
 
-    private enum UserDefaultsKeys: String {
-        case initialized = "camera_stream_sensor_initialized"
-    }
-
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {
         self.request = request
@@ -57,7 +53,9 @@ final class CameraStreamSensor: SensorProvider {
             return .init(error: CameraStreamError.unavailable)
         }
 
-        disableOnFirstRun()
+        // The camera must never turn on (nor its permission prompt appear) without an
+        // explicit user opt-in, so this sensor starts disabled instead of enabled-by-default.
+        Current.sensors.disableInitially(sensorId: .cameraStream)
 
         let server = Current.cameraStreamServer
         let isStreaming = server.isStreaming
@@ -69,7 +67,7 @@ final class CameraStreamSensor: SensorProvider {
             state: isStreaming ? "streaming" : "idle"
         )
         sensor.Attributes = [
-            "Port": Int(server.port),
+            "Port": server.port,
             "Clients": server.clientCount,
             "Stream URL": server.streamURL ?? "unavailable (no Wi-Fi address)",
         ]
@@ -77,8 +75,8 @@ final class CameraStreamSensor: SensorProvider {
         sensor.Settings = [
             .init(
                 type: .stepper(
-                    getter: { server.port },
-                    setter: { server.port = $0 },
+                    getter: { Double(server.port) },
+                    setter: { server.port = Int($0) },
                     minimum: 1024,
                     maximum: 65535,
                     step: 1,
@@ -97,14 +95,5 @@ final class CameraStreamSensor: SensorProvider {
         #else
         return .init(error: CameraStreamError.unavailable)
         #endif
-    }
-
-    /// Sensors are enabled by default, but the camera must never turn on without an
-    /// explicit user opt-in — so unlike other sensors, this one starts disabled.
-    private func disableOnFirstRun() {
-        let prefs = Current.settingsStore.prefs
-        guard prefs.object(forKey: UserDefaultsKeys.initialized.rawValue) == nil else { return }
-        prefs.set(true, forKey: UserDefaultsKeys.initialized.rawValue)
-        Current.sensors.setEnabled(false, forUniqueID: WebhookSensorId.cameraStream.rawValue)
     }
 }
