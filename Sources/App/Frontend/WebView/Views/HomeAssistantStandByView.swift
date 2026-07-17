@@ -476,7 +476,7 @@ struct HomeAssistantStandByView: View {
         emptyState?.dismissAction()
     }
 
-    // Debug escape hatch while the loader is stuck: the empty state has its own hidden dismiss accessory.
+    // Debug escape hatch while the loader is stuck; empty-state mode already has its own hidden dismiss accessory.
     private func registerLogoDismissTap() {
         guard emptyState == nil, let onLogoDismiss else { return }
         logoDismissTapCount += 1
