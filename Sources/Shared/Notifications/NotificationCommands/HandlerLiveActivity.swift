@@ -2,6 +2,7 @@
 import ActivityKit
 import Foundation
 import PromiseKit
+import SharedPush
 
 // MARK: - HandlerStartOrUpdateLiveActivity
 
@@ -139,8 +140,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let progress = (payload["progress"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
         let progressMax = (payload["progress_max"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
         let chronometer = payload["chronometer"] as? Bool
-        let icon = payload["notification_icon"] as? String
-        let color = payload["notification_icon_color"] as? String
+        let icon = payload[NotificationPayloadKey.notificationIcon.rawValue] as? String
+        let color = payload[NotificationPayloadKey.notificationIconColor.rawValue] as? String
         let url = payload["url"] as? String
         let backgroundColor = payload["background_color"] as? String
         let textColor = payload["text_color"] as? String

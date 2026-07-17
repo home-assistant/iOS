@@ -1902,6 +1902,7 @@
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
+		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
@@ -2432,6 +2433,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC0C3002FBD10051FC9B /* Extensions */,
@@ -3096,6 +3098,7 @@
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC293002FBD10051FC9B /* Sensors */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
+				42F467200000000000000001 /* NotificationSender */,
 				8881A40916A3424685660E6B /* LiveActivity */,
 			);
 			name = "Tests-Shared";
