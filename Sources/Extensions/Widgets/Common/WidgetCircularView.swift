@@ -14,15 +14,22 @@ struct WidgetCircularView: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Image(uiImage: icon.image(
-                ofSize: .init(width: 24, height: 24),
-                color: .white
-            ))
-            .foregroundStyle(.ultraThickMaterial)
+            Text(verbatim: icon.unicode)
+                .font(.custom(MaterialDesignIcons.familyName, size: 24))
+                .foregroundStyle(.primary)
+                .minimumScaleFactor(0.5)
             Image(uiImage: Self.scaleLogo(logo: Asset.logo.image, size: 10))
         }
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))
         .clipShape(Circle())
+    }
+}
+
+#Preview {
+    HStack {
+        WidgetCircularView(icon: .scriptTextIcon)
+        WidgetCircularView(icon: .coffeeIcon)
+        WidgetCircularView(icon: .lightbulbIcon)
     }
 }
