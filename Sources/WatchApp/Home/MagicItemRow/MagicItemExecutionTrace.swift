@@ -34,6 +34,10 @@ final class MagicItemExecutionTrace: ObservableObject {
     /// True once the execution reported a terminal result. Entries may still arrive after this (e.g.
     /// a late reply following the UI timeout) and are appended normally.
     @Published private(set) var isFinished = false
+    /// The most recent entry describing execution progress. Timeout/watchdog entries are logged with
+    /// `isProgress: false` so they can report how far the execution got without counting themselves.
+    /// Main-thread only, like `entries`.
+    private(set) var lastProgressMessage: String?
 
     private let recordsClientEvents: Bool
     private let startDate = Current.date()
@@ -47,7 +51,7 @@ final class MagicItemExecutionTrace: ObservableObject {
         String(format: "+%.2fs", entry.date.timeIntervalSince(startDate))
     }
 
-    func log(_ level: Level, _ message: String) {
+    func log(_ level: Level, _ message: String, isProgress: Bool = true) {
         Current.Log.info("[ItemExecutionTrace] \(message)")
         if recordsClientEvents {
             Current.clientEventStore.addEvent(.init(
@@ -61,6 +65,9 @@ final class MagicItemExecutionTrace: ObservableObject {
         }
         DispatchQueue.main.async { [weak self] in
             self?.entries.append(.init(date: Current.date(), level: level, message: message))
+            if isProgress {
+                self?.lastProgressMessage = message
+            }
         }
     }
 
