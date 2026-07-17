@@ -2256,6 +2256,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.title") }
       /// Screensaver
       public static var toggle: String { return L10n.tr("Localizable", "kiosk.screensaver.toggle") }
+      /// Wake on camera motion
+      public static var wakeOnCameraMotion: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion") }
+      /// Uses the front camera to hide the screensaver when motion is detected. The camera is only active while the screensaver is visible.
+      public static var wakeOnCameraMotionFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion_footer") }
       public enum Clock {
         /// Clock
         public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.clock.title") }
@@ -3610,10 +3614,26 @@ public enum L10n {
         public static var timeUntilIdle: String { return L10n.tr("Localizable", "sensors.active.setting.time_until_idle") }
       }
     }
+    public enum CameraStream {
+      public enum Setting {
+        /// Stream port
+        public static var streamPort: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.stream_port") }
+      }
+    }
     public enum GeocodedLocation {
       public enum Setting {
         /// Use Zone Name
         public static var useZones: String { return L10n.tr("Localizable", "sensors.geocoded_location.setting.use_zones") }
+      }
+    }
+    public enum Motion {
+      public enum Setting {
+        /// Changed area threshold
+        public static var changedAreaThreshold: String { return L10n.tr("Localizable", "sensors.motion.setting.changed_area_threshold") }
+        /// Clear delay
+        public static var clearDelay: String { return L10n.tr("Localizable", "sensors.motion.setting.clear_delay") }
+        /// Frame rate
+        public static var frameRate: String { return L10n.tr("Localizable", "sensors.motion.setting.frame_rate") }
       }
     }
   }
