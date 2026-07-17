@@ -89,7 +89,7 @@ final class CameraMotionSensor: SensorProvider {
                     getter: { manager.areaThresholdPercent },
                     setter: { manager.areaThresholdPercent = $0 },
                     minimum: 0.5,
-                    maximum: 25,
+                    maximum: 100,
                     step: 0.5,
                     displayValueFor: { value in
                         value.map { String(format: "%.1f %%", $0) }

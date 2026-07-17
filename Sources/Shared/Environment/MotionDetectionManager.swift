@@ -65,7 +65,7 @@ public class MotionDetectionManager: NSObject {
     /// heat significantly; frame differencing works well down to 1-2 fps.
     public var frameRate: Double {
         get {
-            storedSetting(for: .frameRate, default: 10.0)
+            storedSetting(for: .frameRate, default: 8.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.frameRate.rawValue)
@@ -79,7 +79,7 @@ public class MotionDetectionManager: NSObject {
     /// as motion. Lower = more sensitive.
     public var areaThresholdPercent: Double {
         get {
-            storedSetting(for: .areaThreshold, default: 2.0)
+            storedSetting(for: .areaThreshold, default: 40.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.areaThreshold.rawValue)
@@ -90,7 +90,7 @@ public class MotionDetectionManager: NSObject {
     /// the binary sensor flapping).
     public var clearDelay: Double {
         get {
-            storedSetting(for: .clearDelay, default: 30.0)
+            storedSetting(for: .clearDelay, default: 15.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.clearDelay.rawValue)
