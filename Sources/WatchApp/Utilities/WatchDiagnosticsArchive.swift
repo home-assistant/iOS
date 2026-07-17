@@ -32,6 +32,14 @@ struct WatchDiagnosticsArchive: Transferable {
             AppConstants.clientEventsFile,
             AppConstants.appGRDBFile,
         ]
+        // In WAL journal mode the newest writes live in the sidecars, so a copy of just the main
+        // SQLite file can be stale or unreadable without them.
+        for suffix in ["-wal", "-shm"] {
+            let sidecarURL = URL(fileURLWithPath: AppConstants.appGRDBFile.path + suffix)
+            if fileManager.fileExists(atPath: sidecarURL.path) {
+                sources.append(sidecarURL)
+            }
+        }
         do {
             try sources.append(contentsOf: fileManager.contentsOfDirectory(
                 at: AppConstants.LogsDirectory,
@@ -58,8 +66,12 @@ struct WatchDiagnosticsArchive: Transferable {
             $0.locale = Locale(identifier: "en_US_POSIX")
         }
         let fileName = formatter.string(from: Current.date())
-        let archiveURL = fileManager.temporaryDirectory.appendingPathComponent(fileName, isDirectory: false)
-        try? fileManager.removeItem(at: archiveURL)
+        // Each export gets its own directory so concurrent shares can't clobber each other's archive
+        // while the share sheet is still reading it.
+        let exportURL = fileManager.temporaryDirectory
+            .appendingPathComponent("watch-diagnostics-export-\(UUID().uuidString)", isDirectory: true)
+        try fileManager.createDirectory(at: exportURL, withIntermediateDirectories: true)
+        let archiveURL = exportURL.appendingPathComponent(fileName, isDirectory: false)
 
         var result: Result<URL, Error> = .failure(ArchiveError.zipConversionFailed)
         var coordinatorError: NSError?

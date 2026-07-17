@@ -228,8 +228,8 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     /// Snapshot of everything relevant to routing, recorded at the start of a verbose trace.
-    /// Each potentially blocking call (server list, Wi-Fi lookup) is bracketed by entries, so a hang
-    /// pinpoints itself: the last entry in the trace is the step that never returned.
+    /// Each potentially blocking call (server list, Wi-Fi lookup) is announced before it runs, so a
+    /// hang pinpoints itself: the last entry in the trace names the step that never returned.
     private func logExecutionContext(magicItem: MagicItem, target: WatchActionTarget) async {
         guard let trace else { return }
         trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on server id \(magicItem.serverId)")
@@ -241,10 +241,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         trace.log(.info, "iPhone reachability: \(Communicator.shared.currentReachability)")
         // Resolving the server name reads the ServerManager cache, which can block on its lock (held
         // during Keychain writes by server sync) or on cold Keychain/GRDB reads.
+        trace.log(.info, "Resolving server name…")
         let serverName = Current.servers.all
             .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
             ?? "unknown (id \(magicItem.serverId))"
         trace.log(.info, "Server: \"\(serverName)\"")
+        trace.log(.info, "Checking watch Wi-Fi…")
         if let ssid = await Current.connectivity.currentWiFiSSID() {
             trace.log(.info, "Watch Wi-Fi: \(ssid)")
         } else {
