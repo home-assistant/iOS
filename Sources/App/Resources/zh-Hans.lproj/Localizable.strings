@@ -355,6 +355,11 @@
 "close_label" = "关闭";
 "component.collapsible_view.collapse" = "收缩";
 "component.collapsible_view.expand" = "展开";
+"connection.active_url_type.toast.external" = "Using the external URL.";
+"connection.active_url_type.toast.internal" = "Using the internal URL.";
+"connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
+"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "复制到剪贴板";
 "connection.error.details.button.discord" = "在 Discord 中询问";
 "connection.error.details.button.doc" = "阅读文档";
@@ -2029,6 +2034,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "watch.settings.client_certificate.remove_from_watch.title" = "从这款手表中移除？";
 "watch.settings.client_events.clear" = "清除";
 "watch.settings.client_events.empty" = "尚未记录任何事件。";
+"watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "日志";
 "watch.settings.complications.empty" = "No complications configured yet.";
 "watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";
