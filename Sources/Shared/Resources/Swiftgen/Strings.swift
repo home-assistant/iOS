@@ -816,6 +816,8 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
     public enum Talkback {
+      /// Microphone access is required to talk through this camera.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_player.talkback.microphone_denied") }
       /// Start talking
       public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
       /// Stop talking

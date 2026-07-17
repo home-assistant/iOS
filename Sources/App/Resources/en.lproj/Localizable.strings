@@ -198,6 +198,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.notification.body" = "Tap to open camera";
+"camera_player.talkback.microphone_denied" = "Microphone access is required to talk through this camera.";
 "camera_player.talkback.start" = "Start talking";
 "camera_player.talkback.stop" = "Stop talking";
 "cameras.no_server_found" = "No server found for camera: %@";

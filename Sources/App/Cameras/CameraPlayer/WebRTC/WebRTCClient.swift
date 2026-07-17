@@ -270,10 +270,14 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
 final class WebRTCClient: NSObject {
     private static let playbackOnlyAudioDevice = PlaybackOnlyRTCAudioDevice()
 
+    private static let sslInitialized: Void = {
+        RTCInitializeSSL()
+    }()
+
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
-    private static let factory: RTCPeerConnectionFactory = {
-        RTCInitializeSSL()
+    private static let playbackFactory: RTCPeerConnectionFactory = {
+        _ = sslInitialized
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
         return RTCPeerConnectionFactory(
@@ -283,7 +287,44 @@ final class WebRTCClient: NSObject {
         )
     }()
 
+    private static let recordingFactory: RTCPeerConnectionFactory = {
+        _ = sslInitialized
+        let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
+        let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
+        return RTCPeerConnectionFactory(
+            encoderFactory: videoEncoderFactory,
+            decoderFactory: videoDecoderFactory
+        )
+    }()
+
+    private static func configureRecordingAudioSession() {
+        let configuration = RTCAudioSessionConfiguration.webRTC()
+        configuration.category = AVAudioSession.Category.playAndRecord.rawValue
+        configuration.mode = AVAudioSession.Mode.videoChat.rawValue
+        configuration.categoryOptions = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
+        RTCAudioSessionConfiguration.setWebRTC(configuration)
+    }
+
+    private static func restorePlaybackAudioSession() {
+        let configuration = RTCAudioSessionConfiguration.webRTC()
+        configuration.category = AVAudioSession.Category.playback.rawValue
+        configuration.mode = AVAudioSession.Mode.moviePlayback.rawValue
+        configuration.categoryOptions = [.mixWithOthers]
+        RTCAudioSessionConfiguration.setWebRTC(configuration)
+
+        let session = RTCAudioSession.sharedInstance()
+        session.lockForConfiguration()
+        defer { session.unlockForConfiguration() }
+        do {
+            try session.setActive(false)
+        } catch {
+            Current.Log.error("Failed to release talkback audio session on close: \(error.localizedDescription)")
+        }
+    }
+
     weak var delegate: WebRTCClientDelegate?
+    private let factory: RTCPeerConnectionFactory
+    private let supportsTalkback: Bool
     private let peerConnection: RTCPeerConnection
     private let mediaConstrains = [
         kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
@@ -291,6 +332,7 @@ final class WebRTCClient: NSObject {
     ]
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
+    private var localAudioTrack: RTCAudioTrack?
     private var remoteDataChannel: RTCDataChannel?
 
     @available(*, unavailable)
@@ -298,7 +340,14 @@ final class WebRTCClient: NSObject {
         fatalError("WebRTCClient:init is unavailable")
     }
 
-    required init(iceServers: [String]) {
+    required init(iceServers: [String], supportsTalkback: Bool = false) {
+        self.supportsTalkback = supportsTalkback
+        let factory = supportsTalkback ? WebRTCClient.recordingFactory : WebRTCClient.playbackFactory
+        self.factory = factory
+        if supportsTalkback {
+            WebRTCClient.configureRecordingAudioSession()
+        }
+
         let config = RTCConfiguration()
         config.iceServers = [RTCIceServer(urlStrings: iceServers)]
 
@@ -316,7 +365,7 @@ final class WebRTCClient: NSObject {
             optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue]
         )
 
-        guard let peerConnection = WebRTCClient.factory.peerConnection(
+        guard let peerConnection = factory.peerConnection(
             with: config,
             constraints: constraints,
             delegate: nil
@@ -333,6 +382,8 @@ final class WebRTCClient: NSObject {
 
     func closeConnection() {
         peerConnection.close()
+        guard supportsTalkback else { return }
+        WebRTCClient.restorePlaybackAudioSession()
     }
 
     // MARK: Signaling
@@ -401,20 +452,29 @@ final class WebRTCClient: NSObject {
         return !remoteAudioTrack.isEnabled
     }
 
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        localAudioTrack?.isEnabled = enabled
+    }
+
     private func createMediaTracks() {
         let streamId = "stream"
         let videoTrack = createVideoTrack()
         peerConnection.add(videoTrack, streamIds: [streamId])
         remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
             .track as? RTCVideoTrack
+        guard supportsTalkback else { return }
+        let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
+        audioTrack.isEnabled = false
+        localAudioTrack = audioTrack
+        peerConnection.add(audioTrack, streamIds: [streamId])
     }
 
     private func createVideoTrack() -> RTCVideoTrack {
         // The local track only exists to establish the transceiver we read the remote track from;
         // we never send video, so there's no capturer. RTCCameraVideoCapturer is also unavailable in
         // app extensions, which is why a capturer here broke the device build of the notification ext.
-        let videoSource = WebRTCClient.factory.videoSource()
-        let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
+        let videoSource = factory.videoSource()
+        let videoTrack = factory.videoTrack(with: videoSource, trackId: "video0")
         return videoTrack
     }
 
@@ -427,8 +487,9 @@ final class WebRTCClient: NSObject {
             Current.Log.warning("Remote track is not an RTCAudioTrack")
             return
         }
+        let wasMuted = remoteAudioTrack.map { !$0.isEnabled } ?? true
         remoteAudioTrack = audioTrack
-        remoteAudioTrack?.isEnabled = false
+        remoteAudioTrack?.isEnabled = !wasMuted
         Current.Log.info("Remote audio track set successfully")
     }
 }

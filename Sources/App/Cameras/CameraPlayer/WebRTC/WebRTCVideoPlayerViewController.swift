@@ -23,10 +23,14 @@ class WebRTCVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoView()
-        viewModel.start()
-        if let client = viewModel.webRTCClient {
-            client.renderRemoteVideo(to: remoteVideoView)
+        viewModel.onClientReady = { [weak self] in
+            self?.attachRenderer()
         }
+        viewModel.start()
+    }
+
+    private func attachRenderer() {
+        viewModel.webRTCClient?.renderRemoteVideo(to: remoteVideoView)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
