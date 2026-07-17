@@ -27,6 +27,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var latestLoadError: Error?
 
     var initialURL: URL?
+    var initialURLPath: String?
     var statusBarButtonsStack: UIStackView?
     var lastNavigationWasServerError = false
     var didHandleServerErrorResponse = false
@@ -95,7 +96,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     #if targetEnvironment(macCatalyst)
-    override var canBecomeFirstResponder: Bool { true }
+    override var canBecomeFirstResponder: Bool {
+        true
+    }
 
     override var keyCommands: [UIKeyCommand]? {
         func prioritised(_ input: String, _ action: Selector) -> UIKeyCommand {
@@ -285,7 +288,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         onWebViewLoaded?(self)
     }
 
-    // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
+    /// Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         coordinator.animate(alongsideTransition: { _ in

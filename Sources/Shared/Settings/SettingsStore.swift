@@ -208,6 +208,24 @@ public class SettingsStore {
         }
     }
 
+    public var lastActiveServerIdentifier: String? {
+        get {
+            prefs.string(forKey: "lastActiveServerIdentifier")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveServerIdentifier")
+        }
+    }
+
+    public var lastActiveURLPath: String? {
+        get {
+            prefs.string(forKey: "lastActiveURLPath")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveURLPath")
+        }
+    }
+
     public func hasSeenWhatsNew(releaseID: String) -> Bool {
         seenWhatsNewReleaseIDs.contains(releaseID)
     }
