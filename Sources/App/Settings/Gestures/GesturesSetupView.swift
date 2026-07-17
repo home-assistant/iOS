@@ -123,3 +123,15 @@ struct GesturesSetupView: View {
         GesturesSetupView()
     }
 }
+
+extension GesturesSetupView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Gestures.Swipe.Up.header),
+            SettingsSearchEntry(L10n.Gestures.Swipe.Down.header),
+            SettingsSearchEntry(L10n.Gestures.Swipe.Left.header),
+            SettingsSearchEntry(L10n.Gestures.Swipe.Right.header),
+            SettingsSearchEntry(L10n.Gestures.Reset.title),
+        ]
+    }
+}

@@ -73,6 +73,17 @@ extension WebViewController {
             return
         }
 
+        Current.websiteDataStoreHandler.cleanFrontendAssetCacheIfNeeded { [weak self] _ in
+            self?.continueLoadingActiveURLIfNeeded()
+        }
+    }
+
+    private func continueLoadingActiveURLIfNeeded() {
+        guard !isAppInBackground() else {
+            Current.Log.info("not loading, in background")
+            return
+        }
+
         var previousAttemptHung = false
         if let inFlightTask = loadActiveURLTask {
             let startDate = loadActiveURLTaskStartDate ?? .distantPast
@@ -224,11 +235,15 @@ extension WebViewController {
 
         // Drive the SwiftUI no-active-URL overlay in `HomeAssistantView` instead of presenting a UIKit modal,
         // so an app-level Settings sheet can float over it without tearing it down.
-        overlayState?.showsNoActiveURL = true
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.showsNoActiveURL = true
+        }
     }
 
     func hideNoActiveURLError() {
-        overlayState?.showsNoActiveURL = false
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.showsNoActiveURL = false
+        }
     }
 
     @objc func scheduleReconnectBackgroundTimer() {

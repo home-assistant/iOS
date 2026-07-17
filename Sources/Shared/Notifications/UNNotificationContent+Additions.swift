@@ -44,10 +44,10 @@ public extension UNNotificationContent {
             .map(NotificationAction.init(action:))
             .map(\.action)
 
-        let existingIdentifiers = Set(payloadActions.map(\.identifier))
-        let snoozeActions = NotificationSnoozeAction.enabledActions()
-            .filter { !existingIdentifiers.contains($0.identifier) }
+        guard payloadActions.isEmpty else {
+            return Array(payloadActions.prefix(maxActions))
+        }
 
-        return Array((payloadActions + snoozeActions).prefix(maxActions))
+        return Array(NotificationSnoozeAction.enabledActions().prefix(maxActions))
     }
 }

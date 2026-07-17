@@ -138,3 +138,14 @@ struct ComplicationsRootView: View {
 #Preview("Complications root") {
     NavigationView { ComplicationsRootView() }
 }
+
+extension ComplicationsRootView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Watch.Complications.Root.yourComplications),
+            SettingsSearchEntry(L10n.Watch.Complications.Root.new),
+            SettingsSearchEntry(L10n.Watch.Complications.Root.reload),
+            SettingsSearchEntry(L10n.Watch.Complications.Root.legacy),
+        ]
+    }
+}

@@ -39,3 +39,12 @@ struct ServersListView: View {
         #endif
     }
 }
+
+extension ServersListView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.addServer),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
+        ]
+    }
+}

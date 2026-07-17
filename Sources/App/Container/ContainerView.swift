@@ -24,10 +24,6 @@ struct ContainerView: View {
         Group {
             switch state.screen {
             case let .onboarding(style):
-                // Host onboarding via `embeddedInHostingController()` (inside `OnboardingHostingView`): the
-                // flow reads an `@EnvironmentObject ViewControllerProvider` (e.g. `OnboardingServersListView`,
-                // to present the OAuth flow) that the SwiftUI `WindowGroup` does not inject — a direct render
-                // would crash on first access. `.id(style)` rebuilds the controller if the style changes.
                 OnboardingHostingView(onboardingStyle: style)
                     .id(style)
             case let .webView(server):

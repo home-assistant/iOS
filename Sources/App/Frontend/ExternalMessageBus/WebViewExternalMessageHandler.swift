@@ -82,6 +82,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.updateFrontendConnectionState(state: connEvt)
+            case .frontendLoaded:
+                webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])

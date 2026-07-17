@@ -65,6 +65,7 @@ struct CarPlayConfigurationView: View {
             carPlayLogo
             tabsSection
             itemsSection
+            addEditButtonsSection
             troubleshootingSection
             resetView
             DebugDatabaseTransferSection(part: .carPlayConfiguration) {
@@ -140,6 +141,19 @@ struct CarPlayConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemButton
+        }
+    }
+
+    private var addEditButtonsSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { viewModel.showAddEditButtons },
+                set: { viewModel.showAddEditButtons = $0 }
+            )) {
+                Text(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title)
+            }
+        } footer: {
+            Text(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.footer)
         }
     }
 
@@ -341,4 +355,15 @@ struct CarPlayConfigurationView: View {
 
 #Preview {
     CarPlayConfigurationView()
+}
+
+extension CarPlayConfigurationView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.CarPlay.Navigation.Tab.quickAccess),
+            SettingsSearchEntry(L10n.Carplay.Tab.QuickAccess.layout),
+            SettingsSearchEntry(L10n.CarPlay.Config.Tabs.title),
+            SettingsSearchEntry(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title),
+        ]
+    }
 }

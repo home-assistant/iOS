@@ -139,3 +139,14 @@ struct CustomWidgetsListView: View {
         CustomWidgetsListView()
     }
 }
+
+extension CustomWidgetsListView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.Widgets.YourWidgets.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Create.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Widgets.ReloadAll.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Custom.DeleteAll.title),
+        ]
+    }
+}

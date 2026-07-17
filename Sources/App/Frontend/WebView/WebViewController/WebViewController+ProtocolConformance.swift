@@ -61,16 +61,18 @@ extension WebViewController: WebViewControllerProtocol {
         latestLoadError = nil
 
         let requestedState = FrontEndConnectionState(rawValue: state) ?? .unknown
-        let resolvedState: FrontEndConnectionState = if connectionState == .authInvalid, requestedState != .connected {
+        let resolvedState: FrontEndConnectionState = if connectionState == .authInvalid,
+                                                        !requestedState.isReadyForDisplay {
             .authInvalid
         } else {
             requestedState
         }
         connectionState = resolvedState
+        overlayState?.connectionState = resolvedState
 
-        // Possible values: connected, disconnected, auth-invalid
+        // Possible values: connected, loaded, disconnected, auth-invalid
         switch resolvedState {
-        case .connected:
+        case .connected, .loaded:
             hideEmptyState()
             updateFrontendKioskMode()
         case .authInvalid:
@@ -134,7 +136,7 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refreshIfDisconnected() {
-        guard connectionState != .connected else { return }
+        guard !connectionState.isReadyForDisplay else { return }
         refresh()
     }
 }

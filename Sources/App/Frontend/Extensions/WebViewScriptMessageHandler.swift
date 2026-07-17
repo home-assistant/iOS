@@ -56,7 +56,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         }
 
         ThemeColors.updateCache(with: messageBody, for: traitCollection)
-        webView?.styleUI()
+        webView?.styleUI(publishesThemedStatusBar: true)
     }
 
     /// Handles externalBus messages by passing them to the webViewExternalMessageHandler.

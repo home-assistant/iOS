@@ -83,6 +83,9 @@ public extension DatabaseQueue {
             NotificationCategoryTable(),
             LocationHistoryTable(),
             LocationErrorTable(),
+            RemindersSyncConfigTable(),
+            RemindersSyncItemLinkTable(),
+            RemindersSyncHistoryEntryTable(),
         ]
     }
 

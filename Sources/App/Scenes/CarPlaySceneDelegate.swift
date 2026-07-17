@@ -47,7 +47,17 @@ class CarPlaySceneDelegate: UIResponder {
         if let config {
             subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems)
             guard config != cachedConfig else { return }
+            let previousTabs = cachedConfig?.tabs
             cachedConfig = config
+
+            // Content-only changes (quick access items, layout, add/edit visibility) don't alter the tab
+            // structure, so refresh the existing providers instead of replacing the root template. Replacing
+            // the root mid-transition (e.g. while the in-car add item flow is dismissing its confirmation and
+            // popping back) fails silently and leaves the CarPlay screen blank.
+            if previousTabs == config.tabs {
+                updateTemplates()
+                return
+            }
 
             // Tabs can be removed from the configuration while their template instances are still
             // cached on the scene delegate. Clear those references before rebuilding so hidden
@@ -83,6 +93,9 @@ class CarPlaySceneDelegate: UIResponder {
             }
         } else {
             subscribeToQuickAccessEntitiesChanges(configEntities: [])
+            // The no-config tab set below differs from any stored config's tabs; clear the cache so a config
+            // appearing later always rebuilds instead of matching a stale tab comparison.
+            cachedConfig = nil
             buildQuickAccessTab()
             buildServerTab()
             visibleTemplates = allTemplates

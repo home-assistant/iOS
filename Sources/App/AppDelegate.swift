@@ -120,10 +120,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         BackgroundRefreshManager.register()
         BackgroundRefreshManager.scheduleAppRefresh()
+        RemindersSyncBackgroundRefresher.register()
+        RemindersSyncBackgroundRefresher.schedule()
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
+        RemindersSyncManager.shared.start()
 
         return true
     }
@@ -425,6 +428,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Import any legacy Realm data into GRDB before anything reads it
         RealmToGRDBMigration.migrateIfNeeded()
         NotificationCategory.setupObserver()
+        // Start the server-state subscriptions that keep GRDB models in sync
+        // (zones via the states cache); without this, appZone is never populated
+        // and region monitoring has nothing to track.
+        Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
     }
 
     private func setupMenus() {

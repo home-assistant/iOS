@@ -18,7 +18,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var urlObserver: NSKeyValueObservation?
     var tokens = [HACancellable]()
 
-    let refreshControl = UIRefreshControl()
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
@@ -50,6 +49,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Owns disconnected empty-state recovery timing. Kept in `HomeAssistantView` so attempts survive reset.
     var reconnectManager: WebViewReconnectManager?
+
+    /// Called after `viewDidLoad` creates the hosted `WKWebView`.
+    var onWebViewLoaded: ((WebViewController) -> Void)?
 
     /// In-flight `loadActiveURLIfNeeded()` attempt and when it started. Repeat calls are skipped
     /// while a recent attempt is running, but an attempt older than
@@ -263,7 +265,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.uiDelegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
-        setupPullToRefresh()
 
         NotificationCenter.default.addObserver(
             self,
@@ -281,6 +282,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         postOnboardingNotificationPermission()
         checkForLocalSecurityLevelDecisionNeeded()
+        onWebViewLoaded?(self)
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -370,7 +372,7 @@ extension WebViewController {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 switch connectionState {
-                case .connected:
+                case .connected, .loaded:
                     reload()
                 case .disconnected, .unknown:
                     if overlayState?.emptyState != nil {

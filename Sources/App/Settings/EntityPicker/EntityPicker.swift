@@ -90,7 +90,9 @@ struct EntityPicker: View {
                     .padding()
                     .modify { view in
                         if #available(iOS 26.0, *) {
-                            view.glassEffect(.regular.interactive(), in: .capsule)
+                            view
+                                .glassEffect(.regular.interactive(), in: .capsule)
+                                .contentShape(Capsule())
 
                         } else {
                             view

@@ -284,7 +284,6 @@ private struct WatchDomainFilterPill: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, DesignSystem.Spaces.one)
                 .padding(.vertical, DesignSystem.Spaces.half)
-                .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .modify { view in
@@ -296,5 +295,6 @@ private struct WatchDomainFilterPill: View {
                     .clipShape(Capsule())
             }
         }
+        .contentShape(Capsule())
     }
 }
