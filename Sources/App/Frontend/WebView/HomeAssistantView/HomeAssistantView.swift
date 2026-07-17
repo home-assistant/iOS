@@ -116,7 +116,8 @@ struct HomeAssistantView: View, WebFrontendView {
                 isLoading: viewModel.overlayState.isLoading,
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
-                }
+                },
+                onLogoDismiss: viewModel.forceDismissStandByView
             )
             .transition(.opacity)
             .opacity(viewModel.standByOpacity)

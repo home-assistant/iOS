@@ -4,6 +4,7 @@ import SwiftUI
 
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
+    static let logoDismissTapThreshold = 10
 
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
@@ -19,12 +20,14 @@ struct HomeAssistantStandByView: View {
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
     let onGestureAction: ((HAGestureAction) -> Void)?
+    let onLogoDismiss: (() -> Void)?
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
     @State private var dismissTapCount = 0
+    @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
@@ -52,12 +55,14 @@ struct HomeAssistantStandByView: View {
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
         isLoading: Bool = false,
-        onGestureAction: ((HAGestureAction) -> Void)? = nil
+        onGestureAction: ((HAGestureAction) -> Void)? = nil,
+        onLogoDismiss: (() -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
         self.onGestureAction = onGestureAction
+        self.onLogoDismiss = onLogoDismiss
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -298,6 +303,8 @@ struct HomeAssistantStandByView: View {
             width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
             height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
         )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: registerLogoDismissTap)
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
@@ -467,6 +474,15 @@ struct HomeAssistantStandByView: View {
         guard dismissTapCount >= Self.dismissTapThreshold else { return }
         dismissTapCount = 0
         emptyState?.dismissAction()
+    }
+
+    // Debug escape hatch while the loader is stuck; empty-state mode already has its own hidden dismiss accessory.
+    private func registerLogoDismissTap() {
+        guard emptyState == nil, let onLogoDismiss else { return }
+        logoDismissTapCount += 1
+        guard logoDismissTapCount >= Self.logoDismissTapThreshold else { return }
+        logoDismissTapCount = 0
+        onLogoDismiss()
     }
 
     private func selectServer(_ server: Server) {
