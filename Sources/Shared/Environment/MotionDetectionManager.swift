@@ -61,17 +61,25 @@ public class MotionDetectionManager: NSObject {
         case clearDelay = "motion_detection_clear_delay"
     }
 
-    /// Camera frame rate in frames per second. Lower values reduce power draw and
-    /// heat significantly; frame differencing works well down to 1-2 fps.
+    /// Motion detection frame rate in frames per second. Lower values reduce power
+    /// draw and heat significantly; frame differencing works well down to 1-2 fps.
+    /// The capture session itself runs at the highest rate any active consumer needs
+    /// (see `applyFrameRate`); detection then samples frames at this rate.
     public var frameRate: Double {
         get {
             storedSetting(for: .frameRate, default: 8.0)
         }
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.frameRate.rawValue)
-            sessionQueue.async { [weak self] in
-                self?.applyFrameRate()
-            }
+            refreshFrameRate()
+        }
+    }
+
+    /// Re-evaluates the capture frame rate from all active consumers. Called when any
+    /// consumer's rate or activation changes (e.g. the stream server turning on).
+    public func refreshFrameRate() {
+        sessionQueue.async { [weak self] in
+            self?.applyFrameRate()
         }
     }
 
@@ -119,6 +127,10 @@ public class MotionDetectionManager: NSObject {
     /// 80x60 samples per frame, plenty for presence detection.
     private let sampleStep = 8
     private var previousSamples: [UInt8]?
+    /// Timestamp of the last frame the detection pipeline processed; only touched on
+    /// the processing queue. Lets detection run at `frameRate` even when the capture
+    /// session runs faster for streaming.
+    private var lastDetectionTime: CFAbsoluteTime = 0
 
     private var clearTimer: Timer?
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
@@ -270,11 +282,20 @@ public class MotionDetectionManager: NSObject {
         applyFrameRate()
     }
 
-    /// Clamps and applies the configured frame rate to the capture device.
+    /// Applies the capture frame rate: the highest rate among active consumers
+    /// (motion detection always; the MJPEG stream when its server is active),
+    /// clamped to a sane range. Detection throttles itself down to `frameRate`
+    /// in `captureOutput` when the capture runs faster for streaming.
     private func applyFrameRate() {
         guard let captureDevice, isCaptureSessionConfigured else { return }
 
-        let fps = min(max(frameRate, 1), 30)
+        var desired = frameRate
+        let streamServer = Current.cameraStreamServer
+        if streamServer.isActive {
+            desired = max(desired, streamServer.streamFrameRate)
+        }
+
+        let fps = min(max(desired, 1), 30)
         let duration = CMTime(value: 1, timescale: CMTimeScale(fps))
 
         do {
@@ -339,8 +360,15 @@ extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     ) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        // Feed the MJPEG stream server (no-op when no client is connected).
+        // Feed the MJPEG stream server every frame (no-op when no client is connected).
         Current.cameraStreamServer.handle(frame: pixelBuffer)
+
+        // Detection samples frames at its own rate; the capture session may run
+        // faster when the stream server needs a higher frame rate. The 0.9 factor
+        // tolerates capture timing jitter.
+        let now = CFAbsoluteTimeGetCurrent()
+        guard now - lastDetectionTime >= (1.0 / max(frameRate, 1)) * 0.9 else { return }
+        lastDetectionTime = now
 
         CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly) }

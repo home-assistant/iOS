@@ -88,17 +88,18 @@ final class CameraMotionSensor: SensorProvider {
                         value.map { String(format: "%.0f fps", $0) }
                     }
                 ),
-                title: L10n.Sensors.CameraMotion.Setting.frameRate
+                title: L10n.Sensors.CameraMotion.Setting.frameRate,
+                subtitle: L10n.Sensors.Camera.frameRateWarning
             ),
             .init(
                 type: .slider(
                     getter: { manager.areaThresholdPercent },
                     setter: { manager.areaThresholdPercent = $0 },
-                    minimum: 0.5,
+                    minimum: 1,
                     maximum: 100,
-                    step: 0.5,
+                    step: 1,
                     displayValueFor: { value in
-                        value.map { String(format: "%.1f %%", $0) }
+                        value.map { String(format: "%.0f %%", $0) }
                     }
                 ),
                 title: L10n.Sensors.CameraMotion.Setting.changedAreaThreshold

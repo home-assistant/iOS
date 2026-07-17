@@ -26,10 +26,24 @@ public struct WebhookSensorSetting {
             values: [Double],
             displayValueFor: (Double) -> String
         )
+        case numericField(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            minimum: Double = 0,
+            maximum: Double = 100
+        )
     }
 
     public let type: SettingType
     public let title: String
+    /// Optional caption shown under the row, e.g. a performance warning.
+    public let subtitle: String?
+
+    public init(type: SettingType, title: String, subtitle: String? = nil) {
+        self.type = type
+        self.title = title
+        self.subtitle = subtitle
+    }
 }
 
 public class WebhookSensor: Mappable, Equatable, Comparable {

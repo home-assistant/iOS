@@ -16,6 +16,7 @@ import Network
 public class CameraStreamServer {
     private enum UserDefaultsKeys: String {
         case port = "camera_stream_port"
+        case frameRate = "camera_stream_frame_rate"
     }
 
     private static let boundary = "hacameraframe"
@@ -50,9 +51,10 @@ public class CameraStreamServer {
 
     /// The URL clients should use to consume the stream, based on the Wi-Fi
     /// interface address. `nil` when the device has no Wi-Fi IPv4 address.
+    /// The `/camera` path is canonical/advertised; the server accepts any path.
     public var streamURL: String? {
         guard let address = Self.localIPAddress() else { return nil }
-        return "http://\(address):\(port)/"
+        return "http://\(address):\(port)/camera"
     }
 
     /// IPv4 address of the Wi-Fi interface (`en0`), if any.
@@ -97,11 +99,31 @@ public class CameraStreamServer {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.port.rawValue)
             queue.async { [weak self] in
                 guard let self, active else { return }
-                // Restart on the new port.
                 stopListener()
-                startListener()
-                notifyStateChange()
+                // Restart on the new port after a beat, giving the cancelled listener
+                // time to release its socket.
+                queue.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                    guard let self, active else { return }
+                    startListener()
+                    notifyStateChange()
+                    Current.Log.info("Camera stream: restarted on port \(port)")
+                }
             }
+        }
+    }
+
+    /// Desired stream frame rate in frames per second. The shared capture session
+    /// runs at the highest rate any active consumer needs, so this only raises the
+    /// capture rate while the server is active.
+    public var streamFrameRate: Double {
+        get {
+            let prefs = Current.settingsStore.prefs
+            guard prefs.object(forKey: UserDefaultsKeys.frameRate.rawValue) != nil else { return 15.0 }
+            return prefs.double(forKey: UserDefaultsKeys.frameRate.rawValue)
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.frameRate.rawValue)
+            Current.motionDetection.refreshFrameRate()
         }
     }
 
@@ -120,6 +142,8 @@ public class CameraStreamServer {
             }
             updateCameraObservation()
             notifyStateChange()
+            // The capture rate depends on which consumers are active.
+            Current.motionDetection.refreshFrameRate()
         }
     }
 
@@ -286,6 +310,7 @@ public class CameraStreamServer {
     public var isStreaming: Bool { false }
     public var clientCount: Int { 0 }
     public var port: Int = 8090
+    public var streamFrameRate: Double = 15
 
     public init() {}
 

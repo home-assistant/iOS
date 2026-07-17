@@ -3614,6 +3614,10 @@ public enum L10n {
         public static var timeUntilIdle: String { return L10n.tr("Localizable", "sensors.active.setting.time_until_idle") }
       }
     }
+    public enum Camera {
+      /// Higher frame rates may impact performance and make the device run hotter.
+      public static var frameRateWarning: String { return L10n.tr("Localizable", "sensors.camera.frame_rate_warning") }
+    }
     public enum CameraMotion {
       public enum Setting {
         /// Changed area threshold
@@ -3626,6 +3630,8 @@ public enum L10n {
     }
     public enum CameraStream {
       public enum Setting {
+        /// Frame rate
+        public static var frameRate: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.frame_rate") }
         /// Stream port
         public static var streamPort: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.stream_port") }
       }

@@ -16,7 +16,7 @@ struct SensorDetailSliderRow: View {
     @State private var value: Double = 0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spaces.half) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
             HStack {
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -52,10 +52,10 @@ struct SensorDetailSliderRow: View {
         )
         SensorDetailSliderRow(
             title: "Changed area threshold",
-            minimum: 0.5,
+            minimum: 1,
             maximum: 100,
-            step: 0.5,
-            displayValueFor: { value in value.map { String(format: "%.1f %%", $0) } },
+            step: 1,
+            displayValueFor: { value in value.map { String(format: "%.0f %%", $0) } },
             getter: { 40 },
             setter: { _ in }
         )

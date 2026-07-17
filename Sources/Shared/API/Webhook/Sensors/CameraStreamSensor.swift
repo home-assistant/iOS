@@ -36,7 +36,7 @@ final class CameraStreamSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPr
 /// Exposes the MJPEG camera stream server as a sensor: enabling it starts the server
 /// (and the camera), the state reports whether a client is currently pulling the
 /// stream. Consumed in Home Assistant through the MJPEG camera integration pointed
-/// at `http://<device-ip>:<port>/`. iOS/iPadOS only.
+/// at `http://<device-ip>:<port>/camera`. iOS/iPadOS only.
 final class CameraStreamSensor: SensorProvider {
     public enum CameraStreamError: Error, Equatable {
         case unavailable
@@ -74,15 +74,25 @@ final class CameraStreamSensor: SensorProvider {
 
         sensor.Settings = [
             .init(
-                type: .stepper(
+                type: .slider(
+                    getter: { server.streamFrameRate },
+                    setter: { server.streamFrameRate = $0 },
+                    minimum: 1,
+                    maximum: 30,
+                    step: 1,
+                    displayValueFor: { value in
+                        value.map { String(format: "%.0f fps", $0) }
+                    }
+                ),
+                title: L10n.Sensors.CameraStream.Setting.frameRate,
+                subtitle: L10n.Sensors.Camera.frameRateWarning
+            ),
+            .init(
+                type: .numericField(
                     getter: { Double(server.port) },
                     setter: { server.port = Int($0) },
                     minimum: 1024,
-                    maximum: 65535,
-                    step: 1,
-                    displayValueFor: { value in
-                        value.map { String(Int($0)) }
-                    }
+                    maximum: 65535
                 ),
                 title: L10n.Sensors.CameraStream.Setting.streamPort
             ),

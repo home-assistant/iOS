@@ -62,6 +62,21 @@ struct SensorDetailView: View {
 
     static func settingsSection(from settings: [WebhookSensorSetting]) -> [AnyView] {
         settings.map { setting -> AnyView in
+            let row = makeRow(for: setting)
+            guard let subtitle = setting.subtitle else { return row }
+            return AnyView(
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                    row
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            )
+        }
+    }
+
+    private static func makeRow(for setting: WebhookSensorSetting) -> AnyView {
+        {
             switch setting.type {
             case let .switch(getter, setter):
                 return AnyView(
@@ -136,7 +151,17 @@ struct SensorDetailView: View {
                         setter: setter
                     )
                 )
+            case let .numericField(getter, setter, minimum, maximum):
+                return AnyView(
+                    SensorDetailNumericFieldRow(
+                        title: setting.title,
+                        minimum: minimum,
+                        maximum: maximum,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
             }
-        }
+        }()
     }
 }
