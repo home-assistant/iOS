@@ -263,13 +263,40 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 23 tables create successfully together")
+    @Test("RemindersSyncConfigTable schema validation")
+    func remindersSyncConfigTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncConfigTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncConfig.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncConfig.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("RemindersSyncItemLinkTable schema validation")
+    func remindersSyncItemLinkTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncItemLinkTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncItemLink.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncItemLink.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("RemindersSyncHistoryEntryTable schema validation")
+    func remindersSyncHistoryEntryTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncHistoryEntryTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncHistoryEntry.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncHistoryEntry.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("All 26 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 23 tables
-        #expect(tables.count == 23, "Should have exactly 23 tables, but found \(tables.count)")
+        // Verify we have exactly 26 tables
+        #expect(tables.count == 26, "Should have exactly 26 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {
