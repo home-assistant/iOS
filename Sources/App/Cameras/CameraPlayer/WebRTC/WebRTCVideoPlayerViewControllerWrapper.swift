@@ -1,5 +1,4 @@
 import SwiftUI
-import WebRTC
 
 struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
     private let viewModel: WebRTCViewPlayerViewModel
