@@ -12,6 +12,20 @@ public struct WebhookSensorSetting {
             step: Double = 1,
             displayValueFor: ((Double?) -> String?)?
         )
+        case slider(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            minimum: Double = 0,
+            maximum: Double = 100,
+            step: Double = 1,
+            displayValueFor: ((Double?) -> String?)?
+        )
+        case options(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            values: [Double],
+            displayValueFor: (Double) -> String
+        )
     }
 
     public let type: SettingType

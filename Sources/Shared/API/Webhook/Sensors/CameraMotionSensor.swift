@@ -70,9 +70,15 @@ final class CameraMotionSensor: SensorProvider {
         sensor.Type = "binary_sensor"
         sensor.Attributes = manager.attributes
 
+        let durationFormatter = with(DateComponentsFormatter()) {
+            $0.allowedUnits = [.minute, .second]
+            $0.formattingContext = .standalone
+            $0.unitsStyle = .full
+        }
+
         sensor.Settings = [
             .init(
-                type: .stepper(
+                type: .slider(
                     getter: { manager.frameRate },
                     setter: { manager.frameRate = $0 },
                     minimum: 1,
@@ -85,7 +91,7 @@ final class CameraMotionSensor: SensorProvider {
                 title: L10n.Sensors.CameraMotion.Setting.frameRate
             ),
             .init(
-                type: .stepper(
+                type: .slider(
                     getter: { manager.areaThresholdPercent },
                     setter: { manager.areaThresholdPercent = $0 },
                     minimum: 0.5,
@@ -98,14 +104,12 @@ final class CameraMotionSensor: SensorProvider {
                 title: L10n.Sensors.CameraMotion.Setting.changedAreaThreshold
             ),
             .init(
-                type: .stepper(
+                type: .options(
                     getter: { manager.clearDelay },
                     setter: { manager.clearDelay = $0 },
-                    minimum: 5,
-                    maximum: 300,
-                    step: 5,
+                    values: [2, 5, 15, 30, 60, 120, 300],
                     displayValueFor: { value in
-                        value.map { String(format: "%.0f s", $0) }
+                        durationFormatter.string(from: value) ?? String(format: "%.0f s", value)
                     }
                 ),
                 title: L10n.Sensors.CameraMotion.Setting.clearDelay

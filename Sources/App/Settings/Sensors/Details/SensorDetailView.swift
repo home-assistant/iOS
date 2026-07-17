@@ -114,6 +114,28 @@ struct SensorDetailView: View {
                         }
                     )
                 }
+            case let .slider(getter, setter, minimum, maximum, step, displayValueFor):
+                return AnyView(
+                    SensorDetailSliderRow(
+                        title: setting.title,
+                        minimum: minimum,
+                        maximum: maximum,
+                        step: step,
+                        displayValueFor: displayValueFor,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
+            case let .options(getter, setter, values, displayValueFor):
+                return AnyView(
+                    SensorDetailOptionsRow(
+                        title: setting.title,
+                        values: values,
+                        displayValueFor: displayValueFor,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
             }
         }
     }
