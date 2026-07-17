@@ -49,7 +49,9 @@ public class MotionDetectionManager: NSObject {
             "Area Threshold (%)": areaThresholdPercent,
             "Clear Delay (s)": clearDelay,
             "Last Changed Ratio (%)": (lastChangedRatio * 100).rounded(),
-            "Last Motion": lastMotionDate?.description ?? "never",
+            "Last Motion": lastMotionDate.map {
+                DateFormatter.localizedString(from: $0, dateStyle: .short, timeStyle: .medium)
+            } ?? "never",
         ]
     }
 
