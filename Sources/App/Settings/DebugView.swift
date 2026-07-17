@@ -470,7 +470,7 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
-            if !Current.isCatalyst {
+            if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar
                 }, set: { newValue in
