@@ -20,7 +20,6 @@ struct SensorDetailNumericFieldRow: View {
             Text(title)
                 .frame(maxWidth: .infinity, alignment: .leading)
             TextField("", text: $text)
-                .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 100)
                 .focused($isFocused)
@@ -30,6 +29,9 @@ struct SensorDetailNumericFieldRow: View {
                         commit()
                     }
                 }
+            #if !os(watchOS)
+                .keyboardType(.numberPad)
+            #endif
         }
         .onAppear {
             text = String(Int(getter()))

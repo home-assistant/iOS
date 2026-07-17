@@ -18,7 +18,6 @@ struct SensorDetailOptionsRow: View {
                 Text(displayValueFor(option)).tag(option)
             }
         }
-        .pickerStyle(.menu)
         .onAppear {
             // Snap to the closest predefined value so a previously stored
             // out-of-list value still selects something sensible.
@@ -28,6 +27,9 @@ struct SensorDetailOptionsRow: View {
         .onChange(of: value) { newValue in
             setter(newValue)
         }
+        #if !os(watchOS)
+        .pickerStyle(.menu)
+        #endif
     }
 }
 
