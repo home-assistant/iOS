@@ -112,7 +112,10 @@ struct RemindersSyncSettingsView: View {
                     }
                 }
             }
-            Section(footer: Text(L10n.RemindersSync.Settings.Refresh.backgroundFooter)) {
+            Section(
+                header: Text(L10n.RemindersSync.Settings.Refresh.backgroundHeader),
+                footer: Text(L10n.RemindersSync.Settings.Refresh.backgroundFooter)
+            ) {
                 Picker(
                     L10n.RemindersSync.Settings.Refresh.background,
                     selection: $viewModel.settings.backgroundRefreshInterval
@@ -129,7 +132,10 @@ struct RemindersSyncSettingsView: View {
     }
 
     private var conflictSection: some View {
-        Section(footer: Text(L10n.RemindersSync.Settings.Conflicts.footer)) {
+        Section(
+            header: Text(L10n.RemindersSync.Settings.Conflicts.header),
+            footer: Text(L10n.RemindersSync.Settings.Conflicts.footer)
+        ) {
             Picker(
                 L10n.RemindersSync.Settings.Conflicts.title,
                 selection: $viewModel.settings.conflictResolution

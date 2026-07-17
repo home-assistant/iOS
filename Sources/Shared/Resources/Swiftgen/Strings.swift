@@ -3610,9 +3610,9 @@ public enum L10n {
       public static var todoList: String { return L10n.tr("Localizable", "reminders_sync.add.todo_list") }
     }
     public enum Conflict {
-      /// Home Assistant wins
+      /// Home Assistant
       public static var homeAssistant: String { return L10n.tr("Localizable", "reminders_sync.conflict.home_assistant") }
-      /// Reminders wins
+      /// Apple Reminders
       public static var reminders: String { return L10n.tr("Localizable", "reminders_sync.conflict.reminders") }
     }
     public enum Direction {
@@ -3681,9 +3681,11 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
       }
       public enum Conflicts {
-        /// Applies to two-way syncs when the same item changed in both apps since the last sync.
+        /// For two-way syncs: if the same item was edited in both apps since the last sync, the version from the side chosen here is kept and the other is overwritten.
         public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.footer") }
-        /// When both sides changed
+        /// Conflicts
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.header") }
+        /// Keep changes from
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.title") }
       }
       public enum Empty {
@@ -3691,15 +3693,17 @@ public enum L10n {
         public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.empty.body") }
       }
       public enum Refresh {
-        /// Background refresh
+        /// Ask iOS to sync every
         public static var background: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background") }
-        /// iOS decides when background refreshes actually run, based on battery, usage patterns and Low Power Mode. The chosen frequency is a request, not a guarantee.
+        /// Nothing syncs while the app is closed or in the background — changes from Apple Reminders and Home Assistant both wait until the app next runs. This setting asks iOS to briefly wake the app to sync, but iOS alone decides if and when that happens, based on battery, Low Power Mode and how often you use the app.
         public static var backgroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_footer") }
-        /// Refresh from Home Assistant
+        /// While the app is closed
+        public static var backgroundHeader: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_header") }
+        /// Check Home Assistant every
         public static var foreground: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground") }
-        /// How often the app re-checks your Home Assistant lists while it is open. Changes made in Reminders always sync right away.
+        /// Changes made in Apple Reminders sync right away while the app is open. Home Assistant can’t notify the app about its changes, so they are fetched when you open the app, when you sync manually, and on this schedule.
         public static var foregroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground_footer") }
-        /// Automatic refresh
+        /// While the app is open
         public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.header") }
         /// Off
         public static var off: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.off") }
