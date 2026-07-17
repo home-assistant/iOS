@@ -76,6 +76,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Icon, "mdi:walk")
         XCTAssertEqual(sensors[0].UnitOfMeasurement, "steps")
         XCTAssertEqual(sensors[0].State as? Int, 0)
+        XCTAssertEqual(sensors[0].StateClass, .totalIncreasing)
     }
 
     func testWithDistance() throws {
@@ -97,6 +98,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:hiking")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "m")
         XCTAssertEqual(sensor?.State as? Int, 123)
+        XCTAssertEqual(sensor?.StateClass, .totalIncreasing)
     }
 
     func testWithFloorsAscendedBefore105() throws {
@@ -119,6 +121,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:slope-uphill")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "floors")
         XCTAssertEqual(sensor?.State as? Int, 234)
+        XCTAssertEqual(sensor?.StateClass, .totalIncreasing)
     }
 
     func testWithFloorsAscendedAfter105() throws {
@@ -206,6 +209,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:speedometer")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "m/s")
         XCTAssertEqual(sensor?.State as? Int, 456)
+        XCTAssertEqual(sensor?.StateClass, .measurement)
     }
 
     func testWithCurrentPace() throws {
@@ -248,6 +252,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, nil)
         XCTAssertEqual(sensor?.UnitOfMeasurement, "steps/s")
         XCTAssertEqual(sensor?.State as? Int, 678)
+        XCTAssertEqual(sensor?.StateClass, .measurement)
     }
 }
 
