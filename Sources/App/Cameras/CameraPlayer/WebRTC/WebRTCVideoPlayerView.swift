@@ -129,15 +129,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                             return .large
                         }
                     }())
-                    .modify({ view in
-                        if #available(iOS 26.0, *) {
-                            view
-                                .buttonStyle(.glassProminent)
-                                .tint(viewModel.isTalking ? Color.orange : Color.haPrimary)
-                        } else {
-                            view
-                        }
-                    })
+                    .tint(viewModel.isTalking ? Color.orange : Color.haPrimary)
                     .accessibilityLabel(
                         viewModel.isTalking ? L10n.CameraPlayer.Talkback.stop : L10n.CameraPlayer.Talkback.start
                     )

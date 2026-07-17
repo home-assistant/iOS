@@ -54,6 +54,7 @@ public struct FullScreenLoaderView: View {
                         SettingsButton(action: settingsAction)
                             .padding(DesignSystem.Spaces.one)
                             .glassEffect(.regular.interactive(), in: Circle())
+                            .contentShape(Circle())
                     } else {
                         SettingsButton(action: settingsAction)
                             .padding(DesignSystem.Spaces.one)

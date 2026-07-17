@@ -9,7 +9,7 @@ struct HomeAssistantStandByView: View {
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
-    private static let serverPillHeight: CGFloat = 38
+    private static let serverPillHeight: CGFloat = 44
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
@@ -202,7 +202,9 @@ struct HomeAssistantStandByView: View {
                 .frame(height: Self.serverPillHeight)
                 .modify { view in
                     if #available(iOS 26.0, *) {
-                        view.glassEffect(.regular.interactive(), in: .capsule)
+                        view
+                            .glassEffect(.regular.interactive(), in: .capsule)
+                            .contentShape(Capsule())
                     } else {
                         view
                             .background(Color(uiColor: .secondarySystemBackground))
@@ -223,7 +225,10 @@ struct HomeAssistantStandByView: View {
                 .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
                 .modify { view in
                     if #available(iOS 26.0, *) {
-                        view.glassEffect(.regular.interactive(), in: .circle)
+                        view
+                            .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                            .contentShape(Circle())
                     } else {
                         view
                             .background(Color(uiColor: .secondarySystemBackground))

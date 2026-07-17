@@ -140,6 +140,7 @@ struct CameraPlayerView: View {
                     if #available(iOS 26.0, *) {
                         view
                             .glassEffect(.regular.interactive(), in: .capsule)
+                            .contentShape(Capsule())
                     } else {
                         view
                             .background(.regularMaterial)

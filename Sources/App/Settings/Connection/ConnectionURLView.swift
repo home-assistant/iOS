@@ -218,13 +218,6 @@ struct ConnectionURLView: View {
                 })
             }
             .tint(.haPrimary)
-            .modify { view in
-                if #available(iOS 26.0, *) {
-                    view.buttonStyle(.glassProminent)
-                } else {
-                    view
-                }
-            }
         }
     }
 
