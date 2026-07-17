@@ -6,7 +6,7 @@ import UIKit
 /// fresh controller and discards the previous one.
 struct FrontendView: UIViewControllerRepresentable {
     let server: Server
-    var restorationType: WebViewRestorationType?
+    var initialPath: String?
     var onWebViewController: ((WebViewController) -> Void)?
     var onWebViewLoaded: ((WebViewController) -> Void)?
     var resetFrontendAction: (() -> Void)?
@@ -15,7 +15,7 @@ struct FrontendView: UIViewControllerRepresentable {
 
     init(
         server: Server,
-        restorationType: WebViewRestorationType? = nil,
+        initialPath: String? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil,
         onWebViewLoaded: ((WebViewController) -> Void)? = nil,
         resetFrontendAction: (() -> Void)? = nil,
@@ -23,7 +23,7 @@ struct FrontendView: UIViewControllerRepresentable {
         overlayState: WebFrontendOverlayState
     ) {
         self.server = server
-        self.restorationType = restorationType
+        self.initialPath = initialPath
         self.onWebViewController = onWebViewController
         self.onWebViewLoaded = onWebViewLoaded
         self.resetFrontendAction = resetFrontendAction
@@ -41,10 +41,10 @@ struct FrontendView: UIViewControllerRepresentable {
         // No-op: a server change recreates this view (keyed by server in `ContainerView`), never updates it.
     }
 
-    // Non-private for tests.
+    /// Non-private for tests.
     func makeWebViewController() -> WebViewController {
         let controller = WebViewController(server: server)
-        controller.initialURL = restorationType?.initialURL
+        controller.initialURLPath = initialPath
         controller.overlayState = overlayState
         controller.resetFrontendAction = resetFrontendAction
         controller.reconnectManager = reconnectManager

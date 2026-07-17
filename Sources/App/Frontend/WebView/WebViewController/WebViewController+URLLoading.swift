@@ -168,9 +168,12 @@ extension WebViewController {
             Current.Log.info("loading kiosk dashboard path: \(kioskURL.path)")
             return kioskURL
         }
-        if Current.settingsStore.restoreLastURL, let initialURL, initialURL.baseIsEqual(to: webviewURL) {
-            Current.Log.info("restoring initial url path: \(initialURL.path)")
-            return initialURL
+        if Current.settingsStore.restoreLastURL, webView.url == nil, let initialURLPath,
+           let restored = Self.restoredURL(base: webviewURL, relativePath: initialURLPath) {
+            // Keep the resolved full URL so the WebKit delegates can detect it finishing (or 404ing).
+            initialURL = restored
+            Current.Log.info("restoring last path: \(restored.path)")
+            return restored
         }
         if let currentURL = webView.url, currentURL.path.count > 1 {
             // Preserve the current path when the base URL changes (e.g., switching between internal/external)
@@ -193,6 +196,19 @@ extension WebViewController {
         }
         Current.Log.info("loading default url path: \(webviewURL.path)")
         return webviewURL
+    }
+
+    /// Rebuilds a stored relative reference (`path?query#fragment`) onto the currently active base URL, so
+    /// a page saved on one network/location reopens correctly on another. Non-private for tests.
+    static func restoredURL(base: URL, relativePath: String) -> URL? {
+        guard var components = URLComponents(url: base, resolvingAgainstBaseURL: true),
+              let relative = URLComponents(string: relativePath) else {
+            return nil
+        }
+        components.path = relative.path
+        components.query = relative.query
+        components.fragment = relative.fragment
+        return components.url
     }
 
     /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this
