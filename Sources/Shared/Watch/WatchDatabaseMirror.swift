@@ -4,10 +4,11 @@ import GRDB
 
 /// A snapshot of the phone's reference GRDB tables that the watch needs to configure itself offline.
 ///
-/// The watch can't fetch from Home Assistant directly (no WebSockets on watchOS), so on each reload
-/// the phone sends this snapshot and the watch writes it into its own GRDB. `MagicItemProvider` then
-/// runs locally on the watch to list addable items, resolve names/icons and the area context — all
-/// without the phone nearby.
+/// This phone-relayed sync is the DEFAULT: real watches block `URLSessionWebSocketTask` for
+/// ordinary apps (TN3135), so the watch generally can't fetch from Home Assistant directly. The
+/// experimental direct websocket sync (`WatchDirectDatabaseSync`, watch Settings → Developer)
+/// covers the reference tables itself when enabled — `apply()` then skips them so the two writers
+/// never fight — while complications, configs, and servers always travel on this mirror.
 ///
 /// Only what the add flow needs is included: scripts/scenes/automations (stored as entities), areas
 /// (for the context line), and Assist pipelines. Device / entity-registry tables are intentionally
@@ -143,8 +144,18 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// registry rows are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
-            try applyReferenceTables(in: db)
-            try applyComplicationTables(in: db)
+            // When the experimental direct websocket sync owns the reference tables (developer
+            // toggle), the phone's copies are skipped: the direct sync writes fresher data
+            // per-server and the two write shapes must not interleave.
+            #if os(watchOS)
+            let directSyncOwnsReferenceTables = WatchUserDefaults.shared.directDatabaseSyncEnabled
+            #else
+            let directSyncOwnsReferenceTables = false
+            #endif
+            if !directSyncOwnsReferenceTables {
+                try applyReferenceTables(in: db)
+            }
+            try applyComplicationTables(in: db, includeRegistryRows: !directSyncOwnsReferenceTables)
         }
     }
 
@@ -171,7 +182,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         }
     }
 
-    private func applyComplicationTables(in db: Database) throws {
+    private func applyComplicationTables(in db: Database, includeRegistryRows: Bool) throws {
         // Only replace the complication tables when this sync actually carried them. A `nil` here is
         // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
         if let complications {
@@ -186,6 +197,7 @@ public struct WatchDatabaseMirror: WatchCodable {
                 try config.insert(db)
             }
         }
+        guard includeRegistryRows else { return }
         // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
         // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
         // Replace on conflict to upsert just these rows without wiping the rest of the registry.

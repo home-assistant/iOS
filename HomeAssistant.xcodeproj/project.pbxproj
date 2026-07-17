@@ -266,6 +266,7 @@
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
+		FADE000000000000000000A5 /* HAAPI in Frameworks */ = {isa = PBXBuildFile; productRef = FADE000000000000000000A4 /* HAAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2095,6 +2096,7 @@
 				DE51600000000000000000F5 /* HANetworking in Frameworks */,
 				DE51600000000000000000E5 /* HAModels in Frameworks */,
 				CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */,
+				FADE000000000000000000A5 /* HAAPI in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
@@ -2942,6 +2944,7 @@
 				DE51600000000000000000F4 /* HANetworking */,
 				DE51600000000000000000E4 /* HAModels */,
 				CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */,
+				FADE000000000000000000A4 /* HAAPI */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
@@ -3337,6 +3340,7 @@
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
 				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
+				FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
@@ -5173,6 +5177,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HANetworking;
 		};
+		FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAAPI;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -5835,6 +5843,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
+		};
+		FADE000000000000000000A4 /* HAAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */;
+			productName = HAAPI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

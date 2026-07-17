@@ -61,6 +61,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // restart. Re-read and re-broadcast the live value so reachability recovers on foreground.
         Communicator.shared.refreshConnectivityState()
         HomeAssistantAPI.syncWatchContext()
+        // Refresh server reference data over the direct websocket connection (internally
+        // throttled and coalesced, so foregrounding repeatedly is cheap).
+        Task { await Current.watchDirectDatabaseSync.syncAll(force: false) }
     }
 
     func applicationWillResignActive() {
@@ -69,6 +72,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
         Current.Log.verbose("willResignActive")
+        // Stop any in-flight direct sync before the database suspends on background, so no write
+        // is caught holding the SQLite lock.
+        Current.watchDirectDatabaseSync.cancel()
         HomeAssistantAPI.syncWatchContext()
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
@@ -131,6 +137,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     // own network (e.g. LTE) still updates as long as the server is reachable.
                     Promise { seal in
                         Task {
+                            // Refresh reference data over the direct websocket first (the registry
+                            // precision the complications read comes from it), hard time-boxed so
+                            // an unreachable server can't eat the background-task runtime budget.
+                            let directSync = Task { await Current.watchDirectDatabaseSync.syncAll(force: false) }
+                            let timeout = Task {
+                                try? await Task.sleep(for: .seconds(15))
+                                Current.watchDirectDatabaseSync.cancel()
+                            }
+                            _ = await directSync.value
+                            timeout.cancel()
                             await WatchWidgetComplicationSnapshotStore.refresh()
                             seal.fulfill(())
                         }
@@ -639,8 +655,9 @@ enum WatchWidgetComplicationSnapshotStore {
     }
 }
 
-/// Fetches live data for watch-rendered complications directly from Home Assistant over REST
-/// (no WebSocket on watchOS), reusing the server's active URL and bearer token.
+/// Fetches live data for watch-rendered complications directly from Home Assistant over REST,
+/// reusing the server's active URL and bearer token. (Kept on REST: a single-entity state read
+/// is a one-shot request; the direct websocket sync covers the reference tables.)
 private enum ComplicationStateFetcher {
     struct EntityState {
         let state: String

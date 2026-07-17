@@ -36,6 +36,10 @@ final class WatchHomeViewModel: ObservableObject {
     /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
     /// user to choose which to keep.
     @Published var pendingConflict: ConfigConflict?
+    /// Set when a server was skipped by the direct sync because its only URL is internal and the
+    /// watch can't verify the home network. The UI asks the user whether to use that URL anyway
+    /// (which sets the existing per-server "Always use" override).
+    @Published var internalURLPrompt: WatchInternalURLPromptContext?
 
     /// True while a config/database sync is running. A second `requestConfig` is ignored until it
     /// finishes, so repeated reload taps can't stack several syncs (each holding a 30s reply timeout)
@@ -48,6 +52,8 @@ final class WatchHomeViewModel: ObservableObject {
 
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
+    /// Reloads the cache when the direct websocket sync refreshes the reference tables.
+    private var directSyncObserver: NSObjectProtocol?
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
     /// through numbers too fast to read.
@@ -86,11 +92,23 @@ final class WatchHomeViewModel: ObservableObject {
         self.guaranteedObserver = Communicator.shared.guaranteedMessage.observe { [weak self] message in
             Task { @MainActor in self?.handleGuaranteedConfigResponse(message) }
         }
+        // Reference tables (entities, areas, pipelines) now refresh over the server's websocket,
+        // possibly while this screen is visible — re-resolve names/areas from the fresh rows.
+        self.directSyncObserver = NotificationCenter.default.addObserver(
+            forName: .watchDirectDatabaseSyncDidFinish,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.loadCache() }
+        }
     }
 
     deinit {
         if let guaranteedObserver {
             Communicator.shared.guaranteedMessage.unobserve(guaranteedObserver)
+        }
+        if let directSyncObserver {
+            NotificationCenter.default.removeObserver(directSyncObserver)
         }
     }
 
@@ -143,6 +161,11 @@ final class WatchHomeViewModel: ObservableObject {
             Current.Log.info("requestConfig ignored: a sync is already in flight")
             return
         }
+        // Reference data (entity registry, entities, zones, devices, areas, pipelines) comes
+        // straight from the server over websocket — run it regardless of iPhone reachability.
+        // Only the phone-owned data below (watch config, complications, servers, certificates)
+        // still needs the phone.
+        runDirectSync(userInitiated: userInitiated)
         homeType = .undefined
         guard Communicator.shared.currentReachability != .notReachable else {
             Current.Log.error("iPhone reachability is not immediate reachable")
@@ -151,8 +174,9 @@ final class WatchHomeViewModel: ObservableObject {
             // screen via the guaranteed-response reconcile — no need for the phone to be foreground.
             setLoadingStatus(L10n.Watch.Home.Sync.waiting)
             enqueueGuaranteedConfigPull()
-            // Tell the user why an explicit reload appears to do nothing (background pull still runs).
-            if userInitiated { showNotReachableAlert = true }
+            // No alert here: the direct sync launched above refreshes the reference data without
+            // the phone. `runDirectSync` alerts only if that ALSO couldn't reach anything, so a
+            // reload that actually refreshed data doesn't claim to have failed.
             return
         }
         isSyncInFlight = true
@@ -166,6 +190,86 @@ final class WatchHomeViewModel: ObservableObject {
         // Full reference-database sync (chunked, ordered, acknowledged). On completion it pulls the
         // watch config and clears loading; on failure it surfaces a friendly error.
         startDatabaseSync()
+    }
+
+    /// Refresh the reference tables directly from the server(s). Failures are non-blocking —
+    /// GRDB keeps the last-good rows — but a user-initiated reload that refreshed NOTHING must
+    /// say so: every server failed → the server-unreachable error; nothing even attempted (no
+    /// usable URL) while the phone is also away → the phone-not-reachable alert. Any success
+    /// stays silent — the reload worked.
+    @MainActor
+    private func runDirectSync(userInitiated: Bool) {
+        Task { [weak self] in
+            let outcomes = await Current.watchDirectDatabaseSync.syncAll(force: userInitiated)
+            await MainActor.run {
+                self?.offerInternalURLIfNeeded(for: outcomes)
+            }
+            guard userInitiated else { return }
+            guard !outcomes.contains(where: { $0.status == .success }) else { return }
+            let allFailed = !outcomes.isEmpty && outcomes.allSatisfy {
+                if case .failed = $0.status { return true }
+                return false
+            }
+            await MainActor.run {
+                guard let self else { return }
+                if allFailed {
+                    self.errorMessage = L10n.Watch.Sync.Error.serverUnreachable
+                    self.showError = true
+                } else if Communicator.shared.currentReachability == .notReachable {
+                    self.showNotReachableAlert = true
+                }
+            }
+        }
+    }
+
+    // MARK: - Internal URL consent prompt
+
+    /// A server skipped for "no reachable URL" that HAS an internal URL is only unreachable
+    /// because the watch can't verify the home network. Ask the user (once — "No" is remembered)
+    /// whether to use that URL anyway; "Yes" sets the same per-server override as the settings
+    /// picker. One prompt at a time; further servers get asked on subsequent syncs.
+    @MainActor
+    private func offerInternalURLIfNeeded(for outcomes: [WatchDirectSyncOutcome]) {
+        guard internalURLPrompt == nil else { return }
+        let skippedIds = outcomes.compactMap { outcome -> String? in
+            guard case let .skipped(reason) = outcome.status,
+                  reason == WatchDirectSyncOutcome.noReachableURLReason else { return nil }
+            return outcome.serverId
+        }
+        guard !skippedIds.isEmpty else { return }
+        for server in Current.servers.all where skippedIds.contains(server.identifier.rawValue) {
+            let serverId = server.identifier.rawValue
+            guard let internalURL = server.info.connection.internalURL,
+                  WatchUserDefaults.shared.urlOverrideRawValue(forServerId: serverId) == nil,
+                  !WatchUserDefaults.shared.internalURLPromptDeclined(forServerId: serverId) else { continue }
+            internalURLPrompt = WatchInternalURLPromptContext(
+                serverId: serverId,
+                serverName: server.info.name,
+                internalURL: internalURL
+            )
+            return
+        }
+    }
+
+    /// "Yes": persist the internal URL as this server's override (same storage the settings
+    /// picker uses), re-resolve the live servers, and sync right away.
+    @MainActor
+    func acceptInternalURLPrompt(_ prompt: WatchInternalURLPromptContext) {
+        internalURLPrompt = nil
+        WatchUserDefaults.shared.setURLOverrideRawValue(
+            ConnectionInfo.URLType.internal.rawValue,
+            forServerId: prompt.serverId
+        )
+        WatchServerSync.applyURLOverrides()
+        Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+    }
+
+    /// "No": remember the decline so the prompt never nags again; the settings URL override
+    /// remains the way to opt in later.
+    @MainActor
+    func declineInternalURLPrompt(_ prompt: WatchInternalURLPromptContext) {
+        internalURLPrompt = nil
+        WatchUserDefaults.shared.setInternalURLPromptDeclined(true, forServerId: prompt.serverId)
     }
 
     /// Pull the watch config from the phone and reconcile it (adopt / push offline edits / conflict).

@@ -390,6 +390,9 @@ public class AppEnvironment {
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
+    /// Syncs server reference data (entity registry, entities, zones, devices, areas, pipelines)
+    /// into the watch database over a direct websocket connection — no paired iPhone required.
+    public var watchDirectDatabaseSync: WatchDirectDatabaseSyncing = WatchDirectDatabaseSync()
     #endif
 
     #if targetEnvironment(macCatalyst)

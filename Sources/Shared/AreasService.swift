@@ -69,7 +69,7 @@ final class AreasService: AreasServiceProtocol {
             // Read entity and device registries from database instead of making API calls
             let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
             let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
-            let allEntitiesPerArea = getAllEntitiesFromArea(
+            let allEntitiesPerArea = Self.getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
                 entitiesAndAreas: entitiesForAreas
             )
@@ -115,7 +115,9 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func getAllEntitiesFromArea(
+    /// Static and internal (not private) so the watch's `WatchDirectServerSync` composes areas
+    /// with exactly the same logic the iPhone pipeline uses.
+    static func getAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
@@ -168,7 +170,7 @@ final class AreasService: AreasServiceProtocol {
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
-        getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
+        Self.getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }
     #endif
 }
