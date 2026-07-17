@@ -60,6 +60,22 @@ struct RemindersSyncItemSnapshotTests {
         #expect(snapshot.dueDateTimeArgument == snapshot.due)
     }
 
+    @Test func testTodoItemInitCanonicalizesTimedDueDateFromRawStringFallback() {
+        // TodoListItem fails to parse some server datetime formats, leaving `due` nil; the
+        // snapshot must still canonicalize from the raw string so comparisons stay stable.
+        let snapshot = RemindersSyncItemSnapshot(todoItem: TodoListItem(
+            summary: "Buy milk",
+            uid: "todo-1",
+            status: "needs_action",
+            description: nil,
+            dueRaw: "2026-07-14T03:33:20+00:00",
+            due: nil
+        ))
+        let expected = RemindersSyncItemSnapshot
+            .canonicalDueString(from: Date(timeIntervalSince1970: 1_784_000_000))
+        #expect(snapshot.due == expected)
+    }
+
     // MARK: - Due date round-trips
 
     @Test func testAllDayDueConvertsToDateOnlyComponents() {

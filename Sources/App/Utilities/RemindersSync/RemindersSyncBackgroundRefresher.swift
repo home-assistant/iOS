@@ -38,13 +38,23 @@ enum RemindersSyncBackgroundRefresher {
     private static func handleAppRefresh(task: BGTask) {
         schedule()
 
+        // BGTask completion must be signaled exactly once, and expiration can race the sync.
+        var didComplete = false
+        func complete(_ success: Bool) {
+            DispatchQueue.main.async {
+                guard !didComplete else { return }
+                didComplete = true
+                task.setTaskCompleted(success: success)
+            }
+        }
+
         let syncTask = Task { @MainActor in
             await RemindersSyncManager.shared.syncAll()
-            task.setTaskCompleted(success: true)
+            complete(!Task.isCancelled)
         }
         task.expirationHandler = {
             syncTask.cancel()
-            task.setTaskCompleted(success: false)
+            complete(false)
         }
     }
 }

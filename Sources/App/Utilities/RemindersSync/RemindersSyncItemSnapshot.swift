@@ -32,7 +32,10 @@ struct RemindersSyncItemSnapshot: Equatable {
         self.isCompleted = todoItem.status == "completed"
         self.notes = Self.normalizedNotes(todoItem.description)
         if let raw = todoItem.dueRaw {
-            if raw.contains("T"), let date = todoItem.due {
+            // `TodoListItem` doesn't parse every server datetime format, so fall back to parsing
+            // the raw string ourselves. An uncanonicalized string would never compare equal to
+            // the reminder's canonical one and cause an update on every sync.
+            if raw.contains("T"), let date = todoItem.due ?? Self.parseDueDateTime(raw) {
                 self.due = Self.canonicalDueString(from: date)
             } else {
                 self.due = raw

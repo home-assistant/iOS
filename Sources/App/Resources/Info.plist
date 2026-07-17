@@ -116,11 +116,9 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library access is needed to allow saving photos from the web view.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>Reminders access is used to sync the Reminders lists you choose with your Home
-			Assistant to-do lists.</string>
+	<string>Reminders access is used to sync the Reminders lists you choose with your Home Assistant to-do lists.</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Reminders access is used to sync the Reminders lists you choose with your Home
-			Assistant to-do lists.</string>
+	<string>Reminders access is used to sync the Reminders lists you choose with your Home Assistant to-do lists.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
