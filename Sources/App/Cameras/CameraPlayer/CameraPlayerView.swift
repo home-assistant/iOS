@@ -63,18 +63,6 @@ struct CameraPlayerView: View {
         NavigationStack {
             content
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        if controlsVisible {
-                            HStack(spacing: DesignSystem.Spaces.one) {
-                                Button {
-                                    openMoreInfo()
-                                } label: {
-                                    Image(systemSymbol: .safari)
-                                }
-                            }
-                        }
-                    }
-
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
                             dismiss()
@@ -251,13 +239,6 @@ struct CameraPlayerView: View {
         playerType = .webRTC
         cameraEntityId = entityId
         loadMetadata()
-    }
-
-    private func openMoreInfo() {
-        if let url = AppConstants
-            .openEntityDeeplinkURL(entityId: cameraEntityId, serverId: server.identifier.rawValue) {
-            URLOpener.shared.open(url, options: [:], completionHandler: nil)
-        }
     }
 }
 
