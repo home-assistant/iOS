@@ -43,6 +43,9 @@ extension WebViewController {
         guard let changedServer = notification.object as? Server,
               changedServer.identifier == server.identifier else { return }
 
+        // Edge-to-edge is assumed until the version proves otherwise; re-evaluate now that it changed.
+        updateThemedStatusBar()
+
         Current.Log.info("Resetting frontend cache for \(server.identifier) after server version change")
         Current.websiteDataStoreHandler
             .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
