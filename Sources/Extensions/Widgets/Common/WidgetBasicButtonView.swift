@@ -20,7 +20,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
     var body: some View {
         switch widgetFamily {
         case .accessoryCircular, .accessoryRectangular:
-            WidgetCircularView(icon: model.icon)
+            WidgetCircularView(icon: model.icon, title: model.title)
         case .accessoryInline:
             Label {
                 Text(model.title)
