@@ -485,7 +485,12 @@ private struct WatchClientEventsView: View {
                         Text(verbatim: L10n.ClientEvents.View.ClearConfirm.message)
                     }
 
-                    ShareLink(item: sharedEventsText) {
+                    // Shares a zip of the client events plus the on-watch `Current.Log` files, which
+                    // are otherwise unreachable — the watch has no other way to hand them over.
+                    ShareLink(
+                        item: WatchDiagnosticsArchive(),
+                        preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
+                    ) {
                         Image(systemSymbol: .squareAndArrowUp)
                             .frame(maxWidth: .infinity)
                     }
@@ -512,18 +517,4 @@ private struct WatchClientEventsView: View {
         .onAppear { events = Current.clientEventStore.getEvents().reversed() }
     }
 
-    private var sharedEventsText: String {
-        ([L10n.Watch.Settings.ClientEvents.title] + events.map { event in
-            var components = [
-                event.text,
-                "\(event.type.rawValue) • \(event.date.formatted(date: .abbreviated, time: .shortened))",
-            ]
-
-            if let payload = event.jsonPayloadDescription, !payload.isEmpty {
-                components.append(payload)
-            }
-
-            return components.joined(separator: "\n")
-        }).joined(separator: "\n\n")
-    }
 }
