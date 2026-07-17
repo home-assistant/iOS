@@ -240,7 +240,6 @@ struct CameraPlayerView: View {
         cameraEntityId = entityId
         loadMetadata()
     }
-
 }
 
 #if DEBUG
