@@ -3600,14 +3600,26 @@ public enum L10n {
       public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
       /// These lists are already being synced.
       public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
-      /// Reminders list
+      /// On the first sync, items that already exist in both lists are linked by matching titles; everything else is copied according to the sync direction. Completed items are not copied.
+      public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
+      /// Lists to sync
+      public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
+      /// Apple Reminders list
       public static var remindersList: String { return L10n.tr("Localizable", "reminders_sync.add.reminders_list") }
       /// Server
       public static var server: String { return L10n.tr("Localizable", "reminders_sync.add.server") }
-      /// Add List Sync
+      /// New List Sync
       public static var title: String { return L10n.tr("Localizable", "reminders_sync.add.title") }
-      /// Home Assistant list
+      /// Home Assistant to-do list
       public static var todoList: String { return L10n.tr("Localizable", "reminders_sync.add.todo_list") }
+      public enum DirectionFooter {
+        /// Changes in either list are applied to the other. If the same item changes in both apps, the Conflicts setting chooses which side is kept.
+        public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.both_ways") }
+        /// Apple Reminders is the source of truth: its items and changes overwrite the Home Assistant list. Items that exist only in Home Assistant are left alone.
+        public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_home_assistant") }
+        /// Home Assistant is the source of truth: its items and changes overwrite the Apple Reminders list. Items that exist only in Reminders are left alone.
+        public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_reminders") }
+      }
     }
     public enum Conflict {
       /// Home Assistant
@@ -3618,9 +3630,9 @@ public enum L10n {
     public enum Direction {
       /// Two-way
       public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.direction.both_ways") }
-      /// Reminders to Home Assistant
+      /// One-way: Reminders → Home Assistant
       public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.direction.to_home_assistant") }
-      /// Home Assistant to Reminders
+      /// One-way: Home Assistant → Reminders
       public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.direction.to_reminders") }
     }
     public enum History {
@@ -3658,7 +3670,7 @@ public enum L10n {
       }
     }
     public enum Settings {
-      /// Add list sync
+      /// Add
       public static var addList: String { return L10n.tr("Localizable", "reminders_sync.settings.add_list") }
       /// Last synced %@
       public static func lastSynced(_ p1: Any) -> String {

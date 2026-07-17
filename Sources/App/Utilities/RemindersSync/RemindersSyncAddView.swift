@@ -17,7 +17,10 @@ struct RemindersSyncAddView: View {
                         }
                     }
                 }
-                Section {
+                Section(
+                    header: Text(L10n.RemindersSync.Add.listsHeader),
+                    footer: Text(L10n.RemindersSync.Add.listsFooter)
+                ) {
                     Picker(L10n.RemindersSync.Add.remindersList, selection: $viewModel.selectedReminderListId) {
                         ForEach(viewModel.reminderLists, id: \.calendarIdentifier) { list in
                             Text(list.title).tag(String?.some(list.calendarIdentifier))
@@ -29,12 +32,16 @@ struct RemindersSyncAddView: View {
                         }
                     }
                 }
-                Section(footer: Group {
-                    if viewModel.isDuplicate {
-                        Text(L10n.RemindersSync.Add.duplicateWarning)
-                            .foregroundStyle(.red)
+                Section(
+                    header: Text(L10n.RemindersSync.Add.direction),
+                    footer: VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                        Text(directionFooter)
+                        if viewModel.isDuplicate {
+                            Text(L10n.RemindersSync.Add.duplicateWarning)
+                                .foregroundStyle(.red)
+                        }
                     }
-                }) {
+                ) {
                     Picker(L10n.RemindersSync.Add.direction, selection: $viewModel.direction) {
                         ForEach(RemindersSyncDirection.allCases) { direction in
                             Text(direction.localizedTitle).tag(direction)
@@ -67,6 +74,17 @@ struct RemindersSyncAddView: View {
             .task {
                 await viewModel.load()
             }
+        }
+    }
+
+    private var directionFooter: String {
+        switch viewModel.direction {
+        case .bothWays:
+            return L10n.RemindersSync.Add.DirectionFooter.bothWays
+        case .toHomeAssistant:
+            return L10n.RemindersSync.Add.DirectionFooter.toHomeAssistant
+        case .toReminders:
+            return L10n.RemindersSync.Add.DirectionFooter.toReminders
         }
     }
 }
