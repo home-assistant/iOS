@@ -96,11 +96,11 @@ public final class CameraStreamServer: NSObject {
         set {
             Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.port.rawValue)
             queue.async { [weak self] in
-                guard let self, self.active else { return }
+                guard let self, active else { return }
                 // Restart on the new port.
-                self.stopListener()
-                self.startListener()
-                self.notifyStateChange()
+                stopListener()
+                startListener()
+                notifyStateChange()
             }
         }
     }
@@ -111,15 +111,15 @@ public final class CameraStreamServer: NSObject {
     /// the camera runs continuously (foreground only).
     public func setActive(_ newValue: Bool) {
         queue.async { [weak self] in
-            guard let self, self.active != newValue else { return }
-            self.active = newValue
+            guard let self, active != newValue else { return }
+            active = newValue
             if newValue {
-                self.startListener()
+                startListener()
             } else {
-                self.stopListener()
+                stopListener()
             }
-            self.updateCameraObservation()
-            self.notifyStateChange()
+            updateCameraObservation()
+            notifyStateChange()
         }
     }
 
@@ -189,7 +189,7 @@ public final class CameraStreamServer: NSObject {
 
             connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
                 guard let self else { return }
-                self.queue.async {
+                queue.async {
                     if error == nil {
                         self.connections[ObjectIdentifier(connection)] = connection
                         Current.Log.info("Camera stream: client connected (\(self.connections.count) total)")
@@ -240,10 +240,10 @@ public final class CameraStreamServer: NSObject {
     /// output's `alwaysDiscardsLateVideoFrames` prevents pool starvation.
     public func handle(frame: CVPixelBuffer) {
         encodingQueue.async { [weak self] in
-            guard let self, !self.queue.sync(execute: { self.connections.isEmpty }) else { return }
+            guard let self, !queue.sync(execute: { connections.isEmpty }) else { return }
 
             let image = CIImage(cvPixelBuffer: frame)
-            guard let jpeg = self.ciContext.jpegRepresentation(
+            guard let jpeg = ciContext.jpegRepresentation(
                 of: image,
                 colorSpace: CGColorSpaceCreateDeviceRGB()
             ) else { return }
@@ -260,7 +260,7 @@ public final class CameraStreamServer: NSObject {
             payload.append(jpeg)
             payload.append(Data("\r\n".utf8))
 
-            self.queue.async {
+            queue.async {
                 for connection in self.connections.values {
                     connection.send(content: payload, completion: .idempotent)
                 }

@@ -132,7 +132,7 @@ public final class MotionDetectionManager: NSObject {
 
     override public init() {
         super.init()
-        captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        self.captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
         NotificationCenter.default.addObserver(
             self,
@@ -188,7 +188,7 @@ public final class MotionDetectionManager: NSObject {
                 Current.Log.error("Motion detection: camera access not authorized")
                 return
             }
-            self.sessionQueue.async {
+            sessionQueue.async {
                 guard self.wantsRunning else { return }
                 if !self.isCaptureSessionConfigured {
                     self.configureCaptureSession()
@@ -204,9 +204,9 @@ public final class MotionDetectionManager: NSObject {
 
     private func stopSession() {
         sessionQueue.async { [weak self] in
-            guard let self, self.captureSession.isRunning else { return }
-            self.captureSession.stopRunning()
-            self.previousSamples = nil
+            guard let self, captureSession.isRunning else { return }
+            captureSession.stopRunning()
+            previousSamples = nil
             Current.Log.info("Motion detection: capture session stopped")
         }
         DispatchQueue.main.async { [weak self] in
@@ -300,14 +300,14 @@ public final class MotionDetectionManager: NSObject {
 
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.clearTimer?.invalidate()
-            self.clearTimer = Timer.scheduledTimer(
-                withTimeInterval: self.clearDelay,
+            clearTimer?.invalidate()
+            clearTimer = Timer.scheduledTimer(
+                withTimeInterval: clearDelay,
                 repeats: false
             ) { [weak self] _ in
                 self?.setMotionDetected(false)
             }
-            self.setMotionDetected(true)
+            setMotionDetected(true)
         }
     }
 
