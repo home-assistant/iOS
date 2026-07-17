@@ -6875,6 +6875,8 @@ public enum L10n {
         public static var clear: String { return L10n.tr("Localizable", "watch.settings.client_events.clear") }
         /// No events recorded yet.
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.client_events.empty") }
+        /// Share
+        public static var share: String { return L10n.tr("Localizable", "watch.settings.client_events.share") }
         /// Logs
         public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
       }

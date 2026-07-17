@@ -136,16 +136,16 @@ struct HAExpandedTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
     private let minimumScaleFactor: CGFloat = 0.7
     var body: some View {
-        if let fraction = state.progressFraction {
-            Text(HAActivityVisualStyle.percentString(for: fraction))
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(.white)
-                .minimumScaleFactor(minimumScaleFactor)
-        } else if let critical = state.criticalText {
+        if let critical = state.criticalText {
             Text(critical)
                 .font(.headline)
                 .foregroundStyle(.white)
                 .lineLimit(1)
+                .minimumScaleFactor(minimumScaleFactor)
+        } else if let fraction = state.progressFraction {
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(.white)
                 .minimumScaleFactor(minimumScaleFactor)
         }
     }

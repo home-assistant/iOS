@@ -93,7 +93,7 @@ struct MagicItemExecutionTraceView: View {
 }
 
 #Preview {
-    let trace = MagicItemExecutionTrace()
+    let trace = MagicItemExecutionTrace(recordsClientEvents: false)
     trace.log(.info, "Running script.good_morning (script)")
     trace.log(.info, "iPhone reachability: immediatelyReachable")
     trace.log(.info, "Pinging Home Assistant directly…")
