@@ -355,6 +355,11 @@
 "close_label" = "Fechar";
 "component.collapsible_view.collapse" = "Colapsar";
 "component.collapsible_view.expand" = "Expandir";
+"connection.active_url_type.toast.external" = "Using the external URL.";
+"connection.active_url_type.toast.internal" = "Using the internal URL.";
+"connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
+"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "Copiar para área de transferência";
 "connection.error.details.button.discord" = "Pergunte no Discord";
 "connection.error.details.button.doc" = "Leia a documentação";
@@ -2030,6 +2035,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.settings.client_certificate.remove_from_watch.title" = "Remove from this Watch?";
 "watch.settings.client_events.clear" = "Clear";
 "watch.settings.client_events.empty" = "No events recorded yet.";
+"watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";
 "watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";

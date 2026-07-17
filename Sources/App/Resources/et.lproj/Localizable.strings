@@ -355,6 +355,11 @@
 "close_label" = "Sulge";
 "component.collapsible_view.collapse" = "Ahenda";
 "component.collapsible_view.expand" = "Laienda";
+"connection.active_url_type.toast.external" = "Using the external URL.";
+"connection.active_url_type.toast.internal" = "Using the internal URL.";
+"connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
+"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "Kopeeri lõikelauale";
 "connection.error.details.button.discord" = "Küsi Discordis";
 "connection.error.details.button.doc" = "Loe dokumentatsiooni";
@@ -2030,6 +2035,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.settings.client_certificate.remove_from_watch.title" = "Kas eemaldada sellest kellast?";
 "watch.settings.client_events.clear" = "Kustuta";
 "watch.settings.client_events.empty" = "Ühtegi sündmust pole veel salvestatud.";
+"watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logikirjed";
 "watch.settings.complications.empty" = "No complications configured yet.";
 "watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";
