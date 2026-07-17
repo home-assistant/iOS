@@ -355,6 +355,11 @@
 "close_label" = "Stäng";
 "component.collapsible_view.collapse" = "Komprimera";
 "component.collapsible_view.expand" = "Expandera";
+"connection.active_url_type.toast.external" = "Using the external URL.";
+"connection.active_url_type.toast.internal" = "Using the internal URL.";
+"connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
+"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "Kopiera till urklipp";
 "connection.error.details.button.discord" = "Fråga i Discord";
 "connection.error.details.button.doc" = "Läs dokumentationen";
@@ -2025,6 +2030,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.settings.client_certificate.remove_from_watch.title" = "Ta bort från den här klockan?";
 "watch.settings.client_events.clear" = "Rensa";
 "watch.settings.client_events.empty" = "Inga händelser registrerade ännu.";
+"watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Loggar";
 "watch.settings.complications.empty" = "Inga komplikationer konfigurerade än.";
 "watch.settings.complications.footer" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Detta kräver en nåbar server-URL (i det lokala nätverket eller en fjärr-/moln-URL).";
