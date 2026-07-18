@@ -57,7 +57,6 @@ struct CameraPlayerView: View {
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
-        // Camera playback is a full-screen video experience, always presented in dark mode.
         .preferredColorScheme(.dark)
     }
 
