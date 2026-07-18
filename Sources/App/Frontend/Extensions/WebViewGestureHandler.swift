@@ -8,7 +8,7 @@ final class WebViewGestureHandler {
 
     func handleGestureAction(_ action: HAGestureAction) {
         if action != .none {
-            Current.impactFeedback.impactOccurred(style: .medium)
+            Current.impactFeedback.impactOccurred(style: .light)
         }
         switch action {
         case .assist:
