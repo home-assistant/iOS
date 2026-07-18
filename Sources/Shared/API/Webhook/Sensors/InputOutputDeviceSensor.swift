@@ -160,11 +160,11 @@ public class InputOutputDeviceSensor: SensorProvider {
             (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
         }.get(on: queue) { cameras, audioInputs, audioOutputs in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
-            audioInputs.forEach {
-                updateSignaler.addCoreAudioObserver(for: $0.id, property: .isInputRunningSomewhere)
+            for audioInput in audioInputs {
+                updateSignaler.addCoreAudioObserver(for: audioInput.id, property: .isInputRunningSomewhere)
             }
-            audioOutputs.forEach {
-                updateSignaler.addCoreAudioObserver(for: $0.id, property: .isOutputRunningSomewhere)
+            for audioOutput in audioOutputs {
+                updateSignaler.addCoreAudioObserver(for: audioOutput.id, property: .isOutputRunningSomewhere)
             }
         }.map(on: queue) { cameras, audioInputs, audioOutputs -> [WebhookSensor] in
             Self.sensors(cameras: cameras, audioInputs: audioInputs, audioOutputs: audioOutputs)
