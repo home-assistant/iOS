@@ -59,9 +59,11 @@ struct ContainerView: View {
             }
             Current.sceneManager.registerAppCoordinator(coordinator)
             viewModel.presentLaunchMessagesIfNeeded(isShowingWebView: isShowingWebView)
+            fadeOutLaunchSplashIfNeeded(for: state.screen)
         }
-        .onChange(of: state.screen) { _ in
+        .onChange(of: state.screen) { screen in
             viewModel.presentLaunchMessagesIfNeeded(isShowingWebView: isShowingWebView)
+            fadeOutLaunchSplashIfNeeded(for: screen)
         }
         .sheet(item: $viewModel.presentedSheet, onDismiss: { viewModel.showNextLaunchMessage() }) { sheet in
             switch sheet {
@@ -105,6 +107,17 @@ struct ContainerView: View {
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
             }
+        }
+    }
+
+    /// The recovered-server screens have no Home Assistant logo for the launch splash to morph into, so
+    /// fade the splash out as soon as one of them becomes the top-level screen.
+    private func fadeOutLaunchSplashIfNeeded(for screen: OnboardingStateObservable.Screen) {
+        switch screen {
+        case .recoveredServerImport, .recoveredServerReauth:
+            LaunchSplashOverlayState.shared.fadeOut()
+        case .onboarding, .webView:
+            break
         }
     }
 
