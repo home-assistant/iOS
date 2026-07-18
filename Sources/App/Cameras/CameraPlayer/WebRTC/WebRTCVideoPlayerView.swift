@@ -95,7 +95,8 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             .onChange(of: viewModel.didFail) { didFail in
                 // Any WebRTC failure (ICE failure, signaling error, timeout) cascades to the next
                 // streaming method — HLS works remotely where a TURN-less WebRTC path can't.
-                if didFail {
+                // Unsupported-camera failures already cascade via `isWebRTCUnsupported` above.
+                if didFail, !viewModel.isWebRTCUnsupported {
                     onWebRTCUnsupported?()
                 }
             }

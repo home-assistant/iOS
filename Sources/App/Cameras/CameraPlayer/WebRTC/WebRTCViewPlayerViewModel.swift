@@ -105,6 +105,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
         guard let api = Current.api(for: server) else {
             assertionFailure("API for server is nil")
+            // Fail instead of returning silently so the player falls back rather than
+            // leaving the loader spinning with no connection attempt.
+            handleFailure(reason: nil)
             return
         }
 
