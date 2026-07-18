@@ -57,6 +57,7 @@ struct CameraPlayerView: View {
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
+        .preferredColorScheme(.dark)
     }
 
     private var navigationStack: some View {
