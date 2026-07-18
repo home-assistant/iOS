@@ -34,6 +34,22 @@ class HACoreAudioObjectDevice: HACoreAudioObject {
         }
     }
 
+    var isInputOn: Bool {
+        if let isOn = value(for: .isInputRunningSomewhere) {
+            return isOn != 0
+        } else {
+            return false
+        }
+    }
+
+    var isOutputOn: Bool {
+        if let isOn = value(for: .isOutputRunningSomewhere) {
+            return isOn != 0
+        } else {
+            return false
+        }
+    }
+
     var isInput: Bool {
         if let inputStreams = value(for: .inputStreams) {
             return inputStreams.isEmpty == false

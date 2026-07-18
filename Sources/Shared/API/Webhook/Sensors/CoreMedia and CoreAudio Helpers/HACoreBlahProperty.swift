@@ -213,6 +213,22 @@ extension HACoreAudioProperty {
         )
     }
 
+    static var isInputRunningSomewhere: HACoreAudioProperty<UInt32> {
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceIsRunningSomewhere),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeInput),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var isOutputRunningSomewhere: HACoreAudioProperty<UInt32> {
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceIsRunningSomewhere),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeOutput),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
     static var inputStreams: HACoreAudioProperty<[AudioStreamID]> {
         /*
          An array of AudioStreamIDs that represent the AudioStreams of the AudioDevice. Note that if a notification is
