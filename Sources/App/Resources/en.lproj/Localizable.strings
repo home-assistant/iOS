@@ -1085,13 +1085,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.settings.access_denied.body" = "Allow full access to Reminders in the system Settings app to sync your lists.";
 "reminders_sync.settings.access_denied.title" = "Reminders access needed";
 "reminders_sync.settings.add_list" = "Add";
+"reminders_sync.settings.conflicts.footer" = "This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.";
+"reminders_sync.settings.conflicts.header" = "Conflicts";
+"reminders_sync.settings.conflicts.title" = "Keep changes from";
 "reminders_sync.settings.empty.body" = "No lists are synced yet. Pick an Apple Reminders list and a Home Assistant to-do list to keep in sync.";
 "reminders_sync.settings.last_synced_%@" = "Last synced %@";
 "reminders_sync.settings.never_synced" = "Not synced yet";
 "reminders_sync.settings.open_settings" = "Open Settings";
-"reminders_sync.settings.conflicts.footer" = "This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.";
-"reminders_sync.settings.conflicts.header" = "Conflicts";
-"reminders_sync.settings.conflicts.title" = "Keep changes from";
 "reminders_sync.settings.refresh.background" = "Ask iOS to sync every";
 "reminders_sync.settings.refresh.background_footer" = "Nothing syncs while the app is closed or in the background. Changes from Apple Reminders and Home Assistant wait until the app runs again. This setting asks iOS to briefly wake the app to sync, but iOS decides if and when that happens based on battery, Low Power Mode and how often you use the app.";
 "reminders_sync.settings.refresh.background_header" = "While the app is closed";
@@ -1349,6 +1349,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.mac_toolbar.title" = "Toolbar";
 "settings.navigation_bar.about_button.title" = "About";
 "settings.navigation_bar.title" = "Settings";
+"settings.reminders_sync.title" = "Reminders Sync";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
@@ -1357,7 +1358,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.search.no_results.subtitle" = "Check the spelling or try a different search.";
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Search settings";
-"settings.reminders_sync.title" = "Reminders Sync";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
@@ -1451,6 +1451,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.edge_to_edge.enabled.title" = "Enable";
+"settings_details.general.edge_to_edge.footer" = "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.";
+"settings_details.general.edge_to_edge.title" = "Edge to edge display";
 "settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.links.title" = "Links";
@@ -1919,6 +1922,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.interaction.toast.generic" = "Synced with your Apple Watch";
 "watch.interaction.toast.servers" = "Synced servers";
 "watch.interaction.toast.title" = "Apple Watch";
+"watch.internal_url_prompt.info.message" = "When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.\
+\
+While no URL is considered safe, this server's data won't sync to the watch and its complications won't update.";
+"watch.internal_url_prompt.info.not_now" = "Not Now";
+"watch.internal_url_prompt.info.title" = "Internal URL & Security";
+"watch.internal_url_prompt.info.use" = "Use %@";
+"watch.internal_url_prompt.learn_more" = "Learn More";
+"watch.internal_url_prompt.message" = "Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?";
+"watch.internal_url_prompt.title" = "Use Internal URL?";
 "watch.item_execution_trace.running" = "Running…";
 "watch.item_execution_trace.title" = "Execution Log";
 "watch.labels.complication_group.circular_small.description" = "Use circular small complications to display content in the corners of the Color watch face.";
@@ -2130,21 +2142,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
 "watch.settings.restart_app.title" = "Restart App";
+"watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";
 "watch.settings.troubleshooting.connection.message" = "The connection between your iPhone and Apple Watch can sometimes get stuck. Restarting both devices usually fixes it.";
 "watch.settings.troubleshooting.connection.title" = "Connection Issues";
 "watch.settings.troubleshooting.title" = "Troubleshooting";
-"watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
 "watch.settings.url_override.title" = "Always use";
-"watch.internal_url_prompt.title" = "Use Internal URL?";
-"watch.internal_url_prompt.message" = "Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?";
-"watch.internal_url_prompt.learn_more" = "Learn More";
-"watch.internal_url_prompt.info.title" = "Internal URL & Security";
-"watch.internal_url_prompt.info.message" = "When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.\n\nWhile no URL is considered safe, this server's data won't sync to the watch and its complications won't update.";
-"watch.internal_url_prompt.info.use" = "Use %@";
-"watch.internal_url_prompt.info.not_now" = "Not Now";
 "watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.data" = "Received incomplete data from iPhone. Please try again.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";
