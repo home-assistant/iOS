@@ -32,12 +32,29 @@ public struct WebhookSensorSetting {
             minimum: Double = 0,
             maximum: Double = 100
         )
-        case textField(
-            getter: () -> String,
-            setter: (String) -> Void,
+        case credentials(fields: [CredentialField])
+    }
+
+    public struct CredentialField {
+        public let title: String
+        public let placeholder: String?
+        public let isSecure: Bool
+        public let getter: () -> String
+        public let setter: (String) -> Void
+
+        public init(
+            title: String,
             placeholder: String? = nil,
-            isSecure: Bool = false
-        )
+            isSecure: Bool = false,
+            getter: @escaping () -> String,
+            setter: @escaping (String) -> Void
+        ) {
+            self.title = title
+            self.placeholder = placeholder
+            self.isSecure = isSecure
+            self.getter = getter
+            self.setter = setter
+        }
     }
 
     public let type: SettingType

@@ -98,21 +98,22 @@ final class CameraStreamSensor: SensorProvider {
                 title: L10n.Sensors.CameraStream.Setting.streamPort
             ),
             .init(
-                type: .textField(
-                    getter: { server.username },
-                    setter: { server.username = $0 },
-                    placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder
-                ),
-                title: L10n.Sensors.CameraStream.Setting.username
-            ),
-            .init(
-                type: .textField(
-                    getter: { server.password },
-                    setter: { server.password = $0 },
-                    placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder,
-                    isSecure: true
-                ),
-                title: L10n.Sensors.CameraStream.Setting.password,
+                type: .credentials(fields: [
+                    .init(
+                        title: L10n.Sensors.CameraStream.Setting.username,
+                        placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder,
+                        getter: { server.username },
+                        setter: { server.username = $0 }
+                    ),
+                    .init(
+                        title: L10n.Sensors.CameraStream.Setting.password,
+                        placeholder: L10n.Sensors.CameraStream.Setting.credentialsPlaceholder,
+                        isSecure: true,
+                        getter: { server.password },
+                        setter: { server.password = $0 }
+                    ),
+                ]),
+                title: L10n.Sensors.CameraStream.Setting.username,
                 subtitle: L10n.Sensors.CameraStream.Setting.credentialsFooter
             ),
         ]

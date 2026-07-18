@@ -219,42 +219,79 @@ public class CameraStreamServer {
             }
         }
         connection.start(queue: queue)
+        receiveRequest(on: connection, accumulated: Data())
+    }
 
-        // Read the HTTP request, enforce Basic auth if configured, then reply with the
-        // multipart header and keep the connection open for frames.
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] data, _, _, error in
-            guard let self, error == nil else {
+    /// Reads the HTTP request, accumulating chunks until the full header block arrives.
+    /// Clients (e.g. Home Assistant's aiohttp-based MJPEG integration) may deliver the
+    /// request line and headers in separate TCP segments, so a single read can miss the
+    /// `Authorization` header.
+    private func receiveRequest(on connection: NWConnection, accumulated: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] data, _, isComplete, error in
+            guard let self else {
+                connection.cancel()
+                return
+            }
+            if let error {
+                Current.Log.error("Camera stream: receive failed: \(error)")
                 connection.cancel()
                 return
             }
 
-            let request = data.flatMap { String(data: $0, encoding: .utf8) } ?? ""
-            guard Self.isAuthorized(request: request, username: username, password: password) else {
-                sendUnauthorized(on: connection)
+            var buffer = accumulated
+            if let data {
+                buffer.append(data)
+            }
+
+            let request = String(decoding: buffer, as: UTF8.self)
+            guard request.contains("\r\n\r\n") || isComplete || buffer.count >= 16384 else {
+                receiveRequest(on: connection, accumulated: buffer)
                 return
             }
 
-            let header = [
-                "HTTP/1.1 200 OK",
-                "Content-Type: multipart/x-mixed-replace; boundary=\(Self.boundary)",
-                "Cache-Control: no-cache",
-                "",
-                "",
-            ].joined(separator: "\r\n")
-
-            connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
-                guard let self else { return }
-                queue.async {
-                    if error == nil {
-                        self.connections[ObjectIdentifier(connection)] = connection
-                        Current.Log.info("Camera stream: client connected (\(self.connections.count) total)")
-                        self.notifyStateChange()
-                    } else {
-                        connection.cancel()
-                    }
-                }
-            })
+            respond(to: connection, request: request)
         }
+    }
+
+    private func respond(to connection: NWConnection, request: String) {
+        guard Self.isAuthorized(request: request, username: username, password: password) else {
+            let parsed = Self.basicAuthCredentials(fromRequest: request)
+            let lines = request.split(whereSeparator: { $0 == "\r" || $0 == "\n" })
+            let requestLine = lines.first.map(String.init) ?? "(none)"
+            let headerNames = lines.dropFirst().compactMap { line -> String? in
+                guard let colon = line.firstIndex(of: ":") else { return nil }
+                return String(line[..<colon]).trimmingCharacters(in: .whitespaces)
+            }
+            Current.Log.error(
+                "Camera stream: auth rejected — request: \"\(requestLine)\", "
+                    + "headers: [\(headerNames.joined(separator: ", "))], authHeader: \(parsed != nil), "
+                    + "userMatch: \(parsed?.username == username), passMatch: \(parsed?.password == password), "
+                    + "configuredUserEmpty: \(username.isEmpty), configuredPassEmpty: \(password.isEmpty)"
+            )
+            sendUnauthorized(on: connection)
+            return
+        }
+
+        let header = [
+            "HTTP/1.1 200 OK",
+            "Content-Type: multipart/x-mixed-replace; boundary=\(Self.boundary)",
+            "Cache-Control: no-cache",
+            "",
+            "",
+        ].joined(separator: "\r\n")
+
+        connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
+            guard let self else { return }
+            queue.async {
+                if error == nil {
+                    self.connections[ObjectIdentifier(connection)] = connection
+                    Current.Log.info("Camera stream: client connected (\(self.connections.count) total)")
+                    self.notifyStateChange()
+                } else {
+                    connection.cancel()
+                }
+            }
+        })
     }
 
     private func remove(connection: NWConnection) {
@@ -308,7 +345,6 @@ public class CameraStreamServer {
         connection.send(content: Data(response.utf8), completion: .contentProcessed { _ in
             connection.cancel()
         })
-        Current.Log.info("Camera stream: rejected unauthorized client")
     }
 
     private func notifyStateChange() {

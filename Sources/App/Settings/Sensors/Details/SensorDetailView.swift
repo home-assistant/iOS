@@ -56,18 +56,32 @@ struct SensorDetailView: View {
     }
 
     static func settingsSection(from settings: [WebhookSensorSetting]) -> [AnyView] {
-        settings.map { setting -> AnyView in
+        settings.flatMap { setting -> [AnyView] in
+            if case let .credentials(fields) = setting.type {
+                return credentialRows(fields: fields, footer: setting.subtitle)
+            }
             let row = makeRow(for: setting)
-            guard let subtitle = setting.subtitle else { return row }
-            return AnyView(
+            guard let subtitle = setting.subtitle else { return [row] }
+            return [AnyView(
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     row
                     Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-            )
+            )]
         }
+    }
+
+    /// A `.credentials` setting renders as one row per field plus a trailing Save row,
+    /// all sharing a single `CredentialsDraft` so Save commits every field at once.
+    private static func credentialRows(fields: [WebhookSensorSetting.CredentialField], footer: String?) -> [AnyView] {
+        let draft = CredentialsDraft(fields: fields)
+        var rows = fields.indices.map { index in
+            AnyView(SensorDetailCredentialFieldRow(draft: draft, index: index))
+        }
+        rows.append(AnyView(SensorDetailCredentialSaveRow(draft: draft, footer: footer)))
+        return rows
     }
 
     private static func makeRow(for setting: WebhookSensorSetting) -> AnyView {
@@ -156,16 +170,8 @@ struct SensorDetailView: View {
                         setter: setter
                     )
                 )
-            case let .textField(getter, setter, placeholder, isSecure):
-                return AnyView(
-                    SensorDetailTextFieldRow(
-                        title: setting.title,
-                        placeholder: placeholder ?? "",
-                        isSecure: isSecure,
-                        getter: getter,
-                        setter: setter
-                    )
-                )
+            case .credentials:
+                return AnyView(EmptyView())
             }
         }()
     }
