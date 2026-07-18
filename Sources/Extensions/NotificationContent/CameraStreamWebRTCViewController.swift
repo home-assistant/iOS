@@ -69,7 +69,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
 
     deinit {
         timeoutWorkItem?.cancel()
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
     }
 
     override func viewDidLoad() {
@@ -129,7 +129,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
     private func detachPlayer() {
         timeoutWorkItem?.cancel()
         timeoutWorkItem = nil
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
         playerViewController?.willMove(toParent: nil)
         playerViewController?.view.removeFromSuperview()
         playerViewController?.removeFromParent()
@@ -163,7 +163,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         hasResolved = true
         // Tear down the peer connection now rather than waiting for deinit, so we don't keep a
         // failed/timed-out connection alive while the cascade falls back to HLS/MJPEG.
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
         seal.reject(WebRTCError.unavailable)
     }
 }
