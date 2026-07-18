@@ -146,7 +146,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         client.offer(waitForCandidates: configuration.getCandidatesUpfront) { [weak self] sdp in
             DispatchQueue.main.async {
                 guard let self, token == self.connectionToken else { return }
-                sendOffer(sdp, api: api)
+                self.sendOffer(sdp, api: api)
             }
         }
     }
