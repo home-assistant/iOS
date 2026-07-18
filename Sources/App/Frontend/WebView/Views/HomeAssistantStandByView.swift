@@ -303,6 +303,7 @@ struct HomeAssistantStandByView: View {
             width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
             height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
         )
+        .launchSplashLogoAnchor()
         .contentShape(Rectangle())
         .onTapGesture(perform: registerLogoDismissTap)
     }

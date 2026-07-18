@@ -45,6 +45,7 @@ struct OnboardingWelcomeView: View {
                     height: Constants.logoHeight,
                     alignment: .center
                 )
+                .launchSplashLogoAnchor()
             Text(verbatim: L10n.Onboarding.Welcome.header)
                 .font(DesignSystem.Font.largeTitle.bold())
                 .padding(.horizontal, DesignSystem.Spaces.two)
