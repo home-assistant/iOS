@@ -19,6 +19,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     let server: Server
+    let initialPath: String?
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
@@ -49,12 +50,14 @@ final class HomeAssistantViewModel: ObservableObject {
 
     init(
         server: Server,
+        initialPath: String? = nil,
         overlayState: WebFrontendOverlayState? = nil,
         chrome: WebViewChromeState? = nil,
         reconnectManager: WebViewReconnectManager? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil
     ) {
         self.server = server
+        self.initialPath = initialPath
         self.overlayState = overlayState ?? WebFrontendOverlayState()
         self.chrome = chrome ?? WebViewChromeState()
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
@@ -100,8 +103,8 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.emptyState == nil && !isFullScreenLoaderVisible ? 0 : 1
     }
 
-    // On servers that support `frontend/loaded`, the first bootstrap must wait for that event (the frontend's
-    // own launcher screen is still up on plain `connected`).
+    /// On servers that support `frontend/loaded`, the first bootstrap must wait for that event (the frontend's
+    /// own launcher screen is still up on plain `connected`).
     private func didReachLoaderReadyState(_ connectionState: FrontEndConnectionState) -> Bool {
         guard server.info.version >= .frontendLoadedExternalBus else {
             return connectionState.isReadyForDisplay

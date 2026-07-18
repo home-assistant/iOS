@@ -26,8 +26,8 @@ struct ContainerView: View {
             case let .onboarding(style):
                 OnboardingHostingView(onboardingStyle: style)
                     .id(style)
-            case let .webView(server):
-                HomeAssistantView(server: server) { webViewController in
+            case let .webView(server, initialPath):
+                HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
                     coordinator.setFrontend(webViewController)
                     Current.sceneManager.setWebViewController(webViewController)
                 }
@@ -128,7 +128,9 @@ struct ContainerView: View {
     }
 
     private var isShowingWebView: Bool {
-        if case .webView = state.screen { return true }
+        if case .webView = state.screen {
+            return true
+        }
         return false
     }
 }

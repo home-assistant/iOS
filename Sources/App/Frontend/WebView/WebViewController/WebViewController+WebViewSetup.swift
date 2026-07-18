@@ -55,6 +55,20 @@ extension WebViewController {
                 RestorableStateKey.server.rawValue: server.identifier.rawValue,
             ]
             userActivity?.becomeCurrent()
+
+            // Persist the server and a host-agnostic path so cold launch reopens here; the base URL is
+            // re-resolved from current connectivity at load time (see `resolvedLoadURL`).
+            Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
+            if let components = URLComponents(url: cleanURL, resolvingAgainstBaseURL: false) {
+                var relative = components.path.isEmpty ? "/" : components.path
+                if let query = components.query {
+                    relative += "?\(query)"
+                }
+                if let fragment = components.fragment {
+                    relative += "#\(fragment)"
+                }
+                Current.settingsStore.lastActiveURLPath = relative
+            }
         }
     }
 }
