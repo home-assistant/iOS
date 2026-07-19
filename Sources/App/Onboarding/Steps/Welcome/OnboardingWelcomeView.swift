@@ -11,7 +11,9 @@ struct OnboardingWelcomeView: View {
     }
 
     @State private var showLearnMore = false
-    @Binding var shouldDismissOnboarding: Bool
+    /// Advances to the servers list; the onboarding container swaps content in place (no navigation
+    /// push — tearing the container down with a pushed page leaks its hosting view).
+    let continueAction: () -> Void
 
     var body: some View {
         ScrollView {
@@ -65,7 +67,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButtonBlock: some View {
         VStack {
-            NavigationLink(destination: serversListDestination) {
+            Button(action: continueAction) {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
@@ -79,22 +81,15 @@ struct OnboardingWelcomeView: View {
         .background(Color(uiColor: .systemBackground))
     }
 
-    /// Pushed pages get their own hosting controller, so the `ViewControllerProvider` injected at the
-    /// onboarding root (`embeddedInHostingController()`) does not reach them — re-inject it here or the
-    /// servers list crashes on first access.
-    private var serversListDestination: some View {
-        OnboardingServersListView(onboardingStyle: .initial)
-            .injectingViewControllerProvider()
-    }
 }
 
 #Preview {
     NavigationView {
         if #available(iOS 18.0, *) {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
+            OnboardingWelcomeView(continueAction: {})
                 .toolbarVisibility(.hidden, for: .navigationBar)
         } else {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
+            OnboardingWelcomeView(continueAction: {})
         }
     }
 }

@@ -155,7 +155,7 @@ struct LaunchSplashOverlayView: View {
 #Preview("Hero over Onboarding Welcome") {
     ZStack {
         NavigationView {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
+            OnboardingWelcomeView(continueAction: {})
         }
         .navigationViewStyle(.stack)
         LaunchSplashOverlayView(state: .shared)

@@ -9,7 +9,7 @@ class OnboardingAuthStepModelsTests: XCTestCase {
     private var step: OnboardingAuthStepModels!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
-    private var sender: UIViewController!
+    private var presenter: OnboardingAuthPresenter!
     private var modelManager: FakeModelManager!
 
     override func setUp() {
@@ -21,9 +21,9 @@ class OnboardingAuthStepModelsTests: XCTestCase {
         connection = HAMockConnection()
         api = HomeAssistantAPI(server: .fake())
         api.connection = connection
-        sender = UIViewController()
+        presenter = OnboardingAuthPresenter()
 
-        step = OnboardingAuthStepModels(api: api, sender: sender)
+        step = OnboardingAuthStepModels(api: api, presenter: presenter)
     }
 
     override func tearDown() {

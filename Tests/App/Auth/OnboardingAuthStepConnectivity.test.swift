@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 @testable import HomeAssistant
 import OHHTTPStubs
 import PromiseKit
@@ -8,17 +9,19 @@ import XCTest
 class OnboardingAuthStepConnectivityTests: XCTestCase {
     private var step: OnboardingAuthStepConnectivity!
     private var authDetails: OnboardingAuthDetails!
-    private var sender: FakeUIViewController!
+    private var presenter: OnboardingAuthPresenter!
     private var urlProtocol: ConnectivityURLProtocol.Type!
+    private var cancellables = Set<AnyCancellable>()
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         urlProtocol = ConnectivityURLProtocol.self
         authDetails = try OnboardingAuthDetails(baseURL: URL(string: "http://example.com")!)
-        sender = FakeUIViewController()
+        presenter = OnboardingAuthPresenter()
+        cancellables.removeAll()
 
-        step = OnboardingAuthStepConnectivity(authDetails: authDetails, sender: sender)
+        step = OnboardingAuthStepConnectivity(authDetails: authDetails, presenter: presenter)
         step.prepareSessionConfiguration = { sessionConfiguration in
             sessionConfiguration.protocolClasses = [ConnectivityURLProtocol.self]
         }
@@ -171,27 +174,18 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
             let secTrust = try newSecTrust()
             XCTAssertFalse(SecTrustEvaluateWithError(secTrust, nil), "we should start without it being trusted")
 
-            sender.didPresent = { controller in
-                guard let controller = controller as? UIAlertController else {
-                    XCTFail("expected alert, got \(controller)")
-                    return
-                }
-
-                switch testCase.alertResponse {
-                case .trust:
-                    if let alert = controller.actions.first(where: { $0.style == .destructive }) {
-                        alert.ha_handler(alert)
-                    } else {
-                        XCTFail("expected an action")
-                    }
-                case .cancel:
-                    if let alert = controller.actions.first(where: { $0.style == .cancel }) {
-                        alert.ha_handler(alert)
-                    } else {
-                        XCTFail("expected an action")
+            cancellables.removeAll()
+            presenter.$certificateTrustRequest
+                .compactMap { $0 }
+                .sink { request in
+                    switch testCase.alertResponse {
+                    case .trust:
+                        request.trust()
+                    case .cancel:
+                        request.dontTrust()
                     }
                 }
-            }
+                .store(in: &cancellables)
 
             ConnectivityURLProtocol.handler = { [authDetails] proto, client in
                 client.urlProtocol(proto, didReceive: URLAuthenticationChallenge(
@@ -411,19 +405,6 @@ class FakeURLAuthenticationChallengeSender: NSObject, URLAuthenticationChallenge
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [self] in
             defaultHandling()
         }
-    }
-}
-
-private class FakeUIViewController: UIViewController {
-    var didPresent: ((UIViewController) -> Void)?
-
-    override func present(
-        _ viewControllerToPresent: UIViewController,
-        animated flag: Bool,
-        completion: (() -> Void)? = nil
-    ) {
-        didPresent?(viewControllerToPresent)
-        completion?()
     }
 }
 

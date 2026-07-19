@@ -3,7 +3,14 @@ import SwiftUI
 import UIKit
 
 struct HomeAssistantView: View, WebFrontendView {
+    private enum Constants {
+        static let launchMessagesFallbackDelay: TimeInterval = 2
+    }
+
     @StateObject private var viewModel: HomeAssistantViewModel
+    /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
+    /// frontend, never over onboarding.
+    @StateObject private var launchMessages = LaunchMessagesState()
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -54,11 +61,36 @@ struct HomeAssistantView: View, WebFrontendView {
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
         .statusBarHidden(viewModel.chrome.statusBarHidden)
         .persistentSystemOverlays(viewModel.chrome.homeIndicatorHidden ? .hidden : .automatic)
-        .onAppear { viewModel.fade(to: 1, reduceMotion: reduceMotion) }
+        .onAppear {
+            viewModel.fade(to: 1, reduceMotion: reduceMotion)
+            // Fallback for frontends that never finish loading (e.g. connection errors): still show
+            // the launch messages, but well after any screen-swap transition (post-onboarding) has
+            // finished — presenting a sheet mid-swap corrupts the presenting hierarchy and leaves a
+            // blank screen behind on dismissal.
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.launchMessagesFallbackDelay) {
+                launchMessages.evaluateIfNeeded()
+            }
+        }
+        .onChange(of: viewModel.shouldShowStandByView) { showsStandBy in
+            // The frontend is loaded and on screen — the settled moment to present launch messages.
+            if !showsStandBy {
+                launchMessages.evaluateIfNeeded()
+            }
+        }
         .onChange(of: reduceMotion) { reduceMotion in
             viewModel.updateReduceMotion(reduceMotion)
         }
         .onDisappear { viewModel.disappear(reduceMotion: reduceMotion) }
+        .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
+            switch message {
+            case let .whatsNew(release):
+                WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
+            case let .testFlight(message):
+                TestFlightCommunicationView(message: message) {
+                    TestFlightCommunicationEngine().markSeen(message)
+                }
+            }
+        }
     }
 
     private var homeAssistant: some View {
