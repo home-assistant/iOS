@@ -254,6 +254,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 NotificationPayloadKey.notificationIcon.rawValue,
                 NotificationPayloadKey.notificationIconColor.rawValue,
                 "background_color", "text_color", "progress_bar_color",
+                "progress_bar_direction",
                 "silent", "url",
             ] {
                 if let value = data[key] {
