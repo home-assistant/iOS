@@ -826,7 +826,7 @@ private struct LiveActivitySample: Identifiable {
                 lines.append("\(sub)progress_bar_color: \"\(progressBarColor)\"")
             }
             if let progressBarDirection = stage.progressBarDirection {
-                lines.append("\(sub)progress_bar_direction: \(progressBarDirection)")
+                lines.append("\(sub)progress_bar_direction: \"\(progressBarDirection)\"")
             }
             return lines
         }

@@ -41,7 +41,7 @@ struct HAActivityTimerProgressBar: View {
     let tint: Color
     /// Explicit `progress_bar_direction` override; nil keeps the per-timer default
     /// (countdown drains, bounded count-up fills).
-    var direction: HALiveActivityAttributes.ContentState.ProgressBarDirection?
+    let direction: HALiveActivityAttributes.ContentState.ProgressBarDirection?
 
     var body: some View {
         if let interval {
