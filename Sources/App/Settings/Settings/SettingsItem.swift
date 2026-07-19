@@ -310,7 +310,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     private static var canShowLiveActivities: Bool {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
-            return Current.isTestFlight
+            return true
         } else {
             return false
         }
