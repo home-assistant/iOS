@@ -15,6 +15,7 @@ These apply to every change, even if you don't load the matching skill:
 
 - **One type per file**: each `struct`/`class`/`enum` lives in its own file named after the type — never stack multiple top-level types (especially SwiftUI `View` structs) in one file. Small `private` helper types nested inside the type are the only exception. Every SwiftUI view ships with a `#Preview`. See [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) for the full UI rules.
 - **SwiftUI confirmations stay on the trigger**: apply `.confirmationDialog` directly to the `Button` that opens it, not to a parent `List`, `Section`, or container view. This keeps confirmation ownership local and avoids dialogs firing from unrelated controls.
+- **No AI attribution, no autonomous PR chatter**: never co-sign commits (no `Co-Authored-By` or other AI-attribution trailers), never mention Claude or any AI tooling in pull request titles or bodies, and never post pull request comments or review replies on your own. See [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) for the full commit and PR rules.
 
 ## Skills
 
