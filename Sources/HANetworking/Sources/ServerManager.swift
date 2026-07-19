@@ -231,9 +231,22 @@ public final class ServerManagerImpl: ServerManager {
 
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
+        let existingServers = all
         let setValue = with(serverInfo) {
             if $0.sortOrder == ServerInfo.defaultSortOrder {
-                $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+                $0.sortOrder = existingServers.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+            }
+
+            let takenNames = Set(
+                existingServers
+                    .filter { $0.identifier != identifier }
+                    .map(\.info.name)
+            )
+            let uniqueName = Self.uniqueName(for: $0.name, takenNames: takenNames)
+            if uniqueName != $0.name {
+                // Stored in the local-name override so a later remote-name sync (e.g. get_config
+                // returning the server's location_name) can't reintroduce the duplicate.
+                $0.setSetting(value: uniqueName, for: .localName)
             }
         }
 
@@ -295,6 +308,18 @@ public final class ServerManagerImpl: ServerManager {
         restoredMirroredServers = []
 
         notify()
+    }
+
+    /// Returns `name` unchanged when no other server already uses it, otherwise the first
+    /// numbered variant ("\(name) 2", "\(name) 3", …) that isn't taken.
+    private static func uniqueName(for name: String, takenNames: Set<String>) -> String {
+        guard takenNames.contains(name) else { return name }
+
+        var suffix = 2
+        while takenNames.contains("\(name) \(suffix)") {
+            suffix += 1
+        }
+        return "\(name) \(suffix)"
     }
 
     // MARK: Cache and Observation

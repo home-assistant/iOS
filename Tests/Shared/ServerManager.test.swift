@@ -107,6 +107,8 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")) === server2)
         XCTAssertEqual(server2.info, with(info2) {
             $0.sortOrder = 1000
+            // both fakes share a name, so adding the second one dedupes it locally
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
 
         XCTAssertEqual(servers.all, [server1, server2])
@@ -180,6 +182,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
             $0.sortOrder = 1000
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
         XCTAssertEqual(servers.server(for: "fake3")?.info, with(info3) {
             $0.sortOrder = 2000
@@ -221,6 +224,7 @@ class ServerManagerTests: XCTestCase {
         })
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
             $0.sortOrder = 1000
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
         XCTAssertNil(servers.server(for: "fake3"))
 
@@ -337,6 +341,74 @@ class ServerManagerTests: XCTestCase {
 
         servers.server(for: "fake3")?.info.sortOrder = 0
         XCTAssertEqual(servers.all.map(\.identifier), ["fake3", "fake1", "fake2"])
+    }
+
+    func testAddingServersWithDuplicateNamesAppendsNumberSuffix() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        let server2 = servers.add(identifier: "fake2", serverInfo: .fake())
+        let server3 = servers.add(identifier: "fake3", serverInfo: .fake())
+
+        XCTAssertEqual(server1.info.name, "Fake Server")
+        XCTAssertEqual(server2.info.name, "Fake Server 2")
+        XCTAssertEqual(server3.info.name, "Fake Server 3")
+
+        // the remote name stays untouched; the deduplicated name lives in the local override
+        XCTAssertEqual(server2.info.remoteName, "Fake Server")
+        XCTAssertEqual(server2.info.setting(for: .localName), "Fake Server 2")
+        XCTAssertEqual(server3.info.remoteName, "Fake Server")
+        XCTAssertEqual(server3.info.setting(for: .localName), "Fake Server 3")
+    }
+
+    func testAddingDuplicateNameSkipsAlreadyTakenNumberSuffix() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Fake Server 2"
+        })
+
+        let added = servers.add(identifier: "fake3", serverInfo: .fake())
+        XCTAssertEqual(added.info.name, "Fake Server 3")
+    }
+
+    func testAddingDuplicateOfLocallyRenamedServerDedupesAgainstEffectiveName() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: with(.fake()) {
+            $0.remoteName = "Original"
+            $0.setSetting(value: "Home", for: .localName)
+        })
+
+        let added = servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Home"
+        })
+        XCTAssertEqual(added.info.name, "Home 2")
+    }
+
+    func testReAddingSameServerDoesNotRenameAgainstItself() throws {
+        try setupRegular()
+
+        let first = servers.add(identifier: "fake1", serverInfo: .fake())
+        XCTAssertEqual(first.info.name, "Fake Server")
+        XCTAssertNil(first.info.setting(for: .localName))
+
+        let readded = servers.add(identifier: "fake1", serverInfo: .fake())
+        XCTAssertEqual(readded.info.name, "Fake Server")
+        XCTAssertNil(readded.info.setting(for: .localName))
+    }
+
+    func testAddingServerWithUniqueNameIsNotRenamed() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: .fake())
+
+        let other = servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Other"
+        })
+        XCTAssertEqual(other.info.name, "Other")
+        XCTAssertNil(other.info.setting(for: .localName))
     }
 
     private func notificationContent(webhookID: String?) -> UNNotificationContent {
