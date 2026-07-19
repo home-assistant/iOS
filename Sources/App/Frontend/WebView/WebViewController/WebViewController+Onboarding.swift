@@ -1,3 +1,4 @@
+import CoreLocation
 import PromiseKit
 import Shared
 import SwiftUI
@@ -6,31 +7,41 @@ import UIKit
 // MARK: - Onboarding & Security Level
 
 extension WebViewController {
+    /// The permission steps to force a decision for, or `nil` when every decision has been made.
+    /// Declining to share location during onboarding never shows the iOS permission dialog, so the
+    /// system status stays `.notDetermined` even though the user already decided — an explicit
+    /// `.never` privacy setting counts as a decision and must not re-trigger the flow.
+    static func localSecurityLevelDecisionSteps(
+        connection: ConnectionInfo,
+        locationPermissionStatus: CLAuthorizationStatus,
+        userDeclinedLocationSharing: Bool
+    ) -> [OnboardingPermissionsNavigationViewModel.StepID]? {
+        if locationPermissionStatus == .notDetermined, !userDeclinedLocationSharing,
+           connection.hasNonHTTPSURLOptions {
+            return OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission
+        } else if connection.connectionAccessSecurityLevel == .undefined, !connection.hasOnlyHTTPSURLOptions {
+            return OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference
+        } else {
+            return nil
+        }
+    }
+
     /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
     func checkForLocalSecurityLevelDecisionNeeded() {
         let connection = server.info.connection
+        let steps = Self.localSecurityLevelDecisionSteps(
+            connection: connection,
+            locationPermissionStatus: Current.location.permissionStatus,
+            userDeclinedLocationSharing: server.info.setting(for: .locationPrivacy) == .never
+        )
 
-        // Declining to share location during onboarding never shows the iOS permission dialog, so the
-        // system status stays `.notDetermined` even though the user already decided — an explicit
-        // `.never` privacy setting counts as a decision and must not re-trigger the flow.
-        let userDeclinedLocationSharing = server.info.setting(for: .locationPrivacy) == .never
-
-        if Current.location.permissionStatus == .notDetermined, !userDeclinedLocationSharing,
-           connection.hasNonHTTPSURLOptions {
-            Current.Log.verbose("User has not decided location permission yet")
-            showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
-        } else if connection.connectionAccessSecurityLevel == .undefined, !connection.hasOnlyHTTPSURLOptions {
-            Current.Log.verbose("User has not decided local access security level yet")
-            showOnboardingPermissions(
-                steps: OnboardingPermissionsNavigationViewModel.StepID
-                    .updateLocalAccessSecurityLevelPreference
-            )
-        } else if connection.hasOnlyHTTPSURLOptions {
-            Current.Log.verbose("Skipping local access security level decision because all configured URLs use HTTPS")
+        if let steps {
+            Current.Log.verbose("Local security level decision needed, requesting steps: \(steps.map(\.rawValue))")
+            showOnboardingPermissions(steps: steps)
         } else {
             Current.Log
                 .verbose(
-                    "User decided \(connection.connectionAccessSecurityLevel) for local access security level"
+                    "No local security level decision needed, level: \(connection.connectionAccessSecurityLevel)"
                 )
         }
     }

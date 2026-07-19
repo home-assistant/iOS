@@ -1,3 +1,4 @@
+import CoreLocation
 @testable import HomeAssistant
 @testable import Shared
 import UIKit
@@ -306,6 +307,85 @@ final class WebViewControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
+    }
+
+    // MARK: - Local security level decision
+
+    // ServerInfo.fake() has a non-HTTPS external URL and an undefined security level.
+
+    func testLocalSecurityLevelDecisionRequestsLocationFlowWhenPermissionNotDetermined() {
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: ServerInfo.fake().connection,
+            locationPermissionStatus: .notDetermined,
+            userDeclinedLocationSharing: false
+        )
+
+        XCTAssertEqual(steps, OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
+    }
+
+    func testLocalSecurityLevelDecisionSkipsLocationFlowWhenUserDeclinedSharing() {
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: ServerInfo.fake().connection,
+            locationPermissionStatus: .notDetermined,
+            userDeclinedLocationSharing: true
+        )
+
+        XCTAssertEqual(
+            steps,
+            OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference
+        )
+    }
+
+    func testLocalSecurityLevelDecisionRequiresNothingWhenUserDeclinedSharingAndSecurityLevelDecided() {
+        var connection = ServerInfo.fake().connection
+        connection.connectionAccessSecurityLevel = .mostSecure
+
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: connection,
+            locationPermissionStatus: .notDetermined,
+            userDeclinedLocationSharing: true
+        )
+
+        XCTAssertNil(steps)
+    }
+
+    func testLocalSecurityLevelDecisionRequestsSecurityLevelFlowWhenUndecided() {
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: ServerInfo.fake().connection,
+            locationPermissionStatus: .authorizedWhenInUse,
+            userDeclinedLocationSharing: false
+        )
+
+        XCTAssertEqual(
+            steps,
+            OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference
+        )
+    }
+
+    func testLocalSecurityLevelDecisionRequiresNothingWhenAllURLsAreHTTPS() {
+        var connection = ServerInfo.fake().connection
+        connection.set(address: URL(string: "https://example.com:8123"), for: .external)
+
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: connection,
+            locationPermissionStatus: .notDetermined,
+            userDeclinedLocationSharing: false
+        )
+
+        XCTAssertNil(steps)
+    }
+
+    func testLocalSecurityLevelDecisionRequiresNothingWhenEverythingDecided() {
+        var connection = ServerInfo.fake().connection
+        connection.connectionAccessSecurityLevel = .lessSecure
+
+        let steps = WebViewController.localSecurityLevelDecisionSteps(
+            connection: connection,
+            locationPermissionStatus: .authorizedAlways,
+            userDeclinedLocationSharing: false
+        )
+
+        XCTAssertNil(steps)
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
