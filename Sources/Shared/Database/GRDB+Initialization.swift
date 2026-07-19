@@ -136,7 +136,7 @@ public extension DatabaseQueue {
 /// killing the process with 0xdead10cc for holding the app-group SQLite file lock during suspension —
 /// see https://github.com/groue/GRDB.swift/issues/1626.
 public final class AppDatabaseSuspension {
-    public static let shared = AppDatabaseSuspension()
+    static let shared = AppDatabaseSuspension()
 
     private let lock = NSLock()
     /// Whether the lifecycle currently wants the database suspended (set on background, cleared on
@@ -171,14 +171,14 @@ public final class AppDatabaseSuspension {
         shared.resume()
     }
 
-    public func suspend() {
+    func suspend() {
         lock.lock()
         wantsSuspension = true
         lock.unlock()
         postNotification(Database.suspendNotification)
     }
 
-    public func resume() {
+    func resume() {
         lock.lock()
         wantsSuspension = false
         let parked = activitySemaphore
