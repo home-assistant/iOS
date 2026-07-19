@@ -42,6 +42,42 @@ class ConnectivitySensorTests: XCTestCase {
         )
     }
 
+    func testConnectionTypeTranslationMetadataDependsOnServerVersion() throws {
+        Current.connectivity.hasWiFi = { true }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name", bssid: "bssid") }
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.cellularNetworkType = { .wifi }
+        Current.connectivity.telephonyCarriers = { nil }
+        Current.connectivity.telephonyRadioAccessTechnology = { nil }
+        Current.connectivity.networkAttributes = { [:] }
+
+        let modernSensors = try hang(ConnectivitySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: .canRegisterSensorTranslationKeys
+        )).sensors())
+        let modern = modernSensors.first(where: { $0.UniqueID == "connectivity_connection_type" })
+        XCTAssertEqual(modern?.translationKey, "connection_type")
+        XCTAssertEqual(modern?.options, ["Unknown", "No Connection", "Wi-Fi", "Cellular", "Ethernet"])
+        XCTAssertEqual(modern?.DeviceClass, .enum)
+        // SSID has free-form states, so it must not declare translation metadata
+        let ssid = modernSensors.first(where: { $0.UniqueID == "connectivity_ssid" })
+        XCTAssertNil(ssid?.translationKey)
+        XCTAssertNil(ssid?.options)
+
+        let legacySensors = try hang(ConnectivitySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: Version()
+        )).sensors())
+        let legacy = legacySensors.first(where: { $0.UniqueID == "connectivity_connection_type" })
+        XCTAssertNil(legacy?.translationKey)
+        XCTAssertNil(legacy?.options)
+        XCTAssertNil(legacy?.DeviceClass)
+    }
+
     func testSignaler() async throws {
         _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
 

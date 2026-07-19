@@ -26,11 +26,11 @@ public class BatterySensor: SensorProvider {
 
         return .value(
             Current.device.batteries()
-                .flatMap { Self.sensors(battery: $0) }
+                .flatMap { Self.sensors(battery: $0, serverVersion: request.serverVersion) }
         )
     }
 
-    private static func sensors(battery: DeviceBattery) -> [WebhookSensor] {
+    private static func sensors(battery: DeviceBattery, serverVersion: Version) -> [WebhookSensor] {
         let icon: String = BatteryIcon.forBatteryLevel(battery.level, state: battery.state)
         let isLowPowerMode = Current.device.isLowPowerMode()
         let sensorNamePrefix = battery.name ?? "Battery"
@@ -56,6 +56,11 @@ public class BatterySensor: SensorProvider {
             $0.Attributes = [
                 "Low Power Mode": isLowPowerMode,
             ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
+            $0.setEnumTranslation(
+                key: "battery_state",
+                options: DeviceBattery.State.allCases.map(\.description),
+                serverVersion: serverVersion
+            )
         }
 
         return [levelSensor, stateSensor]

@@ -413,6 +413,10 @@ public extension Version {
     static let frontendLoadedExternalBus: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
     /// Frontend handles safe-area insets itself from 2026.8.0, so the app can display edge-to-edge by default.
     static let canDisplayEdgeToEdge: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
+    /// Core `mobile_app` accepts `translation_key` and `options` in `register_sensor` payloads from 2026.8.0.
+    /// Older cores fail schema validation on unknown keys and silently skip the registration, so these fields
+    /// must never be sent to servers below this version.
+    static let canRegisterSensorTranslationKeys: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

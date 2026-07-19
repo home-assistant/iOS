@@ -29,6 +29,8 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
     public var entityCategory: String?
+    public var translationKey: String?
+    public var options: [String]?
 
     public var Settings: [WebhookSensorSetting] = []
 
@@ -131,9 +133,24 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
             DeviceClass <- map["device_class"]
             entityCategory <- map["entity_category"]
             Name <- map["name"]
+            options <- map["options"]
             StateClass <- map["state_class"]
+            translationKey <- map["translation_key"]
             UnitOfMeasurement <- map["unit_of_measurement"]
         }
+    }
+
+    /// Declares the translation metadata core needs to localize an enum-style sensor's state:
+    /// the raw state values stay English (existing automations keep working) and the frontend
+    /// renders them through core's `entity.<platform>.<translation_key>.state.<state>` pipeline.
+    /// Core requires `options` to come with an `enum` device class, so it is set here too.
+    /// Servers older than `canRegisterSensorTranslationKeys` fail `register_sensor` validation on
+    /// unknown keys and silently drop the whole registration, so this is a no-op for them.
+    public func setEnumTranslation(key: String, options: [String], serverVersion: Version) {
+        guard serverVersion >= .canRegisterSensorTranslationKeys else { return }
+        translationKey = key
+        self.options = options
+        DeviceClass = .enum
     }
 
     public var StateDescription: String? {

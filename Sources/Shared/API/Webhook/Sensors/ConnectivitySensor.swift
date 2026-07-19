@@ -176,9 +176,18 @@ public class ConnectivitySensor: SensorProvider {
                 }
 
                 sensor.Attributes = attributes
+                sensor.setEnumTranslation(
+                    key: "connection_type",
+                    options: Self.connectionTypeOptions,
+                    serverVersion: request.serverVersion
+                )
             },
         ])
     }
+
+    /// Every state `simpleNetworkType` can produce across iOS and Catalyst.
+    private static let connectionTypeOptions: [String] =
+        [NetworkType.unknown, .noConnection, .wifi, .cellular, .ethernet].map(\.description)
 
     #if !targetEnvironment(macCatalyst)
     private func cellularProviders() -> Promise<[WebhookSensor]> {

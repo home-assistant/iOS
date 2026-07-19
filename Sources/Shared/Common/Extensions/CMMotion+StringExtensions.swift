@@ -5,6 +5,12 @@ import Foundation
 // automations expecting localized strings.
 
 extension CMMotionActivity {
+    /// Every value `activityTypes` can produce; registered as the Activity sensor's `options`
+    /// so the value set stays in sync with what's sent as state.
+    static var allActivityTypes: [String] {
+        ["Stationary", "Walking", "Running", "Automotive", "Cycling", "Unknown"]
+    }
+
     var activityTypes: [String] {
         var types: [String] = []
 

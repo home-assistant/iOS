@@ -11,7 +11,7 @@ import WatchKit
 #endif
 
 public struct DeviceBattery {
-    public enum State: CustomStringConvertible {
+    public enum State: CustomStringConvertible, CaseIterable {
         case charging
         case unplugged
         case full

@@ -31,6 +31,35 @@ class BatterySensorTests: XCTestCase {
         XCTAssertTrue(didSignal)
     }
 
+    func testTranslationMetadataDependsOnServerVersion() throws {
+        Current.device.batteries = { [DeviceBattery(level: 50, state: .charging, attributes: [:])] }
+        Current.device.isLowPowerMode = { false }
+
+        let modernSensors = try hang(BatterySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: .canRegisterSensorTranslationKeys
+        )).sensors())
+        let modernLevel = modernSensors[0]
+        let modernState = modernSensors[1]
+        XCTAssertEqual(modernState.translationKey, "battery_state")
+        XCTAssertEqual(modernState.options, ["Charging", "Not Charging", "Full"])
+        XCTAssertEqual(modernState.DeviceClass, .enum)
+        XCTAssertNil(modernLevel.translationKey)
+        XCTAssertEqual(modernLevel.DeviceClass, .battery)
+
+        let legacyState = try hang(BatterySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: Version()
+        )).sensors())[1]
+        XCTAssertNil(legacyState.translationKey)
+        XCTAssertNil(legacyState.options)
+        XCTAssertNil(legacyState.DeviceClass)
+    }
+
     func testAdditionalInfo() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 100, attributes: ["test": true])
         XCTAssertEqual(uLevel.Attributes?["test"] as? Bool, true)
