@@ -199,8 +199,11 @@ public class AppEnvironment {
 
     public var database: () -> DatabaseQueue = {
         // App Intents can run in a background-woken process without a foreground transition,
-        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut.
-        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut. While
+        // backgrounded the resume is protected by an expiring activity that re-suspends GRDB
+        // before the process freezes, so no access is caught holding the app-group SQLite file
+        // lock (0xdead10cc).
+        AppDatabaseSuspension.shared.resumeForAccess()
         return .appDatabase
     }
 
