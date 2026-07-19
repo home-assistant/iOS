@@ -80,7 +80,6 @@ struct OnboardingWelcomeView: View {
         .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground))
     }
-
 }
 
 #Preview {

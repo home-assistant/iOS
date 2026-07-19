@@ -118,5 +118,4 @@ struct ContainerView: View {
     private func refreshWebView() {
         Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
     }
-
 }
