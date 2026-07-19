@@ -252,7 +252,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::sensor::title" = "Sensor";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "brak aktywności";
 "component::shelly::entity::sensor::valve_status::state::closed" = "zamknięto";
-"component::shelly::selector::ble_scanner_mode::options::active" = "aktywny";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Aktywny (zużywa więcej baterii urządzenia, najszybsze aktualizacje)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "wyłączono";
 "component::siren::entity_component::_::state::off" = "wyłączono";
 "component::siren::entity_component::_::state::on" = "włączono";
