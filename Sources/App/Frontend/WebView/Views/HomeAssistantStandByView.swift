@@ -349,41 +349,10 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private func serverSelection(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        if emptyState.style.showsServerPicker, Current.servers.all.count > 1 {
-            if Current.isCatalyst {
-                Menu {
-                    ForEach(Current.servers.all, id: \.identifier) { availableServer in
-                        Button {
-                            selectServer(availableServer)
-                        } label: {
-                            Label(
-                                availableServer.info.name,
-                                systemSymbol: availableServer.identifier == server.identifier ? .checkmark : .serverRack
-                            )
-                        }
-                    }
-                } label: {
-                    HStack(spacing: DesignSystem.Spaces.one) {
-                        Image(systemSymbol: .serverRack)
-                            .foregroundStyle(Color.haPrimary)
-                        Text(server.info.name)
-                            .font(.callout)
-                            .lineLimit(1)
-                        Image(systemSymbol: .chevronUpChevronDown)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, DesignSystem.Spaces.two)
-                    .padding(.vertical, DesignSystem.Spaces.one)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(.capsule)
-                }
-                .buttonStyle(.plain)
-            } else {
-                ServerPickerView(server: server, onSelect: selectServer)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(Capsule())
-            }
+        if emptyState.style.showsServerPicker, Current.servers.all.count > 1, !Current.isCatalyst {
+            ServerPickerView(server: server, onSelect: selectServer)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(Capsule())
         }
     }
 
