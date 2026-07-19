@@ -57,7 +57,13 @@ final class ContainerViewModel: ObservableObject {
             queue.append(.testFlight(message))
         }
         pendingLaunchMessages = queue
-        showNextLaunchMessage()
+        // This is evaluated from the onboarding → web view screen swap. Presenting the sheet in the same
+        // transaction as the swap (which itself rides the tail of the permissions cover dismissal) corrupts
+        // UIKit's presentation state: the old onboarding view stays installed and the web view never attaches.
+        // Delay the first message until the new hierarchy has settled.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.showNextLaunchMessage()
+        }
     }
 
     /// Presents the next queued launch message, if any. Called on first evaluation and on each sheet dismiss so
