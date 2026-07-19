@@ -146,7 +146,8 @@ class ActivitySensorTests: XCTestCase {
             XCTAssertEqual(sensors[0].Attributes?["Types"] as? [String], activity.activityTypes)
 
             // every possible state must be a declared translation option
-            XCTAssertTrue(CMMotionActivity.allActivityTypes.contains(try XCTUnwrap(sensors[0].State as? String)))
+            let state = try XCTUnwrap(sensors[0].State as? String)
+            XCTAssertTrue(CMMotionActivity.allActivityTypes.contains(state))
         }
     }
 }
