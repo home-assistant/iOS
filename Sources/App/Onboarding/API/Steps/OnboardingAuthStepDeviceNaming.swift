@@ -96,7 +96,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                 fetchDeviceList().done { updatedDevices in
                     if updatedDevices.contains(where: { $0.matches(name: name) }) {
                         // Name conflicts with a registered device; keep the screen up with an inline error
-                        request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName))
+                        request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(name))
                     } else {
                         // No conflict, proceed with the name. The screen stays pushed (showing its
                         // saving indicator) until the flow replaces it with the next step.
@@ -107,7 +107,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                     }
                 }.catch { _ in
                     // If we can't verify the name is free, keep the screen up with an inline error
-                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName))
+                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(name))
                 }
             }, onCancel: {
                 resetFirstUserDeviceNameInput()
