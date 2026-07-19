@@ -270,7 +270,7 @@ private final class RecordingAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         stopCallCount += 1
     }
 
-    func update(server: Server, forceUpdate: Bool) {
+    func update(server: Server, forceUpdate: Bool, showProgress _: Bool) {
         if forceUpdate {
             updatedServerIds.append(server.identifier.rawValue)
         }

@@ -187,7 +187,7 @@ extension OnboardingServersListViewModel: OnboardingStateObserver {
                 shouldDismiss = true
             }
             if let onboardingServer {
-                Current.appDatabaseUpdater.update(server: onboardingServer, forceUpdate: true)
+                Current.appDatabaseUpdater.update(server: onboardingServer, forceUpdate: true, showProgress: false)
             }
         }
     }

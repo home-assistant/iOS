@@ -13,7 +13,7 @@ struct ServersListView: View {
             }
             .contextMenu {
                 Button {
-                    server.refreshAppDatabase(forceUpdate: true)
+                    server.refreshAppDatabase(forceUpdate: true, showProgress: true)
                 } label: {
                     Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
                 }

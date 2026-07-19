@@ -149,8 +149,8 @@ public class AppEnvironment {
             lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
         )
         #if !os(watchOS)
-        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate in
-            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate, showProgress in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate, showProgress: showProgress)
         }
         #endif
         HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs

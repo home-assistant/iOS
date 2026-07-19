@@ -286,7 +286,7 @@ enum DebugDatabaseTransfer {
         Current.Log.info("Refreshing app database for \(Current.servers.all.count) server(s) after import")
         for server in Current.servers.all {
             Current.Log.info("Requesting forced app database update for server \(server.identifier.rawValue)")
-            Current.appDatabaseUpdater.update(server: server, forceUpdate: true)
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: true, showProgress: false)
         }
     }
 

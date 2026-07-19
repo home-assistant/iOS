@@ -299,7 +299,7 @@ extension WebViewController {
     /// Called after view appears and on pull to refresh to avoid blocking app launch
     func updateDatabaseAndPanels() {
         // Update runs in background automatically, returns immediately
-        Current.appDatabaseUpdater.update(server: server, forceUpdate: false)
+        Current.appDatabaseUpdater.update(server: server, forceUpdate: false, showProgress: false)
         Current.panelsUpdater.update()
     }
 }
