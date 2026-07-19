@@ -25,6 +25,10 @@ struct OnboardingServersListView: View {
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
+    /// Connection typed in the manual entry sheet; the flow starts in the sheet's `onDismiss` so the
+    /// auth steps never present UI (e.g. the mTLS certificate prompt) while the sheet is still
+    /// animating out — a conflicting presentation gets torn down and reads as a user cancellation.
+    @State private var pendingManualURL: URL?
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
@@ -105,10 +109,15 @@ struct OnboardingServersListView: View {
                     minHeight: Constants.MacSheetSize.errorDetailsMinHeight
                 )
         }
-        .sheet(isPresented: $showManualInput) {
+        .sheet(isPresented: $showManualInput, onDismiss: {
+            if let connectURL = pendingManualURL {
+                pendingManualURL = nil
+                viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
+            }
+        }) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
+                pendingManualURL = connectURL
             }
             .macOnboardingSheetFrame(
                 minWidth: Constants.MacSheetSize.manualInputMinWidth,
