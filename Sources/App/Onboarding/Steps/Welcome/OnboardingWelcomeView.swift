@@ -65,7 +65,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButtonBlock: some View {
         VStack {
-            NavigationLink(value: OnboardingRoute.serversList(.initial)) {
+            NavigationLink(value: OnboardingRoute.serversList) {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)

@@ -73,8 +73,8 @@ struct OnboardingNavigationView: View {
     @ViewBuilder
     private func destination(for route: OnboardingRoute) -> some View {
         switch route {
-        case let .serversList(style):
-            OnboardingServersListView(onboardingStyle: style)
+        case .serversList:
+            OnboardingServersListView(onboardingStyle: onboardingStyle)
                 .injectingViewControllerProvider()
         }
     }
