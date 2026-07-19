@@ -77,7 +77,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     func updateAppDatabase() {
-        server.refreshAppDatabase(forceUpdate: true)
+        server.refreshAppDatabase(forceUpdate: true, showProgress: true)
     }
 
     func retryLocalPush() {

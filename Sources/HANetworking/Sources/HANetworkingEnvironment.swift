@@ -30,9 +30,11 @@ public struct HANetworkingEnvironment {
     public var connectivity = Connectivity.noop
 
     /// Triggers a refresh of a server's cached data from Home Assistant (`Server.refreshAppDatabase`).
-    /// HACore wires this to `Current.appDatabaseUpdater.update(server:forceUpdate:)`; no-op by default
-    /// (and on watchOS, where there is no app database updater).
-    public var refreshAppDatabase: (_ server: Server, _ forceUpdate: Bool) -> Void = { _, _ in }
+    /// HACore wires this to `Current.appDatabaseUpdater.update(server:forceUpdate:showProgress:)`; no-op
+    /// by default (and on watchOS, where there is no app database updater). `showProgress` surfaces
+    /// user-friendly progress through the toast manager and is only set for manual refreshes.
+    public var refreshAppDatabase: (_ server: Server, _ forceUpdate: Bool, _ showProgress: Bool) -> Void = { _, _, _ in
+    }
 
     /// User-defaults store `ServerManager` uses for deleted/restored-server bookkeeping. HACore wires
     /// this to `Current.settingsStore.prefs`.

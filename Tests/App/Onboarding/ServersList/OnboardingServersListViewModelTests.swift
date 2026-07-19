@@ -108,7 +108,7 @@ private final class RecordingAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     func stop() {}
 
-    func update(server: Server, forceUpdate: Bool) {
+    func update(server: Server, forceUpdate: Bool, showProgress _: Bool) {
         updates.append(Update(serverId: server.identifier.rawValue, forceUpdate: forceUpdate))
         onUpdate?(server, forceUpdate)
     }

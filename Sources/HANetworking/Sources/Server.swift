@@ -378,8 +378,10 @@ public extension Server {
 public extension Server {
     /// Triggers a refresh of this server's data from Home Assistant
     /// - Parameter forceUpdate: Whether to force the update regardless of cache state. Defaults to `false`.
-    func refreshAppDatabase(forceUpdate: Bool = false) {
-        HANetworkingEnvironment.current.refreshAppDatabase(self, forceUpdate)
+    /// - Parameter showProgress: Whether to surface user-friendly progress through the toast manager.
+    ///   Only manual (user-triggered) refreshes should pass `true`. Defaults to `false`.
+    func refreshAppDatabase(forceUpdate: Bool = false, showProgress: Bool = false) {
+        HANetworkingEnvironment.current.refreshAppDatabase(self, forceUpdate, showProgress)
     }
 }
 #endif

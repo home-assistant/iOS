@@ -4016,6 +4016,18 @@ public enum L10n {
           public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.setting.none") }
         }
       }
+      public enum UpdateDatabase {
+        /// Server information updated
+        public static var finished: String { return L10n.tr("Localizable", "settings.connection_section.update_database.finished") }
+        public enum Progress {
+          /// Updating areas
+          public static var areas: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.areas") }
+          /// Updating devices
+          public static var devices: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.devices") }
+          /// Updating entities
+          public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
+        }
+      }
       public enum ValidateError {
         /// Edit URL
         public static var editUrl: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.edit_url") }
