@@ -13,12 +13,15 @@ struct HomeAssistantStandByView: View {
     private static let serverPillHeight: CGFloat = 44
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
+    static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
 
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
+    let serverSelectionNamespace: Namespace.ID?
+    let onSelectServerTapped: (() -> Void)?
     let onGestureAction: ((HAGestureAction) -> Void)?
     let onLogoDismiss: (() -> Void)?
 
@@ -52,16 +55,22 @@ struct HomeAssistantStandByView: View {
 
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
+    private var canSelectServer: Bool { Current.servers.all.count > 1 }
+
     init(
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
         isLoading: Bool = false,
+        serverSelectionNamespace: Namespace.ID? = nil,
+        onSelectServerTapped: (() -> Void)? = nil,
         onGestureAction: ((HAGestureAction) -> Void)? = nil,
         onLogoDismiss: (() -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
+        self.serverSelectionNamespace = serverSelectionNamespace
+        self.onSelectServerTapped = onSelectServerTapped
         self.onGestureAction = onGestureAction
         self.onLogoDismiss = onLogoDismiss
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
@@ -206,27 +215,52 @@ struct HomeAssistantStandByView: View {
 
     private var currentServerPillContent: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
-            Text(server.info.name)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                .frame(height: Self.serverPillHeight)
-                .modify { view in
-                    if #available(iOS 26.0, *) {
-                        view
-                            .glassEffect(.regular.interactive(), in: .capsule)
-                            .contentShape(Capsule())
-                    } else {
-                        view
-                            .background(Color(uiColor: .secondarySystemBackground))
-                            .clipShape(.capsule)
-                    }
-                }
+            serverNamePill
             if showsConnectionTypeIndicator {
                 connectionTypeIndicator
             }
         }
+    }
+
+    @ViewBuilder
+    private var serverNamePill: some View {
+        if canSelectServer {
+            Button {
+                onSelectServerTapped?()
+            } label: {
+                serverNameLabel
+            }
+            .buttonStyle(.plain)
+            .modify { view in
+                if #available(iOS 18.0, *), let serverSelectionNamespace {
+                    view.matchedTransitionSource(id: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
+                } else {
+                    view
+                }
+            }
+        } else {
+            serverNameLabel
+        }
+    }
+
+    private var serverNameLabel: some View {
+        Text(server.info.name)
+            .font(.headline)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .frame(height: Self.serverPillHeight)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                        .contentShape(Capsule())
+                } else {
+                    view
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(.capsule)
+                }
+            }
     }
 
     private var connectionTypeIndicator: some View {
