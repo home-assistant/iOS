@@ -156,9 +156,9 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
 
         let expectation = expectation(description: "device name action")
         expectation.expectedFulfillmentCount = actions.count
-        presenter.$pushedDestination
-            .compactMap { destination -> OnboardingDeviceNameRequest? in
-                guard case let .deviceName(request) = destination else { return nil }
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
                 return request
             }
             .sink { request in

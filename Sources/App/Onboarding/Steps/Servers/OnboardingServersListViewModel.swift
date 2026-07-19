@@ -79,6 +79,12 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
     }
 
+    /// Restarts discovery without clearing already-discovered instances — used when the servers list
+    /// reappears after an auth flow page above it was popped (being covered stops discovery).
+    func resumeDiscovery() {
+        discovery.start()
+    }
+
     func selectInstance(_ instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
         Current.Log.verbose("Selected instance \(instance)")
 
@@ -94,8 +100,8 @@ final class OnboardingServersListViewModel: ObservableObject {
                     Current.Log.verbose("Onboarding authentication succeeded")
                     self?.authenticationSucceeded(server: server)
                 case let .rejected(error):
-                    // The flow is over; pop whatever auth screen is still pushed.
-                    presenter.pop()
+                    // The flow is over; pop whatever auth pages are still pushed.
+                    presenter.popAuthFlow()
                     if let pmkError = error as? PMKError, pmkError.isCancelled {
                         /* No action needed, user cancelled flow */
                         self?.resetFlow()

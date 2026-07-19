@@ -23,6 +23,9 @@ final class OnboardingAuthLoginViewModel: NSObject, ObservableObject, Identifiab
     /// indicator while the rest of the auth flow (token exchange, registration) runs.
     @Published private(set) var didCompleteLogin = false
 
+    /// True while the web view loads a page; the view shows a loading overlay.
+    @Published private(set) var isLoading = false
+
     /// The auth code extracted from the OAuth callback, together with `resolvedServerURL`.
     private(set) lazy var resultPromise: Promise<OnboardingAuthLoginResult> = promise
         .map { [weak self] url in
@@ -94,7 +97,20 @@ final class OnboardingAuthLoginViewModel: NSObject, ObservableObject, Identifiab
         completionHandler(result.0, result.1)
     }
 
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        isLoading = true
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        isLoading = false
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        isLoading = false
+    }
+
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        isLoading = false
         resolver.reject(error)
     }
 

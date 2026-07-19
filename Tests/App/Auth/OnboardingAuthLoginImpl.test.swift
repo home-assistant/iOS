@@ -18,9 +18,9 @@ class OnboardingAuthLoginImplTests: XCTestCase {
     }
 
     private func pushedViewModel() throws -> OnboardingAuthLoginViewModel {
-        guard case let .login(viewModel) = presenter.pushedDestination else {
+        guard case let .login(viewModel) = presenter.path.last else {
             struct NotPushed: Error {}
-            XCTFail("expected a pushed login destination, got \(String(describing: presenter.pushedDestination))")
+            XCTFail("expected a pushed login destination, got \(String(describing: presenter.path.last))")
             throw NotPushed()
         }
         return viewModel
@@ -67,8 +67,8 @@ class OnboardingAuthLoginImplTests: XCTestCase {
         let viewModel = try pushedViewModel()
         try simulateCallback(viewModel, url: XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
         XCTAssertEqual(try hang(result).code, "code_123")
-        // The flow advances by replacing the pushed destination; open() itself doesn't pop.
-        XCTAssertNotNil(presenter.pushedDestination)
+        // The flow advances by pushing further pages; open() itself doesn't pop.
+        XCTAssertNotNil(presenter.path.last)
     }
 
     func testSuccessPropagatesResolvedServerURL() throws {

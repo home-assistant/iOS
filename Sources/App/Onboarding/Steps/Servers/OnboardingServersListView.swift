@@ -18,12 +18,10 @@ struct OnboardingServersListView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.layoutDirection) private var layoutDirection
 
     @StateObject private var viewModel: OnboardingServersListViewModel
-    /// Renders the auth flow's UI requests: pushes the login web view and device naming onto this
-    /// navigation stack, and shows its certificate alert/sheet.
-    @StateObject private var authPresenter = OnboardingAuthPresenter()
+    /// Owned by `OnboardingNavigationView`; the auth flow pushes its pages onto its navigation path.
+    @ObservedObject private var presenter: OnboardingAuthPresenter
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
@@ -35,8 +33,6 @@ struct OnboardingServersListView: View {
 
     private let prefillURL: URL?
     private let onboardingStyle: OnboardingStyle
-    /// Returns to the welcome screen (initial onboarding swaps content instead of pushing).
-    private let backAction: (() -> Void)?
 
     private var invitationURL: URL? {
         prefillURL ?? Current.appSessionValues.inviteURL
@@ -50,30 +46,33 @@ struct OnboardingServersListView: View {
         prefillURL: URL? = nil,
         shouldDismissOnSuccess: Bool = false,
         onboardingStyle: OnboardingStyle,
-        backAction: (() -> Void)? = nil
+        presenter: OnboardingAuthPresenter
     ) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
             .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
         self.onboardingStyle = onboardingStyle
-        self.backAction = backAction
+        self.presenter = presenter
     }
 
     var body: some View {
-        // The auth flow replaces this screen's content in place (login → device naming → permissions)
-        // rather than pushing pages: removing the onboarding container while a page is pushed leaks
-        // the pushed page's hosting view over the app.
         ZStack {
-            if let destination = authPresenter.pushedDestination {
-                authFlowContent(for: destination)
-            } else {
-                serversList
-                    .transition(.move(edge: leadingEdge))
+            content
+            if !shouldShowInvitation {
+                centerLoader
+                autoConnectView
             }
         }
-        .animation(DesignSystem.Animation.default, value: authPresenter.pushedDestination?.stepID)
         .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom, content: {
+            if autoConnectInstance == nil, !shouldShowInvitation {
+                manualInputButton
+            }
+        })
+        .toolbar(content: {
+            toolbarItems
+        })
         .onAppear {
             onAppear()
         }
@@ -99,23 +98,6 @@ struct OnboardingServersListView: View {
                 )
             }
         }
-        .alert(
-            L10n.Onboarding.ConnectionTestResult.CertificateError.title,
-            isPresented: certificateTrustAlertBinding,
-            presenting: authPresenter.certificateTrustRequest
-        ) { request in
-            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionTrust, role: .destructive) {
-                request.trust()
-            }
-            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionDontTrust, role: .cancel) {
-                request.dontTrust()
-            }
-        } message: { request in
-            Text(request.message)
-        }
-        .sheet(item: $authPresenter.clientCertificateRequest) { request in
-            clientCertificateSheet(request: request)
-        }
         .sheet(isPresented: $viewModel.showError) {
             errorView
                 .macOnboardingSheetFrame(
@@ -126,107 +108,12 @@ struct OnboardingServersListView: View {
         .sheet(isPresented: $showManualInput) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL), presenter: authPresenter)
+                viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
             }
             .macOnboardingSheetFrame(
                 minWidth: Constants.MacSheetSize.manualInputMinWidth,
                 minHeight: Constants.MacSheetSize.manualInputMinHeight
             )
-        }
-    }
-
-    /// The servers list screen content, with its own chrome — replaced wholesale while the auth flow
-    /// is running.
-    private var serversList: some View {
-        ZStack {
-            content
-            if !shouldShowInvitation {
-                centerLoader
-                autoConnectView
-            }
-        }
-        .safeAreaInset(edge: .bottom, content: {
-            if autoConnectInstance == nil, !shouldShowInvitation {
-                manualInputButton
-            }
-        })
-        .toolbar(content: {
-            toolbarItems
-        })
-    }
-
-    /// One auth flow step, swapped in place with a push-like transition. The steps' own disappearance
-    /// hooks translate removal into cancelling the flow when it didn't advance.
-    @ViewBuilder
-    private func authFlowContent(for destination: OnboardingAuthDestination) -> some View {
-        Group {
-            switch destination {
-            case let .login(viewModel):
-                // Identity per view model: a retry (e.g. internal → external URL) brings a new
-                // view model whose web view must replace the previous one.
-                OnboardingAuthLoginView(viewModel: viewModel)
-                    .id(ObjectIdentifier(viewModel))
-            case let .deviceName(request):
-                DeviceNameView(request: request)
-                    .toolbar(.hidden, for: .navigationBar)
-            case let .permissions(server):
-                OnboardingPermissionsNavigationView(
-                    onboardingServer: server,
-                    onDismiss: {
-                        Current.onboardingObservation.complete()
-                    }
-                )
-                .toolbar(.hidden, for: .navigationBar)
-            }
-        }
-        .transition(authStepTransition)
-    }
-
-    /// Forward-only push transition between auth flow steps, respecting RTL layouts.
-    private var authStepTransition: AnyTransition {
-        .asymmetric(
-            insertion: .move(edge: trailingEdge),
-            removal: .move(edge: leadingEdge)
-        )
-    }
-
-    private var leadingEdge: Edge {
-        layoutDirection == .leftToRight ? .leading : .trailing
-    }
-
-    private var trailingEdge: Edge {
-        layoutDirection == .leftToRight ? .trailing : .leading
-    }
-
-    /// The trust alert can only be answered through its buttons; an unanswered request is kept so a
-    /// follow-up presentation (retry after trusting) isn't dropped by the dismissal callback.
-    private var certificateTrustAlertBinding: Binding<Bool> {
-        Binding(
-            get: { authPresenter.certificateTrustRequest != nil },
-            set: { isPresented in
-                if !isPresented, authPresenter.certificateTrustRequest?.isAnswered == true {
-                    authPresenter.certificateTrustRequest = nil
-                }
-            }
-        )
-    }
-
-    private func clientCertificateSheet(request: OnboardingClientCertificateRequest) -> some View {
-        NavigationView {
-            ClientCertificateOnboardingView(
-                onImport: { certificate in
-                    request.complete(with: certificate)
-                },
-                onCancel: {
-                    request.cancel()
-                }
-            )
-        }
-        .navigationViewStyle(.stack)
-        .presentationDetents([.medium])
-        .onDisappear {
-            // Interactive dismissal without a choice counts as cancelling the import.
-            request.cancel()
         }
     }
 
@@ -272,7 +159,7 @@ struct OnboardingServersListView: View {
             Button {
                 autoConnectInstance = nil
                 guard let instance else { return }
-                viewModel.selectInstance(instance, presenter: authPresenter)
+                viewModel.selectInstance(instance, presenter: presenter)
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -307,10 +194,12 @@ struct OnboardingServersListView: View {
 
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
-        if let backAction {
+        // Cancel for the add-server sheet lives here (not on the onboarding container) so it isn't
+        // shown on top of the auth flow's pages, which bring their own chrome.
+        if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
             ToolbarItem(placement: .topBarLeading) {
-                Button(action: backAction) {
-                    Image(systemSymbol: .chevronBackward)
+                Button(L10n.cancelLabel) {
+                    dismiss()
                 }
             }
         }
@@ -380,6 +269,10 @@ struct OnboardingServersListView: View {
         if !screenLoaded {
             screenLoaded = true
             startDiscoveryIfNeeded()
+        } else if !shouldShowInvitation {
+            // Reappearing after an auth flow page above was popped — being covered stopped
+            // discovery, so resume it without clearing what was already found.
+            viewModel.resumeDiscovery()
         }
     }
 
@@ -404,7 +297,7 @@ struct OnboardingServersListView: View {
 
     private func acceptInvitation(url: URL) {
         viewModel.invitationLoading = true
-        viewModel.selectInstance(.init(manualURL: url), presenter: authPresenter)
+        viewModel.selectInstance(.init(manualURL: url), presenter: presenter)
     }
 
     private func rejectInvitation() {
@@ -465,7 +358,7 @@ struct OnboardingServersListView: View {
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
         Button(action: {
-            viewModel.selectInstance(instance, presenter: authPresenter)
+            viewModel.selectInstance(instance, presenter: presenter)
         }, label: {
             OnboardingScanningInstanceRow(
                 name: instance.bonjourName ?? instance.locationName,
@@ -515,7 +408,11 @@ struct OnboardingServersListView: View {
 }
 
 #Preview {
-    NavigationView {
-        OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
+    NavigationStack {
+        OnboardingServersListView(
+            prefillURL: nil,
+            onboardingStyle: .secondary,
+            presenter: OnboardingAuthPresenter()
+        )
     }
 }

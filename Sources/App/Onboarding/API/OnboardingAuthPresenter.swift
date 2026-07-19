@@ -1,23 +1,30 @@
 import Foundation
 import Shared
 
-/// Presentation state for the onboarding auth flow. Auth steps ask this object to show UI instead of
-/// presenting `UIViewController`s themselves; the hosting SwiftUI screen (`OnboardingServersListView`)
-/// observes it and renders the pushed screen, alert, or sheet.
+/// Presentation state for the onboarding flow. Auth steps ask this object to show UI instead of
+/// presenting `UIViewController`s themselves; `OnboardingNavigationView` binds `path` to its
+/// `NavigationStack` and renders the alert/sheet requests.
 final class OnboardingAuthPresenter: ObservableObject {
-    /// The screen currently pushed onto the navigation stack (login web view or device naming).
-    @Published var pushedDestination: OnboardingAuthDestination?
+    /// The onboarding navigation stack. Auth steps append their pages (login web view, device naming,
+    /// permissions) so each step is a real push.
+    @Published var path: [OnboardingDestination] = []
     /// A server-trust confirmation the connectivity step wants answered via an alert.
     @Published var certificateTrustRequest: OnboardingCertificateTrustRequest?
     /// A client-certificate (mTLS) import prompt shown as a sheet.
     @Published var clientCertificateRequest: OnboardingClientCertificateRequest?
 
-    func push(_ destination: OnboardingAuthDestination) {
-        onMain { self.pushedDestination = destination }
+    func push(_ destination: OnboardingDestination) {
+        onMain { self.path.append(destination) }
     }
 
-    func pop() {
-        onMain { self.pushedDestination = nil }
+    /// Pops every auth flow page, returning to the servers list — called when the flow ends in
+    /// failure or cancellation.
+    func popAuthFlow() {
+        onMain { self.path.removeAll(where: \.isAuthFlowStep) }
+    }
+
+    func popToRoot() {
+        onMain { self.path.removeAll() }
     }
 
     func present(certificateTrustRequest request: OnboardingCertificateTrustRequest) {

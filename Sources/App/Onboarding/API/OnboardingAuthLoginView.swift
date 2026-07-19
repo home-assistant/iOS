@@ -18,10 +18,19 @@ struct OnboardingAuthLoginView: View {
     var body: some View {
         switch style {
         case .pushed:
+            // Cancellation comes from the navigation back button; disappearing while the OAuth
+            // callback is unresolved rejects the login promise.
             content
         case .modal:
             NavigationView {
                 content
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(L10n.cancelLabel) {
+                                viewModel.cancel()
+                            }
+                        }
+                    }
             }
             .navigationViewStyle(.stack)
             .interactiveDismissDisabled()
@@ -31,11 +40,12 @@ struct OnboardingAuthLoginView: View {
     private var content: some View {
         LoginWebView(webView: viewModel.webView)
             .overlay {
-                // Covers the OAuth callback page with a loading indicator while the rest of the
-                // auth flow (token exchange, registration) runs before the next screen replaces us.
-                if viewModel.didCompleteLogin {
+                // Shown while the login page loads, and after the OAuth callback while the rest of
+                // the auth flow (token exchange, registration) runs before the next screen replaces us.
+                if viewModel.isLoading || viewModel.didCompleteLogin {
                     ZStack {
                         Color(uiColor: .systemBackground)
+                            .opacity(0.8)
                             .ignoresSafeArea()
                         HAProgressView()
                     }
@@ -45,11 +55,6 @@ struct OnboardingAuthLoginView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(L10n.cancelLabel) {
-                        viewModel.cancel()
-                    }
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         viewModel.refresh()
@@ -79,7 +84,7 @@ struct OnboardingAuthLoginView: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         OnboardingAuthLoginView(
             // swiftlint:disable:next force_try
             viewModel: OnboardingAuthLoginViewModel(authDetails: try! OnboardingAuthDetails(
@@ -87,5 +92,4 @@ struct OnboardingAuthLoginView: View {
             ))
         )
     }
-    .navigationViewStyle(.stack)
 }

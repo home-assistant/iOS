@@ -24,46 +24,48 @@ enum OnboardingNavigation {
     }
 }
 
-/// Hosts the onboarding screens. Navigation between them is done by swapping content in place rather
-/// than pushing — removing this view (when onboarding completes) while a page is pushed leaks the
-/// pushed page's hosting view over the app.
+/// Hosts the onboarding screens in a `NavigationStack` whose path is owned by the
+/// `OnboardingAuthPresenter`, so the auth flow's steps (login web view, device naming, permissions)
+/// are real pushes.
 struct OnboardingNavigationView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.layoutDirection) private var layoutDirection
     @StateObject public var viewModel = OnboardingNavigationViewModel()
+    @StateObject private var presenter = OnboardingAuthPresenter()
+
     public let onboardingStyle: OnboardingStyle
+    private let prefillURL: URL?
+    private let shouldDismissOnSuccess: Bool
 
-    @State private var showsServersList = false
-
-    init(onboardingStyle: OnboardingStyle) {
+    init(onboardingStyle: OnboardingStyle, prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
         self.onboardingStyle = onboardingStyle
+        self.prefillURL = prefillURL
+        self.shouldDismissOnSuccess = shouldDismissOnSuccess
     }
 
     var body: some View {
-        NavigationView {
-            Group {
-                switch onboardingStyle {
-                case .initial, .required:
-                    welcomeFlow
-                case .secondary:
-                    OnboardingServersListView(onboardingStyle: onboardingStyle)
-                        .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+        NavigationStack(path: $presenter.path) {
+            root
+                .navigationDestination(for: OnboardingDestination.self) { destination in
+                    view(for: destination)
                 }
-            }
-            .navigationViewStyle(.stack)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
-                        Button(action: {
-                            closeOnboarding()
-                        }) {
-                            Text(L10n.cancelLabel)
-                        }
-                    }
-                }
-            }
         }
-        .navigationViewStyle(.stack)
+        .alert(
+            L10n.Onboarding.ConnectionTestResult.CertificateError.title,
+            isPresented: certificateTrustAlertBinding,
+            presenting: presenter.certificateTrustRequest
+        ) { request in
+            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionTrust, role: .destructive) {
+                request.trust()
+            }
+            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionDontTrust, role: .cancel) {
+                request.dontTrust()
+            }
+        } message: { request in
+            Text(request.message)
+        }
+        .sheet(item: $presenter.clientCertificateRequest) { request in
+            clientCertificateSheet(request: request)
+        }
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 closeOnboarding()
@@ -71,30 +73,91 @@ struct OnboardingNavigationView: View {
         }
     }
 
-    /// Welcome ↔ servers list, swapped in place with a push-like slide.
     @ViewBuilder
-    private var welcomeFlow: some View {
-        ZStack {
-            if showsServersList {
-                OnboardingServersListView(
-                    onboardingStyle: onboardingStyle,
-                    backAction: { showsServersList = false }
-                )
-                .transition(.move(edge: trailingEdge))
-            } else {
-                OnboardingWelcomeView(continueAction: { showsServersList = true })
-                    .transition(.move(edge: leadingEdge))
-            }
+    private var root: some View {
+        switch onboardingStyle {
+        case .initial, .required:
+            OnboardingWelcomeView(continueAction: { presenter.push(.serversList) })
+        case .secondary:
+            serversList
+                .navigationTitle(L10n.Settings.ConnectionSection.addServer)
         }
-        .animation(DesignSystem.Animation.default, value: showsServersList)
     }
 
-    private var leadingEdge: Edge {
-        layoutDirection == .leftToRight ? .leading : .trailing
+    @ViewBuilder
+    private func view(for destination: OnboardingDestination) -> some View {
+        switch destination {
+        case .serversList:
+            serversList
+        case let .login(loginViewModel):
+            OnboardingAuthLoginView(viewModel: loginViewModel)
+        case let .deviceName(request):
+            DeviceNameView(request: request)
+                .navigationBarBackButtonHidden(true)
+                .toolbar(.hidden, for: .navigationBar)
+        case let .permissions(server):
+            OnboardingPermissionsNavigationView(
+                onboardingServer: server,
+                onDismiss: { finishFlow() }
+            )
+            .navigationBarBackButtonHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
+        }
     }
 
-    private var trailingEdge: Edge {
-        layoutDirection == .leftToRight ? .trailing : .leading
+    private var serversList: some View {
+        OnboardingServersListView(
+            prefillURL: prefillURL,
+            shouldDismissOnSuccess: shouldDismissOnSuccess,
+            onboardingStyle: onboardingStyle,
+            presenter: presenter
+        )
+    }
+
+    /// Ends onboarding after the permissions flow. The stack is popped to root without animation
+    /// first so the container never tears the `NavigationStack` down while pages are pushed — doing
+    /// so leaks the pushed page's hosting view over the app.
+    private func finishFlow() {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            presenter.popToRoot()
+        }
+        DispatchQueue.main.async {
+            Current.onboardingObservation.complete()
+        }
+    }
+
+    /// The trust alert can only be answered through its buttons; an unanswered request is kept so a
+    /// follow-up presentation (retry after trusting) isn't dropped by the dismissal callback.
+    private var certificateTrustAlertBinding: Binding<Bool> {
+        Binding(
+            get: { presenter.certificateTrustRequest != nil },
+            set: { isPresented in
+                if !isPresented, presenter.certificateTrustRequest?.isAnswered == true {
+                    presenter.certificateTrustRequest = nil
+                }
+            }
+        )
+    }
+
+    private func clientCertificateSheet(request: OnboardingClientCertificateRequest) -> some View {
+        NavigationView {
+            ClientCertificateOnboardingView(
+                onImport: { certificate in
+                    request.complete(with: certificate)
+                },
+                onCancel: {
+                    request.cancel()
+                }
+            )
+        }
+        .navigationViewStyle(.stack)
+        .presentationDetents([.medium])
+        .onDisappear {
+            // Interactive dismissal without a choice counts as cancelling the import.
+            request.cancel()
+        }
     }
 
     private func closeOnboarding() {

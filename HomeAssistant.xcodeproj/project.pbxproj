@@ -1123,7 +1123,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				API/OnboardingAuth.swift,
-				API/OnboardingAuthDestination.swift,
 				API/OnboardingAuthDetails.swift,
 				API/OnboardingAuthError.swift,
 				API/OnboardingAuthLogin.swift,
@@ -1135,6 +1134,7 @@
 				API/OnboardingAuthTokenExchange.swift,
 				API/OnboardingCertificateTrustRequest.swift,
 				API/OnboardingClientCertificateRequest.swift,
+				API/OnboardingDestination.swift,
 				API/OnboardingDeviceNameRequest.swift,
 				API/Steps/OnboardingAuthStepConfig.swift,
 				API/Steps/OnboardingAuthStepConnectivity.swift,
