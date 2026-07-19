@@ -36,7 +36,6 @@ final class CarPlayAssistSession: NSObject {
     private let audioSession = AVAudioSession.sharedInstance()
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
-    private var recordingIndicatorPlayer: AVAudioPlayer?
     private var ttsAudioPlayer: AVAudioPlayer?
     private let ttsPlayer = AVPlayer()
     private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
@@ -460,26 +459,8 @@ final class CarPlayAssistSession: NSObject {
 
     private func playRecordingIndicatorToneIfNeeded() {
         guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
-
-        do {
-            guard let toneURL = Bundle.main.url(
-                forResource: "center_button_press",
-                withExtension: "flac",
-                subdirectory: "Sounds/Assist"
-            ) else {
-                Current.Log.error("CarPlay Assist could not find center_button_press.flac in the app bundle")
-                AudioServicesPlaySystemSound(1113)
-                return
-            }
-
-            recordingIndicatorPlayer = try AVAudioPlayer(contentsOf: toneURL)
-            recordingIndicatorPlayer?.volume = 0.7
-            recordingIndicatorPlayer?.prepareToPlay()
-            recordingIndicatorPlayer?.play()
-        } catch {
-            Current.Log.error("CarPlay Assist failed to play recording indicator tone: \(error.localizedDescription)")
-            AudioServicesPlaySystemSound(1113)
-        }
+        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
+        AudioServicesPlaySystemSound(1113) // begin_record.caf
     }
 
     private func playProcessingIndicatorToneIfNeeded() {
