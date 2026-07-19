@@ -31,6 +31,7 @@ struct HomeAssistantStandByView: View {
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
+    @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
     private var showsEmptyState: Bool { emptyState != nil }
     private var loadingContentOffset: CGFloat { showsEmptyState ? 0 : -DesignSystem.Spaces.eight }
@@ -140,6 +141,12 @@ struct HomeAssistantStandByView: View {
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: Current.connectivity.connectivityDidChangeNotification())
+        ) { _ in
+            networkType = Current.connectivity.simpleNetworkType()
+        }
         .task(id: showsEmptyState) {
             showsDelayedSettingsButton = false
             guard !showsEmptyState else { return }
@@ -248,13 +255,24 @@ struct HomeAssistantStandByView: View {
     private var connectionTypeIndicatorIcon: SFSymbol {
         switch server.info.connection.activeURLType {
         case .internal:
-            .houseFill
+            internalConnectionIcon
         case .remoteUI:
             .cloudFill
         case .external:
             .network
         case .none:
             .wifiExclamationmark
+        }
+    }
+
+    private var internalConnectionIcon: SFSymbol {
+        switch networkType {
+        case .ethernet:
+            .cableConnector
+        case .wifi:
+            .wifi
+        default:
+            .houseFill
         }
     }
 
