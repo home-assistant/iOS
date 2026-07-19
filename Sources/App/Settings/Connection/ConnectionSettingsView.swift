@@ -547,6 +547,29 @@ struct ConnectionSettingsView: View {
     }
 }
 
+extension ConnectionSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.StatusSection.LocationNameRow.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.DeviceName.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.InternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ExternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.LocationSendType.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.SensorSendType.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.connectingVia),
+            SettingsSearchEntry(L10n.Settings.StatusSection.VersionRow.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.Cloudhook.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.loggedInAs),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
+        ]
+    }
+}
+
 // MARK: - Supporting Views
 
 private struct NavigationRow: View {
