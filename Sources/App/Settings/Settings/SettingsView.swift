@@ -258,10 +258,10 @@ struct SettingsView: View {
 
     private var serverSearchResults: [Server] {
         guard isSearching else { return [] }
-        let contentMatches = !serverConnectionContentMatches.isEmpty
-        return serversObserver.servers.filter { server in
-            contentMatches || server.info.name.localizedStandardContains(trimmedSearchQuery)
+        if !serverConnectionContentMatches.isEmpty {
+            return serversObserver.servers
         }
+        return serversObserver.servers.filter { $0.info.name.localizedStandardContains(trimmedSearchQuery) }
     }
 
     private var serverContentSubtitle: String? {
