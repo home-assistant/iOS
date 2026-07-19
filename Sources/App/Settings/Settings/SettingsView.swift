@@ -366,7 +366,7 @@ struct SettingsView: View {
             VStack(alignment: .leading) {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Text(item.title)
-                    if item == .liveActivities || item == .complications || item == .remindersSync {
+                    if item == .complications || item == .remindersSync {
                         LabsLabel()
                     }
                 }
