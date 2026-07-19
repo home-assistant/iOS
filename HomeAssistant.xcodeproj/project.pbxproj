@@ -1143,6 +1143,7 @@
 				Steps/DeviceName/DeviceNameView.swift,
 				Steps/Permissions/OnboardingPermissionsNavigationView.swift,
 				Steps/Permissions/OnboardingPermissionsNavigationViewModel.swift,
+				Steps/Permissions/OnboardingPermissionsStepView.swift,
 				Steps/Permissions/Steps/LocalAccessAndNetworkInput/LocalAccess/LocalAccessPermissionView.swift,
 				Steps/Permissions/Steps/LocalAccessAndNetworkInput/LocalAccess/LocalAccessPermissionViewModel.swift,
 				"Steps/Permissions/Steps/LocalAccessAndNetworkInput/LocalAccess/SelectionOptionView-Usage.md",

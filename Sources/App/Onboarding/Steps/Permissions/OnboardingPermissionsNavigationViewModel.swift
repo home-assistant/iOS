@@ -1,3 +1,4 @@
+import Combine
 import CoreLocation
 import Foundation
 import Shared
@@ -63,10 +64,19 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// SSID Stored into server settings
     @Published var storedSSIDSuccessfully: Bool = false
 
-    // MARK: - Private Properties
+    // MARK: - Navigation
 
-    /// Tracks the previous step index for determining animation direction
-    private var lastStepIndex: Int = 0
+    /// Emits `(from, to)` when the flow should push `to` onto the stack. The currently-visible step view
+    /// whose step equals `from` performs the push via its own `navigationDestination`, so navigation is
+    /// always driven by an on-screen view — never by a cross-view path mutation, which iOS 16's
+    /// `NavigationStack` does not reliably observe after the UIKit auth modals dismiss.
+    let advance = PassthroughSubject<(from: StepID, to: StepID), Never>()
+
+    /// Set by the hosting context to end the flow (complete onboarding, or dismiss for the
+    /// mid-session preference flows).
+    var finish: (() -> Void)?
+
+    // MARK: - Private Properties
 
     private let locationManager = CLLocationManager()
     private let onboardingServer: Server
@@ -75,11 +85,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     /// Returns all available steps in the onboarding flow
     let steps: [StepID]
-
-    /// Determines if the user is advancing forward through the steps (for animation purposes)
-    var isAdvancing: Bool {
-        currentStepIndex >= lastStepIndex
-    }
 
     /// Returns the current step based on the current step index
     var currentStep: StepID {
@@ -116,7 +121,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     /// Navigates to a specific step in the onboarding flow
     /// - Parameter index: The target step index (0-based)
-    /// - Note: Provides haptic feedback for forward navigation and validates bounds
+    /// - Note: Provides haptic feedback for forward navigation and validates bounds. Reaching the
+    ///   `.completion` step ends the flow instead of pushing a screen.
     func navigateToStep(at index: Int) {
         guard index >= 0, index < steps.count else { return }
 
@@ -125,9 +131,20 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             Current.impactFeedback.impactOccurred()
         }
 
-        // Update the last step after deciding transition direction
-        lastStepIndex = currentStepIndex
+        let from = currentStep
+        let to = steps[index]
         currentStepIndex = index
+
+        if to == .completion {
+            finish?()
+        } else {
+            advance.send((from: from, to: to))
+        }
+    }
+
+    /// Ends the flow, called by steps that conclude it themselves (e.g. the update-success screen).
+    func finishFlow() {
+        finish?()
     }
 
     /// Navigates to a specific step by its identifier

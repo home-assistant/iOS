@@ -19,7 +19,9 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var showPermissionsFlow = false
     @Published var shouldDismiss = false
     @Published var onboardingServer: Server?
-    var permissionsFlowCompleted = false
+    /// The permission flow's view model, created when authentication succeeds so the servers list can push
+    /// its first step onto the onboarding `NavigationStack`.
+    @Published var permissionsViewModel: OnboardingPermissionsNavigationViewModel?
 
     @Published var manualInputLoading = false
     @Published var invitationLoading = false
@@ -121,6 +123,9 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
         onboardingServer = server
         disableNonEssentialSensors(server)
+        let permissionsViewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        permissionsViewModel.finish = { Current.onboardingObservation.complete() }
+        self.permissionsViewModel = permissionsViewModel
         showPermissionsFlow = true
     }
 

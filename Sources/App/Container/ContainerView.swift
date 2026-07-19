@@ -92,19 +92,12 @@ struct ContainerView: View {
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in
             switch cover {
             case let .onboardingPermissions(server, steps):
-                NavigationView {
-                    OnboardingPermissionsNavigationView(
-                        onboardingServer: server,
-                        steps: steps,
-                        onDismiss: { viewModel.fullScreenCover = nil }
-                    )
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            CloseButton { viewModel.fullScreenCover = nil }
-                        }
-                    }
-                }
-                .navigationViewStyle(.stack)
+                OnboardingPermissionsNavigationView(
+                    onboardingServer: server,
+                    steps: steps,
+                    onDismiss: { viewModel.fullScreenCover = nil },
+                    showsCloseButton: true
+                )
                 .injectingViewControllerProvider()
             }
         }

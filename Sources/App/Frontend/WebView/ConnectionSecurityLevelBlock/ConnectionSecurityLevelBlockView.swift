@@ -213,21 +213,12 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private var connectionPreferencesView: some View {
-        NavigationView {
-            OnboardingPermissionsNavigationView(
-                onboardingServer: server,
-                steps: [.localAccess, .updatePreferencesSuccess],
-                onDismiss: { showConnectionSecurityPreferences = false }
-            )
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    CloseButton {
-                        showConnectionSecurityPreferences = false
-                    }
-                }
-            }
-            .navigationViewStyle(.stack)
-        }
+        OnboardingPermissionsNavigationView(
+            onboardingServer: server,
+            steps: [.localAccess, .updatePreferencesSuccess],
+            onDismiss: { showConnectionSecurityPreferences = false },
+            showsCloseButton: true
+        )
         .onDisappear {
             reload()
         }

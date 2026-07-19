@@ -1,3 +1,4 @@
+import Combine
 import CoreLocation
 import Foundation
 @testable import HomeAssistant
@@ -114,21 +115,28 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStepIndex == originalIndex)
     }
 
-    @Test("Is advancing detection")
-    func isAdvancingDetection() async throws {
+    @Test("Advance emits transitions and finishes on completion")
+    func advanceEmitsTransitionsAndFinishesOnCompletion() async throws {
+        typealias Step = OnboardingPermissionsNavigationViewModel.StepID
         let server = ServerFixture.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        var transitions = [(from: Step, to: Step)]()
+        var finished = false
+        let cancellable = viewModel.advance.sink { transitions.append($0) }
+        viewModel.finish = { finished = true }
+        defer { cancellable.cancel() }
 
-        // Initially advancing (0 >= 0)
-        #expect(viewModel.isAdvancing == true)
+        // disclaimer -> location
+        viewModel.nextStep()
+        #expect(transitions.count == 1)
+        #expect(transitions.first?.from == .disclaimer)
+        #expect(transitions.first?.to == .location)
+        #expect(finished == false)
 
-        // Move forward
-        viewModel.navigateToStep(at: 2)
-        #expect(viewModel.isAdvancing == true)
-
-        // Move backward
-        viewModel.navigateToStep(at: 1)
-        #expect(viewModel.isAdvancing == false)
+        // Jumping to .completion finishes rather than emitting a transition.
+        viewModel.navigateToStep(.completion)
+        #expect(transitions.count == 1)
+        #expect(finished == true)
     }
 
     // MARK: - Navigation Tests

@@ -56,7 +56,11 @@ struct OnboardingServersListView: View {
         invitationURL != nil && !rejectedInvitation
     }
 
-    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false, onboardingStyle: OnboardingStyle) {
+    init(
+        prefillURL: URL? = nil,
+        shouldDismissOnSuccess: Bool = false,
+        onboardingStyle: OnboardingStyle
+    ) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
@@ -123,28 +127,19 @@ struct OnboardingServersListView: View {
                 minHeight: Constants.MacSheetSize.manualInputMinHeight
             )
         }
-        .fullScreenCover(isPresented: .init(get: {
-            viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
+        .navigationDestination(isPresented: .init(get: {
+            viewModel.showPermissionsFlow && viewModel.permissionsViewModel != nil
         }, set: { newValue in
             viewModel.showPermissionsFlow = newValue
-        }), onDismiss: {
-            if viewModel.permissionsFlowCompleted {
-                viewModel.permissionsFlowCompleted = false
-                Current.onboardingObservation.complete()
+        })) {
+            // Push the permission steps onto the onboarding `NavigationStack` (not a nested one). Each
+            // step pushes the next itself, and the last completes onboarding via the view model's `finish`.
+            if let permissionsViewModel = viewModel.permissionsViewModel,
+               let firstStep = permissionsViewModel.steps.first {
+                OnboardingPermissionsStepView(step: firstStep, viewModel: permissionsViewModel)
+                    .navigationBarBackButtonHidden()
+                    .toolbar(.hidden, for: .navigationBar)
             }
-        }) {
-            // isPresented guarantees onboardingServer
-            // swiftlint:disable:next force_unwrapping
-            OnboardingPermissionsNavigationView(
-                onboardingServer: viewModel.onboardingServer!,
-                onDismiss: {
-                    // Dismiss the cover first and only signal completion from the cover's `onDismiss`
-                    // (above): completing while the cover is still presented makes `ContainerView` swap
-                    // the screen under a presented cover, which can leave it dangling as a blank screen.
-                    viewModel.permissionsFlowCompleted = true
-                    viewModel.showPermissionsFlow = false
-                }
-            )
         }
     }
 
