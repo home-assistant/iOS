@@ -5,7 +5,7 @@ import GRDB
 /// `RemindersSyncConfig`, remembering the item state at the last successful sync so the next sync
 /// can tell which side changed. Pure, extension-safe model (Foundation + GRDB only); the
 /// `Current.database()`-backed queries live in an extension in the `Shared` module.
-public struct RemindersSyncItemLink: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+public struct RemindersSyncItemLink: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable, Sendable {
     public static let databaseTableName = GRDBDatabaseTable.remindersSyncItemLink.rawValue
 
     public var id: String

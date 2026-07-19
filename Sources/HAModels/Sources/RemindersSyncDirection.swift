@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 /// Which way items flow between an Apple Reminders list and a Home Assistant todo list.
-public enum RemindersSyncDirection: String, Codable, CaseIterable, Identifiable, DatabaseValueConvertible {
+public enum RemindersSyncDirection: String, Codable, CaseIterable, Identifiable, DatabaseValueConvertible, Sendable {
     /// Changes on either side are propagated to the other. When the same item changed on both
     /// sides since the last sync, the Home Assistant copy wins (the server is the shared source
     /// of truth for the household and doesn't expose per-item modification times to compare).

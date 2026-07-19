@@ -1,5 +1,6 @@
 import EventKit
 import Foundation
+import PromiseKit
 import Shared
 import UIKit
 
@@ -54,11 +55,40 @@ final class RemindersSyncManager: ObservableObject {
         ) { [weak self] _ in
             Task { @MainActor in
                 self?.scheduleSync(after: 1)
+                self?.restartPeriodicRefresh()
+            }
+        })
+
+        notificationObservers.append(NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.appDidEnterBackground()
             }
         })
 
         scheduleSync(after: 5)
         restartPeriodicRefresh()
+    }
+
+    /// Backgrounding: stop the debounce and periodic-refresh timers so a sync can't start during
+    /// the background-execution grace window without protection; both are re-armed on the next
+    /// foreground. A sync that is already running is left alone — it holds a background task for
+    /// its whole duration — but `LifecycleManager` has just suspended GRDB underneath it, so
+    /// resume the database for the remainder of the protected sync (this runs after
+    /// LifecycleManager's handler because it hops onto the main actor in a fresh task); `syncAll`
+    /// re-suspends when it finishes.
+    private func appDidEnterBackground() {
+        if isSyncing {
+            AppDatabaseSuspension.resume()
+        } else {
+            pendingSyncTask?.cancel()
+            pendingSyncTask = nil
+            periodicRefreshTask?.cancel()
+            periodicRefreshTask = nil
+        }
     }
 
     /// Called when the user changes the sync settings: restarts the foreground refresh timer and
@@ -142,13 +172,54 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     func syncAll() async {
-        guard !isSyncing else { return }
-        let configs = RemindersSyncConfig.all()
-        guard !configs.isEmpty, authorizationState == .authorized else { return }
+        guard !isSyncing, authorizationState == .authorized else { return }
+
+        // GRDB is suspended whenever the app is backgrounded (LifecycleManager); resume it so the
+        // config read and the sync's writes also work from a background refresh. Every exit path
+        // below re-suspends while still backgrounded.
+        AppDatabaseSuspension.resume()
+        let configs = await Self.databaseAccess { RemindersSyncConfig.all() }
+        guard !configs.isEmpty else {
+            suspendDatabaseIfBackgrounded()
+            return
+        }
 
         isSyncing = true
         suppressStoreChangeSync = true
+
+        // Hold a background task for the duration of the sync: getting suspended while a sync
+        // write was mid-commit held the app-group SQLite file lock and killed the app with
+        // 0xdead10cc (see the suspension notes in GRDB+Initialization.swift).
+        let (untilSyncEnds, syncEndSeal) = Promise<Void>.pending()
+        let syncTask = Task { [weak self] in
+            await self?.sync(configs: configs)
+        }
+        Current.backgroundTask(withName: BackgroundTask.remindersSync.rawValue) { _ in untilSyncEnds }
+            .catch { _ in
+                // Out of background time: stop syncing and suspend GRDB right away, aborting any
+                // in-flight write so the file lock is released before the process is frozen.
+                syncTask.cancel()
+                AppDatabaseSuspension.suspend()
+            }
+        // Backgrounding between the resume above and this point suspends GRDB again
+        // (LifecycleManager); undo that now that the background task is held.
+        AppDatabaseSuspension.resume()
+        await syncTask.value
+        syncEndSeal.fulfill(())
+        suspendDatabaseIfBackgrounded()
+
+        isSyncing = false
+        // EKEventStoreChanged notifications for our own writes can arrive slightly after commit.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            self?.suppressStoreChangeSync = false
+        }
+    }
+
+    private func sync(configs: [RemindersSyncConfig]) async {
         for config in configs {
+            // Cancelled when the background task expires; whatever didn't finish syncs next time.
+            guard !Task.isCancelled else { return }
             do {
                 try await sync(config)
             } catch {
@@ -157,11 +228,24 @@ final class RemindersSyncManager: ObservableObject {
                 )
             }
         }
-        isSyncing = false
-        // EKEventStoreChanged notifications for our own writes can arrive slightly after commit.
-        Task { @MainActor [weak self] in
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            self?.suppressStoreChangeSync = false
+    }
+
+    /// Runs synchronous GRDB access on a background thread instead of the main actor. The
+    /// 0xdead10cc termination this sync used to hit showed the main thread blocked in a commit's
+    /// `fsync`: it couldn't service the `didEnterBackground` notification that suspends GRDB and
+    /// was still holding the app-group SQLite lock when the process was frozen.
+    private nonisolated static func databaseAccess<T: Sendable>(
+        _ access: @escaping @Sendable () -> T
+    ) async -> T {
+        await Task.detached { access() }.value
+    }
+
+    /// Counterpart to `LifecycleManager`'s suspend-on-background: after the sync touches the
+    /// database while backgrounded, GRDB goes back to the suspended state so nothing can hold the
+    /// app-group SQLite lock when the process is frozen.
+    private func suspendDatabaseIfBackgrounded() {
+        if UIApplication.shared.applicationState == .background {
+            AppDatabaseSuspension.suspend()
         }
     }
 
@@ -189,7 +273,8 @@ final class RemindersSyncManager: ObservableObject {
                 uniquingKeysWith: { first, _ in first }
             )
 
-            let links = RemindersSyncItemLink.links(configId: config.id)
+            let configId = config.id
+            let links = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
                 .map(RemindersSyncPlanner.LinkState.init(link:))
             details = try await applyPlan(
                 config: config,
@@ -200,18 +285,19 @@ final class RemindersSyncManager: ObservableObject {
                 links: links
             )
         } catch {
-            recordHistory(config: config, error: error, details: details)
+            await recordHistory(config: config, error: error, details: details)
             throw error
         }
 
         // Unchanged runs aren't recorded, so history stays a log of actual changes.
         if !details.isEmpty {
-            recordHistory(config: config, error: nil, details: details)
+            await recordHistory(config: config, error: nil, details: details)
         }
 
         var updated = config
         updated.lastSyncDate = Current.date()
-        updated.save()
+        let configToSave = updated
+        await Self.databaseAccess { configToSave.save() }
     }
 
     /// Plans and applies the operations for one config. Returns the history detail lines for the
@@ -240,7 +326,7 @@ final class RemindersSyncManager: ObservableObject {
         for operation in operations {
             switch operation {
             case .createReminder, .updateReminder, .deleteReminder:
-                let didWriteStore = try applyReminderOperation(
+                let didWriteStore = try await applyReminderOperation(
                     operation,
                     config: config,
                     calendar: calendar,
@@ -286,8 +372,8 @@ final class RemindersSyncManager: ObservableObject {
         return details
     }
 
-    private func recordHistory(config: RemindersSyncConfig, error: Error?, details: [String]) {
-        RemindersSyncHistoryEntry(
+    private func recordHistory(config: RemindersSyncConfig, error: Error?, details: [String]) async {
+        let entry = RemindersSyncHistoryEntry(
             id: UUID().uuidString,
             configId: config.id,
             listLabel: "\(config.reminderListName) ↔ \(config.todoEntityName)",
@@ -295,7 +381,8 @@ final class RemindersSyncManager: ObservableObject {
             success: error == nil,
             error: error?.localizedDescription,
             details: details.joined(separator: "\n")
-        ).save()
+        )
+        await Self.databaseAccess { entry.save() }
     }
 
     /// A localized, human-readable line for the history log describing one applied operation.
@@ -342,7 +429,7 @@ final class RemindersSyncManager: ObservableObject {
         calendar: EKCalendar,
         todoSnapshots: [String: RemindersSyncItemSnapshot],
         remindersById: [String: EKReminder]
-    ) throws -> Bool {
+    ) async throws -> Bool {
         switch operation {
         case let .createReminder(todoItemUid):
             guard let snapshot = todoSnapshots[todoItemUid] else { return false }
@@ -350,7 +437,7 @@ final class RemindersSyncManager: ObservableObject {
             reminder.calendar = calendar
             apply(snapshot, to: reminder)
             try eventStore.save(reminder, commit: false)
-            saveLink(
+            await saveLink(
                 config: config,
                 todoItemUid: todoItemUid,
                 reminderId: reminder.calendarItemIdentifier,
@@ -362,10 +449,14 @@ final class RemindersSyncManager: ObservableObject {
                   let reminder = remindersById[reminderId] else { return false }
             apply(snapshot, to: reminder)
             try eventStore.save(reminder, commit: false)
-            saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
+            await saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
             return true
         case let .deleteReminder(todoItemUid, reminderId):
-            defer { RemindersSyncItemLink.delete(configId: config.id, todoItemUid: todoItemUid) }
+            // The link row goes away regardless of whether the reminder still exists or its
+            // removal fails (this used to be a `defer`); deleting it first keeps that behavior
+            // now that the write needs an await.
+            let configId = config.id
+            await Self.databaseAccess { RemindersSyncItemLink.delete(configId: configId, todoItemUid: todoItemUid) }
             guard let reminder = remindersById[reminderId] else { return false }
             try eventStore.remove(reminder, commit: false)
             return true
@@ -406,21 +497,23 @@ final class RemindersSyncManager: ObservableObject {
                 dueDate: snapshot.dueDateArgument,
                 dueDateTime: snapshot.dueDateTimeArgument
             )
-            saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
+            await saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
             return nil
         case let .deleteTodoItem(todoItemUid, _):
             try await api.removeTodoItem(
                 listId: config.todoEntityId,
                 itemId: todoItemUid
             )
-            RemindersSyncItemLink.delete(configId: config.id, todoItemUid: todoItemUid)
+            let configId = config.id
+            await Self.databaseAccess { RemindersSyncItemLink.delete(configId: configId, todoItemUid: todoItemUid) }
             return nil
         case let .adoptLink(todoItemUid, reminderId):
             guard let snapshot = todoSnapshots[todoItemUid] ?? reminderSnapshots[reminderId] else { return nil }
-            saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
+            await saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
             return nil
         case let .deleteLink(todoItemUid):
-            RemindersSyncItemLink.delete(configId: config.id, todoItemUid: todoItemUid)
+            let configId = config.id
+            await Self.databaseAccess { RemindersSyncItemLink.delete(configId: configId, todoItemUid: todoItemUid) }
             return nil
         default:
             return nil
@@ -437,7 +530,9 @@ final class RemindersSyncManager: ObservableObject {
         reminderSnapshots: [String: RemindersSyncItemSnapshot]
     ) async throws {
         let refreshed = try await fetchTodoItems(api: api, listId: config.todoEntityId)
-        let linkedUids = Set(RemindersSyncItemLink.links(configId: config.id).map(\.todoItemUid))
+        let configId = config.id
+        let existingLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
+        let linkedUids = Set(existingLinks.map(\.todoItemUid))
         var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) }
 
         for reminderId in reminderIds {
@@ -445,7 +540,7 @@ final class RemindersSyncManager: ObservableObject {
                   let index = unlinkedItems
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
-            saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
+            await saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }
 
@@ -474,8 +569,8 @@ final class RemindersSyncManager: ObservableObject {
         todoItemUid: String,
         reminderId: String,
         snapshot: RemindersSyncItemSnapshot
-    ) {
-        RemindersSyncItemLink(
+    ) async {
+        let link = RemindersSyncItemLink(
             configId: config.id,
             todoItemUid: todoItemUid,
             reminderId: reminderId,
@@ -483,6 +578,7 @@ final class RemindersSyncManager: ObservableObject {
             lastKnownCompleted: snapshot.isCompleted,
             lastKnownNotes: snapshot.notes,
             lastKnownDue: snapshot.due
-        ).save()
+        )
+        await Self.databaseAccess { link.save() }
     }
 }
