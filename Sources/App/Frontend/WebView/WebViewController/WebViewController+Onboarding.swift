@@ -10,7 +10,13 @@ extension WebViewController {
     func checkForLocalSecurityLevelDecisionNeeded() {
         let connection = server.info.connection
 
-        if Current.location.permissionStatus == .notDetermined, connection.hasNonHTTPSURLOptions {
+        // Declining to share location during onboarding never shows the iOS permission dialog, so the
+        // system status stays `.notDetermined` even though the user already decided — an explicit
+        // `.never` privacy setting counts as a decision and must not re-trigger the flow.
+        let userDeclinedLocationSharing = server.info.setting(for: .locationPrivacy) == .never
+
+        if Current.location.permissionStatus == .notDetermined, !userDeclinedLocationSharing,
+           connection.hasNonHTTPSURLOptions {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
         } else if connection.connectionAccessSecurityLevel == .undefined, !connection.hasOnlyHTTPSURLOptions {
