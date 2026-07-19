@@ -472,6 +472,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func migrateIfNeeded() {
         resetLocalPush()
+        resetShakeGesture()
+    }
+
+    /// Shake gesture no longer opens debug by default, users that had it set to debug are reset once to none
+    private func resetShakeGesture() {
+        if !Current.settingsStore.migratedShakeGestureToNone {
+            if Current.settingsStore.gestures[.shake] == .openDebug {
+                Current.settingsStore.gestures[.shake] = HAGestureAction.none
+                Current.Log.info("Reset shake gesture from open debug to none due to migration")
+            }
+            Current.settingsStore.migratedShakeGestureToNone = true
+        }
     }
 
     /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
