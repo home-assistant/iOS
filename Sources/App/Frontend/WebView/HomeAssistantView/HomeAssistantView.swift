@@ -6,6 +6,8 @@ struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var viewModel: HomeAssistantViewModel
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showServerSelection = false
+    @Namespace private var serverSelectionNamespace
 
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
@@ -49,6 +51,21 @@ struct HomeAssistantView: View, WebFrontendView {
             }
             noActiveURLState
             standByView
+        }
+        .sheet(isPresented: $showServerSelection) {
+            ServerSelectView(prompt: nil, includeSettings: false, selectAction: viewModel.selectServer)
+                .presentationDetents([.medium, .large])
+                .presentationBackground(Color(uiColor: .systemBackground))
+                .modify { view in
+                    if #available(iOS 18.0, *) {
+                        view.navigationTransition(.zoom(
+                            sourceID: HomeAssistantStandByView.serverSelectionTransitionID,
+                            in: serverSelectionNamespace
+                        ))
+                    } else {
+                        view
+                    }
+                }
         }
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
@@ -120,6 +137,8 @@ struct HomeAssistantView: View, WebFrontendView {
                 server: viewModel.server,
                 emptyState: viewModel.displayedEmptyState,
                 isLoading: viewModel.overlayState.isLoading,
+                serverSelectionNamespace: serverSelectionNamespace,
+                onSelectServerTapped: { showServerSelection = true },
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },

@@ -274,4 +274,10 @@ final class HomeAssistantViewModel: ObservableObject {
         }
         isFullScreenLoaderMounted = false
     }
+
+    func selectServer(_ server: Server) {
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.open(server: server)
+        }
+    }
 }

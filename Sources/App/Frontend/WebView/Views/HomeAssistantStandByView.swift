@@ -13,13 +13,15 @@ struct HomeAssistantStandByView: View {
     private static let serverPillHeight: CGFloat = 44
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
-    private static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
+    static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
 
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
+    let serverSelectionNamespace: Namespace.ID?
+    let onSelectServerTapped: (() -> Void)?
     let onGestureAction: ((HAGestureAction) -> Void)?
     let onLogoDismiss: (() -> Void)?
 
@@ -33,8 +35,6 @@ struct HomeAssistantStandByView: View {
     @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
-    @State private var showServerSelection = false
-    @Namespace private var serverSelectionNamespace
 
     private var showsEmptyState: Bool { emptyState != nil }
     private var loadingContentOffset: CGFloat { showsEmptyState ? 0 : -DesignSystem.Spaces.eight }
@@ -61,12 +61,16 @@ struct HomeAssistantStandByView: View {
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
         isLoading: Bool = false,
+        serverSelectionNamespace: Namespace.ID? = nil,
+        onSelectServerTapped: (() -> Void)? = nil,
         onGestureAction: ((HAGestureAction) -> Void)? = nil,
         onLogoDismiss: (() -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
+        self.serverSelectionNamespace = serverSelectionNamespace
+        self.onSelectServerTapped = onSelectServerTapped
         self.onGestureAction = onGestureAction
         self.onLogoDismiss = onLogoDismiss
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
@@ -222,31 +226,17 @@ struct HomeAssistantStandByView: View {
     private var serverNamePill: some View {
         if canSelectServer {
             Button {
-                showServerSelection = true
+                onSelectServerTapped?()
             } label: {
                 serverNameLabel
             }
             .buttonStyle(.plain)
             .modify { view in
-                if #available(iOS 18.0, *) {
+                if #available(iOS 18.0, *), let serverSelectionNamespace {
                     view.matchedTransitionSource(id: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
                 } else {
                     view
                 }
-            }
-            .sheet(isPresented: $showServerSelection) {
-                ServerSelectView(prompt: nil, includeSettings: false, selectAction: selectServer)
-                    .presentationDetents([.medium, .large])
-                    .presentationBackground(Color(uiColor: .systemBackground))
-                    .modify { view in
-                        if #available(iOS 18.0, *) {
-                            view.navigationTransition(
-                                .zoom(sourceID: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
-                            )
-                        } else {
-                            view
-                        }
-                    }
             }
         } else {
             serverNameLabel
