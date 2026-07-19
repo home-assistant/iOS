@@ -25,9 +25,9 @@
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-launch" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
-                                <rect key="frame" x="97" y="728" width="220" height="100"/>
+                                <rect key="frame" x="47" y="728" width="320" height="100"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="220" id="OLs-dw-fyH"/>
+                                    <constraint firstAttribute="width" constant="320" id="OLs-dw-fyH"/>
                                     <constraint firstAttribute="height" constant="100" id="vTX-2e-0yP"/>
                                 </constraints>
                             </imageView>
