@@ -17,7 +17,7 @@ public class ActivitySensor: SensorProvider {
     public func sensors() -> Promise<[WebhookSensor]> {
         firstly {
             Self.latestMotionActivity()
-        }.map { activity in
+        }.map { [request] activity in
             with(WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue)) {
                 $0.State = activity.activityTypes.first
                 $0.Attributes = [
@@ -25,6 +25,11 @@ public class ActivitySensor: SensorProvider {
                     "Types": activity.activityTypes,
                 ]
                 $0.Icon = activity.icons.first
+                $0.setEnumTranslation(
+                    key: "activity",
+                    options: CMMotionActivity.allActivityTypes,
+                    serverVersion: request.serverVersion
+                )
             }
         }.map {
             [$0]

@@ -46,12 +46,18 @@ final class WatchBatterySensor: SensorProvider {
             }
 
             if let batteryState {
-                sensors.append(WebhookSensor(
+                sensors.append(with(WebhookSensor(
                     name: "Watch Battery State",
                     uniqueID: WebhookSensorId.watchBatteryState.rawValue,
                     icon: icon,
                     state: batteryState.description
-                ))
+                )) {
+                    $0.setEnumTranslation(
+                        key: "battery_state",
+                        options: DeviceBattery.State.allCases.map(\.description),
+                        serverVersion: request.serverVersion
+                    )
+                })
             }
         case .notPaired:
             break
