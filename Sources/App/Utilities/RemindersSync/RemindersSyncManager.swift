@@ -176,10 +176,12 @@ final class RemindersSyncManager: ObservableObject {
 
         // GRDB is suspended whenever the app is backgrounded (LifecycleManager); resume it so the
         // config read and the sync's writes also work from a background refresh. Every exit path
-        // below re-suspends while still backgrounded.
+        // below re-suspends while still backgrounded. The cancellation check matters when
+        // backgrounding cancels a just-started scheduled sync: bail out instead of continuing
+        // into unprotected work.
         AppDatabaseSuspension.resume()
         let configs = await Self.databaseAccess { RemindersSyncConfig.all() }
-        guard !configs.isEmpty else {
+        guard !configs.isEmpty, !Task.isCancelled else {
             suspendDatabaseIfBackgrounded()
             return
         }
@@ -234,6 +236,12 @@ final class RemindersSyncManager: ObservableObject {
     /// 0xdead10cc termination this sync used to hit showed the main thread blocked in a commit's
     /// `fsync`: it couldn't service the `didEnterBackground` notification that suspends GRDB and
     /// was still holding the app-group SQLite lock when the process was frozen.
+    ///
+    /// Deliberately detached without propagating the caller's cancellation: the closure is
+    /// synchronous with no suspension points, so cancelling the detached task could never
+    /// interrupt it. In-flight SQLite work is instead aborted through
+    /// `AppDatabaseSuspension.suspend()` (see the background-task expiration handler in
+    /// `syncAll`), and `sync(configs:)` stops between configs via its own cancellation check.
     private nonisolated static func databaseAccess<T: Sendable>(
         _ access: @escaping @Sendable () -> T
     ) async -> T {
