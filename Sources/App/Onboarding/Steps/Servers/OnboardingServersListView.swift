@@ -138,12 +138,11 @@ struct OnboardingServersListView: View {
             OnboardingPermissionsNavigationView(
                 onboardingServer: viewModel.onboardingServer!,
                 onDismiss: {
-                    if onboardingStyle == .secondary {
-                        viewModel.permissionsFlowCompleted = true
-                        viewModel.showPermissionsFlow = false
-                    } else {
-                        Current.onboardingObservation.complete()
-                    }
+                    // Dismiss the cover first and only signal completion from the cover's `onDismiss`
+                    // (above): completing while the cover is still presented makes `ContainerView` swap
+                    // the screen under a presented cover, which can leave it dangling as a blank screen.
+                    viewModel.permissionsFlowCompleted = true
+                    viewModel.showPermissionsFlow = false
                 }
             )
         }
