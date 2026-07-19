@@ -2,15 +2,12 @@ import Combine
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 enum RecoveredServerReauthenticationError: LocalizedError {
-    case missingPresenter
     case cancelled
 
     var errorDescription: String? {
         switch self {
-        case .missingPresenter: return L10n.Onboarding.ServerImport.Reauthenticate.errorsMissingPresenter
         case .cancelled: return L10n.Onboarding.ServerImport.Reauthenticate.errorsCancelled
         }
     }
@@ -112,11 +109,12 @@ final class OnboardingStateObservable: ObservableObject {
     }
 
     /// Re-authenticates a server recovered from a keychain-mirror restore, then shows its web view.
-    /// Moved from `WebViewWindowController`; `presenter` comes from the re-auth screen's hosting controller.
+    /// Moved from `WebViewWindowController`; `login` is provided by the re-auth screen, which presents
+    /// the login web view and resolves with its OAuth result.
     func performRecoveredServerReauthentication(
         for server: Server,
         using urlType: ConnectionInfo.URLType,
-        presenter: UIViewController?,
+        login: (OnboardingAuthDetails) -> Promise<OnboardingAuthLoginResult>,
         completion: @escaping (Swift.Result<Void, Error>) -> Void
     ) {
         let connectionInfo = server.info.connection
@@ -124,17 +122,12 @@ final class OnboardingStateObservable: ObservableObject {
             completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
             return
         }
-        guard let presenter else {
-            completion(.failure(RecoveredServerReauthenticationError.missingPresenter))
-            return
-        }
         do {
             let authDetails = try OnboardingAuthDetails(baseURL: baseURL)
             authDetails.exceptions = connectionInfo.securityExceptions
             authDetails.clientCertificate = connectionInfo.clientCertificate
-            let login = OnboardingAuthLoginImpl()
             firstly {
-                login.open(authDetails: authDetails, sender: presenter)
+                login(authDetails)
             }.then { result -> Promise<(URL?, TokenInfo)> in
                 let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
                 return AuthenticationAPI.fetchToken(

@@ -4,26 +4,48 @@ import Shared
 import XCTest
 
 class OnboardingAuthLoginImplTests: XCTestCase {
-    private var sender: FakeUIViewController!
+    private var presenter: OnboardingAuthPresenter!
     private var login: OnboardingAuthLoginImpl!
     private var authDetails: OnboardingAuthDetails!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        FakeOnboardingAuthLoginViewController.lastCreated = nil
-
-        sender = FakeUIViewController()
+        presenter = OnboardingAuthPresenter()
         login = OnboardingAuthLoginImpl()
-        login.loginViewControllerClass = FakeOnboardingAuthLoginViewController.self
 
         authDetails = try OnboardingAuthDetails(baseURL: XCTUnwrap(URL(string: "http://example.com:8123")))
     }
 
+    private func pushedViewModel() throws -> OnboardingAuthLoginViewModel {
+        guard case let .login(viewModel) = presenter.path.last else {
+            struct NotPushed: Error {}
+            XCTFail("expected a pushed login destination, got \(String(describing: presenter.path.last))")
+            throw NotPushed()
+        }
+        return viewModel
+    }
+
+    private func simulateCallback(_ viewModel: OnboardingAuthLoginViewModel, url: URL) {
+        let expectation = expectation(description: "decision handler")
+        viewModel.webView(
+            viewModel.webViewForTests,
+            decidePolicyFor: FakeWKNavigationAction(request: URLRequest(url: url)),
+            decisionHandler: { _ in expectation.fulfill() }
+        )
+        wait(for: [expectation], timeout: 10.0)
+    }
+
+    func testOpenPushesLoginDestination() throws {
+        _ = login.open(authDetails: authDetails, presenter: presenter)
+        let viewModel = try pushedViewModel()
+        XCTAssertEqual(viewModel.authDetails, authDetails)
+    }
+
     func testCancelled() throws {
-        let result = login.open(authDetails: authDetails, sender: sender)
-        let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        viewController.resolver.reject(PMKError.cancelled)
+        let result = login.open(authDetails: authDetails, presenter: presenter)
+        let viewModel = try pushedViewModel()
+        viewModel.cancel()
         XCTAssertThrowsError(try hang(result)) { error in
             if case PMKError.cancelled = error {
                 // pass
@@ -34,27 +56,31 @@ class OnboardingAuthLoginImplTests: XCTestCase {
     }
 
     func testInvalidURL() throws {
-        let result = login.open(authDetails: authDetails, sender: sender)
-        let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?no_code_here=true")))
+        let result = login.open(authDetails: authDetails, presenter: presenter)
+        let viewModel = try pushedViewModel()
+        try simulateCallback(viewModel, url: XCTUnwrap(URL(string: "homeassistant://auth-callback?no_code_here=true")))
         XCTAssertThrowsError(try hang(result))
     }
 
     func testSuccess() throws {
-        let result = login.open(authDetails: authDetails, sender: sender)
-        let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
+        let result = login.open(authDetails: authDetails, presenter: presenter)
+        let viewModel = try pushedViewModel()
+        try simulateCallback(viewModel, url: XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
         XCTAssertEqual(try hang(result).code, "code_123")
+        // The flow advances by pushing further pages; open() itself doesn't pop.
+        XCTAssertNotNil(presenter.path.last)
     }
 
     func testSuccessPropagatesResolvedServerURL() throws {
-        let result = login.open(authDetails: authDetails, sender: sender)
-        let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        viewController.resolvedServerURL = URL(string: "http://example.com:8124")
-        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
+        let result = login.open(authDetails: authDetails, presenter: presenter)
+        let viewModel = try pushedViewModel()
+        // Simulate the login page being redirected to a different port before the callback.
+        let redirectedURL = try XCTUnwrap(URL(string: "http://example.com:8124"))
+        try simulateCallback(viewModel, url: redirectedURL)
+        try simulateCallback(viewModel, url: XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
         let value = try hang(result)
         XCTAssertEqual(value.code, "code_123")
-        XCTAssertEqual(value.resolvedURL, URL(string: "http://example.com:8124"))
+        XCTAssertEqual(value.resolvedURL, redirectedURL)
     }
 
     func testAuthDetailsNormalizeFrontendURLForAuthorizeEndpoint() throws {
@@ -67,36 +93,5 @@ class OnboardingAuthLoginImplTests: XCTestCase {
         XCTAssertEqual(details.url.port, 8123)
         XCTAssertEqual(details.url.path, "/auth/authorize")
         XCTAssertEqual(details.url.queryItems?["response_type"], "code")
-    }
-}
-
-private class FakeUIViewController: UIViewController {
-    private var backingPresentedViewController: UIViewController?
-    override var presentedViewController: UIViewController? {
-        backingPresentedViewController
-    }
-
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        backingPresentedViewController = nil
-        super.dismiss(animated: flag, completion: completion)
-    }
-}
-
-private final class FakeOnboardingAuthLoginViewController: UIViewController, OnboardingAuthLoginViewController {
-    static var lastCreated: FakeOnboardingAuthLoginViewController?
-
-    let resolver: Resolver<URL>
-    let promise: Promise<URL>
-    var resolvedServerURL: URL?
-
-    required init(authDetails: OnboardingAuthDetails) {
-        (self.promise, self.resolver) = Promise<URL>.pending()
-        super.init(nibName: nil, bundle: nil)
-        Self.lastCreated = self
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

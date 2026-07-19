@@ -18,9 +18,9 @@ protocol OnboardingAuthStep {
 }
 
 protocol OnboardingAuthPreStep: OnboardingAuthStep {
-    init(authDetails: OnboardingAuthDetails, sender: UIViewController)
+    init(authDetails: OnboardingAuthDetails, presenter: OnboardingAuthPresenter)
 }
 
 protocol OnboardingAuthPostStep: OnboardingAuthStep {
-    init(api: HomeAssistantAPI, sender: UIViewController)
+    init(api: HomeAssistantAPI, presenter: OnboardingAuthPresenter)
 }

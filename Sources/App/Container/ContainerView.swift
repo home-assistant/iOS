@@ -24,7 +24,7 @@ struct ContainerView: View {
         Group {
             switch state.screen {
             case let .onboarding(style):
-                OnboardingHostingView(onboardingStyle: style)
+                OnboardingNavigationView(onboardingStyle: style)
                     .id(style)
             case let .webView(server, initialPath):
                 HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
@@ -35,7 +35,7 @@ struct ContainerView: View {
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
-                RecoveredServerReauthHostingView(server: server, state: state)
+                RecoveredServerReauthView(server: server, state: state)
             }
         }
         .navigationTitle(" ") // Remove default macOS title
@@ -58,21 +58,13 @@ struct ContainerView: View {
                 }
             }
             Current.sceneManager.registerAppCoordinator(coordinator)
-            viewModel.presentLaunchMessagesIfNeeded(isShowingWebView: isShowingWebView)
             fadeOutLaunchSplashIfNeeded(for: state.screen)
         }
         .onChange(of: state.screen) { screen in
-            viewModel.presentLaunchMessagesIfNeeded(isShowingWebView: isShowingWebView)
             fadeOutLaunchSplashIfNeeded(for: screen)
         }
-        .sheet(item: $viewModel.presentedSheet, onDismiss: { viewModel.showNextLaunchMessage() }) { sheet in
+        .sheet(item: $viewModel.presentedSheet) { sheet in
             switch sheet {
-            case let .whatsNew(release):
-                WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
-            case let .testFlight(message):
-                TestFlightCommunicationView(message: message) {
-                    TestFlightCommunicationEngine().markSeen(message)
-                }
             case .assistSettings:
                 AssistSettingsView()
             case let .downloadManager(viewModel):
@@ -125,12 +117,5 @@ struct ContainerView: View {
     /// old `presentOverlayController`'s `onDisappear { refresh() }`.
     private func refreshWebView() {
         Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
-    }
-
-    private var isShowingWebView: Bool {
-        if case .webView = state.screen {
-            return true
-        }
-        return false
     }
 }

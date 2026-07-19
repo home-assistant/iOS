@@ -47,7 +47,7 @@ struct HAApp: App {
 
         // Mac Onboarding
         WindowGroup {
-            OnboardingHostingView(onboardingStyle: .secondary)
+            OnboardingNavigationView(onboardingStyle: .secondary)
         }
         .handlesExternalEvents(matching: [SceneActivity.onboarding.activityIdentifier])
     }
