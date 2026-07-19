@@ -4,7 +4,7 @@ import GRDB
 /// A user-configured pairing between an Apple Reminders list and a Home Assistant todo list.
 /// Pure, extension-safe model (Foundation + GRDB only); the `Current.database()`-backed queries
 /// live in an extension in the `Shared` module.
-public struct RemindersSyncConfig: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+public struct RemindersSyncConfig: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable, Sendable {
     public static let databaseTableName = GRDBDatabaseTable.remindersSyncConfig.rawValue
 
     public var id: String

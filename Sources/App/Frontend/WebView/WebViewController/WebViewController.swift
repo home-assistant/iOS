@@ -321,7 +321,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            let action = Current.settingsStore.gestures[.shake] ?? .openDebug
+            let action = Current.settingsStore.gestures[.shake] ?? .none
             webViewGestureHandler.handleGestureAction(action)
         }
     }

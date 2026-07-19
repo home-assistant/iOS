@@ -205,7 +205,7 @@ public extension [AppGesture: HAGestureAction] {
             ._3FingersSwipeUp: .showServersList,
             ._3FingersSwipeRight: .nextServer,
             ._3FingersSwipeLeft: .previousServer,
-            .shake: .openDebug,
+            .shake: .none,
         ]
     }
 

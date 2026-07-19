@@ -307,6 +307,16 @@ public class SettingsStore {
         }
     }
 
+    /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.
+    public var migratedShakeGestureToNone: Bool {
+        get {
+            prefs.bool(forKey: "migratedShakeGestureToNone")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedShakeGestureToNone")
+        }
+    }
+
     public var periodicUpdateInterval: TimeInterval? {
         get {
             if prefs.object(forKey: "periodicUpdateInterval") == nil {
