@@ -4,7 +4,8 @@ import GRDB
 /// One recorded Reminders sync run for a list pairing: when it happened, whether it succeeded
 /// and what it changed. Runs that change nothing aren't recorded. Pure, extension-safe model;
 /// the `Current.database()`-backed queries live in an extension in the `Shared` module.
-public struct RemindersSyncHistoryEntry: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+public struct RemindersSyncHistoryEntry: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable,
+    Sendable {
     public static let databaseTableName = GRDBDatabaseTable.remindersSyncHistoryEntry.rawValue
 
     public var id: String
