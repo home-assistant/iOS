@@ -20,7 +20,7 @@ struct DeviceNameView: View {
     @State private var onDismissAction: ActionType = .none
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             BaseOnboardingView(
                 illustration: {
                     Image(.Onboarding.pencil)
@@ -62,7 +62,6 @@ struct DeviceNameView: View {
                 }
             }
         }
-        .navigationViewStyle(.stack)
         .interactiveDismissDisabled(true)
         .onDisappear {
             switch onDismissAction {

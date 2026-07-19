@@ -186,7 +186,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
 // MARK: - Previews
 
 #Preview("Location permission example (simple)") {
-    NavigationView {
+    NavigationStack {
         BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.world)
@@ -204,7 +204,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
 }
 
 #Preview("With injected content") {
-    NavigationView {
+    NavigationStack {
         BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.world)

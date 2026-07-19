@@ -130,7 +130,7 @@ struct InvitationView: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         InvitationView(
             invitationURL: URL(string: "http://192.168.0.188:8123")!,
             isAccepting: false,
@@ -138,11 +138,10 @@ struct InvitationView: View {
             onReject: {}
         )
     }
-    .navigationViewStyle(.stack)
 }
 
 #Preview("Long URL") {
-    NavigationView {
+    NavigationStack {
         InvitationView(
             invitationURL: URL(
                 string: "http://thisisaverylongurlsowecantesthowtheuibehaveswiththisurlwhichisgoingtobesuperlongandimnotgoingtoabletofititanywhere:8123"
@@ -152,5 +151,4 @@ struct InvitationView: View {
             onReject: {}
         )
     }
-    .navigationViewStyle(.stack)
 }

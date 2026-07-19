@@ -34,7 +34,7 @@ struct OnboardingNavigationView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 switch onboardingStyle {
                 case .initial:
@@ -46,7 +46,9 @@ struct OnboardingNavigationView: View {
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 }
             }
-            .navigationViewStyle(.stack)
+            .navigationDestination(for: OnboardingRoute.self) { route in
+                destination(for: route)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
@@ -59,11 +61,21 @@ struct OnboardingNavigationView: View {
                 }
             }
         }
-        .navigationViewStyle(.stack)
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 closeOnboarding()
             }
+        }
+    }
+
+    /// Pushed pages keep their own `ViewControllerProvider` injection so presenting UIKit modals
+    /// (e.g. the auth flow) does not depend on environment propagation from the stack root.
+    @ViewBuilder
+    private func destination(for route: OnboardingRoute) -> some View {
+        switch route {
+        case let .serversList(style):
+            OnboardingServersListView(onboardingStyle: style)
+                .injectingViewControllerProvider()
         }
     }
 

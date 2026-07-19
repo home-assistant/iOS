@@ -26,7 +26,7 @@ struct ManualURLEntryView: View, KeyboardReadable {
     private let minCharsToActivateSection = URLScheme.allCases.map(\.rawValue.count).min() ?? 0
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             BaseOnboardingView(illustration: {
                 Image(.Onboarding.pencil)
             }, title: L10n.Onboarding.ManualUrlEntry.title, primaryDescription: "", content: {
@@ -53,7 +53,6 @@ struct ManualURLEntryView: View, KeyboardReadable {
             }
             .hideOnboardingTitle(isKeyboardVisible)
             .hideOnboardingIcon(isKeyboardVisible)
-            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

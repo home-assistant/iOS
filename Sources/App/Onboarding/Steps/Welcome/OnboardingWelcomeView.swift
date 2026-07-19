@@ -65,7 +65,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButtonBlock: some View {
         VStack {
-            NavigationLink(destination: serversListDestination) {
+            NavigationLink(value: OnboardingRoute.serversList(.initial)) {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
@@ -79,17 +79,10 @@ struct OnboardingWelcomeView: View {
         .background(Color(uiColor: .systemBackground))
     }
 
-    /// Pushed pages get their own hosting controller, so the `ViewControllerProvider` injected at the
-    /// onboarding root (`embeddedInHostingController()`) does not reach them — re-inject it here or the
-    /// servers list crashes on first access.
-    private var serversListDestination: some View {
-        OnboardingServersListView(onboardingStyle: .initial)
-            .injectingViewControllerProvider()
-    }
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         if #available(iOS 18.0, *) {
             OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
                 .toolbarVisibility(.hidden, for: .navigationBar)

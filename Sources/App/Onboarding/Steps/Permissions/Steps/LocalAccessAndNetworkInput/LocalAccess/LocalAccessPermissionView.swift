@@ -6,7 +6,7 @@ enum LocalAccessPermissionOptions: String {
     case lessSecure
 }
 
-struct LocalAccessPermissionViewInNavigationView: View {
+struct LocalAccessPermissionViewInNavigationStack: View {
     @Environment(\.dismiss) private var dismiss
     let initialSelection: ConnectionSecurityLevel?
     let action: (ConnectionSecurityLevel) -> Void
@@ -17,7 +17,7 @@ struct LocalAccessPermissionViewInNavigationView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             LocalAccessPermissionView(initialSelection: initialSelection) { selection in
                 action(selection)
             }
@@ -30,7 +30,6 @@ struct LocalAccessPermissionViewInNavigationView: View {
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 }
 

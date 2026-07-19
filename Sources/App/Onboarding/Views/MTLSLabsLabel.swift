@@ -8,7 +8,7 @@ struct MTLSLabsLabel: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         List {
             MTLSLabsLabel()
         }

@@ -144,7 +144,7 @@ struct ConnectionSettingsView: View {
             }
         }
         .sheet(isPresented: $showSecurityLevelPicker) {
-            LocalAccessPermissionViewInNavigationView(
+            LocalAccessPermissionViewInNavigationStack(
                 initialSelection: viewModel.securityLevel,
                 action: { level in
                     viewModel.updateSecurityLevel(level)

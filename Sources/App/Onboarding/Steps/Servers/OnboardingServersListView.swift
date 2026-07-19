@@ -426,7 +426,7 @@ struct OnboardingServersListView: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
     }
 }

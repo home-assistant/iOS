@@ -1139,6 +1139,7 @@
 				API/Steps/OnboardingAuthStepSensors.swift,
 				Container/OnboardingNavigationView.swift,
 				Container/OnboardingNavigationViewModel.swift,
+				Container/OnboardingRoute.swift,
 				Steps/DeviceName/DeviceNameView.swift,
 				Steps/Permissions/OnboardingPermissionsNavigationView.swift,
 				Steps/Permissions/OnboardingPermissionsNavigationViewModel.swift,

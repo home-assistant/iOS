@@ -129,7 +129,7 @@ struct HomeNetworkInputView: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         HomeNetworkInputView(
             onNext: { context in
                 print("Next tapped with network: \(context.networkName ?? "nil")")
