@@ -102,6 +102,7 @@ public final class NetworkReachability {
     private enum Connection: Equatable {
         case unavailable
         case wifi
+        case ethernet
         case cellular
     }
 
@@ -131,6 +132,9 @@ public final class NetworkReachability {
         if path.usesInterfaceType(.cellular) {
             return .cellular
         }
+        if path.usesInterfaceType(.wiredEthernet) {
+            return .ethernet
+        }
         return .wifi
     }
 
@@ -144,6 +148,8 @@ public final class NetworkReachability {
             return .noConnection
         case .wifi:
             return .wifi
+        case .ethernet:
+            return .ethernet
         case .cellular:
             return .cellular
         }
@@ -155,6 +161,8 @@ public final class NetworkReachability {
             return .noConnection
         case .wifi:
             return .wifi
+        case .ethernet:
+            return .ethernet
         case .cellular:
             #if !targetEnvironment(macCatalyst)
             return Self.getWWANNetworkType()
