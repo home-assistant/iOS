@@ -13,7 +13,7 @@ struct LaunchSplashOverlayView: View {
         static let splashLogoSize = CGSize(width: 147, height: 174)
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
         /// Kept in sync with `heroAnimation` — how long the overlay holds before starting to fade out.
-        static let heroDuration: Duration = .milliseconds(550)
+        static let heroDuration: Duration = .seconds(1)
         static let fadeAnimation: SwiftUI.Animation = .easeOut(duration: 0.25)
         static let fadeDuration: Duration = .milliseconds(250)
         /// If no screen ever reports a logo (kiosk mode, unexpected flows), never block the app for
@@ -28,7 +28,7 @@ struct LaunchSplashOverlayView: View {
             GeometryReader { proxy in
                 let frame = logoFrame(in: proxy)
                 ZStack(alignment: .topLeading) {
-                    Color("launchScreen-background")
+                    Color.launchScreenBackground
                     logo
                         .frame(width: frame.width, height: frame.height)
                         .position(x: frame.midX, y: frame.midY)
@@ -54,7 +54,7 @@ struct LaunchSplashOverlayView: View {
     /// while the frame animates.
     private var logo: some View {
         ZStack {
-            Image("launchScreen-logo")
+            Image(.launchScreenLogo)
                 .resizable()
                 .scaledToFit()
                 .opacity(showsSplashWordmark ? 1 : 0)
