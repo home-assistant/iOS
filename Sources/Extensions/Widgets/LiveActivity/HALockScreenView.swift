@@ -48,7 +48,7 @@ struct HALockScreenView: View {
                 trailingValue
             }
 
-            if let fraction = state.progressFraction {
+            if let fraction = state.progressBarFillFraction {
                 HAActivityProgressBar(
                     fraction: fraction,
                     fillColor: barColor,
@@ -56,7 +56,12 @@ struct HALockScreenView: View {
                     height: 10
                 )
             } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(start: state.chronometerStart, end: end, tint: barColor)
+                HAActivityTimerProgressBar(
+                    start: state.chronometerStart,
+                    end: end,
+                    tint: barColor,
+                    direction: state.resolvedProgressBarDirection
+                )
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.two)

@@ -718,6 +718,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.plain.note" = "Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.";
 "live_activity.sample.plain.summary" = "A basic message with nothing else.";
 "live_activity.sample.plain.title" = "Plain Message";
+"live_activity.sample.progress_direction.note" = "progress_bar_direction: decreasing flips the bar's fill: it shows what remains (progress_max − progress) and drains as progress rises. Percent text still shows the raw progress value. Also works on timer bars, e.g. increasing makes a countdown fill up instead of drain.";
+"live_activity.sample.progress_direction.summary" = "A progress bar that drains instead of fills.";
+"live_activity.sample.progress_direction.title" = "Battery · Decreasing Bar";
 "live_activity.sample.rate_limit.note" = "Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.";
 "live_activity.sample.rate_limit.summary" = "Rapid back-to-back updates to test how many show.";
 "live_activity.sample.rate_limit.title" = "Rate Limit · 6 Rapid Updates";

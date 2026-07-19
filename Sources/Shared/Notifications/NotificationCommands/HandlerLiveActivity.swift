@@ -146,6 +146,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let backgroundColor = payload["background_color"] as? String
         let textColor = payload["text_color"] as? String
         let progressBarColor = payload["progress_bar_color"] as? String
+        let progressBarDirection = payload["progress_bar_direction"] as? String
 
         // `when` + `when_relative` → absolute timer end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
@@ -182,7 +183,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             url: url,
             backgroundColor: backgroundColor,
             textColor: textColor,
-            progressBarColor: progressBarColor
+            progressBarColor: progressBarColor,
+            progressBarDirection: progressBarDirection
         )
     }
 }
