@@ -11,9 +11,13 @@ struct LaunchSplashOverlayView: View {
     enum Constants {
         /// Mirrors the icon constraints in `LaunchScreen.storyboard`.
         static let splashLogoSize = CGSize(width: 147, height: 174)
+        /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
+        static let ohfLogoSize = CGSize(width: 320, height: 100)
+        /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
+        static let ohfLogoBottomPadding: CGFloat = 32
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
         /// Kept in sync with `heroAnimation` — how long the overlay holds before starting to fade out.
-        static let heroDuration: Duration = .milliseconds(550)
+        static let heroDuration: Duration = .seconds(1)
         static let fadeAnimation: SwiftUI.Animation = .easeOut(duration: 0.25)
         static let fadeDuration: Duration = .milliseconds(250)
         /// If no screen ever reports a logo (kiosk mode, unexpected flows), never block the app for
@@ -25,17 +29,26 @@ struct LaunchSplashOverlayView: View {
 
     var body: some View {
         if state.phase != .finished {
-            GeometryReader { proxy in
-                let frame = logoFrame(in: proxy)
-                ZStack(alignment: .topLeading) {
-                    Color("launchScreen-background")
-                    logo
-                        .frame(width: frame.width, height: frame.height)
-                        .position(x: frame.midX, y: frame.midY)
+            // The outer ZStack respects the safe area so the OHF logo can pin to its bottom like the
+            // storyboard does; only the hero content extends to the screen edges.
+            ZStack(alignment: .bottom) {
+                GeometryReader { proxy in
+                    let frame = logoFrame(in: proxy)
+                    ZStack(alignment: .topLeading) {
+                        Color.launchScreenBackground
+                        logo
+                            .frame(width: frame.width, height: frame.height)
+                            .position(x: frame.midX, y: frame.midY)
+                    }
+                    .animation(Constants.heroAnimation, value: state.phase)
                 }
-                .animation(Constants.heroAnimation, value: state.phase)
+                .ignoresSafeArea()
+                Image(.ohfLaunch)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: Constants.ohfLogoSize.width, height: Constants.ohfLogoSize.height)
+                    .padding(.bottom, Constants.ohfLogoBottomPadding)
             }
-            .ignoresSafeArea()
             .opacity(isFadingOut ? 0 : 1)
             .animation(Constants.fadeAnimation, value: isFadingOut)
             .allowsHitTesting(!isFadingOut)
@@ -54,7 +67,7 @@ struct LaunchSplashOverlayView: View {
     /// while the frame animates.
     private var logo: some View {
         ZStack {
-            Image("launchScreen-logo")
+            Image(.launchScreenLogo)
                 .resizable()
                 .scaledToFit()
                 .opacity(showsSplashWordmark ? 1 : 0)
