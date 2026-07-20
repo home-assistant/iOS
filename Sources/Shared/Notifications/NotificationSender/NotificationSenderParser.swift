@@ -6,7 +6,10 @@ import UserNotifications
 public enum NotificationSenderParser {
     public static func parse(from content: UNNotificationContent) -> NotificationSenderInfo? {
         // Communication notifications display the sender name in place of the title,
-        // so fall back to the app name for notifications sent without one.
+        // so fall back to the app name for notifications sent without one. Hardcoded
+        // rather than read from CFBundleDisplayName because this runs inside the
+        // notification extensions, where Bundle.main reports the extension's own
+        // display name (e.g. "APNSAttachmentService"), not the app's.
         let senderName = content.title.isEmpty ? "Home Assistant" : content.title
 
         let userInfo = content.userInfo
