@@ -219,9 +219,23 @@ extension AssistService {
         // Evaluated against cached network information: this runs mid-pipeline over an active
         // WebSocket connection (so the cache is fresh), and delegates rely on receiving the TTS
         // URL synchronously, in order with the other pipeline events.
-        guard let mediaUrlPath else { return }
+        guard let mediaUrlPath else {
+            Current.Log.error("Assist tts-end event did not include a media URL path")
+            delegate?.didReceiveError(
+                code: "tts_missing_media_url",
+                message: "The server did not return a TTS media URL"
+            )
+            return
+        }
         guard let mediaUrl = server.activeURLUsingLastKnownNetworkState()?
-            .appendingPathComponent(mediaUrlPath) else { return }
+            .appendingPathComponent(mediaUrlPath) else {
+            Current.Log.error("Assist tts-end could not resolve an active server URL")
+            delegate?.didReceiveError(
+                code: "tts_no_active_url",
+                message: "Could not resolve the server URL for TTS playback"
+            )
+            return
+        }
         delegate?.didReceiveTtsMediaUrl(mediaUrl)
     }
 
