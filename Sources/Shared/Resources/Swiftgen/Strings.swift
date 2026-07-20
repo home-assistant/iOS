@@ -2256,6 +2256,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.title") }
       /// Screensaver
       public static var toggle: String { return L10n.tr("Localizable", "kiosk.screensaver.toggle") }
+      /// Wake on camera motion
+      public static var wakeOnCameraMotion: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion") }
+      /// Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.
+      public static var wakeOnCameraMotionFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.wake_on_camera_motion_footer") }
       public enum Clock {
         /// Clock
         public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.clock.title") }
@@ -3755,6 +3759,38 @@ public enum L10n {
       public enum Setting {
         /// Time Until Idle
         public static var timeUntilIdle: String { return L10n.tr("Localizable", "sensors.active.setting.time_until_idle") }
+      }
+    }
+    public enum Camera {
+      /// Higher frame rates may impact performance and make the device run hotter.
+      public static var frameRateWarning: String { return L10n.tr("Localizable", "sensors.camera.frame_rate_warning") }
+    }
+    public enum CameraMotion {
+      public enum Setting {
+        /// Changed area threshold
+        public static var changedAreaThreshold: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.changed_area_threshold") }
+        /// Clear delay
+        public static var clearDelay: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.clear_delay") }
+        /// Frame rate
+        public static var frameRate: String { return L10n.tr("Localizable", "sensors.camera_motion.setting.frame_rate") }
+      }
+    }
+    public enum CameraStream {
+      /// To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.
+      public static var footer: String { return L10n.tr("Localizable", "sensors.camera_stream.footer") }
+      public enum Setting {
+        /// Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.
+        public static var credentialsFooter: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.credentials_footer") }
+        /// Optional
+        public static var credentialsPlaceholder: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.credentials_placeholder") }
+        /// Frame rate
+        public static var frameRate: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.frame_rate") }
+        /// Password
+        public static var password: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.password") }
+        /// Stream port
+        public static var streamPort: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.stream_port") }
+        /// Username
+        public static var username: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.username") }
       }
     }
     public enum GeocodedLocation {

@@ -20,13 +20,13 @@ struct SensorDetailView: View {
                     set: { newValue in viewModel.setEnabled(newValue) }
                 ))
                 if viewModel.isEnabled, let state = viewModel.stateDescription {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.state, secondText: state)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.state, value: state)
                 }
                 if let deviceClass = viewModel.deviceClass {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.deviceClass, secondText: deviceClass)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.deviceClass, value: deviceClass)
                 }
                 if let icon = viewModel.icon {
-                    makeInfoRow(firstText: L10n.SettingsSensors.Detail.icon, secondText: icon)
+                    SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.icon, value: icon)
                 }
             }
 
@@ -48,20 +48,44 @@ struct SensorDetailView: View {
                     }
                 }
             }
-        }
-    }
 
-    private func makeInfoRow(firstText: String, secondText: String) -> some View {
-        HStack {
-            Text(firstText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(secondText)
-                .foregroundColor(.secondary)
+            if let footer = viewModel.sensor.detailFooter {
+                Section(footer: Text(footer)) {}
+            }
         }
     }
 
     static func settingsSection(from settings: [WebhookSensorSetting]) -> [AnyView] {
-        settings.map { setting -> AnyView in
+        settings.flatMap { setting -> [AnyView] in
+            if case let .credentials(fields) = setting.type {
+                return credentialRows(fields: fields, footer: setting.subtitle)
+            }
+            let row = makeRow(for: setting)
+            guard let subtitle = setting.subtitle else { return [row] }
+            return [AnyView(
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                    row
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            )]
+        }
+    }
+
+    /// A `.credentials` setting renders as one row per field plus a trailing Save row,
+    /// all sharing a single `CredentialsDraft` so Save commits every field at once.
+    private static func credentialRows(fields: [WebhookSensorSetting.CredentialField], footer: String?) -> [AnyView] {
+        let draft = CredentialsDraft(fields: fields)
+        var rows = fields.indices.map { index in
+            AnyView(SensorDetailCredentialFieldRow(draft: draft, index: index))
+        }
+        rows.append(AnyView(SensorDetailCredentialSaveRow(draft: draft, footer: footer)))
+        return rows
+    }
+
+    private static func makeRow(for setting: WebhookSensorSetting) -> AnyView {
+        {
             switch setting.type {
             case let .switch(getter, setter):
                 return AnyView(
@@ -114,7 +138,41 @@ struct SensorDetailView: View {
                         }
                     )
                 }
+            case let .slider(getter, setter, minimum, maximum, step, displayValueFor):
+                return AnyView(
+                    SensorDetailSliderRow(
+                        title: setting.title,
+                        minimum: minimum,
+                        maximum: maximum,
+                        step: step,
+                        displayValueFor: displayValueFor,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
+            case let .options(getter, setter, values, displayValueFor):
+                return AnyView(
+                    SensorDetailOptionsRow(
+                        title: setting.title,
+                        values: values,
+                        displayValueFor: displayValueFor,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
+            case let .numericField(getter, setter, minimum, maximum):
+                return AnyView(
+                    SensorDetailNumericFieldRow(
+                        title: setting.title,
+                        minimum: minimum,
+                        maximum: maximum,
+                        getter: getter,
+                        setter: setter
+                    )
+                )
+            case .credentials:
+                return AnyView(EmptyView())
             }
-        }
+        }()
     }
 }

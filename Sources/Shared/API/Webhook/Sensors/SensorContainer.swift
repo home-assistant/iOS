@@ -108,6 +108,21 @@ public class SensorContainer {
         }
     }
 
+    /// Disables a sensor the first time it is ever seen, so opt-in sensors (e.g. camera-based
+    /// ones, which must not prompt for permission unless the user asks) don't follow the
+    /// enabled-by-default behavior. Subsequent calls are no-ops, preserving the user's choice.
+    public func disableInitially(sensorId: WebhookSensorId) {
+        let key = Self.initialDisableKey(for: sensorId)
+        let prefs = Current.settingsStore.prefs
+        guard prefs.object(forKey: key) == nil else { return }
+        prefs.set(true, forKey: key)
+        setEnabled(false, forUniqueID: sensorId.rawValue)
+    }
+
+    static func initialDisableKey(for sensorId: WebhookSensorId) -> String {
+        "sensor_initially_disabled_\(sensorId.rawValue)"
+    }
+
     private let lastUpdate = HAProtected<SensorObserverUpdate?>(value: nil)
 
     private func currentObservers() -> [SensorObserver] {

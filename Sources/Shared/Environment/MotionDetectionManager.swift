@@ -1,0 +1,423 @@
+import Foundation
+
+public protocol MotionDetectionObserver: AnyObject {
+    func motionStateDidChange(for manager: MotionDetectionManager)
+}
+
+#if os(iOS) && !targetEnvironment(macCatalyst)
+import AVFoundation
+import HAKit
+import UIKit
+
+/// Detects motion using the device's front camera via simple frame differencing
+/// on the luminance (Y) plane. Designed for kiosk/wall-mounted usage: the capture
+/// session only runs while at least one observer is registered and the app is in
+/// the foreground.
+public class MotionDetectionManager: NSObject {
+    // MARK: - Public state
+
+    /// Detection state is written on the capture/processing queue and read from
+    /// arbitrary contexts (sensor providers, observers), so it lives behind a lock.
+    private struct DetectionState {
+        var isMotionDetected = false
+        var lastMotionDate: Date?
+        var lastChangedRatio: Double = 0
+    }
+
+    private let detectionState = HAProtected<DetectionState>(value: .init())
+
+    public var isMotionDetected: Bool {
+        detectionState.read { $0.isMotionDetected }
+    }
+
+    public var lastMotionDate: Date? {
+        detectionState.read { $0.lastMotionDate }
+    }
+
+    /// Ratio (0...1) of sampled pixels that changed in the last processed frame.
+    public var lastChangedRatio: Double {
+        detectionState.read { $0.lastChangedRatio }
+    }
+
+    public var canDetectMotion: Bool {
+        AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) != nil
+    }
+
+    public var attributes: [String: Any] {
+        [
+            "Frame Rate": frameRate,
+            "Area Threshold (%)": areaThresholdPercent,
+            "Clear Delay (s)": clearDelay,
+            "Last Changed Ratio (%)": (lastChangedRatio * 100).rounded(),
+            "Last Motion": lastMotionDate.map {
+                DateFormatter.localizedString(from: $0, dateStyle: .short, timeStyle: .medium)
+            } ?? "never",
+        ]
+    }
+
+    // MARK: - Persisted settings
+
+    private enum UserDefaultsKeys: String {
+        case frameRate = "motion_detection_frame_rate"
+        case areaThreshold = "motion_detection_area_threshold"
+        case clearDelay = "motion_detection_clear_delay"
+    }
+
+    /// Motion detection frame rate in frames per second. Lower values reduce power
+    /// draw and heat significantly; frame differencing works well down to 1-2 fps.
+    /// The capture session itself runs at the highest rate any active consumer needs
+    /// (see `applyFrameRate`); detection then samples frames at this rate.
+    public var frameRate: Double {
+        get {
+            storedSetting(for: .frameRate, default: 8.0)
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.frameRate.rawValue)
+            refreshFrameRate()
+        }
+    }
+
+    /// Re-evaluates the capture frame rate from all active consumers. Called when any
+    /// consumer's rate or activation changes (e.g. the stream server turning on).
+    public func refreshFrameRate() {
+        sessionQueue.async { [weak self] in
+            self?.applyFrameRate()
+        }
+    }
+
+    /// Percentage (0-100) of sampled pixels that must change for a frame to count
+    /// as motion. Lower = more sensitive.
+    public var areaThresholdPercent: Double {
+        get {
+            storedSetting(for: .areaThreshold, default: 40.0)
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.areaThreshold.rawValue)
+        }
+    }
+
+    /// Seconds without motion before the state flips back to off (hysteresis, avoids
+    /// the binary sensor flapping).
+    public var clearDelay: Double {
+        get {
+            storedSetting(for: .clearDelay, default: 15.0)
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue, forKey: UserDefaultsKeys.clearDelay.rawValue)
+        }
+    }
+
+    private func storedSetting(for key: UserDefaultsKeys, default defaultValue: Double) -> Double {
+        let prefs = Current.settingsStore.prefs
+        guard prefs.object(forKey: key.rawValue) != nil else { return defaultValue }
+        return prefs.double(forKey: key.rawValue)
+    }
+
+    /// Per-pixel luminance delta (0-255) above which a pixel counts as changed.
+    /// Kept internal: the area threshold is the user-facing sensitivity knob.
+    private static let pixelThreshold = 25
+
+    // MARK: - Capture plumbing
+
+    private let captureSession = AVCaptureSession()
+    private let sessionQueue = DispatchQueue(label: "motion-detection-session")
+    private let processingQueue = DispatchQueue(label: "motion-detection-frames")
+    private var isCaptureSessionConfigured = false
+    private var captureDevice: AVCaptureDevice?
+
+    /// Subsampling step over the Y plane; with VGA input this yields roughly
+    /// 80x60 samples per frame, plenty for presence detection.
+    private let sampleStep = 8
+    private var previousSamples: [UInt8]?
+    /// Timestamp of the last frame the detection pipeline processed; only touched on
+    /// the processing queue. Lets detection run at `frameRate` even when the capture
+    /// session runs faster for streaming.
+    private var lastDetectionTime: CFAbsoluteTime = 0
+
+    private var clearTimer: Timer?
+    private var observers = NSHashTable<AnyObject>(options: .weakMemory)
+    private var wantsRunning = false
+
+    override public init() {
+        super.init()
+        self.captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    // MARK: - Observers
+
+    /// The capture session runs only while at least one observer is registered.
+    public func register(observer: MotionDetectionObserver) {
+        let wasEmpty = observers.allObjects.isEmpty
+        observers.add(observer)
+        if wasEmpty {
+            wantsRunning = true
+            startSession()
+        }
+    }
+
+    public func unregister(observer: MotionDetectionObserver) {
+        observers.remove(observer)
+        if observers.allObjects.isEmpty {
+            wantsRunning = false
+            stopSession()
+        }
+    }
+
+    private func notifyObservers() {
+        let observers = observers.allObjects.compactMap { $0 as? MotionDetectionObserver }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            for observer in observers {
+                observer.motionStateDidChange(for: self)
+            }
+        }
+    }
+
+    // MARK: - Session lifecycle
+
+    private func startSession() {
+        guard canDetectMotion else { return }
+
+        checkAuthorization { [weak self] authorized in
+            guard let self, authorized else {
+                Current.Log.error("Motion detection: camera access not authorized")
+                return
+            }
+            sessionQueue.async {
+                guard self.wantsRunning else { return }
+                if !self.isCaptureSessionConfigured {
+                    self.configureCaptureSession()
+                }
+                if self.isCaptureSessionConfigured, !self.captureSession.isRunning {
+                    self.previousSamples = nil
+                    self.captureSession.startRunning()
+                    Current.Log.info("Motion detection: capture session started")
+                }
+            }
+        }
+    }
+
+    private func stopSession() {
+        sessionQueue.async { [weak self] in
+            guard let self, captureSession.isRunning else { return }
+            captureSession.stopRunning()
+            previousSamples = nil
+            Current.Log.info("Motion detection: capture session stopped")
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.clearTimer?.invalidate()
+            self?.clearTimer = nil
+            self?.setMotionDetected(false)
+        }
+    }
+
+    @objc private func applicationDidEnterBackground() {
+        // iOS forbids camera capture in the background; stop cleanly.
+        stopSession()
+    }
+
+    @objc private func applicationDidBecomeActive() {
+        if wantsRunning {
+            startSession()
+        }
+    }
+
+    private func checkAuthorization(completion: @escaping (Bool) -> Void) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            completion(true)
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: completion)
+        case .denied, .restricted:
+            completion(false)
+        @unknown default:
+            completion(false)
+        }
+    }
+
+    private func configureCaptureSession() {
+        guard let captureDevice,
+              let deviceInput = try? AVCaptureDeviceInput(device: captureDevice) else {
+            Current.Log.error("Motion detection: failed to obtain video input")
+            return
+        }
+
+        captureSession.beginConfiguration()
+        defer { captureSession.commitConfiguration() }
+
+        // Low resolution is more than enough for frame differencing and keeps
+        // power draw down.
+        if captureSession.canSetSessionPreset(.vga640x480) {
+            captureSession.sessionPreset = .vga640x480
+        }
+
+        let videoOutput = AVCaptureVideoDataOutput()
+        videoOutput.videoSettings = [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
+        ]
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.setSampleBufferDelegate(self, queue: processingQueue)
+
+        guard captureSession.canAddInput(deviceInput),
+              captureSession.canAddOutput(videoOutput) else {
+            Current.Log.error("Motion detection: unable to add capture input/output")
+            return
+        }
+
+        captureSession.addInput(deviceInput)
+        captureSession.addOutput(videoOutput)
+
+        isCaptureSessionConfigured = true
+        applyFrameRate()
+    }
+
+    /// Applies the capture frame rate: the highest rate among active consumers
+    /// (motion detection always; the MJPEG stream when its server is active),
+    /// clamped to a sane range. Detection throttles itself down to `frameRate`
+    /// in `captureOutput` when the capture runs faster for streaming.
+    private func applyFrameRate() {
+        guard let captureDevice, isCaptureSessionConfigured else { return }
+
+        var desired = frameRate
+        let streamServer = Current.cameraStreamServer
+        if streamServer.isActive {
+            desired = max(desired, streamServer.streamFrameRate)
+        }
+
+        let fps = min(max(desired, 1), 30)
+        let duration = CMTime(value: 1, timescale: CMTimeScale(fps))
+
+        do {
+            try captureDevice.lockForConfiguration()
+            defer { captureDevice.unlockForConfiguration() }
+            captureDevice.activeVideoMinFrameDuration = duration
+            captureDevice.activeVideoMaxFrameDuration = duration
+        } catch {
+            Current.Log.error("Motion detection: failed to set frame rate: \(error)")
+        }
+    }
+
+    // MARK: - Motion state
+
+    /// Ratio (0...1) of samples whose luminance changed by more than `pixelThreshold`
+    /// between two equally-sized sample buffers; 0 when the buffers can't be compared.
+    static func changedRatio(previous: [UInt8], current: [UInt8]) -> Double {
+        guard !current.isEmpty, previous.count == current.count else { return 0 }
+
+        var changedCount = 0
+        for index in current.indices where abs(Int(current[index]) - Int(previous[index])) > pixelThreshold {
+            changedCount += 1
+        }
+        return Double(changedCount) / Double(current.count)
+    }
+
+    private func handleMotionFrame() {
+        detectionState.mutate { $0.lastMotionDate = Current.date() }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            clearTimer?.invalidate()
+            clearTimer = Timer.scheduledTimer(
+                withTimeInterval: clearDelay,
+                repeats: false
+            ) { [weak self] _ in
+                self?.setMotionDetected(false)
+            }
+            setMotionDetected(true)
+        }
+    }
+
+    private func setMotionDetected(_ detected: Bool) {
+        let changed = detectionState.mutate { state -> Bool in
+            guard state.isMotionDetected != detected else { return false }
+            state.isMotionDetected = detected
+            return true
+        }
+        if changed {
+            notifyObservers()
+        }
+    }
+}
+
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+
+extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    public func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        // Feed the MJPEG stream server every frame (no-op when no client is connected).
+        Current.cameraStreamServer.handle(frame: pixelBuffer)
+
+        // Detection samples frames at its own rate; the capture session may run
+        // faster when the stream server needs a higher frame rate. The 0.9 factor
+        // tolerates capture timing jitter.
+        let now = CFAbsoluteTimeGetCurrent()
+        guard now - lastDetectionTime >= (1.0 / max(frameRate, 1)) * 0.9 else { return }
+        lastDetectionTime = now
+
+        CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly) }
+
+        // Plane 0 of 420YpCbCr8BiPlanar is the luminance (Y) plane: one byte per
+        // pixel, so we can diff without any color conversion.
+        guard let baseAddress = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0) else { return }
+        let width = CVPixelBufferGetWidthOfPlane(pixelBuffer, 0)
+        let height = CVPixelBufferGetHeightOfPlane(pixelBuffer, 0)
+        let bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
+        let pointer = baseAddress.assumingMemoryBound(to: UInt8.self)
+
+        // Subsample the Y plane into a compact buffer.
+        var samples = [UInt8]()
+        samples.reserveCapacity((width / sampleStep + 1) * (height / sampleStep + 1))
+        for row in stride(from: 0, to: height, by: sampleStep) {
+            let rowStart = row * bytesPerRow
+            for column in stride(from: 0, to: width, by: sampleStep) {
+                samples.append(pointer[rowStart + column])
+            }
+        }
+
+        defer { previousSamples = samples }
+        guard let previousSamples else { return }
+
+        let changedRatio = Self.changedRatio(previous: previousSamples, current: samples)
+        detectionState.mutate { $0.lastChangedRatio = changedRatio }
+
+        if changedRatio * 100 >= areaThresholdPercent {
+            handleMotionFrame()
+        }
+    }
+}
+
+#else
+
+/// Stub for platforms without front-camera capture (watchOS, Mac Catalyst) so the
+/// Shared target compiles everywhere; `CameraMotionSensor` reports unavailable there.
+public class MotionDetectionManager {
+    public private(set) var isMotionDetected = false
+    public var canDetectMotion: Bool { false }
+    public var attributes: [String: Any] { [:] }
+
+    public init() {}
+
+    public func register(observer: MotionDetectionObserver) {}
+    public func unregister(observer: MotionDetectionObserver) {}
+}
+
+#endif
