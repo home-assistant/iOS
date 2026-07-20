@@ -5,8 +5,9 @@ import UserNotifications
 
 public enum NotificationSenderParser {
     public static func parse(from content: UNNotificationContent) -> NotificationSenderInfo? {
-        let senderName = content.title
-        guard !senderName.isEmpty else { return nil }
+        // Communication notifications display the sender name in place of the title,
+        // so fall back to the app name for notifications sent without one.
+        let senderName = content.title.isEmpty ? "Home Assistant" : content.title
 
         let userInfo = content.userInfo
         let nestedData = userInfo["data"] as? [String: Any]

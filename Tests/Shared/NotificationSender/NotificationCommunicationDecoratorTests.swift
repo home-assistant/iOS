@@ -98,8 +98,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         XCTAssertNotEqual(ia.conversationIdentifier, ib.conversationIdentifier)
     }
 
-    func testDecorate_emptyTitle_returnsOriginalContentUnchanged() async {
-        let original = content(title: "", body: "x")
+    func testBuildIntent_usesSenderNameAsDisplayName() async {
         let info = NotificationSenderInfo(
             source: .mdi(
                 name: "mdi:door",
@@ -108,10 +107,15 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
                 colorString: "#FF0000",
                 iconColorString: "#FFFFFF"
             ),
-            senderName: "X"
+            senderName: "Home Assistant"
         )
-        let result = await decorator.decorate(content: original, sender: info, api: api)
-        XCTAssertEqual(result, original)
+        let intent = await decorator.buildIntent(
+            sender: info,
+            title: info.senderName,
+            body: "x",
+            api: api
+        )
+        XCTAssertEqual(intent.sender?.displayName, "Home Assistant")
     }
 
     func testBuildIntent_iconURL_cacheHit_skipsDownload() async throws {
