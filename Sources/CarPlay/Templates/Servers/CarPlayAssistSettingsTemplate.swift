@@ -26,17 +26,17 @@ final class CarPlayAssistSettingsTemplate {
         template?.updateSections(makeSections())
     }
 
+    // The in-app mute toggle is intentionally absent: muteTTS does not apply to CarPlay,
+    // where voice responses always play.
     private func makeSections() -> [CPListSection] {
-        var items = [muteTTSItem]
-        if #available(iOS 17.0, *) {
-            items.append(onDeviceSTTItem)
-            if configuration.enableOnDeviceSTT {
-                items.append(sttLanguageItem)
-            }
-            items.append(onDeviceTTSItem)
-            if configuration.enableOnDeviceTTS {
-                items.append(ttsVoiceItem)
-            }
+        guard #available(iOS 17.0, *) else { return [] }
+        var items = [onDeviceSTTItem]
+        if configuration.enableOnDeviceSTT {
+            items.append(sttLanguageItem)
+        }
+        items.append(onDeviceTTSItem)
+        if configuration.enableOnDeviceTTS {
+            items.append(ttsVoiceItem)
         }
         return [CPListSection(items: items)]
     }
@@ -46,20 +46,6 @@ final class CarPlayAssistSettingsTemplate {
         mutate(&configuration)
         configuration.save()
         reload()
-    }
-
-    private var muteTTSItem: CPListItem {
-        let item = CPListItem(
-            text: L10n.Assist.Settings.TtsMute.toggle,
-            detailText: nil,
-            image: configuration.muteTTS ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
-        )
-        item.accessoryType = .none
-        item.handler = { [weak self] _, completion in
-            self?.updateConfiguration { $0.muteTTS.toggle() }
-            completion()
-        }
-        return item
     }
 
     @available(iOS 17.0, *)

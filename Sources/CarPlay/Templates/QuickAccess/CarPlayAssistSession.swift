@@ -51,9 +51,10 @@ final class CarPlayAssistSession: NSObject {
     private var audioRecorder: AudioRecorderProtocol
 
     /// Assist settings shared globally with the in-app Assist via the `AssistConfiguration`
-    /// database singleton: mute TTS, on-device STT/TTS and their locale/voice. CarPlay owns
-    /// the audio session for the whole conversation, so the on-device speech components run
-    /// with `managesAudioSession = false`.
+    /// database singleton: on-device STT/TTS and their locale/voice. `muteTTS` deliberately
+    /// does not apply to CarPlay (a voice-only interface, so responses must stay audible —
+    /// the settings footer documents this). CarPlay owns the audio session for the whole
+    /// conversation, so the on-device speech components run with `managesAudioSession = false`.
     private var assistConfiguration = AssistConfiguration()
     /// Configuration override from the initializer; when nil, `start()` reads the database.
     private let injectedAssistConfiguration: AssistConfiguration?
@@ -315,9 +316,10 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
-    /// Server TTS is only requested when responses are not muted and not spoken on device.
+    /// Server TTS is only requested when the response is not spoken on device. `muteTTS` is
+    /// not consulted: it does not apply to CarPlay.
     private var shouldRequestServerTTS: Bool {
-        !assistConfiguration.muteTTS && !assistConfiguration.enableOnDeviceTTS
+        !assistConfiguration.enableOnDeviceTTS
     }
 
     private var promptToSend: String? {
@@ -1114,10 +1116,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         guard !stopped else { return }
         stateQueue.sync { state = .responding }
         activateVoiceControlState(for: .responding)
-        if assistConfiguration.muteTTS {
-            // Voice responses are muted globally, so no audio follows; finish the run now.
-            finishResponse()
-        } else if assistConfiguration.enableOnDeviceTTS {
+        if assistConfiguration.enableOnDeviceTTS {
             speakOnDevice(content)
         }
     }

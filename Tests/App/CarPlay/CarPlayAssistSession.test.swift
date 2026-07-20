@@ -328,20 +328,20 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(sut.currentState, .recording)
     }
 
-    // MARK: - Muted TTS (global setting)
+    // MARK: - Muted TTS (does not apply to CarPlay)
 
-    func testMuteTTSSkipsServerTTSRequest() {
+    func testMuteTTSDoesNotSuppressServerTTSRequest() {
         let sut = makeSut(configuration: AssistConfiguration(muteTTS: true))
         sut.start()
         sut.didStartRecording(with: 16000)
 
         XCTAssertEqual(
             mockAssistService.assistSource,
-            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: false)
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
         )
     }
 
-    func testMuteTTSFinishesAfterIntentEndWithoutSpeaking() {
+    func testMuteTTSDoesNotSuppressOnDeviceSpeech() {
         let synthesizer = MockSpeechSynthesizer()
         let sut = makeSut(
             configuration: AssistConfiguration(muteTTS: true, enableOnDeviceTTS: true),
@@ -351,22 +351,8 @@ final class CarPlayAssistSessionTests: XCTestCase {
         sut.didReceiveEvent(.sttEnd)
         sut.didReceiveIntentEndContent("The lights are on")
 
-        XCTAssertFalse(synthesizer.speakCalled)
-        XCTAssertEqual(sut.currentState, .idle)
-    }
-
-    func testMuteTTSContinueConversationRestartsRecording() {
-        let sut = makeSut(configuration: AssistConfiguration(muteTTS: true))
-        sut.start()
-        sut.didReceiveEvent(.sttEnd)
-
-        mockAudioRecorder.startRecordingCalled = false
-        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
-        sut.didReceiveIntentEndContent("Which room?")
-
-        XCTAssertTrue(mockAssistService.resetShouldStartListeningAgainAfterPlaybackEndCalled)
-        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
-        XCTAssertEqual(sut.currentState, .recording)
+        XCTAssertEqual(synthesizer.lastSpokenText, "The lights are on")
+        XCTAssertEqual(sut.currentState, .responding)
     }
 
     func testEmptyIntentContentWithOnDeviceTTSGoesIdleWithoutSpeaking() {
