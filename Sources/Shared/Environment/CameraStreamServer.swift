@@ -256,7 +256,7 @@ public class CameraStreamServer {
     private func respond(to connection: NWConnection, request: String) {
         guard Self.isAuthorized(request: request, username: username, password: password) else {
             let parsed = Self.basicAuthCredentials(fromRequest: request)
-            let lines = request.split(whereSeparator: { $0 == "\r" || $0 == "\n" })
+            let lines = request.split(whereSeparator: \.isNewline)
             let requestLine = lines.first.map(String.init) ?? "(none)"
             let headerNames = lines.dropFirst().compactMap { line -> String? in
                 guard let colon = line.firstIndex(of: ":") else { return nil }
@@ -313,7 +313,10 @@ public class CameraStreamServer {
     /// Extracts `(username, password)` from an `Authorization: Basic <base64>` header
     /// in the raw HTTP request, or `nil` when absent or malformed.
     static func basicAuthCredentials(fromRequest request: String) -> (username: String, password: String)? {
-        for line in request.split(whereSeparator: { $0 == "\r" || $0 == "\n" }) {
+        // Note: split on Character.isNewline, not on "\r"/"\n" — Swift treats CRLF
+        // as a single Character, so comparing against lone "\r" or "\n" never
+        // matches the CRLF line breaks in an HTTP request.
+        for line in request.split(whereSeparator: \.isNewline) {
             guard let colon = line.firstIndex(of: ":") else { continue }
             let name = line[..<colon].trimmingCharacters(in: .whitespaces)
             guard name.caseInsensitiveCompare("Authorization") == .orderedSame else { continue }
