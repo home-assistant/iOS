@@ -27,6 +27,11 @@ final class CarPlayAssistSession: NSObject {
             case .idle, .recording, .error: return false
             }
         }
+
+        var isRecording: Bool {
+            if case .recording = self { return true }
+            return false
+        }
     }
 
     private enum VoiceControlStateID: String {
@@ -44,6 +49,17 @@ final class CarPlayAssistSession: NSObject {
     private let tonePlayer = CarPlayAssistTonePlayer()
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
+
+    /// On-device STT/TTS, shared with the in-app Assist via `AssistConfiguration`.
+    /// CarPlay owns the audio session for the whole conversation, so both components run with
+    /// `managesAudioSession = false`. `muteTTS` is deliberately ignored here: CarPlay Assist is
+    /// a voice-only interface, so a response must always be audible.
+    private var assistConfiguration = AssistConfiguration()
+    private var speechTranscriber: (any SpeechTranscriberProtocol)?
+    private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
+    /// True while an on-device transcription started by this session is listening; used to tell
+    /// a no-speech stop apart from stops the session itself requested.
+    private var onDeviceListeningActive = false
     private var ttsAudioPlayer: AVAudioPlayer?
     private let ttsPlayer = AVPlayer()
     private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
@@ -163,6 +179,7 @@ final class CarPlayAssistSession: NSObject {
     }
 
     func start() {
+        assistConfiguration = AssistConfiguration.config
         assistService.delegate = self
         stateQueue.sync {
             isStopped = false
@@ -195,6 +212,7 @@ final class CarPlayAssistSession: NSObject {
         guard !alreadyStopped else { return }
         cancelResponseWatchdog()
         audioRecorder.stopRecording()
+        stopOnDeviceSpeech()
         assistService.finishSendingAudio()
         tonePlayer.stop()
         ttsAudioPlayer?.stop()
@@ -290,7 +308,6 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func startRecording(presentTemplate: Bool) {
-        audioRecorder.delegate = self
         stateQueue.sync {
             canSendAudioData = false
             state = .recording
@@ -302,7 +319,12 @@ final class CarPlayAssistSession: NSObject {
         if presentTemplate {
             interfaceController?.presentTemplate(template, animated: true, completion: nil)
         }
-        audioRecorder.startRecording()
+        if assistConfiguration.enableOnDeviceSTT {
+            startOnDeviceTranscription()
+        } else {
+            audioRecorder.delegate = self
+            audioRecorder.startRecording()
+        }
     }
 
     private func startPrompt(_ prompt: String, presentTemplate: Bool) {
@@ -322,7 +344,11 @@ final class CarPlayAssistSession: NSObject {
         }
         playProcessingIndicatorToneIfNeeded()
         ttsWasRequested = false
-        assistService.assist(source: .text(input: prompt, pipelineId: pipelineId, expectTTS: true))
+        assistService.assist(source: .text(
+            input: prompt,
+            pipelineId: pipelineId,
+            expectTTS: !assistConfiguration.enableOnDeviceTTS
+        ))
         armResponseWatchdog()
     }
 
@@ -728,6 +754,135 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
+    // MARK: - On-Device Speech (STT/TTS)
+
+    private func startOnDeviceTranscription() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let transcriber = ensureSpeechTranscriber()
+            onDeviceListeningActive = false
+            do {
+                try await transcriber.startListening()
+                onDeviceListeningActive = true
+                playRecordingIndicatorToneIfNeeded()
+            } catch {
+                Current.Log
+                    .error("CarPlay Assist failed to start on-device transcription: \(error.localizedDescription)")
+                enterErrorState(message: error.localizedDescription)
+            }
+        }
+    }
+
+    @MainActor private func ensureSpeechTranscriber() -> any SpeechTranscriberProtocol {
+        if let speechTranscriber {
+            return speechTranscriber
+        }
+
+        let transcriber = assistConfiguration.onDeviceSTTLocaleIdentifier
+            .map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
+        transcriber.managesAudioSession = false
+        transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
+            guard isFinal else { return }
+            self?.handleOnDeviceFinalTranscript(text)
+        }
+        transcriber.onError = { [weak self] error in
+            guard let self else { return }
+            onDeviceListeningActive = false
+            let wasRecording = stateQueue.sync { !isStopped && state.isRecording }
+            guard wasRecording else { return }
+            Current.Log.error("CarPlay Assist on-device transcription failed: \(error.localizedDescription)")
+            enterErrorState(message: error.localizedDescription)
+        }
+        transcriber.onListeningStateChange = { [weak self] listening in
+            guard let self, !listening else { return }
+            guard onDeviceListeningActive else { return }
+            onDeviceListeningActive = false
+            // A final transcript switches the state to .processing before listening stops, so a
+            // stop that leaves the state at .recording means nothing was recognized.
+            let noSpeech = stateQueue.sync { !isStopped && state.isRecording }
+            if noSpeech {
+                enterErrorState(message: "No speech was recognized")
+            }
+        }
+        speechTranscriber = transcriber
+        return transcriber
+    }
+
+    private func handleOnDeviceFinalTranscript(_ text: String) {
+        onDeviceListeningActive = false
+        let shouldHandle = stateQueue.sync { () -> Bool in
+            guard !isStopped, state.isRecording else { return false }
+            canSendAudioData = false
+            state = .processing
+            return true
+        }
+        guard shouldHandle else { return }
+
+        let input = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !input.isEmpty else {
+            enterErrorState(message: "No speech was recognized")
+            return
+        }
+
+        playProcessingIndicatorToneIfNeeded()
+        activateVoiceControlState(for: .processing)
+        ttsWasRequested = false
+        assistService.assist(source: .text(
+            input: input,
+            pipelineId: pipelineId,
+            expectTTS: !assistConfiguration.enableOnDeviceTTS
+        ))
+        armResponseWatchdog()
+    }
+
+    private func speakOnDevice(_ content: String) {
+        ttsWasRequested = true
+        cancelResponseWatchdog()
+
+        let text = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else {
+            onDeviceSpeechFinished()
+            return
+        }
+        ensureSpeechSynthesizer().speak(text)
+    }
+
+    private func ensureSpeechSynthesizer() -> any SpeechSynthesizerProtocol {
+        if let speechSynthesizer {
+            return speechSynthesizer
+        }
+
+        let synthesizer = assistConfiguration.onDeviceTTSVoiceIdentifier
+            .map { SpeechSynthesizer(voiceIdentifier: $0) } ?? SpeechSynthesizer()
+        synthesizer.managesAudioSession = false
+        synthesizer.onFinished = { [weak self] in
+            self?.onDeviceSpeechFinished()
+        }
+        speechSynthesizer = synthesizer
+        return synthesizer
+    }
+
+    private func onDeviceSpeechFinished() {
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
+        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
+            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
+            restartRecording()
+        } else {
+            enterIdleState()
+        }
+    }
+
+    private func stopOnDeviceSpeech() {
+        onDeviceListeningActive = false
+        speechSynthesizer?.stop()
+        if let speechTranscriber {
+            Task { @MainActor in
+                speechTranscriber.stopListening()
+            }
+        }
+    }
+
     // MARK: - Voice Control State Updates
 
     private func activateVoiceControlState(for state: State) {
@@ -755,6 +910,7 @@ final class CarPlayAssistSession: NSObject {
 
     private func restartRecording() {
         tonePlayer.stop()
+        stopOnDeviceSpeech()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -769,6 +925,7 @@ final class CarPlayAssistSession: NSObject {
             return
         }
         tonePlayer.stop()
+        stopOnDeviceSpeech()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -783,6 +940,7 @@ final class CarPlayAssistSession: NSObject {
             state = .idle
         }
         cancelResponseWatchdog()
+        stopOnDeviceSpeech()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -802,6 +960,7 @@ final class CarPlayAssistSession: NSObject {
         guard shouldHandle else { return }
 
         cancelResponseWatchdog()
+        stopOnDeviceSpeech()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -826,7 +985,7 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         assistService.assist(source: .audio(
             pipelineId: pipelineId,
             audioSampleRate: sampleRate,
-            tts: true
+            tts: !assistConfiguration.enableOnDeviceTTS
         ))
     }
 
@@ -918,6 +1077,9 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         guard !stopped else { return }
         stateQueue.sync { state = .responding }
         activateVoiceControlState(for: .responding)
+        if assistConfiguration.enableOnDeviceTTS {
+            speakOnDevice(content)
+        }
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {

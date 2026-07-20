@@ -2,6 +2,7 @@
 
 final class MockSpeechSynthesizer: SpeechSynthesizerProtocol {
     var onFinished: (() -> Void)?
+    var managesAudioSession = true
 
     var speakCalled = false
     var stopCalled = false
