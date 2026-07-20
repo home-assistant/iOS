@@ -847,6 +847,12 @@ public enum L10n {
     }
     public enum Config {
       public enum QuickAccess {
+        public enum Layout {
+          public enum GridRequirement {
+            /// Requires iOS 26 or later
+            public static var subtitle: String { return L10n.tr("Localizable", "carPlay.config.quick_access.layout.grid_requirement.subtitle") }
+          }
+        }
         public enum ShowAddEditButtons {
           /// Show buttons to add and edit Quick Access items directly from the car.
           public static var footer: String { return L10n.tr("Localizable", "carPlay.config.quick_access.show_add_edit_buttons.footer") }
