@@ -1196,6 +1196,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.servers_header" = "Servery";
 "settings.connection_section.servers_reorder_footer" = "Přetažením změníte pořadí serverů. Server nahoře se používá jako výchozí.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Upravit URL";
 "settings.connection_section.validate_error.title" = "Chyba při ukládání URL";
 "settings.connection_section.validate_error.use_anyway" = "Přesto použít";

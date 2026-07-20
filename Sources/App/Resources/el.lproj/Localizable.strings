@@ -1196,6 +1196,10 @@
 "settings.connection_section.servers_header" = "Διακομιστές";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Επεξεργασία διεύθυνσης URL";
 "settings.connection_section.validate_error.title" = "Σφάλμα αποθήκευσης διεύθυνσης URL";
 "settings.connection_section.validate_error.use_anyway" = "Χρήση οπωσδήποτε";

@@ -1196,6 +1196,10 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.servers_header" = "Serveurs";
 "settings.connection_section.servers_reorder_footer" = "Faites glisser pour réorganiser vos serveurs. Celui du haut est utilisé comme serveur par défaut.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation « Toujours » et une précision de localisation « Complet ». Appuyez ici pour modifier vos paramètres.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Modifier l'URL";
 "settings.connection_section.validate_error.title" = "Erreur lors de l'enregistrement de l'URL";
 "settings.connection_section.validate_error.use_anyway" = "Utiliser quand même";

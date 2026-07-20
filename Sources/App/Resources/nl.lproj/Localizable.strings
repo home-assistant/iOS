@@ -1196,6 +1196,10 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Wijzig URL";
 "settings.connection_section.validate_error.title" = "Fout bij opslaan van URL";
 "settings.connection_section.validate_error.use_anyway" = "Gebruik toch";
