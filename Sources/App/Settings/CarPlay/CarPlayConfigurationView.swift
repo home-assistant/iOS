@@ -125,7 +125,11 @@ struct CarPlayConfigurationView: View {
         Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
             Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
                 get: { viewModel.quickAccessLayout },
-                set: { viewModel.quickAccessLayout = $0 }
+                set: { newValue in
+                    // selectionDisabled is iOS 17+, so also ignore Grid here for iOS 16
+                    guard newValue != .grid || isGridLayoutSupported else { return }
+                    viewModel.quickAccessLayout = newValue
+                }
             )) {
                 ForEach(CarPlayQuickAccessLayout.allCases, id: \.rawValue) { layout in
                     layoutPickerOption(layout).tag(layout)
