@@ -183,26 +183,35 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         startTimeoutTimerWhichResetsState(completion: completion)
-        // The execution runs on GCD, not Swift concurrency: watchOS gives the cooperative pool a
-        // single thread, and a starved pool (seen on hardware) meant the old `Task`-based execution
-        // never even started. Every step of this path is synchronous or callback-based.
-        startConcurrencyPoolCanary()
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        // The execution runs on a dedicated thread, not Swift concurrency or a GCD global queue:
+        // on watch hardware both shared pools have been observed starved (traces showed the global
+        // queue never running the block within 15s), so anything queued on them never starts. A raw
+        // `Thread` doesn't compete for pool workers and always starts. Every step of this path is
+        // synchronous or callback-based.
+        startWorkerPoolCanaries()
+        let thread = Thread { [weak self] in
             self?.trace?.log(.info, "Execution started")
             self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         }
+        thread.name = "magic-item-execution"
+        thread.qualityOfService = .userInitiated
+        thread.start()
     }
 
-    /// Verbose-trace diagnostic for the failure mode that used to swallow executions: schedules a
-    /// no-op `Task` and records how long the cooperative pool took to run it. The execution itself
-    /// no longer depends on the pool, so a starved pool shows up here as a late (or missing)
-    /// canary entry instead of a hang.
-    private func startConcurrencyPoolCanary() {
+    /// Verbose-trace diagnostics for the failure mode that used to swallow executions: schedules a
+    /// no-op on each shared worker pool (Swift concurrency, GCD global) and records how long it
+    /// took to run. The execution itself no longer depends on either pool, so a starved pool shows
+    /// up here as a late (or missing) canary entry instead of a hang — and names which pool it is.
+    private func startWorkerPoolCanaries() {
         guard let trace else { return }
         let scheduled = Current.date()
         Task {
             let elapsed = String(format: "%.2fs", Current.date().timeIntervalSince(scheduled))
             trace.log(.info, "Swift-concurrency pool canary ran after \(elapsed)", isProgress: false)
+        }
+        DispatchQueue.global(qos: .userInitiated).async {
+            let elapsed = String(format: "%.2fs", Current.date().timeIntervalSince(scheduled))
+            trace.log(.info, "GCD global-queue canary ran after \(elapsed)", isProgress: false)
         }
     }
 
