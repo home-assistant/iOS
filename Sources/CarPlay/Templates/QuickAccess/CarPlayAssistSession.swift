@@ -40,6 +40,11 @@ final class CarPlayAssistSession: NSObject {
     private let ttsPlayer = AVPlayer()
     private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
     private var ttsPlayerTimeControlObservation: NSKeyValueObservation?
+    /// Detects AVPlayer TTS playback that never starts (e.g. unreachable media URL) so it can
+    /// fall back to downloading the clip instead of failing silently.
+    private var ttsStartWatchdog: DispatchWorkItem?
+    private var ttsPlaybackDidStart = false
+    private static let ttsStartTimeout: TimeInterval = 5
 
     /// Serial queue protecting all mutable session state (`canSendAudioData`, `state`, `isStopped`).
     /// Callbacks from AVCaptureSession, HAKit, and NotificationCenter may arrive on arbitrary threads.
@@ -309,6 +314,7 @@ final class CarPlayAssistSession: NSObject {
                 settings.audioCategory.avCategory,
                 mode: settings.audioMode.avMode,
                 options: makeAudioSessionOptions(
+                    category: settings.audioCategory.avCategory,
                     allowBluetoothHFP: settings.allowBluetoothHFP,
                     allowBluetoothA2DP: settings.allowBluetoothA2DP,
                     duckOthers: settings.duckOthers,
@@ -336,6 +342,7 @@ final class CarPlayAssistSession: NSObject {
                 settings.ttsCategory.avCategory,
                 mode: settings.ttsMode.avMode,
                 options: makeAudioSessionOptions(
+                    category: settings.ttsCategory.avCategory,
                     allowBluetoothHFP: settings.ttsAllowBluetoothHFP,
                     allowBluetoothA2DP: settings.ttsAllowBluetoothA2DP,
                     duckOthers: settings.ttsDuckOthers,
@@ -354,6 +361,7 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func makeAudioSessionOptions(
+        category: AVAudioSession.Category,
         allowBluetoothHFP: Bool,
         allowBluetoothA2DP: Bool,
         duckOthers: Bool,
@@ -371,6 +379,11 @@ final class CarPlayAssistSession: NSObject {
         }
         if interruptSpokenAudio {
             options.insert(.interruptSpokenAudioAndMixWithOthers)
+        }
+        // Only valid with .playAndRecord: without it, playback with no car/Bluetooth route
+        // defaults to the receiver (earpiece) and Assist audio is nearly inaudible.
+        if category == .playAndRecord {
+            options.insert(.defaultToSpeaker)
         }
         return options
     }
@@ -510,9 +523,11 @@ final class CarPlayAssistSession: NSObject {
             .carPlayAssistDebugSettings
             .avPlayerAutomaticallyWaitsToMinimizeStalling
         ttsPlayer.replaceCurrentItem(with: playerItem)
-        observeTTSPlayer(item: playerItem)
+        observeTTSPlayer(item: playerItem, url: url)
         Current.Log.info("CarPlay Assist starting AVPlayer TTS for URL: \(url.absoluteString)")
+        ttsPlaybackDidStart = false
         ttsPlayer.play()
+        scheduleTTSStartWatchdog(url: url)
 
         NotificationCenter.default.addObserver(
             self,
@@ -578,8 +593,8 @@ final class CarPlayAssistSession: NSObject {
         }.resume()
     }
 
-    private func observeTTSPlayer(item: AVPlayerItem) {
-        ttsPlayerItemStatusObservation = item.observe(\.status, options: [.initial, .new]) { item, _ in
+    private func observeTTSPlayer(item: AVPlayerItem, url: URL) {
+        ttsPlayerItemStatusObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
             switch item.status {
             case .unknown:
                 Current.Log.info("CarPlay Assist TTS player item status: unknown")
@@ -589,6 +604,7 @@ final class CarPlayAssistSession: NSObject {
                 Current.Log.error(
                     "CarPlay Assist TTS player item failed: \(item.error?.localizedDescription ?? "unknown error")"
                 )
+                self?.fallBackToDownloadedTTS(url: url)
             @unknown default:
                 Current.Log.info("CarPlay Assist TTS player item status: unknown future case")
             }
@@ -597,7 +613,7 @@ final class CarPlayAssistSession: NSObject {
         ttsPlayerTimeControlObservation = ttsPlayer.observe(\.timeControlStatus, options: [
             .initial,
             .new,
-        ]) { player, _ in
+        ]) { [weak self] player, _ in
             let description: String
             switch player.timeControlStatus {
             case .paused:
@@ -606,6 +622,8 @@ final class CarPlayAssistSession: NSObject {
                 description = "waiting"
             case .playing:
                 description = "playing"
+                self?.ttsPlaybackDidStart = true
+                self?.ttsStartWatchdog?.cancel()
             @unknown default:
                 description = "unknown"
             }
@@ -616,6 +634,36 @@ final class CarPlayAssistSession: NSObject {
     private func clearTTSPlayerObservers() {
         ttsPlayerItemStatusObservation = nil
         ttsPlayerTimeControlObservation = nil
+        ttsStartWatchdog?.cancel()
+        ttsStartWatchdog = nil
+    }
+
+    private func scheduleTTSStartWatchdog(url: URL) {
+        ttsStartWatchdog?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            guard ttsPlayer.timeControlStatus != .playing else { return }
+            Current.Log.error(
+                "CarPlay Assist AVPlayer TTS did not start within \(Self.ttsStartTimeout)s"
+            )
+            fallBackToDownloadedTTS(url: url)
+        }
+        ttsStartWatchdog = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.ttsStartTimeout, execute: workItem)
+    }
+
+    /// AVPlayer TTS failed or never started; retry once by downloading the clip and playing it
+    /// with AVAudioPlayer so the user hears either the response or the error tone, never silence.
+    /// Failures after playback started are handled by `ttsFailedToPlayToEnd` instead.
+    private func fallBackToDownloadedTTS(url: URL) {
+        guard !ttsPlaybackDidStart else { return }
+        clearTTSPlayerObservers()
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
+        Current.Log.info("CarPlay Assist falling back to downloaded TTS playback for URL: \(url.absoluteString)")
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        playTTSWithDownloadedAudioPlayer(url: url)
     }
 
     @objc private func ttsPlaybackStalled(_ notification: Notification) {
