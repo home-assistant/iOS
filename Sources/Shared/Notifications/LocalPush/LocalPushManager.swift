@@ -13,6 +13,7 @@ public protocol LocalPushManagerDelegate: AnyObject {
 public class LocalPushManager {
     public let server: Server
     public weak var delegate: LocalPushManagerDelegate?
+    private let notificationCommunicationDecorator: NotificationCommunicationDecorator
 
     public static let stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
 
@@ -83,8 +84,13 @@ public class LocalPushManager {
 
     private var tokens = [HACancellable]()
 
-    public init(server: Server) {
+    public init(
+        server: Server,
+        notificationCommunicationDecorator: NotificationCommunicationDecorator =
+            NotificationCommunicationDecoratorImpl()
+    ) {
         self.server = server
+        self.notificationCommunicationDecorator = notificationCommunicationDecorator
 
         updateSubscription()
         tokens.append(server.observe { [weak self] _ in
@@ -213,19 +219,30 @@ public class LocalPushManager {
             return
         }
 
-        firstly {
-            Current.notificationAttachmentManager.content(from: baseContent, api: api)
-        }.recover { error in
-            Current.Log.error("failed to get content, giving default: \(error)")
-            return .value(baseContent)
-        }.then { [add] content -> Promise<Void> in
-            add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
-        }.then { () -> Promise<Void> in
-            confirmReceipt()
-        }.done {
-            Current.Log.info("added local notification")
-        }.catch { error in
-            Current.Log.error("failed to add local notification: \(error)")
+        Task { [add, notificationCommunicationDecorator] in
+            var content = await withCheckedContinuation { continuation in
+                Current.notificationAttachmentManager.content(from: baseContent, api: api).done {
+                    continuation.resume(returning: $0)
+                }
+            }
+            if let sender = NotificationSenderParser.parse(from: content) {
+                content = await notificationCommunicationDecorator.decorate(
+                    content: content,
+                    sender: sender,
+                    api: api
+                )
+            }
+            add(UNNotificationRequest(
+                identifier: event.identifier,
+                content: content,
+                trigger: nil
+            )).then {
+                confirmReceipt()
+            }.done {
+                Current.Log.info("added local notification")
+            }.catch { error in
+                Current.Log.error("failed to add local notification: \(error)")
+            }
         }
     }
 

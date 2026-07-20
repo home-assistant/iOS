@@ -108,15 +108,13 @@ final class AppContainerCoordinator: AppCoordinator {
             Current.appSessionValues.inviteURL = inviteURL
             return
         }
-        let navigationView = NavigationView {
-            OnboardingServersListView(
-                prefillURL: inviteURL,
-                shouldDismissOnSuccess: true,
-                onboardingStyle: .secondary
-            )
-        }.navigationViewStyle(.stack)
+        let onboardingView = OnboardingNavigationView(
+            onboardingStyle: .secondary,
+            prefillURL: inviteURL,
+            shouldDismissOnSuccess: true
+        )
         frontend.presentOverlayController(
-            controller: navigationView.embeddedInHostingController(),
+            controller: onboardingView.embeddedInHostingController(),
             animated: true
         )
     }

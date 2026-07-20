@@ -285,29 +285,35 @@ final class WebRTCClient: NSObject {
 
     weak var delegate: WebRTCClientDelegate?
     private let peerConnection: RTCPeerConnection
-    private let mediaConstrains = [
-        kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
-        kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue,
-    ]
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
+    private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
+    /// Set while an offer waits for ICE gathering to finish (candidates-upfront mode); invoked
+    /// from the gathering-state delegate callback once the local description is complete.
+    private var iceGatheringCompletionHandler: (() -> Void)?
 
     @available(*, unavailable)
     override init() {
         fatalError("WebRTCClient:init is unavailable")
     }
 
-    required init(iceServers: [String]) {
+    init(configuration: WebRTCClientConfiguration) {
         let config = RTCConfiguration()
-        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
+        config.iceServers = configuration.iceServers
 
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan
 
-        // gatherContinually will let WebRTC to listen to any network changes and send any new candidates to the other
-        // client
-        config.continualGatheringPolicy = .gatherContinually
+        if configuration.getCandidatesUpfront {
+            // The backend needs every candidate inside the offer, so gather once and wait for the
+            // gathering state to reach `.complete` (which `.gatherContinually` never does).
+            config.continualGatheringPolicy = .gatherOnce
+        } else {
+            // gatherContinually will let WebRTC to listen to any network changes and send any new
+            // candidates to the other client
+            config.continualGatheringPolicy = .gatherContinually
+        }
 
         // Define media constraints. DtlsSrtpKeyAgreement is required to be true to be able to connect with web
         // browsers.
@@ -327,6 +333,9 @@ final class WebRTCClient: NSObject {
         self.peerConnection = peerConnection
         super.init()
         createMediaTracks()
+        if let dataChannelLabel = configuration.dataChannelLabel {
+            createDataChannel(label: dataChannelLabel)
+        }
 
         self.peerConnection.delegate = self
     }
@@ -337,34 +346,34 @@ final class WebRTCClient: NSObject {
 
     // MARK: Signaling
 
-    func offer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
+    /// Creates an offer and returns its SDP. With `waitForCandidates` (candidates-upfront
+    /// backends), the completion fires only after ICE gathering completes, with a local
+    /// description that already contains every gathered candidate.
+    func offer(waitForCandidates: Bool, completion: @escaping (_ sdp: String) -> Void) {
         let constrains = RTCMediaConstraints(
-            mandatoryConstraints: mediaConstrains,
+            mandatoryConstraints: nil,
             optionalConstraints: nil
         )
-        peerConnection.offer(for: constrains) { sdp, _ in
-            guard let sdp else {
+        peerConnection.offer(for: constrains) { [weak self] sdp, error in
+            guard let self, let sdp else {
+                Current.Log.error("Failed to create WebRTC offer: \(error?.localizedDescription ?? "unknown error")")
                 return
             }
 
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { _ in
-                completion(sdp)
-            })
-        }
-    }
-
-    func answer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
-        let constrains = RTCMediaConstraints(
-            mandatoryConstraints: mediaConstrains,
-            optionalConstraints: nil
-        )
-        peerConnection.answer(for: constrains) { sdp, _ in
-            guard let sdp else {
-                return
-            }
-
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { _ in
-                completion(sdp)
+            peerConnection.setLocalDescription(sdp, completionHandler: { [weak self] _ in
+                guard let self else { return }
+                if waitForCandidates {
+                    iceGatheringCompletionHandler = { [weak self] in
+                        guard let self else { return }
+                        completion(peerConnection.localDescription?.sdp ?? sdp.sdp)
+                    }
+                    // Gathering may already have finished before the handler was set.
+                    if peerConnection.iceGatheringState == .complete {
+                        flushIceGatheringCompletionHandler()
+                    }
+                } else {
+                    completion(sdp.sdp)
+                }
             })
         }
     }
@@ -402,20 +411,32 @@ final class WebRTCClient: NSObject {
     }
 
     private func createMediaTracks() {
-        let streamId = "stream"
-        let videoTrack = createVideoTrack()
-        peerConnection.add(videoTrack, streamIds: [streamId])
-        remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
-            .track as? RTCVideoTrack
+        // Receive-only transceivers, matching the frontend player: we never send media, so no
+        // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
+        // extensions anyway), and the offer negotiates recvonly m-lines.
+        let audioTransceiverInit = RTCRtpTransceiverInit()
+        audioTransceiverInit.direction = .recvOnly
+        peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+
+        let videoTransceiverInit = RTCRtpTransceiverInit()
+        videoTransceiverInit.direction = .recvOnly
+        let videoTransceiver = peerConnection.addTransceiver(of: .video, init: videoTransceiverInit)
+        remoteVideoTrack = videoTransceiver?.receiver.track as? RTCVideoTrack
     }
 
-    private func createVideoTrack() -> RTCVideoTrack {
-        // The local track only exists to establish the transceiver we read the remote track from;
-        // we never send video, so there's no capturer. RTCCameraVideoCapturer is also unavailable in
-        // app extensions, which is why a capturer here broke the device build of the notification ext.
-        let videoSource = WebRTCClient.factory.videoSource()
-        let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
-        return videoTrack
+    private func createDataChannel(label: String) {
+        let configuration = RTCDataChannelConfiguration()
+        guard let dataChannel = peerConnection.dataChannel(forLabel: label, configuration: configuration) else {
+            Current.Log.warning("Could not create WebRTC data channel \(label)")
+            return
+        }
+        dataChannel.delegate = self
+        localDataChannel = dataChannel
+    }
+
+    private func flushIceGatheringCompletionHandler() {
+        iceGatheringCompletionHandler?()
+        iceGatheringCompletionHandler = nil
     }
 
     private func setRemoteAudioTrack() {
@@ -460,6 +481,9 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
         Current.Log.info("peerConnection new gathering state: \(newState)")
+        if newState == .complete {
+            flushIceGatheringCompletionHandler()
+        }
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
@@ -473,15 +497,8 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Current.Log.info("peerConnection did open data channel")
+        dataChannel.delegate = self
         remoteDataChannel = dataChannel
-    }
-}
-
-extension WebRTCClient {
-    private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
-        peerConnection.transceivers
-            .compactMap { $0.sender.track as? T }
-            .forEach { $0.isEnabled = isEnabled }
     }
 }
 

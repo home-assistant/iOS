@@ -149,8 +149,8 @@ public class AppEnvironment {
             lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
         )
         #if !os(watchOS)
-        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate in
-            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate, showProgress in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate, showProgress: showProgress)
         }
         #endif
         HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs
@@ -199,8 +199,11 @@ public class AppEnvironment {
 
     public var database: () -> DatabaseQueue = {
         // App Intents can run in a background-woken process without a foreground transition,
-        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut.
-        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut. While
+        // backgrounded the resume is protected by an expiring activity that re-suspends GRDB
+        // before the process freezes, so no access is caught holding the app-group SQLite file
+        // lock (0xdead10cc).
+        AppDatabaseSuspension.shared.resumeForAccess()
         return .appDatabase
     }
 
@@ -392,6 +395,9 @@ public class AppEnvironment {
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
+    /// Syncs server reference data (entity registry, entities, zones, devices, areas, pipelines)
+    /// into the watch database over a direct websocket connection — no paired iPhone required.
+    public var watchDirectDatabaseSync: WatchDirectDatabaseSyncing = WatchDirectDatabaseSync()
     #endif
 
     #if targetEnvironment(macCatalyst)

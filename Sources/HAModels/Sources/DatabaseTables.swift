@@ -32,6 +32,10 @@ public enum GRDBDatabaseTable: String {
     case notificationCategory
     case locationHistory
     case locationError
+    // Apple Reminders ↔ Home Assistant todo list sync
+    case remindersSyncConfig
+    case remindersSyncItemLink
+    case remindersSyncHistoryEntry
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -316,5 +320,42 @@ public enum DatabaseTables {
         case code
         case message
         case createdAt
+    }
+
+    // Apple Reminders ↔ Home Assistant todo list sync pairs. Column names must match
+    // `RemindersSyncConfig`'s stored properties.
+    public enum RemindersSyncConfig: String, CaseIterable {
+        case id
+        case serverId
+        case todoEntityId
+        case todoEntityName
+        case reminderListId
+        case reminderListName
+        case direction
+        case lastSyncDate
+    }
+
+    // Per-item links between a synced HA todo item and its reminder counterpart. Column names
+    // must match `RemindersSyncItemLink`'s stored properties.
+    public enum RemindersSyncItemLink: String, CaseIterable {
+        case id
+        case configId
+        case todoItemUid
+        case reminderId
+        case lastKnownTitle
+        case lastKnownCompleted
+        case lastKnownNotes
+        case lastKnownDue
+    }
+
+    // Recorded sync runs. Column names must match `RemindersSyncHistoryEntry`'s stored properties.
+    public enum RemindersSyncHistoryEntry: String, CaseIterable {
+        case id
+        case configId
+        case listLabel
+        case date
+        case success
+        case error
+        case details
     }
 }

@@ -206,6 +206,80 @@ public extension HATypedRequest {
         )
     }
 
+    /// Adds an item to a todo list. `dueDate` is `yyyy-MM-dd`, `dueDateTime` is an ISO8601
+    /// datetime; pass at most one of them.
+    static func addTodoItem(
+        listId: String,
+        summary: String,
+        description: String? = nil,
+        dueDate: String? = nil,
+        dueDateTime: String? = nil
+    ) -> HATypedRequest<HAResponseVoid> {
+        var data: [String: Any] = [
+            "entity_id": listId,
+            "item": summary,
+        ]
+        if let description {
+            data["description"] = description
+        }
+        if let dueDate {
+            data["due_date"] = dueDate
+        } else if let dueDateTime {
+            data["due_datetime"] = dueDateTime
+        }
+        return HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/add_item"),
+                data: data
+            )
+        )
+    }
+
+    /// Updates a todo item identified by its `uid`. Only the provided fields are sent; a nil due
+    /// date is left untouched (the todo services offer no way to clear it).
+    static func updateTodoItem(
+        listId: String,
+        itemId: String,
+        rename: String,
+        status: String,
+        description: String? = nil,
+        dueDate: String? = nil,
+        dueDateTime: String? = nil
+    ) -> HATypedRequest<HAResponseVoid> {
+        var data: [String: Any] = [
+            "entity_id": listId,
+            "item": itemId,
+            "rename": rename,
+            "status": status,
+        ]
+        if let description {
+            data["description"] = description
+        }
+        if let dueDate {
+            data["due_date"] = dueDate
+        } else if let dueDateTime {
+            data["due_datetime"] = dueDateTime
+        }
+        return HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/update_item"),
+                data: data
+            )
+        )
+    }
+
+    static func removeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/remove_item"),
+                data: [
+                    "entity_id": listId,
+                    "item": itemId,
+                ]
+            )
+        )
+    }
+
     static func completeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
         HATypedRequest<HAResponseVoid>(
             request:

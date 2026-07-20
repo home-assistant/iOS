@@ -26,6 +26,8 @@ struct CameraPlayerView: View {
     @State private var controlsVisible = true
     @State private var showLoader = true
 
+    private let maxTitleTextWidth: CGFloat = 100
+
     enum PlayerType {
         case webRTC
         case hls
@@ -55,31 +57,20 @@ struct CameraPlayerView: View {
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
+        .preferredColorScheme(.dark)
     }
 
     private var navigationStack: some View {
         NavigationStack {
             content
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        if controlsVisible {
-                            HStack(spacing: DesignSystem.Spaces.one) {
-                                Button {
-                                    openMoreInfo()
-                                } label: {
-                                    Image(systemSymbol: .safari)
-                                }
-                            }
-                        }
-                    }
-
-                    ToolbarItem(placement: .cancellationAction) {
+                    ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
                             dismiss()
                         }
                     }
 
-                    ToolbarItem(placement: .principal) {
+                    ToolbarItem(placement: .topBarLeading) {
                         nameBadge
                     }
                 }
@@ -121,11 +112,14 @@ struct CameraPlayerView: View {
                         Text(name)
                             .font(DesignSystem.Font.caption.bold())
                             .foregroundStyle(.primary)
+                            .frame(maxWidth: maxTitleTextWidth, alignment: .leading)
                             .truncationMode(.middle)
                         if let subtitle, !subtitle.isEmpty {
                             Text(subtitle)
                                 .font(DesignSystem.Font.caption2)
                                 .foregroundStyle(.secondary)
+                                .frame(maxWidth: maxTitleTextWidth, alignment: .leading)
+                                .truncationMode(.middle)
                         }
                     }
                     if cameras.count > 1 {
@@ -136,20 +130,9 @@ struct CameraPlayerView: View {
                 }
                 .padding(.horizontal, DesignSystem.Spaces.two)
                 .padding(.vertical, DesignSystem.Spaces.one)
-                .modify { view in
-                    if #available(iOS 26.0, *) {
-                        view
-                            .glassEffect(.regular.interactive(), in: .capsule)
-                    } else {
-                        view
-                            .background(.regularMaterial)
-                            .clipShape(.capsule)
-                    }
-                }
             }
             .menuOrder(.fixed)
             .disabled(cameras.count <= 1)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -257,13 +240,6 @@ struct CameraPlayerView: View {
         playerType = .webRTC
         cameraEntityId = entityId
         loadMetadata()
-    }
-
-    private func openMoreInfo() {
-        if let url = AppConstants
-            .openEntityDeeplinkURL(entityId: cameraEntityId, serverId: server.identifier.rawValue) {
-            URLOpener.shared.open(url, options: [:], completionHandler: nil)
-        }
     }
 }
 

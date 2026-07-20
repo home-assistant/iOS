@@ -83,6 +83,9 @@ public extension DatabaseQueue {
             NotificationCategoryTable(),
             LocationHistoryTable(),
             LocationErrorTable(),
+            RemindersSyncConfigTable(),
+            RemindersSyncItemLinkTable(),
+            RemindersSyncHistoryEntryTable(),
         ]
     }
 
@@ -128,17 +131,102 @@ public extension DatabaseQueue {
     }
 }
 
-/// Posts GRDB's database suspension notifications without requiring callers to import GRDB
+/// Coordinates GRDB's database suspension notifications without requiring callers to import GRDB
 /// (app targets don't all link it directly). Suspending while backgrounded prevents the system from
 /// killing the process with 0xdead10cc for holding the app-group SQLite file lock during suspension —
 /// see https://github.com/groue/GRDB.swift/issues/1626.
-public enum AppDatabaseSuspension {
+public final class AppDatabaseSuspension {
+    static let shared = AppDatabaseSuspension()
+
+    private let lock = NSLock()
+    /// Whether the lifecycle currently wants the database suspended (set on background, cleared on
+    /// foreground). Accesses that arrive while this is set resume GRDB only under an expiring
+    /// activity that re-suspends it before the process is frozen (see `resumeForAccess`).
+    private var wantsSuspension = false
+    /// Parks the thread of the currently-armed expiring activity; nil when none is armed.
+    private var activitySemaphore: DispatchSemaphore?
+
+    private let performExpiringActivity: (String, @escaping (Bool) -> Void) -> Void
+    private let postNotification: (Notification.Name) -> Void
+
+    /// The defaults are the real system behaviors; tests inject recorders into a dedicated instance
+    /// so parallel suites can't interfere through shared state.
+    init(
+        performExpiringActivity: @escaping (String, @escaping (Bool) -> Void) -> Void = { reason, block in
+            ProcessInfo.processInfo.performExpiringActivity(withReason: reason, using: block)
+        },
+        postNotification: @escaping (Notification.Name) -> Void = { name in
+            NotificationCenter.default.post(name: name, object: nil)
+        }
+    ) {
+        self.performExpiringActivity = performExpiringActivity
+        self.postNotification = postNotification
+    }
+
     public static func suspend() {
-        NotificationCenter.default.post(name: Database.suspendNotification, object: nil)
+        shared.suspend()
     }
 
     public static func resume() {
-        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        shared.resume()
+    }
+
+    func suspend() {
+        lock.lock()
+        wantsSuspension = true
+        lock.unlock()
+        postNotification(Database.suspendNotification)
+    }
+
+    func resume() {
+        lock.lock()
+        wantsSuspension = false
+        let parked = activitySemaphore
+        activitySemaphore = nil
+        lock.unlock()
+        postNotification(Database.resumeNotification)
+        // The app is interactive again; release the protection activity, if one was armed.
+        parked?.signal()
+    }
+
+    /// Resumes the database for an access that may happen while the app is backgrounded (App Intents,
+    /// background refresh, pushes, …). A plain resume there would defeat the suspension entirely and
+    /// leave the access exposed to 0xdead10cc, so when the lifecycle has asked for suspension the
+    /// resume is paired with a system expiring activity: the process is kept alive while the access
+    /// runs, and when the activity expires — right before the process would be frozen — GRDB is
+    /// re-suspended so no statement is caught holding the app-group SQLite file lock.
+    func resumeForAccess() {
+        lock.lock()
+        let needsProtection = wantsSuspension && activitySemaphore == nil
+        var parked: DispatchSemaphore?
+        if needsProtection {
+            parked = DispatchSemaphore(value: 0)
+            activitySemaphore = parked
+        }
+        lock.unlock()
+
+        // Resume synchronously so the caller's access can proceed immediately (keeping
+        // background-woken accesses like App Intents from aborting mid-shortcut).
+        postNotification(Database.resumeNotification)
+
+        guard let parked else { return }
+        performExpiringActivity("database-background-access") { [self] expired in
+            if expired {
+                lock.lock()
+                let isCurrent = activitySemaphore === parked
+                if isCurrent { activitySemaphore = nil }
+                lock.unlock()
+                // A stale expiration (the app foregrounded, or a newer activity took over) must not
+                // re-suspend the now-active database.
+                guard isCurrent else { return }
+                postNotification(Database.suspendNotification)
+                parked.signal()
+            } else {
+                // Hold the activity (keeping the process alive and the database usable) until the
+                // app foregrounds or the system expires it.
+                parked.wait()
+            }
+        }
     }
 }
 

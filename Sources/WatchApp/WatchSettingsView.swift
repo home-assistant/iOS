@@ -180,9 +180,19 @@ struct WatchSettingsView: View {
                     WatchServersListView(viewModel: viewModel)
                 } label: {
                     Label {
-                        Text(verbatim: L10n.Watch.Settings.Servers.header)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(verbatim: L10n.Watch.Settings.Servers.header)
+                            if !viewModel.serversNeedingAttention.isEmpty {
+                                Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                    .font(.footnote)
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
                     } icon: {
-                        Image(systemSymbol: .network)
+                        Image(
+                            systemSymbol: viewModel.serversNeedingAttention
+                                .isEmpty ? .network : .exclamationmarkTriangleFill
+                        )
                     }
                 }
             }
@@ -198,9 +208,12 @@ struct WatchSettingsView: View {
 }
 
 /// The list of synchronized servers, pushed from the settings "Servers" row so the small settings
-/// screen stays compact. Each server opens its read-only detail.
+/// screen stays compact. Each server opens its read-only detail. A server the watch can't
+/// currently resolve a URL for gets a "Needs attention" warning row that explains the situation
+/// (no sync, no complication updates) and offers the internal-URL opt-in.
 private struct WatchServersListView: View {
     @ObservedObject var viewModel: WatchSettingsViewModel
+    @State private var attentionContext: WatchInternalURLPromptContext?
 
     var body: some View {
         List {
@@ -214,9 +227,44 @@ private struct WatchServersListView: View {
                         Image(systemSymbol: .network)
                     }
                 }
+                if viewModel.serversNeedingAttention.contains(server.identifier.rawValue) {
+                    Button {
+                        attentionContext = WatchInternalURLPromptContext(
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            internalURL: server.info.connection.internalURL
+                        )
+                    } label: {
+                        Label {
+                            Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                .font(.footnote)
+                        } icon: {
+                            Image(systemSymbol: .exclamationmarkTriangleFill)
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+                }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
+        .sheet(item: $attentionContext) { context in
+            WatchInternalURLInfoView(
+                prompt: context,
+                onUse: {
+                    attentionContext = nil
+                    WatchUserDefaults.shared.setURLOverrideRawValue(
+                        ConnectionInfo.URLType.internal.rawValue,
+                        forServerId: context.serverId
+                    )
+                    WatchServerSync.applyURLOverrides()
+                    Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
+                    viewModel.reload()
+                },
+                onNotNow: {
+                    attentionContext = nil
+                }
+            )
+        }
     }
 }
 
@@ -452,6 +500,7 @@ private struct ComplicationDiagnosticDetailView: View {
 /// Lists the client events recorded on this Watch (sync, database, lifecycle) for on-device debugging.
 private struct WatchClientEventsView: View {
     @State private var events: [ClientEvent] = []
+    @State private var showClearConfirmation = false
 
     var body: some View {
         List {
@@ -460,6 +509,43 @@ private struct WatchClientEventsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Button(role: .destructive) {
+                        showClearConfirmation = true
+                    } label: {
+                        Image(systemSymbol: .trash)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.clear))
+                    .confirmationDialog(
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.title),
+                        isPresented: $showClearConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .cancel) {} label: { Text(verbatim: L10n.cancelLabel) }
+                        Button(role: .destructive) {
+                            Current.clientEventStore.clearAllEvents()
+                            events = []
+                        } label: {
+                            Text(verbatim: L10n.yesLabel)
+                        }
+                    } message: {
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.message)
+                    }
+
+                    // Shares a zip of the client events plus the on-watch `Current.Log` files, which
+                    // are otherwise unreachable — the watch has no other way to hand them over.
+                    ShareLink(
+                        item: WatchDiagnosticsArchive(),
+                        preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
+                    ) {
+                        Image(systemSymbol: .squareAndArrowUp)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
+                }
+                .buttonStyle(.borderless)
+
                 ForEach(events, id: \.id) { event in
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                         Text(verbatim: event.text)
@@ -472,15 +558,6 @@ private struct WatchClientEventsView: View {
                         .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, DesignSystem.Spaces.half)
-                }
-
-                Section {
-                    Button(role: .destructive) {
-                        Current.clientEventStore.clearAllEvents()
-                        events = []
-                    } label: {
-                        Label(L10n.Watch.Settings.ClientEvents.clear, systemSymbol: .trash)
-                    }
                 }
             }
         }

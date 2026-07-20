@@ -35,7 +35,9 @@ public struct ModalReusableButton: View {
                     if #available(iOS 26.0, *) {
                         view
                             .padding(DesignSystem.Spaces.oneAndHalf)
+                            .frame(width: 44, height: 44)
                             .glassEffect(.clear.interactive(), in: .circle)
+                            .contentShape(Circle())
                     } else {
                         view
                     }

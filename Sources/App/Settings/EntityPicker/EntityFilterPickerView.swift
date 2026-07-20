@@ -51,7 +51,9 @@ struct EntityFilterPickerView: View {
         .padding(.vertical, DesignSystem.Spaces.half)
         .modify { view in
             if #available(iOS 26.0, *) {
-                view.glassEffect(.regular.interactive(), in: .capsule)
+                view
+                    .glassEffect(.regular.interactive(), in: .capsule)
+                    .contentShape(Capsule())
             } else {
                 view.clipShape(.capsule)
             }
@@ -89,7 +91,9 @@ struct EntityFilterPickerView: View {
         .frame(width: 150, alignment: .leading)
         .modify { view in
             if #available(iOS 26.0, *) {
-                view.glassEffect(.regular.interactive(), in: .capsule)
+                view
+                    .glassEffect(.regular.interactive(), in: .capsule)
+                    .contentShape(Capsule())
             } else {
                 view.clipShape(.capsule)
             }

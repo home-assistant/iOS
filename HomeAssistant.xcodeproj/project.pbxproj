@@ -266,6 +266,7 @@
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
+		FADE000000000000000000A5 /* HAAPI in Frameworks */ = {isa = PBXBuildFile; productRef = FADE000000000000000000A4 /* HAAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1125,10 +1126,16 @@
 				API/OnboardingAuthDetails.swift,
 				API/OnboardingAuthError.swift,
 				API/OnboardingAuthLogin.swift,
-				API/OnboardingAuthLoginViewController.swift,
+				API/OnboardingAuthLoginView.swift,
+				API/OnboardingAuthLoginViewModel.swift,
+				API/OnboardingAuthPresenter.swift,
 				API/OnboardingAuthStep.swift,
 				API/OnboardingAuthStepClientCertificate.swift,
 				API/OnboardingAuthTokenExchange.swift,
+				API/OnboardingCertificateTrustRequest.swift,
+				API/OnboardingClientCertificateRequest.swift,
+				API/OnboardingDestination.swift,
+				API/OnboardingDeviceNameRequest.swift,
 				API/Steps/OnboardingAuthStepConfig.swift,
 				API/Steps/OnboardingAuthStepConnectivity.swift,
 				API/Steps/OnboardingAuthStepDeviceNaming.swift,
@@ -1902,6 +1909,7 @@
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
+		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
@@ -2094,6 +2102,7 @@
 				DE51600000000000000000F5 /* HANetworking in Frameworks */,
 				DE51600000000000000000E5 /* HAModels in Frameworks */,
 				CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */,
+				FADE000000000000000000A5 /* HAAPI in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
@@ -2432,6 +2441,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC0C3002FBD10051FC9B /* Extensions */,
@@ -2940,6 +2950,7 @@
 				DE51600000000000000000F4 /* HANetworking */,
 				DE51600000000000000000E4 /* HAModels */,
 				CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */,
+				FADE000000000000000000A4 /* HAAPI */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
@@ -3096,6 +3107,7 @@
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC293002FBD10051FC9B /* Sensors */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
+				42F467200000000000000001 /* NotificationSender */,
 				8881A40916A3424685660E6B /* LiveActivity */,
 			);
 			name = "Tests-Shared";
@@ -3334,6 +3346,7 @@
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
 				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
+				FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
@@ -5170,6 +5183,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HANetworking;
 		};
+		FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAAPI;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -5832,6 +5849,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
+		};
+		FADE000000000000000000A4 /* HAAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FADE000000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAAPI" */;
+			productName = HAAPI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

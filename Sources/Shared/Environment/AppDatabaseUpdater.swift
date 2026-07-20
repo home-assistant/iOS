@@ -1,6 +1,9 @@
 import Foundation
 import GRDB
+import HADesignSystem
 import HAKit
+import SFSafeSymbols
+import SwiftUI
 import UIKit
 
 // MARK: - AppDatabaseUpdater
@@ -10,7 +13,7 @@ import UIKit
 /// applies per-server throttling with backoff, and performs careful cancellation and batched DB writes.
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update(server: Server, forceUpdate: Bool)
+    func update(server: Server, forceUpdate: Bool, showProgress: Bool)
 }
 
 public extension Notification.Name {
@@ -20,6 +23,23 @@ public extension Notification.Name {
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     enum UpdateError: Error {
         case noAPI
+    }
+
+    private enum DatabaseUpdatePhase {
+        case entities
+        case devices
+        case areas
+
+        var localizedDescription: String {
+            switch self {
+            case .entities:
+                return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.entities
+            case .devices:
+                return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.devices
+            case .areas:
+                return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.areas
+            }
+        }
     }
 
     // MARK: - Cancellation Helper
@@ -59,6 +79,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Mutated only within the actor, so membership always reflects the true queued-or-running set
         // (no gap between dequeue and start that a duplicate could slip through).
         private var pendingForceByServer: [String: Bool] = [:]
+        private var pendingShowProgressByServer: [String: Bool] = [:]
         private var isProcessingQueue = false
 
         func setTask(_ task: Task<Void, Never>, for serverId: String) {
@@ -74,6 +95,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             pendingForceByServer[serverId] ?? false
         }
 
+        /// Whether the server's queued/running work should surface progress (default off).
+        func effectiveShowProgress(for serverId: String) -> Bool {
+            pendingShowProgressByServer[serverId] ?? false
+        }
+
         func cancelAllTasks() {
             for (_, task) in currentUpdateTasks {
                 task.cancel()
@@ -81,13 +107,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             currentUpdateTasks.removeAll()
             updateQueue.removeAll()
             pendingForceByServer.removeAll()
+            pendingShowProgressByServer.removeAll()
             isProcessingQueue = false
         }
 
         /// Enqueues a server update task to be processed sequentially.
         /// Skips servers that already have work queued or in progress, but a forced request upgrades
         /// an existing non-forced one so the eventual run isn't throttled away.
-        func enqueueUpdate(serverId: String, forceUpdate: Bool, task: @escaping () async -> Void) {
+        func enqueueUpdate(serverId: String, forceUpdate: Bool, showProgress: Bool, task: @escaping () async -> Void) {
             if let existingForce = pendingForceByServer[serverId] {
                 if forceUpdate, !existingForce {
                     pendingForceByServer[serverId] = true
@@ -95,9 +122,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 } else {
                     Current.Log.verbose("Update for server \(serverId) already queued or running, skipping duplicate")
                 }
+                if showProgress, pendingShowProgressByServer[serverId] != true {
+                    pendingShowProgressByServer[serverId] = true
+                    Current.Log.verbose("Upgrading queued update for server \(serverId) to show progress")
+                }
                 return
             }
             pendingForceByServer[serverId] = forceUpdate
+            pendingShowProgressByServer[serverId] = showProgress
             updateQueue.append((serverId: serverId, task: task))
 
             // Start processing if not already running
@@ -118,6 +150,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 Current.Log.verbose("Processing queued update for server: \(queuedUpdate.serverId)")
                 await queuedUpdate.task()
                 pendingForceByServer.removeValue(forKey: queuedUpdate.serverId)
+                pendingShowProgressByServer.removeValue(forKey: queuedUpdate.serverId)
             }
 
             isProcessingQueue = false
@@ -198,9 +231,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// This method returns immediately and does not block the caller.
     /// - Parameter server: The specific server to update.
     /// - Parameter forceUpdate: Forces update regardless of other conditions
+    /// - Parameter showProgress: Surfaces user-friendly progress through the toast manager. Only manual
+    ///   (user-triggered) refreshes pass `true`; automatic background updates stay silent.
     /// - Server updates are queued and processed sequentially, one at a time.
     /// - Applies per-server throttling with exponential backoff on failures.
-    func update(server: Server, forceUpdate: Bool) {
+    func update(server: Server, forceUpdate: Bool, showProgress: Bool) {
         // Explicitly detach from the calling context to ensure we don't block the main thread
         // Returns immediately while work continues in the background
         Task.detached(priority: .userInitiated) { [weak self] in
@@ -209,7 +244,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             let serverId = server.identifier.rawValue
 
             // Enqueue the update to be processed sequentially
-            await taskCoordinator.enqueueUpdate(serverId: serverId, forceUpdate: forceUpdate) { [weak self] in
+            await taskCoordinator.enqueueUpdate(
+                serverId: serverId,
+                forceUpdate: forceUpdate,
+                showProgress: showProgress
+            ) { [weak self] in
                 guard let self else { return }
 
                 Current.Log.verbose("Updating database for server \(server.info.name)")
@@ -266,6 +305,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Read the effective force as late as possible — immediately before the throttle decision —
         // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
         let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
+        let showProgress = await taskCoordinator.effectiveShowProgress(for: server.identifier.rawValue)
         guard await shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
@@ -274,7 +314,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // `nil` means the update was cancelled (e.g. app backgrounded); skip tracking entirely so
         // cancellation isn't recorded as a failure (which would add a spurious backoff penalty, and
         // could re-add a failure count that `stop()` just cleared).
-        guard let success = await safeUpdateServer(server: server) else { return }
+        guard let success = await safeUpdateServer(server: server, showProgress: showProgress) else { return }
         updateServerTracking(serverId: server.identifier.rawValue, success: success)
     }
 
@@ -294,9 +334,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Returns `nil` if the update was cancelled, otherwise whether it succeeded — letting the
     /// scheduler apply backoff on failures and update last-run times on success without treating
     /// cancellation as either.
-    private func safeUpdateServer(server: Server) async -> Bool? {
+    private func safeUpdateServer(server: Server, showProgress: Bool) async -> Bool? {
         if isUpdateCancelled() { return nil }
-        await updateServer(server: server)
+        await updateServer(server: server, showProgress: showProgress)
         if isUpdateCancelled() { return nil }
         return true
     }
@@ -315,13 +355,21 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// `list_for_display` registry and bakes it into `HAAppEntity.name`, so readers can use `name`
     /// directly without a per-entity registry lookup. The `/states` fetch itself still happens first
     /// (Step 1); only the database write is deferred.
-    private func updateServer(server: Server) async {
+    private func updateServer(server: Server, showProgress: Bool) async {
         guard !isUpdateCancelled() else { return }
+
+        var didFinish = false
+        defer {
+            if !didFinish {
+                hideProgressToast(server: server, showProgress: showProgress)
+            }
+        }
 
         let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
 
         // Step 1: Fetch entity states (`/states`). Persistence is deferred to Step 3 (after the
         // registry is saved) so display names can be resolved from `list_for_display`.
+        await presentProgressToast(.entities, server: server, showProgress: showProgress)
         let fetchedEntities: [HAEntity]?
         do {
             let timer = ProfilingTimer("Step 1 (Entities fetch)")
@@ -350,6 +398,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         if isUpdateCancelled() { return }
 
         // Step 4: Devices registry
+        await presentProgressToast(.devices, server: server, showProgress: showProgress)
         do {
             let timer = ProfilingTimer("Step 4 (Devices Registry)")
             await updateDevicesRegistry(server: server)
@@ -360,6 +409,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
+        await presentProgressToast(.areas, server: server, showProgress: showProgress)
         do {
             let timer = ProfilingTimer("Step 5 (Areas)")
             await updateAreasDatabase(server: server)
@@ -368,7 +418,49 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         totalTimer.end()
         Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
+        await presentFinishedToast(server: server, showProgress: showProgress)
+        didFinish = true
         NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: server)
+    }
+
+    // MARK: - Progress Toast
+
+    private static func progressToastID(serverId: String) -> String {
+        "app-database-update-\(serverId)"
+    }
+
+    @MainActor
+    private func presentProgressToast(_ phase: DatabaseUpdatePhase, server: Server, showProgress: Bool) {
+        guard showProgress, #available(iOS 18, *) else { return }
+        ToastPresenter.shared.show(
+            id: Self.progressToastID(serverId: server.identifier.rawValue),
+            symbol: .arrowClockwise,
+            symbolForegroundStyle: (.white, .haPrimary),
+            title: server.info.name,
+            message: phase.localizedDescription
+        )
+    }
+
+    @MainActor
+    private func presentFinishedToast(server: Server, showProgress: Bool) {
+        guard showProgress, #available(iOS 18, *) else { return }
+        ToastPresenter.shared.show(
+            id: Self.progressToastID(serverId: server.identifier.rawValue),
+            symbol: .checkmarkSealFill,
+            symbolForegroundStyle: (.white, .green),
+            title: server.info.name,
+            message: L10n.Settings.ConnectionSection.UpdateDatabase.finished,
+            duration: 4
+        )
+    }
+
+    private func hideProgressToast(server: Server, showProgress: Bool) {
+        guard showProgress else { return }
+        let id = Self.progressToastID(serverId: server.identifier.rawValue)
+        Task { @MainActor in
+            guard #available(iOS 18, *) else { return }
+            ToastPresenter.shared.hide(id: id)
+        }
     }
 
     /// Sends a typed request for `server` and returns the decoded payload, or `nil` on cancellation,

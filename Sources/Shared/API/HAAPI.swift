@@ -193,24 +193,36 @@ public class HomeAssistantAPI {
         return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
     }
 
-    public static func apiAvailabilityCheck(for server: Server, timeout: TimeInterval = 5) async -> Bool {
-        var connectionInfo = server.info.connection
-        guard let baseURL = await connectionInfo.activeURL() else {
-            return false
+    /// Callback-based on purpose (its only caller is the watch's magic item execution): watchOS
+    /// gives the Swift-concurrency cooperative pool a single thread, and a starved pool would keep
+    /// an async check from ever running. The URL is evaluated from the last-known network state,
+    /// which is always current on watchOS.
+    public static func apiAvailabilityCheck(
+        for server: Server,
+        timeout: TimeInterval = 5,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let baseURL = server.activeURLUsingLastKnownNetworkState() else {
+            completion(false)
+            return
         }
 
         var request = URLRequest(url: baseURL.appendingPathComponent("api"))
         request.timeoutInterval = timeout
 
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-        defer { session.finishTasksAndInvalidate() }
-        do {
-            let (_, response) = try await session.data(for: request)
-            return response is HTTPURLResponse
-        } catch {
-            Current.Log.info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
-            return false
+        let task = session.dataTask(with: request) { [session] _, response, error in
+            // The session strongly retains its delegate until invalidated; do it once the task ends.
+            defer { session.finishTasksAndInvalidate() }
+            if let error {
+                Current.Log
+                    .info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+            completion(response is HTTPURLResponse)
         }
+        task.resume()
     }
 
     convenience init?() {
@@ -644,7 +656,7 @@ public class HomeAssistantAPI {
                 if #available(iOS 17.2, *) {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
-                    if Current.isTestFlight, let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
+                    if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
                         appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
                     }
                 }

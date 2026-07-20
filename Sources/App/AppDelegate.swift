@@ -120,10 +120,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         BackgroundRefreshManager.register()
         BackgroundRefreshManager.scheduleAppRefresh()
+        RemindersSyncBackgroundRefresher.register()
+        RemindersSyncBackgroundRefresher.schedule()
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
+        RemindersSyncManager.shared.start()
 
         return true
     }
@@ -469,6 +472,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func migrateIfNeeded() {
         resetLocalPush()
+        resetShakeGesture()
+    }
+
+    /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.
+    private func resetShakeGesture() {
+        if !Current.settingsStore.migratedShakeGestureToNone {
+            var gestures = Current.settingsStore.gestures
+            if gestures[.shake] == .openDebug {
+                gestures[.shake] = HAGestureAction.none
+                Current.settingsStore.gestures = gestures
+                Current.Log.info("Reset shake gesture from open debug to none due to migration")
+            }
+            Current.settingsStore.migratedShakeGestureToNone = true
+        }
     }
 
     /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it

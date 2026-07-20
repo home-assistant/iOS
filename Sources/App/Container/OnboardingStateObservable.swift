@@ -2,15 +2,12 @@ import Combine
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 enum RecoveredServerReauthenticationError: LocalizedError {
-    case missingPresenter
     case cancelled
 
     var errorDescription: String? {
         switch self {
-        case .missingPresenter: return L10n.Onboarding.ServerImport.Reauthenticate.errorsMissingPresenter
         case .cancelled: return L10n.Onboarding.ServerImport.Reauthenticate.errorsCancelled
         }
     }
@@ -23,7 +20,9 @@ enum RecoveredServerReauthenticationError: LocalizedError {
 final class OnboardingStateObservable: ObservableObject {
     enum Screen: Equatable {
         case onboarding(OnboardingStyle)
-        case webView(Server)
+        /// `initialPath` restores the last viewed path on cold launch only; in-session server switches
+        /// pass `nil` so switching never yanks the web view back to the launch path.
+        case webView(Server, initialPath: String?)
         case recoveredServerImport
         case recoveredServerReauth(Server)
     }
@@ -40,7 +39,7 @@ final class OnboardingStateObservable: ObservableObject {
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.
     func showWebView(for server: Server) {
-        screen = .webView(server)
+        screen = .webView(server, initialPath: nil)
     }
 
     /// A change to the kiosk server requires a different web view (rebuilt by `ContainerView` via the
@@ -77,7 +76,9 @@ final class OnboardingStateObservable: ObservableObject {
     }
 
     private var currentServer: Server? {
-        if case let .webView(server) = screen { return server }
+        if case let .webView(server, _) = screen {
+            return server
+        }
         return nil
     }
 
@@ -108,11 +109,12 @@ final class OnboardingStateObservable: ObservableObject {
     }
 
     /// Re-authenticates a server recovered from a keychain-mirror restore, then shows its web view.
-    /// Moved from `WebViewWindowController`; `presenter` comes from the re-auth screen's hosting controller.
+    /// Moved from `WebViewWindowController`; `login` is provided by the re-auth screen, which presents
+    /// the login web view and resolves with its OAuth result.
     func performRecoveredServerReauthentication(
         for server: Server,
         using urlType: ConnectionInfo.URLType,
-        presenter: UIViewController?,
+        login: (OnboardingAuthDetails) -> Promise<OnboardingAuthLoginResult>,
         completion: @escaping (Swift.Result<Void, Error>) -> Void
     ) {
         let connectionInfo = server.info.connection
@@ -120,17 +122,12 @@ final class OnboardingStateObservable: ObservableObject {
             completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
             return
         }
-        guard let presenter else {
-            completion(.failure(RecoveredServerReauthenticationError.missingPresenter))
-            return
-        }
         do {
             let authDetails = try OnboardingAuthDetails(baseURL: baseURL)
             authDetails.exceptions = connectionInfo.securityExceptions
             authDetails.clientCertificate = connectionInfo.clientCertificate
-            let login = OnboardingAuthLoginImpl()
             firstly {
-                login.open(authDetails: authDetails, sender: presenter)
+                login(authDetails)
             }.then { result -> Promise<(URL?, TokenInfo)> in
                 let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
                 return AuthenticationAPI.fetchToken(
@@ -163,8 +160,8 @@ final class OnboardingStateObservable: ObservableObject {
         }
     }
 
-    /// Mirrors `WebViewWindowController.setup()`: onboarding when required, otherwise the first server's
-    /// web view.
+    /// Mirrors `WebViewWindowController.setup()`: onboarding when required, otherwise the last viewed
+    /// server's web view (restoring its last path).
     private static func initialScreen() -> Screen {
         if Current.servers.isMirrorRestorePending {
             return .recoveredServerImport
@@ -176,19 +173,36 @@ final class OnboardingStateObservable: ObservableObject {
             return .onboarding(style)
         }
         if let server = preferredInitialServer() {
-            return .webView(server)
+            return .webView(server, initialPath: restoredInitialPath(for: server))
         }
         return .onboarding(.initial)
     }
 
     /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, otherwise the
-    /// first registered server.
-    private static func preferredInitialServer() -> Server? {
+    /// last server the user was viewing, falling back to the first registered server. Non-private for tests.
+    static func preferredInitialServer() -> Server? {
         let kiosk = Current.kioskSettings
         if kiosk.enabled, let server = Current.servers.server(forServerIdentifier: kiosk.serverId) {
             return server
         }
+        if let identifier = Current.settingsStore.lastActiveServerIdentifier,
+           let server = Current.servers.server(forServerIdentifier: identifier) {
+            return server
+        }
         return Current.servers.all.first
+    }
+
+    /// The path to restore into the launch web view, or `nil` to load the server default. Gated by the
+    /// "Remember Last Page" setting and only applied when the launch server is the one that was persisted,
+    /// so a fallback to the first server (e.g. after the saved server was removed) never inherits a stale
+    /// path. Only the path is stored; the base URL is re-resolved at load time from current connectivity.
+    /// Non-private for tests.
+    static func restoredInitialPath(for server: Server) -> String? {
+        guard Current.settingsStore.restoreLastURL,
+              Current.settingsStore.lastActiveServerIdentifier == server.identifier.rawValue else {
+            return nil
+        }
+        return Current.settingsStore.lastActiveURLPath
     }
 
     /// The server shown at launch (preferring one that doesn't need re-auth), if it requires re-auth after a
@@ -208,7 +222,7 @@ final class OnboardingStateObservable: ObservableObject {
                 // A server was removed / logged out. Fall back to another server if one remains,
                 // otherwise restart onboarding. Mirrors `WebViewWindowController.onboardingStateDidChange`.
                 if let server = Current.servers.all.first {
-                    screen = .webView(server)
+                    screen = .webView(server, initialPath: nil)
                 } else {
                     screen = .onboarding(.initial)
                 }
@@ -219,7 +233,7 @@ final class OnboardingStateObservable: ObservableObject {
             }
         case .complete:
             if let server = Current.servers.all.first {
-                screen = .webView(server)
+                screen = .webView(server, initialPath: nil)
             }
         case .didConnect:
             // Connection established mid-onboarding; the `.complete` transition drives the screen swap.
@@ -229,8 +243,8 @@ final class OnboardingStateObservable: ObservableObject {
 }
 
 extension OnboardingStateObservable: OnboardingStateObserver {
-    // `OnboardingStateObservation` may notify from a non-main thread, so hop to the main actor before
-    // mutating the published `screen`.
+    /// `OnboardingStateObservation` may notify from a non-main thread, so hop to the main actor before
+    /// mutating the published `screen`.
     nonisolated func onboardingStateDidChange(to state: OnboardingState) {
         Task { @MainActor [weak self] in
             self?.apply(state)

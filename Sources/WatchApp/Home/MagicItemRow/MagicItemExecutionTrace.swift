@@ -10,6 +10,17 @@ final class MagicItemExecutionTrace: ObservableObject {
         case info
         case success
         case error
+
+        var clientEventValue: String {
+            switch self {
+            case .info:
+                return "info"
+            case .success:
+                return "success"
+            case .error:
+                return "error"
+            }
+        }
     }
 
     struct Entry: Identifiable {
@@ -23,18 +34,40 @@ final class MagicItemExecutionTrace: ObservableObject {
     /// True once the execution reported a terminal result. Entries may still arrive after this (e.g.
     /// a late reply following the UI timeout) and are appended normally.
     @Published private(set) var isFinished = false
+    /// The most recent entry describing execution progress. Timeout/watchdog entries are logged with
+    /// `isProgress: false` so they can report how far the execution got without counting themselves.
+    /// Main-thread only, like `entries`.
+    private(set) var lastProgressMessage: String?
 
+    private let recordsClientEvents: Bool
     private let startDate = Current.date()
+
+    init(recordsClientEvents: Bool = true) {
+        self.recordsClientEvents = recordsClientEvents
+    }
 
     /// Seconds since the trace started, shown alongside each entry.
     func elapsed(for entry: Entry) -> String {
         String(format: "+%.2fs", entry.date.timeIntervalSince(startDate))
     }
 
-    func log(_ level: Level, _ message: String) {
+    func log(_ level: Level, _ message: String, isProgress: Bool = true) {
         Current.Log.info("[ItemExecutionTrace] \(message)")
+        if recordsClientEvents {
+            Current.clientEventStore.addEvent(.init(
+                text: message,
+                type: .serviceCall,
+                payload: [
+                    "source": "watch_magic_item_verbose_execution",
+                    "level": level.clientEventValue,
+                ]
+            ))
+        }
         DispatchQueue.main.async { [weak self] in
             self?.entries.append(.init(date: Current.date(), level: level, message: message))
+            if isProgress {
+                self?.lastProgressMessage = message
+            }
         }
     }
 

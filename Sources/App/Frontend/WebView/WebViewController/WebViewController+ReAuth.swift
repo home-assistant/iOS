@@ -1,5 +1,6 @@
 import PromiseKit
 import Shared
+import SwiftUI
 import UIKit
 
 extension WebViewController {
@@ -17,10 +18,21 @@ extension WebViewController {
             authDetails.exceptions = connectionInfo.securityExceptions
             authDetails.clientCertificate = connectionInfo.clientCertificate
 
-            let login = OnboardingAuthLoginImpl()
+            let loginViewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
+            let loginController = UIHostingController(
+                rootView: OnboardingAuthLoginView(viewModel: loginViewModel, style: .modal)
+            )
+            loginController.isModalInPresentation = true
+            present(loginController, animated: true)
 
             firstly {
-                login.open(authDetails: authDetails, sender: self)
+                loginViewModel.resultPromise
+            }.ensureThen {
+                Guarantee { seal in
+                    loginController.dismiss(animated: true) {
+                        seal(())
+                    }
+                }
             }.then { result -> Promise<(URL?, TokenInfo)> in
                 // The login web view may have been redirected to a different port/scheme; re-authenticate
                 // against the address it actually ended on, and remember it to update the stored URL.

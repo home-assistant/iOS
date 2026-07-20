@@ -68,6 +68,17 @@
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "HAAPITests"
+               BuildableName = "HAAPITests"
+               BlueprintName = "HAAPITests"
+               ReferencedContainer = "container:Sources/HAAPI">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

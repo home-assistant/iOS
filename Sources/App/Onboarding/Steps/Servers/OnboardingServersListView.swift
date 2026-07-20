@@ -18,32 +18,22 @@ struct OnboardingServersListView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @EnvironmentObject var hostingProvider: ViewControllerProvider
 
     @StateObject private var viewModel: OnboardingServersListViewModel
+    /// Owned by `OnboardingNavigationView`; the auth flow pushes its pages onto its navigation path.
+    @ObservedObject private var presenter: OnboardingAuthPresenter
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
+    /// Connection typed in the manual entry sheet; the flow starts in the sheet's `onDismiss` so the
+    /// auth steps never present UI (e.g. the mTLS certificate prompt) while the sheet is still
+    /// animating out — a conflicting presentation gets torn down and reads as a user cancellation.
+    @State private var pendingManualURL: URL?
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
     @State private var rejectedInvitation = false
-
-    private var presentingViewController: UIViewController {
-        if let providedController = hostingProvider.viewController, Current.isCatalyst {
-            return providedController
-        } else if let hostingViewController = hostingProvider.viewController {
-            switch onboardingStyle {
-            case .initial, .required:
-                return hostingViewController
-            case .secondary:
-                return hostingViewController.presentedViewController ?? hostingViewController
-            }
-        } else {
-            fatalError("No controller provided for onboarding")
-        }
-    }
 
     private let prefillURL: URL?
     private let onboardingStyle: OnboardingStyle
@@ -56,12 +46,18 @@ struct OnboardingServersListView: View {
         invitationURL != nil && !rejectedInvitation
     }
 
-    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false, onboardingStyle: OnboardingStyle) {
+    init(
+        prefillURL: URL? = nil,
+        shouldDismissOnSuccess: Bool = false,
+        onboardingStyle: OnboardingStyle,
+        presenter: OnboardingAuthPresenter
+    ) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
             .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
         self.onboardingStyle = onboardingStyle
+        self.presenter = presenter
     }
 
     var body: some View {
@@ -113,38 +109,19 @@ struct OnboardingServersListView: View {
                     minHeight: Constants.MacSheetSize.errorDetailsMinHeight
                 )
         }
-        .sheet(isPresented: $showManualInput) {
+        .sheet(isPresented: $showManualInput, onDismiss: {
+            if let connectURL = pendingManualURL {
+                pendingManualURL = nil
+                viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
+            }
+        }) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL), presentingController: presentingViewController)
+                pendingManualURL = connectURL
             }
             .macOnboardingSheetFrame(
                 minWidth: Constants.MacSheetSize.manualInputMinWidth,
                 minHeight: Constants.MacSheetSize.manualInputMinHeight
-            )
-        }
-        .fullScreenCover(isPresented: .init(get: {
-            viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
-        }, set: { newValue in
-            viewModel.showPermissionsFlow = newValue
-        }), onDismiss: {
-            if viewModel.permissionsFlowCompleted {
-                viewModel.permissionsFlowCompleted = false
-                Current.onboardingObservation.complete()
-            }
-        }) {
-            // isPresented guarantees onboardingServer
-            // swiftlint:disable:next force_unwrapping
-            OnboardingPermissionsNavigationView(
-                onboardingServer: viewModel.onboardingServer!,
-                onDismiss: {
-                    if onboardingStyle == .secondary {
-                        viewModel.permissionsFlowCompleted = true
-                        viewModel.showPermissionsFlow = false
-                    } else {
-                        Current.onboardingObservation.complete()
-                    }
-                }
             )
         }
     }
@@ -191,7 +168,7 @@ struct OnboardingServersListView: View {
             Button {
                 autoConnectInstance = nil
                 guard let instance else { return }
-                viewModel.selectInstance(instance, presentingController: presentingViewController)
+                viewModel.selectInstance(instance, presenter: presenter)
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -224,7 +201,17 @@ struct OnboardingServersListView: View {
         }
     }
 
+    @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
+        // Cancel for the add-server sheet lives here (not on the onboarding container) so it isn't
+        // shown on top of the auth flow's pages, which bring their own chrome.
+        if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(L10n.cancelLabel) {
+                    dismiss()
+                }
+            }
+        }
         ToolbarItem(placement: .topBarTrailing) {
             if prefillURL != nil {
                 CloseButton {
@@ -291,6 +278,10 @@ struct OnboardingServersListView: View {
         if !screenLoaded {
             screenLoaded = true
             startDiscoveryIfNeeded()
+        } else if !shouldShowInvitation {
+            // Reappearing after an auth flow page above was popped — being covered stopped
+            // discovery, so resume it without clearing what was already found.
+            viewModel.resumeDiscovery()
         }
     }
 
@@ -315,7 +306,7 @@ struct OnboardingServersListView: View {
 
     private func acceptInvitation(url: URL) {
         viewModel.invitationLoading = true
-        viewModel.selectInstance(.init(manualURL: url), presentingController: presentingViewController)
+        viewModel.selectInstance(.init(manualURL: url), presenter: presenter)
     }
 
     private func rejectInvitation() {
@@ -376,7 +367,7 @@ struct OnboardingServersListView: View {
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
         Button(action: {
-            viewModel.selectInstance(instance, presentingController: presentingViewController)
+            viewModel.selectInstance(instance, presenter: presenter)
         }, label: {
             OnboardingScanningInstanceRow(
                 name: instance.bonjourName ?? instance.locationName,
@@ -426,7 +417,11 @@ struct OnboardingServersListView: View {
 }
 
 #Preview {
-    NavigationView {
-        OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
+    NavigationStack {
+        OnboardingServersListView(
+            prefillURL: nil,
+            onboardingStyle: .secondary,
+            presenter: OnboardingAuthPresenter()
+        )
     }
 }

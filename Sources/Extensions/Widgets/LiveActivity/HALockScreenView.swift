@@ -99,15 +99,15 @@ struct HALockScreenView: View {
 
     @ViewBuilder
     private var trailingValue: some View {
-        if let fraction = state.progressFraction {
-            Text(HAActivityVisualStyle.percentString(for: fraction))
-                .font(.headline.monospacedDigit())
+        if let critical = state.criticalText {
+            Text(critical)
+                .font(.headline)
                 .foregroundStyle(primaryTextColor)
                 .lineLimit(1)
                 .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
-        } else if let critical = state.criticalText {
-            Text(critical)
-                .font(.headline)
+        } else if let fraction = state.progressFraction {
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.headline.monospacedDigit())
                 .foregroundStyle(primaryTextColor)
                 .lineLimit(1)
                 .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)

@@ -19,6 +19,7 @@ public struct PillView: View {
                 if #available(iOS 26.0, *) {
                     view
                         .glassEffect(.clear.interactive().tint(selected ? Color.haPrimary : nil), in: .capsule)
+                        .contentShape(Capsule())
                 } else {
                     view
                         .background(selected ? Color.haPrimary : Color.secondary.opacity(0.1))

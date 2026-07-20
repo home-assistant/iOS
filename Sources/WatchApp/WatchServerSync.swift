@@ -76,6 +76,9 @@ enum WatchServerSync {
         WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
         Current.servers.restoreState(data)
         applyURLOverrides()
+        // A newly added server should populate its reference data (entities, areas, pipelines)
+        // right away instead of waiting for the next foreground. Throttled internally.
+        Task { await Current.watchDirectDatabaseSync.syncAll(force: false) }
     }
 
     /// Re-apply each server's watch-local "Always use" URL choice. `ConnectionInfo` is overwritten on

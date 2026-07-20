@@ -560,26 +560,27 @@ public extension MagicItem {
             return
         }
 
-        Task {
-            guard let baseURL = await server.activeURL() else {
-                Current.Log.error("No active URL while executing magic item \(id) on watch")
-                completion(false, ServerConnectionError.noActiveURL(server.info.name))
-                return
-            }
+        // No Swift concurrency on this path: watchOS gives the cooperative pool a single thread,
+        // and a starved pool left taps hanging before the request ever started. The synchronous
+        // URL evaluation is equivalent — on watchOS the last-known network state is always current.
+        guard let baseURL = server.activeURLUsingLastKnownNetworkState() else {
+            Current.Log.error("No active URL while executing magic item \(id) on watch")
+            completion(false, ServerConnectionError.noActiveURL(server.info.name))
+            return
+        }
 
-            let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
-            tokenManager.bearerToken.done { token, _ in
-                self.sendRESTServiceCall(
-                    baseURL: baseURL,
-                    server: server,
-                    token: token,
-                    serviceCall: serviceCall,
-                    completion: completion
-                )
-            }.catch { error in
-                Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
-                completion(false, error)
-            }
+        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        tokenManager.bearerToken.done { token, _ in
+            self.sendRESTServiceCall(
+                baseURL: baseURL,
+                server: server,
+                token: token,
+                serviceCall: serviceCall,
+                completion: completion
+            )
+        }.catch { error in
+            Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
+            completion(false, error)
         }
     }
 

@@ -40,6 +40,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published private(set) var itemInfo: MagicItem.Info
 
     private var timeoutWorkItem: DispatchWorkItem?
+    private var watchdogWorkItem: DispatchWorkItem?
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
@@ -182,8 +183,26 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         startTimeoutTimerWhichResetsState(completion: completion)
-        Task { [weak self] in
-            await self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+        // The execution runs on GCD, not Swift concurrency: watchOS gives the cooperative pool a
+        // single thread, and a starved pool (seen on hardware) meant the old `Task`-based execution
+        // never even started. Every step of this path is synchronous or callback-based.
+        startConcurrencyPoolCanary()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.trace?.log(.info, "Execution started")
+            self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+        }
+    }
+
+    /// Verbose-trace diagnostic for the failure mode that used to swallow executions: schedules a
+    /// no-op `Task` and records how long the cooperative pool took to run it. The execution itself
+    /// no longer depends on the pool, so a starved pool shows up here as a late (or missing)
+    /// canary entry instead of a hang.
+    private func startConcurrencyPoolCanary() {
+        guard let trace else { return }
+        let scheduled = Current.date()
+        Task {
+            let elapsed = String(format: "%.2fs", Current.date().timeIntervalSince(scheduled))
+            trace.log(.info, "Swift-concurrency pool canary ran after \(elapsed)", isProgress: false)
         }
     }
 
@@ -195,48 +214,64 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         magicItem: MagicItem,
         timeTriggered: Date,
         completion: @escaping (MagicItemResponse) -> Void
-    ) async {
+    ) {
         let target = WatchUserDefaults.shared.effectivePerformActionTarget
-        await logExecutionContext(magicItem: magicItem, target: target)
+        logExecutionContext(magicItem: magicItem, target: target)
         switch target {
         case .iPhone:
             executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .appleWatch:
-            await Current.connectivity.refreshNetworkInformation()
             executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .auto:
+            guard let server = Current.servers.all
+                .first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
+                Current.Log.info("Auto: server not synced to the watch, relaying via iPhone")
+                trace?.log(.error, "Server \(magicItem.serverId) not synced to the watch — relaying via iPhone")
+                executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+                return
+            }
             trace?.log(.info, "Pinging Home Assistant directly from the watch…")
             let pingStarted = Current.date()
-            if let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }),
-               await HomeAssistantAPI.apiAvailabilityCheck(for: server) {
-                Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")
-                trace?.log(.success, "Reached Home Assistant in \(elapsedText(since: pingStarted))")
-                executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
-            } else {
-                Current.Log.info("Auto: Watch cannot reach Home Assistant directly, relaying via iPhone")
-                trace?.log(
-                    .error,
-                    "No direct answer after \(elapsedText(since: pingStarted)) — relaying via iPhone"
-                )
-                executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+            HomeAssistantAPI.apiAvailabilityCheck(for: server) { [weak self] available in
+                guard let self else { return }
+                if available {
+                    Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")
+                    trace?.log(.success, "Reached Home Assistant in \(elapsedText(since: pingStarted))")
+                    executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+                } else {
+                    Current.Log.info("Auto: Watch cannot reach Home Assistant directly, relaying via iPhone")
+                    trace?.log(
+                        .error,
+                        "No direct answer after \(elapsedText(since: pingStarted)) — relaying via iPhone"
+                    )
+                    executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+                }
             }
         }
     }
 
     /// Snapshot of everything relevant to routing, recorded at the start of a verbose trace.
-    private func logExecutionContext(magicItem: MagicItem, target: WatchActionTarget) async {
+    /// Each potentially blocking call (server list resolution) is announced before it runs, so a
+    /// hang pinpoints itself: the last entry in the trace names the step that never returned.
+    private func logExecutionContext(magicItem: MagicItem, target: WatchActionTarget) {
         guard let trace else { return }
-        let serverName = Current.servers.all
-            .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
-            ?? "unknown (id \(magicItem.serverId))"
-        trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on \"\(serverName)\"")
+        trace.log(.info, "Running \(magicItem.id) (\(magicItem.type.rawValue)) on server id \(magicItem.serverId)")
         if WatchUserDefaults.shared.allowChoosingMagicItemRoute {
             trace.log(.info, "Route preference (developer): \(target.rawValue)")
         } else {
             trace.log(.info, "Route: auto")
         }
         trace.log(.info, "iPhone reachability: \(Communicator.shared.currentReachability)")
-        if let ssid = await Current.connectivity.currentWiFiSSID() {
+        // Resolving the server name reads the ServerManager cache, which can block on its lock (held
+        // during Keychain writes by server sync) or on cold Keychain/GRDB reads.
+        trace.log(.info, "Resolving server name…")
+        let serverName = Current.servers.all
+            .first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
+            ?? "unknown (id \(magicItem.serverId))"
+        trace.log(.info, "Server: \"\(serverName)\"")
+        // The last-known state is read synchronously — the watch has no network info of its own,
+        // so this is always current (and the SSID always empty) on watchOS.
+        if let ssid = Current.connectivity.lastKnownNetworkState().ssid {
             trace.log(.info, "Watch Wi-Fi: \(ssid)")
         } else {
             trace.log(.info, "No Wi-Fi on watch (traffic may proxy via iPhone or LTE)")
@@ -295,18 +330,41 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {
         timeoutWorkItem?.cancel()
+        watchdogWorkItem?.cancel()
 
         timeoutWorkItem = DispatchWorkItem { [weak self] in
-            self?.trace?.log(.info, "Still waiting after 4s — row resets while execution continues")
+            guard let self else { return }
+            let lastStep = trace?.lastProgressMessage ?? "execution never started"
+            trace?.log(
+                .info,
+                "Still waiting after 4s — row resets while execution continues (last step: \(lastStep))",
+                isProgress: false
+            )
             completion(.tookLonger)
+        }
+
+        // Second, later checkpoint: if the execution is still silent well past the UI timeout it is
+        // most likely stuck (not just slow), so leave a trace of the step it never came back from.
+        watchdogWorkItem = DispatchWorkItem { [weak self] in
+            guard let self, let trace else { return }
+            let lastStep = trace.lastProgressMessage ?? "execution never started"
+            trace.log(
+                .error,
+                "Still no result after 15s — execution appears stuck (last step: \(lastStep))",
+                isProgress: false
+            )
         }
 
         if let workItem = timeoutWorkItem {
             DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: workItem)
         }
+        if let workItem = watchdogWorkItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: workItem)
+        }
     }
 
     private func cancelTimeout() {
         timeoutWorkItem?.cancel()
+        watchdogWorkItem?.cancel()
     }
 }

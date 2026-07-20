@@ -464,7 +464,7 @@ class OnboardingAuthTests: XCTestCase {
             expectedCode: internalLoginResult.value?.code ?? externalLoginResult.value?.code
         )
 
-        return auth.authenticate(to: instance, sender: UIViewController())
+        return auth.authenticate(to: instance, presenter: OnboardingAuthPresenter())
     }
 }
 
@@ -488,7 +488,10 @@ protocol FakeAuthStepResultable {
 }
 
 class FakeOnboardingAuthLogin: OnboardingAuthLogin {
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult> {
+    func open(
+        authDetails: OnboardingAuthDetails,
+        presenter: OnboardingAuthPresenter
+    ) -> Promise<OnboardingAuthLoginResult> {
         let expected = expectedDetails.removeFirst()
         XCTAssertEqual(authDetails, expected)
         return results.removeFirst()
@@ -515,10 +518,10 @@ struct FakeOnboardingAuthTokenExchange: OnboardingAuthTokenExchange {
 
 class FakeOnboardingAuthPreStep: OnboardingAuthPreStep {
     var authDetails: OnboardingAuthDetails
-    var sender: UIViewController
-    required init(authDetails: OnboardingAuthDetails, sender: UIViewController) {
+    var presenter: OnboardingAuthPresenter
+    required init(authDetails: OnboardingAuthDetails, presenter: OnboardingAuthPresenter) {
         self.authDetails = authDetails
-        self.sender = sender
+        self.presenter = presenter
     }
 
     class var supportedPoints: Set<OnboardingAuthStepPoint> { fatalError() }
@@ -560,10 +563,10 @@ class FakeOnboardingAuthPostStep: OnboardingAuthPostStep {
     class var supportedPoints: Set<OnboardingAuthStepPoint> { fatalError() }
 
     var api: HomeAssistantAPI
-    var sender: UIViewController
-    required init(api: HomeAssistantAPI, sender: UIViewController) {
+    var presenter: OnboardingAuthPresenter
+    required init(api: HomeAssistantAPI, presenter: OnboardingAuthPresenter) {
         self.api = api
-        self.sender = sender
+        self.presenter = presenter
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { fatalError() }

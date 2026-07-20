@@ -3598,6 +3598,145 @@ public enum L10n {
     }
   }
 
+  public enum RemindersSync {
+    public enum Add {
+      /// Sync direction
+      public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
+      /// These lists are already being synced.
+      public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
+      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.
+      public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
+      /// Lists to sync
+      public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
+      /// Apple Reminders list
+      public static var remindersList: String { return L10n.tr("Localizable", "reminders_sync.add.reminders_list") }
+      /// Server
+      public static var server: String { return L10n.tr("Localizable", "reminders_sync.add.server") }
+      /// New List Sync
+      public static var title: String { return L10n.tr("Localizable", "reminders_sync.add.title") }
+      /// Home Assistant to-do list
+      public static var todoList: String { return L10n.tr("Localizable", "reminders_sync.add.todo_list") }
+      public enum DirectionFooter {
+        /// Changes in either list are applied to the other. If the same item changes in both apps, the Conflicts setting chooses which side is kept.
+        public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.both_ways") }
+        /// Apple Reminders is the source of truth. Its items and changes overwrite the Home Assistant list. Items that only exist in Home Assistant are left alone.
+        public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_home_assistant") }
+        /// Home Assistant is the source of truth. Its items and changes overwrite the Apple Reminders list. Items that only exist in Reminders are left alone.
+        public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_reminders") }
+      }
+    }
+    public enum Conflict {
+      /// Home Assistant
+      public static var homeAssistant: String { return L10n.tr("Localizable", "reminders_sync.conflict.home_assistant") }
+      /// Apple Reminders
+      public static var reminders: String { return L10n.tr("Localizable", "reminders_sync.conflict.reminders") }
+    }
+    public enum Direction {
+      /// Two-way
+      public static var bothWays: String { return L10n.tr("Localizable", "reminders_sync.direction.both_ways") }
+      /// Reminders → Home Assistant
+      public static var toHomeAssistant: String { return L10n.tr("Localizable", "reminders_sync.direction.to_home_assistant") }
+      /// Home Assistant → Reminders
+      public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.direction.to_reminders") }
+    }
+    public enum History {
+      /// Clear
+      public static var clear: String { return L10n.tr("Localizable", "reminders_sync.history.clear") }
+      /// Syncs that change something will appear here.
+      public static var empty: String { return L10n.tr("Localizable", "reminders_sync.history.empty") }
+      /// Sync history
+      public static var title: String { return L10n.tr("Localizable", "reminders_sync.history.title") }
+      public enum ClearConfirm {
+        /// Clear History
+        public static var button: String { return L10n.tr("Localizable", "reminders_sync.history.clear_confirm.button") }
+        /// Clear all sync history? This can’t be undone.
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.history.clear_confirm.title") }
+      }
+      public enum Detail {
+        /// Created Home Assistant item “%@”
+        public static func createdItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.created_item_%@", String(describing: p1))
+        }
+        /// Created reminder “%@”
+        public static func createdReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.created_reminder_%@", String(describing: p1))
+        }
+        /// Deleted Home Assistant item “%@”
+        public static func deletedItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.deleted_item_%@", String(describing: p1))
+        }
+        /// Deleted reminder “%@”
+        public static func deletedReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.deleted_reminder_%@", String(describing: p1))
+        }
+        /// Updated Home Assistant item “%@”
+        public static func updatedItem(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.updated_item_%@", String(describing: p1))
+        }
+        /// Updated reminder “%@”
+        public static func updatedReminder(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "reminders_sync.history.detail.updated_reminder_%@", String(describing: p1))
+        }
+      }
+    }
+    public enum Settings {
+      /// Add
+      public static var addList: String { return L10n.tr("Localizable", "reminders_sync.settings.add_list") }
+      /// Last synced %@
+      public static func lastSynced(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "reminders_sync.settings.last_synced_%@", String(describing: p1))
+      }
+      /// Not synced yet
+      public static var neverSynced: String { return L10n.tr("Localizable", "reminders_sync.settings.never_synced") }
+      /// Open Settings
+      public static var openSettings: String { return L10n.tr("Localizable", "reminders_sync.settings.open_settings") }
+      /// Keep Apple Reminders lists and Home Assistant to-do lists in sync.
+      public static var subtitle: String { return L10n.tr("Localizable", "reminders_sync.settings.subtitle") }
+      /// Sync now
+      public static var syncNow: String { return L10n.tr("Localizable", "reminders_sync.settings.sync_now") }
+      /// Syncing…
+      public static var syncing: String { return L10n.tr("Localizable", "reminders_sync.settings.syncing") }
+      public enum AccessDenied {
+        /// Allow full access to Reminders in the system Settings app to sync your lists.
+        public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.body") }
+        /// Reminders access needed
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
+      }
+      public enum Conflicts {
+        /// This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.
+        public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.footer") }
+        /// Conflicts
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.header") }
+        /// Keep changes from
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.conflicts.title") }
+      }
+      public enum Empty {
+        /// No lists are synced yet. Pick an Apple Reminders list and a Home Assistant to-do list to keep in sync.
+        public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.empty.body") }
+      }
+      public enum Refresh {
+        /// Ask iOS to sync every
+        public static var background: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background") }
+        /// Nothing syncs while the app is closed or in the background. Changes from Apple Reminders and Home Assistant wait until the app runs again. This setting asks iOS to briefly wake the app to sync, but iOS decides if and when that happens based on battery, Low Power Mode and how often you use the app.
+        public static var backgroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_footer") }
+        /// While the app is closed
+        public static var backgroundHeader: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.background_header") }
+        /// Check Home Assistant every
+        public static var foreground: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground") }
+        /// Changes made in Apple Reminders sync right away while the app is open. Home Assistant can’t notify the app about its changes, so they are fetched when you open the app, when you sync manually, and on this schedule.
+        public static var foregroundFooter: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.foreground_footer") }
+        /// While the app is open
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.header") }
+        /// Off
+        public static var off: String { return L10n.tr("Localizable", "reminders_sync.settings.refresh.off") }
+      }
+      public enum SyncedLists {
+        /// Synced lists
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.synced_lists.header") }
+      }
+    }
+  }
+
   public enum RoomView {
     public enum Section {
       /// Hidden
@@ -3911,6 +4050,18 @@ public enum L10n {
           public static var all: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.setting.all") }
           /// None
           public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.setting.none") }
+        }
+      }
+      public enum UpdateDatabase {
+        /// Server information updated
+        public static var finished: String { return L10n.tr("Localizable", "settings.connection_section.update_database.finished") }
+        public enum Progress {
+          /// Updating areas
+          public static var areas: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.areas") }
+          /// Updating devices
+          public static var devices: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.devices") }
+          /// Updating entities
+          public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
         }
       }
       public enum ValidateError {
@@ -4365,6 +4516,10 @@ public enum L10n {
         /// Sync Watch Context
         public static var title: String { return L10n.tr("Localizable", "settings.developer.sync_watch_context.title") }
       }
+      public enum WebViewBelowStatusBar {
+        /// Always draw web view below status bar
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.web_view_below_status_bar.title") }
+      }
     }
     public enum EventLog {
       /// Event Log
@@ -4417,6 +4572,10 @@ public enum L10n {
         /// About
         public static var title: String { return L10n.tr("Localizable", "settings.navigation_bar.about_button.title") }
       }
+    }
+    public enum RemindersSync {
+      /// Reminders Sync
+      public static var title: String { return L10n.tr("Localizable", "settings.reminders_sync.title") }
     }
     public enum ResetSection {
       public enum ResetAlert {
@@ -4479,6 +4638,8 @@ public enum L10n {
       public static var notifications: String { return L10n.tr("Localizable", "settings.search_keywords.notifications") }
       /// analytics, crash reports, data collection, consent
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
+      /// reminders, todo, to-do, tasks, lists, shopping list, sync
+      public static var remindersSync: String { return L10n.tr("Localizable", "settings.search_keywords.reminders_sync") }
       /// battery, motion, pedometer, focus, device data
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
@@ -6252,6 +6413,30 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.interaction.toast.title") }
       }
     }
+    public enum InternalUrlPrompt {
+      /// Learn More
+      public static var learnMore: String { return L10n.tr("Localizable", "watch.internal_url_prompt.learn_more") }
+      /// Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?
+      public static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.internal_url_prompt.message", String(describing: p1))
+      }
+      /// Use Internal URL?
+      public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.title") }
+      public enum Info {
+        /// When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.
+        /// 
+        /// While no URL is considered safe, this server's data won't sync to the watch and its complications won't update.
+        public static var message: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.message") }
+        /// Not Now
+        public static var notNow: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.not_now") }
+        /// Internal URL & Security
+        public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.title") }
+        /// Use %@
+        public static func use(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.internal_url_prompt.info.use", String(describing: p1))
+        }
+      }
+    }
     public enum ItemExecutionTrace {
       /// Running…
       public static var running: String { return L10n.tr("Localizable", "watch.item_execution_trace.running") }
@@ -6766,6 +6951,8 @@ public enum L10n {
         public static var clear: String { return L10n.tr("Localizable", "watch.settings.client_events.clear") }
         /// No events recorded yet.
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.client_events.empty") }
+        /// Share
+        public static var share: String { return L10n.tr("Localizable", "watch.settings.client_events.share") }
         /// Logs
         public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
       }
@@ -6834,6 +7021,18 @@ public enum L10n {
           /// Allow choosing route
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
         }
+        public enum AudioProbe {
+          /// Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
+          /// Audio session probe
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.title") }
+        }
+        public enum DirectSync {
+          /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.footer") }
+          /// Direct server sync
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.title") }
+        }
         public enum VerboseExecution {
           /// Shows a live log describing every step while an item runs.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.verbose_execution.footer") }
@@ -6870,6 +7069,10 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.restart_app.footer") }
         /// Restart App
         public static var title: String { return L10n.tr("Localizable", "watch.settings.restart_app.title") }
+      }
+      public enum Server {
+        /// Needs attention
+        public static var needsAttention: String { return L10n.tr("Localizable", "watch.settings.server.needs_attention") }
       }
       public enum Servers {
         /// Servers
@@ -6908,6 +7111,8 @@ public enum L10n {
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.
         public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
+        /// Couldn't reach your Home Assistant server from this watch. Check the watch's connection and try again.
+        public static var serverUnreachable: String { return L10n.tr("Localizable", "watch.sync.error.server_unreachable") }
         /// Sync Failed
         public static var title: String { return L10n.tr("Localizable", "watch.sync.error.title") }
         /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.

@@ -23,15 +23,15 @@ class WebRTCVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoView()
+        // The peer connection is created after the client config is fetched, so the renderer is
+        // registered up front and attached by the view model once the connection exists.
+        viewModel.attach(renderer: remoteVideoView)
         viewModel.start()
-        if let client = viewModel.webRTCClient {
-            client.renderRemoteVideo(to: remoteVideoView)
-        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
     }
 
     private func setupVideoView() {
@@ -54,7 +54,7 @@ extension WebRTCVideoPlayerViewController: RTCVideoViewDelegate {
     func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
         // Hide loader when the first frame is rendered
         DispatchQueue.main.async { [weak self] in
-            self?.viewModel.showLoader = false
+            self?.viewModel.handleVideoRendered()
             self?.onVideoStarted?()
             self?.onVideoSizeChanged?(size)
         }

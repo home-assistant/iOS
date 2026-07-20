@@ -33,19 +33,5 @@ import Shared
 /// )
 /// ```
 enum TestFlightCommunicationCatalog {
-    static let message: TestFlightMessage? = TestFlightMessage(
-        id: .includeEmailWhenReporting,
-        title: "Reporting an issue?",
-        items: [
-            WhatsNewItem(
-                id: "testflight-include-email",
-                title: "Optional, but it helps a lot",
-                body: "When you report a problem through TestFlight, it's optional but really valuable to " +
-                    "include your email address or Discord handle. With it we can reach out to share " +
-                    "setup instructions or ask follow-up questions — without it we have no way to get " +
-                    "back to you.",
-                icon: .sfSymbol(.envelope)
-            ),
-        ]
-    )
+    static let message: TestFlightMessage? = nil
 }

@@ -245,22 +245,64 @@ struct SettingsView: View {
         if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
             return true
         }
+        if !serverSearchResults.isEmpty {
+            return true
+        }
         return SettingsSection.allCases.contains { !$0.items(matching: trimmedSearchQuery).isEmpty }
+    }
+
+    private var serverConnectionContentMatches: [SettingsSearchEntry] {
+        guard isSearching else { return [] }
+        return ConnectionSettingsView.settingsSearchEntries.filter { $0.matches(searchQuery: trimmedSearchQuery) }
+    }
+
+    private var serverSearchResults: [Server] {
+        guard isSearching else { return [] }
+        if !serverConnectionContentMatches.isEmpty {
+            return serversObserver.servers
+        }
+        return serversObserver.servers.filter { $0.info.name.localizedStandardContains(trimmedSearchQuery) }
+    }
+
+    private var serverContentSubtitle: String? {
+        let matched = serverConnectionContentMatches
+        guard !matched.isEmpty else { return nil }
+        return matched.prefix(3).map(\.title).joined(separator: ", ")
     }
 
     @ViewBuilder
     private var searchResultsContent: some View {
         if hasSearchResults {
             // Servers live in their own list normally (including the Catalyst sidebar, where the
-            // item is not "visible"), so surface them as a plain row when searching.
-            if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
+            // item is not "visible"), so surface them as plain rows when searching: the servers
+            // screen itself plus every server whose name or connection settings match the query.
+            let serverResults = serverSearchResults
+            if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) || !serverResults.isEmpty {
                 Section {
-                    settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
+                    if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
+                        settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
+                    }
+                    ForEach(serverResults, id: \.identifier) { server in
+                        NavigationLink(destination: ConnectionSettingsView(server: server)) {
+                            serverSearchRow(server: server)
+                        }
+                    }
                 }
             }
             settingsSections(matching: trimmedSearchQuery)
         } else {
             noSearchResultsSection
+        }
+    }
+
+    private func serverSearchRow(server: Server) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            HomeAssistantAccountRowView(server: server)
+            if let serverContentSubtitle {
+                Text(serverContentSubtitle)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 
@@ -324,7 +366,7 @@ struct SettingsView: View {
             VStack(alignment: .leading) {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Text(item.title)
-                    if item == .liveActivities || item == .complications {
+                    if item == .complications || item == .remindersSync {
                         LabsLabel()
                     }
                 }

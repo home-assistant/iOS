@@ -208,6 +208,24 @@ public class SettingsStore {
         }
     }
 
+    public var lastActiveServerIdentifier: String? {
+        get {
+            prefs.string(forKey: "lastActiveServerIdentifier")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveServerIdentifier")
+        }
+    }
+
+    public var lastActiveURLPath: String? {
+        get {
+            prefs.string(forKey: "lastActiveURLPath")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveURLPath")
+        }
+    }
+
     public func hasSeenWhatsNew(releaseID: String) -> Bool {
         seenWhatsNewReleaseIDs.contains(releaseID)
     }
@@ -234,12 +252,14 @@ public class SettingsStore {
         }
     }
 
-    public var edgeToEdge: Bool {
+    /// Debug override: always draw the web view below the iPhone status bar, even on cores that
+    /// support edge-to-edge display (2026.8+).
+    public var webViewAlwaysBelowStatusBar: Bool {
         get {
-            prefs.bool(forKey: "edgeToEdge_experimental")
+            prefs.bool(forKey: "webViewAlwaysBelowStatusBar")
         }
         set {
-            prefs.set(newValue, forKey: "edgeToEdge_experimental")
+            prefs.set(newValue, forKey: "webViewAlwaysBelowStatusBar")
             NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
         }
     }
@@ -284,6 +304,16 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "migratedOptInLocalPush")
+        }
+    }
+
+    /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.
+    public var migratedShakeGestureToNone: Bool {
+        get {
+            prefs.bool(forKey: "migratedShakeGestureToNone")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedShakeGestureToNone")
         }
     }
 

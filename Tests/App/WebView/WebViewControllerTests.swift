@@ -228,8 +228,8 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(decision, .allow)
     }
 
-    func testServerErrorResponseDecisionReloadsDefaultURLForRestoredPage() {
-        let restoredURL = URL(string: "https://example.com/history")!
+    func testServerErrorResponseDecisionReloadsDefaultURLForRestoredPage() throws {
+        let restoredURL = try XCTUnwrap(URL(string: "https://example.com/history"))
 
         for statusCode in [404, 500] {
             let decision = WebViewController.decisionForMainFrameErrorResponse(
@@ -243,8 +243,8 @@ final class WebViewControllerTests: XCTestCase {
         }
     }
 
-    func testServerErrorLoadErrorCarriesFailingURL() {
-        let url = URL(string: "https://example.com/lovelace")!
+    func testServerErrorLoadErrorCarriesFailingURL() throws {
+        let url = try XCTUnwrap(URL(string: "https://example.com/lovelace"))
 
         let error = WebViewController.serverErrorLoadError(for: url)
 
@@ -277,6 +277,35 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertFalse(sut.didHandleServerErrorResponse)
         XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .badServerResponse)
+    }
+
+    func testRestoredURLRebuildsSavedPathOntoLiveBaseIgnoringSavedHost() throws {
+        // A path saved on the internal base is restored against whatever base is active now (e.g. remote
+        // UI), so only path/query/fragment carry over -- never the host.
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "https://remote.example.com:8123")),
+            relativePath: "/lovelace/kitchen"
+        )
+
+        XCTAssertEqual(restored, URL(string: "https://remote.example.com:8123/lovelace/kitchen"))
+    }
+
+    func testRestoredURLPreservesQueryAndFragment() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "http://homeassistant.local:8123")),
+            relativePath: "/history?back=1#anchor"
+        )
+
+        XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/history?back=1#anchor"))
+    }
+
+    func testRestoredURLHandlesRootPath() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "http://homeassistant.local:8123")),
+            relativePath: "/"
+        )
+
+        XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {

@@ -1,24 +1,21 @@
 import Combine
 import Shared
 
-/// Drives the content presented over the web frontend — launch messages (What's-New, then TestFlight),
-/// Settings, the download manager (sheets), and the forced onboarding-permissions decision (full-screen
-/// cover). Owns the launch queue and publishes the currently-presented content for `ContainerView`.
+/// Drives the content presented over the web frontend — Settings, the download manager (sheets), and
+/// the forced onboarding-permissions decision (full-screen cover). Publishes the currently-presented
+/// content for `ContainerView`. What's-New / TestFlight launch messages are owned by
+/// `HomeAssistantView` so they can only ever present over the web frontend, never over onboarding.
 @MainActor
 final class ContainerViewModel: ObservableObject {
     /// A sheet presented over the web view. A single `.sheet(item:)` switches on this, so only one can be
     /// presented at a time regardless of how many qualify.
     enum PresentedSheet: Identifiable {
-        case whatsNew(WhatsNewRelease)
-        case testFlight(TestFlightMessage)
         case assistSettings
         case downloadManager(DownloadManagerViewModel)
         case serverSelect(prompt: String?, includeSettings: Bool, onSelect: (Server) -> Void)
 
         var id: String {
             switch self {
-            case let .whatsNew(release): return "whatsNew-\(release.id)"
-            case let .testFlight(message): return "testFlight-\(message.id.rawValue)"
             case .assistSettings: return "assistSettings"
             case .downloadManager: return "downloadManager"
             case .serverSelect: return "serverSelect"
@@ -39,33 +36,6 @@ final class ContainerViewModel: ObservableObject {
 
     @Published var presentedSheet: PresentedSheet?
     @Published var fullScreenCover: FullScreenCover?
-
-    private var pendingLaunchMessages: [PresentedSheet] = []
-    private var didEvaluateLaunchMessages = false
-
-    /// Queues the launch messages (What's-New, then TestFlight) to present the first time the web view appears
-    /// — the first thing the user sees — via SwiftUI rather than a UIKit overlay.
-    func presentLaunchMessagesIfNeeded(isShowingWebView: Bool) {
-        guard !didEvaluateLaunchMessages, isShowingWebView else { return }
-        didEvaluateLaunchMessages = true
-
-        var queue: [PresentedSheet] = []
-        if let release = WhatsNewEngine().releaseToShow() {
-            queue.append(.whatsNew(release))
-        }
-        if let message = TestFlightCommunicationEngine().messageToShow() {
-            queue.append(.testFlight(message))
-        }
-        pendingLaunchMessages = queue
-        showNextLaunchMessage()
-    }
-
-    /// Presents the next queued launch message, if any. Called on first evaluation and on each sheet dismiss so
-    /// a single `.sheet` shows them in sequence — only one is ever bound, avoiding competing-binding races.
-    func showNextLaunchMessage() {
-        guard presentedSheet == nil, !pendingLaunchMessages.isEmpty else { return }
-        presentedSheet = pendingLaunchMessages.removeFirst()
-    }
 
     /// Presents Assist settings as a sheet over the web view (triggered by the frontend's external bus).
     func presentAssistSettings() {

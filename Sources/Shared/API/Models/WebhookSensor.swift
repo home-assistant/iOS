@@ -75,6 +75,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var Icon: String?
     public var Name: String?
     public var State: Any? = "Initial"
+    public var StateClass: SensorStateClass?
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
@@ -105,11 +106,19 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.UniqueID = uniqueID
     }
 
-    convenience init(name: String, uniqueID: String, state: Any, unit: String? = nil, entityCategory: String? = nil) {
+    convenience init(
+        name: String,
+        uniqueID: String,
+        state: Any,
+        unit: String? = nil,
+        entityCategory: String? = nil,
+        stateClass: SensorStateClass? = nil
+    ) {
         self.init(name: name, uniqueID: uniqueID)
         self.State = state
         self.UnitOfMeasurement = unit
         self.entityCategory = entityCategory
+        self.StateClass = stateClass
     }
 
     convenience init(
@@ -118,9 +127,17 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String?,
         state: Any,
         unit: String? = nil,
-        entityCategory: String? = nil
+        entityCategory: String? = nil,
+        stateClass: SensorStateClass? = nil
     ) {
-        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit, entityCategory: entityCategory)
+        self.init(
+            name: name,
+            uniqueID: uniqueID,
+            state: state,
+            unit: unit,
+            entityCategory: entityCategory,
+            stateClass: stateClass
+        )
         self.Icon = icon
     }
 
@@ -169,6 +186,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
             DeviceClass <- map["device_class"]
             entityCategory <- map["entity_category"]
             Name <- map["name"]
+            StateClass <- map["state_class"]
             UnitOfMeasurement <- map["unit_of_measurement"]
         }
     }

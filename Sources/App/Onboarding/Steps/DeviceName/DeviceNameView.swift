@@ -2,77 +2,53 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+/// Asks the user to name this device during onboarding. Pushed onto the onboarding navigation stack;
+/// going back cancels the auth flow, and name conflicts surface inline via the request's `errorMessage`.
 struct DeviceNameView: View {
-    enum ActionType {
-        case save
-        case cancel
-        case none
-    }
-
-    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var request: OnboardingDeviceNameRequest
     @State private var deviceName: String = ""
-    let errorMessage: String?
-    let saveAction: (String) -> Void
-    let cancelAction: () -> Void
-
-    // We can only execute those actions when the view has actually disappeared.
-    // similar to UIKit onDismiss completion handler.
-    @State private var onDismissAction: ActionType = .none
 
     var body: some View {
-        NavigationView {
-            BaseOnboardingView(
-                illustration: {
-                    Image(.Onboarding.pencil)
-                },
-                title: L10n.DeviceName.title,
-                primaryDescription: L10n.DeviceName.subtitle,
-                content: {
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(DesignSystem.Font.footnote)
-                                .foregroundStyle(.red)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+        BaseOnboardingView(
+            illustration: {
+                Image(.Onboarding.pencil)
+            },
+            title: L10n.DeviceName.title,
+            primaryDescription: L10n.DeviceName.subtitle,
+            content: {
+                VStack(spacing: DesignSystem.Spaces.one) {
+                    HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
+                        .disabled(request.isSaving)
+                    if let errorMessage = request.errorMessage {
+                        Text(errorMessage)
+                            .font(DesignSystem.Font.footnote)
+                            .foregroundStyle(.red)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: DesignSystem.List.rowMaxWidth)
-                },
-                primaryActionTitle: L10n.DeviceName.PrimaryButton.title,
-                primaryAction: {
-                    onDismissAction = .save
-                    dismiss()
-                }
-            )
-            .disableOnboardingPrimaryAction(deviceName.count < 3)
-            .onAppear {
-                #if DEBUG
-                deviceName = "Simulator \(UUID().uuidString.prefix(4))"
-                #else
-                deviceName = UIDevice.current.name
-                #endif
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton(size: .medium) {
-                        onDismissAction = .cancel
-                        dismiss()
+                    if request.isSaving {
+                        HAProgressView()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top, DesignSystem.Spaces.one)
                     }
                 }
+                .frame(maxWidth: DesignSystem.List.rowMaxWidth)
+            },
+            primaryActionTitle: L10n.DeviceName.PrimaryButton.title,
+            primaryAction: {
+                request.save(deviceName)
             }
+        )
+        .disableOnboardingPrimaryAction(deviceName.count < 3 || request.isSaving)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            #if DEBUG
+            deviceName = "Simulator \(UUID().uuidString.prefix(4))"
+            #else
+            deviceName = UIDevice.current.name
+            #endif
         }
-        .navigationViewStyle(.stack)
-        .interactiveDismissDisabled(true)
         .onDisappear {
-            switch onDismissAction {
-            case .save:
-                saveAction(deviceName)
-            case .cancel:
-                cancelAction()
-            case .none:
-                break
-            }
+            request.cancelAfterDismissal()
         }
     }
 
@@ -84,7 +60,10 @@ struct DeviceNameView: View {
 }
 
 #Preview {
-    DeviceNameView(errorMessage: "Error message") { _ in
-
-    } cancelAction: {}
+    NavigationView {
+        DeviceNameView(request: OnboardingDeviceNameRequest(onSave: { _, request in
+            request.fail(with: "Error message")
+        }, onCancel: {}))
+    }
+    .navigationViewStyle(.stack)
 }

@@ -4,30 +4,37 @@ import SwiftUI
 
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
+    static let logoDismissTapThreshold = 10
 
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
-    private static let serverPillHeight: CGFloat = 38
+    private static let serverPillHeight: CGFloat = 44
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
+    static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
     fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
 
     let server: Server
     let emptyState: WebFrontendOverlayState.EmptyStateContent?
     let isLoading: Bool
+    let serverSelectionNamespace: Namespace.ID?
+    let onSelectServerTapped: (() -> Void)?
     let onGestureAction: ((HAGestureAction) -> Void)?
+    let onLogoDismiss: (() -> Void)?
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
     @State private var dismissTapCount = 0
+    @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
     @State private var hasAppeared = false
+    @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
     private var showsEmptyState: Bool { emptyState != nil }
     private var loadingContentOffset: CGFloat { showsEmptyState ? 0 : -DesignSystem.Spaces.eight }
@@ -48,16 +55,24 @@ struct HomeAssistantStandByView: View {
 
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
+    private var canSelectServer: Bool { Current.servers.all.count > 1 }
+
     init(
         server: Server,
         emptyState: WebFrontendOverlayState.EmptyStateContent?,
         isLoading: Bool = false,
-        onGestureAction: ((HAGestureAction) -> Void)? = nil
+        serverSelectionNamespace: Namespace.ID? = nil,
+        onSelectServerTapped: (() -> Void)? = nil,
+        onGestureAction: ((HAGestureAction) -> Void)? = nil,
+        onLogoDismiss: (() -> Void)? = nil
     ) {
         self.server = server
         self.emptyState = emptyState
         self.isLoading = isLoading
+        self.serverSelectionNamespace = serverSelectionNamespace
+        self.onSelectServerTapped = onSelectServerTapped
         self.onGestureAction = onGestureAction
+        self.onLogoDismiss = onLogoDismiss
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -135,6 +150,12 @@ struct HomeAssistantStandByView: View {
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: Current.connectivity.connectivityDidChangeNotification())
+        ) { _ in
+            networkType = Current.connectivity.simpleNetworkType()
+        }
         .task(id: showsEmptyState) {
             showsDelayedSettingsButton = false
             guard !showsEmptyState else { return }
@@ -194,25 +215,52 @@ struct HomeAssistantStandByView: View {
 
     private var currentServerPillContent: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
-            Text(server.info.name)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                .frame(height: Self.serverPillHeight)
-                .modify { view in
-                    if #available(iOS 26.0, *) {
-                        view.glassEffect(.regular.interactive(), in: .capsule)
-                    } else {
-                        view
-                            .background(Color(uiColor: .secondarySystemBackground))
-                            .clipShape(.capsule)
-                    }
-                }
+            serverNamePill
             if showsConnectionTypeIndicator {
                 connectionTypeIndicator
             }
         }
+    }
+
+    @ViewBuilder
+    private var serverNamePill: some View {
+        if canSelectServer {
+            Button {
+                onSelectServerTapped?()
+            } label: {
+                serverNameLabel
+            }
+            .buttonStyle(.plain)
+            .modify { view in
+                if #available(iOS 18.0, *), let serverSelectionNamespace {
+                    view.matchedTransitionSource(id: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
+                } else {
+                    view
+                }
+            }
+        } else {
+            serverNameLabel
+        }
+    }
+
+    private var serverNameLabel: some View {
+        Text(server.info.name)
+            .font(.headline)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .frame(height: Self.serverPillHeight)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                        .contentShape(Capsule())
+                } else {
+                    view
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(.capsule)
+                }
+            }
     }
 
     private var connectionTypeIndicator: some View {
@@ -223,7 +271,10 @@ struct HomeAssistantStandByView: View {
                 .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
                 .modify { view in
                     if #available(iOS 26.0, *) {
-                        view.glassEffect(.regular.interactive(), in: .circle)
+                        view
+                            .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                            .contentShape(Circle())
                     } else {
                         view
                             .background(Color(uiColor: .secondarySystemBackground))
@@ -238,13 +289,24 @@ struct HomeAssistantStandByView: View {
     private var connectionTypeIndicatorIcon: SFSymbol {
         switch server.info.connection.activeURLType {
         case .internal:
-            .houseFill
+            internalConnectionIcon
         case .remoteUI:
             .cloudFill
         case .external:
             .network
         case .none:
             .wifiExclamationmark
+        }
+    }
+
+    private var internalConnectionIcon: SFSymbol {
+        switch networkType {
+        case .ethernet:
+            .cableConnector
+        case .wifi:
+            .wifi
+        default:
+            .houseFill
         }
     }
 
@@ -293,6 +355,9 @@ struct HomeAssistantStandByView: View {
             width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
             height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
         )
+        .launchSplashLogoAnchor()
+        .contentShape(Rectangle())
+        .onTapGesture(perform: registerLogoDismissTap)
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
@@ -336,41 +401,10 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private func serverSelection(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        if emptyState.style.showsServerPicker, Current.servers.all.count > 1 {
-            if Current.isCatalyst {
-                Menu {
-                    ForEach(Current.servers.all, id: \.identifier) { availableServer in
-                        Button {
-                            selectServer(availableServer)
-                        } label: {
-                            Label(
-                                availableServer.info.name,
-                                systemSymbol: availableServer.identifier == server.identifier ? .checkmark : .serverRack
-                            )
-                        }
-                    }
-                } label: {
-                    HStack(spacing: DesignSystem.Spaces.one) {
-                        Image(systemSymbol: .serverRack)
-                            .foregroundStyle(Color.haPrimary)
-                        Text(server.info.name)
-                            .font(.callout)
-                            .lineLimit(1)
-                        Image(systemSymbol: .chevronUpChevronDown)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, DesignSystem.Spaces.two)
-                    .padding(.vertical, DesignSystem.Spaces.one)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(.capsule)
-                }
-                .buttonStyle(.plain)
-            } else {
-                ServerPickerView(server: server, onSelect: selectServer)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(Capsule())
-            }
+        if emptyState.style.showsServerPicker, Current.servers.all.count > 1, !Current.isCatalyst {
+            ServerPickerView(server: server, onSelect: selectServer)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(Capsule())
         }
     }
 
@@ -462,6 +496,15 @@ struct HomeAssistantStandByView: View {
         guard dismissTapCount >= Self.dismissTapThreshold else { return }
         dismissTapCount = 0
         emptyState?.dismissAction()
+    }
+
+    // Debug escape hatch while the loader is stuck; empty-state mode already has its own hidden dismiss accessory.
+    private func registerLogoDismissTap() {
+        guard emptyState == nil, let onLogoDismiss else { return }
+        logoDismissTapCount += 1
+        guard logoDismissTapCount >= Self.logoDismissTapThreshold else { return }
+        logoDismissTapCount = 0
+        onLogoDismiss()
     }
 
     private func selectServer(_ server: Server) {
