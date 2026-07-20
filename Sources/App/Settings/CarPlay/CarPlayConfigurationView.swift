@@ -122,7 +122,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
+        Section {
             Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
                 get: { viewModel.quickAccessLayout },
                 set: { viewModel.quickAccessLayout = $0 }
@@ -141,6 +141,20 @@ struct CarPlayConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemButton
+        } header: {
+            Text(L10n.CarPlay.Navigation.Tab.quickAccess)
+        } footer: {
+            if !isGridLayoutSupported {
+                Text(L10n.CarPlay.Config.QuickAccess.Layout.GridRequirement.footer)
+            }
+        }
+    }
+
+    private var isGridLayoutSupported: Bool {
+        if #available(iOS 26.0, *) {
+            return true
+        } else {
+            return false
         }
     }
 
