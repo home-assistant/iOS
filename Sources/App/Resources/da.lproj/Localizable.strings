@@ -1196,6 +1196,10 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings.connection_section.servers_header" = "Servere";
 "settings.connection_section.servers_reorder_footer" = "Træk for at ændre rækkefølgen på dine servere. Den øverste server bruges som standardserver.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Adgang til at tilgå SSID'er i baggrunden kræver, at lokalitetstilladelse er sat til 'Altid'  og at 'Præcis lokalitet' er slået til. Tryk her for at ændre dine indstillinger.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Redigér webadresse";
 "settings.connection_section.validate_error.title" = "Fejl ved gemning af webadresse";
 "settings.connection_section.validate_error.use_anyway" = "Brug alligevel";

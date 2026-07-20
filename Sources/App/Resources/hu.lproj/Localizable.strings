@@ -1195,6 +1195,10 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.servers_header" = "Kiszolgálók";
 "settings.connection_section.servers_reorder_footer" = "Húzással rendezheti át a kiszolgálókat. A lista tetején lévő lesz az alapértelmezett kiszolgáló.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "URL szerkesztése";
 "settings.connection_section.validate_error.title" = "Hiba történt az URL mentésekor";
 "settings.connection_section.validate_error.use_anyway" = "Mindenképpen használja";

@@ -1195,6 +1195,10 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings.connection_section.servers_header" = "Server";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Akses SSID di latar belakang membutuhkan izin lokasi 'Selalu' dan keakuratan lokasi 'Tepat'. Ketuk di sini untuk mengubah pengaturan Anda.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
 "settings.connection_section.validate_error.title" = "Kesalahan saat Menyimpan URL";
 "settings.connection_section.validate_error.use_anyway" = "Tetap Gunakan";
