@@ -241,7 +241,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             }
             trace?.log(.info, "Pinging Home Assistant directly from the watch…")
             let pingStarted = Current.date()
-            HomeAssistantAPI.apiAvailabilityCheck(for: server) { [weak self] available in
+            HomeAssistantAPI.apiAvailabilityCheck(for: server, onStep: { [weak self] step in
+                self?.trace?.log(.info, step)
+            }) { [weak self] available in
                 guard let self else { return }
                 if available {
                     Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")

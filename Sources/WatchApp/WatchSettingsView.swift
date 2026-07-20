@@ -503,6 +503,11 @@ private struct WatchClientEventsView: View {
     @State private var showClearConfirmation = false
     /// Set once the diagnostics zip has been built; the share button stays a spinner until then.
     @State private var diagnosticsArchiveURL: URL?
+    /// True from tapping "Send to iPhone" until the transfer reaches the iPhone (or fails). The
+    /// transfer itself is queued by the system and survives leaving this screen.
+    @State private var isSendingToPhone = false
+    @State private var sendToPhoneMessage: String?
+    @State private var showSendToPhoneResult = false
 
     var body: some View {
         List {
@@ -549,6 +554,29 @@ private struct WatchClientEventsView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
+
+                        // The watchOS share sheet can't reliably deliver an arbitrary file, so the
+                        // dependable path hands the archive to the paired iPhone over Watch
+                        // Connectivity; it then ships with the iPhone's "Export Log Files".
+                        Button {
+                            sendToPhone(archiveURL: diagnosticsArchiveURL)
+                        } label: {
+                            if isSendingToPhone {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                Image(systemSymbol: .iphoneAndArrowForward)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .disabled(isSendingToPhone)
+                        .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.sendToPhone))
+                        .alert(
+                            Text(verbatim: sendToPhoneMessage ?? ""),
+                            isPresented: $showSendToPhoneResult
+                        ) {
+                            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+                        }
                     } else {
                         ProgressView()
                             .frame(maxWidth: .infinity)
@@ -575,6 +603,23 @@ private struct WatchClientEventsView: View {
         .onAppear {
             events = Current.clientEventStore.getEvents().reversed()
             prepareDiagnosticsArchive()
+        }
+    }
+
+    private func sendToPhone(archiveURL: URL) {
+        isSendingToPhone = true
+        WatchDiagnosticsTransfer.send(archiveURL: archiveURL) { result in
+            DispatchQueue.main.async {
+                isSendingToPhone = false
+                switch result {
+                case .success:
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone.success
+                case let .failure(error):
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone
+                        .failure(error.localizedDescription)
+                }
+                showSendToPhoneResult = true
+            }
         }
     }
 
