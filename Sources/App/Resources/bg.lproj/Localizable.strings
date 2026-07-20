@@ -1196,6 +1196,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Достъпът до SSID във фонов режим изисква разрешение за местоположение „Винаги“ и „Пълна“ точност на местоположението. Докоснете тук, за да промените настройките си.";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Редактирай URL";
 "settings.connection_section.validate_error.title" = "Грешка при запазване на URL";
 "settings.connection_section.validate_error.use_anyway" = "Използвай въпреки това";

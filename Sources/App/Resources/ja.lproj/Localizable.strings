@@ -1195,6 +1195,10 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.servers_header" = "サーバー";
 "settings.connection_section.servers_reorder_footer" = "サーバーの順序を変更するには、ドラッグしてください。一番上にあるサーバーがデフォルトのサーバーとして使用されます。";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "バックグラウンドで SSID にアクセスするには、「常に」位置情報の許可と「完全な」位置精度が必要です。ここをタップして設定を変更します。";
+"settings.connection_section.update_database.finished" = "Server information updated";
+"settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.devices" = "Updating devices";
+"settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "URLの編集";
 "settings.connection_section.validate_error.title" = "URLの保存中にエラーが発生しました";
 "settings.connection_section.validate_error.use_anyway" = "とにかく使う";
