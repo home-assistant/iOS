@@ -205,7 +205,7 @@
 "carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
-"carPlay.config.quick_access.layout.grid_requirement.footer" = "The Grid layout requires iOS 26 or later. On this device, Quick Access items are always displayed as a list.";
+"carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Tabs";

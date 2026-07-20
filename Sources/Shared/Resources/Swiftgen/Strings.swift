@@ -849,8 +849,8 @@ public enum L10n {
       public enum QuickAccess {
         public enum Layout {
           public enum GridRequirement {
-            /// The Grid layout requires iOS 26 or later. On this device, Quick Access items are always displayed as a list.
-            public static var footer: String { return L10n.tr("Localizable", "carPlay.config.quick_access.layout.grid_requirement.footer") }
+            /// Requires iOS 26 or later
+            public static var subtitle: String { return L10n.tr("Localizable", "carPlay.config.quick_access.layout.grid_requirement.subtitle") }
           }
         }
         public enum ShowAddEditButtons {

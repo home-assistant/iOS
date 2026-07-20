@@ -122,13 +122,13 @@ struct CarPlayConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section {
+        Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
             Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
                 get: { viewModel.quickAccessLayout },
                 set: { viewModel.quickAccessLayout = $0 }
             )) {
                 ForEach(CarPlayQuickAccessLayout.allCases, id: \.rawValue) { layout in
-                    Text(layout.name).tag(layout)
+                    layoutPickerOption(layout).tag(layout)
                 }
             }
             ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
@@ -141,12 +141,24 @@ struct CarPlayConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemButton
-        } header: {
-            Text(L10n.CarPlay.Navigation.Tab.quickAccess)
-        } footer: {
-            if !isGridLayoutSupported {
-                Text(L10n.CarPlay.Config.QuickAccess.Layout.GridRequirement.footer)
+        }
+    }
+
+    @ViewBuilder
+    private func layoutPickerOption(_ layout: CarPlayQuickAccessLayout) -> some View {
+        let isUnsupported = layout == .grid && !isGridLayoutSupported
+        let label = VStack(alignment: .leading, spacing: 2) {
+            Text(layout.name)
+            if isUnsupported {
+                Text(L10n.CarPlay.Config.QuickAccess.Layout.GridRequirement.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
+        }
+        if #available(iOS 17.0, *) {
+            label.selectionDisabled(isUnsupported)
+        } else {
+            label
         }
     }
 
