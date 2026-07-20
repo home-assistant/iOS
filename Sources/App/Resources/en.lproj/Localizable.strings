@@ -2115,6 +2115,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_certificate.remove_from_watch.title" = "Remove from this Watch?";
 "watch.settings.client_events.clear" = "Clear";
 "watch.settings.client_events.empty" = "No events recorded yet.";
+"watch.settings.client_events.send_to_phone" = "Send to iPhone";
+"watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
+"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";

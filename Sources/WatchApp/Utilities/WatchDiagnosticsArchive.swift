@@ -1,24 +1,19 @@
-import CoreTransferable
 import Foundation
 import Shared
-import UniformTypeIdentifiers
 
 /// Zip of the watch's diagnostic files — client events, the GRDB database and the rotating
-/// `Current.Log` files — shared from the client events screen. The archive is built lazily when the
-/// share actually starts. ZIPFoundation isn't linked on watchOS, so zipping uses
-/// `NSFileCoordinator`'s `.forUploading` conversion instead.
-struct WatchDiagnosticsArchive: Transferable {
+/// `Current.Log` files — shared from the client events screen. The archive is built eagerly on a
+/// dedicated thread before the `ShareLink` is offered: it was previously built lazily inside a
+/// `Transferable` `FileRepresentation` exporting closure, which is async and therefore runs on the
+/// Swift-concurrency pool — starved on watch hardware, so the share sheet hung forever after
+/// picking a target. ZIPFoundation isn't linked on watchOS, so zipping uses `NSFileCoordinator`'s
+/// `.forUploading` conversion instead.
+enum WatchDiagnosticsArchive {
     private enum ArchiveError: Error {
         case zipConversionFailed
     }
 
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(exportedContentType: .zip) { _ in
-            try SentTransferredFile(makeArchive())
-        }
-    }
-
-    private static func makeArchive() throws -> URL {
+    static func makeArchive() throws -> URL {
         let fileManager = FileManager.default
         let stagingURL = fileManager.temporaryDirectory
             .appendingPathComponent("watch-diagnostics-\(UUID().uuidString)", isDirectory: true)

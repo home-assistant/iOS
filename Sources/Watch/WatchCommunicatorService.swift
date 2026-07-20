@@ -85,6 +85,24 @@ final class WatchCommunicatorService {
             }
         }
 
+        // Diagnostics archive pushed from the watch's Logs screen. Saved into the logs directory so
+        // the app's regular "Export Log Files" includes the watch's logs — the watch has no
+        // reliable share sheet of its own.
+        Communicator.shared.blob.observations.store[.init(queue: .main)] = { blob in
+            guard blob.identifier == WatchDiagnosticsTransfer.blobIdentifier else { return }
+            do {
+                let url = try WatchDiagnosticsTransfer.save(blob)
+                Current.Log.info("Saved watch diagnostics archive to \(url.lastPathComponent)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Received watch diagnostics archive; it will be included in Export Log Files",
+                    type: .settings,
+                    payload: ["fileName": url.lastPathComponent, "bytes": blob.content.count]
+                ))
+            } catch {
+                Current.Log.error("Failed to save watch diagnostics archive: \(error.localizedDescription)")
+            }
+        }
+
         // When the iOS app finishes refreshing its local database from a server, proactively push the
         // updated reference tables to the watch over transferFile so its cached data stays fresh without
         // the user opening the watch app.
