@@ -8,7 +8,7 @@ import Shared
 final class CarPlayAssistSession: NSObject {
     typealias OnStop = () -> Void
 
-    enum State {
+    enum State: Equatable {
         case idle
         case recording
         case processing
@@ -46,7 +46,7 @@ final class CarPlayAssistSession: NSObject {
     var onStop: OnStop?
 
     private let audioSession = AVAudioSession.sharedInstance()
-    private let tonePlayer = CarPlayAssistTonePlayer()
+    private let tonePlayer: CarPlayAssistTonePlayerProtocol
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
 
@@ -55,6 +55,8 @@ final class CarPlayAssistSession: NSObject {
     /// `managesAudioSession = false`. `muteTTS` is deliberately ignored here: CarPlay Assist is
     /// a voice-only interface, so a response must always be audible.
     private var assistConfiguration = AssistConfiguration()
+    /// Configuration override from the initializer; when nil, `start()` reads the database.
+    private let injectedAssistConfiguration: AssistConfiguration?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     /// True while an on-device transcription started by this session is listening; used to tell
@@ -161,13 +163,21 @@ final class CarPlayAssistSession: NSObject {
         pipelineId: String,
         prompt: String? = nil,
         audioRecorder: AudioRecorderProtocol = AudioRecorder(),
-        assistService: AssistServiceProtocol? = nil
+        assistService: AssistServiceProtocol? = nil,
+        assistConfiguration: AssistConfiguration? = nil,
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
+        tonePlayer: CarPlayAssistTonePlayerProtocol = CarPlayAssistTonePlayer()
     ) {
         self.interfaceController = interfaceController
         self.pipelineId = pipelineId
         self.prompt = prompt
         self.audioRecorder = audioRecorder
         self.assistService = assistService ?? AssistService(server: server)
+        self.injectedAssistConfiguration = assistConfiguration
+        self.speechTranscriber = speechTranscriber
+        self.speechSynthesizer = speechSynthesizer
+        self.tonePlayer = tonePlayer
         super.init()
         self.audioRecorder.managesAudioSession = Current.settingsStore.carPlayAssistDebugSettings
             .recorderManagesAudioSession
@@ -178,8 +188,13 @@ final class CarPlayAssistSession: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// Snapshot of the current session state, for unit tests.
+    var currentState: State {
+        stateQueue.sync { state }
+    }
+
     func start() {
-        assistConfiguration = AssistConfiguration.config
+        assistConfiguration = injectedAssistConfiguration ?? AssistConfiguration.config
         assistService.delegate = self
         stateQueue.sync {
             isStopped = false
@@ -773,13 +788,17 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
+    /// Returns the transcriber (injected or lazily created) with the session's callbacks
+    /// installed. Callbacks are (re)assigned on every call so injected instances get them too.
     @MainActor private func ensureSpeechTranscriber() -> any SpeechTranscriberProtocol {
+        let transcriber: any SpeechTranscriberProtocol
         if let speechTranscriber {
-            return speechTranscriber
+            transcriber = speechTranscriber
+        } else {
+            transcriber = assistConfiguration.onDeviceSTTLocaleIdentifier
+                .map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
+            speechTranscriber = transcriber
         }
-
-        let transcriber = assistConfiguration.onDeviceSTTLocaleIdentifier
-            .map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
         transcriber.managesAudioSession = false
         transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
             guard isFinal else { return }
@@ -804,7 +823,6 @@ final class CarPlayAssistSession: NSObject {
                 enterErrorState(message: "No speech was recognized")
             }
         }
-        speechTranscriber = transcriber
         return transcriber
     }
 
@@ -847,18 +865,21 @@ final class CarPlayAssistSession: NSObject {
         ensureSpeechSynthesizer().speak(text)
     }
 
+    /// Returns the synthesizer (injected or lazily created) with the session's callbacks
+    /// installed. Callbacks are (re)assigned on every call so injected instances get them too.
     private func ensureSpeechSynthesizer() -> any SpeechSynthesizerProtocol {
+        let synthesizer: any SpeechSynthesizerProtocol
         if let speechSynthesizer {
-            return speechSynthesizer
+            synthesizer = speechSynthesizer
+        } else {
+            synthesizer = assistConfiguration.onDeviceTTSVoiceIdentifier
+                .map { SpeechSynthesizer(voiceIdentifier: $0) } ?? SpeechSynthesizer()
+            speechSynthesizer = synthesizer
         }
-
-        let synthesizer = assistConfiguration.onDeviceTTSVoiceIdentifier
-            .map { SpeechSynthesizer(voiceIdentifier: $0) } ?? SpeechSynthesizer()
         synthesizer.managesAudioSession = false
         synthesizer.onFinished = { [weak self] in
             self?.onDeviceSpeechFinished()
         }
-        speechSynthesizer = synthesizer
         return synthesizer
     }
 

@@ -2,10 +2,21 @@ import AVFoundation
 import Foundation
 import Shared
 
+protocol CarPlayAssistTonePlayerProtocol: AnyObject {
+    func play(_ tone: CarPlayAssistTonePlayer.Tone, completion: (() -> Void)?)
+    func stop()
+}
+
+extension CarPlayAssistTonePlayerProtocol {
+    func play(_ tone: CarPlayAssistTonePlayer.Tone) {
+        play(tone, completion: nil)
+    }
+}
+
 /// Plays the CarPlay Assist feedback tones through the shared audio session instead of the
 /// system sound server, so they behave like media playback: routed with the rest of the
 /// Assist audio and not silenced by the iPhone ring/silent switch.
-final class CarPlayAssistTonePlayer: NSObject {
+final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
     enum Tone {
         /// Rising two-note chime, replaces the system "begin record" sound.
         case startRecording
