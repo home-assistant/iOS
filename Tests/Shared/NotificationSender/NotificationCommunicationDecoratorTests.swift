@@ -98,7 +98,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         XCTAssertNotEqual(ia.conversationIdentifier, ib.conversationIdentifier)
     }
 
-    func testDecorate_emptyTitle_returnsOriginalContentUnchanged() async {
+    func testDecorate_emptyTitle_stillDecorates() async {
         let original = content(title: "", body: "x")
         let info = NotificationSenderInfo(
             source: .mdi(
@@ -108,10 +108,13 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
                 colorString: "#FF0000",
                 iconColorString: "#FFFFFF"
             ),
-            senderName: "X"
+            senderName: "Home Assistant"
         )
         let result = await decorator.decorate(content: original, sender: info, api: api)
-        XCTAssertEqual(result, original)
+        XCTAssertFalse(
+            result === original,
+            "a notification without a title must still be decorated with the sender intent"
+        )
     }
 
     func testBuildIntent_iconURL_cacheHit_skipsDownload() async throws {
