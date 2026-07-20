@@ -519,6 +519,7 @@ class LocalPushManagerTests: XCTestCase {
                 "background_color": "#101820",
                 "text_color": "#FFFFFF",
                 "progress_bar_color": "#03A9F4",
+                "progress_bar_direction": "decreasing",
             ],
         ]))
 
@@ -527,6 +528,7 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(ha["background_color"] as? String, "#101820")
         XCTAssertEqual(ha["text_color"] as? String, "#FFFFFF")
         XCTAssertEqual(ha["progress_bar_color"] as? String, "#03A9F4")
+        XCTAssertEqual(ha["progress_bar_direction"] as? String, "decreasing")
         XCTAssertEqual(ha["notification_icon_color"] as? String, "#FF0000")
     }
 

@@ -2476,6 +2476,14 @@ public enum L10n {
         /// Plain Message
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.plain.title") }
       }
+      public enum ProgressDirection {
+        /// progress_bar_direction: decreasing flips the bar's fill: it shows what remains (progress_max − progress) and drains as progress rises. Percent text still shows the raw progress value. Also works on timer bars, e.g. increasing makes a countdown fill up instead of drain.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.progress_direction.note") }
+        /// A progress bar that drains instead of fills.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.progress_direction.summary") }
+        /// Battery · Decreasing Bar
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.progress_direction.title") }
+      }
       public enum RateLimit {
         /// Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.note") }

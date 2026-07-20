@@ -170,7 +170,7 @@ struct HAExpandedBottomView: View {
                     .lineLimit(2)
             }
 
-            if let fraction = state.progressFraction {
+            if let fraction = state.progressBarFillFraction {
                 HAActivityProgressBar(
                     fraction: fraction,
                     fillColor: barColor,
@@ -178,7 +178,12 @@ struct HAExpandedBottomView: View {
                     height: 8
                 )
             } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(start: state.chronometerStart, end: end, tint: barColor)
+                HAActivityTimerProgressBar(
+                    start: state.chronometerStart,
+                    end: end,
+                    tint: barColor,
+                    direction: state.resolvedProgressBarDirection
+                )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

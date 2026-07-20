@@ -90,6 +90,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.backgroundColor)
         XCTAssertNil(state.textColor)
         XCTAssertNil(state.progressBarColor)
+        XCTAssertNil(state.progressBarDirection)
     }
 
     func testContentState_emptyTitle_isNil() {
@@ -110,6 +111,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             "background_color": "#101820",
             "text_color": "#FFFFFF",
             "progress_bar_color": "#FF9800",
+            "progress_bar_direction": "decreasing",
         ]
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
         XCTAssertEqual(state.title, "Test title")
@@ -123,6 +125,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.backgroundColor, "#101820")
         XCTAssertEqual(state.textColor, "#FFFFFF")
         XCTAssertEqual(state.progressBarColor, "#FF9800")
+        XCTAssertEqual(state.progressBarDirection, "decreasing")
         XCTAssertNil(state.countdownEnd)
     }
 
