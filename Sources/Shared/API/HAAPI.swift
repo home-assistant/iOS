@@ -187,10 +187,13 @@ public class HomeAssistantAPI {
     /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
     /// session construction on that snapshot would leave the session permanently without the
     /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
-    public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+    public static func makeCertificateAwareURLSession(
+        server: Server,
+        configuration: URLSessionConfiguration = .ephemeral
+    ) -> URLSession {
         let certificateProvider = HomeAssistantCertificateProvider(server: server)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-        return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
     }
 
     /// Callback-based on purpose (its only caller is the watch's magic item execution): watchOS
