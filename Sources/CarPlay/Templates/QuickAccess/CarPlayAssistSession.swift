@@ -1,4 +1,3 @@
-import AudioToolbox
 import AVFoundation
 import CarPlay
 import Foundation
@@ -34,6 +33,7 @@ final class CarPlayAssistSession: NSObject {
     var onStop: OnStop?
 
     private let audioSession = AVAudioSession.sharedInstance()
+    private let tonePlayer = CarPlayAssistTonePlayer()
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
     private var ttsAudioPlayer: AVAudioPlayer?
@@ -174,6 +174,7 @@ final class CarPlayAssistSession: NSObject {
         guard !alreadyStopped else { return }
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
+        tonePlayer.stop()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -457,20 +458,15 @@ final class CarPlayAssistSession: NSObject {
         Current.Log.info("CarPlay Assist audio route \(context). inputs: [\(inputs)] outputs: [\(outputs)]")
     }
 
+    // Tones go through the audio session (not the system sound server) so they stay audible
+    // when the iPhone ring/silent switch is muted, like any other media playback.
     private func playRecordingIndicatorToneIfNeeded() {
         guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
-        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
-        AudioServicesPlaySystemSound(1113) // begin_record.caf
+        tonePlayer.play(.startRecording)
     }
 
     private func playProcessingIndicatorToneIfNeeded() {
-        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
-        AudioServicesPlaySystemSound(1405) // SiriStopSuccess_Haptic.caf
-    }
-
-    private func playErrorIndicatorToneIfNeeded() {
-        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
-        AudioServicesPlaySystemSound(1343) // PINUnexpected.caf
+        tonePlayer.play(.processing)
     }
 
     // MARK: - TTS Playback
@@ -670,6 +666,7 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func restartRecording() {
+        tonePlayer.stop()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -683,6 +680,7 @@ final class CarPlayAssistSession: NSObject {
             restartRecording()
             return
         }
+        tonePlayer.stop()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
@@ -719,9 +717,12 @@ final class CarPlayAssistSession: NSObject {
         ttsPlayer.pause()
         ttsPlayer.replaceCurrentItem(with: nil)
         clearTTSPlayerObservers()
-        deactivateAudioSession()
         Current.Log.error("CarPlay Assist entered error state: \(message)")
-        playErrorIndicatorToneIfNeeded()
+        // The audio session must stay active until the error tone finishes, otherwise the
+        // tone is cut off; it is released once playback completes.
+        tonePlayer.play(.error) { [weak self] in
+            self?.deactivateAudioSession()
+        }
         activateVoiceControlState(for: .error(message))
     }
 }
