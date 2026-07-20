@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="launchScreen-logo" translatesAutoresizingMaskIntoConstraints="NO" id="mQh-tn-BC1" userLabel="Icon">
-                                <rect key="frame" x="133.5" y="361" width="147" height="174"/>
+                                <rect key="frame" x="149.5" y="390.5" width="115" height="115"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="147" id="xXY-zT-zVi"/>
-                                    <constraint firstAttribute="height" constant="174" id="y4R-Bz-WCE"/>
+                                    <constraint firstAttribute="width" constant="115" id="xXY-zT-zVi"/>
+                                    <constraint firstAttribute="height" constant="115" id="y4R-Bz-WCE"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-launch" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
@@ -49,7 +49,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="launchScreen-logo" width="180" height="271"/>
+        <image name="launchScreen-logo" width="180" height="180"/>
         <image name="ohf-launch" width="903" height="282"/>
         <namedColor name="launchScreen-background">
             <color red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
