@@ -728,7 +728,7 @@ final class CarPlayAssistSession: NSObject {
         let workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
             let shouldFire = stateQueue.sync {
-                !isStopped && state.isAwaitingPipelineResponse && !ttsWasRequested
+                !self.isStopped && self.state.isAwaitingPipelineResponse && !self.ttsWasRequested
             }
             guard shouldFire else { return }
             enterErrorState(message: "No response from the Assist pipeline within \(Self.responseTimeout)s")
@@ -821,7 +821,7 @@ final class CarPlayAssistSession: NSObject {
         transcriber.onError = { [weak self] error in
             guard let self else { return }
             onDeviceListeningActive = false
-            let wasRecording = stateQueue.sync { !isStopped && state.isRecording }
+            let wasRecording = stateQueue.sync { !self.isStopped && self.state.isRecording }
             guard wasRecording else { return }
             Current.Log.error("CarPlay Assist on-device transcription failed: \(error.localizedDescription)")
             enterErrorState(message: error.localizedDescription)
@@ -832,7 +832,7 @@ final class CarPlayAssistSession: NSObject {
             onDeviceListeningActive = false
             // A final transcript switches the state to .processing before listening stops, so a
             // stop that leaves the state at .recording means nothing was recognized.
-            let noSpeech = stateQueue.sync { !isStopped && state.isRecording }
+            let noSpeech = stateQueue.sync { !self.isStopped && self.state.isRecording }
             if noSpeech {
                 enterErrorState(message: "No speech was recognized")
             }
