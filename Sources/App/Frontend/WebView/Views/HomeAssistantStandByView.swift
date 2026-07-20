@@ -14,7 +14,6 @@ struct HomeAssistantStandByView: View {
     private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
-    fileprivate static let launchScreenLogoSize = CGSize(width: 147, height: 174)
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
 
     let server: Server
@@ -658,8 +657,8 @@ private extension HomeAssistantStandByView {
             .resizable()
             .scaledToFit()
             .frame(
-                width: HomeAssistantStandByView.launchScreenLogoSize.width,
-                height: HomeAssistantStandByView.launchScreenLogoSize.height
+                width: LaunchSplashOverlayView.Constants.splashLogoSize.width,
+                height: LaunchSplashOverlayView.Constants.splashLogoSize.height
             )
             .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
             .allowsHitTesting(false)
