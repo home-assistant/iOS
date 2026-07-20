@@ -21,7 +21,16 @@ enum ServerHAAPIAdapter {
                 // The delegate answers mTLS client-certificate challenges and applies the server's
                 // security exceptions — required for local/self-signed servers. HAAPI invalidates
                 // the session after each connection attempt, releasing the delegate.
-                HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+                //
+                // `.avStreaming` marks the connection as continuous media so watchOS keeps the
+                // long-lived websocket on Wi-Fi instead of throttling or tearing it down under
+                // its default networking policies.
+                let configuration = URLSessionConfiguration.ephemeral
+                configuration.networkServiceType = .avStreaming
+                return HomeAssistantAPI.makeCertificateAwareURLSession(
+                    server: server,
+                    configuration: configuration
+                )
             },
             additionalHeaders: ["User-Agent": HomeAssistantAPI.userAgent]
         )

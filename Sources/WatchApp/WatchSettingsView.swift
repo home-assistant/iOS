@@ -501,6 +501,13 @@ private struct ComplicationDiagnosticDetailView: View {
 private struct WatchClientEventsView: View {
     @State private var events: [ClientEvent] = []
     @State private var showClearConfirmation = false
+    /// Set once the diagnostics zip has been built; the share button stays a spinner until then.
+    @State private var diagnosticsArchiveURL: URL?
+    /// True from tapping "Send to iPhone" until the transfer reaches the iPhone (or fails). The
+    /// transfer itself is queued by the system and survives leaving this screen.
+    @State private var isSendingToPhone = false
+    @State private var sendToPhoneMessage: String?
+    @State private var showSendToPhoneResult = false
 
     var body: some View {
         List {
@@ -534,15 +541,46 @@ private struct WatchClientEventsView: View {
                     }
 
                     // Shares a zip of the client events plus the on-watch `Current.Log` files, which
-                    // are otherwise unreachable — the watch has no other way to hand them over.
-                    ShareLink(
-                        item: WatchDiagnosticsArchive(),
-                        preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
-                    ) {
-                        Image(systemSymbol: .squareAndArrowUp)
+                    // are otherwise unreachable — the watch has no other way to hand them over. The
+                    // zip is prepared on appear so the ShareLink only hands over a finished file:
+                    // building it lazily during the share ran on the Swift-concurrency pool, which
+                    // is starved on watch hardware, leaving the share sheet stuck.
+                    if let diagnosticsArchiveURL {
+                        ShareLink(
+                            item: diagnosticsArchiveURL,
+                            preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
+                        ) {
+                            Image(systemSymbol: .squareAndArrowUp)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
+
+                        // The watchOS share sheet can't reliably deliver an arbitrary file, so the
+                        // dependable path hands the archive to the paired iPhone over Watch
+                        // Connectivity; it then ships with the iPhone's "Export Log Files".
+                        Button {
+                            sendToPhone(archiveURL: diagnosticsArchiveURL)
+                        } label: {
+                            if isSendingToPhone {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                Image(systemSymbol: .iphoneAndArrowForward)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .disabled(isSendingToPhone)
+                        .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.sendToPhone))
+                        .alert(
+                            Text(verbatim: sendToPhoneMessage ?? ""),
+                            isPresented: $showSendToPhoneResult
+                        ) {
+                            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+                        }
+                    } else {
+                        ProgressView()
                             .frame(maxWidth: .infinity)
                     }
-                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
                 }
                 .buttonStyle(.borderless)
 
@@ -562,6 +600,44 @@ private struct WatchClientEventsView: View {
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
-        .onAppear { events = Current.clientEventStore.getEvents().reversed() }
+        .onAppear {
+            events = Current.clientEventStore.getEvents().reversed()
+            prepareDiagnosticsArchive()
+        }
+    }
+
+    private func sendToPhone(archiveURL: URL) {
+        isSendingToPhone = true
+        WatchDiagnosticsTransfer.send(archiveURL: archiveURL) { result in
+            DispatchQueue.main.async {
+                isSendingToPhone = false
+                switch result {
+                case .success:
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone.success
+                case let .failure(error):
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone
+                        .failure(error.localizedDescription)
+                }
+                showSendToPhoneResult = true
+            }
+        }
+    }
+
+    private func prepareDiagnosticsArchive() {
+        guard diagnosticsArchiveURL == nil, !events.isEmpty else { return }
+        // Dedicated thread for the same reason as magic item execution: on watch hardware the GCD
+        // global queues and the Swift-concurrency pool can be starved, so work queued on them may
+        // never start. A raw `Thread` always does.
+        let thread = Thread {
+            do {
+                let url = try WatchDiagnosticsArchive.makeArchive()
+                DispatchQueue.main.async { diagnosticsArchiveURL = url }
+            } catch {
+                Current.Log.error("Failed to build watch diagnostics archive: \(error.localizedDescription)")
+            }
+        }
+        thread.name = "watch-diagnostics-archive"
+        thread.qualityOfService = .userInitiated
+        thread.start()
     }
 }
