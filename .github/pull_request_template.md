@@ -4,9 +4,12 @@
 <!-- Please read our AI policy before contributing: https://developers.home-assistant.io/docs/ai_policy -->
 Read our [AI policy](https://developers.home-assistant.io/docs/ai_policy).
 
+Select exactly one option that describes AI usage in this contribution:
+
 - [ ] AI assistance was used for this contribution
 - [ ] AI took full control of the code generation for this contribution
 - [ ] I have not used AI for this contribution
+
 - [ ] I have read the AI policy
 
 ## Summary
