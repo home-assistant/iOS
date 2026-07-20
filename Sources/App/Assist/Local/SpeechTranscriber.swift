@@ -265,8 +265,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         }
     }
 
-    /// Get list of locales that support on-device speech recognition
-    public static var supportedLocales: [Locale] {
+    /// Get list of locales that support on-device speech recognition.
+    /// Nonisolated so non-main-actor callers (e.g. CarPlay settings) can read it; the
+    /// underlying Speech framework APIs are not main-actor-bound.
+    public nonisolated static var supportedLocales: [Locale] {
         SFSpeechRecognizer.supportedLocales()
             .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
             .sorted { $0.identifier < $1.identifier }

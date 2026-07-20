@@ -50,10 +50,10 @@ final class CarPlayAssistSession: NSObject {
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
 
-    /// On-device STT/TTS, shared with the in-app Assist via `AssistConfiguration`.
-    /// CarPlay owns the audio session for the whole conversation, so both components run with
-    /// `managesAudioSession = false`. `muteTTS` is deliberately ignored here: CarPlay Assist is
-    /// a voice-only interface, so a response must always be audible.
+    /// Assist settings shared globally with the in-app Assist via the `AssistConfiguration`
+    /// database singleton: mute TTS, on-device STT/TTS and their locale/voice. CarPlay owns
+    /// the audio session for the whole conversation, so the on-device speech components run
+    /// with `managesAudioSession = false`.
     private var assistConfiguration = AssistConfiguration()
     /// Configuration override from the initializer; when nil, `start()` reads the database.
     private let injectedAssistConfiguration: AssistConfiguration?
@@ -315,6 +315,11 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
+    /// Server TTS is only requested when responses are not muted and not spoken on device.
+    private var shouldRequestServerTTS: Bool {
+        !assistConfiguration.muteTTS && !assistConfiguration.enableOnDeviceTTS
+    }
+
     private var promptToSend: String? {
         guard let prompt = prompt?.trimmingCharacters(in: .whitespacesAndNewlines), !prompt.isEmpty else {
             return nil
@@ -363,7 +368,7 @@ final class CarPlayAssistSession: NSObject {
         assistService.assist(source: .text(
             input: prompt,
             pipelineId: pipelineId,
-            expectTTS: !assistConfiguration.enableOnDeviceTTS
+            expectTTS: shouldRequestServerTTS
         ))
         armResponseWatchdog()
     }
@@ -855,7 +860,7 @@ final class CarPlayAssistSession: NSObject {
         assistService.assist(source: .text(
             input: input,
             pipelineId: pipelineId,
-            expectTTS: !assistConfiguration.enableOnDeviceTTS
+            expectTTS: shouldRequestServerTTS
         ))
         armResponseWatchdog()
     }
@@ -866,7 +871,7 @@ final class CarPlayAssistSession: NSObject {
 
         let text = content.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else {
-            onDeviceSpeechFinished()
+            finishResponse()
             return
         }
         ensureSpeechSynthesizer().speak(text)
@@ -885,12 +890,14 @@ final class CarPlayAssistSession: NSObject {
         }
         synthesizer.managesAudioSession = false
         synthesizer.onFinished = { [weak self] in
-            self?.onDeviceSpeechFinished()
+            self?.finishResponse()
         }
         return synthesizer
     }
 
-    private func onDeviceSpeechFinished() {
+    /// Ends a response that produces no further audio (on-device speech finished, muted, or
+    /// empty content): starts listening again for a continued conversation, otherwise idles.
+    private func finishResponse() {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
@@ -1013,7 +1020,7 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         assistService.assist(source: .audio(
             pipelineId: pipelineId,
             audioSampleRate: sampleRate,
-            tts: !assistConfiguration.enableOnDeviceTTS
+            tts: shouldRequestServerTTS
         ))
     }
 
@@ -1107,7 +1114,10 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         guard !stopped else { return }
         stateQueue.sync { state = .responding }
         activateVoiceControlState(for: .responding)
-        if assistConfiguration.enableOnDeviceTTS {
+        if assistConfiguration.muteTTS {
+            // Voice responses are muted globally, so no audio follows; finish the run now.
+            finishResponse()
+        } else if assistConfiguration.enableOnDeviceTTS {
             speakOnDevice(content)
         }
     }

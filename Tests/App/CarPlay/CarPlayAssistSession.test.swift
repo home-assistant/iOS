@@ -328,6 +328,47 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(sut.currentState, .recording)
     }
 
+    // MARK: - Muted TTS (global setting)
+
+    func testMuteTTSSkipsServerTTSRequest() {
+        let sut = makeSut(configuration: AssistConfiguration(muteTTS: true))
+        sut.start()
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    func testMuteTTSFinishesAfterIntentEndWithoutSpeaking() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(
+            configuration: AssistConfiguration(muteTTS: true, enableOnDeviceTTS: true),
+            speechSynthesizer: synthesizer
+        )
+        sut.start()
+        sut.didReceiveEvent(.sttEnd)
+        sut.didReceiveIntentEndContent("The lights are on")
+
+        XCTAssertFalse(synthesizer.speakCalled)
+        XCTAssertEqual(sut.currentState, .idle)
+    }
+
+    func testMuteTTSContinueConversationRestartsRecording() {
+        let sut = makeSut(configuration: AssistConfiguration(muteTTS: true))
+        sut.start()
+        sut.didReceiveEvent(.sttEnd)
+
+        mockAudioRecorder.startRecordingCalled = false
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+        sut.didReceiveIntentEndContent("Which room?")
+
+        XCTAssertTrue(mockAssistService.resetShouldStartListeningAgainAfterPlaybackEndCalled)
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+        XCTAssertEqual(sut.currentState, .recording)
+    }
+
     func testEmptyIntentContentWithOnDeviceTTSGoesIdleWithoutSpeaking() {
         let synthesizer = MockSpeechSynthesizer()
         let sut = makeSut(
