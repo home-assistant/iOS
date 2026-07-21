@@ -36,8 +36,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
+        XCTAssertEqual(
+            WebViewExternalBusMessage.frontendReloadAndClearCache.rawValue,
+            "frontend/reload_and_clear_cache"
+        )
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 24)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 25)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -84,6 +88,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
+            "hasReloadAndClearCache",
             "appVersion",
             "toastComponentVersion",
         ]

@@ -273,6 +273,29 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
     }
 
+    @MainActor func testHandleExternalMessageFrontendReloadAndClearCacheCleansCacheThenRefreshes() {
+        let original = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = original }
+        let handler = MockWebsiteDataStoreHandler()
+        Current.websiteDataStoreHandler = handler
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "frontend/reload_and_clear_cache",
+        ]
+        sut.handleExternalMessage(dictionary)
+
+        XCTAssertEqual(handler.cleanCacheCallCount, 1)
+        XCTAssertEqual(handler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
+        XCTAssertFalse(mockWebViewController.refreshCalled, "reload must wait for cache clearing to finish")
+
+        handler.invokePendingCompletion()
+
+        XCTAssertTrue(mockWebViewController.refreshCalled)
+    }
+
     @MainActor func testSendExternalBusCommandWithRetrySendsCommandWithCorrelatableID() throws {
         let firstSend = expectation(description: "command sent")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
