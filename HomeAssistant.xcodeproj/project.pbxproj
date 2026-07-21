@@ -96,6 +96,7 @@
 		4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
+		424D4161300F75B7001998ED /* GreetingsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D4160300F75B7001998ED /* GreetingsSettingsView.swift */; };
 		4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
 		4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
@@ -169,6 +170,9 @@
 		42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
+		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
+		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
+		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
 		42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */; };
 		42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */; };
@@ -603,6 +607,7 @@
 		423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-WatchWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4245DC022EBA42C3005E0E04 /* AreasService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
+		424D4160300F75B7001998ED /* GreetingsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingsSettingsView.swift; sourceTree = "<group>"; };
 		4254C4C92D103ABB00245021 /* ExternalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLink.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
@@ -620,6 +625,9 @@
 		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
+		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
+		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
+		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
 		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
 		42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.swift; sourceTree = "<group>"; };
 		42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaSyntaxHighlighter.swift; sourceTree = "<group>"; };
@@ -2234,6 +2242,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		42D6FDD1300F71E800D4BEB9 /* FlightGreetings */ = {
+			isa = PBXGroup;
+			children = (
+				42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */,
+				42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */,
+				42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */,
+				424D4160300F75B7001998ED /* GreetingsSettingsView.swift */,
+			);
+			path = FlightGreetings;
+			sourceTree = "<group>";
+		};
 		42DF194F30065055003B7FA1 /* Templating */ = {
 			isa = PBXGroup;
 			children = (
@@ -2285,6 +2304,7 @@
 				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
 				42DF194F30065055003B7FA1 /* Templating */,
+				42D6FDD1300F71E800D4BEB9 /* FlightGreetings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -3757,11 +3777,15 @@
 				42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */,
 				42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */,
 				42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */,
+				42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */,
+				42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
+				42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
 				42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
+				424D4161300F75B7001998ED /* GreetingsSettingsView.swift in Sources */,
 				42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */,
 				42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */,
 				42DF97B430066D95003B7FA1 /* JinjaTemplateEditorSheet.swift in Sources */,

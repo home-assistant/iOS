@@ -195,6 +195,21 @@ public class SettingsStore {
         }
     }
 
+    /// Greets the user (toast + in-flight empty state) when flight detection determines they are on a plane.
+    /// Enabled by default; toggled in App settings > Greetings.
+    public var flightGreetingsEnabled: Bool {
+        get {
+            if let value = prefs.object(forKey: "flightGreetingsEnabled") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "flightGreetingsEnabled")
+        }
+    }
+
     public var restoreLastURL: Bool {
         get {
             if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {

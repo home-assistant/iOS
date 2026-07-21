@@ -1688,6 +1688,17 @@ public enum L10n {
     }
   }
 
+  public enum FlightGreetings {
+    /// Have a great flight!
+    public static var greeting: String { return L10n.tr("Localizable", "flight_greetings.greeting") }
+    public enum EmptyState {
+      /// It looks like you're in the air. Your home will be waiting when you land.
+      public static var body: String { return L10n.tr("Localizable", "flight_greetings.empty_state.body") }
+      /// Tap here to configure in-flight greetings
+      public static var disclaimer: String { return L10n.tr("Localizable", "flight_greetings.empty_state.disclaimer") }
+    }
+  }
+
   public enum Gestures {
     public enum _1Finger {
       /// Using one finger
@@ -4533,6 +4544,16 @@ public enum L10n {
       /// Event Log
       public static var title: String { return L10n.tr("Localizable", "settings.event_log.title") }
     }
+    public enum Greetings {
+      /// Greetings
+      public static var title: String { return L10n.tr("Localizable", "settings.greetings.title") }
+      public enum Flight {
+        /// Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed and altitude.
+        public static var footer: String { return L10n.tr("Localizable", "settings.greetings.flight.footer") }
+        /// Flight greetings
+        public static var title: String { return L10n.tr("Localizable", "settings.greetings.flight.title") }
+      }
+    }
     public enum LocationHistory {
       /// No Location History
       public static var empty: String { return L10n.tr("Localizable", "settings.location_history.empty") }
@@ -4630,6 +4651,8 @@ public enum L10n {
       public static var general: String { return L10n.tr("Localizable", "settings.search_keywords.general") }
       /// swipe, tap, navigation, shortcuts
       public static var gestures: String { return L10n.tr("Localizable", "settings.search_keywords.gestures") }
+      /// flight, airplane, plane, travel, toast
+      public static var greetings: String { return L10n.tr("Localizable", "settings.search_keywords.greetings") }
       /// documentation, support, guide, companion
       public static var help: String { return L10n.tr("Localizable", "settings.search_keywords.help") }
       /// wall mount, tablet, screen, always on, auto lock

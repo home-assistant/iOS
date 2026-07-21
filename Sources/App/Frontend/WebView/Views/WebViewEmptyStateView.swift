@@ -221,6 +221,25 @@ struct WebViewEmptyStateView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
+        case .inFlight:
+            VStack(spacing: DesignSystem.Spaces.two) {
+                HStack(spacing: DesignSystem.Spaces.two) {
+                    Image(.logo)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
+                    Image(systemSymbol: .airplane)
+                        .font(.system(size: 44))
+                        .foregroundStyle(Color.haPrimary)
+                }
+                Text(L10n.FlightGreetings.greeting)
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, DesignSystem.Spaces.two)
+                    .padding(.vertical, DesignSystem.Spaces.one)
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
         case .recoveredServerNeedingReauthentication:
             Image(systemSymbol: .key)
                 .font(.system(size: 56))
@@ -231,7 +250,7 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var bodyText: some View {
         switch style {
-        case .disconnected, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated:
             Text(style.body)
                 .font(.callout)
                 .foregroundColor(.secondary)
@@ -249,7 +268,7 @@ struct WebViewEmptyStateView: View {
     private var primaryButton: some View {
         Button(action: {
             switch style {
-            case .disconnected:
+            case .disconnected, .inFlight:
                 retryAction?()
             case .unauthenticated:
                 reauthAction?(selectedReauthURLType)
@@ -299,7 +318,7 @@ struct WebViewEmptyStateView: View {
     private var secondaryButton: some View {
         Button(action: {
             switch style {
-            case .disconnected, .unauthenticated, .recoveredServerNeedingReauthentication:
+            case .disconnected, .inFlight, .unauthenticated, .recoveredServerNeedingReauthentication:
                 settingsAction?()
             }
         }) {
@@ -371,6 +390,10 @@ struct WebViewEmptyStateView: View {
         showsErrorDetailsButton: true,
         errorDetailsAction: {}
     )
+}
+
+#Preview("In Flight") {
+    WebViewEmptyStatePreview.view(style: .inFlight)
 }
 
 #Preview("Unauthenticated") {

@@ -24,7 +24,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
     /// All entries belonging to this group, before platform visibility filtering.
     var allItems: [SettingsItem] {
         switch self {
-        case .customizeExperience: return [.general, .gestures, .kiosk, .macToolbar]
+        case .customizeExperience: return [.general, .gestures, .greetings, .kiosk, .macToolbar]
         case .stayInformed: return [.notifications, .liveActivities]
         case .shareFromDevice: return [.location, .sensors, .remindersSync]
         case .quickAccess: return [.widgets, .appIconShortcuts, .nfc]

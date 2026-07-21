@@ -27,6 +27,23 @@ extension WebViewController {
         } else {
             reconnectManager?.stop()
         }
+        upgradeEmptyStateForFlightIfNeeded()
+    }
+
+    /// Swaps the disconnected empty state for the in-flight variant (and greets) when flight
+    /// detection confirms the user is on a plane. Detection is async (Wi-Fi SSID + one-shot GPS),
+    /// so the regular disconnected state shows first and upgrades in place.
+    private func upgradeEmptyStateForFlightIfNeeded() {
+        guard Current.settingsStore.flightGreetingsEnabled,
+              emptyStateStyle(for: connectionState) == .disconnected else { return }
+        Task { @MainActor [weak self] in
+            guard await FlightGreetingManager.shared.isCurrentlyFlying() else { return }
+            guard let self, overlayState?.emptyState?.style == .disconnected else { return }
+            withAnimation(DesignSystem.Animation.easeInOutFaster) {
+                self.overlayState?.emptyState = self.makeEmptyStateContent(style: .inFlight)
+            }
+            FlightGreetingManager.shared.presentGreetingToastIfAllowed()
+        }
     }
 
     @objc func hideEmptyState() {
@@ -72,9 +89,10 @@ extension WebViewController {
         }
     }
 
-    private func makeEmptyStateContent() -> WebFrontendOverlayState.EmptyStateContent {
+    private func makeEmptyStateContent(style: WebViewEmptyStateStyle? = nil) -> WebFrontendOverlayState
+        .EmptyStateContent {
         WebFrontendOverlayState.EmptyStateContent(
-            style: emptyStateStyle(for: connectionState),
+            style: style ?? emptyStateStyle(for: connectionState),
             server: server,
             showsErrorDetailsButton: shouldShowErrorDetailsButton,
             availableReauthURLTypes: availableReauthURLTypes(for: server),
