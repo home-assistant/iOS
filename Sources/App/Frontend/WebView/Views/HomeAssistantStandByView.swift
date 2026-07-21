@@ -376,6 +376,7 @@ struct HomeAssistantStandByView: View {
                 if #available(iOS 26.0, *) {
                     view
                         .glassEffect(.regular.interactive(), in: .circle)
+                        .contentShape(.circle)
                 } else {
                     view
                         .backgroundStyle(.regularMaterial)
