@@ -30,6 +30,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
 
     @MainActor static var configResult: [String: Any] {
         [
