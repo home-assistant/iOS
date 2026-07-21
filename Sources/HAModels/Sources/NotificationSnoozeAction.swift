@@ -24,4 +24,11 @@ public struct NotificationSnoozeAction: Codable, FetchableRecord, PersistableRec
     public var actionIdentifier: String {
         Self.actionIdentifierPrefix + String(minutes)
     }
+
+    /// Parses the snooze duration out of a notification action identifier, or nil when the
+    /// identifier is not a snooze action (e.g. `HA_SNOOZE_15` → 15).
+    public static func minutes(fromActionIdentifier identifier: String) -> Int? {
+        guard identifier.hasPrefix(actionIdentifierPrefix) else { return nil }
+        return Int(identifier.dropFirst(actionIdentifierPrefix.count))
+    }
 }
