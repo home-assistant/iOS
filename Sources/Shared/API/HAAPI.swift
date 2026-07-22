@@ -187,11 +187,15 @@ public class HomeAssistantAPI {
     /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
     /// session construction on that snapshot would leave the session permanently without the
     /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
+    /// `onStep` narrates TLS challenge handling (client certificate / server trust) for callers with
+    /// a live diagnostic trace — a challenge handler blocking on a Keychain read stalls the request
+    /// before any timeout applies, and these lines are the only way to see that stage.
     public static func makeCertificateAwareURLSession(
         server: Server,
-        configuration: URLSessionConfiguration = .ephemeral
+        configuration: URLSessionConfiguration = .ephemeral,
+        onStep: ((String) -> Void)? = nil
     ) -> URLSession {
-        let certificateProvider = HomeAssistantCertificateProvider(server: server)
+        let certificateProvider = HomeAssistantCertificateProvider(server: server, onStep: onStep)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
         return URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
     }
@@ -1394,9 +1398,13 @@ private extension URL {
 /// Certificate provider implementation for Home Assistant servers
 private class HomeAssistantCertificateProvider: HACertificateProvider {
     private let server: Server
+    /// Optional live narration of challenge handling; announced BEFORE the potentially blocking
+    /// work (Keychain read, trust evaluation) so a hang names the step it never returned from.
+    private let onStep: ((String) -> Void)?
 
-    init(server: Server) {
+    init(server: Server, onStep: ((String) -> Void)? = nil) {
         self.server = server
+        self.onStep = onStep
     }
 
     func provideClientCertificate(
@@ -1411,12 +1419,15 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
             return
         }
 
+        onStep?("TLS: client certificate requested — reading it from the Keychain…")
         do {
             let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
             Current.Log.info("[mTLS HAKit] Using client certificate: \(clientCertificate.displayName)")
+            onStep?("TLS: using client certificate \(clientCertificate.displayName)")
             completionHandler(.useCredential, credential)
         } catch {
             Current.Log.error("[mTLS HAKit] Failed to get credential: \(error)")
+            onStep?("TLS: client certificate unavailable (\(error.localizedDescription))")
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }
@@ -1428,13 +1439,16 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
     ) {
         Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(host)")
 
+        onStep?("TLS: evaluating server trust for \(host)…")
         do {
             try server.info.connection.securityExceptions.evaluate(serverTrust)
             Current.Log.info("[mTLS HAKit] Server trust validation successful")
+            onStep?("TLS: server trust accepted")
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
         } catch {
             Current.Log.error("[mTLS HAKit] Server trust validation failed: \(error)")
+            onStep?("TLS: server trust rejected (\(error.localizedDescription))")
             completionHandler(.rejectProtectionSpace, nil)
         }
     }

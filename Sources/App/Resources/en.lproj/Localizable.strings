@@ -1944,7 +1944,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
 "watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
+"watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Couldn't run action";
+"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Syncing with iPhone…";
 "watch.home.sync.waiting" = "Waiting for iPhone…";
 "watch.interaction.toast.action" = "Ran an action";

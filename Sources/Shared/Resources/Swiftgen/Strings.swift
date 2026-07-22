@@ -6431,8 +6431,12 @@ public enum L10n {
           public static var message: String { return L10n.tr("Localizable", "watch.home.run.error.message") }
           /// Open Settings → Servers on this watch to review the server's URL options.
           public static var noActiveUrlHint: String { return L10n.tr("Localizable", "watch.home.run.error.no_active_url_hint") }
+          /// The server didn't respond in time.
+          public static var noResponse: String { return L10n.tr("Localizable", "watch.home.run.error.no_response") }
           /// Couldn't run action
           public static var title: String { return L10n.tr("Localizable", "watch.home.run.error.title") }
+          /// Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.
+          public static var tokenTimeout: String { return L10n.tr("Localizable", "watch.home.run.error.token_timeout") }
         }
       }
       public enum Sync {
