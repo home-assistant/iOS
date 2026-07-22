@@ -203,6 +203,8 @@
 "carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
+"carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
+"carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Tabs";
 "carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
@@ -296,6 +298,8 @@
 "carPlay.quick_access.edit_item.confirmation.no_confirmation" = "Don't require confirmation";
 "carPlay.quick_access.edit_item.subtitle" = "Remove or edit items";
 "carPlay.quick_access.edit_item.title" = "Edit";
+"carPlay.quick_access.empty.body" = "Add items in the Home Assistant app on your iPhone.";
+"carPlay.quick_access.empty.title" = "No Quick Access items";
 "carPlay.quick_access.execute.in_progress" = "Executing...";
 "carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";

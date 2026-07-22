@@ -41,6 +41,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var entityProviders: [CarPlayEntityListItem] = []
     private var currentItems: [MagicItem] = []
     private var currentLayout: CarPlayQuickAccessLayout = .grid
+    private var currentShowAddEditButtons = true
     private var entitiesPerServer: [String: HACachedStates] = [:]
     private var lastKnownEntities: [String: HAEntity] = [:]
     private var executingItemIds: Set<String> = []
@@ -207,9 +208,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout) {
+    func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout, showAddEditButtons: Bool) {
         currentItems = items
         currentLayout = layout
+        currentShowAddEditButtons = showAddEditButtons
         pruneLastKnownEntities(for: items)
         guard !items.isEmpty else {
             presentEmptyState()
@@ -219,12 +221,26 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentEmptyState() {
+        guard currentShowAddEditButtons else {
+            presentAddEditHiddenEmptyState()
+            return
+        }
+
         if #available(iOS 26.0, *), currentLayout == .grid {
             paginatedList.updateItems(items: rowItems(displayItems: actionDisplayItems(includeEdit: false)))
         } else {
             template.trailingNavigationBarButtons = []
             template.updateSections([.init(items: [makeAddItemRow()])])
         }
+    }
+
+    private func presentAddEditHiddenEmptyState() {
+        let item = CPListItem(
+            text: L10n.CarPlay.QuickAccess.Empty.title,
+            detailText: L10n.CarPlay.QuickAccess.Empty.body
+        )
+        template.trailingNavigationBarButtons = []
+        template.updateSections([.init(items: [item])])
     }
 
     private func refreshCurrentPresentation() {
@@ -234,11 +250,22 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
 
         if #available(iOS 26.0, *), currentLayout == .grid {
-            let displayItems = gridItems(items: currentItems) + actionDisplayItems(includeEdit: true)
-            paginatedList.updateItems(items: rowItems(displayItems: displayItems))
+            paginatedList.updateItems(
+                items: rowItems(displayItems: gridItems(items: currentItems)),
+                footerItems: gridActionFooterItems()
+            )
         } else {
-            paginatedList.updateItems(items: listItems(items: currentItems) + [makeAddItemRow(), makeEditItemRow()])
+            paginatedList.updateItems(
+                items: listItems(items: currentItems),
+                footerItems: currentShowAddEditButtons ? [makeAddItemRow(), makeEditItemRow()] : []
+            )
         }
+    }
+
+    @available(iOS 26.0, *)
+    private func gridActionFooterItems() -> [any CPListTemplateItem] {
+        guard currentShowAddEditButtons else { return [] }
+        return rowItems(displayItems: actionDisplayItems(includeEdit: true))
     }
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {

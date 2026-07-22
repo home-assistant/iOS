@@ -166,4 +166,15 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             config.quickAccessLayout = newValue
         }
     }
+
+    // MARK: - Add/Edit buttons visibility
+
+    var showAddEditButtons: Bool {
+        get {
+            config.resolvedShowAddEditButtons
+        }
+        set {
+            config.showAddEditButtons = newValue
+        }
+    }
 }
