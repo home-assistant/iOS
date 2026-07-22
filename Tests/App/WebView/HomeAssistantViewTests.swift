@@ -154,9 +154,55 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowStandByView)
     }
 
+    func testCleanCacheAndReloadClearsFrontendAssetCacheThenResetsFrontend() {
+        let previousHandler = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = previousHandler }
+        let handler = FakeWebsiteDataStoreHandler()
+        Current.websiteDataStoreHandler = handler
+
+        let overlayState = WebFrontendOverlayState()
+        overlayState.showsNoActiveURL = true
+        let sut = HomeAssistantViewModel(
+            server: Server.fake(),
+            overlayState: overlayState
+        )
+        let initialResetID = sut.webViewResetID
+
+        sut.cleanCacheAndReload()
+
+        XCTAssertEqual(handler.cleanCacheCallCount, 1)
+        XCTAssertEqual(handler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
+
+        handler.invokePendingCompletion()
+
+        XCTAssertNotEqual(sut.webViewResetID, initialResetID)
+        XCTAssertFalse(overlayState.showsNoActiveURL)
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+    }
+
     private func server(version: Version) -> Server {
         Server.fake { info in
             info.version = version
         }
+    }
+}
+
+private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
+    private(set) var cleanCacheCallCount = 0
+    private(set) var lastDataTypes: Set<String>?
+    private var pendingCompletion: (() -> Void)?
+
+    func cleanCache(dataTypes: Set<String>, completion: (() -> Void)?) {
+        cleanCacheCallCount += 1
+        lastDataTypes = dataTypes
+        pendingCompletion = completion
+    }
+
+    func cleanFrontendAssetCacheIfNeeded(completion: ((Bool) -> Void)?) {}
+
+    func invokePendingCompletion() {
+        let completion = pendingCompletion
+        pendingCompletion = nil
+        completion?()
     }
 }

@@ -11,7 +11,6 @@ struct HomeAssistantStandByView: View {
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 44
-    private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
@@ -23,6 +22,10 @@ struct HomeAssistantStandByView: View {
     let onSelectServerTapped: (() -> Void)?
     let onGestureAction: ((HAGestureAction) -> Void)?
     let onLogoDismiss: (() -> Void)?
+    let onCleanCacheAndReload: (() -> Void)?
+
+    private let delayedSettingsButtonDelay: Duration
+    private let cleanCacheButtonDelay: Duration
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -32,6 +35,8 @@ struct HomeAssistantStandByView: View {
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
+    @State private var showsCleanCacheButton = false
+    @State private var loaderCountdownRestartToken = 0
     @State private var hasAppeared = false
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
@@ -63,7 +68,10 @@ struct HomeAssistantStandByView: View {
         serverSelectionNamespace: Namespace.ID? = nil,
         onSelectServerTapped: (() -> Void)? = nil,
         onGestureAction: ((HAGestureAction) -> Void)? = nil,
-        onLogoDismiss: (() -> Void)? = nil
+        onLogoDismiss: (() -> Void)? = nil,
+        onCleanCacheAndReload: (() -> Void)? = nil,
+        delayedSettingsButtonDelay: Duration = .seconds(5),
+        cleanCacheButtonDelay: Duration = .seconds(15)
     ) {
         self.server = server
         self.emptyState = emptyState
@@ -72,6 +80,9 @@ struct HomeAssistantStandByView: View {
         self.onSelectServerTapped = onSelectServerTapped
         self.onGestureAction = onGestureAction
         self.onLogoDismiss = onLogoDismiss
+        self.onCleanCacheAndReload = onCleanCacheAndReload
+        self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
+        self.cleanCacheButtonDelay = cleanCacheButtonDelay
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -117,6 +128,9 @@ struct HomeAssistantStandByView: View {
             if let emptyState {
                 actionButtons(for: emptyState)
                     .opacity(contentOpacity)
+            } else if showsCleanCacheButton, onCleanCacheAndReload != nil {
+                cleanCacheButton
+                    .transition(.opacity)
             }
         }
         .alert(L10n.errorLabel, isPresented: .init(
@@ -155,13 +169,19 @@ struct HomeAssistantStandByView: View {
         ) { _ in
             networkType = Current.connectivity.simpleNetworkType()
         }
-        .task(id: showsEmptyState) {
+        .task(id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)]) {
             showsDelayedSettingsButton = false
+            showsCleanCacheButton = false
             guard !showsEmptyState else { return }
-            try? await Task.sleep(for: Self.delayedSettingsButtonDelay)
+            try? await Task.sleep(for: delayedSettingsButtonDelay)
             guard !Task.isCancelled, !showsEmptyState else { return }
             withAnimation(DesignSystem.Animation.default) {
                 showsDelayedSettingsButton = true
+            }
+            try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
+            guard !Task.isCancelled, !showsEmptyState else { return }
+            withAnimation(DesignSystem.Animation.default) {
+                showsCleanCacheButton = true
             }
         }
     }
@@ -173,6 +193,24 @@ struct HomeAssistantStandByView: View {
                 .transition(.opacity)
                 .padding(.bottom, DesignSystem.Spaces.eighteen)
         }
+    }
+
+    private var cleanCacheButton: some View {
+        Button(action: cleanCacheAndReload) {
+            Text(L10n.WebView.EmptyState.cleanCacheAndReloadButton)
+        }
+        .buttonStyle(.primaryButton)
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.top)
+    }
+
+    private func cleanCacheAndReload() {
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = false
+        }
+        loaderCountdownRestartToken += 1
+        onCleanCacheAndReload?()
     }
 
     @ViewBuilder
@@ -644,6 +682,20 @@ private extension HomeAssistantStandByView {
             activeURLType: .external
         ),
         emptyState: nil
+    )
+}
+
+#Preview("Loading Stuck — Clean Cache Button") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Reserva Aruanã",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .remoteUI
+        ),
+        emptyState: nil,
+        onCleanCacheAndReload: {},
+        delayedSettingsButtonDelay: .seconds(0.2),
+        cleanCacheButtonDelay: .seconds(0.6)
     )
 }
 
