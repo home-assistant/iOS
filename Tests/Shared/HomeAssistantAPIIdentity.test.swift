@@ -389,7 +389,7 @@ private final class FakeHAConnection: HAConnection {
     @discardableResult
     func send<T>(
         _ request: HATypedRequest<T>,
-        completion: @escaping (Result<T, HAError>) -> Void
+        completion: @escaping (Swift.Result<T, HAError>) -> Void
     ) -> HACancellable where T: HADataDecodable {
         sentRequests.append(request.request)
 
