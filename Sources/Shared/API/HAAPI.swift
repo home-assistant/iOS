@@ -1214,8 +1214,9 @@ public class HomeAssistantAPI {
             switch result {
             case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
+                    // Not conclusive that no picture is configured, so not `.missing`.
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
-                    completion(.missing)
+                    completion(.failure)
                     return
                 }
 
@@ -1386,7 +1387,9 @@ public class HomeAssistantAPI {
         "profile-picture-\(server.identifier.rawValue)"
     }
 
-    private func cachedProfilePicture(completion: @escaping (UIImage?) -> Void) {
+    /// Completes with the last successfully fetched profile picture, without any network access.
+    /// Useful to show something immediately, or when the server is unreachable.
+    public func cachedProfilePicture(completion: @escaping (UIImage?) -> Void) {
         Current.diskCache.value(for: profilePictureCacheKey)
             .done { (data: Data) in
                 completion(UIImage(data: data))
