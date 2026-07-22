@@ -142,11 +142,11 @@ struct ServerSelectViewRow: View {
 
         api.currentUser { user in
             userName = user?.name ?? ""
+        }
 
-            guard let user else { return }
-            api.profilePicture(for: user) { image in
-                profilePictureImage = image
-            }
+        // Loaded independently of the user so a cached picture still shows while offline.
+        api.profilePicture { image in
+            profilePictureImage = image
         }
     }
 }
