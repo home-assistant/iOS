@@ -90,7 +90,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.info("Executing watch magic item directly via API")
         trace?.log(.info, "Executing via REST from the watch on \"\(server.info.name)\"…")
 
-        magicItem.execute(on: server, source: .Watch) { [weak self] success, error in
+        magicItem.execute(on: server, source: .Watch, onStep: { [weak self] step in
+            // Each REST stage (service call, URL, token, request, TLS) announces itself before it
+            // runs, so a hang's last trace line names the exact step that never returned.
+            self?.trace?.log(.info, step)
+        }) { [weak self] success, error in
             if success {
                 self?.trace?.log(.success, "Server accepted the request")
             } else {
