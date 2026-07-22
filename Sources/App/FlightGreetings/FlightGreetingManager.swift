@@ -21,9 +21,11 @@ final class FlightGreetingManager {
 
     private var cachedDetection: (isFlying: Bool, date: Date)?
     private var detectionTask: Task<Bool, Never>?
+    private var didBecomeActiveObserver: NSObjectProtocol?
 
     func start() {
-        NotificationCenter.default.addObserver(
+        guard didBecomeActiveObserver == nil else { return }
+        didBecomeActiveObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
             queue: .main
