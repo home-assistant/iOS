@@ -1,6 +1,7 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
+import UIKit
 
 struct HomeAssistantStandByView: View {
     static let dismissTapThreshold = 5
@@ -168,6 +169,12 @@ struct HomeAssistantStandByView: View {
                 .publisher(for: Current.connectivity.connectivityDidChangeNotification())
         ) { _ in
             networkType = Current.connectivity.simpleNetworkType()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            guard !showsEmptyState else { return }
+            showsDelayedSettingsButton = false
+            showsCleanCacheButton = false
+            loaderCountdownRestartToken += 1
         }
         .task(id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)]) {
             showsDelayedSettingsButton = false
