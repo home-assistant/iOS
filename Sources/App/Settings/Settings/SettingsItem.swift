@@ -5,6 +5,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case servers
     case general
     case gestures
+    case greetings
     case kiosk
     case location
     case remindersSync
@@ -29,6 +30,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .general: return L10n.SettingsDetails.General.title
         case .macToolbar: return L10n.Settings.MacToolbar.title
         case .gestures: return L10n.Gestures.Screen.title
+        case .greetings: return L10n.Settings.Greetings.title
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .remindersSync: return L10n.Settings.RemindersSync.title
@@ -61,6 +63,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .dockWindowIcon, size: Self.iconSize)
             case .gestures:
                 MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
+            case .greetings:
+                MaterialDesignIconsImage(icon: .airplaneIcon, size: Self.iconSize)
             case .kiosk:
                 MaterialDesignIconsImage(icon: .tabletDashboardIcon, size: Self.iconSize)
             case .location:
@@ -117,6 +121,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             MacToolbarSettingsView()
         case .gestures:
             GesturesSetupView()
+        case .greetings:
+            GreetingsSettingsView()
         case .kiosk:
             KioskSettingsView()
         case .location:
@@ -216,6 +222,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .general: return L10n.Settings.SearchKeywords.general
         case .macToolbar: return L10n.Settings.SearchKeywords.macToolbar
         case .gestures: return L10n.Settings.SearchKeywords.gestures
+        case .greetings: return L10n.Settings.SearchKeywords.greetings
         case .kiosk: return L10n.Settings.SearchKeywords.kiosk
         case .location: return L10n.Settings.SearchKeywords.location
         case .remindersSync: return L10n.Settings.SearchKeywords.remindersSync
@@ -243,6 +250,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .general: return GeneralSettingsView.settingsSearchEntries
         case .macToolbar: return MacToolbarSettingsView.settingsSearchEntries
         case .gestures: return GesturesSetupView.settingsSearchEntries
+        case .greetings: return GreetingsSettingsView.settingsSearchEntries
         case .kiosk: return KioskSettingsView.settingsSearchEntries
         case .location: return LocationSettingsView.settingsSearchEntries
         case .remindersSync: return RemindersSyncSettingsView.settingsSearchEntries

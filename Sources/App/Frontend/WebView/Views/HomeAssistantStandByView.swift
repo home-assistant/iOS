@@ -195,6 +195,7 @@ struct HomeAssistantStandByView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
             bodyText(for: emptyState)
+            bodyComplementaryText(for: emptyState)
         }
         .opacity(contentOpacity)
         .transition(.opacity)
@@ -345,9 +346,15 @@ struct HomeAssistantStandByView: View {
                     .font(.system(size: Self.reauthenticationIconSize))
                     .foregroundStyle(Color.haPrimary)
             } else {
-                Image(.logo)
-                    .resizable()
-                    .scaledToFit()
+                ZStack(alignment: .bottomTrailing) {
+                    Image(.logo)
+                        .resizable()
+                        .scaledToFit()
+                    if case .inFlight = emptyState?.style {
+                        inFlightIcon
+                            .offset(x: 15, y: 15)
+                    }
+                }
             }
         }
         .frame(
@@ -357,6 +364,24 @@ struct HomeAssistantStandByView: View {
         .launchSplashLogoAnchor()
         .contentShape(Rectangle())
         .onTapGesture(perform: registerLogoDismissTap)
+    }
+
+    private var inFlightIcon: some View {
+        Image(systemSymbol: .airplane)
+            .foregroundStyle(.haPrimary)
+            .rotationEffect(.degrees(-45))
+            .padding(DesignSystem.Spaces.one)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .contentShape(.circle)
+                } else {
+                    view
+                        .backgroundStyle(.regularMaterial)
+                        .clipShape(.circle)
+                }
+            }
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
@@ -410,7 +435,7 @@ struct HomeAssistantStandByView: View {
     @ViewBuilder
     private func bodyText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
         switch emptyState.style {
-        case .disconnected, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated:
             Text(emptyState.style.body)
                 .font(.callout)
                 .foregroundColor(.secondary)
@@ -425,11 +450,30 @@ struct HomeAssistantStandByView: View {
         }
     }
 
+    @ViewBuilder
+    private func bodyComplementaryText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
+        switch emptyState.style {
+        case .inFlight:
+            if let text = emptyState.style.complementaryMessage {
+                Button(action: openSettings) {
+                    Text(text)
+                        .font(.caption2.italic())
+                        .foregroundColor(.haPrimary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
+                }
+                .buttonStyle(.plain)
+            }
+        default:
+            EmptyView()
+        }
+    }
+
     private func actionButtons(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
         VStack(spacing: DesignSystem.Spaces.one) {
             Button(action: {
                 switch emptyState.style {
-                case .disconnected:
+                case .disconnected, .inFlight:
                     emptyState.retryAction()
                 case .unauthenticated:
                     emptyState.reauthAction(selectedReauthURLType)
@@ -720,6 +764,22 @@ private extension HomeAssistantStandByView {
         server: server,
         emptyState: HomeAssistantStandByView.previewEmptyState(
             style: .recoveredServerNeedingReauthentication,
+            server: server,
+            availableReauthURLTypes: [.external, .internal]
+        )
+    )
+}
+
+#Preview("In-flight") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "In-flight",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .internal
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .inFlight,
             server: server,
             availableReauthURLTypes: [.external, .internal]
         )
