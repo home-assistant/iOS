@@ -128,7 +128,7 @@ struct HomeAssistantStandByView: View {
             if let emptyState {
                 actionButtons(for: emptyState)
                     .opacity(contentOpacity)
-            } else if showsCleanCacheButton {
+            } else if showsCleanCacheButton, onCleanCacheAndReload != nil {
                 cleanCacheButton
                     .transition(.opacity)
             }
@@ -178,7 +178,7 @@ struct HomeAssistantStandByView: View {
             withAnimation(DesignSystem.Animation.default) {
                 showsDelayedSettingsButton = true
             }
-            try? await Task.sleep(for: cleanCacheButtonDelay - delayedSettingsButtonDelay)
+            try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
             guard !Task.isCancelled, !showsEmptyState else { return }
             withAnimation(DesignSystem.Animation.default) {
                 showsCleanCacheButton = true
