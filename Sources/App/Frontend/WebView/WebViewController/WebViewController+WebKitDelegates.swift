@@ -106,7 +106,22 @@ extension WebViewController {
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
         if #available(iOS 17.0, *) {
             let viewModel = DownloadManagerViewModel()
-            download.delegate = viewModel
+            if let request = download.originalRequest,
+               let scheme = request.url?.scheme?.lowercased(),
+               ["http", "https"].contains(scheme) {
+                // A `WKDownload` dies with the web content process when the app is suspended, so re-issue
+                // the request on the background `URLSession` instead and let that own the transfer.
+                download.cancel()
+                viewModel.startBackgroundDownload(
+                    request: request,
+                    server: server,
+                    cookieStore: webView.configuration.websiteDataStore.httpCookieStore
+                )
+            } else {
+                // Anything else (e.g. a frontend-generated `blob:` file) only exists inside the web
+                // content process, so it has to stay a `WKDownload`.
+                download.delegate = viewModel
+            }
             // Present via `ContainerView`'s sheet (SwiftUI) instead of a UIKit overlay; the same view model
             // instance must back the sheet and the download delegate.
             Current.sceneManager.appCoordinator.done { $0.showDownloadManager(viewModel) }

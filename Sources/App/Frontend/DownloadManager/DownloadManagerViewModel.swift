@@ -13,6 +13,25 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
 
     private var progressObservation: NSKeyValueObservation?
     private var lastDownload: WKDownload?
+    private var backgroundTaskIdentifier: Int?
+
+    /// Re-issues a `WKDownload`'s request on `BackgroundDownloadManager`'s background `URLSession` so the
+    /// transfer keeps going while the app is suspended. Cookies live in the web view's store rather than
+    /// the app's shared one, so they are copied onto the request for setups that authenticate with them.
+    func startBackgroundDownload(request: URLRequest, server: Server, cookieStore: WKHTTPCookieStore) {
+        fileName = request.url?.lastPathComponent ?? ""
+        BackgroundDownloadManager.shared.delegate = self
+        cookieStore.getAllCookies { cookies in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                let task = BackgroundDownloadManager.shared.download(
+                    Self.request(request, addingCookies: cookies),
+                    for: server
+                )
+                self.backgroundTaskIdentifier = task.taskIdentifier
+            }
+        }
+    }
 
     func deleteFile() {
         if let url = lastURLCreated {
@@ -28,6 +47,34 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
     func cancelDownload() {
         progressObservation?.invalidate()
         lastDownload?.cancel()
+        if let backgroundTaskIdentifier {
+            BackgroundDownloadManager.shared.cancel(taskIdentifier: backgroundTaskIdentifier)
+        }
+    }
+
+    nonisolated static func request(_ request: URLRequest, addingCookies cookies: [HTTPCookie]) -> URLRequest {
+        guard let url = request.url else { return request }
+        let matching = cookies.filter { cookie($0, matches: url) }
+        guard !matching.isEmpty else { return request }
+        return with(request) { request in
+            for (header, value) in HTTPCookie.requestHeaderFields(with: matching) {
+                request.setValue(value, forHTTPHeaderField: header)
+            }
+        }
+    }
+
+    private nonisolated static func cookie(_ cookie: HTTPCookie, matches url: URL) -> Bool {
+        guard let host = url.host?.lowercased() else { return false }
+        let domain = cookie.domain.lowercased()
+        let domainMatches: Bool
+        if domain.hasPrefix(".") {
+            domainMatches = host == String(domain.dropFirst()) || host.hasSuffix(domain)
+        } else {
+            domainMatches = host == domain
+        }
+        guard domainMatches else { return false }
+        if cookie.isSecure, url.scheme?.lowercased() != "https" { return false }
+        return cookie.path == "/" || url.path.hasPrefix(cookie.path)
     }
 
     private func bytesToMBString(_ bytes: Int64) -> String {
@@ -35,6 +82,38 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
         formatter.allowedUnits = [.useMB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
+    }
+}
+
+extension DownloadManagerViewModel: BackgroundDownloadManagerDelegate {
+    nonisolated func backgroundDownload(
+        taskIdentifier: Int,
+        didWriteBytes totalBytesWritten: Int64,
+        expectedTotalBytes: Int64,
+        suggestedFilename: String?
+    ) {
+        Task { @MainActor [weak self] in
+            guard let self, taskIdentifier == self.backgroundTaskIdentifier else { return }
+            if let suggestedFilename { self.fileName = suggestedFilename }
+            self.progress = bytesToMBString(totalBytesWritten)
+        }
+    }
+
+    nonisolated func backgroundDownload(taskIdentifier: Int, didFinishDownloadingTo url: URL) {
+        Task { @MainActor [weak self] in
+            guard let self, taskIdentifier == self.backgroundTaskIdentifier else { return }
+            self.fileName = url.lastPathComponent
+            self.lastURLCreated = url
+            self.finished = true
+        }
+    }
+
+    nonisolated func backgroundDownload(taskIdentifier: Int, didFailWith error: Error) {
+        Task { @MainActor [weak self] in
+            guard let self, taskIdentifier == self.backgroundTaskIdentifier else { return }
+            self.errorMessage = L10n.DownloadManager.Failed.title(error.localizedDescription)
+            self.failed = true
+        }
     }
 }
 

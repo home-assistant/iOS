@@ -239,6 +239,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if WebhookManager.isManager(forSessionIdentifier: identifier) {
             Current.Log.info("starting webhook handler for \(identifier)")
             Current.webhooks.handleBackground(for: identifier, completionHandler: completionHandler)
+        } else if BackgroundDownloadManager.isManager(forSessionIdentifier: identifier) {
+            Current.Log.info("starting background download handler for \(identifier)")
+            BackgroundDownloadManager.shared.handleBackgroundEvents(completionHandler: completionHandler)
         } else {
             Current.Log.error("couldn't find appropriate session for for \(identifier)")
             completionHandler()
