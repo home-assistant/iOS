@@ -9,6 +9,10 @@ protocol SpeechTranscriberProtocol: AnyObject {
     var onTranscriptUpdate: ((String, Bool) -> Void)? { get set }
     var onError: ((Error) -> Void)? { get set }
     var onListeningStateChange: ((Bool) -> Void)? { get set }
+    /// When false, the caller owns the audio session (e.g. CarPlay keeps a .playAndRecord
+    /// session active for the whole conversation) and the transcriber must not reconfigure
+    /// or deactivate it.
+    var managesAudioSession: Bool { get set }
     func startListening() async throws
     func stopListening()
 }
@@ -69,6 +73,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     /// Called when listening state changes
     public var onListeningStateChange: ((Bool) -> Void)?
+
+    /// Whether this transcriber configures and deactivates the shared audio session itself.
+    public var managesAudioSession = true
 
     // MARK: - Private Properties
 
@@ -178,9 +185,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         onListeningStateChange?(true)
 
         // Configure audio session
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        if managesAudioSession {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        }
 
         // Create audio engine
         audioEngine = AVAudioEngine()
@@ -247,15 +256,19 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         isListening = false
 
         // Deactivate audio session
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        if managesAudioSession {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
 
         if wasListening {
             onListeningStateChange?(false)
         }
     }
 
-    /// Get list of locales that support on-device speech recognition
-    public static var supportedLocales: [Locale] {
+    /// Get list of locales that support on-device speech recognition.
+    /// Nonisolated so non-main-actor callers (e.g. CarPlay settings) can read it; the
+    /// underlying Speech framework APIs are not main-actor-bound.
+    public nonisolated static var supportedLocales: [Locale] {
         SFSpeechRecognizer.supportedLocales()
             .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
             .sorted { $0.identifier < $1.identifier }

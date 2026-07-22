@@ -5,6 +5,7 @@ final class MockSpeechTranscriber: SpeechTranscriberProtocol {
     var onTranscriptUpdate: ((String, Bool) -> Void)?
     var onError: ((Error) -> Void)?
     var onListeningStateChange: ((Bool) -> Void)?
+    var managesAudioSession = true
 
     var startListeningCalled = false
     var stopListeningCalled = false

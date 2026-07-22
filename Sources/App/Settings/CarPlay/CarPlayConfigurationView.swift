@@ -41,6 +41,7 @@ struct CarPlayConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var showAssistSettings = false
     @State private var addItemDestination: AddItemDestination?
 
     private let needsNavigationController: Bool
@@ -66,6 +67,7 @@ struct CarPlayConfigurationView: View {
             tabsSection
             itemsSection
             addEditButtonsSection
+            assistSettingsRow
             troubleshootingSection
             resetView
             DebugDatabaseTransferSection(part: .carPlayConfiguration) {
@@ -366,6 +368,21 @@ struct CarPlayConfigurationView: View {
         }
     }
 
+    /// Opens the same global Assist settings used by the in-app Assist; the CarPlay Assist
+    /// session reads the same configuration.
+    private var assistSettingsRow: some View {
+        Button {
+            showAssistSettings = true
+        } label: {
+            Text(L10n.Assist.Settings.title)
+                .foregroundStyle(Color.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .sheet(isPresented: $showAssistSettings) {
+            AssistSettingsView()
+        }
+    }
+
     private var troubleshootingSection: some View {
         NavigationLink {
             CarPlayTroubleshootingSettingsView()
@@ -394,6 +411,7 @@ extension CarPlayConfigurationView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Carplay.Tab.QuickAccess.layout),
             SettingsSearchEntry(L10n.CarPlay.Config.Tabs.title),
             SettingsSearchEntry(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title),
+            SettingsSearchEntry(L10n.Assist.Settings.title),
         ]
     }
 }

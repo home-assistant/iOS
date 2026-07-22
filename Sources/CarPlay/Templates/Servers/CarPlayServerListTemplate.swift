@@ -5,6 +5,7 @@ import Shared
 
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayServerListViewModel
+    private let assistSettingsTemplate = CarPlayAssistSettingsTemplate()
     private weak var tabsSelectionTemplate: CPListTemplate?
     private weak var layoutSelectionTemplate: CPListTemplate?
     private weak var serverSelectionTemplate: CPListTemplate?
@@ -65,6 +66,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 layoutItem,
                 tabsItem,
                 showAddEditButtonsItem,
+                assistSettingsItem,
                 troubleshootingItem,
             ]),
         ])
@@ -128,6 +130,19 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         item.accessoryType = .none
         item.handler = { [weak self] _, completion in
             self?.viewModel.toggleShowAddEditButtons()
+            completion()
+        }
+        return item
+    }
+
+    private var assistSettingsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.Assist.Settings.title,
+            detailText: nil
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.assistSettingsTemplate.present(using: self?.interfaceController)
             completion()
         }
         return item
