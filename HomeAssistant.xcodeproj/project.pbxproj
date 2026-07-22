@@ -1273,6 +1273,7 @@
 		756FCCCE01A8BFA7864E61C7 /* NotificationSnoozeActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FDABE240EEC2AF3656F35B /* NotificationSnoozeActionsView.swift */; };
 		78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12960782B4F42B5C4811E859 /* WhatsNewView.swift */; };
 		7BFD0239CA1B74E2C14C92E2 /* KioskVolumeSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */; };
+		B03B331EBC36FF493C52B010 /* KioskScreensaverSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EECC51322286BA68036000 /* KioskScreensaverSensor.swift */; };
 		7CD3C880084E8C73B781D130 /* NotificationSnoozeActionTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31B4C3B146C0560BFDF64F2 /* NotificationSnoozeActionTable.swift */; };
 		7EB1B6B52775DAF12C3B2B27 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FD2BAEEAE31310280CB33D /* KioskSettings.swift */; };
 		7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
@@ -1574,6 +1575,7 @@
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C1AE883A374C598B5BCCAE23 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
 		C2485C745F81BBEB2BEB9DB0 /* KioskVolumeSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */; };
+		F9A31C6320F16B88CD545E05 /* KioskScreensaverSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EECC51322286BA68036000 /* KioskScreensaverSensor.swift */; };
 		C35621B95F7E4548BC8F6D75 /* FolderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BECEB2525564358A124F818 /* FolderEditView.swift */; };
 		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		C5A9D6D06B794615BE1299F9 /* CarPlayAddItemFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3632CE0EC0E141A8B30CD245 /* CarPlayAddItemFlow.swift */; };
@@ -3576,6 +3578,7 @@
 		E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
 		E78C6E1C01A872D8B4DA275D /* KioskSensorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSensorsView.swift; sourceTree = "<group>"; };
 		E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskVolumeSensor.swift; sourceTree = "<group>"; };
+		A9EECC51322286BA68036000 /* KioskScreensaverSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverSensor.swift; sourceTree = "<group>"; };
 		ED4B2D38DF1316D881D79769 /* Pods-iOS-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		EE9D38AFF8103605A5E02F62 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
 		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
@@ -4334,6 +4337,7 @@
 				98FB38C417E1928C8AEB2106 /* KioskModeSensor.swift */,
 				F1D3EF229B8D9A2DB7DF078A /* KioskBrightnessSensor.swift */,
 				E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */,
+				A9EECC51322286BA68036000 /* KioskScreensaverSensor.swift */,
 				11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */,
 				1396822195C7FF562AB891F2 /* BarometerSensor.swift */,
 				11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */,
@@ -10167,6 +10171,7 @@
 				FF79AFA7BB50A4412EA3D90F /* KioskModeSensor.swift in Sources */,
 				72BA28D07496C22E40A84DDB /* KioskBrightnessSensor.swift in Sources */,
 				C2485C745F81BBEB2BEB9DB0 /* KioskVolumeSensor.swift in Sources */,
+				F9A31C6320F16B88CD545E05 /* KioskScreensaverSensor.swift in Sources */,
 				C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
@@ -10627,6 +10632,7 @@
 				FE977E5AF3716CC177054DF8 /* KioskModeSensor.swift in Sources */,
 				5189F6FB2CC89777A8E2172A /* KioskBrightnessSensor.swift in Sources */,
 				7BFD0239CA1B74E2C14C92E2 /* KioskVolumeSensor.swift in Sources */,
+				B03B331EBC36FF493C52B010 /* KioskScreensaverSensor.swift in Sources */,
 				D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
