@@ -181,7 +181,11 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     }
 
     func didReceiveTTS(url: URL) {
-        audioPlayer.play(url: url)
+        let server = assistService.server
+        if server == nil {
+            Current.Log.error("Watch Assist could not resolve the session's server, TTS playback will stream")
+        }
+        audioPlayer.play(url: url, server: server)
     }
 
     func didReceiveError(code: String, message: String) {
