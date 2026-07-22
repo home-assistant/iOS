@@ -205,6 +205,7 @@
 "carPlay.action.execute.in_progress" = "Εκτέλεση...";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
+"carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Καρτέλες";
@@ -661,6 +662,8 @@
 "kiosk.screensaver.timeout.seconds_30" = "30 δευτερόλεπτα";
 "kiosk.screensaver.title" = "Προφύλαξη οθόνης";
 "kiosk.screensaver.toggle" = "Προφύλαξη οθόνης";
+"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver_label" = "Προφύλαξη οθόνης: %@";
 "kiosk.section.title" = "Λειτουργία κιόσκι";
 "kiosk.security.gesture_footer" = "Πατήστε τη γωνία %1$@ %2$@ φορές για να αποκτήσετε πρόσβαση στις ρυθμίσεις kiosk όταν είναι κλειδωμένο.";
@@ -718,6 +721,9 @@
 "live_activity.sample.plain.note" = "Ελάχιστη λειτουργική διάταξη — έχει οριστεί μόνο το πεδίο μηνύματος. Επαληθεύει ότι η βασική διάταξη εμφανίζεται χωρίς εικονίδιο, ένδειξη προόδου ή χρονόμετρο.";
 "live_activity.sample.plain.summary" = "Ενα απλό μήνυμα, χωρίς τίποτα άλλο.";
 "live_activity.sample.plain.title" = "Απλό μήνυμα";
+"live_activity.sample.progress_direction.note" = "progress_bar_direction: decreasing flips the bar's fill: it shows what remains (progress_max − progress) and drains as progress rises. Percent text still shows the raw progress value. Also works on timer bars, e.g. increasing makes a countdown fill up instead of drain.";
+"live_activity.sample.progress_direction.summary" = "A progress bar that drains instead of fills.";
+"live_activity.sample.progress_direction.title" = "Battery · Decreasing Bar";
 "live_activity.sample.rate_limit.note" = "Εξι ενημερώσεις με διαφορά 2 δευτερολέπτων. Στο iOS 18, το σύστημα αποδίδει ~μία ανά 15 δευτερόλεπτα — μερικές παραλείπονται σιωπηλά και ο μετρητής παραλείπεται. Στον προσομοιωτή και στο iOS 17, και οι έξι αποδίδονται.";
 "live_activity.sample.rate_limit.summary" = "Γρήγορες διαδοχικές ενημερώσεις για να ελέγξετε πόσες εμφανίζονται.";
 "live_activity.sample.rate_limit.title" = "Οριο Ρυθμού · 6 Γρήγορες Ενημερώσεις";
@@ -1109,6 +1115,17 @@
 "room_view.section.visible" = "Ορατό";
 "save_label" = "Αποθήκευση";
 "sensors.active.setting.time_until_idle" = "Χρόνος μέχρι την αδράνεια";
+"sensors.camera.frame_rate_warning" = "Higher frame rates may impact performance and make the device run hotter.";
+"sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
+"sensors.camera_motion.setting.clear_delay" = "Clear delay";
+"sensors.camera_motion.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.setting.credentials_footer" = "Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.";
+"sensors.camera_stream.setting.credentials_placeholder" = "Optional";
+"sensors.camera_stream.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.setting.password" = "Password";
+"sensors.camera_stream.setting.stream_port" = "Stream port";
+"sensors.camera_stream.setting.username" = "Username";
 "sensors.geocoded_location.setting.use_zones" = "Χρήση ονόματος ζώνης";
 "servers_selection.title" = "Διακομιστές";
 "settings.app_icon_shortcuts.add_item.title" = "Προσθήκη στοιχείου";
@@ -2099,6 +2116,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_certificate.remove_from_watch.title" = "Κατάργηση από αυτό το ρολόι;";
 "watch.settings.client_events.clear" = "Clear";
 "watch.settings.client_events.empty" = "No events recorded yet.";
+"watch.settings.client_events.send_to_phone" = "Send to iPhone";
+"watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
+"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";

@@ -205,6 +205,7 @@
 "carPlay.action.execute.in_progress" = "Kör...";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.action.intro.item.title" = "Skapa din första åtgärd";
+"carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Flikar";
@@ -659,6 +660,8 @@
 "kiosk.screensaver.timeout.seconds_30" = "30 sekunder";
 "kiosk.screensaver.title" = "Skärmsläckare";
 "kiosk.screensaver.toggle" = "Skärmsläckare";
+"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver_label" = "Skärmsläckare: %@";
 "kiosk.section.title" = "Kioskläge";
 "kiosk.security.gesture_footer" = "Tryck på %1$@ hörnet %2$@ gånger för att komma åt kioskens inställningar när den är låst.";
@@ -716,6 +719,9 @@
 "live_activity.sample.plain.note" = "Minimal fungerande layout – endast meddelandefältet är inställt. Kontrollerar att den enklaste layouten visas utan ikon, förloppsindikator eller timer.";
 "live_activity.sample.plain.summary" = "Ett enkelt meddelande utan något annat.";
 "live_activity.sample.plain.title" = "Vanligt meddelande";
+"live_activity.sample.progress_direction.note" = "progress_bar_direction: decreasing flips the bar's fill: it shows what remains (progress_max − progress) and drains as progress rises. Percent text still shows the raw progress value. Also works on timer bars, e.g. increasing makes a countdown fill up instead of drain.";
+"live_activity.sample.progress_direction.summary" = "A progress bar that drains instead of fills.";
+"live_activity.sample.progress_direction.title" = "Battery · Decreasing Bar";
 "live_activity.sample.rate_limit.note" = "Sex uppdateringar med 2 sekunders mellanrum. I iOS 18 visar systemet ungefär en var 15:e sekund – vissa utelämnas utan att man märker det och räknaren hoppar över. I simulatorn och i iOS 17 visas alla sex.";
 "live_activity.sample.rate_limit.summary" = "Snabba uppdateringar efter varandra för att testa hur många som visas.";
 "live_activity.sample.rate_limit.title" = "Begränsning av uppdateringsfrekvens · 6 snabba uppdateringar";
@@ -1104,6 +1110,17 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "room_view.section.visible" = "Synlig";
 "save_label" = "Spara";
 "sensors.active.setting.time_until_idle" = "Tid till inaktiv";
+"sensors.camera.frame_rate_warning" = "Higher frame rates may impact performance and make the device run hotter.";
+"sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
+"sensors.camera_motion.setting.clear_delay" = "Clear delay";
+"sensors.camera_motion.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.setting.credentials_footer" = "Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.";
+"sensors.camera_stream.setting.credentials_placeholder" = "Optional";
+"sensors.camera_stream.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.setting.password" = "Password";
+"sensors.camera_stream.setting.stream_port" = "Stream port";
+"sensors.camera_stream.setting.username" = "Username";
 "sensors.geocoded_location.setting.use_zones" = "Använd zonnamn";
 "servers_selection.title" = "Servrar";
 "settings.app_icon_shortcuts.add_item.title" = "Lägg till objekt";
@@ -2094,6 +2111,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_certificate.remove_from_watch.title" = "Ta bort från den här klockan?";
 "watch.settings.client_events.clear" = "Rensa";
 "watch.settings.client_events.empty" = "Inga händelser registrerade ännu.";
+"watch.settings.client_events.send_to_phone" = "Send to iPhone";
+"watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
+"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Loggar";
 "watch.settings.complications.empty" = "Inga komplikationer konfigurerade än.";

@@ -187,42 +187,80 @@ public class HomeAssistantAPI {
     /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
     /// session construction on that snapshot would leave the session permanently without the
     /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
-    public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+    public static func makeCertificateAwareURLSession(
+        server: Server,
+        configuration: URLSessionConfiguration = .ephemeral
+    ) -> URLSession {
         let certificateProvider = HomeAssistantCertificateProvider(server: server)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-        return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
     }
 
     /// Callback-based on purpose (its only caller is the watch's magic item execution): watchOS
     /// gives the Swift-concurrency cooperative pool a single thread, and a starved pool would keep
     /// an async check from ever running. The URL is evaluated from the last-known network state,
     /// which is always current on watchOS.
+    ///
+    /// `onStep` narrates the check's progress (resolved URL, failures) for the watch's verbose
+    /// execution trace. `completion` is guaranteed to run exactly once: URLSession has been
+    /// observed never calling the data task back on watch hardware (even past `timeoutInterval`),
+    /// so a fallback timer treats a silent session as unreachable instead of stalling the
+    /// execution forever.
     public static func apiAvailabilityCheck(
         for server: Server,
         timeout: TimeInterval = 5,
+        onStep: ((String) -> Void)? = nil,
         completion: @escaping (Bool) -> Void
     ) {
         guard let baseURL = server.activeURLUsingLastKnownNetworkState() else {
+            onStep?("No URL usable from the watch (internal URL needs opt-in; no external/cloud URL set)")
             completion(false)
             return
         }
+        onStep?("Pinging \(baseURL.absoluteString)")
 
         var request = URLRequest(url: baseURL.appendingPathComponent("api"))
         request.timeoutInterval = timeout
+
+        let lock = NSLock()
+        var finished = false
+        // First caller wins; the loser's work is discarded so `completion` runs exactly once.
+        func finishOnce(_ body: () -> Void) {
+            lock.lock()
+            let shouldRun = !finished
+            finished = true
+            lock.unlock()
+            if shouldRun { body() }
+        }
 
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         let task = session.dataTask(with: request) { [session] _, response, error in
             // The session strongly retains its delegate until invalidated; do it once the task ends.
             defer { session.finishTasksAndInvalidate() }
-            if let error {
-                Current.Log
-                    .info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
-                completion(false)
-                return
+            finishOnce {
+                if let error {
+                    Current.Log
+                        .info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
+                    onStep?("Ping failed: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                completion(response is HTTPURLResponse)
             }
-            completion(response is HTTPURLResponse)
         }
         task.resume()
+        // Fallback for a URLSession that never calls back. Main queue on purpose: it is the one
+        // queue proven to stay serviced on watch hardware (the GCD global and Swift-concurrency
+        // pools have both been observed starved there).
+        let fallbackDelay = timeout + 2
+        DispatchQueue.main.asyncAfter(deadline: .now() + fallbackDelay) {
+            finishOnce {
+                Current.Log.info("API availability check got no URLSession callback for \(server.info.name)")
+                onStep?("No answer from URLSession after \(Int(fallbackDelay))s — treating as unreachable")
+                session.invalidateAndCancel()
+                completion(false)
+            }
+        }
     }
 
     convenience init?() {

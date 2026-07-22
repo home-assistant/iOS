@@ -177,7 +177,7 @@
 "assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.section.labs.title" = "More";
 "assist.settings.title" = "Assist Settings";
-"assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
+"assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses. This setting does not apply to CarPlay, where voice responses always play.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
@@ -205,6 +205,7 @@
 "carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
+"carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Tabs";
@@ -654,8 +655,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.show_date" = "Show date";
 "kiosk.screensaver.show_seconds" = "Show seconds";
 "kiosk.screensaver.time_to_start" = "Time to start";
-"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
-"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver.timeout" = "Timeout";
 "kiosk.screensaver.timeout.hours_1" = "1 hour";
 "kiosk.screensaver.timeout.minutes_1" = "1 minute";
@@ -667,6 +666,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.timeout.seconds_30" = "30 seconds";
 "kiosk.screensaver.title" = "Screensaver";
 "kiosk.screensaver.toggle" = "Screensaver";
+"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver_label" = "Screensaver: %@";
 "kiosk.section.title" = "Kiosk Mode";
 "kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
@@ -2123,6 +2124,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_certificate.remove_from_watch.title" = "Remove from this Watch?";
 "watch.settings.client_events.clear" = "Clear";
 "watch.settings.client_events.empty" = "No events recorded yet.";
+"watch.settings.client_events.send_to_phone" = "Send to iPhone";
+"watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
+"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";

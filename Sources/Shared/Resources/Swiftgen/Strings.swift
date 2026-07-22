@@ -847,6 +847,12 @@ public enum L10n {
     }
     public enum Config {
       public enum QuickAccess {
+        public enum Layout {
+          public enum GridRequirement {
+            /// Requires iOS 26 or later
+            public static var subtitle: String { return L10n.tr("Localizable", "carPlay.config.quick_access.layout.grid_requirement.subtitle") }
+          }
+        }
         public enum ShowAddEditButtons {
           /// Show buttons to add and edit Quick Access items directly from the car.
           public static var footer: String { return L10n.tr("Localizable", "carPlay.config.quick_access.show_add_edit_buttons.footer") }
@@ -6984,10 +6990,20 @@ public enum L10n {
         public static var clear: String { return L10n.tr("Localizable", "watch.settings.client_events.clear") }
         /// No events recorded yet.
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.client_events.empty") }
+        /// Send to iPhone
+        public static var sendToPhone: String { return L10n.tr("Localizable", "watch.settings.client_events.send_to_phone") }
         /// Share
         public static var share: String { return L10n.tr("Localizable", "watch.settings.client_events.share") }
         /// Logs
         public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
+        public enum SendToPhone {
+          /// Sending logs to the iPhone failed: %@
+          public static func failure(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "watch.settings.client_events.send_to_phone.failure", String(describing: p1))
+          }
+          /// Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.
+          public static var success: String { return L10n.tr("Localizable", "watch.settings.client_events.send_to_phone.success") }
+        }
       }
       public enum Complications {
         /// No complications configured yet.

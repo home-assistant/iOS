@@ -41,6 +41,7 @@ struct CarPlayConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var showAssistSettings = false
     @State private var addItemDestination: AddItemDestination?
 
     private let needsNavigationController: Bool
@@ -66,6 +67,7 @@ struct CarPlayConfigurationView: View {
             tabsSection
             itemsSection
             addEditButtonsSection
+            assistSettingsRow
             troubleshootingSection
             resetView
             DebugDatabaseTransferSection(part: .carPlayConfiguration) {
@@ -125,10 +127,14 @@ struct CarPlayConfigurationView: View {
         Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
             Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
                 get: { viewModel.quickAccessLayout },
-                set: { viewModel.quickAccessLayout = $0 }
+                set: { newValue in
+                    // selectionDisabled is iOS 17+, so also ignore Grid here for iOS 16
+                    guard newValue != .grid || isGridLayoutSupported else { return }
+                    viewModel.quickAccessLayout = newValue
+                }
             )) {
                 ForEach(CarPlayQuickAccessLayout.allCases, id: \.rawValue) { layout in
-                    Text(layout.name).tag(layout)
+                    layoutPickerOption(layout).tag(layout)
                 }
             }
             ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
@@ -141,6 +147,32 @@ struct CarPlayConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemButton
+        }
+    }
+
+    @ViewBuilder
+    private func layoutPickerOption(_ layout: CarPlayQuickAccessLayout) -> some View {
+        let isUnsupported = layout == .grid && !isGridLayoutSupported
+        let label = VStack(alignment: .leading, spacing: 2) {
+            Text(layout.name)
+            if isUnsupported {
+                Text(L10n.CarPlay.Config.QuickAccess.Layout.GridRequirement.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        if #available(iOS 17.0, *) {
+            label.selectionDisabled(isUnsupported)
+        } else {
+            label
+        }
+    }
+
+    private var isGridLayoutSupported: Bool {
+        if #available(iOS 26.0, *) {
+            return true
+        } else {
+            return false
         }
     }
 
@@ -336,6 +368,21 @@ struct CarPlayConfigurationView: View {
         }
     }
 
+    /// Opens the same global Assist settings used by the in-app Assist; the CarPlay Assist
+    /// session reads the same configuration.
+    private var assistSettingsRow: some View {
+        Button {
+            showAssistSettings = true
+        } label: {
+            Text(L10n.Assist.Settings.title)
+                .foregroundStyle(Color.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .sheet(isPresented: $showAssistSettings) {
+            AssistSettingsView()
+        }
+    }
+
     private var troubleshootingSection: some View {
         NavigationLink {
             CarPlayTroubleshootingSettingsView()
@@ -364,6 +411,7 @@ extension CarPlayConfigurationView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Carplay.Tab.QuickAccess.layout),
             SettingsSearchEntry(L10n.CarPlay.Config.Tabs.title),
             SettingsSearchEntry(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title),
+            SettingsSearchEntry(L10n.Assist.Settings.title),
         ]
     }
 }

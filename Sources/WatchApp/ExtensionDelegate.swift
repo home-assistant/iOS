@@ -400,6 +400,26 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
+        #if DEBUG
+        if response.actionIdentifier == NotificationSnoozeAction.debugTenSecondsActionIdentifier {
+            Current.notificationDispatcher.reschedule(response.notification.request.content, after: 10)
+            completionHandler()
+            return
+        }
+        #endif
+
+        // Snooze is an on-device-only convenience, mirroring NotificationManager on iOS: reschedule
+        // a local re-delivery of the same notification on the watch (so it keeps its snooze actions)
+        // instead of forwarding a notification action event to Home Assistant.
+        if let minutes = NotificationSnoozeAction.minutes(fromActionIdentifier: response.actionIdentifier) {
+            Current.notificationDispatcher.reschedule(
+                response.notification.request.content,
+                after: TimeInterval(minutes) * 60
+            )
+            completionHandler()
+            return
+        }
+
         guard let info = HomeAssistantAPI.PushActionInfo(response: response),
               let server = Current.servers.server(for: response.notification.request.content) else {
             completionHandler()

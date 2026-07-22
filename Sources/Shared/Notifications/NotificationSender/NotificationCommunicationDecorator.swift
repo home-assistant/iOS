@@ -33,10 +33,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         sender: NotificationSenderInfo,
         api: HomeAssistantAPI?
     ) async -> UNNotificationContent {
-        let title = content.title
-        guard !title.isEmpty else { return content }
-
-        let intent = await buildIntent(sender: sender, title: title, body: content.body, api: api)
+        let intent = await buildIntent(sender: sender, title: sender.senderName, body: content.body, api: api)
         do {
             return try content.updating(from: intent)
         } catch {

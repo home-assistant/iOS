@@ -205,6 +205,7 @@
 "carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
+"carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
 "carPlay.config.tabs.title" = "Tabs";
@@ -661,6 +662,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.timeout.seconds_30" = "30 seconds";
 "kiosk.screensaver.title" = "Screensaver";
 "kiosk.screensaver.toggle" = "Screensaver";
+"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion_footer" = "Uses the front camera to detect motion: the screensaver won't start while motion is ongoing, and is dismissed when motion is detected. The camera stays active the whole time kiosk mode runs with this option on.";
 "kiosk.screensaver_label" = "Screensaver: %@";
 "kiosk.section.title" = "Kiosk Mode";
 "kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
@@ -718,6 +721,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.plain.note" = "Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.";
 "live_activity.sample.plain.summary" = "A basic message with nothing else.";
 "live_activity.sample.plain.title" = "Plain Message";
+"live_activity.sample.progress_direction.note" = "progress_bar_direction: decreasing flips the bar's fill: it shows what remains (progress_max − progress) and drains as progress rises. Percent text still shows the raw progress value. Also works on timer bars, e.g. increasing makes a countdown fill up instead of drain.";
+"live_activity.sample.progress_direction.summary" = "A progress bar that drains instead of fills.";
+"live_activity.sample.progress_direction.title" = "Battery · Decreasing Bar";
 "live_activity.sample.rate_limit.note" = "Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.";
 "live_activity.sample.rate_limit.summary" = "Rapid back-to-back updates to test how many show.";
 "live_activity.sample.rate_limit.title" = "Rate Limit · 6 Rapid Updates";
@@ -1109,6 +1115,17 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "room_view.section.visible" = "Visible";
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Tiempo hasta inactividad";
+"sensors.camera.frame_rate_warning" = "Higher frame rates may impact performance and make the device run hotter.";
+"sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
+"sensors.camera_motion.setting.clear_delay" = "Clear delay";
+"sensors.camera_motion.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.setting.credentials_footer" = "Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.";
+"sensors.camera_stream.setting.credentials_placeholder" = "Optional";
+"sensors.camera_stream.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.setting.password" = "Password";
+"sensors.camera_stream.setting.stream_port" = "Stream port";
+"sensors.camera_stream.setting.username" = "Username";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "servers_selection.title" = "Servidores";
 "settings.app_icon_shortcuts.add_item.title" = "Add item";
@@ -2099,6 +2116,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_certificate.remove_from_watch.title" = "Remove from this Watch?";
 "watch.settings.client_events.clear" = "Clear";
 "watch.settings.client_events.empty" = "No events recorded yet.";
+"watch.settings.client_events.send_to_phone" = "Send to iPhone";
+"watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
+"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";
