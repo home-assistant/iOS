@@ -105,8 +105,9 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         var task: URLSessionDataTask?
         task = session.dataTask(with: url) { [weak self] data, response, error in
-            DispatchQueue.main.async {
-                guard let self, downloadTask === task else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                guard downloadTask === task else { return }
                 downloadTask = nil
                 handleDownloadResult(data: data, response: response, error: error)
             }
