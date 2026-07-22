@@ -177,7 +177,7 @@
 "assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.section.labs.title" = "More";
 "assist.settings.title" = "Assist Settings";
-"assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses. This setting does not apply to CarPlay, where voice responses always play.";
+"assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
