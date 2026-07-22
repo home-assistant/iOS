@@ -311,7 +311,7 @@ private final class FakeDiskCache: DiskCache {
         return Promise(error: FakeDiskCacheError.missing)
     }
 
-    func set<T: Codable>(_ value: T, for key: String) -> Promise<Void> {
+    func set(_ value: some Codable, for key: String) -> Promise<Void> {
         storage[key] = value
         return .value(())
     }
