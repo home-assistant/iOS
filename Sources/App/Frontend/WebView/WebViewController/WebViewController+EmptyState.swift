@@ -89,8 +89,9 @@ extension WebViewController {
         }
     }
 
-    private func makeEmptyStateContent(style: WebViewEmptyStateStyle? = nil) -> WebFrontendOverlayState
-        .EmptyStateContent {
+    private func makeEmptyStateContent(
+        style: WebViewEmptyStateStyle? = nil
+    ) -> WebFrontendOverlayState.EmptyStateContent {
         WebFrontendOverlayState.EmptyStateContent(
             style: style ?? emptyStateStyle(for: connectionState),
             server: server,

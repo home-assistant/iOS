@@ -1689,14 +1689,14 @@ public enum L10n {
   }
 
   public enum FlightGreetings {
-    /// Have a great flight!
+    /// Have a nice flight!
     public static var greeting: String { return L10n.tr("Localizable", "flight_greetings.greeting") }
     public enum EmptyState {
-      /// Your home will be waiting when you land.
+      /// You're currently disconnected. Your home will be waiting when you land.
       public static var body: String { return L10n.tr("Localizable", "flight_greetings.empty_state.body") }
       /// Configure flight greetings in Settings
       public static var configureHint: String { return L10n.tr("Localizable", "flight_greetings.empty_state.configure_hint") }
-      /// You're in the air
+      /// Have a nice flight
       public static var title: String { return L10n.tr("Localizable", "flight_greetings.empty_state.title") }
     }
   }
@@ -4552,7 +4552,7 @@ public enum L10n {
       public enum Flight {
         /// Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.
         public static var footer: String { return L10n.tr("Localizable", "settings.greetings.flight.footer") }
-        /// Flight greetings
+        /// Flight
         public static var title: String { return L10n.tr("Localizable", "settings.greetings.flight.title") }
       }
     }

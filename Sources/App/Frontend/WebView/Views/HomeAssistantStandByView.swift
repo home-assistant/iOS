@@ -369,8 +369,7 @@ struct HomeAssistantStandByView: View {
     private var inFlightIcon: some View {
         Image(systemSymbol: .airplane)
             .foregroundStyle(.haPrimary)
-            .transformEffect(.init(rotationAngle: -45))
-            .offset(x: -3, y: 13)
+            .rotationEffect(.degrees(-45))
             .padding(DesignSystem.Spaces.one)
             .modify { view in
                 if #available(iOS 26.0, *) {
