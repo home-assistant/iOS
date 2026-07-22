@@ -420,14 +420,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         // Snooze is an on-device-only convenience: reschedule a local re-delivery of the same
         // notification (so it keeps its snooze actions) and skip forwarding to Home Assistant.
-        if response.actionIdentifier.hasPrefix(NotificationSnoozeAction.actionIdentifierPrefix),
-           let minutes = Int(
-               response.actionIdentifier
-                   .dropFirst(NotificationSnoozeAction.actionIdentifierPrefix.count)
-           ) {
+        if let minutes = NotificationSnoozeAction.minutes(fromActionIdentifier: response.actionIdentifier) {
             Current.notificationDispatcher.reschedule(
                 response.notification.request.content,
-                after: TimeInterval(minutes * 60)
+                after: TimeInterval(minutes) * 60
             )
             completionHandler()
             return
