@@ -414,7 +414,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         if let minutes = NotificationSnoozeAction.minutes(fromActionIdentifier: response.actionIdentifier) {
             Current.notificationDispatcher.reschedule(
                 response.notification.request.content,
-                after: TimeInterval(minutes * 60)
+                after: TimeInterval(minutes) * 60
             )
             completionHandler()
             return

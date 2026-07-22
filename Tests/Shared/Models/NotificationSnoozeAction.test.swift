@@ -19,4 +19,9 @@ final class NotificationSnoozeActionTests: XCTestCase {
         XCTAssertNil(NotificationSnoozeAction.minutes(fromActionIdentifier: "HA_SNOOZE_abc"))
         XCTAssertNil(NotificationSnoozeAction.minutes(fromActionIdentifier: UNNotificationDefaultActionIdentifier))
     }
+
+    func testMinutesNilForNonPositiveDurations() {
+        XCTAssertNil(NotificationSnoozeAction.minutes(fromActionIdentifier: "HA_SNOOZE_0"))
+        XCTAssertNil(NotificationSnoozeAction.minutes(fromActionIdentifier: "HA_SNOOZE_-5"))
+    }
 }
