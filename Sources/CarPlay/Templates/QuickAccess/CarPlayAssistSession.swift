@@ -645,7 +645,7 @@ final class CarPlayAssistSession: NSObject {
                 return
             }
 
-            guard let data else {
+            guard let data, !data.isEmpty else {
                 Current.Log.error("CarPlay Assist downloaded empty TTS audio data")
                 enterErrorState(message: "Downloaded empty TTS audio data")
                 return

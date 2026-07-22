@@ -10,7 +10,7 @@ final class MockAudioPlayer: AudioPlayerProtocol {
     var playCalled = false
     var pauseCalled = false
 
-    func play(url: URL, server: Server) {
+    func play(url: URL, server: Server?) {
         playUrl = url
         playServer = server
         playCalled = true

@@ -296,7 +296,7 @@ private final class PreviewWatchAudioRecorder: ObservableObject, WatchAudioRecor
 private final class PreviewAudioPlayer: AudioPlayerProtocol {
     weak var delegate: AudioPlayerDelegate?
 
-    func play(url: URL, server: Server) {}
+    func play(url: URL, server: Server?) {}
 
     func pause() {}
 }

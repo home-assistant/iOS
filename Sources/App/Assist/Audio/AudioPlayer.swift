@@ -4,7 +4,7 @@ import Shared
 
 protocol AudioPlayerProtocol {
     var delegate: AudioPlayerDelegate? { get set }
-    func play(url: URL, server: Server)
+    func play(url: URL, server: Server?)
     func pause()
 }
 
@@ -19,7 +19,9 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
     private var dataPlayer: AVAudioPlayer?
     private var downloadTask: URLSessionDataTask?
 
-    func play(url: URL, server: Server) {
+    func play(url: URL, server: Server?) {
+        stopCurrentPlayback()
+
         let audioSession = AVAudioSession.sharedInstance()
 
         // Each step is attempted independently: if deactivation fails (e.g. while the
@@ -49,7 +51,9 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
             return
         }
 
-        if requiresCertificateAwareLoading(server: server) {
+        // Falls back to streaming when the server is unknown: for the servers streaming can
+        // handle, playback keeps working, and the certificate-requiring ones failed either way.
+        if let server, requiresCertificateAwareLoading(server: server) {
             downloadAndPlay(url: url, server: server)
         } else {
             playStreaming(url: url)
@@ -60,6 +64,18 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         player.pause()
         dataPlayer?.pause()
         downloadTask?.cancel()
+    }
+
+    /// Stops whichever path is currently active so a new `play` never overlaps the previous
+    /// audio or receives its finish callbacks. `AVAudioPlayer.stop()` does not fire the
+    /// finished-playing delegate, so no spurious `audioPlayerDidFinishPlaying` results.
+    private func stopCurrentPlayback() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        dataPlayer?.stop()
+        dataPlayer = nil
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        player.replaceCurrentItem(with: nil)
     }
 
     /// AVPlayer loads media over its own connection, which can neither present the server's
@@ -87,13 +103,16 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         downloadTask?.cancel()
 
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-        let task = session.dataTask(with: url) { [weak self] data, response, error in
+        var task: URLSessionDataTask?
+        task = session.dataTask(with: url) { [weak self] data, response, error in
             DispatchQueue.main.async {
-                self?.handleDownloadResult(data: data, response: response, error: error)
+                guard let self, downloadTask === task else { return }
+                downloadTask = nil
+                handleDownloadResult(data: data, response: response, error: error)
             }
         }
         downloadTask = task
-        task.resume()
+        task?.resume()
         // The running task completes normally; afterwards the session releases its delegate,
         // which URLSession otherwise retains forever.
         session.finishTasksAndInvalidate()
