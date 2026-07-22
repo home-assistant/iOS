@@ -154,6 +154,9 @@ struct HALockScreenView: View {
 enum HAActivityVisualStyle {
     /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
     private static let haBlueHex = "#03A9F4"
+    private static let supplementalBackgroundHex = "#1C1C1E"
+
+    static let defaultSupplementalForegroundColor = Color.white
 
     /// Treats nil, empty, or whitespace-only as "unset" so the caller's default applies — an empty
     /// `background_color`/`text_color` would otherwise parse to transparent via UIColor(hex:).
@@ -172,6 +175,10 @@ enum HAActivityVisualStyle {
     static func backgroundColor(from hex: String?) -> Color {
         guard let hex = normalized(hex) else { return .clear }
         return Color(uiColor: UIColor(hex: hex))
+    }
+
+    static func supplementalBackgroundColor(from hex: String?) -> Color {
+        Color(uiColor: UIColor(hex: normalized(hex) ?? supplementalBackgroundHex))
     }
 
     /// Whether light text reads best on the given opaque background hex, by Rec. 601 luma.

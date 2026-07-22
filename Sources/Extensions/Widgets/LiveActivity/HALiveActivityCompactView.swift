@@ -74,10 +74,19 @@ struct HALiveActivityCompactView: View {
                 height: 6
             )
         } else if state.chronometer == true, let end = state.countdownEnd {
-            HAActivityChronometerText(end: end, start: state.chronometerStart)
-                .font(.caption2.monospacedDigit())
-                .foregroundStyle(secondaryTextColor)
-                .lineLimit(1)
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                HAActivityChronometerText(end: end, start: state.chronometerStart)
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(secondaryTextColor)
+                    .lineLimit(1)
+
+                HAActivityTimerProgressBar(
+                    start: state.chronometerStart,
+                    end: end,
+                    tint: barColor,
+                    direction: state.resolvedProgressBarDirection
+                )
+            }
         } else {
             Text(state.message)
                 .font(.caption2)
@@ -95,15 +104,15 @@ struct HALiveActivityCompactView: View {
     }
 
     private var primaryTextColor: Color {
-        resolvedForeground ?? .primary
+        resolvedForeground ?? HAActivityVisualStyle.defaultSupplementalForegroundColor
     }
 
     private var secondaryTextColor: Color {
-        resolvedForeground?.opacity(0.8) ?? .secondary
+        primaryTextColor.opacity(0.8)
     }
 
     private var trackColor: Color {
-        (resolvedForeground ?? .primary).opacity(0.12)
+        primaryTextColor.opacity(0.12)
     }
 }
 #endif
