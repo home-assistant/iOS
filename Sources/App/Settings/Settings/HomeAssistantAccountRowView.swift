@@ -64,6 +64,13 @@ struct HomeAssistantAccountRowView: View {
     private func loadUserNameAndProfilePicture() {
         guard let api = Current.api(for: server) else { return }
 
+        // Shows something immediately, and still shows a picture when the server is unreachable.
+        api.cachedProfilePicture { image in
+            if profilePicture == nil {
+                profilePicture = image
+            }
+        }
+
         api.currentUser { user in
             userName = user?.name ?? ""
 

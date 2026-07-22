@@ -140,6 +140,13 @@ struct ServerSelectViewRow: View {
     private func loadUserNameAndProfilePicture() {
         guard let api = Current.api(for: server) else { return }
 
+        // Shows something immediately, and still shows a picture when the server is unreachable.
+        api.cachedProfilePicture { image in
+            if profilePictureImage == nil {
+                profilePictureImage = image
+            }
+        }
+
         api.currentUser { user in
             userName = user?.name ?? ""
 
