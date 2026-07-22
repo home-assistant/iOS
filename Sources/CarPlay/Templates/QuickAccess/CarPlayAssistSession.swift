@@ -90,6 +90,7 @@ final class CarPlayAssistSession: NSObject {
     private var isStopped = false
     private var postDismissAction: (() -> Void)?
 
+    private let server: Server
     private let pipelineId: String
     private let prompt: String?
 
@@ -172,6 +173,7 @@ final class CarPlayAssistSession: NSObject {
         tonePlayer: CarPlayAssistTonePlayerProtocol = CarPlayAssistTonePlayer()
     ) {
         self.interfaceController = interfaceController
+        self.server = server
         self.pipelineId = pipelineId
         self.prompt = prompt
         self.audioRecorder = audioRecorder
@@ -574,10 +576,16 @@ final class CarPlayAssistSession: NSObject {
         configureAudioSessionForTTSIfNeeded()
         logCurrentAudioRoute(context: "before tts playback")
 
+        // AVPlayer loads media over its own connection, which can neither present the server's
+        // client certificate (mTLS) nor apply the app's TLS security exceptions, so for servers
+        // configured with either the streaming strategy can never succeed.
+        let requiresCertificateAwareLoading = server.info.connection.clientCertificate != nil ||
+            server.info.connection.securityExceptions.hasExceptions
+
         switch Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackStrategy {
-        case .avPlayer:
+        case .avPlayer where !requiresCertificateAwareLoading:
             playTTSWithAVPlayer(url: url)
-        case .downloadedAVAudioPlayer:
+        case .avPlayer, .downloadedAVAudioPlayer:
             playTTSWithDownloadedAudioPlayer(url: url)
         }
     }
@@ -624,7 +632,11 @@ final class CarPlayAssistSession: NSObject {
     private func playTTSWithDownloadedAudioPlayer(url: URL) {
         Current.Log.info("CarPlay Assist downloading TTS audio for AVAudioPlayer: \(url.absoluteString)")
 
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        // Downloaded through the certificate-aware session so the fetch presents the server's
+        // client certificate (mTLS) and applies its TLS security exceptions, which
+        // URLSession.shared cannot do.
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        session.dataTask(with: url) { [weak self] data, _, error in
             guard let self else { return }
 
             if let error {
@@ -661,6 +673,9 @@ final class CarPlayAssistSession: NSObject {
                 }
             }
         }.resume()
+        // The running task completes normally; afterwards the session releases its delegate,
+        // which URLSession otherwise retains forever.
+        session.finishTasksAndInvalidate()
     }
 
     private func observeTTSPlayer(item: AVPlayerItem, url: URL) {
