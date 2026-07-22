@@ -701,7 +701,7 @@ final class WatchHomeViewModel: ObservableObject {
     /// without its own observation.
     private func refreshServerURLAttention() {
         Task { [weak self] in
-            let needsAttention = await !WatchServerURLAttention.serverIdsNeedingAttention().isEmpty
+            let needsAttention = !(await WatchServerURLAttention.serverIdsNeedingAttention().isEmpty)
             await MainActor.run { [weak self] in
                 self?.settingsNeedsAttention = needsAttention
             }

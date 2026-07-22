@@ -49,6 +49,9 @@ struct WatchHomeFooterView: View {
                 Circle()
                     .fill(.yellow)
                     .frame(width: 8, height: 8)
+                    // Decorative: must not steal taps from the button or appear to VoiceOver.
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
         }
     }
