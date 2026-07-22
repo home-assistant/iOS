@@ -45,7 +45,7 @@ struct WidgetsBundle18: WidgetBundle {
 
     var body: some Widget {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        HALiveActivityConfiguration()
+        HALiveActivityConfigurationSupplemental()
         #endif
 
         // Controls
