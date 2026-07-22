@@ -57,18 +57,17 @@ struct WatchMagicViewRow: View {
                 break
             }
         }
-        .alert(
-            Text(verbatim: L10n.Watch.Home.Run.Error.title),
-            isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { if !$0 { viewModel.errorMessage = nil } }
+        // Full screen (not an alert) so the failure reason — and what to do about it — stays
+        // readable on the small display.
+        .fullScreenCover(isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            MagicItemExecutionErrorView(
+                itemName: viewModel.item.name(info: viewModel.itemInfo),
+                message: viewModel.errorMessage ?? "",
+                onDismiss: { viewModel.errorMessage = nil }
             )
-        ) {
-            Button(L10n.okLabel, role: .cancel) {}
-        } message: {
-            if let errorMessage = viewModel.errorMessage {
-                Text(verbatim: errorMessage)
-            }
         }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.

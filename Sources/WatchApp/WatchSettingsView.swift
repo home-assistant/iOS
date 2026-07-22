@@ -3,15 +3,10 @@ import Shared
 import SwiftUI
 
 /// Watch settings. Lists servers synchronized from the paired iPhone and shows connectivity details
-/// (including mTLS client-certificate status). It also provides watch-local preferences like where
-/// actions run (iPhone vs Watch) and per-server URL overrides; server configuration itself remains
-/// managed on the iPhone.
+/// (including mTLS client-certificate status). It also provides watch-local preferences like
+/// per-server URL overrides; server configuration itself remains managed on the iPhone.
 struct WatchSettingsView: View {
     @StateObject private var viewModel = WatchSettingsViewModel()
-    @State private var performActionTarget = WatchUserDefaults.shared.performActionTarget
-    /// Developer option: routing is always automatic unless this re-enables the picker. Refreshed
-    /// on appear so toggling it in the Developer screen reflects here on pop.
-    @State private var allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
     @State private var showDeleteLocalDataConfirmation = false
     @State private var showDeleteLocalDataResult = false
     @State private var deleteLocalDataSucceeded = false
@@ -23,16 +18,12 @@ struct WatchSettingsView: View {
                 networkSection
                 configurationSection
                 layoutSection
-                if allowChoosingRoute {
-                    performActionSection
-                }
                 troubleshootingSection
                 deleteLocalDataSection
                 restartAppSection
             }
             .onAppear {
-                allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
-                performActionTarget = WatchUserDefaults.shared.performActionTarget
+                viewModel.reload()
             }
             .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
             .alert(
@@ -108,21 +99,6 @@ struct WatchSettingsView: View {
             }
         } footer: {
             Text(verbatim: L10n.Watch.Configuration.Layout.footer)
-        }
-    }
-
-    private var performActionSection: some View {
-        Section {
-            Picker(L10n.Watch.Settings.PerformAction.title, selection: $performActionTarget) {
-                Text(verbatim: L10n.Watch.Settings.auto).tag(WatchActionTarget.auto)
-                Text(verbatim: L10n.Watch.Settings.PerformAction.iphone).tag(WatchActionTarget.iPhone)
-                Text(verbatim: L10n.Watch.Settings.PerformAction.appleWatch).tag(WatchActionTarget.appleWatch)
-            }
-            .onChange(of: performActionTarget) { newValue in
-                WatchUserDefaults.shared.performActionTarget = newValue
-            }
-        } footer: {
-            Text(verbatim: L10n.Watch.Settings.PerformAction.footerPreferWatch)
         }
     }
 

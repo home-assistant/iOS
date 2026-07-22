@@ -245,7 +245,11 @@ struct WatchHomeView: View {
 
     private func updateIPhoneReachability(_ reachability: HAWatchConnectivity.Reachability) {
         withAnimation(.easeInOut(duration: 0.2)) {
-            iPhoneNotReachable = reachability == .notReachable
+            // The header's iPhone-with-a-slash icon is a developer option, off by default —
+            // magic items run over the watch's own networking, so an unreachable iPhone is
+            // not worth alarming users about.
+            iPhoneNotReachable = WatchUserDefaults.shared.showIPhoneUnreachableIcon
+                && reachability == .notReachable
         }
     }
 

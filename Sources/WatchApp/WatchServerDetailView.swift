@@ -55,16 +55,25 @@ struct WatchServerDetailView: View {
 
     @ViewBuilder
     private var urlOverrideSection: some View {
-        // Only meaningful when there's a choice of URLs to force.
-        if configuredURLCount > 1 {
+        // Shown when there's a choice of URLs to force, and ALWAYS while an override is active:
+        // an internal-only server gets its override from the "Needs attention" opt-in, and hiding
+        // the picker would leave no way back to automatic — the override outlives server syncs
+        // and even "Delete Local Data".
+        if configuredURLCount > 1 || urlOverride != nil {
             Section {
                 Picker(L10n.Watch.Settings.UrlOverride.title, selection: $urlOverride) {
                     Text(verbatim: L10n.Watch.Settings.auto)
                         .tag(ConnectionInfo.URLType?.none)
-                    Text(verbatim: L10n.Settings.ConnectionSection.InternalBaseUrl.title)
-                        .tag(ConnectionInfo.URLType?.some(.internal))
-                    Text(verbatim: L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
-                        .tag(ConnectionInfo.URLType?.some(.external))
+                    // Offer only URL types that exist for this server — plus the forced one even
+                    // if its URL is gone, so the picker can still display (and clear) it.
+                    if connection.address(for: .internal) != nil || urlOverride == .internal {
+                        Text(verbatim: L10n.Settings.ConnectionSection.InternalBaseUrl.title)
+                            .tag(ConnectionInfo.URLType?.some(.internal))
+                    }
+                    if connection.address(for: .external) != nil || urlOverride == .external {
+                        Text(verbatim: L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
+                            .tag(ConnectionInfo.URLType?.some(.external))
+                    }
                 }
                 .onChange(of: urlOverride) { newValue in
                     WatchUserDefaults.shared.setURLOverrideRawValue(
