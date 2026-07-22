@@ -16,8 +16,10 @@ enum WebViewEmptyStateStyle: Equatable {
 
     var title: String {
         switch self {
-        case .disconnected, .inFlight:
+        case .disconnected:
             L10n.WebView.EmptyState.title
+        case .inFlight:
+            L10n.FlightGreetings.EmptyState.title
         case .unauthenticated:
             L10n.Unauthenticated.Message.title
         case .recoveredServerNeedingReauthentication:
@@ -41,7 +43,7 @@ enum WebViewEmptyStateStyle: Equatable {
     var complementaryMessage: String? {
         switch self {
         case .inFlight:
-            L10n.FlightGreetings.EmptyState.disclaimer
+            L10n.FlightGreetings.EmptyState.configureHint
         default:
             nil
         }

@@ -456,14 +456,14 @@ struct HomeAssistantStandByView: View {
         switch emptyState.style {
         case .inFlight:
             if let text = emptyState.style.complementaryMessage {
-                Text(text)
-                    .font(.caption2.italic())
-                    .foregroundColor(.haPrimary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DesignSystem.Spaces.two)
-                    .onTapGesture {
-                        openSettings()
-                    }
+                Button(action: openSettings) {
+                    Text(text)
+                        .font(.caption2.italic())
+                        .foregroundColor(.haPrimary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
+                }
+                .buttonStyle(.plain)
             }
         default:
             EmptyView()
