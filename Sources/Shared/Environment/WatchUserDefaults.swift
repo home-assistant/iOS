@@ -3,8 +3,6 @@ import Foundation
 public enum WatchUserDefaultsKey: String {
     /// When the watch last received the server configuration from the paired iPhone.
     case serversUpdatedAt
-    /// Where the watch runs actions (magic items): automatically, always via iPhone, or directly.
-    case performActionTarget
     /// Last selected Assist pipeline display name for the Watch settings summary.
     case assistPipelineName
     /// `WatchConfig.lastModified` of the config the watch and iPhone last agreed on — the baseline for
@@ -13,10 +11,11 @@ public enum WatchUserDefaultsKey: String {
     /// Opaque per-table digests the phone issued with the last applied database mirror; echoed on
     /// the next sync request so the phone can omit unchanged tables (delta sync).
     case databaseMirrorDigests
-    /// Developer option: shows the "Perform action using" route picker in the watch settings.
-    case allowChoosingMagicItemRoute
     /// Developer option: presents a live step-by-step log screen while a magic item executes.
     case verboseItemExecution
+    /// Developer option: shows the iPhone-with-a-slash icon in the home header while the paired
+    /// iPhone is unreachable. Off by default — the icon never shows unless a developer opts in.
+    case showIPhoneUnreachableIcon
     /// Developer option: the watch fetches its reference database directly from Home Assistant
     /// over websocket instead of relying on the iPhone mirror. Off by default: real watches block
     /// `URLSessionWebSocketTask` for ordinary apps (TN3135), so this only works in specific
@@ -27,16 +26,6 @@ public enum WatchUserDefaultsKey: String {
     /// EXPERIMENT: hold a playback audio session open during the direct sync, to test whether
     /// watchOS's audio-streaming exception unlocks the websocket on real hardware (TN3135).
     case directSyncAudioSessionProbeEnabled
-}
-
-/// Where the Apple Watch performs actions such as executing magic items.
-public enum WatchActionTarget: String, CaseIterable {
-    /// Connect directly from the Watch when it can reach Home Assistant, otherwise relay via the iPhone.
-    case auto
-    /// Always route through the paired iPhone.
-    case iPhone
-    /// Always connect directly from the Apple Watch.
-    case appleWatch
 }
 
 public final class WatchUserDefaults {
@@ -89,32 +78,19 @@ public final class WatchUserDefaults {
         }
     }
 
-    // MARK: - Action target
-
-    public var performActionTarget: WatchActionTarget {
-        get { string(for: .performActionTarget).flatMap(WatchActionTarget.init(rawValue:)) ?? .auto }
-        set { set(newValue.rawValue, key: .performActionTarget) }
-    }
-
-    /// The route actually used to execute magic items. Locked to `.auto` unless the developer
-    /// "Allow choosing route" option is on, so a preference stored before the picker was hidden
-    /// can't keep silently forcing a route.
-    public var effectivePerformActionTarget: WatchActionTarget {
-        allowChoosingMagicItemRoute ? performActionTarget : .auto
-    }
-
     // MARK: - Developer options
-
-    /// Developer option gating the "Perform action using" picker in the watch settings.
-    public var allowChoosingMagicItemRoute: Bool {
-        get { userDefaults.bool(forKey: WatchUserDefaultsKey.allowChoosingMagicItemRoute.rawValue) }
-        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.allowChoosingMagicItemRoute.rawValue) }
-    }
 
     /// Developer option: present a live step-by-step log screen while a magic item executes.
     public var verboseItemExecution: Bool {
         get { userDefaults.bool(forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
         set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.verboseItemExecution.rawValue) }
+    }
+
+    /// Developer option: show the iPhone-with-a-slash icon in the home header while the paired
+    /// iPhone is unreachable. Defaults to false, so the icon never shows unless opted in.
+    public var showIPhoneUnreachableIcon: Bool {
+        get { userDefaults.bool(forKey: WatchUserDefaultsKey.showIPhoneUnreachableIcon.rawValue) }
+        set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.showIPhoneUnreachableIcon.rawValue) }
     }
 
     /// Developer option: fetch the watch's reference database directly over websocket instead of

@@ -612,6 +612,9 @@ final class WatchCommunicatorService {
         }
     }
 
+    /// Deprecated wire flow: current watch builds always execute magic items over the watch's own
+    /// networking and never send `magicItemPressed`. Kept for one release cycle so older watch
+    /// builds keep working — see the note on `InteractiveImmediateMessages.magicItemPressed`.
     private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
         // Every failure reply carries a stable code (which the watch maps to a localized message)

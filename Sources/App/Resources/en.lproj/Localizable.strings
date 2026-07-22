@@ -841,6 +841,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Close";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
+"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
 "network.error.no_active_url.title" = "No URL available to load";
 "nfc.detail.copy" = "Copy to Pasteboard";
 "nfc.detail.duplicate" = "Create a Duplicate";
@@ -1942,6 +1943,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
 "watch.home.run.error.title" = "Couldn't run action";
 "watch.home.sync.syncing" = "Syncing with iPhone…";
 "watch.home.sync.waiting" = "Waiting for iPhone…";
@@ -1953,7 +1955,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.interaction.toast.title" = "Apple Watch";
 "watch.internal_url_prompt.info.message" = "When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.\
 \
-While no URL is considered safe, this server's data won't sync to the watch and its complications won't update.";
+While no URL is considered safe, this server's actions won't run from the watch, its data won't sync, and its complications won't update.";
 "watch.internal_url_prompt.info.not_now" = "Not Now";
 "watch.internal_url_prompt.info.title" = "Internal URL & Security";
 "watch.internal_url_prompt.info.use" = "Use %@";
@@ -2152,12 +2154,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.delete_local_data.footer" = "Removes the offline database and cached data stored on this Watch only.";
 "watch.settings.delete_local_data.success" = "Local data deleted";
 "watch.settings.delete_local_data.title" = "Delete Local Data";
-"watch.settings.developer.allow_choosing_route.footer" = "Shows the \"Perform action using\" picker in Settings. When off, actions always use automatic routing.";
-"watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
 "watch.settings.developer.audio_probe.footer" = "Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.";
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
 "watch.settings.developer.title" = "Developer";
 "watch.settings.developer.verbose_execution.footer" = "Shows a live log describing every step while an item runs.";
 "watch.settings.developer.verbose_execution.title" = "Verbose item execution";
@@ -2166,11 +2168,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.last_updated" = "Updated %@";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "watch.settings.no_servers" = "No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
-"watch.settings.perform_action.footer" = "Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.";
-"watch.settings.perform_action.footer_prefer_watch" = "Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.";
-"watch.settings.perform_action.iphone" = "iPhone";
-"watch.settings.perform_action.title" = "Perform action using";
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
 "watch.settings.restart_app.title" = "Restart App";

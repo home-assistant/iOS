@@ -42,6 +42,15 @@ struct WatchHomeFooterView: View {
         }
         .buttonStyle(.plain)
         .circularGlassOrLegacyBackground()
+        // Yellow attention dot: at least one server has no usable URL from the watch, so its magic
+        // items can't run — settings hosts the per-server "Needs attention" warning explaining it.
+        .overlay(alignment: .topTrailing) {
+            if viewModel.settingsNeedsAttention {
+                Circle()
+                    .fill(.yellow)
+                    .frame(width: 8, height: 8)
+            }
+        }
     }
 
     private var appVersion: some View {
@@ -55,3 +64,16 @@ struct WatchHomeFooterView: View {
         .foregroundStyle(.secondary)
     }
 }
+
+#if DEBUG
+#Preview {
+    List {
+        WatchHomeFooterView(
+            viewModel: .init(),
+            isEditing: false,
+            onEdit: {},
+            onSettings: {}
+        )
+    }
+}
+#endif

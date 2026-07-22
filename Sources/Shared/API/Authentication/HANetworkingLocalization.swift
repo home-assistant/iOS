@@ -70,3 +70,22 @@ extension TokenManager.TokenError: @retroactive LocalizedError {
         }
     }
 }
+
+extension ServerConnectionError: @retroactive LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case let .noActiveURL(serverName):
+            return L10n.Network.Error.NoActiveUrl.description(serverName)
+        }
+    }
+}
+
+public extension Error {
+    /// True when this is `ServerConnectionError.noActiveURL`. Exposed from Shared because
+    /// HANetworking is linked only through Shared, so consumers (the watch app) can't import the
+    /// package to pattern-match the error themselves.
+    var isNoActiveURLError: Bool {
+        guard let error = self as? ServerConnectionError, case .noActiveURL = error else { return false }
+        return true
+    }
+}
