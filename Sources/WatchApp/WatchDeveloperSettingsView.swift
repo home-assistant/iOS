@@ -5,8 +5,8 @@ import SwiftUI
 /// these switches change how magic items execute and are meant to be used under a developer's
 /// guidance while debugging.
 struct WatchDeveloperSettingsView: View {
-    @State private var allowChoosingRoute = WatchUserDefaults.shared.allowChoosingMagicItemRoute
     @State private var verboseExecution = WatchUserDefaults.shared.verboseItemExecution
+    @State private var showIPhoneUnreachableIcon = WatchUserDefaults.shared.showIPhoneUnreachableIcon
     @State private var directDatabaseSync = WatchUserDefaults.shared.directDatabaseSyncEnabled
     @State private var directSyncAudioProbe = WatchUserDefaults.shared.directSyncAudioSessionProbeEnabled
     /// True on entry so the warning alert shows as soon as the screen is pushed.
@@ -14,21 +14,6 @@ struct WatchDeveloperSettingsView: View {
 
     var body: some View {
         List {
-            Section {
-                Toggle(isOn: $allowChoosingRoute) {
-                    Text(verbatim: L10n.Watch.Settings.Developer.AllowChoosingRoute.title)
-                }
-                .onChange(of: allowChoosingRoute) { newValue in
-                    WatchUserDefaults.shared.allowChoosingMagicItemRoute = newValue
-                    if !newValue {
-                        // Turning the escape hatch off returns execution to automatic routing.
-                        WatchUserDefaults.shared.performActionTarget = .auto
-                    }
-                }
-            } footer: {
-                Text(verbatim: L10n.Watch.Settings.Developer.AllowChoosingRoute.footer)
-            }
-
             Section {
                 Toggle(isOn: $verboseExecution) {
                     Text(verbatim: L10n.Watch.Settings.Developer.VerboseExecution.title)
@@ -38,6 +23,17 @@ struct WatchDeveloperSettingsView: View {
                 }
             } footer: {
                 Text(verbatim: L10n.Watch.Settings.Developer.VerboseExecution.footer)
+            }
+
+            Section {
+                Toggle(isOn: $showIPhoneUnreachableIcon) {
+                    Text(verbatim: L10n.Watch.Settings.Developer.IphoneUnreachableIcon.title)
+                }
+                .onChange(of: showIPhoneUnreachableIcon) { newValue in
+                    WatchUserDefaults.shared.showIPhoneUnreachableIcon = newValue
+                }
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.Developer.IphoneUnreachableIcon.footer)
             }
 
             Section {

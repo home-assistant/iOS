@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Full-screen live log shown while a magic item executes with the developer "Verbose item
 /// execution" option on. Renders each trace entry as it arrives, auto-scrolling to the newest one,
-/// so route decisions, states and errors are readable on-device.
+/// so execution steps, states and errors are readable on-device.
 struct MagicItemExecutionTraceView: View {
     @ObservedObject var trace: MagicItemExecutionTrace
     let itemName: String
@@ -95,11 +95,10 @@ struct MagicItemExecutionTraceView: View {
 #Preview {
     let trace = MagicItemExecutionTrace(recordsClientEvents: false)
     trace.log(.info, "Running script.good_morning (script)")
-    trace.log(.info, "iPhone reachability: immediatelyReachable")
-    trace.log(.info, "Pinging Home Assistant directly…")
-    trace.log(.error, "Ping failed after 2.31s")
-    trace.log(.info, "Relaying via iPhone over Watch Connectivity…")
-    trace.log(.success, "iPhone confirmed the action ran")
+    trace.log(.info, "Server: \"Home\"")
+    trace.log(.info, "Executing via REST from the watch on \"Home\"…")
+    trace.log(.success, "Server accepted the request")
+    trace.log(.success, "Finished successfully in 1.42s")
     trace.finish()
     return MagicItemExecutionTraceView(trace: trace, itemName: "Good Morning", onDone: {})
 }

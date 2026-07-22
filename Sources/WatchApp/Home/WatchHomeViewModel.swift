@@ -40,6 +40,10 @@ final class WatchHomeViewModel: ObservableObject {
     /// watch can't verify the home network. The UI asks the user whether to use that URL anyway
     /// (which sets the existing per-server "Always use" override).
     @Published var internalURLPrompt: WatchInternalURLPromptContext?
+    /// True when any synced server currently resolves no usable URL from the watch — its magic
+    /// items can't run. Surfaces as a yellow dot on the home footer's settings gear, pointing the
+    /// user at the per-server warnings in Settings.
+    @Published private(set) var settingsNeedsAttention = false
 
     /// True while a config/database sync is running. A second `requestConfig` is ignored until it
     /// finishes, so repeated reload taps can't stack several syncs (each holding a 30s reply timeout)
@@ -632,6 +636,7 @@ final class WatchHomeViewModel: ObservableObject {
     /// mirrors how the iPhone watch-configuration editor resolves item info.
     @MainActor
     func loadCache(isRetry: Bool = false) {
+        refreshServerURLAttention()
         let fetchedConfig: WatchConfig?
         do {
             fetchedConfig = try Current.database().read { db in try WatchConfig.fetchOne(db) }
@@ -687,6 +692,18 @@ final class WatchHomeViewModel: ObservableObject {
                 self.updateConfig(config: config, magicItemsInfo: infos)
                 self.resetError()
                 self.finishCacheLoad()
+            }
+        }
+    }
+
+    /// Re-evaluates whether any server lacks a usable URL, feeding the settings gear's yellow
+    /// attention dot. Piggybacks on every cache load so the dot follows server/URL-override changes
+    /// without its own observation.
+    private func refreshServerURLAttention() {
+        Task { [weak self] in
+            let needingAttention = await WatchServerURLAttention.serverIdsNeedingAttention()
+            await MainActor.run { [weak self] in
+                self?.settingsNeedsAttention = !needingAttention.isEmpty
             }
         }
     }
