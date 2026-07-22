@@ -55,7 +55,13 @@ final class BackgroundDownloadManager: NSObject {
     }
 
     static func destinationURL(forSuggestedFilename suggestedFilename: String) -> URL? {
-        let name = suggestedFilename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "Unknown"
+        // The name can come from a server-provided Content-Disposition header, so strip any path
+        // structure to keep the file inside the downloads directory.
+        let baseName = suggestedFilename
+            .components(separatedBy: "/").last?
+            .components(separatedBy: "\\").last ?? "Unknown"
+        let safeName = [".", ".."].contains(baseName) || baseName.isEmpty ? "Unknown" : baseName
+        let name = safeName.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "Unknown"
         return URL(string: name, relativeTo: AppConstants.DownloadsDirectory)
     }
 
@@ -68,15 +74,18 @@ final class BackgroundDownloadManager: NSObject {
         ])
     }
 
-    private func server(for task: URLSessionTask, host: String?) -> Server? {
+    private func server(for task: URLSessionTask, protectionSpace: URLProtectionSpace) -> Server? {
         if let identifier = serverIdentifierForTask[task.taskIdentifier],
            let server = Current.servers.server(for: identifier) {
             return server
         }
-        // After a background relaunch the task → server map is gone; match by host so security
-        // exceptions and client certificates still apply.
+        // After a background relaunch the task → server map is gone; match by host and port so
+        // security exceptions and client certificates still apply — and to the right server when
+        // several share a host.
         return Current.servers.all.first { server in
-            server.activeURLUsingLastKnownNetworkState()?.host == host
+            guard let url = server.activeURLUsingLastKnownNetworkState(), let host = url.host else { return false }
+            let port = url.port ?? (url.scheme?.lowercased() == "https" ? 443 : 80)
+            return host == protectionSpace.host && port == protectionSpace.port
         }
     }
 }
@@ -150,7 +159,7 @@ extension BackgroundDownloadManager: URLSessionDownloadDelegate {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let server = server(for: task, host: challenge.protectionSpace.host) else {
+        guard let server = server(for: task, protectionSpace: challenge.protectionSpace) else {
             completionHandler(.performDefaultHandling, nil)
             return
         }

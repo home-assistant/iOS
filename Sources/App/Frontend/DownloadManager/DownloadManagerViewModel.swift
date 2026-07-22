@@ -74,7 +74,16 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
         }
         guard domainMatches else { return false }
         if cookie.isSecure, url.scheme?.lowercased() != "https" { return false }
-        return cookie.path == "/" || url.path.hasPrefix(cookie.path)
+        return pathMatches(requestPath: url.path, cookiePath: cookie.path)
+    }
+
+    /// RFC 6265 §5.1.4 path matching: a bare prefix isn't enough — `/admin` must not match `/administrator`.
+    private nonisolated static func pathMatches(requestPath: String, cookiePath: String) -> Bool {
+        let requestPath = requestPath.isEmpty ? "/" : requestPath
+        if cookiePath == requestPath { return true }
+        guard requestPath.hasPrefix(cookiePath) else { return false }
+        if cookiePath.hasSuffix("/") { return true }
+        return requestPath[requestPath.index(requestPath.startIndex, offsetBy: cookiePath.count)] == "/"
     }
 
     private func bytesToMBString(_ bytes: Int64) -> String {

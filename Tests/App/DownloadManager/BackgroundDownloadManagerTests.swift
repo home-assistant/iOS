@@ -21,6 +21,21 @@ struct BackgroundDownloadManagerTests {
         #expect(url.lastPathComponent == "my backup.tar")
     }
 
+    @Test func testDestinationURLStripsPathTraversal() throws {
+        let downloadsPrefix = AppConstants.DownloadsDirectory.absoluteString
+        let traversal = try #require(BackgroundDownloadManager.destinationURL(forSuggestedFilename: "../evil.tar"))
+        #expect(traversal.lastPathComponent == "evil.tar")
+        #expect(traversal.absoluteString.hasPrefix(downloadsPrefix))
+
+        let nested = try #require(BackgroundDownloadManager.destinationURL(forSuggestedFilename: "a/b/c.tar"))
+        #expect(nested.lastPathComponent == "c.tar")
+        #expect(nested.absoluteString.hasPrefix(downloadsPrefix))
+
+        let bare = try #require(BackgroundDownloadManager.destinationURL(forSuggestedFilename: ".."))
+        #expect(bare.lastPathComponent == "Unknown")
+        #expect(bare.absoluteString.hasPrefix(downloadsPrefix))
+    }
+
     @Test func testValidationErrorForSuccessResponse() {
         let response = HTTPURLResponse(
             url: URL(string: "https://example.com/file")!,
