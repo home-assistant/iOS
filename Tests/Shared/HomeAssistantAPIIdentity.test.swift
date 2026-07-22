@@ -1,9 +1,22 @@
 import HAKit
+import PromiseKit
 @testable import Shared
+import UIKit
 import XCTest
 
 final class HomeAssistantAPIIdentityTests: XCTestCase {
+    private var originalDiskCache: DiskCache!
+    private var fakeDiskCache: FakeDiskCache!
+
+    override func setUp() {
+        super.setUp()
+        originalDiskCache = Current.diskCache
+        fakeDiskCache = FakeDiskCache()
+        Current.diskCache = fakeDiskCache
+    }
+
     override func tearDown() {
+        Current.diskCache = originalDiskCache
         ServerFixture.reset()
         super.tearDown()
     }
@@ -136,6 +149,166 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         XCTAssertEqual(connection.sentRequests.count, 2)
     }
 
+    func testProfilePictureFallsBackToCacheWhenStatesUnavailable() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = FakeHAConnection()
+
+        fakeDiskCache.storage[api.profilePictureCacheKey] = makePNGData()
+
+        let user = try makeUser()
+        let expectation = expectation(description: "profile picture")
+        var images = [UIImage?]()
+
+        api.profilePicture(for: user) { image in
+            images.append(image)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(images.count, 1)
+        XCTAssertNotNil(images[0])
+        XCTAssertTrue(fakeDiskCache.deletedKeys.isEmpty)
+    }
+
+    func testProfilePictureDeliversCacheThenClearsWhenPictureMissing() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        let connection = FakeHAConnection()
+        connection.mockResponses["states"] = .array([
+            .dictionary([
+                "entity_id": "person.cepresso",
+                "state": "home",
+                "last_changed": "2026-04-23T10:00:00Z",
+                "last_updated": "2026-04-23T10:00:00Z",
+                "attributes": [
+                    "user_id": "user-id",
+                ],
+                "context": [
+                    "id": "context-id",
+                ],
+            ]),
+        ])
+        api.connection = connection
+
+        fakeDiskCache.storage[api.profilePictureCacheKey] = makePNGData()
+
+        let user = try makeUser()
+        let expectation = expectation(description: "profile picture")
+        expectation.expectedFulfillmentCount = 2
+        var images = [UIImage?]()
+
+        api.profilePicture(for: user) { image in
+            images.append(image)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(images.count, 2)
+        XCTAssertNotNil(images[0])
+        XCTAssertNil(images[1])
+        XCTAssertEqual(fakeDiskCache.deletedKeys, [api.profilePictureCacheKey])
+    }
+
+    func testProfilePictureKeepsCacheWhenPersonEntityNotFound() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        let connection = FakeHAConnection()
+        connection.mockResponses["states"] = .array([
+            .dictionary([
+                "entity_id": "person.someone_else",
+                "state": "home",
+                "last_changed": "2026-04-23T10:00:00Z",
+                "last_updated": "2026-04-23T10:00:00Z",
+                "attributes": [
+                    "user_id": "another-user-id",
+                ],
+                "context": [
+                    "id": "context-id",
+                ],
+            ]),
+        ])
+        api.connection = connection
+
+        fakeDiskCache.storage[api.profilePictureCacheKey] = makePNGData()
+
+        let user = try makeUser()
+        let expectation = expectation(description: "profile picture")
+        var images = [UIImage?]()
+
+        api.profilePicture(for: user) { image in
+            images.append(image)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(images.count, 1)
+        XCTAssertNotNil(images[0])
+        XCTAssertTrue(fakeDiskCache.deletedKeys.isEmpty)
+    }
+
+    func testProfilePictureWithoutCacheReturnsNilWhenStatesUnavailable() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = FakeHAConnection()
+
+        let user = try makeUser()
+        let expectation = expectation(description: "profile picture")
+
+        api.profilePicture(for: user) { image in
+            XCTAssertNil(image)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+    }
+
+    private func makeUser() throws -> HAResponseCurrentUser {
+        try HAResponseCurrentUser(data: .dictionary([
+            "id": "user-id",
+            "name": "cepresso",
+            "is_owner": false,
+            "is_admin": true,
+            "credentials": [],
+            "mfa_modules": [],
+        ]))
+    }
+
+    private func makePNGData() -> Data {
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1))
+        let image = renderer.image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
+        }
+        guard let data = image.pngData() else {
+            preconditionFailure("Unable to encode test image")
+        }
+        return data
+    }
+
+    private final class FakeDiskCache: DiskCache {
+        enum FakeDiskCacheError: Error {
+            case missing
+        }
+
+        var storage = [String: Any]()
+        private(set) var deletedKeys = [String]()
+
+        func value<T: Codable>(for key: String) -> Promise<T> {
+            if let value = storage[key] as? T {
+                return .value(value)
+            }
+            return Promise(error: FakeDiskCacheError.missing)
+        }
+
+        func set(_ value: some Codable, for key: String) -> Promise<Void> {
+            storage[key] = value
+            return .value(())
+        }
+
+        func delete(for key: String) -> Promise<Void> {
+            storage[key] = nil
+            deletedKeys.append(key)
+            return .value(())
+        }
+    }
+
     func testCertificateAwareSessionAttachesDelegateWithoutClientCertificate() {
         let server = makeServer(clientCertificate: nil)
         XCTAssertNil(server.info.connection.clientCertificate)
@@ -216,7 +389,7 @@ private final class FakeHAConnection: HAConnection {
     @discardableResult
     func send<T>(
         _ request: HATypedRequest<T>,
-        completion: @escaping (Result<T, HAError>) -> Void
+        completion: @escaping (Swift.Result<T, HAError>) -> Void
     ) -> HACancellable where T: HADataDecodable {
         sentRequests.append(request.request)
 

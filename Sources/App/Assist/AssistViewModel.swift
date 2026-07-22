@@ -441,7 +441,7 @@ extension AssistViewModel: AssistServiceDelegate {
         }
 
         audioPlayer.delegate = self
-        audioPlayer.play(url: mediaUrl)
+        audioPlayer.play(url: mediaUrl, server: server)
     }
 
     func didReceiveError(code: String, message: String) {

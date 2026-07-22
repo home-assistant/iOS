@@ -1694,6 +1694,19 @@ public enum L10n {
     }
   }
 
+  public enum FlightGreetings {
+    /// Have a nice flight!
+    public static var greeting: String { return L10n.tr("Localizable", "flight_greetings.greeting") }
+    public enum EmptyState {
+      /// You're currently disconnected. Your home will be waiting when you land.
+      public static var body: String { return L10n.tr("Localizable", "flight_greetings.empty_state.body") }
+      /// Configure flight greetings in Settings
+      public static var configureHint: String { return L10n.tr("Localizable", "flight_greetings.empty_state.configure_hint") }
+      /// Have a nice flight
+      public static var title: String { return L10n.tr("Localizable", "flight_greetings.empty_state.title") }
+    }
+  }
+
   public enum Gestures {
     public enum _1Finger {
       /// Using one finger
@@ -4539,6 +4552,16 @@ public enum L10n {
       /// Event Log
       public static var title: String { return L10n.tr("Localizable", "settings.event_log.title") }
     }
+    public enum Greetings {
+      /// Greetings
+      public static var title: String { return L10n.tr("Localizable", "settings.greetings.title") }
+      public enum Flight {
+        /// Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.
+        public static var footer: String { return L10n.tr("Localizable", "settings.greetings.flight.footer") }
+        /// Flight
+        public static var title: String { return L10n.tr("Localizable", "settings.greetings.flight.title") }
+      }
+    }
     public enum LocationHistory {
       /// No Location History
       public static var empty: String { return L10n.tr("Localizable", "settings.location_history.empty") }
@@ -4636,6 +4659,8 @@ public enum L10n {
       public static var general: String { return L10n.tr("Localizable", "settings.search_keywords.general") }
       /// swipe, tap, navigation, shortcuts
       public static var gestures: String { return L10n.tr("Localizable", "settings.search_keywords.gestures") }
+      /// flight, airplane, plane, travel, welcome
+      public static var greetings: String { return L10n.tr("Localizable", "settings.search_keywords.greetings") }
       /// documentation, support, guide, companion
       public static var help: String { return L10n.tr("Localizable", "settings.search_keywords.help") }
       /// wall mount, tablet, screen, always on, auto lock
@@ -7175,6 +7200,8 @@ public enum L10n {
     public enum EmptyState {
       /// Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.
       public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }
+      /// Clean cache and reload
+      public static var cleanCacheAndReloadButton: String { return L10n.tr("Localizable", "web_view.empty_state.clean_cache_and_reload_button") }
       /// Open App settings
       public static var openSettingsButton: String { return L10n.tr("Localizable", "web_view.empty_state.open_settings_button") }
       /// Re-authenticate

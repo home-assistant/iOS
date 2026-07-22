@@ -1183,23 +1183,46 @@ public class HomeAssistantAPI {
         }
     }
 
+    private enum ProfilePictureURLResult {
+        /// A picture is configured and its URL resolved successfully.
+        case url(URL)
+        /// The server responded and the user has no picture configured.
+        case missing
+        /// The picture's existence could not be determined (e.g. no connectivity).
+        case failure
+    }
+
     @discardableResult
     public func profilePictureURL(
         for user: HAResponseCurrentUser,
         completion: @escaping (URL?) -> Void
     ) -> HACancellable {
+        resolveProfilePictureURL(for: user) { result in
+            if case let .url(url) = result {
+                completion(url)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
+    private func resolveProfilePictureURL(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (ProfilePictureURLResult) -> Void
+    ) -> HACancellable {
         connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { [weak self] result in
             switch result {
             case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
+                    // Not conclusive that no picture is configured, so not `.missing`.
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
-                    completion(nil)
+                    completion(.failure)
                     return
                 }
 
                 guard let path = person.attributes["entity_picture"] as? String else {
                     Current.Log.error("Profile picture: Missing URL for user entity picture, user id \(user.id)")
-                    completion(nil)
+                    completion(.missing)
                     return
                 }
 
@@ -1208,15 +1231,15 @@ public class HomeAssistantAPI {
                 Task { @MainActor in
                     guard let url = await self?.resolvedProfilePictureURL(from: path) else {
                         Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
-                        completion(nil)
+                        completion(.failure)
                         return
                     }
 
-                    completion(url)
+                    completion(.url(url))
                 }
             case let .failure(error):
                 Current.Log.error("Failed to retrieve states for profile picture: \(error)")
-                completion(nil)
+                completion(.failure)
             }
         }
     }
@@ -1241,6 +1264,9 @@ public class HomeAssistantAPI {
         return cancellable
     }
 
+    /// The completion may be called twice: first with a previously cached picture (if one exists),
+    /// then with the freshly fetched picture. When the fetch fails and a cached picture was already
+    /// delivered, the cached delivery stands and no `nil` follows.
     @discardableResult
     public func profilePicture(
         for user: HAResponseCurrentUser,
@@ -1248,48 +1274,141 @@ public class HomeAssistantAPI {
     ) -> HACancellable {
         let cancellable = ProfilePictureCancellable()
 
-        cancellable.add(profilePictureURL(for: user) { [weak self] url in
+        cachedProfilePicture { [weak self] cached in
             guard !cancellable.isCancelled else { return }
-            guard let self, let url else {
-                completion(nil)
+
+            if let cached {
+                completion(cached)
+            }
+
+            guard let self else {
+                if cached == nil { completion(nil) }
                 return
             }
 
-            let request = manager.download(url).validate()
-            cancellable.setDownloadRequest(request)
-            request.responseData { response in
-                guard !cancellable.isCancelled else { return }
-                switch response.result {
-                case let .success(data):
-                    completion(UIImage(data: data))
-                case let .failure(error):
-                    Current.Log.error("Failed to download profile picture: \(error)")
-                    completion(nil)
-                }
-            }
-        })
+            fetchRemoteProfilePicture(
+                for: user,
+                cancellable: cancellable,
+                hasCachedFallback: cached != nil,
+                completion: completion
+            )
+        }
 
         return cancellable
     }
 
+    /// The completion may be called twice: first with a previously cached picture (if one exists),
+    /// then with the freshly fetched picture. When the fetch fails and a cached picture was already
+    /// delivered, the cached delivery stands and no `nil` follows.
     @discardableResult
     public func profilePicture(completion: @escaping (UIImage?) -> Void) -> HACancellable {
         let cancellable = ProfilePictureCancellable()
 
-        cancellable.add(currentUser { [weak self] user in
+        cachedProfilePicture { [weak self] cached in
             guard !cancellable.isCancelled else { return }
-            guard let self, let user else {
-                completion(nil)
+
+            if let cached {
+                completion(cached)
+            }
+
+            let hasCachedFallback = cached != nil
+
+            guard let self else {
+                if !hasCachedFallback { completion(nil) }
                 return
             }
 
-            cancellable.add(profilePicture(for: user) { image in
+            cancellable.add(currentUser { [weak self] user in
                 guard !cancellable.isCancelled else { return }
-                completion(image)
+                guard let self, let user else {
+                    if !hasCachedFallback { completion(nil) }
+                    return
+                }
+
+                fetchRemoteProfilePicture(
+                    for: user,
+                    cancellable: cancellable,
+                    hasCachedFallback: hasCachedFallback,
+                    completion: completion
+                )
             })
-        })
+        }
 
         return cancellable
+    }
+
+    private func fetchRemoteProfilePicture(
+        for user: HAResponseCurrentUser,
+        cancellable: ProfilePictureCancellable,
+        hasCachedFallback: Bool,
+        completion: @escaping (UIImage?) -> Void
+    ) {
+        cancellable.add(resolveProfilePictureURL(for: user) { [weak self] result in
+            guard !cancellable.isCancelled else { return }
+            guard let self else {
+                if !hasCachedFallback { completion(nil) }
+                return
+            }
+
+            switch result {
+            case let .url(url):
+                let request = manager.download(url).validate()
+                cancellable.setDownloadRequest(request)
+                request.responseData { response in
+                    guard !cancellable.isCancelled else { return }
+                    switch response.result {
+                    case let .success(data):
+                        if let image = UIImage(data: data) {
+                            self.storeProfilePictureInCache(data)
+                            completion(image)
+                        } else if !hasCachedFallback {
+                            completion(nil)
+                        }
+                    case let .failure(error):
+                        Current.Log.error("Failed to download profile picture: \(error)")
+                        if !hasCachedFallback {
+                            completion(nil)
+                        }
+                    }
+                }
+            case .missing:
+                // The server affirmatively has no picture; a stale cached one must not resurface.
+                removeProfilePictureFromCache()
+                completion(nil)
+            case .failure:
+                if !hasCachedFallback {
+                    completion(nil)
+                }
+            }
+        })
+    }
+
+    var profilePictureCacheKey: String {
+        "profile-picture-\(server.identifier.rawValue)"
+    }
+
+    /// Completes with the last successfully fetched profile picture, without any network access.
+    /// Useful to show something immediately, or when the server is unreachable.
+    public func cachedProfilePicture(completion: @escaping (UIImage?) -> Void) {
+        Current.diskCache.value(for: profilePictureCacheKey)
+            .done { (data: Data) in
+                completion(UIImage(data: data))
+            }
+            .catch { _ in
+                completion(nil)
+            }
+    }
+
+    private func storeProfilePictureInCache(_ data: Data) {
+        Current.diskCache.set(data, for: profilePictureCacheKey).catch { error in
+            Current.Log.error("Failed to cache profile picture: \(error)")
+        }
+    }
+
+    private func removeProfilePictureFromCache() {
+        Current.diskCache.delete(for: profilePictureCacheKey).catch { error in
+            Current.Log.error("Failed to remove cached profile picture: \(error)")
+        }
     }
 
     private func resolvedProfilePictureURL(from path: String) async -> URL? {

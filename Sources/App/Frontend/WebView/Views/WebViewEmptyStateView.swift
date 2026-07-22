@@ -216,7 +216,7 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var iconView: some View {
         switch style {
-        case .disconnected, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated:
             Image(.logo)
                 .resizable()
                 .scaledToFit()
@@ -231,7 +231,7 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var bodyText: some View {
         switch style {
-        case .disconnected, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated:
             Text(style.body)
                 .font(.callout)
                 .foregroundColor(.secondary)
@@ -249,7 +249,7 @@ struct WebViewEmptyStateView: View {
     private var primaryButton: some View {
         Button(action: {
             switch style {
-            case .disconnected:
+            case .disconnected, .inFlight:
                 retryAction?()
             case .unauthenticated:
                 reauthAction?(selectedReauthURLType)
@@ -299,7 +299,7 @@ struct WebViewEmptyStateView: View {
     private var secondaryButton: some View {
         Button(action: {
             switch style {
-            case .disconnected, .unauthenticated, .recoveredServerNeedingReauthentication:
+            case .disconnected, .inFlight, .unauthenticated, .recoveredServerNeedingReauthentication:
                 settingsAction?()
             }
         }) {

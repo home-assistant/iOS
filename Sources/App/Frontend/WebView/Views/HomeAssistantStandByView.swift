@@ -11,7 +11,6 @@ struct HomeAssistantStandByView: View {
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 44
-    private static let delayedSettingsButtonDelay: Duration = .seconds(5)
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
     fileprivate static let launchScreenLogoPreviewOpacity = 0.55
@@ -23,6 +22,10 @@ struct HomeAssistantStandByView: View {
     let onSelectServerTapped: (() -> Void)?
     let onGestureAction: ((HAGestureAction) -> Void)?
     let onLogoDismiss: (() -> Void)?
+    let onCleanCacheAndReload: (() -> Void)?
+
+    private let delayedSettingsButtonDelay: Duration
+    private let cleanCacheButtonDelay: Duration
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -32,6 +35,8 @@ struct HomeAssistantStandByView: View {
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
+    @State private var showsCleanCacheButton = false
+    @State private var loaderCountdownRestartToken = 0
     @State private var hasAppeared = false
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
@@ -63,7 +68,10 @@ struct HomeAssistantStandByView: View {
         serverSelectionNamespace: Namespace.ID? = nil,
         onSelectServerTapped: (() -> Void)? = nil,
         onGestureAction: ((HAGestureAction) -> Void)? = nil,
-        onLogoDismiss: (() -> Void)? = nil
+        onLogoDismiss: (() -> Void)? = nil,
+        onCleanCacheAndReload: (() -> Void)? = nil,
+        delayedSettingsButtonDelay: Duration = .seconds(5),
+        cleanCacheButtonDelay: Duration = .seconds(15)
     ) {
         self.server = server
         self.emptyState = emptyState
@@ -72,6 +80,9 @@ struct HomeAssistantStandByView: View {
         self.onSelectServerTapped = onSelectServerTapped
         self.onGestureAction = onGestureAction
         self.onLogoDismiss = onLogoDismiss
+        self.onCleanCacheAndReload = onCleanCacheAndReload
+        self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
+        self.cleanCacheButtonDelay = cleanCacheButtonDelay
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
     }
 
@@ -117,6 +128,9 @@ struct HomeAssistantStandByView: View {
             if let emptyState {
                 actionButtons(for: emptyState)
                     .opacity(contentOpacity)
+            } else if showsCleanCacheButton, onCleanCacheAndReload != nil {
+                cleanCacheButton
+                    .transition(.opacity)
             }
         }
         .alert(L10n.errorLabel, isPresented: .init(
@@ -155,13 +169,19 @@ struct HomeAssistantStandByView: View {
         ) { _ in
             networkType = Current.connectivity.simpleNetworkType()
         }
-        .task(id: showsEmptyState) {
+        .task(id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)]) {
             showsDelayedSettingsButton = false
+            showsCleanCacheButton = false
             guard !showsEmptyState else { return }
-            try? await Task.sleep(for: Self.delayedSettingsButtonDelay)
+            try? await Task.sleep(for: delayedSettingsButtonDelay)
             guard !Task.isCancelled, !showsEmptyState else { return }
             withAnimation(DesignSystem.Animation.default) {
                 showsDelayedSettingsButton = true
+            }
+            try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
+            guard !Task.isCancelled, !showsEmptyState else { return }
+            withAnimation(DesignSystem.Animation.default) {
+                showsCleanCacheButton = true
             }
         }
     }
@@ -173,6 +193,24 @@ struct HomeAssistantStandByView: View {
                 .transition(.opacity)
                 .padding(.bottom, DesignSystem.Spaces.eighteen)
         }
+    }
+
+    private var cleanCacheButton: some View {
+        Button(action: cleanCacheAndReload) {
+            Text(L10n.WebView.EmptyState.cleanCacheAndReloadButton)
+        }
+        .buttonStyle(.primaryButton)
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.top)
+    }
+
+    private func cleanCacheAndReload() {
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = false
+        }
+        loaderCountdownRestartToken += 1
+        onCleanCacheAndReload?()
     }
 
     @ViewBuilder
@@ -195,6 +233,7 @@ struct HomeAssistantStandByView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
             bodyText(for: emptyState)
+            bodyComplementaryText(for: emptyState)
         }
         .opacity(contentOpacity)
         .transition(.opacity)
@@ -345,9 +384,15 @@ struct HomeAssistantStandByView: View {
                     .font(.system(size: Self.reauthenticationIconSize))
                     .foregroundStyle(Color.haPrimary)
             } else {
-                Image(.logo)
-                    .resizable()
-                    .scaledToFit()
+                ZStack(alignment: .bottomTrailing) {
+                    Image(.logo)
+                        .resizable()
+                        .scaledToFit()
+                    if case .inFlight = emptyState?.style {
+                        inFlightIcon
+                            .offset(x: 15, y: 15)
+                    }
+                }
             }
         }
         .frame(
@@ -357,6 +402,24 @@ struct HomeAssistantStandByView: View {
         .launchSplashLogoAnchor()
         .contentShape(Rectangle())
         .onTapGesture(perform: registerLogoDismissTap)
+    }
+
+    private var inFlightIcon: some View {
+        Image(systemSymbol: .airplane)
+            .foregroundStyle(.haPrimary)
+            .rotationEffect(.degrees(-45))
+            .padding(DesignSystem.Spaces.one)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .contentShape(.circle)
+                } else {
+                    view
+                        .backgroundStyle(.regularMaterial)
+                        .clipShape(.circle)
+                }
+            }
     }
 
     private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
@@ -410,7 +473,7 @@ struct HomeAssistantStandByView: View {
     @ViewBuilder
     private func bodyText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
         switch emptyState.style {
-        case .disconnected, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated:
             Text(emptyState.style.body)
                 .font(.callout)
                 .foregroundColor(.secondary)
@@ -425,11 +488,30 @@ struct HomeAssistantStandByView: View {
         }
     }
 
+    @ViewBuilder
+    private func bodyComplementaryText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
+        switch emptyState.style {
+        case .inFlight:
+            if let text = emptyState.style.complementaryMessage {
+                Button(action: openSettings) {
+                    Text(text)
+                        .font(.caption2.italic())
+                        .foregroundColor(.haPrimary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
+                }
+                .buttonStyle(.plain)
+            }
+        default:
+            EmptyView()
+        }
+    }
+
     private func actionButtons(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
         VStack(spacing: DesignSystem.Spaces.one) {
             Button(action: {
                 switch emptyState.style {
-                case .disconnected:
+                case .disconnected, .inFlight:
                     emptyState.retryAction()
                 case .unauthenticated:
                     emptyState.reauthAction(selectedReauthURLType)
@@ -603,6 +685,20 @@ private extension HomeAssistantStandByView {
     )
 }
 
+#Preview("Loading Stuck — Clean Cache Button") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Reserva Aruanã",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .remoteUI
+        ),
+        emptyState: nil,
+        onCleanCacheAndReload: {},
+        delayedSettingsButtonDelay: .seconds(0.2),
+        cleanCacheButtonDelay: .seconds(0.6)
+    )
+}
+
 #Preview("Loading Internal URL") {
     HomeAssistantStandByView(
         server: HomeAssistantStandByView.previewServer(
@@ -720,6 +816,22 @@ private extension HomeAssistantStandByView {
         server: server,
         emptyState: HomeAssistantStandByView.previewEmptyState(
             style: .recoveredServerNeedingReauthentication,
+            server: server,
+            availableReauthURLTypes: [.external, .internal]
+        )
+    )
+}
+
+#Preview("In-flight") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "In-flight",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .internal
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .inFlight,
             server: server,
             availableReauthURLTypes: [.external, .internal]
         )

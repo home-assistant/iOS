@@ -190,9 +190,9 @@ Por favor, completa la configuración siguiendo las [instrucciones de configurac
 "component::overkiz::entity::select::open_closed_partial::state::closed" = "Cerrado";
 "component::overkiz::entity::select::open_closed_partial::state::open" = "Abierto";
 "component::overkiz::entity::select::open_closed_pedestrian::state::closed" = "Cerrada";
-"component::overkiz::entity::select::open_closed_pedestrian::state::open" = "Abierta";
+"component::overkiz::entity::select::open_closed_pedestrian::state::open" = "Abierto";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::closed" = "Cerrado";
-"component::overkiz::entity::sensor::three_way_handle_direction::state::open" = "Abierta";
+"component::overkiz::entity::sensor::three_way_handle_direction::state::open" = "Abierto";
 "component::person::entity_component::_::state::home" = "En casa";
 "component::person::entity_component::_::state::not_home" = "Fuera";
 "component::person::title" = "Persona";
@@ -308,7 +308,7 @@ Por favor, completa la configuración siguiendo las [instrucciones de configurac
 "component::vacuum::entity_component::_::state::paused" = "En pausa";
 "component::vacuum::title" = "Aspiradora";
 "component::valve::entity_component::_::state::closed" = "Cerrada";
-"component::valve::entity_component::_::state::open" = "Abierta";
+"component::valve::entity_component::_::state::open" = "Abierto";
 "component::valve::title" = "Válvula";
 "component::water_heater::entity_component::_::state::off" = "Apagado";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::off" = "Apagado";

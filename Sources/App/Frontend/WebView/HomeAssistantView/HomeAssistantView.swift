@@ -174,7 +174,8 @@ struct HomeAssistantView: View, WebFrontendView {
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },
-                onLogoDismiss: viewModel.forceDismissStandByView
+                onLogoDismiss: viewModel.forceDismissStandByView,
+                onCleanCacheAndReload: viewModel.cleanCacheAndReload
             )
             .transition(.opacity)
             .opacity(viewModel.standByOpacity)
