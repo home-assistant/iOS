@@ -16,6 +16,13 @@ final class WatchAssistService: ObservableObject {
 
     private let serverId: String
     private let pipelineId: String
+
+    /// The server this Assist session talks to; playback needs it to present the server's
+    /// client certificate and TLS security exceptions when fetching TTS audio.
+    var server: Server? {
+        Current.servers.server(forServerIdentifier: serverId)
+    }
+
     private var reachabilityObservation: HAWatchConnectivity.ObservationToken?
     private var cancellable: Cancellable?
 

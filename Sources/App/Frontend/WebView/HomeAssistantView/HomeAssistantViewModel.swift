@@ -140,6 +140,14 @@ final class HomeAssistantViewModel: ObservableObject {
         webViewResetID = UUID()
     }
 
+    func cleanCacheAndReload() {
+        Current.Log.info("Standby loader stuck; cleaning frontend cache and reloading")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.resetWebFrontend()
+            }
+    }
+
     func handleWebViewController(_ controller: WebViewController) {
         webViewController = controller
         onWebViewController?(controller)

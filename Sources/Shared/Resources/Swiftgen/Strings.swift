@@ -7194,6 +7194,8 @@ public enum L10n {
     public enum EmptyState {
       /// Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.
       public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }
+      /// Clean cache and reload
+      public static var cleanCacheAndReloadButton: String { return L10n.tr("Localizable", "web_view.empty_state.clean_cache_and_reload_button") }
       /// Open App settings
       public static var openSettingsButton: String { return L10n.tr("Localizable", "web_view.empty_state.open_settings_button") }
       /// Re-authenticate

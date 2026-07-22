@@ -84,6 +84,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
+            "hasSplashscreen",
             "appVersion",
             "toastComponentVersion",
         ]
