@@ -9,7 +9,6 @@ struct HALiveActivityConfigurationSupplemental: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
             HALiveActivityLockScreenRouterView(attributes: context.attributes, state: context.state)
-                .haLiveActivitySupplementalChrome(attributes: context.attributes, state: context.state)
         } dynamicIsland: { context in
             makeHADynamicIsland(attributes: context.attributes, state: context.state)
                 .widgetURL(haLiveActivityTapURL(attributes: context.attributes, state: context.state))
