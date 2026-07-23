@@ -109,6 +109,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupLocalization()
         setupMenus()
 
+        // Warm the stand-by loading logo's WKWebView so it renders without cold-start delay.
+        AnimatedSVGWebViewCache.shared.preload(HomeAssistantStandByView.loadingLogoResourceName)
+
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),

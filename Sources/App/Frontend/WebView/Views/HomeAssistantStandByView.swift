@@ -9,6 +9,7 @@ struct HomeAssistantStandByView: View {
 
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
     private static let loadingLogoSize = CGSize(width: 110, height: 110)
+    static let loadingLogoResourceName = "home-assistant-logo-loading"
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 44
@@ -88,26 +89,23 @@ struct HomeAssistantStandByView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                iconView
-                if let emptyState {
-                    emptyStateBody(for: emptyState)
-                } else {
-                    currentServerPill
-                }
+        VStack(spacing: DesignSystem.Spaces.three) {
+            iconView
+            if let emptyState {
+                emptyStateBody(for: emptyState)
+            } else {
+                currentServerPill
             }
-            .padding(.horizontal, DesignSystem.Spaces.three)
-            .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: showsEmptyState ? .top : .center
-            )
-            .offset(y: loadingContentOffset)
-            .opacity(standByContentOpacity)
-            progressView
         }
+        .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: showsEmptyState ? .top : .center
+        )
+        .offset(y: loadingContentOffset)
+        .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
         .background {
@@ -190,15 +188,6 @@ struct HomeAssistantStandByView: View {
             withAnimation(DesignSystem.Animation.default) {
                 showsCleanCacheButton = true
             }
-        }
-    }
-
-    @ViewBuilder
-    private var progressView: some View {
-        if emptyState == nil {
-            HAProgressView()
-                .transition(.opacity)
-                .padding(.bottom, DesignSystem.Spaces.eighteen)
         }
     }
 
@@ -392,9 +381,16 @@ struct HomeAssistantStandByView: View {
                     .foregroundStyle(Color.haPrimary)
             } else {
                 ZStack(alignment: .bottomTrailing) {
+                    // Keep the static logo behind the animated SVG while loading: the launch-splash
+                    // hero morphs into a pixel-identical `Image(.logo)` (matched geometry), and it
+                    // also fills any frame before the WKWebView paints. The animated SVG sits on top
+                    // once loaded.
                     Image(.logo)
                         .resizable()
                         .scaledToFit()
+                    if !showsEmptyState {
+                        AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
+                    }
                     if case .inFlight = emptyState?.style {
                         inFlightIcon
                             .offset(x: 15, y: 15)

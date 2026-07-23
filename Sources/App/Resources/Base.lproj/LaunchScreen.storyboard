@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25087" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25063.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25068"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -24,11 +24,11 @@
                                     <constraint firstAttribute="height" constant="115" id="y4R-Bz-WCE"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-launch" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
-                                <rect key="frame" x="47" y="696" width="320" height="100"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-inline" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
+                                <rect key="frame" x="97" y="746" width="220" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="320" id="OLs-dw-fyH"/>
-                                    <constraint firstAttribute="height" constant="100" id="vTX-2e-0yP"/>
+                                    <constraint firstAttribute="width" constant="220" id="OLs-dw-fyH"/>
+                                    <constraint firstAttribute="height" constant="50" id="vTX-2e-0yP"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -50,7 +50,7 @@
     </scenes>
     <resources>
         <image name="launchScreen-logo" width="180" height="180"/>
-        <image name="ohf-launch" width="903" height="282"/>
+        <image name="ohf-inline" width="2960" height="291"/>
         <namedColor name="launchScreen-background">
             <color red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

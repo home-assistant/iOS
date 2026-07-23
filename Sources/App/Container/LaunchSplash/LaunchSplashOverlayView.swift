@@ -12,7 +12,7 @@ struct LaunchSplashOverlayView: View {
         /// Mirrors the icon constraints in `LaunchScreen.storyboard`.
         static let splashLogoSize = CGSize(width: 115, height: 115)
         /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
-        static let ohfLogoSize = CGSize(width: 320, height: 100)
+        static let ohfLogoSize = CGSize(width: 220, height: 50)
         /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
         static let ohfLogoBottomPadding: CGFloat = 32
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
@@ -43,7 +43,7 @@ struct LaunchSplashOverlayView: View {
                     .animation(Constants.heroAnimation, value: state.phase)
                 }
                 .ignoresSafeArea()
-                Image(.ohfLaunch)
+                Image(.ohfInline)
                     .resizable()
                     .scaledToFit()
                     .frame(width: Constants.ohfLogoSize.width, height: Constants.ohfLogoSize.height)
