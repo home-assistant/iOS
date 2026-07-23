@@ -27,16 +27,6 @@ extension View {
             .activitySystemActionForegroundColor(haLiveActivityForegroundColor(for: state))
             .widgetURL(haLiveActivityTapURL(attributes: attributes, state: state))
     }
-
-    @available(iOS 18.0, *)
-    func haLiveActivitySupplementalChrome(
-        attributes: HALiveActivityAttributes,
-        state: HALiveActivityAttributes.ContentState
-    ) -> some View {
-        activityBackgroundTint(HAActivityVisualStyle.supplementalBackgroundColor(from: state.backgroundColor))
-            .activitySystemActionForegroundColor(haLiveActivitySupplementalForegroundColor(for: state))
-            .widgetURL(haLiveActivityTapURL(attributes: attributes, state: state))
-    }
 }
 
 /// The widget extension can't reliably resolve the server on a physical device, so it forwards
@@ -67,12 +57,12 @@ func haLiveActivityTapURL(
 }
 
 @available(iOS 17.2, *)
-private func haLiveActivityForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
+func haLiveActivityForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
     HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
 }
 
 @available(iOS 18.0, *)
-private func haLiveActivitySupplementalForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
+func haLiveActivitySupplementalForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
     haLiveActivityForegroundColor(for: state) ?? HAActivityVisualStyle.defaultSupplementalForegroundColor
 }
 #endif
