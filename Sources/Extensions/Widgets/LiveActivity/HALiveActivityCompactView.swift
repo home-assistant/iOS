@@ -14,13 +14,18 @@ struct HALiveActivityCompactView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            HStack(alignment: .center, spacing: DesignSystem.Spaces.one) {
+            HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
                 icon
-
-                Text(state.title ?? attributes.title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(primaryTextColor)
-                    .lineLimit(1)
+                VStack(alignment: .leading, spacing: .zero) {
+                    Text(state.title ?? attributes.title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(primaryTextColor)
+                        .lineLimit(1)
+                    Text(state.message)
+                        .font(.caption2)
+                        .foregroundStyle(secondaryTextColor)
+                        .lineLimit(1)
+                }
 
                 Spacer(minLength: 0)
 
@@ -28,6 +33,7 @@ struct HALiveActivityCompactView: View {
             }
 
             secondaryContent
+                .padding(.top, DesignSystem.Spaces.half)
         }
         .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
         .padding(.vertical, DesignSystem.Spaces.one)
@@ -87,11 +93,6 @@ struct HALiveActivityCompactView: View {
                     direction: state.resolvedProgressBarDirection
                 )
             }
-        } else {
-            Text(state.message)
-                .font(.caption2)
-                .foregroundStyle(secondaryTextColor)
-                .lineLimit(1)
         }
     }
 

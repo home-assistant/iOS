@@ -169,24 +169,26 @@ struct HAExpandedBottomView: View {
                     .foregroundStyle(.white.opacity(0.88))
                     .lineLimit(2)
             }
-
-            if let fraction = state.progressBarFillFraction {
-                HAActivityProgressBar(
-                    fraction: fraction,
-                    fillColor: barColor,
-                    trackColor: .white.opacity(0.16),
-                    height: 8
-                )
-            } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(
-                    start: state.chronometerStart,
-                    end: end,
-                    tint: barColor,
-                    direction: state.resolvedProgressBarDirection
-                )
+            Group {
+                if let fraction = state.progressBarFillFraction {
+                    HAActivityProgressBar(
+                        fraction: fraction,
+                        fillColor: barColor,
+                        trackColor: .white.opacity(0.16),
+                        height: 8
+                    )
+                } else if state.chronometer == true, let end = state.countdownEnd {
+                    HAActivityTimerProgressBar(
+                        start: state.chronometerStart,
+                        end: end,
+                        tint: barColor,
+                        direction: state.resolvedProgressBarDirection
+                    )
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical)
     }
 
     /// Progress bar tint: `progress_bar_color`, else the icon color, else HA blue.
