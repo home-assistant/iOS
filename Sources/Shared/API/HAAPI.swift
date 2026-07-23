@@ -190,6 +190,15 @@ public class HomeAssistantAPI {
     /// `onStep` narrates TLS challenge handling (client certificate / server trust) for callers with
     /// a live diagnostic trace — a challenge handler blocking on a Keychain read stalls the request
     /// before any timeout applies, and these lines are the only way to see that stage.
+    ///
+    /// On watchOS the session's delegate/completion callbacks are delivered on the main queue. The
+    /// delegate queue is where URLSession schedules both the auth-challenge callbacks and the task
+    /// completion handlers; a `nil` queue makes it use a private serial queue backed by the shared
+    /// thread pool. That pool has been observed starved on watch hardware while a tap is handled and
+    /// SwiftUI presents, so the private queue never runs — neither the TLS challenge, the task
+    /// completion, nor even the request's own timeout is ever delivered and the request hangs
+    /// silently. The main queue is the one proven to stay serviced there. iOS/macOS keep the default
+    /// private queue (no reason to serialize this work onto the main thread there).
     public static func makeCertificateAwareURLSession(
         server: Server,
         configuration: URLSessionConfiguration = .ephemeral,
@@ -197,7 +206,12 @@ public class HomeAssistantAPI {
     ) -> URLSession {
         let certificateProvider = HomeAssistantCertificateProvider(server: server, onStep: onStep)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        #if os(watchOS)
+        let delegateQueue: OperationQueue? = .main
+        #else
+        let delegateQueue: OperationQueue? = nil
+        #endif
+        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
     convenience init?() {
