@@ -6474,7 +6474,7 @@ public enum L10n {
       public enum Info {
         /// When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.
         /// 
-        /// While no URL is considered safe, this server's actions won't run from the watch, its data won't sync, and its complications won't update.
+        /// While no URL is considered safe, this server's data won't sync to the watch and its complications won't update.
         public static var message: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.message") }
         /// Not Now
         public static var notNow: String { return L10n.tr("Localizable", "watch.internal_url_prompt.info.not_now") }
@@ -7074,6 +7074,12 @@ public enum L10n {
       public enum Developer {
         /// Developer
         public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.title") }
+        public enum AllowChoosingRoute {
+          /// Shows the "Perform action using" picker in Settings. When off, actions always use automatic routing.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.footer") }
+          /// Allow choosing route
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
+        }
         public enum AudioProbe {
           /// Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
@@ -7110,6 +7116,18 @@ public enum L10n {
           /// No items configured, please choose items below.
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
+      }
+      public enum PerformAction {
+        /// Apple Watch
+        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
+        /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.
+        public static var footerPreferWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer_prefer_watch") }
+        /// iPhone
+        public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
+        /// Perform action using
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
       }
       public enum RestartApp {
         /// This closes the app immediately. You'll need to reopen it manually.

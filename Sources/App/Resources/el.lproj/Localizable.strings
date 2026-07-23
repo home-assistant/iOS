@@ -455,6 +455,10 @@
 "extensions.notification_content.error.request.hls_unavailable" = "Η ροή HLS δεν είναι διαθέσιμη";
 "extensions.notification_content.error.request.other" = "Λήφθηκε κωδικός κατάστασης που δεν είναι 200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Η ροή WebRTC δεν είναι διαθέσιμη.";
+"flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
+"flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
+"flight_greetings.empty_state.title" = "Have a nice flight";
+"flight_greetings.greeting" = "Have a nice flight!";
 "gestures.1_finger.title" = "Χρήση ενός δακτύλου";
 "gestures.2_fingers.title" = "Χρήση δύο δακτύλων";
 "gestures.2_fingers_swipe_down.title" = "2 👆 σύρετε προς τα κάτω";
@@ -837,6 +841,7 @@
 Προς το παρόν, το mTLS υποστηρίζεται μόνο σε iOS 17+, ενδέχεται να παρουσιάσει προβλήματα σχετικά με την εμφάνιση συνημμένων ειδοποιήσεων, τον ήχο Assist κείμενο σε ομιλία και δεν θα λειτουργεί πλήρως στο Apple Watch.";
 "navBar.close" = "Κλείσιμο";
 "network.error.no_active_url.body" = "Ανοίξτε τις ρυθμίσεις της εφαρμογής companion και ελέγξτε τις ρυθμίσεις του διακομιστή σας, η εσωτερική διεύθυνση URL θα χρησιμοποιηθεί μόνο αν έχει οριστεί το τοπικό δίκτυο (SSID), αν χρησιμοποιείτε VPN δοκιμάστε να ορίσετε την εξωτερική διεύθυνση URL ως την ίδια με την εσωτερική διεύθυνση URL.";
+"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
 "network.error.no_active_url.title" = "Δεν υπάρχει διαθέσιμη διεύθυνση URL για φόρτωση";
 "nfc.detail.copy" = "Αντιγραφή στον πίνακα επικόλλησης";
 "nfc.detail.duplicate" = "Δημιουργία αντιγράφου";
@@ -1356,6 +1361,9 @@
 "settings.developer.sync_watch_context.title" = "Συγχρονισμός περιβάλλοντος παρακολούθησης";
 "settings.developer.web_view_below_status_bar.title" = "Always draw web view below status bar";
 "settings.event_log.title" = "Αρχείο καταγραφής συμβάντων";
+"settings.greetings.flight.footer" = "Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.";
+"settings.greetings.flight.title" = "Flight";
+"settings.greetings.title" = "Greetings";
 "settings.location_history.detail.explanation" = "Ο μωβ κύκλος είναι η τοποθεσία σας και η ακρίβειά του. Οι μπλε κύκλοι είναι οι ζώνες σας. Βρίσκεστε σε μια ζώνη εάν ο μωβ κύκλος επικαλύπτει έναν μπλε κύκλο. Οι πορτοκαλί κύκλοι είναι επιπλέον περιοχές που χρησιμοποιούνται για ζώνες μικρότερες των 100 μέτρων.";
 "settings.location_history.empty" = "Χωρίς Ιστορικό Τοποθεσίας";
 "settings.location_history.title" = "Ιστορικό Τοποθεσίας";
@@ -1385,6 +1393,7 @@
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
 "settings.search_keywords.general" = "appearance, theme, app icon, browser, links, display, launch";
 "settings.search_keywords.gestures" = "swipe, tap, navigation, shortcuts";
+"settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
 "settings.search_keywords.help" = "documentation, support, guide, companion";
 "settings.search_keywords.kiosk" = "wall mount, tablet, screen, always on, auto lock";
 "settings.search_keywords.live_activities" = "dynamic island, lock screen, timers";
@@ -1934,7 +1943,10 @@
 "watch.home.loading.skip.title" = "Παράλειψη";
 "watch.home.run.confirmation.title" = "Θέλετε σίγουρα να εκτελέσετε το \"%@\";";
 "watch.home.run.error.message" = "Δεν ήταν δυνατή η εκτέλεση της ενέργειας. Το Apple Watch ενδέχεται να μην είναι σε θέση να επικοινωνήσει απευθείας με αυτόν τον server.";
+"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
+"watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Δεν ήταν δυνατή η εκτέλεση της ενέργειας";
+"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Syncing with iPhone…";
 "watch.home.sync.waiting" = "Waiting for iPhone…";
 "watch.interaction.toast.action" = "Ran an action";
@@ -2150,6 +2162,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
 "watch.settings.developer.title" = "Developer";
 "watch.settings.developer.verbose_execution.footer" = "Shows a live log describing every step while an item runs.";
 "watch.settings.developer.verbose_execution.title" = "Verbose item execution";
@@ -2190,6 +2204,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.MacToolbar.title" = "Γραμμή εργαλείων Mac";
 "web_view.add_to.option.Widget.title" = "Γραφικό στοιχείο";
 "web_view.empty_state.body" = "Ελέγξτε τη σύνδεσή σας ή προσπαθήστε ξανά αργότερα. Εάν το Home Assistant κάνει επανεκκίνηση, θα επανασυνδεθεί αφού επανέλθει σε λειτουργία.";
+"web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
 "web_view.empty_state.open_settings_button" = "Ανοιγμα ρυθμίσεων εφαρμογής";
 "web_view.empty_state.reauthenticate_button" = "Εκ νέου έλεγχος ταυτότητας";
 "web_view.empty_state.retry_button" = "Επανάληψη";
