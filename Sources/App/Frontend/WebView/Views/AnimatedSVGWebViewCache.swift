@@ -2,35 +2,47 @@ import Shared
 import UIKit
 import WebKit
 
-/// Keeps warm, already-loaded `WKWebView` instances for animated SVGs so the loading logo
+/// Keeps a warm, already-loaded `WKWebView` instance for animated SVGs so the loading logo
 /// appears instantly instead of paying WKWebView's web-content-process spin-up and
 /// first-paint cost the moment `HomeAssistantStandByView` is shown.
 ///
-/// Views are keyed by bundle resource name and reused: `AnimatedSVGView` pulls the cached
-/// instance rather than building its own. Only one animated SVG per resource is ever on
-/// screen at a time, so a single shared instance per resource is safe to reparent.
+/// The warm instance is handed out only while it is unattached. If it is already in a view
+/// hierarchy (e.g. two multi-window scenes show the loading logo at once), a fresh instance
+/// is created for the second caller, since a single `WKWebView` cannot live in two hierarchies
+/// at the same time.
 @MainActor
 final class AnimatedSVGWebViewCache {
     static let shared = AnimatedSVGWebViewCache()
 
-    private var webViews: [String: WKWebView] = [:]
+    private var warmWebViews: [String: WKWebView] = [:]
 
     private init() {}
 
-    /// Eagerly builds and starts loading the web view for `resourceName` (e.g. at app launch)
-    /// so it is warm before first use.
+    /// Eagerly builds and starts loading the warm web view for `resourceName` (e.g. at app
+    /// launch) so it is ready before first use.
     func preload(_ resourceName: String) {
-        _ = webView(for: resourceName)
+        _ = warmWebView(for: resourceName)
     }
 
-    /// Returns the cached web view for `resourceName`, creating and loading it on first access.
+    /// Returns a loaded web view for `resourceName`. Reuses the warm instance when it is free,
+    /// otherwise creates and loads a fresh one so it can be parented independently.
     func webView(for resourceName: String) -> WKWebView {
-        if let existing = webViews[resourceName] {
+        let warm = warmWebView(for: resourceName)
+        guard warm.superview != nil else {
+            return warm
+        }
+        let webView = Self.makeWebView()
+        Self.loadSVG(named: resourceName, into: webView)
+        return webView
+    }
+
+    private func warmWebView(for resourceName: String) -> WKWebView {
+        if let existing = warmWebViews[resourceName] {
             return existing
         }
         let webView = Self.makeWebView()
         Self.loadSVG(named: resourceName, into: webView)
-        webViews[resourceName] = webView
+        warmWebViews[resourceName] = webView
         return webView
     }
 
