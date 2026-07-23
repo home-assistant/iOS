@@ -57,7 +57,7 @@ struct HALiveActivityConfigurationSupplemental: Widget {
 } contentStates: {
     HALiveActivityAttributes.ContentState(
         message: "Washing cycle",
-        progress: 40,
+        progress: 100,
         progressMax: 100,
         icon: "washing-machine",
         color: "#03A9F4"
