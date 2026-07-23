@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25068"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,24 +19,32 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="launchScreen-logo" translatesAutoresizingMaskIntoConstraints="NO" id="mQh-tn-BC1" userLabel="Icon">
-                                <rect key="frame" x="149.5" y="390.5" width="115" height="115"/>
+                                <rect key="frame" x="147" y="388" width="120" height="120"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="115" id="xXY-zT-zVi"/>
-                                    <constraint firstAttribute="height" constant="115" id="y4R-Bz-WCE"/>
+                                    <constraint firstAttribute="width" constant="120" id="xXY-zT-zVi"/>
+                                    <constraint firstAttribute="height" constant="120" id="y4R-Bz-WCE"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-inline" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
-                                <rect key="frame" x="97" y="746" width="220" height="50"/>
+                                <rect key="frame" x="97" y="771" width="220" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="220" id="OLs-dw-fyH"/>
-                                    <constraint firstAttribute="height" constant="50" id="vTX-2e-0yP"/>
+                                    <constraint firstAttribute="height" constant="25" id="vTX-2e-0yP"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A PROJECT FROM THE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Kv-2m-Wq7">
+                                <rect key="frame" x="135" y="755" width="144" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ESo-tq-1hR"/>
                         <color key="backgroundColor" name="launchScreen-background"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="9Kv-2m-Wq7" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3Rp-8n-Lc4"/>
+                            <constraint firstItem="pDB-na-0R2" firstAttribute="top" secondItem="9Kv-2m-Wq7" secondAttribute="bottom" id="7Tj-5w-Xa2"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BRP-Fw-g6e"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="gXx-Ta-dWp"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hcu-i7-wKs"/>
@@ -54,5 +63,8 @@
         <namedColor name="launchScreen-background">
             <color red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>
