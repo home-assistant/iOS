@@ -133,15 +133,31 @@ final class WatchHomeViewModel: ObservableObject {
     /// Queue a config pull over `transferUserInfo` so the phone answers it in the background even when
     /// it wasn't immediately reachable. Used as a fallback when the interactive request can't run or
     /// times out.
+    ///
+    /// Runs off-main: both the outstanding-transfers read and `transferUserInfo` go through
+    /// WCSession's internal serial queue, which can stall for tens of seconds while the session is
+    /// busy with transfers — the same condition that leaves `isReachable` stale-false and lands a
+    /// reload in this fallback. On main those calls froze the whole app; the pull is fire-and-forget,
+    /// so a delayed enqueue is harmless.
     private func enqueueGuaranteedConfigPull() {
         let identifier = InteractiveImmediateMessages.watchConfig.rawValue
-        // Every reload while unreachable would otherwise queue another transferUserInfo, and the
-        // phone would answer each with a full config payload once it wakes.
-        guard !Communicator.shared.hasOutstandingGuaranteedMessage(identifier: identifier) else {
-            Current.Log.info("Skipping guaranteed config pull: one is already queued")
-            return
+        DispatchQueue.global(qos: .utility).async {
+            let started = Current.date()
+            // Every reload while unreachable would otherwise queue another transferUserInfo, and the
+            // phone would answer each with a full config payload once it wakes.
+            guard !Communicator.shared.hasOutstandingGuaranteedMessage(identifier: identifier) else {
+                Current.Log.info("Skipping guaranteed config pull: one is already queued")
+                return
+            }
+            Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(identifier: identifier))
+            let elapsed = Current.date().timeIntervalSince(started)
+            if elapsed > 1 {
+                let seconds = String(format: "%.2f", elapsed)
+                Current.Log.error(
+                    "Guaranteed config pull took \(seconds)s to enqueue — WCSession queue is stalled"
+                )
+            }
         }
-        Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(identifier: identifier))
     }
 
     @MainActor
