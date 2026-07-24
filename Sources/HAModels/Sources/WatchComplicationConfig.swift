@@ -411,7 +411,15 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case .icon:
             return ComplicationFormula(parts: [])
         case .title where family == .inline:
-            return ComplicationFormula(parts: [.entityName, .text(" - "), valuePart])
+            // Inline joined name and value per the legacy flags, so name-only / value-only
+            // combinations keep rendering exactly as before.
+            var parts: [ComplicationFormula.Part] = []
+            if showsName(for: .inline) { parts.append(.entityName) }
+            if showsValue(for: .inline) {
+                if !parts.isEmpty { parts.append(.text(" - ")) }
+                parts.append(valuePart)
+            }
+            return ComplicationFormula(parts: parts)
         case .title:
             return ComplicationFormula(parts: [.entityName])
         case .subtitle:

@@ -107,6 +107,14 @@ struct ComplicationFormulaTests {
         #expect(config.formula(for: .title, family: .inline).parts == [.entityName, .text(" - "), .state])
     }
 
+    @Test func inlineDefaultFormulaHonorsLegacyFlags() {
+        var config = entityConfig
+        config.setOptions(WatchComplicationConfig.FamilyOptions(showValue: false), for: .inline)
+        #expect(config.formula(for: .title, family: .inline).parts == [.entityName])
+        config.setOptions(WatchComplicationConfig.FamilyOptions(showName: false), for: .inline)
+        #expect(config.formula(for: .title, family: .inline).parts == [.state])
+    }
+
     @Test func templateKindDefaultsRouteValueThroughTextTemplate() {
         var config = WatchComplicationConfig(serverId: "server", kind: .customTemplate)
         config.customTextTemplate = "{{ tpl }}"

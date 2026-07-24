@@ -225,8 +225,11 @@ enum WatchWidgetLiveFetch {
             // Re-resolve the slot texts in place with the fresh state. Only entity complications
             // reach here, so every formula resolves on-device — no template rendering involved.
             guard let config = configs.first(where: { $0.id == id }) else { continue }
+            // The config's display name, not the snapshot's stored one: the stored name can be
+            // stale relative to the current config, and the snapshot builder resolves against the
+            // config too.
             let context = ComplicationFormulaContext(
-                entityName: name,
+                entityName: config.displayName,
                 formattedState: update.value,
                 attributeValue: { update.attributes[$0].map { String(describing: $0) } }
             )
