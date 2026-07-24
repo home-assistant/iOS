@@ -56,11 +56,17 @@ struct ServerSwitchingSettingsView: View {
 }
 
 extension ServerSwitchingSettingsView: SettingsScreenSearchable {
+    /// Only index rows the screen can actually present: the whole entry is absent on Catalyst,
+    /// and the by-location toggle only shows with more than one server.
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        guard !Current.isCatalyst else { return [] }
+        var entries = [
             SettingsSearchEntry(L10n.Settings.ServerSwitching.title),
-            SettingsSearchEntry(L10n.Settings.ServerSwitching.ByLocation.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title),
         ]
+        if Current.servers.all.count > 1 {
+            entries.append(SettingsSearchEntry(L10n.Settings.ServerSwitching.ByLocation.title))
+        }
+        return entries
     }
 }

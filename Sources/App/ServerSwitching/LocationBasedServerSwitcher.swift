@@ -27,9 +27,9 @@ final class LocationBasedServerSwitcher {
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
             queue: .main
-        ) { _ in
+        ) { [weak self] _ in
             Task { @MainActor in
-                LocationBasedServerSwitcher.shared.evaluate()
+                self?.evaluate()
             }
         }
     }
@@ -50,9 +50,9 @@ final class LocationBasedServerSwitcher {
                     .catch { _ in continuation.resume(returning: nil) }
             }
             guard let self else { return }
-            self.evaluationTask = nil
+            evaluationTask = nil
             guard let location else { return }
-            self.apply(location: location)
+            apply(location: location)
         }
     }
 
@@ -88,17 +88,24 @@ final class LocationBasedServerSwitcher {
         for location: CLLocation,
         preferring currentServerIdentifier: Identifier<Server>?
     ) -> Server? {
+        // A single read for every server's zones; this runs on each app activation when enabled.
+        let zonesByServer = Dictionary(grouping: AppZone.trackedZones(), by: \.serverIdentifier)
+        // Match the smaller zone over the larger, then the closer center — mirrors AppZone.zones(of:in:).
+        let byProximity: (AppZone, AppZone) -> Bool = { lhs, rhs in
+            if lhs.radius != rhs.radius {
+                return lhs.radius < rhs.radius
+            }
+            return location.distance(from: lhs.location) < location.distance(from: rhs.location)
+        }
         let matches: [(server: Server, zone: AppZone)] = Current.servers.all.compactMap { server in
-            AppZone.zone(of: location, in: server).map { (server, $0) }
+            (zonesByServer[server.identifier.rawValue] ?? [])
+                .filter { $0.circularRegion.containsWithAccuracy(location) }
+                .min(by: byProximity)
+                .map { (server, $0) }
         }
         if let current = matches.first(where: { $0.server.identifier == currentServerIdentifier }) {
             return current.server
         }
-        return matches.min { lhs, rhs in
-            if lhs.zone.radius != rhs.zone.radius {
-                return lhs.zone.radius < rhs.zone.radius
-            }
-            return location.distance(from: lhs.zone.location) < location.distance(from: rhs.zone.location)
-        }?.server
+        return matches.min { byProximity($0.zone, $1.zone) }?.server
     }
 }
