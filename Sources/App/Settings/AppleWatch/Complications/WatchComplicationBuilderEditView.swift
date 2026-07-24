@@ -789,18 +789,6 @@ private struct ComplicationSlotRow: View {
         currentSlotConfig.formula ?? config.defaultFormula(for: slot, family: family)
     }
 
-    /// The formula as its editable token string. Parsing keeps the existing template source
-    /// attached to any `{template}` token the user leaves in place.
-    private var tokenText: Binding<String> {
-        Binding(
-            get: { formula.tokenString },
-            set: { newValue in
-                let templateSource = formula.templates.first ?? config.customTextTemplate ?? ""
-                update { $0.formula = ComplicationFormula(tokenString: newValue, templateSource: templateSource) }
-            }
-        )
-    }
-
     /// The source of the formula's `{template}` token, edited in the full template editor.
     private var templateSource: Binding<String> {
         Binding(
@@ -826,13 +814,17 @@ private struct ComplicationSlotRow: View {
             }
             .pickerStyle(.segmented)
             if isCustomContent.wrappedValue {
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    TextField(text: tokenText) {
-                        Text(L10n.Watch.Complications.Builder.content)
+                // The formula is edited as pills, not raw token text: dynamic tokens are tinted
+                // capsules, hardcoded text is typed straight into neutral capsule fields, and each
+                // pill removes with its x. New pieces come from the + menu and land at the end.
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: DesignSystem.Spaces.half) {
+                        ForEach(Array(formula.parts.enumerated()), id: \.offset) { index, part in
+                            partPill(at: index, part: part)
+                        }
+                        insertMenu
                     }
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    insertMenu
+                    .padding(.vertical, DesignSystem.Spaces.half)
                 }
                 if config.kind == .customTemplate, let server, !formula.templates.isEmpty {
                     JinjaTemplateButton(
@@ -846,32 +838,109 @@ private struct ComplicationSlotRow: View {
         }
     }
 
-    /// Appends a token at the end of the formula text. Attributes come from the live preview's
-    /// reported keys; the template token is offered once, for template complications only.
+    /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
+    /// friendly name; every pill carries its own remove button.
+    @ViewBuilder
+    private func partPill(at index: Int, part: ComplicationFormula.Part) -> some View {
+        let isText: Bool = {
+            if case .text = part { return true }
+            return false
+        }()
+        HStack(spacing: DesignSystem.Spaces.half) {
+            if isText {
+                TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .fixedSize()
+            } else {
+                Text(verbatim: pillTitle(for: part))
+            }
+            Button {
+                withAnimation { removePart(at: index) }
+            } label: {
+                Image(systemSymbol: .xmarkCircleFill)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .font(.callout)
+        .padding(.horizontal, DesignSystem.Spaces.one)
+        .padding(.vertical, DesignSystem.Spaces.half)
+        .foregroundStyle(isText ? Color.primary : Color.haPrimary)
+        .background(Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15)))
+    }
+
+    private func pillTitle(for part: ComplicationFormula.Part) -> String {
+        switch part {
+        case let .text(text): return text
+        case .entityName: return L10n.Watch.Complications.Builder.tokenEntityName
+        case .state: return L10n.Watch.Complications.Builder.tokenValue
+        case let .attribute(name): return name
+        case .template: return L10n.Watch.Complications.Builder.tokenTemplate
+        }
+    }
+
+    private func updateParts(_ mutate: (inout [ComplicationFormula.Part]) -> Void) {
+        var parts = formula.parts
+        mutate(&parts)
+        update { $0.formula = ComplicationFormula(parts: parts) }
+    }
+
+    private func removePart(at index: Int) {
+        updateParts { parts in
+            guard parts.indices.contains(index) else { return }
+            parts.remove(at: index)
+        }
+    }
+
+    private func appendPart(_ part: ComplicationFormula.Part) {
+        withAnimation { updateParts { $0.append(part) } }
+    }
+
+    /// In-place editing for a text pill. Index-guarded: SwiftUI can call stale bindings while the
+    /// pill list animates a removal.
+    private func textBinding(at index: Int) -> Binding<String> {
+        Binding(
+            get: {
+                guard formula.parts.indices.contains(index),
+                      case let .text(text) = formula.parts[index] else { return "" }
+                return text
+            },
+            set: { newValue in
+                updateParts { parts in
+                    guard parts.indices.contains(index) else { return }
+                    parts[index] = .text(newValue)
+                }
+            }
+        )
+    }
+
+    /// Appends a piece at the end of the formula. Attributes come from the live preview's reported
+    /// keys; the template token is offered once, for template complications only.
     private var insertMenu: some View {
         Menu {
-            Button(L10n.Watch.Complications.Builder.tokenEntityName) { append(ComplicationFormula.Token.name) }
-            Button(L10n.Watch.Complications.Builder.tokenValue) { append(ComplicationFormula.Token.value) }
+            Button(L10n.Watch.Complications.Builder.tokenText) { appendPart(.text("")) }
+            Button(L10n.Watch.Complications.Builder.tokenEntityName) { appendPart(.entityName) }
+            Button(L10n.Watch.Complications.Builder.tokenValue) { appendPart(.state) }
             if !attributeKeys.isEmpty {
                 Menu {
                     ForEach(attributeKeys, id: \.self) { key in
-                        Button(key) { append("\(ComplicationFormula.Token.attributePrefix)\(key)}") }
+                        Button(key) { appendPart(.attribute(key)) }
                     }
                 } label: {
                     Text(L10n.Watch.Complications.Builder.tokenAttributes)
                 }
             }
             if config.kind == .customTemplate, formula.templates.isEmpty {
-                Button(L10n.Watch.Complications.Builder.tokenTemplate) { append(ComplicationFormula.Token.template) }
+                Button(L10n.Watch.Complications.Builder.tokenTemplate) {
+                    appendPart(.template(config.customTextTemplate ?? ""))
+                }
             }
         } label: {
-            Image(systemSymbol: .plusCircle)
+            Image(systemSymbol: .plusCircleFill)
         }
         .accessibilityLabel(Text(L10n.Watch.Complications.Builder.insertToken))
-    }
-
-    private func append(_ token: String) {
-        tokenText.wrappedValue = formula.tokenString + token
     }
 }
 

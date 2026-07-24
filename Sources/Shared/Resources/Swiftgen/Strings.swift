@@ -6012,6 +6012,8 @@ public enum L10n {
         public static var tokenEntityName: String { return L10n.tr("Localizable", "watch.complications.builder.token_entity_name") }
         /// Template
         public static var tokenTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.token_template") }
+        /// Text
+        public static var tokenText: String { return L10n.tr("Localizable", "watch.complications.builder.token_text") }
         /// Value
         public static var tokenValue: String { return L10n.tr("Localizable", "watch.complications.builder.token_value") }
         /// Unit

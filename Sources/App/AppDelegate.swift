@@ -147,6 +147,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
+        // Every switch renders in the Home Assistant brand color instead of the system green —
+        // SwiftUI Toggles are UISwitch-backed on iOS, so this covers both UI stacks.
+        UISwitch.appearance().onTintColor = .haPrimary
+
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
         FlightGreetingManager.shared.start()

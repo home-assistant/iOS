@@ -1768,6 +1768,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
 "watch.complications.builder.token_template" = "Template";
+"watch.complications.builder.token_text" = "Text";
 "watch.complications.builder.token_value" = "Value";
 "watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
