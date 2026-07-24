@@ -9,6 +9,9 @@ enum WatchWidgetConstants {
     static let templateLogoAssetName = "TemplateLogo"
     static let assistIconAssetName = "message-processing-outline"
     static let placeholderSubtitle = "Complication"
+    /// Neutral value shown in the complication picker's preview instead of a possibly-stale
+    /// live value (see `WatchWidgetComplicationSnapshot.previewVariant`).
+    static let previewValueText = "--"
     static let timelineRefreshInterval: TimeInterval = 15 * 60
 
     enum DeepLink {

@@ -32,7 +32,16 @@ struct WatchWidgetAppIntentProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: WatchWidgetConfigurationIntent, in context: Context) async -> WatchWidgetEntry {
-        entry(for: configuration, in: context)
+        let entry = entry(for: configuration, in: context)
+        // The complication picker/gallery asks for a preview snapshot: render the complication's
+        // identity (name, icon, gauge, colors) with a neutral value instead of whatever live value
+        // happens to be cached — no fetch, instant, and never presents stale data as current.
+        guard context.isPreview else { return entry }
+        return WatchWidgetEntry(
+            date: entry.date,
+            family: entry.family,
+            complication: entry.complication?.previewVariant
+        )
     }
 
     func timeline(

@@ -5894,6 +5894,8 @@ public enum L10n {
         public static var colorFromTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.color_from_template") }
         /// Colors
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
+        /// Complication name
+        public static var complicationName: String { return L10n.tr("Localizable", "watch.complications.builder.complication_name") }
         /// Custom colors
         public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
         /// Customize

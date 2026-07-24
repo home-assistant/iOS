@@ -160,6 +160,7 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
     }
 
     func save() {
+        autoGenerateNameIfNeeded()
         do {
             try config.save()
         } catch {
@@ -168,5 +169,19 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
         WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
+    }
+
+    /// A template complication saved without a name gets "Complication-N" (first free number), so it
+    /// never shows up as a generic "Complication" in the iOS list and the watch gallery. Entity
+    /// complications keep their entity-name fallback instead.
+    private func autoGenerateNameIfNeeded() {
+        guard config.kind == .customTemplate,
+              (config.name ?? "").trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        let existingNames = Set(((try? WatchComplicationConfig.all()) ?? []).compactMap(\.name))
+        var number = 1
+        while existingNames.contains("Complication-\(number)") {
+            number += 1
+        }
+        config.name = "Complication-\(number)"
     }
 }

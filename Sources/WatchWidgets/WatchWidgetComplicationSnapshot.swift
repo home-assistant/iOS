@@ -154,6 +154,20 @@ struct WatchWidgetComplicationSnapshot: Codable {
         return title.isEmpty ? WatchWidgetConstants.appName : title
     }
 
+    /// A static stand-in for the complication picker (`context.isPreview`): identity only — name,
+    /// icon, gauge shape and colors — with the value slot neutralized. The picker preview must
+    /// render instantly from whatever is cached and must not present a possibly-stale value as
+    /// current. Built-ins (placeholder/Assist) already carry static text and pass through as-is.
+    var previewVariant: Self {
+        guard !isBuiltIn else { return self }
+        var preview = self
+        preview.title = WatchWidgetConstants.previewValueText
+        // Inline renders a single line of text: the name identifies the complication better than
+        // a bare "--".
+        preview.inlineText = recommendationTitle
+        return preview
+    }
+
     var widgetURL: URL? {
         recommendationID == Self.assistID ? WatchWidgetConstants.DeepLink.assistURL : nil
     }
