@@ -246,7 +246,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     /// indexed by the root settings search.
     var contentSearchEntries: [SettingsSearchEntry] {
         switch self {
-        case .servers: return ServersListView.settingsSearchEntries
+        case .servers: return SettingsServersView.settingsSearchEntries
         case .general: return GeneralSettingsView.settingsSearchEntries
         case .macToolbar: return MacToolbarSettingsView.settingsSearchEntries
         case .gestures: return GesturesSetupView.settingsSearchEntries
@@ -341,20 +341,6 @@ struct MaterialDesignIconsImage: View {
 }
 
 // MARK: - Wrapper Views for UIKit Controllers
-
-struct SettingsServersView: View {
-    var body: some View {
-        List {
-            Section(
-                header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversReorderFooter)
-            ) {
-                ServersListView()
-            }
-        }
-        .navigationTitle(L10n.Settings.ConnectionSection.servers)
-    }
-}
 
 struct SettingsNotificationsView: View {
     var body: some View {
