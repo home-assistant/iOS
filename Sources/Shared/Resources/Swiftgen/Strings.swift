@@ -4730,7 +4730,7 @@ public enum L10n {
       /// Server Switching
       public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
       public enum ByLocation {
-        /// When you open the app, your location is compared with your servers' zones. If you are inside a zone that belongs to another server, such as arriving at your second home, that server is opened automatically. Your location is only checked on this device while the app is in use, and is never stored.
+        /// When you open the app, it checks whether you are at one of your homes — connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.
         public static var footer: String { return L10n.tr("Localizable", "settings.server_switching.by_location.footer") }
         /// Switch Server by Location
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.by_location.title") }
@@ -4757,7 +4757,7 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.privacy.title") }
         }
         public enum Switching {
-          /// When you open the app inside a zone that belongs to another server, that server is opened automatically. The server you are viewing always wins when zones overlap, and if you switch manually your choice is respected until you leave the zone.
+          /// When you open the app at another server's home — on its Wi-Fi network or inside its Home zone — that server is opened automatically. The server you are viewing always wins when homes overlap, and if you switch manually your choice is respected until you leave.
           public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.body") }
           /// Automatic switching
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.title") }

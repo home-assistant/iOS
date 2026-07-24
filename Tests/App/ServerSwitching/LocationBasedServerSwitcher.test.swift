@@ -65,6 +65,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: home2),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
@@ -77,6 +78,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: home1),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
@@ -89,6 +91,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: .init(latitude: 51.5074, longitude: -0.1278)),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
@@ -103,6 +106,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: home1),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
@@ -117,6 +121,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: home2),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
@@ -129,6 +134,49 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let matched = LocationBasedServerSwitcher.matchedServer(
             for: location(at: home2),
+            currentSSID: nil,
+            preferring: server1.identifier
+        )
+
+        XCTAssertNil(matched)
+    }
+
+    func testSwitchPrefersHomeNetworkOverZoneContainment() {
+        addZone(server: server1, center: home1)
+        addZone(server: server2, center: home2)
+        server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }
+        server2.update { $0.connection.internalSSIDs = ["home2-wifi"] }
+
+        // Standing inside server1's home zone but on server2's network: the network wins,
+        // matching what the "Closest Server" row shows.
+        let matched = LocationBasedServerSwitcher.matchedServer(
+            for: location(at: home1),
+            currentSSID: "home2-wifi",
+            preferring: server1.identifier
+        )
+
+        XCTAssertEqual(matched?.identifier, server2.identifier)
+    }
+
+    func testSwitchStaysOnCurrentServerWhenNetworkIsShared() {
+        // Both fake servers ship with the same default "MyWifi" internal SSID.
+        let matched = LocationBasedServerSwitcher.matchedServer(
+            for: nil,
+            currentSSID: "MyWifi",
+            preferring: server2.identifier
+        )
+
+        XCTAssertEqual(matched?.identifier, server2.identifier)
+    }
+
+    func testSwitchIgnoresNonHomeZones() {
+        addZone(server: server1, center: home1)
+        addZone(entityId: "zone.office", server: server2, center: home2)
+
+        // Inside server2's office zone: only being at a home switches, so stay put.
+        let matched = LocationBasedServerSwitcher.matchedServer(
+            for: location(at: home2),
+            currentSSID: nil,
             preferring: server1.identifier
         )
 
