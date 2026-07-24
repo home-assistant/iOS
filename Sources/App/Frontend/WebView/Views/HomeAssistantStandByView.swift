@@ -60,31 +60,30 @@ struct HomeAssistantStandByView: View {
 
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
-    private var canSelectServer: Bool { Current.servers.all.count > 1 }
-
-    /// With a single server there is nothing to identify or switch to, so the pill row is hidden and the
+    /// Without another registered server there is nothing to identify or switch to (a zero count — as in
+    /// previews or a transiently empty registry — behaves the same), so the pill row is hidden and the
     /// loading logo mirrors the splash logo exactly (size and full-screen-centered position) so the
     /// splash-to-stand-by hand-off is a pure crossfade with no movement.
-    private var hasSingleServer: Bool { Current.servers.all.count <= 1 }
+    private var hasMultipleServers: Bool { Current.servers.all.count > 1 }
 
     private var logoSize: CGSize {
         if showsEmptyState {
             Self.emptyStateLogoSize
-        } else if hasSingleServer {
-            LaunchSplashOverlayView.Constants.splashLogoSize
-        } else {
+        } else if hasMultipleServers {
             Self.loadingLogoSize
+        } else {
+            LaunchSplashOverlayView.Constants.splashLogoSize
         }
     }
 
     private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
         guard !showsEmptyState else { return 0 }
-        if hasSingleServer {
-            // The splash logo is centered against the full screen while this content is laid out inside
-            // the safe area; shift by the safe-area asymmetry so the two centers coincide.
-            return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
+        if hasMultipleServers {
+            return -DesignSystem.Spaces.eight
         }
-        return -DesignSystem.Spaces.eight
+        // The splash logo is centered against the full screen while this content is laid out inside
+        // the safe area; shift by the safe-area asymmetry so the two centers coincide.
+        return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
     }
 
     init(
@@ -123,7 +122,7 @@ struct HomeAssistantStandByView: View {
             iconView
             if let emptyState {
                 emptyStateBody(for: emptyState)
-            } else if !hasSingleServer {
+            } else if hasMultipleServers {
                 currentServerPill
             }
         }
@@ -294,7 +293,7 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private var serverNamePill: some View {
-        if canSelectServer {
+        if hasMultipleServers {
             Button {
                 onSelectServerTapped?()
             } label: {
