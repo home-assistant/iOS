@@ -37,6 +37,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record audio to talk to Assist.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
