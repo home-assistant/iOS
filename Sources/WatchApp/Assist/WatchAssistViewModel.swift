@@ -48,6 +48,15 @@ final class WatchAssistViewModel: ObservableObject {
         assist()
     }
 
+    /// (Re)subscribe to phone responses. Called on every appearance: `endRoutine()` unsubscribes
+    /// when the view disappears (volume screen push, dismissal), so a view model that returns to
+    /// the screen must register again or it stays deaf to STT/intent/TTS responses. Remove first
+    /// so repeated appearances can't stack duplicate deliveries.
+    func reconnectObserver() {
+        immediateCommunicatorService.removeObserver(self)
+        immediateCommunicatorService.addObserver(.init(delegate: self))
+    }
+
     func endRoutine() {
         stopRecording()
         assistService.endRoutine()
@@ -71,6 +80,7 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func startPingPong() {
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.timerAction()
         }
@@ -178,6 +188,12 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
 extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     func didReceiveChatItem(_ item: AssistChatItem) {
         appendChatItem(item)
+        // The intent response ends the round-trip. Returning to idle also stops the keep-alive
+        // ping-pong (see `startPingPong`), which exists only to keep the phone app awake while the
+        // pipeline runs — it used to keep pinging for as long as the screen stayed open.
+        if item.itemType == .output {
+            updateState(state: .idle)
+        }
     }
 
     func didReceiveTTS(url: URL) {
@@ -192,5 +208,7 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
         Current.Log.error("Watch Assist error: \(code)")
         appendChatItem(.init(content: message, itemType: .error))
         stopRecording()
+        // A failed round-trip is over too: return to idle so the keep-alive ping-pong stops.
+        updateState(state: .idle)
     }
 }

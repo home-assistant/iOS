@@ -1,5 +1,7 @@
+import Darwin
 import Foundation
 import Shared
+import WatchKit
 
 final class WatchMagicViewRowViewModel: ObservableObject {
     enum RowState {
@@ -90,11 +92,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.info("Executing watch magic item directly via API")
         trace?.log(.info, "Executing via REST from the watch on \"\(server.info.name)\"…")
 
-        magicItem.execute(on: server, source: .Watch, onStep: { [weak self] step in
-            // Each REST stage (service call, URL, token, request, TLS) announces itself before it
-            // runs, so a hang's last trace line names the exact step that never returned.
+        // Each REST stage (service call, URL, token, request, TLS) announces itself before it
+        // runs, so a hang's last trace line names the exact step that never returned. Nil when
+        // verbose execution is off, so the run skips the narration (and its probes) entirely.
+        let onStep: ((String) -> Void)? = trace == nil ? nil : { [weak self] step in
             self?.trace?.log(.info, step)
-        }) { [weak self] success, error in
+        }
+        magicItem.execute(on: server, source: .Watch, onStep: onStep) { [weak self] success, error in
             if success {
                 self?.trace?.log(.success, "Server accepted the request")
             } else {
@@ -127,10 +131,19 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             type: .serviceCall,
             payload: ["item": item.id, "server": item.serverId, "reason": detail]
         ))
-        trace?.log(.error, "Execution failed: \(detail)")
+        let currentTrace = trace
+        currentTrace?.log(.error, "Execution failed: \(detail)")
+        // The census names the queues holding GCD workers (a worker thread is named after the queue
+        // it is currently running), so a starvation-driven failure pinpoints its own culprit.
+        currentTrace?.log(.info, "Threads at failure: \(Self.threadCensus())", isProgress: false)
+        // `WKApplication.shared()` is main-thread-only, and failures can be reported from URLSession
+        // callback queues; `trace.log` itself is thread-safe.
+        DispatchQueue.main.async {
+            currentTrace?.log(.info, "Process at failure: \(Self.processStateSummary())", isProgress: false)
+        }
         // The verbose trace screen already shows the failure; presenting the alert underneath the
         // full-screen cover would just fight it.
-        guard trace == nil else { return }
+        guard currentTrace == nil else { return }
         let message = alertMessage ?? L10n.Watch.Home.Run.Error.message
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
@@ -228,6 +241,8 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                 "Still no result after 15s — execution appears stuck (last step: \(lastStep))",
                 isProgress: false
             )
+            trace.log(.error, "Threads at hang: \(Self.threadCensus())", isProgress: false)
+            trace.log(.error, "Process at hang: \(Self.processStateSummary())", isProgress: false)
         }
 
         if let workItem = timeoutWorkItem {
@@ -241,5 +256,94 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     private func cancelTimeout() {
         timeoutWorkItem?.cancel()
         watchdogWorkItem?.cancel()
+    }
+
+    /// A one-line census of the process's threads: total count plus a histogram of thread names.
+    /// GCD names a worker thread after the queue it is currently running, so when the worker pool
+    /// is starved (main alive, global queues silent — the observed watch hang signature) the
+    /// blocked workers carry the labels of the queues that wedged them. Logged into the verbose
+    /// trace when a run fails or the watchdog declares it stuck.
+    private static func threadCensus() -> String {
+        var threadList: thread_act_array_t?
+        var threadCount = mach_msg_type_number_t(0)
+        guard task_threads(mach_task_self_, &threadList, &threadCount) == KERN_SUCCESS,
+              let threadList else {
+            return "thread info unavailable"
+        }
+        defer {
+            for index in 0 ..< Int(threadCount) {
+                mach_port_deallocate(mach_task_self_, threadList[index])
+            }
+            vm_deallocate(
+                mach_task_self_,
+                vm_address_t(UInt(bitPattern: threadList)),
+                vm_size_t(Int(threadCount) * MemoryLayout<thread_t>.stride)
+            )
+        }
+
+        var histogram: [String: Int] = [:]
+        var runStates: [String: Int] = [:]
+        for index in 0 ..< Int(threadCount) {
+            var info = thread_extended_info_data_t()
+            var infoCount = mach_msg_type_number_t(
+                MemoryLayout<thread_extended_info_data_t>.size / MemoryLayout<natural_t>.size
+            )
+            let result = withUnsafeMutablePointer(to: &info) { infoPointer in
+                infoPointer.withMemoryRebound(to: integer_t.self, capacity: Int(infoCount)) {
+                    thread_info(threadList[index], thread_flavor_t(THREAD_EXTENDED_INFO), $0, &infoCount)
+                }
+            }
+            guard result == KERN_SUCCESS else { continue }
+            var name = withUnsafeBytes(of: info.pth_name) { buffer in
+                String(decoding: buffer.prefix(while: { $0 != 0 }), as: UTF8.self)
+            }
+            if name.isEmpty { name = "unnamed" }
+            // Priority distinguishes a clamped process (everything at background priority) from a
+            // normal one; run state distinguishes parked workers from busy ones.
+            histogram["\(name) pri:\(info.pth_curpri)", default: 0] += 1
+            let stateLabel: String
+            switch info.pth_run_state {
+            case TH_STATE_RUNNING: stateLabel = "running"
+            case TH_STATE_WAITING: stateLabel = "waiting"
+            case TH_STATE_UNINTERRUPTIBLE: stateLabel = "blocked"
+            case TH_STATE_STOPPED: stateLabel = "stopped"
+            default: stateLabel = "other"
+            }
+            runStates[stateLabel, default: 0] += 1
+        }
+
+        let states = runStates
+            .sorted { $0.value == $1.value ? $0.key < $1.key : $0.value > $1.value }
+            .map { "\($0.value) \($0.key)" }
+            .joined(separator: ", ")
+        let summary = histogram
+            .sorted { $0.value == $1.value ? $0.key < $1.key : $0.value > $1.value }
+            .map { "\($0.value)× \($0.key)" }
+            .joined(separator: ", ")
+        return "\(threadCount) total (\(states)) — \(summary)"
+    }
+
+    /// The process/lifecycle facts that decide whether background QoS should be serviced at all:
+    /// a run whose sub-user-interactive probes never fire while the app claims to be `.active` is
+    /// clamped from outside (RunningBoard/scheduler), not blocked by its own code. Main-thread only
+    /// (`WKApplication` requirement) — both watchdog and failure paths already run there.
+    private static func processStateSummary() -> String {
+        let appState: String
+        switch WKApplication.shared().applicationState {
+        case .active: appState = "active"
+        case .inactive: appState = "inactive"
+        case .background: appState = "background"
+        @unknown default: appState = "unknown"
+        }
+        let thermal: String
+        switch ProcessInfo.processInfo.thermalState {
+        case .nominal: thermal = "nominal"
+        case .fair: thermal = "fair"
+        case .serious: thermal = "serious"
+        case .critical: thermal = "critical"
+        @unknown default: thermal = "unknown"
+        }
+        let lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled ? "on" : "off"
+        return "app: \(appState), thermal: \(thermal), low power: \(lowPower)"
     }
 }

@@ -92,6 +92,17 @@ public extension HomeAssistantAPI {
 
         let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
 
+        #if os(watchOS)
+        // `updateApplicationContext` waits synchronously on WCSession's internal operation queue,
+        // which stalls indefinitely while the companion channel is wedged. This method runs in a
+        // cooperative-pool task on every lifecycle transition, and the watch's cooperative pool is
+        // only two threads wide — two stuck updates wedged the entire pool (and GCD's worker
+        // budget with it), killing all async work in the app: direct sync, token refresh, even
+        // URLSession callbacks for magic items. So the blocking call is handed to a dedicated
+        // serial queue instead, gated to a single in-flight update, and never awaited here.
+        enqueueWatchContextSync(context)
+        return nil
+        #else
         do {
             try syncRespectingSizeLimit(context)
             Current.Log.info("updated context")
@@ -109,7 +120,52 @@ public extension HomeAssistantAPI {
         }
 
         return nil
+        #endif
     }
+
+    #if os(watchOS)
+    /// Dedicated home for the blocking `updateApplicationContext` call. A private serial queue
+    /// runs on GCD's overcommit band, so a call stuck inside WCSession costs one extra thread
+    /// without draining the worker budget the rest of the app depends on.
+    private static let watchContextSyncQueue = DispatchQueue(label: "watch-context-sync", qos: .utility)
+    private static let watchContextSyncGate = NSLock()
+    private static var watchContextSyncInFlight = false
+
+    /// Hand the context to `updateApplicationContext` off the caller's thread, keeping at most one
+    /// update in flight: when WCSession is stalled the stuck call already carries the freshest
+    /// context that could be delivered, and stacking more would just park more threads behind it.
+    private static func enqueueWatchContextSync(_ context: HAWatchConnectivity.Context) {
+        watchContextSyncGate.lock()
+        let alreadyInFlight = watchContextSyncInFlight
+        watchContextSyncInFlight = true
+        watchContextSyncGate.unlock()
+        guard !alreadyInFlight else {
+            Current.Log.info("Skipping watch context sync: previous update still in flight (WCSession stalled?)")
+            return
+        }
+        watchContextSyncQueue.async {
+            defer {
+                watchContextSyncGate.lock()
+                watchContextSyncInFlight = false
+                watchContextSyncGate.unlock()
+            }
+            do {
+                try syncRespectingSizeLimit(context)
+                Current.Log.info("updated context")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Synced watch context to Apple Watch (updateApplicationContext)",
+                    type: .database
+                ))
+            } catch {
+                Current.Log.error("Updating the context failed: \(error)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Failed to sync watch context: \(error.localizedDescription)",
+                    type: .database
+                ))
+            }
+        }
+    }
+    #endif
 
     /// Fire-and-forget `SyncWatchContext()` for callers that cannot await; sync errors are logged
     /// by `SyncWatchContext()` itself.
