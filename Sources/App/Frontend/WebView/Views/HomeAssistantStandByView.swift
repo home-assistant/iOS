@@ -43,7 +43,6 @@ struct HomeAssistantStandByView: View {
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
     private var showsEmptyState: Bool { emptyState != nil }
-    private var loadingContentOffset: CGFloat { showsEmptyState ? 0 : -DesignSystem.Spaces.eight }
     private var standByContentOpacity: Double { hasAppeared ? 1.0 : 0.0 }
     private var contentOpacity: Double { showsEmptyStateContent ? 1.0 : 0.0 }
     private var configuredURLTypes: [ConnectionInfo.URLType] {
@@ -61,7 +60,31 @@ struct HomeAssistantStandByView: View {
 
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
-    private var canSelectServer: Bool { Current.servers.all.count > 1 }
+    /// Without another registered server there is nothing to identify or switch to (a zero count — as in
+    /// previews or a transiently empty registry — behaves the same), so the pill row is hidden and the
+    /// loading logo mirrors the splash logo exactly (size and full-screen-centered position) so the
+    /// splash-to-stand-by hand-off is a pure crossfade with no movement.
+    private var hasMultipleServers: Bool { Current.servers.all.count > 1 }
+
+    private var logoSize: CGSize {
+        if showsEmptyState {
+            Self.emptyStateLogoSize
+        } else if hasMultipleServers {
+            Self.loadingLogoSize
+        } else {
+            LaunchSplashOverlayView.Constants.splashLogoSize
+        }
+    }
+
+    private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
+        guard !showsEmptyState else { return 0 }
+        if hasMultipleServers {
+            return -DesignSystem.Spaces.eight
+        }
+        // The splash logo is centered against the full screen while this content is laid out inside
+        // the safe area; shift by the safe-area asymmetry so the two centers coincide.
+        return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
+    }
 
     init(
         server: Server,
@@ -89,11 +112,17 @@ struct HomeAssistantStandByView: View {
     }
 
     var body: some View {
+        GeometryReader { proxy in
+            content(safeAreaInsets: proxy.safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: DesignSystem.Spaces.three) {
             iconView
             if let emptyState {
                 emptyStateBody(for: emptyState)
-            } else {
+            } else if hasMultipleServers {
                 currentServerPill
             }
         }
@@ -104,7 +133,7 @@ struct HomeAssistantStandByView: View {
             maxHeight: .infinity,
             alignment: showsEmptyState ? .top : .center
         )
-        .offset(y: loadingContentOffset)
+        .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
@@ -174,20 +203,26 @@ struct HomeAssistantStandByView: View {
             showsCleanCacheButton = false
             loaderCountdownRestartToken += 1
         }
-        .task(id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)]) {
-            showsDelayedSettingsButton = false
-            showsCleanCacheButton = false
-            guard !showsEmptyState else { return }
-            try? await Task.sleep(for: delayedSettingsButtonDelay)
-            guard !Task.isCancelled, !showsEmptyState else { return }
-            withAnimation(DesignSystem.Animation.default) {
-                showsDelayedSettingsButton = true
-            }
-            try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
-            guard !Task.isCancelled, !showsEmptyState else { return }
-            withAnimation(DesignSystem.Animation.default) {
-                showsCleanCacheButton = true
-            }
+        .task(
+            id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
+            runDelayedButtonsCountdown
+        )
+    }
+
+    @Sendable
+    private func runDelayedButtonsCountdown() async {
+        showsDelayedSettingsButton = false
+        showsCleanCacheButton = false
+        guard !showsEmptyState else { return }
+        try? await Task.sleep(for: delayedSettingsButtonDelay)
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsDelayedSettingsButton = true
+        }
+        try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = true
         }
     }
 
@@ -258,7 +293,7 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private var serverNamePill: some View {
-        if canSelectServer {
+        if hasMultipleServers {
             Button {
                 onSelectServerTapped?()
             } label: {
@@ -398,10 +433,7 @@ struct HomeAssistantStandByView: View {
                 }
             }
         }
-        .frame(
-            width: showsEmptyState ? Self.emptyStateLogoSize.width : Self.loadingLogoSize.width,
-            height: showsEmptyState ? Self.emptyStateLogoSize.height : Self.loadingLogoSize.height
-        )
+        .frame(width: logoSize.width, height: logoSize.height)
         .launchSplashLogoAnchor()
         .contentShape(Rectangle())
         .onTapGesture(perform: registerLogoDismissTap)
@@ -752,16 +784,21 @@ private extension HomeAssistantStandByView {
         emptyState: nil
     )
     .overlay {
-        Image("launchScreen-logo")
-            .resizable()
-            .scaledToFit()
-            .frame(
-                width: LaunchSplashOverlayView.Constants.splashLogoSize.width,
-                height: LaunchSplashOverlayView.Constants.splashLogoSize.height
-            )
-            .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
-            .allowsHitTesting(false)
-            .ignoresSafeArea()
+        // Positioned with the same math as `LaunchSplashOverlayView`: centered against the full
+        // screen, not the safe area.
+        GeometryReader { proxy in
+            Image("launchScreen-logo")
+                .resizable()
+                .scaledToFit()
+                .frame(
+                    width: LaunchSplashOverlayView.Constants.splashLogoSize.width,
+                    height: LaunchSplashOverlayView.Constants.splashLogoSize.height
+                )
+                .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+        }
+        .ignoresSafeArea()
+        .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
+        .allowsHitTesting(false)
     }
 }
 
