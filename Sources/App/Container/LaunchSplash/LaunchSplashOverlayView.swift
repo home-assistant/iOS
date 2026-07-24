@@ -10,11 +10,13 @@ struct LaunchSplashOverlayView: View {
     /// Tweak these to adjust the transition; the previews below replay it.
     enum Constants {
         /// Mirrors the icon constraints in `LaunchScreen.storyboard`.
-        static let splashLogoSize = CGSize(width: 115, height: 115)
+        static let splashLogoSize = CGSize(width: 120, height: 120)
         /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
-        static let ohfLogoSize = CGSize(width: 320, height: 100)
+        static let ohfLogoSize = CGSize(width: 220, height: 25)
         /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
         static let ohfLogoBottomPadding: CGFloat = 32
+        /// Mirrors the "A PROJECT FROM THE" caption above the OHF logo in `LaunchScreen.storyboard`.
+        static let ohfCaptionFontSize: CGFloat = 13
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
         /// Kept in sync with `heroAnimation` — how long the overlay holds before starting to fade out.
         static let heroDuration: Duration = .seconds(1)
@@ -43,11 +45,17 @@ struct LaunchSplashOverlayView: View {
                     .animation(Constants.heroAnimation, value: state.phase)
                 }
                 .ignoresSafeArea()
-                Image(.ohfLaunch)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Constants.ohfLogoSize.width, height: Constants.ohfLogoSize.height)
-                    .padding(.bottom, Constants.ohfLogoBottomPadding)
+                VStack(spacing: 0) {
+                    Text(verbatim: "A PROJECT FROM THE")
+                        .font(.system(size: Constants.ohfCaptionFontSize, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Image(.ohfInline)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: Constants.ohfLogoSize.width, height: Constants.ohfLogoSize.height)
+                }
+                .padding(.bottom, Constants.ohfLogoBottomPadding)
             }
             .opacity(isFadingOut ? 0 : 1)
             .animation(Constants.fadeAnimation, value: isFadingOut)
