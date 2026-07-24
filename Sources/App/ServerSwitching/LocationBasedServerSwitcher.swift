@@ -65,17 +65,20 @@ final class LocationBasedServerSwitcher {
     }
 
     private func apply(location: CLLocation?, currentSSID: String?) {
-        let currentServerIdentifier = Current.settingsStore.lastActiveServerIdentifier
-            .map(Identifier<Server>.init(rawValue:))
+        // The server the app shows without our intervention — the same kiosk/last-active/first
+        // resolution used at launch. Comparing against the raw stored identifier isn't enough:
+        // when it's stale or unset, launch falls back to the first server, and matching that
+        // fallback on a cold open must not announce a "switch" to the server already opening.
+        let currentServer = OnboardingStateObservable.preferredInitialServer()
         let matched = Self.matchedServer(
             for: location,
             currentSSID: currentSSID,
-            preferring: currentServerIdentifier
+            preferring: currentServer?.identifier
         )
         defer { lastMatchedServerIdentifier = matched?.identifier }
         guard let matched,
               matched.identifier != lastMatchedServerIdentifier,
-              matched.identifier != currentServerIdentifier else { return }
+              matched.identifier != currentServer?.identifier else { return }
 
         Current.Log.info("location-based server switch to \(matched.identifier)")
         Current.sceneManager.appCoordinator.done { coordinator in
