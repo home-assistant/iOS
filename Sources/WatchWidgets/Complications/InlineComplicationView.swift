@@ -19,6 +19,11 @@ struct InlineComplicationView: View {
 
     private func inlineText(for complication: WatchWidgetComplicationSnapshot) -> String {
         guard complication.perFamily != nil else { return complication.inlineText }
+        // Slot payloads resolve the whole line from the title slot's formula ("{name} - {value}" by
+        // default); older modern payloads fall back to the legacy name/value join.
+        if let slotTitle = complication.options(for: family)?.title {
+            return complication.showsName(for: family) ? slotTitle : ""
+        }
         return [
             complication.showsName(for: family) ? complication.subtitle : "",
             complication.showsValue(for: family) ? complication.title : "",

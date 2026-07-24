@@ -112,6 +112,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var gaugeStyle: String?
         /// Hex color for the value/text; nil uses the default (primary) color.
         public var textColor: String?
+        /// Per-slot customization, keyed by `ComplicationSlot.rawValue`. A missing slot (or a nil
+        /// field inside one) falls back to the legacy flags above and the slot defaults, so configs
+        /// saved before slots existed render unchanged.
+        public var slots: [String: ComplicationSlotConfig]?
 
         public init(
             showName: Bool? = nil,
@@ -125,7 +129,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             gaugeAttribute: String? = nil,
             tint: String? = nil,
             gaugeStyle: String? = nil,
-            textColor: String? = nil
+            textColor: String? = nil,
+            slots: [String: ComplicationSlotConfig]? = nil
         ) {
             self.showName = showName
             self.showValue = showValue
@@ -139,6 +144,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             self.tint = tint
             self.gaugeStyle = gaugeStyle
             self.textColor = textColor
+            self.slots = slots
         }
     }
 
@@ -351,5 +357,75 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         var resolved = families ?? [:]
         resolved[family.rawValue] = options
         families = resolved
+    }
+
+    // MARK: - Slot resolution (explicit slot config → legacy flags → family defaults)
+
+    public func slotConfig(_ slot: ComplicationSlot, for family: Family) -> ComplicationSlotConfig? {
+        families?[family.rawValue]?.slots?[slot.rawValue]
+    }
+
+    public mutating func setSlotConfig(_ config: ComplicationSlotConfig, slot: ComplicationSlot, for family: Family) {
+        var options = options(for: family)
+        var slots = options.slots ?? [:]
+        slots[slot.rawValue] = config
+        options.slots = slots
+        setOptions(options, for: family)
+    }
+
+    /// Whether a slot renders for a family. The legacy per-family flags are the defaults — their
+    /// own fallbacks encode the family defaults (rectangular leads with icon + title, circular is
+    /// value-only, …) — so configs saved before slots existed render unchanged. The slots that
+    /// didn't exist before (subtitle, bottom text) start hidden.
+    public func isSlotVisible(_ slot: ComplicationSlot, for family: Family) -> Bool {
+        if let explicit = slotConfig(slot, for: family)?.isVisible { return explicit }
+        switch slot {
+        case .icon:
+            return showsIcon(for: family)
+        case .title:
+            // Inline's single line used to be "name - value": the slot is visible when either half was.
+            if family == .inline { return showsName(for: family) || showsValue(for: family) }
+            return showsName(for: family)
+        case .value:
+            return showsValue(for: family)
+        case .subtitle, .bottomText:
+            return false
+        }
+    }
+
+    /// The content a slot renders: the user's formula, else a default replicating the pre-slot
+    /// rendering (title = name, value = formatted state / rendered text template, inline = both).
+    public func formula(for slot: ComplicationSlot, family: Family) -> ComplicationFormula {
+        if let explicit = slotConfig(slot, for: family)?.formula, !explicit.isEmpty { return explicit }
+        return defaultFormula(for: slot, family: family)
+    }
+
+    /// The default content per slot. Entity kind uses only on-device tokens — never a template
+    /// (server-side rendering is admin-only); template kind routes the value through the config's
+    /// text template. Subtitle/bottom text defaults only matter once the user shows those slots.
+    public func defaultFormula(for slot: ComplicationSlot, family: Family) -> ComplicationFormula {
+        let valuePart: ComplicationFormula.Part = kind == .customTemplate
+            ? .template(customTextTemplate ?? "")
+            : .state
+        switch slot {
+        case .icon:
+            return ComplicationFormula(parts: [])
+        case .title where family == .inline:
+            // Inline joined name and value per the legacy flags, so name-only / value-only
+            // combinations keep rendering exactly as before.
+            var parts: [ComplicationFormula.Part] = []
+            if showsName(for: .inline) { parts.append(.entityName) }
+            if showsValue(for: .inline) {
+                if !parts.isEmpty { parts.append(.text(" - ")) }
+                parts.append(valuePart)
+            }
+            return ComplicationFormula(parts: parts)
+        case .title:
+            return ComplicationFormula(parts: [.entityName])
+        case .subtitle:
+            return ComplicationFormula(parts: [.entityName])
+        case .value, .bottomText:
+            return ComplicationFormula(parts: [valuePart])
+        }
     }
 }

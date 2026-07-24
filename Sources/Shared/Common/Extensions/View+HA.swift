@@ -1,10 +1,14 @@
 import Foundation
+import HADesignSystem
 import SwiftUI
 
 public extension View {
     func embeddedInHostingController() -> UIHostingController<some View> {
         let provider = ViewControllerProvider()
+        // Every UIKit-hosted SwiftUI screen flows through here, so the brand toggle style applies
+        // app-wide from this single seam (the SwiftUI scene roots in HAApp apply it themselves).
         let hostingAccessingView = environmentObject(provider)
+            .toggleStyle(BrandedSwitchToggleStyle())
         let hostingController = UIHostingController(rootView: hostingAccessingView)
         provider.viewController = hostingController
         return hostingController

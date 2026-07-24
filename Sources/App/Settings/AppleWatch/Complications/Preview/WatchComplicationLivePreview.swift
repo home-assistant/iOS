@@ -14,12 +14,21 @@ struct ComplicationPreviewContext {
     let fraction: Double?
     /// The icon image, already gated by the "show icon" toggle (nil when hidden or none).
     let iconImage: Image?
+    /// Raw entity attributes (entity kind), so slot formulas referencing `{attr:…}` resolve in the
+    /// preview exactly like on the watch.
+    var attributes: [String: Any] = [:]
+    /// Pre-rendered templates for formula resolution. The preview only renders the main text
+    /// template; extra templates in customized slot formulas resolve empty here and render on the
+    /// watch.
+    var renderedTemplates: [String: String] = [:]
 
     private var family: WatchComplicationConfig.Family { config.widgetFamily }
 
     var name: String { config.name ?? config.entityDisplayName ?? config.entityId ?? "" }
-    var showsValue: Bool { config.showsValue(for: family) }
-    var showsName: Bool { config.showsName(for: family) }
+    var showsValue: Bool { config.isSlotVisible(.value, for: family) }
+    var showsName: Bool { config.isSlotVisible(.title, for: family) }
+    var showsSubtitle: Bool { config.isSlotVisible(.subtitle, for: family) }
+    var showsBottomText: Bool { config.isSlotVisible(.bottomText, for: family) }
     var showsMin: Bool { config.showsMin(for: family) }
     var showsMax: Bool { config.showsMax(for: family) }
     /// Whether a gauge is drawn — needs both the toggle on and an actual value.
@@ -34,6 +43,25 @@ struct ComplicationPreviewContext {
 
     /// Min/max are whole numbers.
     func label(_ value: Double) -> String { String(Int(value.rounded())) }
+
+    // MARK: - Slot texts (same resolution as the watch's snapshot builder)
+
+    private func slotText(_ slot: ComplicationSlot) -> String {
+        ComplicationFormulaResolver.resolve(
+            config.formula(for: slot, family: family),
+            context: ComplicationFormulaContext(
+                entityName: name,
+                formattedState: value,
+                attributeValue: { attributes[$0].map { String(describing: $0) } },
+                renderedTemplates: renderedTemplates
+            )
+        )
+    }
+
+    var titleText: String { slotText(.title) }
+    var valueText: String { slotText(.value) }
+    var subtitleText: String { slotText(.subtitle) }
+    var bottomText: String { slotText(.bottomText) }
 }
 
 #if DEBUG
@@ -151,7 +179,13 @@ extension ComplicationPreviewContext {
             )
         }
 
-        return ComplicationPreviewContext(config: familyConfig, value: value, fraction: fraction, iconImage: iconImage)
+        return ComplicationPreviewContext(
+            config: familyConfig,
+            value: value,
+            fraction: fraction,
+            iconImage: iconImage,
+            attributes: attributes
+        )
     }
 
     /// A representative placeholder shown before the user picks an entity/template, so every size renders
@@ -324,7 +358,13 @@ struct WatchComplicationLivePreview: View {
                 attributes: entityAttributes
             )
         case .customTemplate:
-            return ComplicationPreviewContext(config: config, value: value, fraction: fraction, iconImage: iconImage)
+            return ComplicationPreviewContext(
+                config: config,
+                value: value,
+                fraction: fraction,
+                iconImage: iconImage,
+                renderedTemplates: config.customTextTemplate.map { [$0: value] } ?? [:]
+            )
         }
     }
 

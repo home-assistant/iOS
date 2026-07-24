@@ -202,21 +202,6 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
-    // MARK: - Customize disclosure
-
-    @Test func customizeDisclosureIsMirroredIntoConfig() throws {
-        try withBuilderTestWorld { _ in
-            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
-            #expect(viewModel.config.isCustomized != true)
-
-            viewModel.isCustomizing = true
-            #expect(viewModel.config.isCustomized == true)
-
-            viewModel.isCustomizing = false
-            #expect(viewModel.config.isCustomized == false)
-        }
-    }
-
     // MARK: - Template color
 
     @Test func templateColorOptInFollowsExistingConfig() throws {

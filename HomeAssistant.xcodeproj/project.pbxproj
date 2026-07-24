@@ -89,6 +89,7 @@
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
 		42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
+		42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42164BB8301320720077A903 /* ComplicationFormula.test.swift */; };
 		42165CDB3013242D0077A903 /* LocationBasedServerSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */; };
 		42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
@@ -605,6 +606,7 @@
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
+		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
 		42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.swift; sourceTree = "<group>"; };
 		42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
@@ -2542,6 +2544,7 @@
 				42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */,
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
+				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3917,6 +3920,7 @@
 				42F1C0323140B00011AACC02 /* ConnectivityWrapper.test.swift in Sources */,
 				1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */,
 				6DC7361D22E7972F8C24B259 /* WatchConnectivity.test.swift in Sources */,
+				42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,

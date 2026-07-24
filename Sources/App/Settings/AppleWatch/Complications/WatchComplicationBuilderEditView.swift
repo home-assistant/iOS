@@ -35,27 +35,6 @@ struct WatchComplicationBuilderEditView: View {
         viewModel.config.setOptions(options, for: currentFamily)
     }
 
-    private var showValueBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsValue(for: currentFamily) },
-            set: { value in updateOptions { $0.showValue = value } }
-        )
-    }
-
-    private var showNameBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsName(for: currentFamily) },
-            set: { value in updateOptions { $0.showName = value } }
-        )
-    }
-
-    private var showIconBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsIcon(for: currentFamily) },
-            set: { value in updateOptions { $0.showIcon = value } }
-        )
-    }
-
     private var showGaugeBinding: Binding<Bool> {
         Binding(
             get: { viewModel.config.showsGauge(for: currentFamily) },
@@ -175,6 +154,45 @@ struct WatchComplicationBuilderEditView: View {
             },
             set: { value in updateOptions { $0.textColor = UIColor(value).hexString(true) } }
         )
+    }
+
+    /// Unit + gauge options shown inside the value slot's section: they shape how the value
+    /// renders (unit suffix, gauge/progress bar, range and min/max labels).
+    @ViewBuilder
+    private var valueSlotOptions: some View {
+        if viewModel.config.kind == .entity,
+           viewModel.entityUnit != nil || !(viewModel.config.unitOverride ?? "").isEmpty {
+            Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
+        }
+        if familyHasProgressBar {
+            Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
+            if viewModel.config.showsGauge(for: currentFamily) {
+                // Only the circular gauge has an open/ring style choice.
+                if currentFamily == .circular {
+                    Picker(selection: gaugeStyleBinding) {
+                        ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
+                            Text(verbatim: style.title).tag(style)
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.GaugeStyle.title)
+                    }
+                    .pickerStyle(.segmented)
+                }
+                // Numeric range + min/max labels only apply to entity gauges.
+                if viewModel.config.kind == .entity {
+                    numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
+                    numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
+                    if viewModel.config.gaugeRange(for: currentFamily) != nil {
+                        Toggle(isOn: showMinBinding) {
+                            Text(L10n.Watch.Complications.Builder.showMin)
+                        }
+                        Toggle(isOn: showMaxBinding) {
+                            Text(L10n.Watch.Complications.Builder.showMax)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     var body: some View {
@@ -373,7 +391,7 @@ struct WatchComplicationBuilderEditView: View {
 
             // Step 4: once the source is fully configured (an entity picked, or a template entered),
             // the display options reveal: name/icon (entity flow — the template flow's display-name
-            // row above edits the text template instead), then the Customize disclosure.
+            // row above edits the text template instead), then the per-slot sections.
             if viewModel.isSourceConfigured {
                 if viewModel.config.kind == .entity {
                     Section {
@@ -395,80 +413,38 @@ struct WatchComplicationBuilderEditView: View {
                     }
                 }
 
-                // Progressive disclosure: keep the initial screen simple (name + source). Everything
-                // below is opt-in behind "Customize", so the average user isn't faced with a crowded
-                // form.
+                // Family switcher: selects the size the sections below configure — also the size
+                // the floating mini preview shows.
                 Section {
-                    Toggle(isOn: $viewModel.isCustomizing.animation()) {
-                        Text(L10n.Watch.Complications.Builder.customize)
-                    }
-                } footer: {
-                    Text(L10n.Watch.Complications.Builder.customizeFooter)
-                }
-            }
-
-            if viewModel.isSourceConfigured, viewModel.isCustomizing {
-                // Per-size display options, bound to the size selected in the preview above.
-                Section {
-                    Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
-                    Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
-                    // Inline has no icon.
-                    if currentFamily != .inline {
-                        Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
-                    }
-                    if viewModel.config.kind == .entity,
-                       viewModel.entityUnit != nil || !(viewModel.config.unitOverride ?? "").isEmpty {
-                        Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
-                    }
-
-                    if familyHasProgressBar {
-                        Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
-                        if viewModel.config.showsGauge(for: currentFamily) {
-                            // Only the circular gauge has an open/ring style choice.
-                            if currentFamily == .circular {
-                                Picker(selection: gaugeStyleBinding) {
-                                    ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
-                                        Text(verbatim: style.title).tag(style)
-                                    }
-                                } label: {
-                                    Text(L10n.Watch.Complications.GaugeStyle.title)
-                                }
-                                .pickerStyle(.segmented)
-                            }
-                            // Numeric range + min/max labels only apply to entity gauges.
-                            if viewModel.config.kind == .entity {
-                                numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
-                                numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
-                                if viewModel.config.gaugeRange(for: currentFamily) != nil {
-                                    Toggle(isOn: showMinBinding) {
-                                        Text(L10n.Watch.Complications.Builder.showMin)
-                                    }
-                                    Toggle(isOn: showMaxBinding) {
-                                        Text(L10n.Watch.Complications.Builder.showMax)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                } header: {
-                    // Family switcher: selects the size being customized, which is also the size the
-                    // floating mini preview shows.
                     Picker(selection: $viewModel.config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
                         }
                     } label: { EmptyView() }
                         .pickerStyle(.segmented)
-                        .frame(maxWidth: .infinity)
-                        .textCase(nil)
-                        .padding(.bottom, DesignSystem.Spaces.one)
                 } footer: {
                     Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
                 }
 
-                // Colors are a further opt-in under Customize. Inline is rendered in the watch-face tint,
-                // so it has no custom colors.
+                // One section per UI slot of the selected size: visibility, content formula, and —
+                // for the value slot — the unit and gauge options that shape how the value renders.
+                ForEach(ComplicationSlot.slots(for: currentFamily)) { slot in
+                    Section {
+                        ComplicationSlotRow(
+                            config: $viewModel.config,
+                            slot: slot,
+                            server: viewModel.server,
+                            attributeKeys: viewModel.config.kind == .entity ? viewModel.entityAttributeKeys : []
+                        )
+                        if slot == .value {
+                            valueSlotOptions
+                        }
+                    } header: {
+                        Text(verbatim: slot.editorTitle)
+                    }
+                }
+
+                // Inline is rendered in the watch-face tint, so it has no custom colors.
                 if currentFamily != .inline {
                     Section {
                         Toggle(isOn: $viewModel.useCustomColors.animation()) {
@@ -516,7 +492,7 @@ struct WatchComplicationBuilderEditView: View {
                         Text(L10n.Watch.Complications.Builder.colors)
                     }
                 }
-            } // end if isSourceConfigured, isCustomizing
+            } // end if isSourceConfigured
         }
         // Once the inline preview scrolls away, it re-appears as a floating mini preview — only the
         // selected size, zoomed to fit a small watch screen — that the user can drag to any corner
@@ -751,5 +727,230 @@ struct WatchComplicationBuilderEditView: View {
             customTextColorTemplate: "{{ '#FF9500' }}",
             isCustomized: true
         ))
+    }
+}
+
+// MARK: - ComplicationSlotRow
+
+extension WatchComplicationBuilderEditView {
+    /// One slot of the selected size in the complication builder: a visibility toggle and, for text
+    /// slots, the content choice — the slot's default, or a custom formula mixing hardcoded text
+    /// with tokens (`{name}`, `{value}`, `{attr:…}`, and `{template}` for template complications).
+    /// Entity complications only get on-device tokens: template rendering is an admin-only server
+    /// operation. Nested (rather than its own file) so it stays App-target-only without a
+    /// project-file change: this folder is synchronized into the Shared targets too, and a
+    /// standalone file would need per-file membership exceptions in the pbxproj.
+    struct ComplicationSlotRow: View {
+        @Binding var config: WatchComplicationConfig
+        let slot: ComplicationSlot
+        let server: Server?
+        /// Attribute names offered by the Insert menu (entity kind; empty otherwise).
+        let attributeKeys: [String]
+
+        private var family: WatchComplicationConfig.Family { config.widgetFamily }
+
+        private var currentSlotConfig: ComplicationSlotConfig {
+            config.slotConfig(slot, for: family) ?? ComplicationSlotConfig()
+        }
+
+        private func update(_ mutate: (inout ComplicationSlotConfig) -> Void) {
+            var updated = currentSlotConfig
+            mutate(&updated)
+            config.setSlotConfig(updated, slot: slot, for: family)
+        }
+
+        private var isVisible: Binding<Bool> {
+            Binding(
+                get: { config.isSlotVisible(slot, for: family) },
+                set: { newValue in update { $0.isVisible = newValue } }
+            )
+        }
+
+        /// Default vs. custom content: custom == a stored formula. Switching back to default discards
+        /// the formula, so the slot follows the built-in behavior again.
+        private var isCustomContent: Binding<Bool> {
+            Binding(
+                get: { currentSlotConfig.formula != nil },
+                set: { custom in
+                    update { slotConfig in
+                        slotConfig.formula = custom ? config.defaultFormula(for: slot, family: family) : nil
+                    }
+                }
+            )
+        }
+
+        private var formula: ComplicationFormula {
+            currentSlotConfig.formula ?? config.defaultFormula(for: slot, family: family)
+        }
+
+        /// The source of the formula's `{template}` token, edited in the full template editor.
+        private var templateSource: Binding<String> {
+            Binding(
+                get: { formula.templates.first ?? "" },
+                set: { newValue in
+                    let parts: [ComplicationFormula.Part] = formula.parts.map { part in
+                        if case .template = part { return .template(newValue) }
+                        return part
+                    }
+                    update { $0.formula = ComplicationFormula(parts: parts) }
+                }
+            )
+        }
+
+        var body: some View {
+            Toggle(isOn: isVisible.animation()) { Text(L10n.Watch.Complications.Builder.show) }
+            if isVisible.wrappedValue, slot != .icon {
+                Picker(selection: isCustomContent.animation()) {
+                    Text(L10n.Watch.Complications.Builder.contentDefault).tag(false)
+                    Text(L10n.Watch.Complications.Builder.contentCustom).tag(true)
+                } label: {
+                    Text(L10n.Watch.Complications.Builder.content)
+                }
+                .pickerStyle(.segmented)
+                if isCustomContent.wrappedValue {
+                    // The formula is edited as pills, not raw token text: dynamic tokens are tinted
+                    // capsules, hardcoded text is typed straight into neutral capsule fields, and each
+                    // pill removes with its x. New pieces come from the + menu and land at the end.
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: DesignSystem.Spaces.half) {
+                            ForEach(Array(formula.parts.enumerated()), id: \.offset) { index, part in
+                                partPill(at: index, part: part)
+                            }
+                            insertMenu
+                        }
+                        .padding(.vertical, DesignSystem.Spaces.half)
+                    }
+                    if config.kind == .customTemplate, let server, !formula.templates.isEmpty {
+                        JinjaTemplateButton(
+                            server: server,
+                            title: L10n.Watch.Complications.Builder.tokenTemplate,
+                            text: templateSource,
+                            placeholder: "{{ states('sensor.x') }}"
+                        )
+                    }
+                }
+            }
+        }
+
+        /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
+        /// friendly name; every pill carries its own remove button.
+        @ViewBuilder
+        private func partPill(at index: Int, part: ComplicationFormula.Part) -> some View {
+            let isText: Bool = {
+                if case .text = part { return true }
+                return false
+            }()
+            HStack(spacing: DesignSystem.Spaces.half) {
+                if isText {
+                    TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .fixedSize()
+                } else {
+                    Text(verbatim: pillTitle(for: part))
+                }
+                Button {
+                    withAnimation { removePart(at: index) }
+                } label: {
+                    Image(systemSymbol: .xmarkCircleFill)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            .font(.callout)
+            .padding(.horizontal, DesignSystem.Spaces.one)
+            .padding(.vertical, DesignSystem.Spaces.half)
+            .foregroundStyle(isText ? Color.primary : Color.haPrimary)
+            .background(Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15)))
+        }
+
+        private func pillTitle(for part: ComplicationFormula.Part) -> String {
+            switch part {
+            case let .text(text): return text
+            case .entityName: return L10n.Watch.Complications.Builder.tokenEntityName
+            case .state: return L10n.Watch.Complications.Builder.tokenValue
+            case let .attribute(name): return name
+            case .template: return L10n.Watch.Complications.Builder.tokenTemplate
+            }
+        }
+
+        private func updateParts(_ mutate: (inout [ComplicationFormula.Part]) -> Void) {
+            var parts = formula.parts
+            mutate(&parts)
+            // Deleting the last pill returns the slot to its default content: rendering ignores empty
+            // formulas anyway, so keeping one stored would show "Custom" with an empty pill list while
+            // silently rendering the default.
+            update { $0.formula = parts.isEmpty ? nil : ComplicationFormula(parts: parts) }
+        }
+
+        private func removePart(at index: Int) {
+            updateParts { parts in
+                guard parts.indices.contains(index) else { return }
+                parts.remove(at: index)
+            }
+        }
+
+        private func appendPart(_ part: ComplicationFormula.Part) {
+            withAnimation { updateParts { $0.append(part) } }
+        }
+
+        /// In-place editing for a text pill. Index-guarded: SwiftUI can call stale bindings while the
+        /// pill list animates a removal.
+        private func textBinding(at index: Int) -> Binding<String> {
+            Binding(
+                get: {
+                    guard formula.parts.indices.contains(index),
+                          case let .text(text) = formula.parts[index] else { return "" }
+                    return text
+                },
+                set: { newValue in
+                    updateParts { parts in
+                        guard parts.indices.contains(index) else { return }
+                        parts[index] = .text(newValue)
+                    }
+                }
+            )
+        }
+
+        /// Appends a piece at the end of the formula. Attributes come from the live preview's reported
+        /// keys; the template token is offered once, for template complications only.
+        private var insertMenu: some View {
+            Menu {
+                Button(L10n.Watch.Complications.Builder.tokenText) { appendPart(.text("")) }
+                Button(L10n.Watch.Complications.Builder.tokenEntityName) { appendPart(.entityName) }
+                Button(L10n.Watch.Complications.Builder.tokenValue) { appendPart(.state) }
+                if !attributeKeys.isEmpty {
+                    Menu {
+                        ForEach(attributeKeys, id: \.self) { key in
+                            Button(key) { appendPart(.attribute(key)) }
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.Builder.tokenAttributes)
+                    }
+                }
+                if config.kind == .customTemplate, formula.templates.isEmpty {
+                    Button(L10n.Watch.Complications.Builder.tokenTemplate) {
+                        appendPart(.template(config.customTextTemplate ?? ""))
+                    }
+                }
+            } label: {
+                Image(systemSymbol: .plusCircleFill)
+            }
+            .accessibilityLabel(Text(L10n.Watch.Complications.Builder.insertToken))
+        }
+    }
+}
+
+/// Localized slot names live here (not in HAModels, which has no L10n access).
+extension ComplicationSlot {
+    var editorTitle: String {
+        switch self {
+        case .icon: return L10n.Watch.Complications.Slot.icon
+        case .title: return L10n.Watch.Complications.Slot.title
+        case .subtitle: return L10n.Watch.Complications.Slot.subtitle
+        case .value: return L10n.Watch.Complications.Slot.value
+        case .bottomText: return L10n.Watch.Complications.Slot.bottomText
+        }
     }
 }

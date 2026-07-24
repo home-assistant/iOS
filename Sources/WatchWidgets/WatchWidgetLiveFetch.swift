@@ -37,7 +37,7 @@ enum WatchWidgetLiveFetch {
         guard !usable.isEmpty else { return }
 
         let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
-        var updates: [String: String] = [:] // config.id -> fresh value text
+        var updates: [String: LiveValue] = [:] // config.id -> fresh value
 
         for config in targets where config.kind == .entity {
             guard let entityId = config.entityId,
@@ -49,7 +49,14 @@ enum WatchWidgetLiveFetch {
         }
 
         guard !updates.isEmpty else { return }
-        applyUpdates(updates)
+        applyUpdates(updates, configs: configs)
+    }
+
+    /// A fresh formatted value plus the raw attributes, so slot formulas that reference attributes
+    /// can be re-resolved without another fetch.
+    private struct LiveValue {
+        let value: String
+        let attributes: [String: Any]
     }
 
     // MARK: - Token validity / refresh
@@ -132,7 +139,7 @@ enum WatchWidgetLiveFetch {
         config: WatchComplicationConfig,
         entityId: String,
         credential: WatchWidgetServerCredential
-    ) async -> String? {
+    ) async -> LiveValue? {
         var request = URLRequest(url: credential.baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(credential.token)", forHTTPHeaderField: "Authorization")
 
@@ -165,7 +172,10 @@ enum WatchWidgetLiveFetch {
         }
         let effectiveUnit = config.unitOverride.flatMap { $0.isEmpty ? nil : $0 } ?? resolvedUnit
         let unit = config.showsUnit() ? effectiveUnit : nil
-        return format(rawValue, unit: unit, precision: config.valuePrecision)
+        return LiveValue(
+            value: format(rawValue, unit: unit, precision: config.valuePrecision),
+            attributes: attributes
+        )
     }
 
     private static func format(_ value: String, unit: String?, precision: Int?) -> String {
@@ -200,20 +210,56 @@ enum WatchWidgetLiveFetch {
         }) ?? []
     }
 
-    private static func applyUpdates(_ updates: [String: String]) {
+    private static func applyUpdates(_ updates: [String: LiveValue], configs: [WatchComplicationConfig]) {
         guard let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID),
               let data = defaults.data(forKey: WatchWidgetConstants.defaultsKey),
               var snapshots = try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: data) else {
             return
         }
         for index in snapshots.indices {
-            guard let id = snapshots[index].id, let value = updates[id] else { continue }
+            guard let id = snapshots[index].id, let update = updates[id] else { continue }
             let name = snapshots[index].menuName ?? snapshots[index].subtitle
-            snapshots[index].title = value
-            snapshots[index].inlineText = [name, value].filter { !$0.isEmpty }.joined(separator: " ")
+            snapshots[index].title = update.value
+            snapshots[index].inlineText = [name, update.value].filter { !$0.isEmpty }.joined(separator: " ")
+
+            // Re-resolve the slot texts in place with the fresh state. Only entity complications
+            // reach here, so every formula resolves on-device — no template rendering involved.
+            guard let config = configs.first(where: { $0.id == id }) else { continue }
+            // The config's display name, not the snapshot's stored one: the stored name can be
+            // stale relative to the current config, and the snapshot builder resolves against the
+            // config too.
+            let context = ComplicationFormulaContext(
+                entityName: config.displayName,
+                formattedState: update.value,
+                attributeValue: { update.attributes[$0].map { String(describing: $0) } }
+            )
+            refreshSlotTexts(in: &snapshots[index], config: config, context: context)
         }
         if let encoded = try? JSONEncoder().encode(snapshots) {
             defaults.set(encoded, forKey: WatchWidgetConstants.defaultsKey)
+        }
+    }
+
+    /// Re-resolves a snapshot's per-family slot texts against fresh entity data, leaving families
+    /// without slot payloads (older snapshots) untouched.
+    private static func refreshSlotTexts(
+        in snapshot: inout WatchWidgetComplicationSnapshot,
+        config: WatchComplicationConfig,
+        context: ComplicationFormulaContext
+    ) {
+        for family in WatchComplicationConfig.Family.allCases {
+            guard var options = snapshot.perFamily?[family.rawValue] else { continue }
+            func slotText(_ slot: ComplicationSlot) -> String {
+                ComplicationFormulaResolver.resolve(
+                    config.formula(for: slot, family: family),
+                    context: context
+                )
+            }
+            if options.title != nil { options.title = slotText(.title) }
+            if options.subtitle != nil { options.subtitle = slotText(.subtitle) }
+            if options.value != nil { options.value = slotText(.value) }
+            if options.bottomText != nil { options.bottomText = slotText(.bottomText) }
+            snapshot.perFamily?[family.rawValue] = options
         }
     }
 }

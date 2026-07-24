@@ -41,14 +41,14 @@ struct CornerComplicationView: View {
         complication.showsIcon(for: family) && complication.iconImage != nil
     }
 
-    /// The flat corner shows the value, falling back to the name (then the app name) when the value
-    /// is hidden or empty.
+    /// The flat corner shows the value slot, falling back to the title slot (then the app name)
+    /// when the value is hidden or empty.
     private func cornerText(_ complication: WatchWidgetComplicationSnapshot) -> String {
-        if complication.showsValue(for: family), !complication.title.isEmpty {
-            return complication.title
+        if complication.showsValue(for: family), !complication.valueText(for: family).isEmpty {
+            return complication.valueText(for: family)
         }
-        if complication.showsName(for: family), !complication.subtitle.isEmpty {
-            return complication.subtitle
+        if complication.showsName(for: family), !complication.titleText(for: family).isEmpty {
+            return complication.titleText(for: family)
         }
         return WatchWidgetConstants.appName
     }
@@ -67,18 +67,18 @@ struct CornerComplicationView: View {
         }
     }
 
-    /// What rides the arc. When the icon fills the corner, the value goes on the arc (falling back to
-    /// the name). Otherwise the value occupies the corner and the name rides the arc — but only then,
-    /// so the arc never duplicates whatever the corner is already showing.
+    /// What rides the arc. When the icon fills the corner, the value slot goes on the arc (falling
+    /// back to the title). Otherwise the value occupies the corner and the title rides the arc —
+    /// but only then, so the arc never duplicates whatever the corner is already showing.
     private func arcText(_ complication: WatchWidgetComplicationSnapshot) -> String {
         if showsIconInCorner(complication) {
-            if complication.showsValue(for: family), !complication.title.isEmpty {
-                return complication.title
+            if complication.showsValue(for: family), !complication.valueText(for: family).isEmpty {
+                return complication.valueText(for: family)
             }
-            return complication.showsName(for: family) ? complication.subtitle : ""
+            return complication.showsName(for: family) ? complication.titleText(for: family) : ""
         }
-        guard complication.showsValue(for: family), !complication.title.isEmpty else { return "" }
-        return complication.showsName(for: family) ? complication.subtitle : ""
+        guard complication.showsValue(for: family), !complication.valueText(for: family).isEmpty else { return "" }
+        return complication.showsName(for: family) ? complication.titleText(for: family) : ""
     }
 }
 

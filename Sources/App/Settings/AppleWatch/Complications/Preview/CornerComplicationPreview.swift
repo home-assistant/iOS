@@ -19,8 +19,8 @@ struct CornerComplicationPreview: View {
     private var stackContentHeight: CGFloat {
         var heights: [CGFloat] = []
         if context.iconImage != nil { heights.append(20) }
-        if context.showsName, !context.name.isEmpty { heights.append(11) }
-        if context.showsValue, !context.value.isEmpty { heights.append(17) }
+        if context.showsName, !context.titleText.isEmpty { heights.append(11) }
+        if context.showsValue, !context.valueText.isEmpty { heights.append(17) }
         guard !heights.isEmpty else { return 0 }
         return heights.reduce(0, +) + CGFloat(heights.count - 1) * stackSpacing
     }
@@ -69,8 +69,8 @@ struct CornerComplicationPreview: View {
                         // widget's un-curved icon.
                         .rotationEffect(.degrees(-45))
                 }
-                if context.showsName, !context.name.isEmpty {
-                    Text(context.name)
+                if context.showsName, !context.titleText.isEmpty {
+                    Text(context.titleText)
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(context.textColor.opacity(0.7))
                         .lineLimit(1)
@@ -78,8 +78,8 @@ struct CornerComplicationPreview: View {
                         // Bound the width so long text scales down instead of clipping off the edge.
                         .frame(maxWidth: 56)
                 }
-                if context.showsValue, !context.value.isEmpty {
-                    Text(context.value)
+                if context.showsValue, !context.valueText.isEmpty {
+                    Text(context.valueText)
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundStyle(context.textColor)
                         .lineLimit(1)

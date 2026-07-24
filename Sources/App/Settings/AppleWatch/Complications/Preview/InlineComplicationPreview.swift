@@ -7,16 +7,14 @@ struct InlineComplicationPreview: View {
     let context: ComplicationPreviewContext
 
     var body: some View {
-        Text(
-            [context.showsName ? context.name : "", context.showsValue ? context.value : ""]
-                .filter { !$0.isEmpty }
-                .joined(separator: " - ")
-        )
-        .font(.system(size: 15))
-        .lineLimit(1)
-        .foregroundStyle(.white)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
+        // The whole line is the title slot's formula ("{name} - {value}" by default), matching the
+        // watch's inline rendering.
+        Text(context.showsName ? context.titleText : "")
+            .font(.system(size: 15))
+            .lineLimit(1)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
     }
 }
 

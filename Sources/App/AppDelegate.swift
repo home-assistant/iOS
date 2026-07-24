@@ -147,6 +147,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
+        // Tints the remaining UIKit-backed switches (e.g. the Eureka settings forms) with the
+        // brand color. SwiftUI toggles are no longer UISwitch-backed, so they get
+        // `BrandedSwitchToggleStyle` at the hosting seams instead.
+        UISwitch.appearance().onTintColor = .haPrimary
+
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
         FlightGreetingManager.shared.start()

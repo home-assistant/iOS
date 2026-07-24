@@ -26,6 +26,16 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var maxLabel: String?
         /// Hex color for the value text; nil uses the default.
         var textColor: String?
+        /// Resolved slot texts (slot/formula model). All optional so payloads written before slots
+        /// existed still decode — the accessors below then fall back to the top-level
+        /// `title`/`subtitle`. Mutable so the widget's live self-fetch can update them in place.
+        var title: String?
+        var subtitle: String?
+        var value: String?
+        var bottomText: String?
+        /// Visibility of the slots that have no legacy flag (both default hidden).
+        var showSubtitle: Bool?
+        var showBottomText: Bool?
     }
 
     let id: String?
@@ -85,7 +95,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
         }
     }
 
-    private func options(for widgetFamily: WidgetFamily) -> PerFamily? {
+    func options(for widgetFamily: WidgetFamily) -> PerFamily? {
         Self.familyKey(for: widgetFamily).flatMap { perFamily?[$0] }
     }
 
@@ -132,6 +142,38 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// Whether the complication should render while the display is dimmed (default true).
     var showsWhenInactive: Bool { showWhenInactive ?? true }
 
+    // MARK: - Slot texts
+
+    // The top-level fields predate slots and are confusingly inverted (`title` carries the value,
+    // `subtitle` the name); they remain the fallback for payloads written before slots existed.
+
+    /// The resolved title-slot text for a family (the complication's name unless customized).
+    func titleText(for widgetFamily: WidgetFamily) -> String {
+        options(for: widgetFamily)?.title ?? subtitle
+    }
+
+    /// The resolved value-slot text for a family (the formatted state unless customized).
+    func valueText(for widgetFamily: WidgetFamily) -> String {
+        options(for: widgetFamily)?.value ?? title
+    }
+
+    func subtitleText(for widgetFamily: WidgetFamily) -> String {
+        options(for: widgetFamily)?.subtitle ?? ""
+    }
+
+    func bottomTextValue(for widgetFamily: WidgetFamily) -> String {
+        options(for: widgetFamily)?.bottomText ?? ""
+    }
+
+    /// Subtitle / bottom text have no legacy flag: hidden unless the slot payload shows them.
+    func showsSubtitle(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showSubtitle ?? false
+    }
+
+    func showsBottomText(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showBottomText ?? false
+    }
+
     /// Whether the circular gauge should be drawn as a full capacity ring (vs the open arc).
     func isCapacityGauge(for widgetFamily: WidgetFamily) -> Bool {
         options(for: widgetFamily)?.gaugeStyle == "capacity"
@@ -168,10 +210,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var families = perFamily?.mapValues { options -> PerFamily in
             var options = options
             options.fraction = options.fraction.map { _ in WatchWidgetConstants.previewGaugeFraction }
+            if options.value != nil { options.value = WatchWidgetConstants.previewValueText }
             return options
         }
         if var inline = families?["inline"] {
             inline.showName = true
+            if inline.title != nil { inline.title = recommendationTitle }
             families?["inline"] = inline
         }
         preview.perFamily = families

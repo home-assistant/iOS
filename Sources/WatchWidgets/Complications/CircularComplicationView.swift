@@ -69,8 +69,8 @@ struct CircularComplicationView: View {
                             )
                             .widgetAccentable()
                     }
-                    if complication.showsValue(for: family), !complication.title.isEmpty {
-                        Text(complication.title)
+                    if complication.showsValue(for: family), !complication.valueText(for: family).isEmpty {
+                        Text(complication.valueText(for: family))
                             .font(valueOnly ? .system(
                                 size: WatchWidgetConstants.Font.circularValueOnlySize,
                                 weight: .semibold
@@ -79,8 +79,8 @@ struct CircularComplicationView: View {
                             .minimumScaleFactor(WatchWidgetConstants.Font.circularValueMinScale)
                             .foregroundStyle(complication.textColor(for: family) ?? .primary)
                     }
-                    if complication.showsName(for: family), !complication.subtitle.isEmpty {
-                        Text(complication.subtitle)
+                    if complication.showsName(for: family), !complication.titleText(for: family).isEmpty {
+                        Text(complication.titleText(for: family))
                             .font(.system(size: WatchWidgetConstants.Font.circularNameSize))
                             .minimumScaleFactor(WatchWidgetConstants.Font.circularNameMinScale)
                             .lineLimit(1)
@@ -101,7 +101,7 @@ struct CircularComplicationView: View {
     private func isValueOnly(_ complication: WatchWidgetComplicationSnapshot?) -> Bool {
         guard let complication, complication.perFamily != nil else { return false }
         let showsIcon = complication.showsIcon(for: family) && complication.iconImage != nil
-        let showsName = complication.showsName(for: family) && !complication.subtitle.isEmpty
+        let showsName = complication.showsName(for: family) && !complication.titleText(for: family).isEmpty
         return !showsIcon && !showsName
     }
 }
