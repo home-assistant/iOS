@@ -4730,7 +4730,7 @@ public enum L10n {
       /// Server Switching
       public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
       public enum ByLocation {
-        /// When you open the app, it checks whether you are at one of your homes — connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.
+        /// When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.
         public static var footer: String { return L10n.tr("Localizable", "settings.server_switching.by_location.footer") }
         /// Switch Server by Location
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.by_location.title") }
@@ -4740,7 +4740,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.title") }
       }
       public enum HowItWorks {
-        /// With multiple homes, the app can figure out which server matters right now and switch to it for you — like walking into your second home and seeing its dashboard.
+        /// With multiple homes, the app can figure out which server matters right now and switch to it for you. Walk into your second home and its dashboard is already there.
         public static var intro: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.intro") }
         /// How it works?
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.title") }
@@ -4757,13 +4757,13 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.privacy.title") }
         }
         public enum Switching {
-          /// When you open the app at another server's home — on its Wi-Fi network or inside its Home zone — that server is opened automatically. The server you are viewing always wins when homes overlap, and if you switch manually your choice is respected until you leave.
+          /// When you open the app at another server's home, on its Wi-Fi network or inside its Home zone, that server is opened automatically. The server you are viewing always wins when homes overlap. If you switch manually, your choice is respected until you leave or stop using the app for a while.
           public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.body") }
           /// Automatic switching
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.title") }
         }
         public enum Wifi {
-          /// If this device is connected to a Wi-Fi network that belongs to one of your servers, that server is considered closest — no location check needed.
+          /// If this device is connected to a Wi-Fi network that belongs to one of your servers, that server is considered closest. No location check is needed.
           public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.wifi.body") }
           /// Home network first
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.wifi.title") }
