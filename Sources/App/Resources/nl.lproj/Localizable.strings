@@ -1760,6 +1760,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Colors";
+"watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
 "watch.complications.builder.customize_footer" = "Customize how each size shows its name, value, gauge, and colors.";
