@@ -16,6 +16,9 @@ final class ImmediateCommunicatorService {
     private var observers: [ImmediateCommunicatorServiceObserver] = []
 
     func addObserver(_ observer: ImmediateCommunicatorServiceObserver) {
+        // Prune released delegates: a deallocated observer can't unregister itself (its weak
+        // delegate is already nil during deinit, so `removeObserver` matches nothing).
+        observers.removeAll { $0.delegate == nil }
         observers.append(observer)
     }
 

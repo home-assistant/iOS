@@ -24,9 +24,12 @@ struct WatchAssistView: View {
     private let progressViewId = "progressViewId"
 
     init(
-        viewModel: WatchAssistViewModel
+        viewModel: @autoclosure @escaping () -> WatchAssistViewModel
     ) {
-        self._viewModel = .init(wrappedValue: viewModel)
+        // Deferred: `fullScreenCover` re-invokes `WatchAssistView.build` on every parent
+        // re-render, and the view model's init has side effects (communicator observer
+        // registration) — so it must only run when @StateObject actually creates storage.
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
 
     var body: some View {
@@ -67,6 +70,10 @@ struct WatchAssistView: View {
         }
         .animation(.easeInOut, value: viewModel.state)
         .onAppear {
+            // Always re-subscribe: `endRoutine()` (onDisappear — e.g. pushing the volume screen)
+            // unsubscribes the view model from responses, and without this the screen comes back
+            // permanently deaf: TTS may still play elsewhere but the chat never updates.
+            viewModel.reconnectObserver()
             // Avoid re-trigger when coming back from audio volume screen
             if isInitialAppearance {
                 isInitialAppearance = false
