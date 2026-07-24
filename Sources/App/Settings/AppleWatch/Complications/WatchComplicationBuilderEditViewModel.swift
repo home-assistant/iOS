@@ -176,7 +176,7 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
     /// complications keep their entity-name fallback instead.
     private func autoGenerateNameIfNeeded() {
         guard config.kind == .customTemplate,
-              (config.name ?? "").trimmingCharacters(in: .whitespaces).isEmpty else { return }
+              (config.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         let existingNames = Set(((try? WatchComplicationConfig.all()) ?? []).compactMap(\.name))
         var number = 1
         while existingNames.contains("Complication-\(number)") {
