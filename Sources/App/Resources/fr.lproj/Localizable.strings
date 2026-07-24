@@ -1760,6 +1760,7 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.complications.builder.color" = "Couleur de la jauge";
 "watch.complications.builder.color_from_template" = "Couleur depuis le modèle";
 "watch.complications.builder.colors" = "Couleurs";
+"watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.custom_colors" = "Couleurs personnalisées";
 "watch.complications.builder.customize" = "Personnaliser";
 "watch.complications.builder.customize_footer" = "Personnalisez comment chaque taille affiche son nom, sa valeur, sa jauge et ses couleurs.";

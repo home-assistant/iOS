@@ -1755,6 +1755,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.complications.builder.color" = "Mätarens färg";
 "watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Färger";
+"watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.custom_colors" = "Anpassade färger";
 "watch.complications.builder.customize" = "Anpassa";
 "watch.complications.builder.customize_footer" = "Anpassa hur varje storlek visar sitt namn, värde, tjocklek och färger.";

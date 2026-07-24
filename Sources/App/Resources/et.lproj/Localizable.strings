@@ -1760,6 +1760,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.complications.builder.color" = "Mõõdiku värv";
 "watch.complications.builder.color_from_template" = "Värv mallist";
 "watch.complications.builder.colors" = "Värvid";
+"watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.custom_colors" = "Kohandatud värvid";
 "watch.complications.builder.customize" = "Kohanda";
 "watch.complications.builder.customize_footer" = "Kohanda iga suuruse nime, väärtuse, gabariidi ja värvide kuvamist.";

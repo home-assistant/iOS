@@ -455,10 +455,10 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-Stream nicht verfügbar";
 "extensions.notification_content.error.request.other" = "Kein HTTP-200 (OK) Statuscode erhalten (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-Stream nicht verfügbar";
-"flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
-"flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
-"flight_greetings.empty_state.title" = "Have a nice flight";
-"flight_greetings.greeting" = "Have a nice flight!";
+"flight_greetings.empty_state.body" = "Du bist derzeit nicht verbunden. Dein Zuhause wartet auf dich, wenn du landest.";
+"flight_greetings.empty_state.configure_hint" = "Flugbegrüßungen in den Einstellungen konfigurieren";
+"flight_greetings.empty_state.title" = "Guten Flug";
+"flight_greetings.greeting" = "Guten Flug!";
 "gestures.1_finger.title" = "Mit einem Finger";
 "gestures.2_fingers.title" = "Mit zwei Fingern";
 "gestures.2_fingers_swipe_down.title" = "2 👆 nach unten wischen";
@@ -841,7 +841,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 Aktuell wird mTLS nur unter iOS 17 und höher unterstützt. Es kann zu Problemen bei der Anzeige von Benachrichtigungsanhängen und der Assist-Sprachausgabe (TTS) kommen. Auf der Apple Watch ist die Funktion nicht vollständig verfügbar.";
 "navBar.close" = "Schließen";
 "network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfe deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";
-"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
+"network.error.no_active_url.description" = "„%@“ verfügt derzeit über keine URL, die dieses Gerät nutzen kann.";
 "network.error.no_active_url.title" = "Keine URL zum Laden verfügbar";
 "nfc.detail.copy" = "In die Zwischenablage kopieren";
 "nfc.detail.duplicate" = "Duplikat erstellen";
@@ -1361,9 +1361,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.developer.sync_watch_context.title" = "Watch-Kontext synchronisieren";
 "settings.developer.web_view_below_status_bar.title" = "Webansicht immer unterhalb der Statusleiste anzeigen";
 "settings.event_log.title" = "Ereignisprotokoll";
-"settings.greetings.flight.footer" = "Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.";
-"settings.greetings.flight.title" = "Flight";
-"settings.greetings.title" = "Greetings";
+"settings.greetings.flight.footer" = "Zeigt eine freundliche Begrüßung an, sobald die App anhand der WLAN-Netzwerke an Bord, deiner Geschwindigkeit und deiner Flughöhe erkennt, dass du dich im Flugzeug befindest.";
+"settings.greetings.flight.title" = "Flug";
+"settings.greetings.title" = "Grüße";
 "settings.location_history.detail.explanation" = "Der lila Kreis ist dein Standort und dessen Genauigkeit. Blaue Kreise sind deine Zonen. Du bist in einer Zone, wenn der lila Kreis einen blauen Kreis überlappt. Orange Kreise sind zusätzliche Bereiche für Kreise, die einen Durchmesser unter 100 Meter haben.";
 "settings.location_history.empty" = "Kein Standortverlauf";
 "settings.location_history.title" = "Standortverlauf";
@@ -1393,7 +1393,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.search_keywords.debugging" = "Protokolle, Diagnose, Export, Datenbank, Fehlerbehebung, Zurücksetzen";
 "settings.search_keywords.general" = "Erscheinungsbild, Design, App-Symbol, Browser, Links, Anzeige, Start";
 "settings.search_keywords.gestures" = "Wischen, Tippen, Navigation, Kürzel";
-"settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
+"settings.search_keywords.greetings" = "Flug, Flugzeug, Flieger, Reise, willkommen";
 "settings.search_keywords.help" = "Dokumentation, Unterstützung, Hanbuch, Companion";
 "settings.search_keywords.kiosk" = "Wandhalterung, Tablet, Bildschirm, Dauerbetrieb, automatische Verriegelung";
 "settings.search_keywords.live_activities" = "Dynamic Island, Sperrbildschirm, Timer";
@@ -1761,6 +1761,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.complications.builder.color" = "Skalen-Farbe";
 "watch.complications.builder.color_from_template" = "Farbe aus Template";
 "watch.complications.builder.colors" = "Farben";
+"watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.custom_colors" = "Eigene Farben";
 "watch.complications.builder.customize" = "Anpassen";
 "watch.complications.builder.customize_footer" = "Passe an, wie bei jeder Größe der Name, der Wert, die Skala und die Farben angezeigt werden.";
@@ -1944,10 +1945,10 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
 "watch.home.run.error.message" = "Die Aktion konnte nicht ausgeführt werden. Die Apple Watch kann diesen Server möglicherweise nicht direkt erreichen.";
-"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
-"watch.home.run.error.no_response" = "The server didn't respond in time.";
+"watch.home.run.error.no_active_url_hint" = "Öffne Einstellungen → Server auf dieser Watch, um die URL-Optionen des Servers zu überprüfen.";
+"watch.home.run.error.no_response" = "Der Server hat nicht rechtzeitig geantwortet.";
 "watch.home.run.error.title" = "Aktion konnte nicht ausgeführt werden";
-"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
+"watch.home.run.error.token_timeout" = "Es konnte nicht zeitig ein Zugriffstoken vom Server abgerufen werden. Versuche es erneut; ein Neustart der App behebt eine Verbindungsstörung.";
 "watch.home.sync.syncing" = "Mit iPhone synchronisieren …";
 "watch.home.sync.waiting" = "Auf iPhone warten …";
 "watch.interaction.toast.action" = "Aktion wurde ausgeführt";
@@ -2163,8 +2164,8 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.settings.developer.audio_probe.title" = "Audio-Session-Prüfung";
 "watch.settings.developer.direct_sync.footer" = "Die Daten dieser Watch werden direkt über WebSocket von Home Assistant abgerufen, anstatt sie über das iPhone zu synchronisieren. Experimentell: Die meisten Watches lassen keine WebSocket-Verbindungen zu. In diesem Fall werden die Daten nicht mehr aktualisiert, bis diese Funktion deaktiviert wird.";
 "watch.settings.developer.direct_sync.title" = "Direkte Serversynchronisation";
-"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
-"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Zeigt ein iPhone-Symbol mit einem Schrägstrich in der Startbildschirmleiste an, solange das gekoppelte iPhone nicht erreichbar ist. Die Aktionen werden von der Watch selbst ausgeführt, daher ist dies nur beim Debuggen der iPhone-Verbindung hilfreich.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Symbol „iPhone nicht erreichbar“ anzeigen";
 "watch.settings.developer.title" = "Entwickler";
 "watch.settings.developer.verbose_execution.footer" = "Zeigt ein Live-Protokoll an, das jeden Schritt während der Ausführung eines Elements beschreibt.";
 "watch.settings.developer.verbose_execution.title" = "Ausführliche Elementausführung";
@@ -2205,7 +2206,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "web_view.add_to.option.MacToolbar.title" = "Mac-Symbolleiste";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Bitte überprüfe deine Verbindung oder versuche es später erneut. Wenn Home Assistant neu gestartet wird, wird die Verbindung wiederhergestellt, sobald er wieder online ist.";
-"web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
+"web_view.empty_state.clean_cache_and_reload_button" = "Cache leeren und neu laden";
 "web_view.empty_state.open_settings_button" = "App-Einstellungen öffnen";
 "web_view.empty_state.reauthenticate_button" = "Erneut authentifizieren";
 "web_view.empty_state.retry_button" = "Erneut versuchen";
