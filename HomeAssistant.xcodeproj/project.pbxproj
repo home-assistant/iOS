@@ -90,6 +90,8 @@
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
 		42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42164BB8301320720077A903 /* ComplicationFormula.test.swift */; };
+		42165CDB3013242D0077A903 /* LocationBasedServerSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */; };
+		42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62BA82D8A3AC5002C0001 /* SwiftUI.framework */; };
@@ -605,6 +607,8 @@
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
+		42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.swift; sourceTree = "<group>"; };
+		42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
 		423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-WatchWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4245DC022EBA42C3005E0E04 /* AreasService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.swift; sourceTree = "<group>"; };
@@ -1321,10 +1325,12 @@
 				Settings/OpenInBrowser.swift,
 				Settings/ServersListView.swift,
 				Settings/ServersObserver.swift,
+				Settings/ServerSwitchingSettingsView.swift,
 				Settings/SettingsItem.swift,
 				Settings/SettingsScreenSearchable.swift,
 				Settings/SettingsSearchEntry.swift,
 				Settings/SettingsSection.swift,
+				Settings/SettingsServersView.swift,
 				Settings/SettingsView.swift,
 				Widgets/Builder/CustomWidgetsListView.swift,
 				Widgets/Builder/WidgetBuilderViewModel.swift,
@@ -1458,10 +1464,12 @@
 				Settings/OpenInBrowser.swift,
 				Settings/ServersListView.swift,
 				Settings/ServersObserver.swift,
+				Settings/ServerSwitchingSettingsView.swift,
 				Settings/SettingsItem.swift,
 				Settings/SettingsScreenSearchable.swift,
 				Settings/SettingsSearchEntry.swift,
 				Settings/SettingsSection.swift,
+				Settings/SettingsServersView.swift,
 				Settings/SettingsView.swift,
 				Widgets/Builder/CustomWidgetsListView.swift,
 				Widgets/Builder/WidgetBuilderViewModel.swift,
@@ -2248,6 +2256,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		42165CD93013242D0077A903 /* ServerSwitching */ = {
+			isa = PBXGroup;
+			children = (
+				42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */,
+			);
+			path = ServerSwitching;
+			sourceTree = "<group>";
+		};
+		42165CDE301324980077A903 /* ServerSwitching */ = {
+			isa = PBXGroup;
+			children = (
+				42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */,
+			);
+			path = ServerSwitching;
+			sourceTree = "<group>";
+		};
 		42D6FDD1300F71E800D4BEB9 /* FlightGreetings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2311,6 +2335,7 @@
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
 				42DF194F30065055003B7FA1 /* Templating */,
 				42D6FDD1300F71E800D4BEB9 /* FlightGreetings */,
+				42165CD93013242D0077A903 /* ServerSwitching */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2397,6 +2422,7 @@
 				42EDBBB63002FBC90051FC9B /* Widgets */,
 				42EDBBAD3002FBC90051FC9B /* ZoneManager */,
 				42DF97B0300669B9003B7FA1 /* Templating */,
+				42165CDE301324980077A903 /* ServerSwitching */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -3778,6 +3804,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42165CDB3013242D0077A903 /* LocationBasedServerSwitcher.swift in Sources */,
 				42EDEB10300315A50051FC9B /* AppDelegate.swift in Sources */,
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
 				42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */,
@@ -3806,6 +3833,7 @@
 				42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1414,6 +1414,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.sections.share_from_device.header" = "Share from this device";
 "settings.sections.stay_informed.header" = "Stay informed";
 "settings.server_select.title" = "Server";
+"settings.server_switching.by_location.footer" = "When you open the app, your location is compared with your servers' zones. If you are inside a zone that belongs to another server, such as arriving at your second home, that server is opened automatically. Your location is only checked on this device while the app is in use, and is never stored.";
+"settings.server_switching.by_location.title" = "Switch Server by Location";
+"settings.server_switching.switched_toast" = "Switched to %@";
+"settings.server_switching.title" = "Server Switching";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";

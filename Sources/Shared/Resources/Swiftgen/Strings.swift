@@ -4722,6 +4722,20 @@ public enum L10n {
       /// Server
       public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }
     }
+    public enum ServerSwitching {
+      /// Switched to %@
+      public static func switchedToast(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.server_switching.switched_toast", String(describing: p1))
+      }
+      /// Server Switching
+      public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
+      public enum ByLocation {
+        /// When you open the app, your location is compared with your servers' zones. If you are inside a zone that belongs to another server, such as arriving at your second home, that server is opened automatically. Your location is only checked on this device while the app is in use, and is never stored.
+        public static var footer: String { return L10n.tr("Localizable", "settings.server_switching.by_location.footer") }
+        /// Switch Server by Location
+        public static var title: String { return L10n.tr("Localizable", "settings.server_switching.by_location.title") }
+      }
+    }
     public enum StatusSection {
       /// Status
       public static var header: String { return L10n.tr("Localizable", "settings.status_section.header") }

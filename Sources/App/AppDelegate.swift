@@ -155,6 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
         FlightGreetingManager.shared.start()
+        LocationBasedServerSwitcher.shared.start()
 
         #if targetEnvironment(macCatalyst)
         statusItemManager.configure()
