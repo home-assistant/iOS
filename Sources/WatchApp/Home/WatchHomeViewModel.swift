@@ -138,10 +138,14 @@ final class WatchHomeViewModel: ObservableObject {
     /// WCSession's internal serial queue, which can stall for tens of seconds while the session is
     /// busy with transfers — the same condition that leaves `isReachable` stale-false and lands a
     /// reload in this fallback. On main those calls froze the whole app; the pull is fire-and-forget,
-    /// so a delayed enqueue is harmless.
+    /// so a delayed enqueue is harmless. A private serial queue (not a global one) so a stuck call
+    /// costs one overcommit thread instead of draining GCD's limited worker budget, and repeated
+    /// reloads queue behind it rather than parking more threads.
+    private static let guaranteedPullQueue = DispatchQueue(label: "guaranteed-config-pull", qos: .utility)
+
     private func enqueueGuaranteedConfigPull() {
         let identifier = InteractiveImmediateMessages.watchConfig.rawValue
-        DispatchQueue.global(qos: .utility).async {
+        Self.guaranteedPullQueue.async {
             let started = Current.date()
             // Every reload while unreachable would otherwise queue another transferUserInfo, and the
             // phone would answer each with a full config payload once it wakes.
