@@ -204,20 +204,26 @@ struct HomeAssistantStandByView: View {
             showsCleanCacheButton = false
             loaderCountdownRestartToken += 1
         }
-        .task(id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)]) {
-            showsDelayedSettingsButton = false
-            showsCleanCacheButton = false
-            guard !showsEmptyState else { return }
-            try? await Task.sleep(for: delayedSettingsButtonDelay)
-            guard !Task.isCancelled, !showsEmptyState else { return }
-            withAnimation(DesignSystem.Animation.default) {
-                showsDelayedSettingsButton = true
-            }
-            try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
-            guard !Task.isCancelled, !showsEmptyState else { return }
-            withAnimation(DesignSystem.Animation.default) {
-                showsCleanCacheButton = true
-            }
+        .task(
+            id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
+            runDelayedButtonsCountdown
+        )
+    }
+
+    @Sendable
+    private func runDelayedButtonsCountdown() async {
+        showsDelayedSettingsButton = false
+        showsCleanCacheButton = false
+        guard !showsEmptyState else { return }
+        try? await Task.sleep(for: delayedSettingsButtonDelay)
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsDelayedSettingsButton = true
+        }
+        try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = true
         }
     }
 
