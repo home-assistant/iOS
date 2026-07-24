@@ -4735,6 +4735,10 @@ public enum L10n {
         /// Switch Server by Location
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.by_location.title") }
       }
+      public enum ClosestServer {
+        /// Closest Server
+        public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.title") }
+      }
     }
     public enum StatusSection {
       /// Status

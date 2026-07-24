@@ -108,4 +108,21 @@ final class LocationBasedServerSwitcher {
         }
         return matches.min { byProximity($0.zone, $1.zone) }?.server
     }
+
+    /// The server whose nearest tracked zone center is closest to `location`, with that distance,
+    /// or `nil` when no server has any tracked zone. Shown in the Server Switching settings screen;
+    /// unlike `matchedServer` the location doesn't need to be inside a zone. Non-private for tests.
+    nonisolated static func closestServer(
+        to location: CLLocation
+    ) -> (server: Server, distance: CLLocationDistance)? {
+        let zonesByServer = Dictionary(grouping: AppZone.trackedZones(), by: \.serverIdentifier)
+        let candidates: [(server: Server, distance: CLLocationDistance)] = Current.servers.all
+            .compactMap { server in
+                (zonesByServer[server.identifier.rawValue] ?? [])
+                    .map { location.distance(from: $0.location) }
+                    .min()
+                    .map { (server, $0) }
+            }
+        return candidates.min { $0.distance < $1.distance }
+    }
 }

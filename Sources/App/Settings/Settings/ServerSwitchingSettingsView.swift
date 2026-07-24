@@ -2,8 +2,15 @@ import Shared
 import SwiftUI
 
 struct ServerSwitchingSettingsView: View {
+    @StateObject private var viewModel: ServerSwitchingSettingsViewModel
+
     /// Helper variable to force redraw view
     @State private var redrawHelper: UUID = .init()
+
+    @MainActor
+    init(viewModel: ServerSwitchingSettingsViewModel? = nil) {
+        self._viewModel = StateObject(wrappedValue: viewModel ?? ServerSwitchingSettingsViewModel())
+    }
 
     var body: some View {
         List {
@@ -20,6 +27,14 @@ struct ServerSwitchingSettingsView: View {
                         redrawView()
                     })) {
                         Text(L10n.Settings.ServerSwitching.ByLocation.title)
+                    }
+                    if let closestServer = viewModel.closestServerDescription {
+                        HStack {
+                            Text(L10n.Settings.ServerSwitching.ClosestServer.title)
+                            Spacer()
+                            Text(closestServer)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 // Mac has a system-level setting for state restoration
@@ -41,6 +56,9 @@ struct ServerSwitchingSettingsView: View {
         }
         .id(redrawHelper)
         .navigationTitle(L10n.Settings.ServerSwitching.title)
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 
     private func redrawView() {

@@ -134,4 +134,36 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         XCTAssertNil(matched)
     }
+
+    func testClosestServerIsTheOneWithTheNearestZone() throws {
+        addZone(server: server1, center: home1)
+        addZone(server: server2, center: home2)
+
+        // Slightly north of server2's home: far from both zones, but nearer to server2's.
+        let nearHome2 = CLLocation(latitude: home2.latitude + 0.1, longitude: home2.longitude)
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nearHome2))
+
+        XCTAssertEqual(closest.server.identifier, server2.identifier)
+        XCTAssertEqual(closest.distance, nearHome2.distance(from: location(at: home2)), accuracy: 1)
+    }
+
+    func testClosestServerUsesEachServersNearestZone() throws {
+        // Server1 has a faraway home but also a nearby secondary zone, which should represent it.
+        addZone(server: server1, center: home1)
+        addZone(entityId: "zone.office", server: server1, center: .init(
+            latitude: home2.latitude + 0.01,
+            longitude: home2.longitude
+        ))
+        addZone(server: server2, center: home2)
+
+        let atHome2 = location(at: home2)
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: atHome2))
+
+        XCTAssertEqual(closest.server.identifier, server2.identifier)
+        XCTAssertEqual(closest.distance, 0, accuracy: 1)
+    }
+
+    func testClosestServerIsNilWithoutZones() {
+        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: location(at: home1)))
+    }
 }
