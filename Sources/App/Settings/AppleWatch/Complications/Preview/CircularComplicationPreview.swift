@@ -49,15 +49,15 @@ struct CircularComplicationPreview: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
-            if context.showsValue, !context.value.isEmpty {
-                Text(context.value)
+            if context.showsValue, !context.valueText.isEmpty {
+                Text(context.valueText)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(context.textColor)
                     .lineLimit(1)
                     .minimumScaleFactor(0.3)
             }
-            if context.showsName, !context.name.isEmpty {
-                Text(context.name)
+            if context.showsName, !context.titleText.isEmpty {
+                Text(context.titleText)
                     .font(.system(size: 9))
                     .foregroundStyle(context.textColor.opacity(0.7))
                     .lineLimit(1)

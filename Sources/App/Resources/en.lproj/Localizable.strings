@@ -1761,6 +1761,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Complication name";
+"watch.complications.builder.content" = "Content";
+"watch.complications.builder.content_custom" = "Custom";
+"watch.complications.builder.content_default" = "Default";
+"watch.complications.builder.insert_token" = "Insert";
+"watch.complications.builder.token_attributes" = "Attributes";
+"watch.complications.builder.token_entity_name" = "Entity name";
+"watch.complications.builder.token_template" = "Template";
+"watch.complications.builder.token_value" = "Value";
 "watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
 "watch.complications.builder.customize_footer" = "Customize how each size shows its name, value, gauge, and colors.";
@@ -1839,6 +1847,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.root.reload_unavailable_title" = "Apple Watch Not Available";
 "watch.complications.root.template" = "Template";
 "watch.complications.root.your_complications" = "Your complications";
+"watch.complications.slot.bottom_text" = "Bottom text";
+"watch.complications.slot.icon" = "Icon";
+"watch.complications.slot.subtitle" = "Subtitle";
+"watch.complications.slot.title" = "Title";
+"watch.complications.slot.value" = "Value";
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
 "watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";

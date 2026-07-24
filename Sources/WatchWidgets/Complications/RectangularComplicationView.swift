@@ -38,11 +38,17 @@ struct RectangularComplicationView: View {
     private func modernContent(_ complication: WatchWidgetComplicationSnapshot) -> some View {
         let textColor = complication.textColor(for: family) ?? .primary
         VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
-            if complication.showsName(for: family) {
-                Text(complication.subtitle)
+            if complication.showsName(for: family), !complication.titleText(for: family).isEmpty {
+                Text(complication.titleText(for: family))
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
                     .foregroundStyle(textColor)
+            }
+            if complication.showsSubtitle(for: family), !complication.subtitleText(for: family).isEmpty {
+                Text(complication.subtitleText(for: family))
+                    .font(.caption2)
+                    .lineLimit(1)
+                    .foregroundStyle(textColor.opacity(0.8))
             }
             if let fraction = complication.fraction(for: family) {
                 RectangularProgressView(
@@ -51,14 +57,21 @@ struct RectangularComplicationView: View {
                         ? complication.gaugeLabels(for: family)?.min : nil,
                     maxLabel: complication.showsMax(for: family)
                         ? complication.gaugeLabels(for: family)?.max : nil,
-                    valueLabel: complication.showsValue(for: family) ? complication.title : nil,
+                    valueLabel: complication.showsValue(for: family)
+                        ? complication.valueText(for: family) : nil,
                     tint: complication.tintColor(for: family)
                 )
-            } else if complication.showsValue(for: family), !complication.title.isEmpty {
-                Text(complication.title)
+            } else if complication.showsValue(for: family), !complication.valueText(for: family).isEmpty {
+                Text(complication.valueText(for: family))
                     .font(.caption2)
                     .lineLimit(2)
                     .foregroundStyle(textColor)
+            }
+            if complication.showsBottomText(for: family), !complication.bottomTextValue(for: family).isEmpty {
+                Text(complication.bottomTextValue(for: family))
+                    .font(.caption2)
+                    .lineLimit(1)
+                    .foregroundStyle(textColor.opacity(0.8))
             }
         }
     }

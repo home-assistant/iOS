@@ -35,27 +35,6 @@ struct WatchComplicationBuilderEditView: View {
         viewModel.config.setOptions(options, for: currentFamily)
     }
 
-    private var showValueBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsValue(for: currentFamily) },
-            set: { value in updateOptions { $0.showValue = value } }
-        )
-    }
-
-    private var showNameBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsName(for: currentFamily) },
-            set: { value in updateOptions { $0.showName = value } }
-        )
-    }
-
-    private var showIconBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.config.showsIcon(for: currentFamily) },
-            set: { value in updateOptions { $0.showIcon = value } }
-        )
-    }
-
     private var showGaugeBinding: Binding<Bool> {
         Binding(
             get: { viewModel.config.showsGauge(for: currentFamily) },
@@ -408,13 +387,17 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             if viewModel.isSourceConfigured, viewModel.isCustomizing {
-                // Per-size display options, bound to the size selected in the preview above.
+                // Per-size display options, bound to the size selected in the preview above. Each
+                // UI slot the size offers gets a visibility toggle and (for text slots) a content
+                // choice: the default, or a custom formula mixing hardcoded text with tokens.
                 Section {
-                    Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
-                    Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
-                    // Inline has no icon.
-                    if currentFamily != .inline {
-                        Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
+                    ForEach(ComplicationSlot.slots(for: currentFamily)) { slot in
+                        ComplicationSlotRow(
+                            config: $viewModel.config,
+                            slot: slot,
+                            server: viewModel.server,
+                            attributeKeys: viewModel.config.kind == .entity ? viewModel.entityAttributeKeys : []
+                        )
                     }
                     if viewModel.config.kind == .entity,
                        viewModel.entityUnit != nil || !(viewModel.config.unitOverride ?? "").isEmpty {
@@ -751,5 +734,156 @@ struct WatchComplicationBuilderEditView: View {
             customTextColorTemplate: "{{ '#FF9500' }}",
             isCustomized: true
         ))
+    }
+}
+
+// MARK: - ComplicationSlotRow
+
+// Defined here (rather than its own file) so it stays App-target-only without a
+// project-file change: this folder is synchronized into the Shared targets too, and a
+// standalone file would need per-file membership exceptions in the pbxproj.
+/// One slot of the selected size in the complication builder: a visibility toggle and, for text
+/// slots, the content choice — the slot's default, or a custom formula mixing hardcoded text with
+/// tokens (`{name}`, `{value}`, `{attr:…}`, and `{template}` for template complications). Entity
+/// complications only get on-device tokens: template rendering is an admin-only server operation.
+private struct ComplicationSlotRow: View {
+    @Binding var config: WatchComplicationConfig
+    let slot: ComplicationSlot
+    let server: Server?
+    /// Attribute names offered by the Insert menu (entity kind; empty otherwise).
+    let attributeKeys: [String]
+
+    private var family: WatchComplicationConfig.Family { config.widgetFamily }
+
+    private var currentSlotConfig: ComplicationSlotConfig {
+        config.slotConfig(slot, for: family) ?? ComplicationSlotConfig()
+    }
+
+    private func update(_ mutate: (inout ComplicationSlotConfig) -> Void) {
+        var updated = currentSlotConfig
+        mutate(&updated)
+        config.setSlotConfig(updated, slot: slot, for: family)
+    }
+
+    private var isVisible: Binding<Bool> {
+        Binding(
+            get: { config.isSlotVisible(slot, for: family) },
+            set: { newValue in update { $0.isVisible = newValue } }
+        )
+    }
+
+    /// Default vs. custom content: custom == a stored formula. Switching back to default discards
+    /// the formula, so the slot follows the built-in behavior again.
+    private var isCustomContent: Binding<Bool> {
+        Binding(
+            get: { currentSlotConfig.formula != nil },
+            set: { custom in
+                update { slotConfig in
+                    slotConfig.formula = custom ? config.defaultFormula(for: slot, family: family) : nil
+                }
+            }
+        )
+    }
+
+    private var formula: ComplicationFormula {
+        currentSlotConfig.formula ?? config.defaultFormula(for: slot, family: family)
+    }
+
+    /// The formula as its editable token string. Parsing keeps the existing template source
+    /// attached to any `{template}` token the user leaves in place.
+    private var tokenText: Binding<String> {
+        Binding(
+            get: { formula.tokenString },
+            set: { newValue in
+                let templateSource = formula.templates.first ?? config.customTextTemplate ?? ""
+                update { $0.formula = ComplicationFormula(tokenString: newValue, templateSource: templateSource) }
+            }
+        )
+    }
+
+    /// The source of the formula's `{template}` token, edited in the full template editor.
+    private var templateSource: Binding<String> {
+        Binding(
+            get: { formula.templates.first ?? "" },
+            set: { newValue in
+                let parts: [ComplicationFormula.Part] = formula.parts.map { part in
+                    if case .template = part { return .template(newValue) }
+                    return part
+                }
+                update { $0.formula = ComplicationFormula(parts: parts) }
+            }
+        )
+    }
+
+    var body: some View {
+        Toggle(isOn: isVisible.animation()) { Text(verbatim: slot.editorTitle) }
+        if isVisible.wrappedValue, slot != .icon {
+            Picker(selection: isCustomContent.animation()) {
+                Text(L10n.Watch.Complications.Builder.contentDefault).tag(false)
+                Text(L10n.Watch.Complications.Builder.contentCustom).tag(true)
+            } label: {
+                Text(L10n.Watch.Complications.Builder.content)
+            }
+            .pickerStyle(.segmented)
+            if isCustomContent.wrappedValue {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    TextField(text: tokenText) {
+                        Text(L10n.Watch.Complications.Builder.content)
+                    }
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    insertMenu
+                }
+                if config.kind == .customTemplate, let server, !formula.templates.isEmpty {
+                    JinjaTemplateButton(
+                        server: server,
+                        title: L10n.Watch.Complications.Builder.tokenTemplate,
+                        text: templateSource,
+                        placeholder: "{{ states('sensor.x') }}"
+                    )
+                }
+            }
+        }
+    }
+
+    /// Appends a token at the end of the formula text. Attributes come from the live preview's
+    /// reported keys; the template token is offered once, for template complications only.
+    private var insertMenu: some View {
+        Menu {
+            Button(L10n.Watch.Complications.Builder.tokenEntityName) { append(ComplicationFormula.Token.name) }
+            Button(L10n.Watch.Complications.Builder.tokenValue) { append(ComplicationFormula.Token.value) }
+            if !attributeKeys.isEmpty {
+                Menu {
+                    ForEach(attributeKeys, id: \.self) { key in
+                        Button(key) { append("\(ComplicationFormula.Token.attributePrefix)\(key)}") }
+                    }
+                } label: {
+                    Text(L10n.Watch.Complications.Builder.tokenAttributes)
+                }
+            }
+            if config.kind == .customTemplate, formula.templates.isEmpty {
+                Button(L10n.Watch.Complications.Builder.tokenTemplate) { append(ComplicationFormula.Token.template) }
+            }
+        } label: {
+            Image(systemSymbol: .plusCircle)
+        }
+        .accessibilityLabel(Text(L10n.Watch.Complications.Builder.insertToken))
+    }
+
+    private func append(_ token: String) {
+        tokenText.wrappedValue = formula.tokenString + token
+    }
+}
+
+/// Localized slot names live here (not in HAModels, which has no L10n access).
+extension ComplicationSlot {
+    var editorTitle: String {
+        switch self {
+        case .icon: return L10n.Watch.Complications.Slot.icon
+        case .title: return L10n.Watch.Complications.Slot.title
+        case .subtitle: return L10n.Watch.Complications.Slot.subtitle
+        case .value: return L10n.Watch.Complications.Slot.value
+        case .bottomText: return L10n.Watch.Complications.Slot.bottomText
+        }
     }
 }

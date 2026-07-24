@@ -5896,6 +5896,12 @@ public enum L10n {
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Complication name
         public static var complicationName: String { return L10n.tr("Localizable", "watch.complications.builder.complication_name") }
+        /// Content
+        public static var content: String { return L10n.tr("Localizable", "watch.complications.builder.content") }
+        /// Custom
+        public static var contentCustom: String { return L10n.tr("Localizable", "watch.complications.builder.content_custom") }
+        /// Default
+        public static var contentDefault: String { return L10n.tr("Localizable", "watch.complications.builder.content_default") }
         /// Custom colors
         public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
         /// Customize
@@ -5920,6 +5926,8 @@ public enum L10n {
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
         public static var iconColor: String { return L10n.tr("Localizable", "watch.complications.builder.icon_color") }
+        /// Insert
+        public static var insertToken: String { return L10n.tr("Localizable", "watch.complications.builder.insert_token") }
         /// Maximum
         public static var maximum: String { return L10n.tr("Localizable", "watch.complications.builder.maximum") }
         /// Minimum
@@ -5998,6 +6006,14 @@ public enum L10n {
         public static var textTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.text_template") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
+        /// Attributes
+        public static var tokenAttributes: String { return L10n.tr("Localizable", "watch.complications.builder.token_attributes") }
+        /// Entity name
+        public static var tokenEntityName: String { return L10n.tr("Localizable", "watch.complications.builder.token_entity_name") }
+        /// Template
+        public static var tokenTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.token_template") }
+        /// Value
+        public static var tokenValue: String { return L10n.tr("Localizable", "watch.complications.builder.token_value") }
         /// Unit
         public static var unit: String { return L10n.tr("Localizable", "watch.complications.builder.unit") }
         /// Automatic
@@ -6062,6 +6078,18 @@ public enum L10n {
         public static var template: String { return L10n.tr("Localizable", "watch.complications.root.template") }
         /// Your complications
         public static var yourComplications: String { return L10n.tr("Localizable", "watch.complications.root.your_complications") }
+      }
+      public enum Slot {
+        /// Bottom text
+        public static var bottomText: String { return L10n.tr("Localizable", "watch.complications.slot.bottom_text") }
+        /// Icon
+        public static var icon: String { return L10n.tr("Localizable", "watch.complications.slot.icon") }
+        /// Subtitle
+        public static var subtitle: String { return L10n.tr("Localizable", "watch.complications.slot.subtitle") }
+        /// Title
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.slot.title") }
+        /// Value
+        public static var value: String { return L10n.tr("Localizable", "watch.complications.slot.value") }
       }
     }
     public enum Config {

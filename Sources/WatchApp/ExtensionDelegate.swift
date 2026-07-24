@@ -783,7 +783,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     static let iconRenderSize = CGSize(width: 56, height: 56)
 
     /// Per-widget-family rendering values (varies with the config's per-size customization). Keyed by
-    /// `WatchComplicationConfig.Family.rawValue`.
+    /// `WatchComplicationConfig.Family.rawValue`. Must stay field-compatible with the widget
+    /// extension's copy in `Sources/WatchWidgets/WatchWidgetComplicationSnapshot.swift` — the two
+    /// only meet through the JSON in the app group.
     struct PerFamily: Codable {
         let fraction: Double?
         let tint: String?
@@ -802,6 +804,14 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         var maxLabel: String?
         /// Hex color for the value text; nil uses the default.
         var textColor: String?
+        /// Resolved slot texts (slot/formula model); optional so older widget builds ignore them.
+        var title: String?
+        var subtitle: String?
+        var value: String?
+        var bottomText: String?
+        /// Visibility of the slots that have no legacy flag (both default hidden).
+        var showSubtitle: Bool?
+        var showBottomText: Bool?
     }
 
     let id: String
@@ -984,25 +994,59 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             String(Int(value.rounded()))
         }
 
+        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+
+        // Slot resolution. Entity formulas resolve fully on-device from the fetched state (template
+        // rendering is an admin-only server operation); template-kind formulas may reference extra
+        // templates in customized slots, each rendered once here. The main text template reuses the
+        // render above instead of rendering twice.
+        var renderedTemplates: [String: String] = [:]
+        if config.kind == .customTemplate, let server {
+            if isLive, let mainTemplate = config.customTextTemplate {
+                renderedTemplates[mainTemplate] = valueText
+            }
+            let allSlotConfigs = (config.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
+            let customTemplates = Set(allSlotConfigs.flatMap { $0.formula?.templates ?? [] })
+                .subtracting(renderedTemplates.keys)
+            for template in customTemplates {
+                if let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
+                    renderedTemplates[template] = rendered
+                }
+            }
+        }
+        let formulaContext = ComplicationFormulaContext(
+            entityName: name,
+            formattedState: valueText,
+            attributeValue: { attributes[$0].map { String(describing: $0) } },
+            renderedTemplates: renderedTemplates
+        )
+        func slotText(_ slot: ComplicationSlot, _ family: Family) -> String {
+            ComplicationFormulaResolver.resolve(config.formula(for: slot, family: family), context: formulaContext)
+        }
+
         var perFamily: [String: PerFamily] = [:]
         for family in Family.allCases {
             let range = config.gaugeRange(for: family)
             perFamily[family.rawValue] = PerFamily(
                 fraction: fraction(for: family),
                 tint: gaugeColorHex ?? config.tint(for: family),
-                showValue: config.showsValue(for: family),
-                showName: config.showsName(for: family),
-                showIcon: config.showsIcon(for: family),
+                showValue: config.isSlotVisible(.value, for: family),
+                showName: config.isSlotVisible(.title, for: family),
+                showIcon: config.isSlotVisible(.icon, for: family),
                 showMin: config.showsMin(for: family),
                 showMax: config.showsMax(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
-                textColor: textColorHex ?? config.textColor(for: family)
+                textColor: textColorHex ?? config.textColor(for: family),
+                title: slotText(.title, family),
+                subtitle: slotText(.subtitle, family),
+                value: slotText(.value, family),
+                bottomText: slotText(.bottomText, family),
+                showSubtitle: config.isSlotVisible(.subtitle, for: family),
+                showBottomText: config.isSlotVisible(.bottomText, for: family)
             )
         }
-
-        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
         // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
         let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let iconData = config.iconName
