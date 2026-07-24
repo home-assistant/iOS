@@ -3,17 +3,20 @@ import Foundation
 import MapKit
 import Shared
 
-/// Backs `ServerSwitchingSettingsView`: takes a one-shot location fix and exposes the server the
-/// by-location switching considers closest, with a human-readable distance to its nearest zone.
+/// Backs `ServerSwitchingSettingsView`: checks the current Wi-Fi and a one-shot location fix, and
+/// exposes the server considered closest — by home network, or by distance to its home zone.
 @MainActor
 final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
-    /// E.g. "Casa · 1.2 km", or `nil` while no location fix is available or no server has zones.
+    /// E.g. "Casa · 1.2 km" (or just "Casa" when matched by Wi-Fi), `nil` while undetermined.
     @Published private(set) var closestServerDescription: String?
 
     private let locationManager = CLLocationManager()
     private let distanceFormatter = with(MKDistanceFormatter()) {
         $0.unitStyle = .abbreviated
     }
+
+    private var currentSSID: String?
+    private var currentLocation: CLLocation?
 
     init(closestServerDescription: String? = nil) {
         self.closestServerDescription = closestServerDescription
@@ -22,6 +25,12 @@ final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
     }
 
     func onAppear() {
+        guard Current.servers.all.count > 1 else { return }
+        Task { [weak self] in
+            let ssid = await Current.connectivity.currentWiFiSSID()
+            self?.currentSSID = ssid
+            self?.updateClosestServer()
+        }
         requestCurrentLocationIfAuthorized()
     }
 
@@ -36,13 +45,18 @@ final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
         locationManager.requestLocation()
     }
 
-    private func updateClosestServer(for location: CLLocation) {
-        guard let closest = LocationBasedServerSwitcher.closestServer(to: location) else {
-            closestServerDescription = nil
-            return
+    private func updateClosestServer() {
+        guard let closest = LocationBasedServerSwitcher.closestServer(
+            to: currentLocation,
+            currentSSID: currentSSID
+        ) else { return }
+        if let distance = closest.distance {
+            let formatted = distanceFormatter.string(fromDistance: distance)
+            closestServerDescription = "\(closest.server.info.name) · \(formatted)"
+        } else {
+            // Matched by being on the server's home network; a distance would be meaningless.
+            closestServerDescription = closest.server.info.name
         }
-        let distance = distanceFormatter.string(fromDistance: closest.distance)
-        closestServerDescription = "\(closest.server.info.name) · \(distance)"
     }
 }
 
@@ -58,7 +72,8 @@ extension ServerSwitchingSettingsViewModel: CLLocationManagerDelegate {
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         Task { @MainActor [weak self] in
-            self?.updateClosestServer(for: location)
+            self?.currentLocation = location
+            self?.updateClosestServer()
         }
     }
 

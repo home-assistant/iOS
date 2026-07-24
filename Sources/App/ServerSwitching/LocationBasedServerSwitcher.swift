@@ -109,20 +109,34 @@ final class LocationBasedServerSwitcher {
         return matches.min { byProximity($0.zone, $1.zone) }?.server
     }
 
-    /// The server whose nearest tracked zone center is closest to `location`, with that distance,
-    /// or `nil` when no server has any tracked zone. Shown in the Server Switching settings screen;
-    /// unlike `matchedServer` the location doesn't need to be inside a zone. Non-private for tests.
+    /// The server considered closest, shown in the Server Switching settings screen. Being on a
+    /// server's home network — `currentSSID` matching the internal-URL SSIDs, the same signal
+    /// `ConnectionInfo` uses to pick the internal URL — wins outright (no distance). Otherwise
+    /// each server is represented by its home zone (`zone.home`, the fixed entity id every Home
+    /// Assistant instance uses) and the nearest one to `location` wins, with that distance.
+    /// Returns `nil` when neither signal resolves a server. Non-private for tests.
     nonisolated static func closestServer(
-        to location: CLLocation
-    ) -> (server: Server, distance: CLLocationDistance)? {
-        let zonesByServer = Dictionary(grouping: AppZone.trackedZones(), by: \.serverIdentifier)
-        let candidates: [(server: Server, distance: CLLocationDistance)] = Current.servers.all
+        to location: CLLocation?,
+        currentSSID: String?
+    ) -> (server: Server, distance: CLLocationDistance?)? {
+        if let currentSSID, let onHomeNetwork = Current.servers.all.first(where: { server in
+            server.info.connection.internalSSIDs?.contains(currentSSID) == true
+        }) {
+            return (onHomeNetwork, nil)
+        }
+        guard let location else { return nil }
+
+        let homeZonesByServer = Dictionary(
+            grouping: AppZone.trackedZones().filter(\.isHome),
+            by: \.serverIdentifier
+        )
+        let candidates: [(server: Server, distance: CLLocationDistance?)] = Current.servers.all
             .compactMap { server in
-                (zonesByServer[server.identifier.rawValue] ?? [])
+                homeZonesByServer[server.identifier.rawValue]?
                     .map { location.distance(from: $0.location) }
                     .min()
                     .map { (server, $0) }
             }
-        return candidates.min { $0.distance < $1.distance }
+        return candidates.min { ($0.distance ?? .infinity) < ($1.distance ?? .infinity) }
     }
 }

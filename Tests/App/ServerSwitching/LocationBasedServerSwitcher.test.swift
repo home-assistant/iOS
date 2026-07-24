@@ -135,35 +135,74 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         XCTAssertNil(matched)
     }
 
-    func testClosestServerIsTheOneWithTheNearestZone() throws {
+    func testClosestServerIsTheOneWithTheNearestHomeZone() throws {
         addZone(server: server1, center: home1)
         addZone(server: server2, center: home2)
 
         // Slightly north of server2's home: far from both zones, but nearer to server2's.
         let nearHome2 = CLLocation(latitude: home2.latitude + 0.1, longitude: home2.longitude)
-        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nearHome2))
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nearHome2, currentSSID: nil))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
-        XCTAssertEqual(closest.distance, nearHome2.distance(from: location(at: home2)), accuracy: 1)
+        let distance = try XCTUnwrap(closest.distance)
+        XCTAssertEqual(distance, nearHome2.distance(from: location(at: home2)), accuracy: 1)
     }
 
-    func testClosestServerUsesEachServersNearestZone() throws {
-        // Server1 has a faraway home but also a nearby secondary zone, which should represent it.
+    func testClosestServerIgnoresNonHomeZones() throws {
+        // Server1's office sits exactly at the test location, but only each server's
+        // zone.home represents it — so server2's much nearer home must win.
         addZone(server: server1, center: home1)
-        addZone(entityId: "zone.office", server: server1, center: .init(
-            latitude: home2.latitude + 0.01,
-            longitude: home2.longitude
-        ))
-        addZone(server: server2, center: home2)
+        addZone(entityId: "zone.office", server: server1, center: home2)
+        addZone(server: server2, center: .init(latitude: home2.latitude + 0.01, longitude: home2.longitude))
 
         let atHome2 = location(at: home2)
-        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: atHome2))
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: atHome2, currentSSID: nil))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
-        XCTAssertEqual(closest.distance, 0, accuracy: 1)
     }
 
-    func testClosestServerIsNilWithoutZones() {
-        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: location(at: home1)))
+    func testClosestServerPrefersHomeNetworkOverDistance() throws {
+        addZone(server: server1, center: home1)
+        addZone(server: server2, center: home2)
+        server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }
+        server2.update { $0.connection.internalSSIDs = ["home2-wifi"] }
+
+        // Standing at server1's home but connected to server2's network: the network wins.
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: location(at: home1),
+            currentSSID: "home2-wifi"
+        ))
+
+        XCTAssertEqual(closest.server.identifier, server2.identifier)
+        XCTAssertNil(closest.distance)
+    }
+
+    func testClosestServerMatchesHomeNetworkWithoutLocation() throws {
+        server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }
+        server2.update { $0.connection.internalSSIDs = ["home2-wifi"] }
+
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nil, currentSSID: "home1-wifi"))
+
+        XCTAssertEqual(closest.server.identifier, server1.identifier)
+        XCTAssertNil(closest.distance)
+    }
+
+    func testClosestServerFallsBackToDistanceForUnknownNetwork() throws {
+        addZone(server: server1, center: home1)
+        addZone(server: server2, center: home2)
+        server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }
+        server2.update { $0.connection.internalSSIDs = ["home2-wifi"] }
+
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: location(at: home1),
+            currentSSID: "coffee-shop-wifi"
+        ))
+
+        XCTAssertEqual(closest.server.identifier, server1.identifier)
+    }
+
+    func testClosestServerIsNilWithoutZonesOrNetworkMatch() {
+        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: location(at: home1), currentSSID: nil))
+        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: nil, currentSSID: nil))
     }
 }
