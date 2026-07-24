@@ -10,7 +10,7 @@ class SensorListViewModel: ObservableObject {
     @Published var lastUpdateDate: Date?
     @Published var motionAuthorizationStatus: CMAuthorizationStatus?
     @Published var focusAuthorizationStatus: FocusStatusWrapper.AuthorizationStatus?
-    @Published var healthKitStatus: HealthKitSensor.AuthorizationStatus?
+    @Published var isHealthKitAvailable = false
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
     @Published var alertMessage: String?
     @Published var showAlert: Bool = false
@@ -29,7 +29,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updatePermissions() {
-        healthKitStatus = Current.healthKit.authorizationStatus()
+        isHealthKitAvailable = Current.healthKitService.isAvailable()
 
         if Current.motion.isActivityAvailable() {
             motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
@@ -63,10 +63,10 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
-    func requestHealthAuthorization() -> Promise<Void> {
-        Current.healthKit.requestReadAuthorization().get { [weak self] in
-            self?.healthKitStatus = Current.healthKit.authorizationStatus()
-        }
+    @MainActor
+    func requestHealthAuthorization() async throws {
+        try await Current.healthKitService.requestReadAuthorization()
+        isHealthKitAvailable = Current.healthKitService.isAvailable()
     }
 
     // MARK: - Permissions Handling

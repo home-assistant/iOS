@@ -103,12 +103,11 @@ struct SensorListView: View {
     private var healthKitSection: some View {
         Section {
             Button(action: {
-                viewModel.requestHealthAuthorization().done { [viewModel] in
-                    DispatchQueue.main.async {
+                Task { @MainActor [viewModel] in
+                    do {
+                        try await viewModel.requestHealthAuthorization()
                         viewModel.refresh()
-                    }
-                }.catch { [viewModel] error in
-                    DispatchQueue.main.async {
+                    } catch {
                         viewModel.alertMessage = error.localizedDescription
                         viewModel.showAlert = true
                     }
@@ -116,15 +115,13 @@ struct SensorListView: View {
             }) {
                 Text(L10n.SettingsSensors.Health.requestAccess)
             }
-            .disabled(viewModel.healthKitStatus == .unavailable)
+            .disabled(!viewModel.isHealthKitAvailable)
 
-            if let healthKitStatus = viewModel.healthKitStatus {
-                HStack {
-                    Text(L10n.SettingsSensors.Health.status)
-                    Spacer()
-                    Text(healthStatusDescription(healthKitStatus))
-                        .foregroundColor(.secondary)
-                }
+            HStack {
+                Text(L10n.SettingsSensors.Health.status)
+                Spacer()
+                Text(healthStatusDescription(isAvailable: viewModel.isHealthKitAvailable))
+                    .foregroundColor(.secondary)
             }
         } header: {
             Text(L10n.SettingsSensors.Health.header)
@@ -218,13 +215,10 @@ struct SensorListView: View {
         }
     }
 
-    private func healthStatusDescription(_ status: HealthKitSensor.AuthorizationStatus) -> String {
-        switch status {
-        case .unavailable:
-            return L10n.SettingsSensors.Health.Status.unavailable
-        case .available:
-            return L10n.SettingsSensors.Health.Status.available
-        }
+    private func healthStatusDescription(isAvailable: Bool) -> String {
+        isAvailable
+            ? L10n.SettingsSensors.Health.Status.available
+            : L10n.SettingsSensors.Health.Status.unavailable
     }
 }
 

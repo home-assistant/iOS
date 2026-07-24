@@ -5,9 +5,6 @@ import Dependencies
 import Foundation
 import GRDB
 import HAKit
-#if canImport(HealthKit)
-import HealthKit
-#endif
 import os
 import PromiseKit
 import UserNotifications
@@ -383,7 +380,9 @@ public class AppEnvironment {
         $0.register(provider: KioskScreensaverSensor.self)
         $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         $0.register(provider: HealthKitSensor.self)
+        #endif
     }
 
     public var localized = LocalizedManager()
@@ -622,116 +621,9 @@ public class AppEnvironment {
 
     public var pedometer = Pedometer()
 
-    public struct HealthKit {
-        public var isAvailable: () -> Bool = {
-            #if canImport(HealthKit) && os(iOS)
-            guard !Current.isCatalyst, !Current.isAppExtension else { return false }
-            return HKHealthStore.isHealthDataAvailable()
-            #else
-            return false
-            #endif
-        }
-
-        public var authorizationStatus: () -> HealthKitSensor.AuthorizationStatus = {
-            Current.healthKit.isAvailable() ? .available : .unavailable
-        }
-
-        public var requestReadAuthorization: () -> Promise<Void> = {
-            #if canImport(HealthKit) && os(iOS)
-            guard Current.healthKit.isAvailable() else {
-                return .init(error: HealthKitSensor.HealthKitSensorError.unavailable)
-            }
-
-            let healthStore = HKHealthStore()
-            let types = Set([
-                HKObjectType.quantityType(forIdentifier: .stepCount),
-                HKObjectType.quantityType(forIdentifier: .restingHeartRate),
-            ].compactMap { $0 })
-
-            let (promise, seal) = Promise<Void>.pending()
-            healthStore.requestAuthorization(toShare: Set<HKSampleType>(), read: types) { success, error in
-                if let error {
-                    seal.reject(error)
-                } else if success {
-                    seal.fulfill(())
-                } else {
-                    seal.reject(HealthKitSensor.HealthKitSensorError.authorizationFailed)
-                }
-            }
-            return promise
-            #else
-            return .init(error: HealthKitSensor.HealthKitSensorError.unavailable)
-            #endif
-        }
-
-        public var queryStepCount: (Date, Date) -> Promise<Int?> = { start, end in
-            #if canImport(HealthKit) && os(iOS)
-            guard Current.healthKit.isAvailable() else {
-                return .value(nil)
-            }
-
-            guard let quantityType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
-                return .value(nil)
-            }
-
-            let healthStore = HKHealthStore()
-            let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
-            let (promise, seal) = Promise<Int?>.pending()
-            let query = HKStatisticsQuery(
-                quantityType: quantityType,
-                quantitySamplePredicate: predicate,
-                options: .cumulativeSum
-            ) { _, statistics, error in
-                if let error {
-                    seal.reject(error)
-                } else {
-                    let steps = statistics?.sumQuantity()?.doubleValue(for: .count())
-                    seal.fulfill(steps.map(Int.init))
-                }
-            }
-            healthStore.execute(query)
-            return promise
-            #else
-            return .value(nil)
-            #endif
-        }
-
-        public var queryLatestRestingHeartRate: (Date, Date) -> Promise<Double?> = { start, end in
-            #if canImport(HealthKit) && os(iOS)
-            guard Current.healthKit.isAvailable() else {
-                return .value(nil)
-            }
-
-            guard let quantityType = HKObjectType.quantityType(forIdentifier: .restingHeartRate) else {
-                return .value(nil)
-            }
-
-            let healthStore = HKHealthStore()
-            let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
-            let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-            let (promise, seal) = Promise<Double?>.pending()
-            let query = HKSampleQuery(
-                sampleType: quantityType,
-                predicate: predicate,
-                limit: 1,
-                sortDescriptors: [sort]
-            ) { _, samples, error in
-                if let error {
-                    seal.reject(error)
-                } else {
-                    let sample = samples?.first as? HKQuantitySample
-                    seal.fulfill(sample?.quantity.doubleValue(for: .init(from: "count/min")))
-                }
-            }
-            healthStore.execute(query)
-            return promise
-            #else
-            return .value(nil)
-            #endif
-        }
-    }
-
-    public var healthKit = HealthKit()
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    public var healthKitService = HealthKitService()
+    #endif
 
     /// Wrapper around CMAltimeter for barometric pressure readings
     public struct Barometer {

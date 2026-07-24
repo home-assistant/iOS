@@ -4,24 +4,23 @@ import PromiseKit
 import XCTest
 
 class SensorListViewModelHealthKitTests: XCTestCase {
-    private var originalHealthKit: AppEnvironment.HealthKit!
+    private var originalHealthKitService: HealthKitService!
     private var previousDisabledSensors: Any?
 
     override func setUp() {
         super.setUp()
 
-        originalHealthKit = Current.healthKit
+        originalHealthKitService = Current.healthKitService
         previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
         Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
-        Current.healthKit.isAvailable = { true }
-        Current.healthKit.authorizationStatus = { .available }
+        Current.healthKitService.isAvailable = { true }
     }
 
     override func tearDown() {
         restore(previousDisabledSensors, forKey: "disabledSensors")
-        Current.healthKit = originalHealthKit
-        originalHealthKit = nil
+        Current.healthKitService = originalHealthKitService
+        originalHealthKitService = nil
         super.tearDown()
     }
 
@@ -33,30 +32,30 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         }
     }
 
-    func testRequestHealthAuthorizationRefreshesHealthKitStatus() throws {
+    @MainActor
+    func testRequestHealthAuthorizationRefreshesHealthKitAvailability() async throws {
         var requested = false
-        var status = HealthKitSensor.AuthorizationStatus.unavailable
-        Current.healthKit.authorizationStatus = { status }
-        Current.healthKit.requestReadAuthorization = {
+        var isAvailable = false
+        Current.healthKitService.isAvailable = { isAvailable }
+        Current.healthKitService.requestReadAuthorization = {
             requested = true
-            status = .available
-            return .value(())
+            isAvailable = true
         }
         let viewModel = SensorListViewModel()
 
-        try hang(viewModel.requestHealthAuthorization())
+        try await viewModel.requestHealthAuthorization()
 
         XCTAssertTrue(requested)
-        XCTAssertEqual(viewModel.healthKitStatus, .available)
+        XCTAssertTrue(viewModel.isHealthKitAvailable)
     }
 
-    func testUpdatePermissionsUsesHealthKitStatus() {
-        Current.healthKit.authorizationStatus = { .unavailable }
+    func testUpdatePermissionsUsesHealthKitAvailability() {
+        Current.healthKitService.isAvailable = { false }
         let viewModel = SensorListViewModel()
 
         viewModel.updatePermissions()
 
-        XCTAssertEqual(viewModel.healthKitStatus, .unavailable)
+        XCTAssertFalse(viewModel.isHealthKitAvailable)
     }
 
     func testUpdateAllSensorsIncludesHealthSensors() {

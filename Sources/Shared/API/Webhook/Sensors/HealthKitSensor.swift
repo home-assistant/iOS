@@ -1,26 +1,8 @@
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import Foundation
 import PromiseKit
 
 public final class HealthKitSensor: SensorProvider {
-    enum HealthKitSensorError: LocalizedError {
-        case authorizationFailed
-        case unavailable
-
-        var errorDescription: String? {
-            switch self {
-            case .authorizationFailed:
-                return L10n.SettingsSensors.Health.Error.authorizationFailed
-            case .unavailable:
-                return L10n.SettingsSensors.Health.Error.unavailable
-            }
-        }
-    }
-
-    public enum AuthorizationStatus: Equatable {
-        case unavailable
-        case available
-    }
-
     public enum Metric: CaseIterable, Codable {
         case steps
         case restingHeartRate
@@ -66,29 +48,34 @@ public final class HealthKitSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        guard Current.healthKit.isAvailable() else {
+        guard Current.healthKitService.isAvailable() else {
             return .value(Self.unavailableSensors())
         }
 
         let start = Current.calendar().startOfDay(for: Current.date())
         let end = Current.date()
         let restingHeartRateStart = Current.calendar().date(byAdding: .day, value: -7, to: end) ?? start
+        let (promise, seal) = Promise<[WebhookSensor]>.pending()
 
-        return firstly { () -> Guarantee<[Result<HealthSensorValue?>]> in
-            when(resolved: Metric.allCases.map { metric in
-                value(for: metric, start: start, end: end, restingHeartRateStart: restingHeartRateStart)
-            })
-        }.map { results -> [HealthSensorValue] in
-            let values = results.compactMap { result -> HealthSensorValue? in
-                if case let .fulfilled(value) = result {
-                    return value
-                } else {
-                    return nil
-                }
-            }
+        Task {
+            async let steps = value(
+                for: .steps,
+                start: start,
+                end: end,
+                restingHeartRateStart: restingHeartRateStart
+            )
+            async let restingHeartRate = value(
+                for: .restingHeartRate,
+                start: start,
+                end: end,
+                restingHeartRateStart: restingHeartRateStart
+            )
 
-            return values
-        }.map(Self.sensors(from:))
+            let values = await [steps, restingHeartRate].compactMap { $0 }
+            seal.fulfill(Self.sensors(from: values))
+        }
+
+        return promise
     }
 
     private func value(
@@ -96,20 +83,18 @@ public final class HealthKitSensor: SensorProvider {
         start: Date,
         end: Date,
         restingHeartRateStart: Date
-    ) -> Promise<HealthSensorValue?> {
+    ) async -> HealthSensorValue? {
         guard Current.sensors.isEnabled(uniqueID: metric.uniqueID) else {
-            return .value(nil)
+            return nil
         }
 
         switch metric {
         case .steps:
-            return Current.healthKit.queryStepCount(start, end).map {
-                HealthSensorValue(metric: metric, value: $0.map(Double.init))
-            }
+            let value = try? await Current.healthKitService.queryStepCount(start, end)
+            return HealthSensorValue(metric: metric, value: value.map(Double.init))
         case .restingHeartRate:
-            return Current.healthKit.queryLatestRestingHeartRate(restingHeartRateStart, end).map {
-                HealthSensorValue(metric: metric, value: $0)
-            }
+            let value = try? await Current.healthKitService.queryLatestRestingHeartRate(restingHeartRateStart, end)
+            return HealthSensorValue(metric: metric, value: value)
         }
     }
 
@@ -142,13 +127,4 @@ public final class HealthKitSensor: SensorProvider {
         )
     }
 }
-
-public struct HealthSensorValue: Codable, Equatable {
-    public let metric: HealthKitSensor.Metric
-    public let value: Double?
-
-    public init(metric: HealthKitSensor.Metric, value: Double?) {
-        self.metric = metric
-        self.value = value
-    }
-}
+#endif

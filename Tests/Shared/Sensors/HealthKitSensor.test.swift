@@ -9,7 +9,7 @@ class HealthKitSensorTests: XCTestCase {
     private var restingHeartRateQueryCount: Int!
     private var originalDate: (() -> Date)!
     private var originalCalendar: (() -> Calendar)!
-    private var originalHealthKit: AppEnvironment.HealthKit!
+    private var originalHealthKitService: HealthKitService!
     private var previousDisabledSensors: Any?
 
     override func setUp() {
@@ -17,7 +17,7 @@ class HealthKitSensorTests: XCTestCase {
 
         originalDate = Current.date
         originalCalendar = Current.calendar
-        originalHealthKit = Current.healthKit
+        originalHealthKitService = Current.healthKitService
         previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
         request = .init(
@@ -34,14 +34,14 @@ class HealthKitSensorTests: XCTestCase {
         Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.restingHeartRate.uniqueID)
-        Current.healthKit.isAvailable = { true }
-        Current.healthKit.queryStepCount = { [weak self] _, _ in
+        Current.healthKitService.isAvailable = { true }
+        Current.healthKitService.queryStepCount = { [weak self] _, _ in
             self?.stepQueryCount += 1
-            return .value(1234)
+            return 1234
         }
-        Current.healthKit.queryLatestRestingHeartRate = { [weak self] _, _ in
+        Current.healthKitService.queryLatestRestingHeartRate = { [weak self] _, _ in
             self?.restingHeartRateQueryCount += 1
-            return .value(62.4)
+            return 62.4
         }
     }
 
@@ -49,10 +49,10 @@ class HealthKitSensorTests: XCTestCase {
         restore(previousDisabledSensors, forKey: "disabledSensors")
         Current.date = originalDate
         Current.calendar = originalCalendar
-        Current.healthKit = originalHealthKit
+        Current.healthKitService = originalHealthKitService
         originalDate = nil
         originalCalendar = nil
-        originalHealthKit = nil
+        originalHealthKitService = nil
         super.tearDown()
     }
 
@@ -65,7 +65,7 @@ class HealthKitSensorTests: XCTestCase {
     }
 
     func testUnavailableHealthKitReturnsUnavailableSensorsAndDoesNotQueryHealthKit() throws {
-        Current.healthKit.isAvailable = { false }
+        Current.healthKitService.isAvailable = { false }
 
         let sensors = try hang(HealthKitSensor(request: request).sensors())
 
@@ -100,13 +100,13 @@ class HealthKitSensorTests: XCTestCase {
     }
 
     func testMissingDataReturnsUnavailableRows() throws {
-        Current.healthKit.queryStepCount = { [weak self] _, _ in
+        Current.healthKitService.queryStepCount = { [weak self] _, _ in
             self?.stepQueryCount += 1
-            return .value(nil)
+            return nil
         }
-        Current.healthKit.queryLatestRestingHeartRate = { [weak self] _, _ in
+        Current.healthKitService.queryLatestRestingHeartRate = { [weak self] _, _ in
             self?.restingHeartRateQueryCount += 1
-            return .value(nil)
+            return nil
         }
 
         let sensors = try hang(HealthKitSensor(request: request).sensors())

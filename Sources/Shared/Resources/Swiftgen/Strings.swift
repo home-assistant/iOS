@@ -5594,8 +5594,6 @@ public enum L10n {
       /// Health Data
       public static var status: String { return L10n.tr("Localizable", "settings_sensors.health.status") }
       public enum Error {
-        /// Apple Health authorization was not granted.
-        public static var authorizationFailed: String { return L10n.tr("Localizable", "settings_sensors.health.error.authorization_failed") }
         /// Apple Health is not available on this device.
         public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.error.unavailable") }
       }
