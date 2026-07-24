@@ -9,7 +9,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// Per-widget-family rendering values, keyed by `WatchComplicationConfig.Family.rawValue`
     /// ("circular"/"rectangular"/"inline"/"corner"). Absent for built-in/legacy complications.
     struct PerFamily: Codable {
-        let fraction: Double?
+        var fraction: Double?
         let tint: String?
         let showValue: Bool
         /// Whether to show the complication name (default true).
@@ -35,10 +35,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
     let subtitle: String
     /// Mutable so the widget's live self-fetch can update the inline value in place.
     var inlineText: String
-    let fraction: Double?
+    var fraction: Double?
     let tint: String?
     let iconData: Data?
-    let perFamily: [String: PerFamily]?
+    var perFamily: [String: PerFamily]?
     /// The name shown in the complication picker (the value goes in `title` for on-face rendering).
     /// Optional so older payloads without it still decode.
     let menuName: String?
@@ -152,6 +152,30 @@ struct WatchWidgetComplicationSnapshot: Codable {
         // The picker should show the complication's name, not its live value.
         if let menuName, !menuName.isEmpty { return menuName }
         return title.isEmpty ? WatchWidgetConstants.appName : title
+    }
+
+    /// A static stand-in for the complication picker (`context.isPreview`): identity only — name,
+    /// icon, gauge shape and colors — with both the value text and the gauge fill neutralized. The
+    /// picker preview must render instantly from whatever is cached and must not present a
+    /// possibly-stale value as current. Built-ins (placeholder/Assist) already carry static text and
+    /// pass through as-is.
+    var previewVariant: Self {
+        guard !isBuiltIn else { return self }
+        var preview = self
+        preview.title = WatchWidgetConstants.previewValueText
+        preview.inlineText = recommendationTitle
+        preview.fraction = fraction.map { _ in WatchWidgetConstants.previewGaugeFraction }
+        var families = perFamily?.mapValues { options -> PerFamily in
+            var options = options
+            options.fraction = options.fraction.map { _ in WatchWidgetConstants.previewGaugeFraction }
+            return options
+        }
+        if var inline = families?["inline"] {
+            inline.showName = true
+            families?["inline"] = inline
+        }
+        preview.perFamily = families
+        return preview
     }
 
     var widgetURL: URL? {

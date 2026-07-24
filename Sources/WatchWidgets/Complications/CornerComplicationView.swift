@@ -11,20 +11,26 @@ struct CornerComplicationView: View {
 
     var body: some View {
         if let complication {
-            Group {
-                if showsIconInCorner(complication), let iconImage = complication.iconImage {
-                    // The icon sits in the corner un-curved; curving a raster image collapses it.
-                    iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
-                } else {
-                    // Curve the value/name along the outer edge of the corner; the system lays the
-                    // widget label on the inside of the same curve.
-                    Text(cornerText(complication))
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
-                        .widgetCurvesContent()
+            if complication.perFamily == nil {
+                // Built-ins (Home Assistant / Assist): the icon alone fills the corner, matching
+                // the circular family — no arc text and no bezel label.
+                ComplicationIconView(complication: complication)
+            } else {
+                Group {
+                    if showsIconInCorner(complication), let iconImage = complication.iconImage {
+                        // The icon sits in the corner un-curved; curving a raster image collapses it.
+                        iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
+                    } else {
+                        // Curve the value/name along the outer edge of the corner; the system lays
+                        // the widget label on the inside of the same curve.
+                        Text(cornerText(complication))
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                            .widgetCurvesContent()
+                    }
                 }
+                .widgetLabel { bezelLabel(complication) }
             }
-            .widgetLabel { bezelLabel(complication) }
         } else {
             Text(WatchWidgetConstants.appName)
         }

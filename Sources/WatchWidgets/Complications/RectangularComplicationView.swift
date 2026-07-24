@@ -2,7 +2,7 @@ import SwiftUI
 import WidgetKit
 
 /// Rectangular complication: optional icon + name, plus a progress bar (value follows the thumb,
-/// min/max at the edges) when a value exists. Legacy/built-ins keep the simpler primary/secondary layout.
+/// min/max at the edges) when a value exists. Built-ins show just their icon + title.
 @available(watchOS 10.0, *)
 struct RectangularComplicationView: View {
     let complication: WatchWidgetComplicationSnapshot?
@@ -63,26 +63,12 @@ struct RectangularComplicationView: View {
         }
     }
 
-    @ViewBuilder
+    /// Built-ins (Home Assistant / Assist): the title alone next to the icon — no subtitle line
+    /// and no gauge.
     private var legacyContent: some View {
-        VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
-            Text(complication?.title ?? WatchWidgetConstants.appName)
-                .font(.caption2.weight(.semibold))
-                .lineLimit(1)
-            if let complication, let fraction = complication.fraction(for: family) {
-                Gauge(value: fraction) {
-                    EmptyView()
-                } currentValueLabel: {
-                    Text(complication.subtitle).lineLimit(1)
-                }
-                .gaugeStyle(.accessoryLinearCapacity)
-                .tint(complication.tintColor(for: family))
-            } else {
-                Text(complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
-                    .font(.caption2)
-                    .lineLimit(2)
-            }
-        }
+        Text(complication?.title ?? WatchWidgetConstants.appName)
+            .font(.caption2.weight(.semibold))
+            .lineLimit(1)
     }
 }
 

@@ -324,11 +324,24 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            // Step 3 (template): enter the templates, then the shared options reveal below. The text
-            // template stands in for the display name — same icon + row as the entity flow — showing
-            // its rendered result (or the template source) and opening the full editor in a sheet.
+            // Step 3 (template): name the complication, enter the templates, then the shared options
+            // reveal below. The text template stands in for the display name — same icon + row as
+            // the entity flow — showing its rendered result (or the template source) and opening the
+            // full editor in a sheet.
             if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty,
                let server = viewModel.server {
+                // Without a name every template complication is listed as a generic
+                // "Complication"/"Template" in the iOS list and the watch gallery; the name labels
+                // it in both. Left empty, saving auto-generates "Complication-N" (the on-face text
+                // still comes from the text template below).
+                Section {
+                    TextField(text: stringBinding(\.name)) {
+                        Text(verbatim: L10n.Watch.Complications.Builder.complicationName)
+                    }
+                } header: {
+                    Text(L10n.Watch.Complications.Builder.complicationName)
+                }
+
                 Section {
                     HStack(spacing: DesignSystem.Spaces.two) {
                         IconPicker(
