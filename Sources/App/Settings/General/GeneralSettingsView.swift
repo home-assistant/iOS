@@ -42,7 +42,6 @@ struct GeneralSettingsView: View {
             }
 
             Section(L10n.SettingsDetails.General.Page.title) {
-                rememberLastPage
                 pageZoomPicker
                 pinchZoom
                 fullScreen
@@ -112,21 +111,6 @@ struct GeneralSettingsView: View {
             redrawView()
         })) {
             Text(L10n.SettingsDetails.Notifications.PromptToOpenUrls.title)
-        }
-    }
-
-    @ViewBuilder
-    private var rememberLastPage: some View {
-        // Mac has a system-level setting for state restoration
-        if !Current.isCatalyst {
-            Toggle(isOn: .init(get: {
-                Current.settingsStore.restoreLastURL
-            }, set: { newValue in
-                Current.settingsStore.restoreLastURL = newValue
-                redrawView()
-            })) {
-                Text(L10n.SettingsDetails.General.Restoration.title)
-            }
         }
     }
 
@@ -303,7 +287,6 @@ extension GeneralSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.OpenInBrowser.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.OpenInPrivateTab.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.PromptToOpenUrls.title),
-            SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.PageZoom.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.PinchToZoom.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.FullScreen.title),

@@ -223,6 +223,17 @@ public class SettingsStore {
         }
     }
 
+    /// Switches the active server to the one whose zone the user is in when the app is opened
+    /// (e.g. arriving at a second home). Off by default; toggled in Settings > Servers.
+    public var locationBasedServerSwitching: Bool {
+        get {
+            prefs.bool(forKey: "locationBasedServerSwitching")
+        }
+        set {
+            prefs.set(newValue, forKey: "locationBasedServerSwitching")
+        }
+    }
+
     public var lastActiveServerIdentifier: String? {
         get {
             prefs.string(forKey: "lastActiveServerIdentifier")
