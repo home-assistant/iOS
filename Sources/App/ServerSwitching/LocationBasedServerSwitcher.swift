@@ -155,15 +155,19 @@ final class LocationBasedServerSwitcher {
     }
 
     /// The server considered closest, shown in the Server Switching settings screen. Being on a
-    /// server's home network wins outright (no distance); otherwise the server whose `zone.home`
-    /// center is nearest to `location` wins, with that distance — no need to be inside it.
-    /// Returns `nil` when neither signal resolves a server. Non-private for tests.
+    /// server's home network wins outright (no distance), preferring the current server when
+    /// several share the SSID so the row agrees with `matchedServer`. Otherwise the server whose
+    /// `zone.home` center is nearest to `location` wins, with that distance, no need to be inside
+    /// it. Returns `nil` when neither signal resolves a server. Non-private for tests.
     nonisolated static func closestServer(
         to location: CLLocation?,
-        currentSSID: String?
+        currentSSID: String?,
+        preferring currentServerIdentifier: Identifier<Server>?
     ) -> (server: Server, distance: CLLocationDistance?)? {
-        if let onHomeNetwork = serversOnHomeNetwork(currentSSID).first {
-            return (onHomeNetwork, nil)
+        let onHomeNetwork = serversOnHomeNetwork(currentSSID)
+        if let server = onHomeNetwork.first(where: { $0.identifier == currentServerIdentifier })
+            ?? onHomeNetwork.first {
+            return (server, nil)
         }
         guard let location else { return nil }
 

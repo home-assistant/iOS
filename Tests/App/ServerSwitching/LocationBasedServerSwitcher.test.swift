@@ -189,7 +189,11 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         // Slightly north of server2's home: far from both zones, but nearer to server2's.
         let nearHome2 = CLLocation(latitude: home2.latitude + 0.1, longitude: home2.longitude)
-        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nearHome2, currentSSID: nil))
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: nearHome2,
+            currentSSID: nil,
+            preferring: nil
+        ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
         let distance = try XCTUnwrap(closest.distance)
@@ -204,7 +208,11 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         addZone(server: server2, center: .init(latitude: home2.latitude + 0.01, longitude: home2.longitude))
 
         let atHome2 = location(at: home2)
-        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: atHome2, currentSSID: nil))
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: atHome2,
+            currentSSID: nil,
+            preferring: nil
+        ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
     }
@@ -218,7 +226,8 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         // Standing at server1's home but connected to server2's network: the network wins.
         let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
             to: location(at: home1),
-            currentSSID: "home2-wifi"
+            currentSSID: "home2-wifi",
+            preferring: server1.identifier
         ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
@@ -229,9 +238,26 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }
         server2.update { $0.connection.internalSSIDs = ["home2-wifi"] }
 
-        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(to: nil, currentSSID: "home1-wifi"))
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: nil,
+            currentSSID: "home1-wifi",
+            preferring: nil
+        ))
 
         XCTAssertEqual(closest.server.identifier, server1.identifier)
+        XCTAssertNil(closest.distance)
+    }
+
+    func testClosestServerPrefersCurrentServerOnSharedNetwork() throws {
+        // Both fake servers ship with the same default "MyWifi" internal SSID; the row must
+        // agree with switching, which stays on the current server in that tie.
+        let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
+            to: nil,
+            currentSSID: "MyWifi",
+            preferring: server2.identifier
+        ))
+
+        XCTAssertEqual(closest.server.identifier, server2.identifier)
         XCTAssertNil(closest.distance)
     }
 
@@ -243,14 +269,19 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
 
         let closest = try XCTUnwrap(LocationBasedServerSwitcher.closestServer(
             to: location(at: home1),
-            currentSSID: "coffee-shop-wifi"
+            currentSSID: "coffee-shop-wifi",
+            preferring: nil
         ))
 
         XCTAssertEqual(closest.server.identifier, server1.identifier)
     }
 
     func testClosestServerIsNilWithoutZonesOrNetworkMatch() {
-        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: location(at: home1), currentSSID: nil))
-        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: nil, currentSSID: nil))
+        XCTAssertNil(LocationBasedServerSwitcher.closestServer(
+            to: location(at: home1),
+            currentSSID: nil,
+            preferring: nil
+        ))
+        XCTAssertNil(LocationBasedServerSwitcher.closestServer(to: nil, currentSSID: nil, preferring: nil))
     }
 }

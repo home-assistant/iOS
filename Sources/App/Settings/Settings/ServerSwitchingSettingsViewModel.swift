@@ -46,10 +46,17 @@ final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
     }
 
     private func updateClosestServer() {
+        // Prefer the currently shown server on shared networks, so the row agrees with switching.
+        let currentServerIdentifier = OnboardingStateObservable.preferredInitialServer()?.identifier
         guard let closest = LocationBasedServerSwitcher.closestServer(
             to: currentLocation,
-            currentSSID: currentSSID
-        ) else { return }
+            currentSSID: currentSSID,
+            preferring: currentServerIdentifier
+        ) else {
+            // Clear rather than keep a stale value when the signals no longer resolve a server.
+            closestServerDescription = nil
+            return
+        }
         if let distance = closest.distance {
             let formatted = distanceFormatter.string(fromDistance: distance)
             closestServerDescription = "\(closest.server.info.name) · \(formatted)"
