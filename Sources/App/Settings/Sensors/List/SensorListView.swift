@@ -34,7 +34,7 @@ struct SensorListView: View {
                 subtitle: L10n.SettingsSensors.body
             )
             periodicUpdaterRow
-            motionFocusPermissionNeededView
+            permissionsSection
             sensorsList
         }
         .onAppear {
@@ -99,14 +99,42 @@ struct SensorListView: View {
         }
     }
 
-    @ViewBuilder
-    private var motionFocusPermissionNeededView: some View {
-        if viewModel.motionAuthorizationStatus != nil || viewModel.focusAuthorizationStatus != nil {
-            Section(L10n.SettingsSensors.Permissions.header) {
+    private var permissionsSection: some View {
+        Section {
+            healthAuthorizationButton
+            if viewModel.motionAuthorizationStatus != nil {
                 motionAuthorizationButton
+            }
+            if viewModel.focusAuthorizationStatus != nil {
                 focusAuthorizationButton
             }
+        } header: {
+            Text(L10n.SettingsSensors.Permissions.header)
+        } footer: {
+            Text(L10n.SettingsSensors.Health.footer)
         }
+    }
+
+    private var healthAuthorizationButton: some View {
+        Button(action: {
+            Task { @MainActor [viewModel] in
+                do {
+                    try await viewModel.requestHealthAuthorization()
+                    viewModel.refresh()
+                } catch {
+                    viewModel.alertMessage = error.localizedDescription
+                    viewModel.showAlert = true
+                }
+            }
+        }) {
+            HStack {
+                Text(L10n.SettingsSensors.Health.status)
+                Spacer()
+                Text(healthStatusDescription(isAvailable: viewModel.isHealthKitAvailable))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .disabled(!viewModel.isHealthKitAvailable)
     }
 
     private var motionAuthorizationButton: some View {
@@ -183,6 +211,18 @@ struct SensorListView: View {
             return L10n.SettingsDetails.Location.FocusPermission.needsRequest
         }
     }
+
+    private func healthStatusDescription(isAvailable: Bool) -> String {
+        isAvailable
+            ? L10n.SettingsSensors.Health.Status.available
+            : L10n.SettingsSensors.Health.Status.unavailable
+    }
+}
+
+#Preview {
+    NavigationView {
+        SensorListView()
+    }
 }
 
 extension SensorListView: SettingsScreenSearchable {
@@ -190,6 +230,7 @@ extension SensorListView: SettingsScreenSearchable {
         [
             SettingsSearchEntry(L10n.SettingsSensors.PeriodicUpdate.title),
             SettingsSearchEntry(L10n.SettingsSensors.Permissions.header),
+            SettingsSearchEntry(L10n.SettingsSensors.Health.status),
             SettingsSearchEntry(L10n.SettingsDetails.Location.MotionPermission.title),
             SettingsSearchEntry(L10n.SettingsSensors.FocusPermission.title),
             SettingsSearchEntry(L10n.SettingsSensors.Sensors.header),
