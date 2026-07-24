@@ -455,6 +455,10 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "extensions.notification_content.error.request.hls_unavailable" = "Proud HLS je nedostupný";
 "extensions.notification_content.error.request.other" = "Stavový kód jiný než 200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Proud WebRTC není k dispozici";
+"flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
+"flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
+"flight_greetings.empty_state.title" = "Have a nice flight";
+"flight_greetings.greeting" = "Have a nice flight!";
 "gestures.1_finger.title" = "Použití jednoho prstu";
 "gestures.2_fingers.title" = "Použití dvou prstů";
 "gestures.2_fingers_swipe_down.title" = "2 👆 přejedou dolů";
@@ -837,6 +841,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat problémy se zobrazováním příloh oznámení, zvukem asistence TTS a nebude plně fungovat na Apple Watch.";
 "navBar.close" = "Zavřít";
 "network.error.no_active_url.body" = "Otevřete nastavení doprovodné aplikace a zkontrolujte nastavení serveru; interní URL se použije jen v případě, že je definována místní síť (SSID). Pokud používáte VPN, zkuste nastavit externí URL stejnou jako interní URL.";
+"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
 "network.error.no_active_url.title" = "Není dostupná žádná adresa URL k načtení";
 "nfc.detail.copy" = "Kopírovat do schránky";
 "nfc.detail.duplicate" = "Vytvořit duplikát";
@@ -1356,6 +1361,9 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.developer.sync_watch_context.title" = "Kontext synchronizace s hodinkami";
 "settings.developer.web_view_below_status_bar.title" = "Vždy vykreslovat webové zobrazení pod stavovým řádkem";
 "settings.event_log.title" = "Log událostí";
+"settings.greetings.flight.footer" = "Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.";
+"settings.greetings.flight.title" = "Flight";
+"settings.greetings.title" = "Greetings";
 "settings.location_history.detail.explanation" = "Fialový kruh představuje Vaši polohu a její přesnost. Modré kruhy jsou Vaše zóny. Pokud se fialový kruh překrývá s modrým kruhem, jste uvnitř zóny. Oranžové kruhy jsou další oblasti používané pro zóny pod 100 m.";
 "settings.location_history.empty" = "Žádná historie polohy";
 "settings.location_history.title" = "Historie polohy";
@@ -1385,6 +1393,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.search_keywords.debugging" = "protokoly, diagnostika, export, databáze, řešení problémů, reset";
 "settings.search_keywords.general" = "vzhled, motiv, ikona aplikace, prohlížeč, odkazy, zobrazení, spuštění";
 "settings.search_keywords.gestures" = "přejetí prstem, klepnutí, navigace, zkratky";
+"settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
 "settings.search_keywords.help" = "dokumentace, podpora, průvodce, doprovodná aplikace";
 "settings.search_keywords.kiosk" = "držák na zeď, tablet, obrazovka, vždy zapnuto, automatické zamykání";
 "settings.search_keywords.live_activities" = "dynamický ostrov, zamykací obrazovka, časovače";
@@ -1934,7 +1943,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
 "watch.home.run.error.message" = "Akci se nepodařilo spustit. Apple Watch se pravděpodobně nebudou moci k tomuto serveru připojit přímo.";
+"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
+"watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Akci se nepodařilo spustit";
+"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Synchronizování s iPhonem…";
 "watch.home.sync.waiting" = "Čekání na iPhone…";
 "watch.interaction.toast.action" = "Provedl akci";
@@ -2150,6 +2162,8 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.settings.developer.audio_probe.title" = "Sonda zvukové relace";
 "watch.settings.developer.direct_sync.footer" = "Načíte data těchto hodinek přímo z Home Assistanta přes websocket namísto synchronizace přes iPhone. Experimentální: většina hodinek neumožňuje připojení přes websocket, v takovém případě se data přestanou aktualizovat, dokud tuto funkci nevypnete.";
 "watch.settings.developer.direct_sync.title" = "Přímá synchronizace se serverem";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
 "watch.settings.developer.title" = "Vývojář";
 "watch.settings.developer.verbose_execution.footer" = "Zobrazuje živý protokol popisující každý krok během běhu položky.";
 "watch.settings.developer.verbose_execution.title" = "Podrobné provedení položky";
@@ -2190,6 +2204,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "web_view.add_to.option.MacToolbar.title" = "Panel nástrojů Macu";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
+"web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
 "web_view.empty_state.open_settings_button" = "Otevřít nastavení aplikace";
 "web_view.empty_state.reauthenticate_button" = "Znovu ověřit";
 "web_view.empty_state.retry_button" = "Zkusit znovu";

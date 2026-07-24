@@ -453,6 +453,10 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-ström ej tillgänglig";
 "extensions.notification_content.error.request.other" = "Fick icke-200 statuskod (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-strömmen är inte tillgänglig";
+"flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
+"flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
+"flight_greetings.empty_state.title" = "Have a nice flight";
+"flight_greetings.greeting" = "Have a nice flight!";
 "gestures.1_finger.title" = "Med ett finger";
 "gestures.2_fingers.title" = "Med två fingrar";
 "gestures.2_fingers_swipe_down.title" = "2 👆 svep nedåt";
@@ -833,6 +837,7 @@
 "mtls.beta.info" = "Detta är en beta-funktion, om du upplever några problem, vänligen rapportera dem med knappen nedan. För närvarande stöds mTLS endast på iOS 17+, det kan uppstå problem relaterade till visning av bilagor till meddelanden, Assist TTS-ljud och det kommer inte att fungera fullt ut på Apple Watch.";
 "navBar.close" = "Stäng";
 "network.error.no_active_url.body" = "Öppna inställningarna för Companion-appen och kontrollera serverinställningarna. Den interna webbadressen används endast om lokalt nätverk är definierat (SSID). Om du använder VPN kan du försöka ställa in den externa webbadressen som samma som den interna webbadressen.";
+"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
 "network.error.no_active_url.title" = "Ingen URL tillgänglig att ladda";
 "nfc.detail.copy" = "Kopiera till klippbord";
 "nfc.detail.duplicate" = "Skapa en kopia";
@@ -1351,6 +1356,9 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.developer.sync_watch_context.title" = "Sync Watch Context";
 "settings.developer.web_view_below_status_bar.title" = "Always draw web view below status bar";
 "settings.event_log.title" = "Händelselogg";
+"settings.greetings.flight.footer" = "Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.";
+"settings.greetings.flight.title" = "Flight";
+"settings.greetings.title" = "Greetings";
 "settings.location_history.detail.explanation" = "Den lila cirkeln är din position och dess noggrannhet. Blå cirklar är dina zoner. Du är i en zon om den lila cirkeln överlappar den blå. Orange cirklar är ytterligare regioner som används för zoner under 100 meter.";
 "settings.location_history.empty" = "Ingen platshistorik";
 "settings.location_history.title" = "Platshistorik";
@@ -1380,6 +1388,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
 "settings.search_keywords.general" = "appearance, theme, app icon, browser, links, display, launch";
 "settings.search_keywords.gestures" = "swipe, tap, navigation, shortcuts";
+"settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
 "settings.search_keywords.help" = "documentation, support, guide, companion";
 "settings.search_keywords.kiosk" = "wall mount, tablet, screen, always on, auto lock";
 "settings.search_keywords.live_activities" = "dynamic island, lock screen, timers";
@@ -1929,7 +1938,10 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.home.loading.skip.title" = "Hoppa över";
 "watch.home.run.confirmation.title" = "Är du säker på att du vill köra \"%@\"?";
 "watch.home.run.error.message" = "Åtgärden kunde inte utföras. Apple Watch kan eventuellt inte ansluta direkt till den här servern.";
+"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
+"watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Kunde inte köra åtgärden";
+"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Synkroniserar med iPhone…";
 "watch.home.sync.waiting" = "Väntar på iPhone…";
 "watch.interaction.toast.action" = "Körde en åtgärd";
@@ -2145,6 +2157,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
 "watch.settings.developer.title" = "Developer";
 "watch.settings.developer.verbose_execution.footer" = "Shows a live log describing every step while an item runs.";
 "watch.settings.developer.verbose_execution.title" = "Verbose item execution";
@@ -2185,6 +2199,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.MacToolbar.title" = "Mac-verktygsfältet";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
+"web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
 "web_view.empty_state.open_settings_button" = "Öppna appinställningar";
 "web_view.empty_state.reauthenticate_button" = "Autentisera på nytt";
 "web_view.empty_state.retry_button" = "Försök igen";

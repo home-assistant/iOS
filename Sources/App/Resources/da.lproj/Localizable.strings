@@ -455,6 +455,10 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-stream er ikke tilgængelig";
 "extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-stream ikke tilgængelig";
+"flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
+"flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
+"flight_greetings.empty_state.title" = "Have a nice flight";
+"flight_greetings.greeting" = "Have a nice flight!";
 "gestures.1_finger.title" = "Brug af én finger";
 "gestures.2_fingers.title" = "Brug af to fingre";
 "gestures.2_fingers_swipe_down.title" = "2-👆 strygning nedad";
@@ -837,6 +841,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 mTLS understøttes i øjeblikket kun på iOS 17+. Det kan give problemer relateret til visning af vedhæftede notifikationer, Assist TTS-lyd, og det vil ikke fungere fuldt ud på Apple Watch.";
 "navBar.close" = "Luk";
 "network.error.no_active_url.body" = "Åbn indstillingerne for appen, og tjek dine serverindstillinger. Den interne URL vil kun blive brugt, hvis det lokale netværk er defineret (SSID). Hvis du bruger VPN, kan du prøve at indstille din eksterne URL som den samme som den interne URL.";
+"network.error.no_active_url.description" = "“%@” has no URL this device can use right now.";
 "network.error.no_active_url.title" = "Ingen URL at hente";
 "nfc.detail.copy" = "Kopiér til udklipsholder";
 "nfc.detail.duplicate" = "Opret et duplikat";
@@ -1356,6 +1361,9 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings.developer.sync_watch_context.title" = "Synkroniser ur kontekst";
 "settings.developer.web_view_below_status_bar.title" = "Always draw web view below status bar";
 "settings.event_log.title" = "Hændelseslog";
+"settings.greetings.flight.footer" = "Shows a friendly greeting when the app detects you're on a flight, based on in-flight Wi-Fi networks, your speed, and your altitude.";
+"settings.greetings.flight.title" = "Flight";
+"settings.greetings.title" = "Greetings";
 "settings.location_history.detail.explanation" = "Den lilla cirkel er din lokalitet og dens nøjagtighed. Blå cirkler er dine zoner. Du er inde i en zone, hvis den lilla cirkel overlapper en blå cirkel. Orange cirkler er yderligere områder, der bruges til zoner under 100 m.";
 "settings.location_history.empty" = "Ingen lokalitetshistorik";
 "settings.location_history.title" = "Lokalitetshistorik";
@@ -1385,6 +1393,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
 "settings.search_keywords.general" = "appearance, theme, app icon, browser, links, display, launch";
 "settings.search_keywords.gestures" = "swipe, tap, navigation, shortcuts";
+"settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
 "settings.search_keywords.help" = "documentation, support, guide, companion";
 "settings.search_keywords.kiosk" = "wall mount, tablet, screen, always on, auto lock";
 "settings.search_keywords.live_activities" = "dynamic island, lock screen, timers";
@@ -1934,7 +1943,10 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.home.loading.skip.title" = "Spring over";
 "watch.home.run.confirmation.title" = "Er du sikker på, at du vil køre \"%@\"?";
 "watch.home.run.error.message" = "Handlingen kunne ikke udføres. Apple Watch kan muligvis ikke oprette direkte forbindelse til denne server.";
+"watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
+"watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Handlingen kunne ikke udføres";
+"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Synkroniserer med iPhone…";
 "watch.home.sync.waiting" = "Venter på iPhone…";
 "watch.interaction.toast.action" = "Kørte en handling";
@@ -2150,6 +2162,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
+"watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
+"watch.settings.developer.iphone_unreachable_icon.title" = "Show iPhone unreachable icon";
 "watch.settings.developer.title" = "Developer";
 "watch.settings.developer.verbose_execution.footer" = "Shows a live log describing every step while an item runs.";
 "watch.settings.developer.verbose_execution.title" = "Verbose item execution";
@@ -2190,6 +2204,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.MacToolbar.title" = "Mac-værktøjslinje";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genopretter den forbindelsen, når den er online igen.";
+"web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
 "web_view.empty_state.open_settings_button" = "Åbn app-indstillinger";
 "web_view.empty_state.reauthenticate_button" = "Godkend igen";
 "web_view.empty_state.retry_button" = "Prøv igen";

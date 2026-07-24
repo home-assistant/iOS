@@ -114,25 +114,25 @@
 "component::image_processing::title" = "Beeldverwerking";
 "component::improv_ble::config::abort::already_configured" = "Apparaat is al geconfigureerd";
 "component::improv_ble::config::abort::cannot_connect" = "Kan geen verbinding maken";
-"component::improv_ble::config::abort::characteristic_missing" = "The device is either already connected to Wi-Fi, or no longer able to connect to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
+"component::improv_ble::config::abort::characteristic_missing" = "Het apparaat is al verbonden met wifi, of het kan geen verbinding meer maken met wifi. Als je het met een ander netwerk wilt verbinden, probeer dan eerst de fabrieksinstellingen te herstellen.";
 "component::improv_ble::config::abort::no_devices_found" = "Geen apparaten gevonden op het netwerk";
-"component::improv_ble::config::abort::provision_successful" = "The device has successfully connected to the Wi-Fi network.";
-"component::improv_ble::config::abort::provision_successful_url" = "The device has successfully connected to the Wi-Fi network.\
+"component::improv_ble::config::abort::provision_successful" = "Het apparaat is succesvol verbonden met het wifi-netwerk.";
+"component::improv_ble::config::abort::provision_successful_url" = "Het apparaat is succesvol verbonden met het wifi-netwerk.\
 \
-Please finish the setup by following the [setup instructions]({url}).";
+Voltooi de installatie door de [installatie-instructies]({url}) te volgen.";
 "component::improv_ble::config::abort::unknown" = "Onverwachte fout";
-"component::improv_ble::config::error::unable_to_connect" = "The device could not connect to the Wi-Fi network. Check that the SSID and password are correct and try again.";
+"component::improv_ble::config::error::unable_to_connect" = "Het apparaat kon geen verbinding maken met het wifi-netwerk. Controleer of de SSID en het wachtwoord goed zijn ingevuld en probeer het opnieuw.";
 "component::improv_ble::config::flow_title" = "{name}";
 "component::improv_ble::config::progress::authorize" = "The device requires authorization, please press its authorization button or consult the device's manual for how to proceed.";
-"component::improv_ble::config::progress::provisioning" = "The device is connecting to the Wi-Fi network.";
+"component::improv_ble::config::progress::provisioning" = "Het apparaat maakt verbinding met het wifi-netwerk.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Wil je {name} instellen?";
 "component::improv_ble::config::step::identify::description" = "The device is now identifying itself, for example by blinking or beeping.";
 "component::improv_ble::config::step::main_menu::description" = "Choose next step.";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "Identify device";
-"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connect device to a Wi-Fi network";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Verbind het apparaat met een wifi-netwerk";
 "component::improv_ble::config::step::provision::data::password" = "Wachtwoord";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
-"component::improv_ble::config::step::provision::description" = "Enter Wi-Fi credentials to connect the device to your network.";
+"component::improv_ble::config::step::provision::description" = "Voer de wifi-inloggegevens in om het apparaat met het netwerk te verbinden.";
 "component::improv_ble::config::step::user::data::address" = "Apparaat";
 "component::improv_ble::config::step::user::description" = "Kies een apparaat om in te stellen";
 "component::input_boolean::entity_component::_::state::off" = "Uit";
