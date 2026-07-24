@@ -870,6 +870,30 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         return text
     }
 
+    /// Renders every template the slot formulas reference (template kind only): the main text
+    /// template reuses its already-rendered result, and any extra templates in customized slots
+    /// render once each.
+    private static func renderedSlotTemplates(
+        config: WatchComplicationConfig,
+        server: Server?,
+        mainTemplateResult: String?
+    ) async -> [String: String] {
+        guard config.kind == .customTemplate, let server else { return [:] }
+        var rendered: [String: String] = [:]
+        if let mainTemplate = config.customTextTemplate, let mainTemplateResult {
+            rendered[mainTemplate] = mainTemplateResult
+        }
+        let slotConfigs = (config.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
+        let customTemplates = Set(slotConfigs.flatMap { $0.formula?.templates ?? [] })
+            .subtracting(rendered.keys)
+        for template in customTemplates {
+            if let result = await ComplicationStateFetcher.renderTemplate(template, server: server) {
+                rendered[template] = result
+            }
+        }
+        return rendered
+    }
+
     /// Builds a snapshot for a modern config, fetching the live entity state / rendering the custom
     /// template on the watch. The value is shared across sizes; per-family gauge/tint/showValue are
     /// resolved from the config's per-size customization. Falls back to the name when unavailable.
@@ -1000,20 +1024,11 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         // rendering is an admin-only server operation); template-kind formulas may reference extra
         // templates in customized slots, each rendered once here. The main text template reuses the
         // render above instead of rendering twice.
-        var renderedTemplates: [String: String] = [:]
-        if config.kind == .customTemplate, let server {
-            if isLive, let mainTemplate = config.customTextTemplate {
-                renderedTemplates[mainTemplate] = valueText
-            }
-            let allSlotConfigs = (config.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
-            let customTemplates = Set(allSlotConfigs.flatMap { $0.formula?.templates ?? [] })
-                .subtracting(renderedTemplates.keys)
-            for template in customTemplates {
-                if let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
-                    renderedTemplates[template] = rendered
-                }
-            }
-        }
+        let renderedTemplates = await renderedSlotTemplates(
+            config: config,
+            server: server,
+            mainTemplateResult: isLive ? valueText : nil
+        )
         let formulaContext = ComplicationFormulaContext(
             entityName: name,
             formattedState: valueText,

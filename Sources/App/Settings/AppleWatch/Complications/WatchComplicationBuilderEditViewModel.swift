@@ -23,13 +23,6 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
     /// brand-new complication, so the form reveals itself step by step: source → server → entity /
     /// template → value options. Editing an existing config starts with its kind selected.
     @Published private(set) var selectedSource: WatchComplicationConfig.Kind?
-    /// Progressive disclosure: the per-size option toggles are hidden behind "Customize" so the
-    /// initial screen stays simple for the average user. Mirrored into the config so saving persists
-    /// the disclosure state (feedback: "Customize was always off when reopening the editor").
-    @Published var isCustomizing: Bool {
-        didSet { config.isCustomized = isCustomizing }
-    }
-
     /// Nested opt-in under "Customize": reveals the color pickers.
     @Published var useCustomColors: Bool
     /// Opt-in for the template flow: the colors come from templates rendering hex strings — one per
@@ -60,9 +53,6 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         )
         self.config = initial
         self.selectedSource = existing?.kind
-        // Reopen expanded when the user left Customize on (or, for configs saved before the flag
-        // existed, when per-size customization is present).
-        self.isCustomizing = initial.showsCustomized()
         self.useCustomColors = initial.iconColor != nil
             || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false)
         self.useTemplateColor = [

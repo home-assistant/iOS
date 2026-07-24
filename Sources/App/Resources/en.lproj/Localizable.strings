@@ -1771,8 +1771,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.token_text" = "Text";
 "watch.complications.builder.token_value" = "Value";
 "watch.complications.builder.custom_colors" = "Custom colors";
-"watch.complications.builder.customize" = "Customize";
-"watch.complications.builder.customize_footer" = "Customize how each size shows its name, value, gauge, and colors.";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
 "watch.complications.builder.empty" = "No complications yet. Tap + to create one from an entity or a template.";
@@ -1791,14 +1789,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.preview_footer" = "A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
-"watch.complications.builder.show_icon" = "Show icon";
 "watch.complications.builder.show_max" = "Show maximum";
 "watch.complications.builder.show_min" = "Show minimum";
-"watch.complications.builder.show_name" = "Show name";
 "watch.complications.builder.show_progress_bar" = "Show progress bar";
 "watch.complications.builder.show_unit" = "Show unit";
-"watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.show_when_inactive" = "Show when inactive";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";

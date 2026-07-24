@@ -230,23 +230,33 @@ enum WatchWidgetLiveFetch {
                 formattedState: update.value,
                 attributeValue: { update.attributes[$0].map { String(describing: $0) } }
             )
-            for family in WatchComplicationConfig.Family.allCases {
-                guard var options = snapshots[index].perFamily?[family.rawValue] else { continue }
-                func slotText(_ slot: ComplicationSlot) -> String {
-                    ComplicationFormulaResolver.resolve(
-                        config.formula(for: slot, family: family),
-                        context: context
-                    )
-                }
-                if options.title != nil { options.title = slotText(.title) }
-                if options.subtitle != nil { options.subtitle = slotText(.subtitle) }
-                if options.value != nil { options.value = slotText(.value) }
-                if options.bottomText != nil { options.bottomText = slotText(.bottomText) }
-                snapshots[index].perFamily?[family.rawValue] = options
-            }
+            refreshSlotTexts(in: &snapshots[index], config: config, context: context)
         }
         if let encoded = try? JSONEncoder().encode(snapshots) {
             defaults.set(encoded, forKey: WatchWidgetConstants.defaultsKey)
+        }
+    }
+
+    /// Re-resolves a snapshot's per-family slot texts against fresh entity data, leaving families
+    /// without slot payloads (older snapshots) untouched.
+    private static func refreshSlotTexts(
+        in snapshot: inout WatchWidgetComplicationSnapshot,
+        config: WatchComplicationConfig,
+        context: ComplicationFormulaContext
+    ) {
+        for family in WatchComplicationConfig.Family.allCases {
+            guard var options = snapshot.perFamily?[family.rawValue] else { continue }
+            func slotText(_ slot: ComplicationSlot) -> String {
+                ComplicationFormulaResolver.resolve(
+                    config.formula(for: slot, family: family),
+                    context: context
+                )
+            }
+            if options.title != nil { options.title = slotText(.title) }
+            if options.subtitle != nil { options.subtitle = slotText(.subtitle) }
+            if options.value != nil { options.value = slotText(.value) }
+            if options.bottomText != nil { options.bottomText = slotText(.bottomText) }
+            snapshot.perFamily?[family.rawValue] = options
         }
     }
 }

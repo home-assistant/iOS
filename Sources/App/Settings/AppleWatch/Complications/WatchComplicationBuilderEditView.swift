@@ -156,6 +156,45 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Unit + gauge options shown inside the value slot's section: they shape how the value
+    /// renders (unit suffix, gauge/progress bar, range and min/max labels).
+    @ViewBuilder
+    private var valueSlotOptions: some View {
+        if viewModel.config.kind == .entity,
+           viewModel.entityUnit != nil || !(viewModel.config.unitOverride ?? "").isEmpty {
+            Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
+        }
+        if familyHasProgressBar {
+            Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
+            if viewModel.config.showsGauge(for: currentFamily) {
+                // Only the circular gauge has an open/ring style choice.
+                if currentFamily == .circular {
+                    Picker(selection: gaugeStyleBinding) {
+                        ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
+                            Text(verbatim: style.title).tag(style)
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.GaugeStyle.title)
+                    }
+                    .pickerStyle(.segmented)
+                }
+                // Numeric range + min/max labels only apply to entity gauges.
+                if viewModel.config.kind == .entity {
+                    numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
+                    numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
+                    if viewModel.config.gaugeRange(for: currentFamily) != nil {
+                        Toggle(isOn: showMinBinding) {
+                            Text(L10n.Watch.Complications.Builder.showMin)
+                        }
+                        Toggle(isOn: showMaxBinding) {
+                            Text(L10n.Watch.Complications.Builder.showMax)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     var body: some View {
         Form {
             if let server = viewModel.server {
@@ -352,7 +391,7 @@ struct WatchComplicationBuilderEditView: View {
 
             // Step 4: once the source is fully configured (an entity picked, or a template entered),
             // the display options reveal: name/icon (entity flow — the template flow's display-name
-            // row above edits the text template instead), then the Customize disclosure.
+            // row above edits the text template instead), then the per-slot sections.
             if viewModel.isSourceConfigured {
                 if viewModel.config.kind == .entity {
                     Section {
@@ -374,84 +413,38 @@ struct WatchComplicationBuilderEditView: View {
                     }
                 }
 
-                // Progressive disclosure: keep the initial screen simple (name + source). Everything
-                // below is opt-in behind "Customize", so the average user isn't faced with a crowded
-                // form.
+                // Family switcher: selects the size the sections below configure — also the size
+                // the floating mini preview shows.
                 Section {
-                    Toggle(isOn: $viewModel.isCustomizing.animation()) {
-                        Text(L10n.Watch.Complications.Builder.customize)
-                    }
-                } footer: {
-                    Text(L10n.Watch.Complications.Builder.customizeFooter)
-                }
-            }
-
-            if viewModel.isSourceConfigured, viewModel.isCustomizing {
-                // Per-size display options, bound to the size selected in the preview above. Each
-                // UI slot the size offers gets a visibility toggle and (for text slots) a content
-                // choice: the default, or a custom formula mixing hardcoded text with tokens.
-                Section {
-                    ForEach(ComplicationSlot.slots(for: currentFamily)) { slot in
-                        ComplicationSlotRow(
-                            config: $viewModel.config,
-                            slot: slot,
-                            server: viewModel.server,
-                            attributeKeys: viewModel.config.kind == .entity ? viewModel.entityAttributeKeys : []
-                        )
-                    }
-                    if viewModel.config.kind == .entity,
-                       viewModel.entityUnit != nil || !(viewModel.config.unitOverride ?? "").isEmpty {
-                        Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
-                    }
-
-                    if familyHasProgressBar {
-                        Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
-                        if viewModel.config.showsGauge(for: currentFamily) {
-                            // Only the circular gauge has an open/ring style choice.
-                            if currentFamily == .circular {
-                                Picker(selection: gaugeStyleBinding) {
-                                    ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
-                                        Text(verbatim: style.title).tag(style)
-                                    }
-                                } label: {
-                                    Text(L10n.Watch.Complications.GaugeStyle.title)
-                                }
-                                .pickerStyle(.segmented)
-                            }
-                            // Numeric range + min/max labels only apply to entity gauges.
-                            if viewModel.config.kind == .entity {
-                                numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
-                                numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
-                                if viewModel.config.gaugeRange(for: currentFamily) != nil {
-                                    Toggle(isOn: showMinBinding) {
-                                        Text(L10n.Watch.Complications.Builder.showMin)
-                                    }
-                                    Toggle(isOn: showMaxBinding) {
-                                        Text(L10n.Watch.Complications.Builder.showMax)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                } header: {
-                    // Family switcher: selects the size being customized, which is also the size the
-                    // floating mini preview shows.
                     Picker(selection: $viewModel.config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
                         }
                     } label: { EmptyView() }
                         .pickerStyle(.segmented)
-                        .frame(maxWidth: .infinity)
-                        .textCase(nil)
-                        .padding(.bottom, DesignSystem.Spaces.one)
                 } footer: {
                     Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
                 }
 
-                // Colors are a further opt-in under Customize. Inline is rendered in the watch-face tint,
-                // so it has no custom colors.
+                // One section per UI slot of the selected size: visibility, content formula, and —
+                // for the value slot — the unit and gauge options that shape how the value renders.
+                ForEach(ComplicationSlot.slots(for: currentFamily)) { slot in
+                    Section {
+                        ComplicationSlotRow(
+                            config: $viewModel.config,
+                            slot: slot,
+                            server: viewModel.server,
+                            attributeKeys: viewModel.config.kind == .entity ? viewModel.entityAttributeKeys : []
+                        )
+                        if slot == .value {
+                            valueSlotOptions
+                        }
+                    } header: {
+                        Text(verbatim: slot.editorTitle)
+                    }
+                }
+
+                // Inline is rendered in the watch-face tint, so it has no custom colors.
                 if currentFamily != .inline {
                     Section {
                         Toggle(isOn: $viewModel.useCustomColors.animation()) {
@@ -499,7 +492,7 @@ struct WatchComplicationBuilderEditView: View {
                         Text(L10n.Watch.Complications.Builder.colors)
                     }
                 }
-            } // end if isSourceConfigured, isCustomizing
+            } // end if isSourceConfigured
         }
         // Once the inline preview scrolls away, it re-appears as a floating mini preview — only the
         // selected size, zoomed to fit a small watch screen — that the user can drag to any corner
@@ -804,7 +797,7 @@ private struct ComplicationSlotRow: View {
     }
 
     var body: some View {
-        Toggle(isOn: isVisible.animation()) { Text(verbatim: slot.editorTitle) }
+        Toggle(isOn: isVisible.animation()) { Text(L10n.Watch.Complications.Builder.show) }
         if isVisible.wrappedValue, slot != .icon {
             Picker(selection: isCustomContent.animation()) {
                 Text(L10n.Watch.Complications.Builder.contentDefault).tag(false)

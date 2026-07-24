@@ -5904,10 +5904,6 @@ public enum L10n {
         public static var contentDefault: String { return L10n.tr("Localizable", "watch.complications.builder.content_default") }
         /// Custom colors
         public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
-        /// Customize
-        public static var customize: String { return L10n.tr("Localizable", "watch.complications.builder.customize") }
-        /// Customize how each size shows its name, value, gauge, and colors.
-        public static var customizeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.customize_footer") }
         /// Display name
         public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
         /// Edit complication
@@ -5946,22 +5942,18 @@ public enum L10n {
         public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Progress bar color
         public static var progressBarColor: String { return L10n.tr("Localizable", "watch.complications.builder.progress_bar_color") }
+        /// Show
+        public static var show: String { return L10n.tr("Localizable", "watch.complications.builder.show") }
         /// Show as gauge / ring
         public static var showGauge: String { return L10n.tr("Localizable", "watch.complications.builder.show_gauge") }
-        /// Show icon
-        public static var showIcon: String { return L10n.tr("Localizable", "watch.complications.builder.show_icon") }
         /// Show maximum
         public static var showMax: String { return L10n.tr("Localizable", "watch.complications.builder.show_max") }
         /// Show minimum
         public static var showMin: String { return L10n.tr("Localizable", "watch.complications.builder.show_min") }
-        /// Show name
-        public static var showName: String { return L10n.tr("Localizable", "watch.complications.builder.show_name") }
         /// Show progress bar
         public static var showProgressBar: String { return L10n.tr("Localizable", "watch.complications.builder.show_progress_bar") }
         /// Show unit
         public static var showUnit: String { return L10n.tr("Localizable", "watch.complications.builder.show_unit") }
-        /// Show value
-        public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
         /// Show when inactive
         public static var showWhenInactive: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive") }
         /// %1$@ options
