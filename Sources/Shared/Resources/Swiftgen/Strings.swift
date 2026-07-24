@@ -4739,6 +4739,36 @@ public enum L10n {
         /// Closest Server
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.title") }
       }
+      public enum HowItWorks {
+        /// With multiple homes, the app can figure out which server matters right now and switch to it for you — like walking into your second home and seeing its dashboard.
+        public static var intro: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.intro") }
+        /// How it works?
+        public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.title") }
+        public enum Location {
+          /// Otherwise, your location is compared with each server's Home zone, and the nearest one is considered closest.
+          public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.location.body") }
+          /// Then your location
+          public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.location.title") }
+        }
+        public enum Privacy {
+          /// Network and location checks happen only on this device, only while the app is in use. Your location is never stored or shared.
+          public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.privacy.body") }
+          /// Your privacy
+          public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.privacy.title") }
+        }
+        public enum Switching {
+          /// When you open the app inside a zone that belongs to another server, that server is opened automatically. The server you are viewing always wins when zones overlap, and if you switch manually your choice is respected until you leave the zone.
+          public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.body") }
+          /// Automatic switching
+          public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.switching.title") }
+        }
+        public enum Wifi {
+          /// If this device is connected to a Wi-Fi network that belongs to one of your servers, that server is considered closest — no location check needed.
+          public static var body: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.wifi.body") }
+          /// Home network first
+          public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.wifi.title") }
+        }
+      }
     }
     public enum StatusSection {
       /// Status

@@ -1417,6 +1417,16 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.server_switching.by_location.footer" = "When you open the app, your location is compared with your servers' zones. If you are inside a zone that belongs to another server, such as arriving at your second home, that server is opened automatically. Your location is only checked on this device while the app is in use, and is never stored.";
 "settings.server_switching.by_location.title" = "Switch Server by Location";
 "settings.server_switching.closest_server.title" = "Closest Server";
+"settings.server_switching.how_it_works.intro" = "With multiple homes, the app can figure out which server matters right now and switch to it for you — like walking into your second home and seeing its dashboard.";
+"settings.server_switching.how_it_works.location.body" = "Otherwise, your location is compared with each server's Home zone, and the nearest one is considered closest.";
+"settings.server_switching.how_it_works.location.title" = "Then your location";
+"settings.server_switching.how_it_works.privacy.body" = "Network and location checks happen only on this device, only while the app is in use. Your location is never stored or shared.";
+"settings.server_switching.how_it_works.privacy.title" = "Your privacy";
+"settings.server_switching.how_it_works.switching.body" = "When you open the app inside a zone that belongs to another server, that server is opened automatically. The server you are viewing always wins when zones overlap, and if you switch manually your choice is respected until you leave the zone.";
+"settings.server_switching.how_it_works.switching.title" = "Automatic switching";
+"settings.server_switching.how_it_works.title" = "How it works?";
+"settings.server_switching.how_it_works.wifi.body" = "If this device is connected to a Wi-Fi network that belongs to one of your servers, that server is considered closest — no location check needed.";
+"settings.server_switching.how_it_works.wifi.title" = "Home network first";
 "settings.server_switching.switched_toast" = "Switched to %@";
 "settings.server_switching.title" = "Server Switching";
 "settings.status_section.header" = "Status";
