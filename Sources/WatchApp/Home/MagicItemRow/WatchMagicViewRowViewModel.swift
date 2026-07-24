@@ -92,11 +92,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.info("Executing watch magic item directly via API")
         trace?.log(.info, "Executing via REST from the watch on \"\(server.info.name)\"…")
 
-        magicItem.execute(on: server, source: .Watch, onStep: { [weak self] step in
-            // Each REST stage (service call, URL, token, request, TLS) announces itself before it
-            // runs, so a hang's last trace line names the exact step that never returned.
+        // Each REST stage (service call, URL, token, request, TLS) announces itself before it
+        // runs, so a hang's last trace line names the exact step that never returned. Nil when
+        // verbose execution is off, so the run skips the narration (and its probes) entirely.
+        let onStep: ((String) -> Void)? = trace == nil ? nil : { [weak self] step in
             self?.trace?.log(.info, step)
-        }) { [weak self] success, error in
+        }
+        magicItem.execute(on: server, source: .Watch, onStep: onStep) { [weak self] success, error in
             if success {
                 self?.trace?.log(.success, "Server accepted the request")
             } else {
@@ -129,19 +131,19 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             type: .serviceCall,
             payload: ["item": item.id, "server": item.serverId, "reason": detail]
         ))
-        trace?.log(.error, "Execution failed: \(detail)")
+        let currentTrace = trace
+        currentTrace?.log(.error, "Execution failed: \(detail)")
         // The census names the queues holding GCD workers (a worker thread is named after the queue
         // it is currently running), so a starvation-driven failure pinpoints its own culprit.
-        trace?.log(.info, "Threads at failure: \(Self.threadCensus())", isProgress: false)
+        currentTrace?.log(.info, "Threads at failure: \(Self.threadCensus())", isProgress: false)
         // `WKApplication.shared()` is main-thread-only, and failures can be reported from URLSession
         // callback queues; `trace.log` itself is thread-safe.
-        let trace = trace
         DispatchQueue.main.async {
-            trace?.log(.info, "Process at failure: \(Self.processStateSummary())", isProgress: false)
+            currentTrace?.log(.info, "Process at failure: \(Self.processStateSummary())", isProgress: false)
         }
         // The verbose trace screen already shows the failure; presenting the alert underneath the
         // full-screen cover would just fight it.
-        guard trace == nil else { return }
+        guard currentTrace == nil else { return }
         let message = alertMessage ?? L10n.Watch.Home.Run.Error.message
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
