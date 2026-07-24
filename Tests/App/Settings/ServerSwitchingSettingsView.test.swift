@@ -15,4 +15,19 @@ struct ServerSwitchingSettingsViewTests {
             drawHierarchyInKeyWindow: true
         )
     }
+
+    @MainActor
+    @Test func serverSwitchingScreenWithClosestServer() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 2)
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                ServerSwitchingSettingsView(
+                    viewModel: ServerSwitchingSettingsViewModel(closestServerDescription: "Fake Server · 1.2 km")
+                )
+            },
+            drawHierarchyInKeyWindow: true
+        )
+    }
 }
