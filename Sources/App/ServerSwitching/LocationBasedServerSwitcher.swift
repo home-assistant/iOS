@@ -9,7 +9,9 @@ import UIKit
 /// signals, in the same priority, drive the "Closest Server" row so what's shown is what switches.
 /// Runs on cold launch and on every return from the background via `didBecomeActive`; foreground
 /// only, one check per activation, no background monitoring. A match is applied once per visit, so
-/// manually switching away isn't undone on the next activation.
+/// manually switching away isn't undone by quick app switches. The manual choice expires after the
+/// app stays in the background for a while (or is relaunched), so reopening later lands on the
+/// server for the home the user is at.
 @MainActor
 final class LocationBasedServerSwitcher {
     static let shared = LocationBasedServerSwitcher()
@@ -17,11 +19,17 @@ final class LocationBasedServerSwitcher {
     private static let toastID = "location-based-server-switch"
     private static let toastDuration: TimeInterval = 4
     private static let locationTimeout: TimeInterval = 5
+    /// How long the app must stay in the background before the once-per-visit memory expires and
+    /// the matched server is applied again on the next activation.
+    private static let matchMemoryLifetime: TimeInterval = 15 * 60
 
     private var didBecomeActiveObserver: NSObjectProtocol?
+    private var didEnterBackgroundObserver: NSObjectProtocol?
+    private var enteredBackgroundDate: Date?
     private var evaluationTask: Task<Void, Never>?
     /// The server the previous evaluation matched. A new match is only applied when it differs, so a
-    /// user who manually switched away stays put until they leave the home and come back.
+    /// user who manually switched away stays put until they leave the home, come back to the app
+    /// after `matchMemoryLifetime` in the background, or relaunch it.
     private var lastMatchedServerIdentifier: Identifier<Server>?
 
     func start() {
@@ -35,6 +43,15 @@ final class LocationBasedServerSwitcher {
                 self?.evaluate()
             }
         }
+        didEnterBackgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.enteredBackgroundDate = Date()
+            }
+        }
     }
 
     func evaluate() {
@@ -43,6 +60,13 @@ final class LocationBasedServerSwitcher {
               !Current.kioskSettings.enabled,
               Current.servers.all.count > 1 else { return }
         guard evaluationTask == nil else { return }
+
+        // A long stay in the background ends the visit: whoever is at this home now expects the
+        // matching server again, even if they had manually switched away before leaving the app.
+        if let enteredBackgroundDate, Date().timeIntervalSince(enteredBackgroundDate) >= Self.matchMemoryLifetime {
+            lastMatchedServerIdentifier = nil
+        }
+        enteredBackgroundDate = nil
 
         evaluationTask = Task { [weak self] in
             // The Wi-Fi check works even without a location fix (and resolves faster than one).
