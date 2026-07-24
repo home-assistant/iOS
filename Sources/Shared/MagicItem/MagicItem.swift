@@ -571,6 +571,9 @@ public extension MagicItem {
             return
         }
         onStep?("Service call: \(serviceCall.domain).\(serviceCall.service)")
+        if let onStep {
+            probeDispatchPools(onStep: onStep)
+        }
 
         // No Swift concurrency on this path: watchOS gives the cooperative pool a single thread,
         // and a starved pool left taps hanging before the request ever started. The synchronous
@@ -595,34 +598,78 @@ public extension MagicItem {
         let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
         let tokenStarted = Current.date()
         onStep?("Requesting bearer token (\(Int(Self.tokenDeadline))s deadline)…")
-        // Deadline so a stuck refresh fails the run instead of silencing it. The loser of the race
-        // is discarded; a late token still lands in the shared cache for the next run.
-        let deadline = after(seconds: Self.tokenDeadline)
-            .then { Promise<(String, Date)>(error: WatchRESTExecutionError.tokenTimeout) }
-        race(tokenManager.bearerToken, deadline).done { token, _ in
-            onStep?(String(
-                format: "Token ready in %.2fs",
-                Current.date().timeIntervalSince(tokenStarted)
-            ))
-            self.sendRESTServiceCall(
-                baseURL: baseURL,
-                server: server,
-                token: token,
-                serviceCall: serviceCall,
-                onStep: onStep,
-                completion: completion
-            )
-        }.catch { error in
-            if let restError = error as? WatchRESTExecutionError, case .tokenTimeout = restError {
+
+        let lock = NSLock()
+        var settled = false
+        // First caller wins; the loser is discarded so `completion` runs exactly once. A late token
+        // still lands in the shared cache for the next run.
+        func settleOnce(_ body: () -> Void) {
+            lock.lock()
+            let shouldRun = !settled
+            settled = true
+            lock.unlock()
+            if shouldRun { body() }
+        }
+
+        // Deadline so a stuck refresh fails the run instead of silencing it. Main queue on purpose,
+        // not PromiseKit's `after` — that fires on the GCD global pool, which is exactly what these
+        // hangs starve, so a pool-based deadline never fired and the run hung with no trace. Main is
+        // the one queue proven to stay serviced on watch hardware (same reasoning as the URLSession
+        // callback fallback in `sendRESTServiceCall`).
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.tokenDeadline) {
+            settleOnce {
                 onStep?(
                     "No token after \(Int(Self.tokenDeadline))s — giving up. The refresh appears " +
                         "stuck; it stays cached, so later runs will fail fast too until the app restarts."
                 )
-            } else {
-                onStep?("Token failed: \(error.localizedDescription)")
+                Current.Log.error("Token deadline elapsed executing magic item \(self.id)")
+                completion(false, WatchRESTExecutionError.tokenTimeout)
             }
-            Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
-            completion(false, error)
+        }
+
+        tokenManager.bearerToken.done { token, _ in
+            settleOnce {
+                onStep?(String(
+                    format: "Token ready in %.2fs",
+                    Current.date().timeIntervalSince(tokenStarted)
+                ))
+                self.sendRESTServiceCall(
+                    baseURL: baseURL,
+                    server: server,
+                    token: token,
+                    serviceCall: serviceCall,
+                    onStep: onStep,
+                    completion: completion
+                )
+            }
+        }.catch { error in
+            settleOnce {
+                onStep?("Token failed: \(error.localizedDescription)")
+                Current.Log
+                    .error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
+                completion(false, error)
+            }
+        }
+    }
+
+    /// Fires a no-op on each global-QoS queue and narrates when it ran. During past hangs the GCD
+    /// worker pool was starved while the main queue stayed serviced, so these lines show — per QoS
+    /// level — whether background dispatch is alive during this run. A probe line that never
+    /// appears in the trace is itself the finding: that QoS level never got a worker thread.
+    private func probeDispatchPools(onStep: @escaping (String) -> Void) {
+        let started = Current.date()
+        let levels: [(label: String, qos: DispatchQoS.QoSClass)] = [
+            ("user-interactive", .userInteractive),
+            ("user-initiated", .userInitiated),
+            ("default", .default),
+            ("utility", .utility),
+            ("background", .background),
+        ]
+        for level in levels {
+            DispatchQueue.global(qos: level.qos).async {
+                let elapsed = Current.date().timeIntervalSince(started)
+                onStep(String(format: "Probe: global %@ queue ran after %.2fs", level.label, elapsed))
+            }
         }
     }
 
