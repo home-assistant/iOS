@@ -51,10 +51,11 @@ final class WebViewGestureHandler {
             .cauterize()
     }
 
-    private func webViewNavigateBack() {
-        if webView?.canGoBack ?? false {
-            webView?.goBack()
-        }
+    @discardableResult
+    private func webViewNavigateBack() -> Bool {
+        guard webView?.canGoBack ?? false else { return false }
+        webView?.goBack()
+        return true
     }
 
     private func webViewNavigateForward() {
@@ -64,9 +65,7 @@ final class WebViewGestureHandler {
     }
 
     private func smartBack() {
-        if webView?.canGoBack ?? false {
-            webView?.goBack()
-        } else {
+        if !webViewNavigateBack() {
             showSidebar()
         }
     }
