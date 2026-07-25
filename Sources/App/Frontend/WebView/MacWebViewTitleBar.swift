@@ -72,7 +72,8 @@ extension MacWebViewTitleBar {
         private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { ![
             .none,
             .nextPage,
-            .backPage
+            .backPage,
+            .smartBack
         ].contains($0) }
 
         private weak var webViewController: WebViewController?
@@ -403,6 +404,8 @@ extension MacWebViewTitleBar {
                 .arrowUturnBackward
             case .nextPage:
                 .arrowUturnForward
+            case .smartBack:
+                .arrowUturnBackward
             case .showServersList:
                 .serverRack
             case .nextServer:
