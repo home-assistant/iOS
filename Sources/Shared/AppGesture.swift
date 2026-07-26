@@ -96,6 +96,16 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         }
     }
 
+    /// Whether the action is experimental and should display a Labs label
+    public var isLabsFeature: Bool {
+        switch self {
+        case .smartBack:
+            true
+        default:
+            false
+        }
+    }
+
     public var moreInfo: String? {
         switch self {
         case .showSidebar:

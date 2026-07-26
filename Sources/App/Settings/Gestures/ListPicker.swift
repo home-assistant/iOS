@@ -1,4 +1,5 @@
 import SFSafeSymbols
+import Shared
 import SwiftUI
 
 protocol ListPickerSelectable: Identifiable {
@@ -19,11 +20,13 @@ struct ListPickerContent {
         let id: String
         let title: String
         let subtitle: String?
+        let showsLabsLabel: Bool
 
-        init(id: String, title: String, subtitle: String? = nil) {
+        init(id: String, title: String, subtitle: String? = nil, showsLabsLabel: Bool = false) {
             self.id = id
             self.title = title
             self.subtitle = subtitle
+            self.showsLabsLabel = showsLabsLabel
         }
     }
 }
@@ -73,6 +76,9 @@ struct ListPickerContentView: View {
                                     }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                if item.showsLabsLabel {
+                                    LabsLabel()
+                                }
                                 if selection.id == item.id {
                                     Image(systemSymbol: .checkmark)
                                         .foregroundColor(.accentColor)
