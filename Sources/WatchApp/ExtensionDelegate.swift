@@ -665,6 +665,16 @@ enum WatchWidgetComplicationSnapshotStore {
             Current.Log.error("Failed to encode watch widget complication snapshots")
             return
         }
+        // Skip the write + WidgetKit reload when the model didn't change. Reloads are budgeted on
+        // watchOS; spending one on identical content can get a later, real change throttled — the
+        // face then keeps showing a stale value even though the store holds the fresh one. The
+        // stored blob is decoded and compared as a model (not byte-wise) so JSON dictionary key
+        // ordering can't fake a change.
+        if let stored = defaults.data(forKey: defaultsKey),
+           let previous = try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: stored),
+           previous == snapshots {
+            return
+        }
         defaults.set(data, forKey: defaultsKey)
         // Reload every kind rather than a single `kind` string: the widget registers its kind from the
         // extension's `Bundle.main.bundleIdentifier`, which can differ from this app-process-derived
@@ -777,7 +787,7 @@ private enum ComplicationStateFetcher {
     }
 }
 
-private struct WatchWidgetComplicationSnapshot: Codable {
+private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
     // Watch screens are @2x, so this rasterizes to 112px — safely under WidgetKit's ~122px
     // complication-image archiving limit. Anything larger makes the complication render empty.
     static let iconRenderSize = CGSize(width: 56, height: 56)
@@ -786,7 +796,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     /// `WatchComplicationConfig.Family.rawValue`. Must stay field-compatible with the widget
     /// extension's copy in `Sources/WatchWidgets/WatchWidgetComplicationSnapshot.swift` — the two
     /// only meet through the JSON in the app group.
-    struct PerFamily: Codable {
+    struct PerFamily: Codable, Equatable {
         let fraction: Double?
         let tint: String?
         let showValue: Bool
