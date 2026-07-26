@@ -11,10 +11,12 @@ enum WatchWidgetRefreshNotifier {
     // Unlocalized on purpose: the widget target carries no strings tables (see the plain-text
     // constants in `WatchWidgetConstants`), and this developer-only tracing never shows for
     // regular users.
-    static func notifyStarted(configuredID: String?) {
+    static func notifyStarted(names: [String]) {
         post(
             title: "Widget reload started",
-            body: configuredID == nil ? "Self fetch: all complications" : "Self fetch: one complication"
+            body: names.isEmpty
+                ? "Self fetch: no complications configured"
+                : "Self fetch: reloading \(names.count) — \(names.joined(separator: ", "))"
         )
     }
 

@@ -6477,27 +6477,31 @@ public enum L10n {
     public enum Debug {
       public enum ComplicationRefresh {
         public enum Finished {
-          /// %1$@ failed: %2$@
-          public static func failedLine(_ p1: Any, _ p2: Any) -> String {
-            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.failed_line", String(describing: p1), String(describing: p2))
+          /// %1$@ failed in %2$@: %3$@
+          public static func failedLine(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.failed_line", String(describing: p1), String(describing: p2), String(describing: p3))
           }
-          /// %1$@ failed, kept previous value: %2$@
-          public static func keptPreviousLine(_ p1: Any, _ p2: Any) -> String {
-            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.kept_previous_line", String(describing: p1), String(describing: p2))
+          /// %1$@ failed in %2$@ (%3$@) — still showing %4$@
+          public static func keptPreviousLine(_ p1: Any, _ p2: Any, _ p3: Any, _ p4: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.kept_previous_line", String(describing: p1), String(describing: p2), String(describing: p3), String(describing: p4))
           }
-          /// %li succeeded, %li failed
-          public static func summary(_ p1: Int, _ p2: Int) -> String {
-            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.summary", p1, p2)
+          /// %1$li succeeded, %2$li failed in %3$@
+          public static func summary(_ p1: Int, _ p2: Int, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.summary", p1, p2, String(describing: p3))
           }
           /// Complications reload finished
           public static var title: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.title") }
           /// unknown reason
           public static var unknownReason: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.unknown_reason") }
+          /// %1$@ updated to %2$@ in %3$@
+          public static func updatedLine(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.updated_line", String(describing: p1), String(describing: p2), String(describing: p3))
+          }
         }
         public enum Started {
-          /// Reloading %li complication(s)
-          public static func body(_ p1: Int) -> String {
-            return L10n.tr("Localizable", "watch.debug.complication_refresh.started.body", p1)
+          /// Reloading %1$li complication(s): %2$@
+          public static func body(_ p1: Int, _ p2: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.started.body", p1, String(describing: p2))
           }
           /// Complications reload started
           public static var title: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.started.title") }

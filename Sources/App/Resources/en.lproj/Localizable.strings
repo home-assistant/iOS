@@ -1968,12 +1968,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed: %2$@";
-"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed, kept previous value: %2$@";
-"watch.debug.complication_refresh.finished.summary" = "%li succeeded, %li failed";
+"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
+"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
+"watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
 "watch.debug.complication_refresh.finished.title" = "Complications reload finished";
 "watch.debug.complication_refresh.finished.unknown_reason" = "unknown reason";
-"watch.debug.complication_refresh.started.body" = "Reloading %li complication(s)";
+"watch.debug.complication_refresh.finished.updated_line" = "%1$@ updated to %2$@ in %3$@";
+"watch.debug.complication_refresh.started.body" = "Reloading %1$li complication(s): %2$@";
 "watch.debug.complication_refresh.started.title" = "Complications reload started";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
