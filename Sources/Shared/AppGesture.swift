@@ -35,6 +35,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Page
     case backPage
     case nextPage
+    case smartBack
     // Servers
     case showServersList
     case nextServer
@@ -49,7 +50,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         switch self {
         case .showSidebar, .quickSearch, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
-        case .backPage, .nextPage:
+        case .backPage, .nextPage, .smartBack:
             .page
         case .showServersList, .nextServer, .previousServer:
             .servers
@@ -68,6 +69,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.backPage
         case .nextPage:
             L10n.Gestures.Value.Option.nextPage
+        case .smartBack:
+            L10n.Gestures.Value.Option.smartBack
         case .quickSearch:
             L10n.Gestures.Value.Option.quickSearch
         case .searchEntities:
@@ -93,6 +96,16 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         }
     }
 
+    /// Whether the action is experimental and should display a Labs label
+    public var isLabsFeature: Bool {
+        switch self {
+        case .smartBack:
+            true
+        default:
+            false
+        }
+    }
+
     public var moreInfo: String? {
         switch self {
         case .showSidebar:
@@ -101,6 +114,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .nextPage:
             nil
+        case .smartBack:
+            L10n.Gestures.Value.Option.MoreInfo.smartBack
         case .quickSearch:
             L10n.Gestures.Value.Option.MoreInfo.quickSearch
         case .searchEntities:
