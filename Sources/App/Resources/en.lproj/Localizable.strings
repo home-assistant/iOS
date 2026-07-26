@@ -1968,6 +1968,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
+"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
+"watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
+"watch.debug.complication_refresh.finished.title" = "Complications reload finished";
+"watch.debug.complication_refresh.finished.unknown_reason" = "unknown reason";
+"watch.debug.complication_refresh.finished.updated_line" = "%1$@ updated to %2$@ in %3$@";
+"watch.debug.complication_refresh.started.body" = "Reloading %1$li complication(s): %2$@";
+"watch.debug.complication_refresh.started.title" = "Complications reload started";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
@@ -2193,6 +2201,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
 "watch.settings.developer.audio_probe.footer" = "Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.";
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
+"watch.settings.developer.complication_refresh_notifications.footer" = "Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.";
+"watch.settings.developer.complication_refresh_notifications.title" = "Complication reload alerts";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
 "watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";

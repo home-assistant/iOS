@@ -26,6 +26,11 @@ public enum WatchUserDefaultsKey: String {
     /// EXPERIMENT: hold a playback audio session open during the direct sync, to test whether
     /// watchOS's audio-streaming exception unlocks the websocket on real hardware (TN3135).
     case directSyncAudioSessionProbeEnabled
+    /// Developer option: post a local notification when a complication reload (self fetch) starts
+    /// and finishes, saying whether each complication succeeded and why it failed. Stored in the
+    /// shared app group (unlike the other keys) so the watch widget extension's own self fetch can
+    /// read it too.
+    case complicationRefreshNotificationsEnabled
 }
 
 public final class WatchUserDefaults {
@@ -106,6 +111,22 @@ public final class WatchUserDefaults {
     public var directSyncAudioSessionProbeEnabled: Bool {
         get { userDefaults.bool(forKey: WatchUserDefaultsKey.directSyncAudioSessionProbeEnabled.rawValue) }
         set { userDefaults.set(newValue, forKey: WatchUserDefaultsKey.directSyncAudioSessionProbeEnabled.rawValue) }
+    }
+
+    /// Developer option: post a local notification when a complication reload (self fetch) starts
+    /// and finishes, saying whether each complication succeeded and why it failed. Defaults to
+    /// false. Lives in the shared app-group defaults — not the standard suite the other developer
+    /// options use — because the watch widget extension also self-fetches (on its own WidgetKit
+    /// budget) and must be able to read the flag.
+    public var complicationRefreshNotificationsEnabled: Bool {
+        get {
+            UserDefaults(suiteName: AppConstants.AppGroupID)?
+                .bool(forKey: WatchUserDefaultsKey.complicationRefreshNotificationsEnabled.rawValue) ?? false
+        }
+        set {
+            UserDefaults(suiteName: AppConstants.AppGroupID)?
+                .set(newValue, forKey: WatchUserDefaultsKey.complicationRefreshNotificationsEnabled.rawValue)
+        }
     }
 
     // MARK: - Per-server URL override (watch-local)

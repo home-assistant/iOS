@@ -468,6 +468,13 @@ struct ComplicationRefreshOutcome: Identifiable {
     let name: String
     let status: Status
     let reason: String?
+    /// The entity backing the complication, when it has one — identifies exactly what was fetched.
+    let entityId: String?
+    /// The value now shown on the face: the freshly fetched value when live, the retained previous
+    /// value when cached, nil when there's nothing to show.
+    let value: String?
+    /// How long this complication's fetch took.
+    let duration: TimeInterval
 }
 
 /// Persisted record of a complication's last refresh attempt, shown on the watch's per-complication
@@ -535,18 +542,38 @@ enum WatchWidgetComplicationSnapshotStore {
         write(snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots, defaults: defaults)
 
         guard !configs.isEmpty else { return [] }
+        ComplicationRefreshDebugNotifier.notifyStarted(names: configs.map(\.displayName))
+        let refreshStarted = Date()
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
         var outcomes: [ComplicationRefreshOutcome] = []
         for config in configs {
             let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+            let fetchStarted = Date()
             let result = await WatchWidgetComplicationSnapshot.make(config: config)
+            let duration = Date().timeIntervalSince(fetchStarted)
             if result.isLive {
                 configSnapshots.append(result.snapshot)
-                outcomes.append(.init(id: config.id, name: name, status: .live, reason: nil))
+                outcomes.append(.init(
+                    id: config.id,
+                    name: name,
+                    status: .live,
+                    reason: nil,
+                    entityId: config.entityId,
+                    value: result.snapshot.title,
+                    duration: duration
+                ))
             } else if let cached = previous[config.id] {
                 // Live fetch failed but we have a previous value — keep it rather than overwrite.
                 configSnapshots.append(cached)
-                outcomes.append(.init(id: config.id, name: name, status: .cached, reason: result.failureReason))
+                outcomes.append(.init(
+                    id: config.id,
+                    name: name,
+                    status: .cached,
+                    reason: result.failureReason,
+                    entityId: config.entityId,
+                    value: cached.title,
+                    duration: duration
+                ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” is showing a cached "
                         + "value; live refresh failed (\(result.failureReason ?? "unknown"))",
@@ -556,7 +583,15 @@ enum WatchWidgetComplicationSnapshotStore {
             } else {
                 // Nothing cached (e.g. just added) — show the name-only snapshot and record the error.
                 configSnapshots.append(result.snapshot)
-                outcomes.append(.init(id: config.id, name: name, status: .failed, reason: result.failureReason))
+                outcomes.append(.init(
+                    id: config.id,
+                    name: name,
+                    status: .failed,
+                    reason: result.failureReason,
+                    entityId: config.entityId,
+                    value: nil,
+                    duration: duration
+                ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” "
                         + "could not load live data (\(result.failureReason ?? "unknown"))",
@@ -576,6 +611,10 @@ enum WatchWidgetComplicationSnapshotStore {
             type: .backgroundOperation,
             payload: ["live": liveCount, "cached": cachedCount, "failed": failedCount]
         ))
+        ComplicationRefreshDebugNotifier.notifyFinished(
+            outcomes,
+            duration: Date().timeIntervalSince(refreshStarted)
+        )
         return outcomes
     }
 
@@ -593,18 +632,45 @@ enum WatchWidgetComplicationSnapshotStore {
         let legacy = ((try? WatchComplication.all()) ?? [])
             .map(WatchWidgetComplicationSnapshot.init(complication:))
 
+        ComplicationRefreshDebugNotifier.notifyStarted(names: [name])
+        let fetchStarted = Date()
         let result = await WatchWidgetComplicationSnapshot.make(config: config)
+        let duration = Date().timeIntervalSince(fetchStarted)
         let snapshot: WatchWidgetComplicationSnapshot
         let outcome: ComplicationRefreshOutcome
         if result.isLive {
             snapshot = result.snapshot
-            outcome = .init(id: config.id, name: name, status: .live, reason: nil)
+            outcome = .init(
+                id: config.id,
+                name: name,
+                status: .live,
+                reason: nil,
+                entityId: config.entityId,
+                value: result.snapshot.title,
+                duration: duration
+            )
         } else if let cached = previous[config.id] {
             snapshot = cached
-            outcome = .init(id: config.id, name: name, status: .cached, reason: result.failureReason)
+            outcome = .init(
+                id: config.id,
+                name: name,
+                status: .cached,
+                reason: result.failureReason,
+                entityId: config.entityId,
+                value: cached.title,
+                duration: duration
+            )
         } else {
             snapshot = result.snapshot
-            outcome = .init(id: config.id, name: name, status: .failed, reason: result.failureReason)
+            outcome = .init(
+                id: config.id,
+                name: name,
+                status: .failed,
+                reason: result.failureReason,
+                entityId: config.entityId,
+                value: nil,
+                duration: duration
+            )
         }
 
         // Rebuild the full set: keep every other complication's last snapshot, replace just this one.
@@ -613,6 +679,7 @@ enum WatchWidgetComplicationSnapshotStore {
         }
         write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
         persistRecords([outcome], keepingIds: configs.map(\.id), defaults: defaults)
+        ComplicationRefreshDebugNotifier.notifyFinished([outcome], duration: duration)
         return outcome
     }
 
@@ -696,46 +763,51 @@ private enum ComplicationStateFetcher {
     }
 
     /// Performs `request` on the server's mTLS/self-signed-aware session (so local servers work),
-    /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does.
-    private static func data(for request: URLRequest, server: Server) async -> Data? {
+    /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does. On failure the
+    /// data is nil and `failure` says why (transport error, HTTP status), so diagnostics can show
+    /// the actual cause instead of a generic "unavailable".
+    private static func data(for request: URLRequest, server: Server) async -> (data: Data?, failure: String?) {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         defer { session.finishTasksAndInvalidate() }
         do {
             let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else {
                 Current.Log.error("[Complication] no HTTP response for \(request.url?.absoluteString ?? "?")")
-                return nil
+                return (nil, "no HTTP response")
             }
             guard (200 ..< 300).contains(http.statusCode) else {
                 Current.Log.error("[Complication] HTTP \(http.statusCode) for \(request.url?.absoluteString ?? "?")")
-                return nil
+                return (nil, "HTTP \(http.statusCode)")
             }
-            return data
+            return (data, nil)
         } catch {
             Current.Log.error("[Complication] request failed \(request.url?.absoluteString ?? "?"): \(error)")
-            return nil
+            return (nil, error.localizedDescription)
         }
     }
 
-    static func fetchState(entityId: String, server: Server) async -> EntityState? {
+    static func fetchState(entityId: String, server: Server) async -> (state: EntityState?, failure: String?) {
         guard let baseURL = await server.activeURL() else {
             Current.Log.error("[Complication] no active URL for server \(server.identifier.rawValue)")
-            return nil
+            return (nil, "no server URL reachable from the watch")
         }
         guard let token = await bearerToken(for: server) else {
             Current.Log.error("[Complication] no bearer token for server \(server.identifier.rawValue)")
-            return nil
+            return (nil, "couldn't get an access token")
         }
         Current.Log.info("[Complication] fetching state for \(entityId) at \(baseURL.absoluteString)")
         var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
-        guard let data = await data(for: request, server: server),
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let state = json["state"] as? String else {
-            return nil
+        let result = await data(for: request, server: server)
+        guard let data = result.data else {
+            return (nil, result.failure)
         }
-        return EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:])
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let state = json["state"] as? String else {
+            return (nil, "unexpected response body")
+        }
+        return (EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:]), nil)
     }
 
     /// Snapshot everything the watch-widget extension needs to self-fetch this server over REST on its
@@ -772,7 +844,7 @@ private enum ComplicationStateFetcher {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["template": template])
-        guard let data = await data(for: request, server: server) else { return nil }
+        guard let data = await data(for: request, server: server).data else { return nil }
         return String(data: data, encoding: .utf8)
     }
 }
@@ -929,7 +1001,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 failureReason = "no entity configured"
                 break
             }
-            if let result = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server) {
+            let fetched = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server)
+            if let result = fetched.state {
                 rawState = result.state
                 attributes = result.attributes
                 // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
@@ -963,7 +1036,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 valueText = formatValue(rawValue, unit: unit, precision: precision)
                 isLive = true
             } else {
-                failureReason = "live state unavailable"
+                failureReason = fetched.failure ?? "live state unavailable"
             }
         case .customTemplate:
             guard let server else {

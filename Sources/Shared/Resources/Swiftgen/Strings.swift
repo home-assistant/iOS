@@ -6475,6 +6475,38 @@ public enum L10n {
       }
     }
     public enum Debug {
+      public enum ComplicationRefresh {
+        public enum Finished {
+          /// %1$@ failed in %2$@: %3$@
+          public static func failedLine(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.failed_line", String(describing: p1), String(describing: p2), String(describing: p3))
+          }
+          /// %1$@ failed in %2$@ (%3$@) — still showing %4$@
+          public static func keptPreviousLine(_ p1: Any, _ p2: Any, _ p3: Any, _ p4: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.kept_previous_line", String(describing: p1), String(describing: p2), String(describing: p3), String(describing: p4))
+          }
+          /// %1$li succeeded, %2$li failed in %3$@
+          public static func summary(_ p1: Int, _ p2: Int, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.summary", p1, p2, String(describing: p3))
+          }
+          /// Complications reload finished
+          public static var title: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.title") }
+          /// unknown reason
+          public static var unknownReason: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.unknown_reason") }
+          /// %1$@ updated to %2$@ in %3$@
+          public static func updatedLine(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.finished.updated_line", String(describing: p1), String(describing: p2), String(describing: p3))
+          }
+        }
+        public enum Started {
+          /// Reloading %1$li complication(s): %2$@
+          public static func body(_ p1: Int, _ p2: Any) -> String {
+            return L10n.tr("Localizable", "watch.debug.complication_refresh.started.body", p1, String(describing: p2))
+          }
+          /// Complications reload started
+          public static var title: String { return L10n.tr("Localizable", "watch.debug.complication_refresh.started.title") }
+        }
+      }
       public enum DeleteDb {
         /// Delete watch configuration
         public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.title") }
@@ -7171,6 +7203,12 @@ public enum L10n {
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
           /// Audio session probe
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.title") }
+        }
+        public enum ComplicationRefreshNotifications {
+          /// Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.footer") }
+          /// Complication reload alerts
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.title") }
         }
         public enum DirectSync {
           /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.

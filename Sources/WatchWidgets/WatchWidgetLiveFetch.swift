@@ -19,14 +19,30 @@ enum WatchWidgetLiveFetch {
     /// snapshot's value text in the app group. Best-effort; never throws.
     static func refresh(configuredID: String?) async {
         let configs = readConfigs()
-        guard !configs.isEmpty else { return }
+        let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
+        WatchWidgetRefreshNotifier.notifyStarted(names: targets.map(\.displayName))
+        let started = Date()
+        let summary = await performRefresh(configs: configs, targets: targets)
+        WatchWidgetRefreshNotifier.notifyFinished(
+            summary + String(format: " — total %.1fs", Date().timeIntervalSince(started))
+        )
+    }
+
+    /// The actual refresh. Returns a human-readable outcome for the developer-option notification —
+    /// per complication: the fresh value and how long its fetch took, or why it failed; ignored when
+    /// the option is off.
+    private static func performRefresh(
+        configs: [WatchComplicationConfig],
+        targets: [WatchComplicationConfig]
+    ) async -> String {
+        guard !configs.isEmpty else { return "Failed: no complication configurations found" }
 
         let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID)
         let stored = Dictionary(
             WatchWidgetServerCredential.read(from: defaults).map { ($0.serverId, $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        guard !stored.isEmpty else { return }
+        guard !stored.isEmpty else { return "Failed: no server credentials stored by the watch app" }
 
         // Ensure each server's access token is valid before touching `/api/states`. If it's at/near
         // expiry we refresh it ourselves (a plain `POST /auth/token`); if we can't get a valid token we
@@ -34,22 +50,53 @@ enum WatchWidgetLiveFetch {
         // is what the server logs as invalid auth and eventually IP-bans.
         let (usable, persist) = await validated(stored)
         if let persist { WatchWidgetServerCredential.write(persist, to: defaults) }
-        guard !usable.isEmpty else { return }
-
-        let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
-        var updates: [String: LiveValue] = [:] // config.id -> fresh value
-
-        for config in targets where config.kind == .entity {
-            guard let entityId = config.entityId,
-                  let credential = usable[config.serverId],
-                  let value = await fetchValue(config: config, entityId: entityId, credential: credential) else {
-                continue
-            }
-            updates[config.id] = value
+        guard !usable.isEmpty else {
+            return "Failed: no valid access token for server(s) " + stored.keys.sorted().joined(separator: ", ")
         }
 
-        guard !updates.isEmpty else { return }
-        applyUpdates(updates, configs: configs)
+        let (updates, details) = await fetchUpdates(targets: targets, usable: usable)
+        if !updates.isEmpty { applyUpdates(updates, configs: configs) }
+
+        let entityCount = targets.filter { $0.kind == .entity }.count
+        var summary = "Updated \(updates.count) of \(entityCount) complication(s)"
+        if !details.isEmpty { summary += "\n" + details.joined(separator: "\n") }
+        return summary
+    }
+
+    /// Fetches each entity complication's live value, collecting a detail line per complication for
+    /// the developer notification: the fresh value and fetch time on success, the elapsed time and
+    /// cause on failure.
+    private static func fetchUpdates(
+        targets: [WatchComplicationConfig],
+        usable: [String: WatchWidgetServerCredential]
+    ) async -> (updates: [String: LiveValue], details: [String]) {
+        var updates: [String: LiveValue] = [:] // config.id -> fresh value
+        var details: [String] = []
+        for config in targets {
+            let label = config.entityId.map { "\(config.displayName) (\($0))" } ?? config.displayName
+            guard config.kind == .entity else {
+                details.append("\(label): skipped — template complications can't self-fetch")
+                continue
+            }
+            guard let entityId = config.entityId else {
+                details.append("\(label): failed — no entity configured")
+                continue
+            }
+            guard let credential = usable[config.serverId] else {
+                details.append("\(label): failed — no valid credential for its server")
+                continue
+            }
+            let started = Date()
+            let result = await fetchValue(config: config, entityId: entityId, credential: credential)
+            let elapsed = String(format: "%.1fs", Date().timeIntervalSince(started))
+            if let value = result.value {
+                updates[config.id] = value
+                details.append("\(label): updated to \(value.value) in \(elapsed)")
+            } else {
+                details.append("\(label): failed in \(elapsed) — \(result.failure ?? "unknown reason")")
+            }
+        }
+        return (updates, details)
     }
 
     /// A fresh formatted value plus the raw attributes, so slot formulas that reference attributes
@@ -135,11 +182,14 @@ enum WatchWidgetLiveFetch {
 
     // MARK: - Fetch
 
+    /// Fetches the entity's live state. On failure the value is nil and `failure` says why
+    /// (transport error, HTTP status, malformed body), so the developer notification can report the
+    /// actual cause instead of a generic "fetch failed".
     private static func fetchValue(
         config: WatchComplicationConfig,
         entityId: String,
         credential: WatchWidgetServerCredential
-    ) async -> LiveValue? {
+    ) async -> (value: LiveValue?, failure: String?) {
         var request = URLRequest(url: credential.baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(credential.token)", forHTTPHeaderField: "Authorization")
 
@@ -147,11 +197,18 @@ enum WatchWidgetLiveFetch {
         let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
         defer { session.finishTasksAndInvalidate() }
 
-        guard let (data, response) = try? await session.data(for: request),
-              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode),
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        let data: Data
+        do {
+            let (body, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else { return (nil, "no HTTP response") }
+            guard (200 ..< 300).contains(http.statusCode) else { return (nil, "HTTP \(http.statusCode)") }
+            data = body
+        } catch {
+            return (nil, error.localizedDescription)
+        }
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let state = json["state"] as? String else {
-            return nil
+            return (nil, "unexpected response body")
         }
         let attributes = json["attributes"] as? [String: Any] ?? [:]
 
@@ -172,9 +229,12 @@ enum WatchWidgetLiveFetch {
         }
         let effectiveUnit = config.unitOverride.flatMap { $0.isEmpty ? nil : $0 } ?? resolvedUnit
         let unit = config.showsUnit() ? effectiveUnit : nil
-        return LiveValue(
-            value: format(rawValue, unit: unit, precision: config.valuePrecision),
-            attributes: attributes
+        return (
+            LiveValue(
+                value: format(rawValue, unit: unit, precision: config.valuePrecision),
+                attributes: attributes
+            ),
+            nil
         )
     }
 
