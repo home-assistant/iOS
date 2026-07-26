@@ -18,6 +18,13 @@ struct ListPickerContent {
     struct Item {
         let id: String
         let title: String
+        let subtitle: String?
+
+        init(id: String, title: String, subtitle: String? = nil) {
+            self.id = id
+            self.title = title
+            self.subtitle = subtitle
+        }
     }
 }
 
@@ -57,8 +64,15 @@ struct ListPickerContentView: View {
                             selection = item
                         } label: {
                             HStack {
-                                Text(item.title)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                VStack(alignment: .leading) {
+                                    Text(item.title)
+                                    if let subtitle = item.subtitle {
+                                        Text(subtitle)
+                                            .font(.footnote)
+                                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 if selection.id == item.id {
                                     Image(systemSymbol: .checkmark)
                                         .foregroundColor(.accentColor)
