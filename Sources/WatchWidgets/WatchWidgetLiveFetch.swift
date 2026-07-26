@@ -45,9 +45,31 @@ enum WatchWidgetLiveFetch {
         guard !usable.isEmpty else { return "Failed: no server has a valid access token" }
 
         let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
+        let (updates, failures) = await fetchUpdates(targets: targets, usable: usable)
+
+        guard !updates.isEmpty else {
+            // Template complications can't self-fetch (rendering needs the server's template API via
+            // the app), so an all-template target set legitimately has nothing to do here.
+            if failures.isEmpty {
+                return "Nothing to fetch: no entity complications targeted"
+            }
+            return "Failed: " + failures.joined(separator: "; ")
+        }
+        applyUpdates(updates, configs: configs)
+        if failures.isEmpty {
+            return "Succeeded: updated \(updates.count) complication(s)"
+        }
+        return "Updated \(updates.count) complication(s); failed: " + failures.joined(separator: "; ")
+    }
+
+    /// Fetches each entity complication's live value, collecting a failure line for the developer
+    /// notification whenever one can't be updated.
+    private static func fetchUpdates(
+        targets: [WatchComplicationConfig],
+        usable: [String: WatchWidgetServerCredential]
+    ) async -> (updates: [String: LiveValue], failures: [String]) {
         var updates: [String: LiveValue] = [:] // config.id -> fresh value
         var failures: [String] = []
-
         for config in targets where config.kind == .entity {
             guard let entityId = config.entityId else {
                 failures.append("\(config.displayName): no entity configured")
@@ -63,20 +85,7 @@ enum WatchWidgetLiveFetch {
             }
             updates[config.id] = value
         }
-
-        guard !updates.isEmpty else {
-            // Template complications can't self-fetch (rendering needs the server's template API via
-            // the app), so an all-template target set legitimately has nothing to do here.
-            if failures.isEmpty {
-                return "Nothing to fetch: no entity complications targeted"
-            }
-            return "Failed: " + failures.joined(separator: "; ")
-        }
-        applyUpdates(updates, configs: configs)
-        if failures.isEmpty {
-            return "Succeeded: updated \(updates.count) complication(s)"
-        }
-        return "Updated \(updates.count) complication(s); failed: " + failures.joined(separator: "; ")
+        return (updates, failures)
     }
 
     /// A fresh formatted value plus the raw attributes, so slot formulas that reference attributes
