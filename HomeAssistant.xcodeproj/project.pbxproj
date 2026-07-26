@@ -1185,7 +1185,6 @@
 				Views/CheckmarkDrawOnView.swift,
 				Views/ClientCertificateOnboardingView.swift,
 				Views/MacOnboardingSheetFrame.swift,
-				Views/MTLSLabsLabel.swift,
 				Views/OnboardingErrorView.swift,
 				Views/RecoveredServersImportView.swift,
 				Views/SafariWebView.swift,

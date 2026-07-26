@@ -407,10 +407,7 @@ struct ConnectionSettingsView: View {
                 .disabled(viewModel.isImportingCertificate)
             }
         } header: {
-            HStack {
-                Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
-                MTLSLabsLabel()
-            }
+            Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
         } footer: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
         }
