@@ -661,8 +661,8 @@ enum WatchWidgetComplicationSnapshotStore {
     }
 
     private static func write(snapshots: [WatchWidgetComplicationSnapshot], defaults: UserDefaults?) {
-        guard let data = try? JSONEncoder().encode(snapshots), let defaults else {
-            Current.Log.error("Failed to encode watch widget complication snapshots")
+        guard let defaults else {
+            Current.Log.error("Missing app group defaults for watch widget complication snapshots")
             return
         }
         // Skip the write + WidgetKit reload when the model didn't change. Reloads are budgeted on
@@ -673,6 +673,10 @@ enum WatchWidgetComplicationSnapshotStore {
         if let stored = defaults.data(forKey: defaultsKey),
            let previous = try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: stored),
            previous == snapshots {
+            return
+        }
+        guard let data = try? JSONEncoder().encode(snapshots) else {
+            Current.Log.error("Failed to encode watch widget complication snapshots")
             return
         }
         defaults.set(data, forKey: defaultsKey)
