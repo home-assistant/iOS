@@ -7,6 +7,8 @@ import SwiftUI
 struct WatchDeveloperSettingsView: View {
     @State private var verboseExecution = WatchUserDefaults.shared.verboseItemExecution
     @State private var showIPhoneUnreachableIcon = WatchUserDefaults.shared.showIPhoneUnreachableIcon
+    @State private var complicationRefreshNotifications = WatchUserDefaults.shared
+        .complicationRefreshNotificationsEnabled
     @State private var directDatabaseSync = WatchUserDefaults.shared.directDatabaseSyncEnabled
     @State private var directSyncAudioProbe = WatchUserDefaults.shared.directSyncAudioSessionProbeEnabled
     /// True on entry so the warning alert shows as soon as the screen is pushed.
@@ -34,6 +36,17 @@ struct WatchDeveloperSettingsView: View {
                 }
             } footer: {
                 Text(verbatim: L10n.Watch.Settings.Developer.IphoneUnreachableIcon.footer)
+            }
+
+            Section {
+                Toggle(isOn: $complicationRefreshNotifications) {
+                    Text(verbatim: L10n.Watch.Settings.Developer.ComplicationRefreshNotifications.title)
+                }
+                .onChange(of: complicationRefreshNotifications) { newValue in
+                    WatchUserDefaults.shared.complicationRefreshNotificationsEnabled = newValue
+                }
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.Developer.ComplicationRefreshNotifications.footer)
             }
 
             Section {

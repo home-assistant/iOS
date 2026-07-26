@@ -18,15 +18,23 @@ enum WatchWidgetLiveFetch {
     /// Refresh the configured complication (or all, when `configuredID` is nil), updating the stored
     /// snapshot's value text in the app group. Best-effort; never throws.
     static func refresh(configuredID: String?) async {
+        WatchWidgetRefreshNotifier.notifyStarted(configuredID: configuredID)
+        let summary = await performRefresh(configuredID: configuredID)
+        WatchWidgetRefreshNotifier.notifyFinished(summary)
+    }
+
+    /// The actual refresh. Returns a short human-readable outcome — what succeeded, what failed,
+    /// and why — for the developer-option notification; ignored when the option is off.
+    private static func performRefresh(configuredID: String?) async -> String {
         let configs = readConfigs()
-        guard !configs.isEmpty else { return }
+        guard !configs.isEmpty else { return "Failed: no complication configurations found" }
 
         let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID)
         let stored = Dictionary(
             WatchWidgetServerCredential.read(from: defaults).map { ($0.serverId, $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        guard !stored.isEmpty else { return }
+        guard !stored.isEmpty else { return "Failed: no server credentials stored by the watch app" }
 
         // Ensure each server's access token is valid before touching `/api/states`. If it's at/near
         // expiry we refresh it ourselves (a plain `POST /auth/token`); if we can't get a valid token we
@@ -34,22 +42,41 @@ enum WatchWidgetLiveFetch {
         // is what the server logs as invalid auth and eventually IP-bans.
         let (usable, persist) = await validated(stored)
         if let persist { WatchWidgetServerCredential.write(persist, to: defaults) }
-        guard !usable.isEmpty else { return }
+        guard !usable.isEmpty else { return "Failed: no server has a valid access token" }
 
         let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
         var updates: [String: LiveValue] = [:] // config.id -> fresh value
+        var failures: [String] = []
 
         for config in targets where config.kind == .entity {
-            guard let entityId = config.entityId,
-                  let credential = usable[config.serverId],
-                  let value = await fetchValue(config: config, entityId: entityId, credential: credential) else {
+            guard let entityId = config.entityId else {
+                failures.append("\(config.displayName): no entity configured")
+                continue
+            }
+            guard let credential = usable[config.serverId] else {
+                failures.append("\(config.displayName): no valid credential for its server")
+                continue
+            }
+            guard let value = await fetchValue(config: config, entityId: entityId, credential: credential) else {
+                failures.append("\(config.displayName): live state fetch failed")
                 continue
             }
             updates[config.id] = value
         }
 
-        guard !updates.isEmpty else { return }
+        guard !updates.isEmpty else {
+            // Template complications can't self-fetch (rendering needs the server's template API via
+            // the app), so an all-template target set legitimately has nothing to do here.
+            if failures.isEmpty {
+                return "Nothing to fetch: no entity complications targeted"
+            }
+            return "Failed: " + failures.joined(separator: "; ")
+        }
         applyUpdates(updates, configs: configs)
+        if failures.isEmpty {
+            return "Succeeded: updated \(updates.count) complication(s)"
+        }
+        return "Updated \(updates.count) complication(s); failed: " + failures.joined(separator: "; ")
     }
 
     /// A fresh formatted value plus the raw attributes, so slot formulas that reference attributes
