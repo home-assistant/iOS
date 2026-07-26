@@ -13,6 +13,7 @@ enum WKUserContentControllerMessage: String, CaseIterable {
 
 final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     weak var webView: WebViewControllerProtocol?
+    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     @MainActor func userContentController(
         _ userContentController: WKUserContentController,
@@ -25,12 +26,23 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
         Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
 
-        guard UIApplication.shared.applicationState != .background else {
-            Current.Log.verbose("Ignoring WKUserContentController message \(message.name) because app is in background")
+        handle(messageName: message.name, messageBody: messageBody)
+    }
+
+    @MainActor func handle(messageName: String, messageBody: [String: Any]) {
+        guard !isAppInBackground() else {
+            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
+            // The frontend caches the pending getExternalAuth promise and never asks again while it
+            // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
+            // frontend can never reconnect until the web view is reloaded.
+            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth,
+               let callbackName = messageBody["callback"] {
+                sendGetExternalAuthFailure(callbackName: callbackName)
+            }
             return
         }
 
-        switch WKUserContentControllerMessage(rawValue: message.name) {
+        switch WKUserContentControllerMessage(rawValue: messageName) {
         case .externalBus:
             handleExternalBus(messageBody)
         case .updateThemeColors:
@@ -42,7 +54,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case .logError:
             handleLogError(messageBody)
         default:
-            Current.Log.error("unknown message: \(message.name)")
+            Current.Log.error("unknown message: \(messageName)")
         }
     }
 
@@ -92,13 +104,17 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
                 })
             }
         }.catch { [weak self] error in
-            self?.webView?.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')") {
-                _, error in
-                if let error {
-                    Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
-                }
-            }
+            self?.sendGetExternalAuthFailure(callbackName: callbackName)
             Current.Log.error("Failed to authenticate webview: \(error)")
+        }
+    }
+
+    /// Rejects a getExternalAuth request so the frontend can clear its pending token promise and retry.
+    private func sendGetExternalAuthFailure(callbackName: Any) {
+        webView?.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')") { _, error in
+            if let error {
+                Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
+            }
         }
     }
 
