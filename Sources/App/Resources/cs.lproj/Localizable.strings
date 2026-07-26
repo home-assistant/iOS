@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "Synchronizování dat serveru... (%li/%li)";
 "database_updater.toast.title" = "Aktualizování %@";
 "debug.reset.entities_database.title" = "Resetovat databázi entit aplikace";
-"debug_section_label" = "Ladění";
 "delete" = "Smazat";
 "device_name.primary_button.title" = "Uložit";
 "device_name.subtitle" = "Toto se používá k identifikaci vašeho zařízení v aplikaci Home Assistant.";
@@ -1030,7 +1029,6 @@ Vzdálené, až budete připraveni.";
 "onboarding.server_import.message" = "Vydržte, shromažďujeme vaše servery.";
 "onboarding.server_import.reauthenticate.continue_button" = "Pokračovat";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "Přihlášení bylo zrušeno.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Nyní nelze zobrazit průběh přihlašování.";
 "onboarding.server_import.reauthenticate.message" = "Ještě jeden krok: znovu se přihlaste a dokončete obnovení %@.";
 "onboarding.server_import.reauthenticate.title" = "Znovu připojit Home Assistanta";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Vyberte připojení";
@@ -1781,7 +1779,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "Vlastní barvy";
 "watch.complications.builder.customize" = "Přizpůsobit";
-"watch.complications.builder.customize_footer" = "Upravte, jak se u jednotlivých velikostí zobrazuje jejich název, hodnota, stupnice a barvy.";
 "watch.complications.builder.display_name" = "Zobrazovaný název";
 "watch.complications.builder.edit_title" = "Upravit komplikaci";
 "watch.complications.builder.empty" = "Zatím žádné komplikace. Klepnutím na + ji vytvoříte z entity nebo šablony.";
@@ -1799,7 +1796,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.complications.builder.precision" = "Desetinná čísla";
 "watch.complications.builder.precision_automatic" = "Automaticky";
 "watch.complications.builder.preview" = "Náhled";
-"watch.complications.builder.preview_footer" = "Živý náhled ve všech velikostech. Klepnutím na velikost ji můžete přizpůsobit a poté přidejte komplikaci do libovolného slotu na ciferníku.";
 "watch.complications.builder.progress_bar_color" = "Barva ukazatele průběhu";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Zobrazit jako měřidlo / kroužek";
@@ -1814,13 +1810,11 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.complications.builder.size_options" = "Volby %1$@";
 "watch.complications.builder.size_options_footer" = "Tato nastavení platí pro vybranou velikost. Přepnutím velikosti náhledu výše si můžete každou velikost přizpůsobit samostatně.";
 "watch.complications.builder.source" = "Zdroj";
-"watch.complications.builder.source_custom" = "Vlastní šablona";
 "watch.complications.builder.source_entity" = "Entita";
 "watch.complications.builder.source_entity_subtitle" = "Zobrazit stav entity";
 "watch.complications.builder.source_template" = "Šablona";
 "watch.complications.builder.source_template_subtitle" = "Je vyžadována role správce";
 "watch.complications.builder.style" = "Styl";
-"watch.complications.builder.template_color" = "Barva";
 "watch.complications.builder.template_evaluating" = "Vyhodnocování šablony...";
 "watch.complications.builder.template_invalid_hex" = "Výsledek není hexadecimální barva (např. #FF9500)";
 "watch.complications.builder.template_no_result" = "Server nevrátil žádný výsledek. Zkontrolujte šablonu, zda neobsahuje chyby.";
@@ -1829,7 +1823,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.complications.builder.template_suggestions_more" = "Více";
 "watch.complications.builder.templates" = "Šablony";
 "watch.complications.builder.text_color" = "Barva textu";
-"watch.complications.builder.text_template" = "Textová šablona";
 "watch.complications.builder.title" = "Komplikace";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2203,9 +2196,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.settings.last_updated" = "Aktualizováno %@";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
 "watch.settings.no_servers" = "Zatím nebyly synchronizovány žádné servery. Otevřete na spárovaném iPhonu Home Assistanta a poté obnovte stránku z domovské obrazovky.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Kde se spouštějí akce. Funkce Auto používá váš iPhone, když je poblíž, jinak se Apple Watch připojí přímo k Home Assistantovi.";
-"watch.settings.perform_action.footer_prefer_watch" = "Kde se spouštějí akce. Auto se připojuje přímo z Apple Watch k Home Assistantovi, pokud to jde, jinak přenáší data přes váš iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Provést akci pomocí";
 "watch.settings.refresh" = "Obnovit";

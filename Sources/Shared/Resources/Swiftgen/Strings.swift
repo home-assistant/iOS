@@ -22,8 +22,6 @@ public enum L10n {
   public static var continueLabel: String { return L10n.tr("Localizable", "continue_label") }
   /// Copy
   public static var copyLabel: String { return L10n.tr("Localizable", "copy_label") }
-  /// Debug
-  public static var debugSectionLabel: String { return L10n.tr("Localizable", "debug_section_label") }
   /// Delete
   public static var delete: String { return L10n.tr("Localizable", "delete") }
   /// Done
@@ -3524,8 +3522,6 @@ public enum L10n {
         public static var continueButton: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.continue_button") }
         /// Sign in was cancelled.
         public static var errorsCancelled: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_cancelled") }
-        /// Unable to present the sign-in flow right now.
-        public static var errorsMissingPresenter: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_missing_presenter") }
         /// One more step: sign in again to finish restoring %@.
         public static func message(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.message", String(describing: p1))
@@ -5949,8 +5945,6 @@ public enum L10n {
         public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
         /// Customize
         public static var customize: String { return L10n.tr("Localizable", "watch.complications.builder.customize") }
-        /// Customize how each size shows its name, value, gauge, and colors.
-        public static var customizeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.customize_footer") }
         /// Display name
         public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
         /// Edit complication
@@ -5985,8 +5979,6 @@ public enum L10n {
         public static var precisionAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.precision_automatic") }
         /// Preview
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
-        /// A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.
-        public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Progress bar color
         public static var progressBarColor: String { return L10n.tr("Localizable", "watch.complications.builder.progress_bar_color") }
         /// Show
@@ -6017,8 +6009,6 @@ public enum L10n {
         public static var sizeOptionsFooter: String { return L10n.tr("Localizable", "watch.complications.builder.size_options_footer") }
         /// Source
         public static var source: String { return L10n.tr("Localizable", "watch.complications.builder.source") }
-        /// Custom template
-        public static var sourceCustom: String { return L10n.tr("Localizable", "watch.complications.builder.source_custom") }
         /// Entity
         public static var sourceEntity: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity") }
         /// Display entity state
@@ -6029,8 +6019,6 @@ public enum L10n {
         public static var sourceTemplateSubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_template_subtitle") }
         /// Style
         public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
-        /// Color
-        public static var templateColor: String { return L10n.tr("Localizable", "watch.complications.builder.template_color") }
         /// Evaluating template…
         public static var templateEvaluating: String { return L10n.tr("Localizable", "watch.complications.builder.template_evaluating") }
         /// Result is not a hex color (e.g. #FF9500)
@@ -6047,8 +6035,6 @@ public enum L10n {
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color
         public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
-        /// Text template
-        public static var textTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.text_template") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
         /// Attributes
@@ -7233,12 +7219,8 @@ public enum L10n {
         }
       }
       public enum PerformAction {
-        /// Apple Watch
-        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
         /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
-        /// Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.
-        public static var footerPreferWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer_prefer_watch") }
         /// iPhone
         public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
         /// Perform action using

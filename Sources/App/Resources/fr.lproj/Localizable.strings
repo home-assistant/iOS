@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "Synchronisation des données du serveur… (%li/%li)";
 "database_updater.toast.title" = "Mise à jour de %@";
 "debug.reset.entities_database.title" = "Réinitialiser la base d'entités";
-"debug_section_label" = "Déboguer";
 "delete" = "Supprimer";
 "device_name.primary_button.title" = "Enregistrer";
 "device_name.subtitle" = "Cela permet d'identifier votre appareil dans votre Home Assistant.";
@@ -1030,7 +1029,6 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.server_import.message" = "Patientez, nous rassemblons vos serveurs.";
 "onboarding.server_import.reauthenticate.continue_button" = "Continuer";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "La connexion a été annulée.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Impossible d'afficher le processus de connexion pour le moment.";
 "onboarding.server_import.reauthenticate.message" = "Encore une étape : reconnectez-vous pour terminer la restauration de %@.";
 "onboarding.server_import.reauthenticate.title" = "Reconnecter Home Assistant";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Choisir une connexion";
@@ -1781,7 +1779,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "Couleurs personnalisées";
 "watch.complications.builder.customize" = "Personnaliser";
-"watch.complications.builder.customize_footer" = "Personnalisez comment chaque taille affiche son nom, sa valeur, sa jauge et ses couleurs.";
 "watch.complications.builder.display_name" = "Nom d'affichage";
 "watch.complications.builder.edit_title" = "Modifier la complication";
 "watch.complications.builder.empty" = "Aucune complication pour le moment. Appuyez sur + pour en créer une à partir d'une entité ou d'un modèle.";
@@ -1799,7 +1796,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.complications.builder.precision" = "Décimales";
 "watch.complications.builder.precision_automatic" = "Automatique";
 "watch.complications.builder.preview" = "Aperçu";
-"watch.complications.builder.preview_footer" = "Un aperçu en direct pour chaque taille. Appuyez sur une taille pour la personnaliser, puis ajoutez la complication à n'importe quel emplacement de votre cadran.";
 "watch.complications.builder.progress_bar_color" = "Couleur de la barre de progression";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Afficher en jauge / anneau";
@@ -1814,13 +1810,11 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.complications.builder.size_options" = "Options %1$@";
 "watch.complications.builder.size_options_footer" = "Ces réglages s'appliquent à la taille sélectionnée. Changez la taille de l'aperçu ci-dessus pour personnaliser chaque taille indépendamment.";
 "watch.complications.builder.source" = "Source";
-"watch.complications.builder.source_custom" = "Modèle personnalisé";
 "watch.complications.builder.source_entity" = "Entité";
 "watch.complications.builder.source_entity_subtitle" = "Afficher l'état de l'entité";
 "watch.complications.builder.source_template" = "Modèle";
 "watch.complications.builder.source_template_subtitle" = "Rôle administrateur requis";
 "watch.complications.builder.style" = "Style";
-"watch.complications.builder.template_color" = "Couleur";
 "watch.complications.builder.template_evaluating" = "Évaluation du modèle…";
 "watch.complications.builder.template_invalid_hex" = "Le résultat n'est pas une couleur hexadécimale (par exemple #FF9500)";
 "watch.complications.builder.template_no_result" = "Le serveur n'a renvoyé aucun résultat. Vérifiez si le modèle contient des erreurs.";
@@ -1829,7 +1823,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.complications.builder.template_suggestions_more" = "Plus";
 "watch.complications.builder.templates" = "Modèles";
 "watch.complications.builder.text_color" = "Couleur du texte";
-"watch.complications.builder.text_template" = "Modèle de texte";
 "watch.complications.builder.title" = "Complications";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2203,9 +2196,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.last_updated" = "Mis à jour %@";
 "watch.settings.no_items.phone.title" = "Aucun élément configuré, veuillez choisir les éléments ci-dessous.";
 "watch.settings.no_servers" = "Aucun serveur synchronisé pour le moment. Ouvrez Home Assistant sur votre iPhone associé, puis actualisez depuis l'écran d'accueil.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Où les actions s'exécutent. Auto utilise votre iPhone lorsqu'il est à proximité, sinon l'Apple Watch se connecte directement à Home Assistant.";
-"watch.settings.perform_action.footer_prefer_watch" = "Où les actions s'exécutent. Auto se connecte directement depuis l'Apple Watch à Home Assistant lorsque c'est possible, sinon il relaie via votre iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Effectuer l'action via";
 "watch.settings.refresh" = "Actualiser";

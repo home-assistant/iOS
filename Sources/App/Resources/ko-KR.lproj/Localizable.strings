@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "서버 데이터 동기화 중... (%li/%li)";
 "database_updater.toast.title" = "%@ 업데이트 중";
 "debug.reset.entities_database.title" = "앱 엔티티 데이터베이스 재설정";
-"debug_section_label" = "디버그";
 "delete" = "삭제";
 "device_name.primary_button.title" = "저장";
 "device_name.subtitle" = "이 이름은 Home Assistant에서 기기를 식별하는 데 사용됩니다.";
@@ -1030,7 +1029,6 @@
 "onboarding.server_import.message" = "잠시만 기다려주세요. 서버를 모으는 중입니다.";
 "onboarding.server_import.reauthenticate.continue_button" = "계속";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "로그인이 취소되었습니다.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "지금은 로그인 흐름을 표시할 수 없습니다.";
 "onboarding.server_import.reauthenticate.message" = "한 단계 더: 다시 로그인하여 %@ 복원을 완료하세요.";
 "onboarding.server_import.reauthenticate.title" = "Home Assistant 다시 연결";
 "onboarding.server_import.reauthenticate.url_picker_title" = "A Connection 선택";
@@ -1781,7 +1779,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "사용자 지정 색상";
 "watch.complications.builder.customize" = "사용자 지정";
-"watch.complications.builder.customize_footer" = "각 크기가 이름, 값, 게이지 및 색상을 표시하는 방식을 사용자 지정하세요.";
 "watch.complications.builder.display_name" = "표시 이름";
 "watch.complications.builder.edit_title" = "컴플리케이션 편집";
 "watch.complications.builder.empty" = "아직 컴플리케이션이 없습니다. 엔티티 또는 템플릿에서 하나를 만들려면 +를 탭하세요.";
@@ -1799,7 +1796,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.precision" = "소수점";
 "watch.complications.builder.precision_automatic" = "자동";
 "watch.complications.builder.preview" = "미리보기";
-"watch.complications.builder.preview_footer" = "모든 크기의 실시간 미리보기입니다. 크기를 탭하여 사용자 지정한 다음 컴플리케이션을 시계 페이스의 원하는 슬롯에 추가하세요.";
 "watch.complications.builder.progress_bar_color" = "진행률 표시줄 색상";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "게이지/링으로 표시";
@@ -1814,13 +1810,11 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.size_options" = "%1$@ 옵션";
 "watch.complications.builder.size_options_footer" = "이 설정은 선택한 크기에 적용됩니다. 위의 미리보기 크기를 전환하여 각 크기를 개별적으로 사용자 지정하세요.";
 "watch.complications.builder.source" = "소스";
-"watch.complications.builder.source_custom" = "사용자 지정 템플릿";
 "watch.complications.builder.source_entity" = "엔티티";
 "watch.complications.builder.source_entity_subtitle" = "엔티티 상태 표시";
 "watch.complications.builder.source_template" = "템플릿";
 "watch.complications.builder.source_template_subtitle" = "관리자 역할 필요";
 "watch.complications.builder.style" = "스타일";
-"watch.complications.builder.template_color" = "색상";
 "watch.complications.builder.template_evaluating" = "템플릿 평가 중…";
 "watch.complications.builder.template_invalid_hex" = "결과가 16진수 색상이 아닙니다(예: #FF9500).";
 "watch.complications.builder.template_no_result" = "서버가 결과를 반환하지 않았습니다. 템플릿에 오류가 있는지 확인하세요.";
@@ -1829,7 +1823,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.template_suggestions_more" = "더 보기";
 "watch.complications.builder.templates" = "템플릿";
 "watch.complications.builder.text_color" = "텍스트 색상";
-"watch.complications.builder.text_template" = "텍스트 템플릿";
 "watch.complications.builder.title" = "컴플리케이션";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2201,9 +2194,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.settings.last_updated" = "%@ 업데이트됨";
 "watch.settings.no_items.phone.title" = "구성된 항목이 없으므로 아래에서 항목을 선택하세요.";
 "watch.settings.no_servers" = "아직 동기화된 서버가 없습니다. 페어링된 iPhone에서 Home Assistant를 연 다음 홈 화면에서 새로 고침하세요.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "작업이 실행되는 위치입니다. 자동은 iPhone이 근처에 있을 때 iPhone을 사용하고, 그렇지 않으면 Apple Watch가 Home Assistant에 직접 연결됩니다.";
-"watch.settings.perform_action.footer_prefer_watch" = "작업 실행 위치. 가능한 경우 Apple Watch에서 Home Assistant로 직접 자동 연결하며, 그렇지 않으면 iPhone을 통해 연결합니다.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "다음을 사용하여 작업 수행";
 "watch.settings.refresh" = "새로 고침";

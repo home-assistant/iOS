@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "Synkroniserar serverdata... (%li/%li)";
 "database_updater.toast.title" = "Uppdaterar %@";
 "debug.reset.entities_database.title" = "Återställ databasen för app-entiteter";
-"debug_section_label" = "Felsökning";
 "delete" = "Ta bort";
 "device_name.primary_button.title" = "Spara";
 "device_name.subtitle" = "Detta används för att identifiera din enhet i Home Assistant.";
@@ -1025,7 +1024,6 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.server_import.message" = "Håll i dig, vi samlar ihop dina servrar.";
 "onboarding.server_import.reauthenticate.continue_button" = "Fortsätt";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "Inloggningen avbröts.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Det går inte att visa inloggningsflödet just nu.";
 "onboarding.server_import.reauthenticate.message" = "Ett steg till: logga in igen för att slutföra återställningen av %@.";
 "onboarding.server_import.reauthenticate.title" = "Återanslut Home Assistant";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Välj en anslutning";
@@ -1776,7 +1774,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "Anpassade färger";
 "watch.complications.builder.customize" = "Anpassa";
-"watch.complications.builder.customize_footer" = "Anpassa hur varje storlek visar sitt namn, värde, tjocklek och färger.";
 "watch.complications.builder.display_name" = "Visningsnamn";
 "watch.complications.builder.edit_title" = "Redigera komplikation";
 "watch.complications.builder.empty" = "Inga komplikationer än så länge. Tryck på + för att skapa en utifrån en enhet eller en mall.";
@@ -1794,7 +1791,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.complications.builder.precision" = "Decimaler";
 "watch.complications.builder.precision_automatic" = "Automatisk";
 "watch.complications.builder.preview" = "Förhandsvisning";
-"watch.complications.builder.preview_footer" = "En förhandsvisning i realtid för varje storlek. Tryck på en storlek för att anpassa den och lägg sedan till komplikationen i valfri plats på urtavlan.";
 "watch.complications.builder.progress_bar_color" = "Färg på förloppsindikatorn";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Visa som mätare / ring";
@@ -1809,13 +1805,11 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.complications.builder.size_options" = "%1$@ alternativ";
 "watch.complications.builder.size_options_footer" = "Dessa inställningar gäller för den valda storleken. Ändra förhandsgranskningsstorleken ovan för att anpassa varje storlek separat.";
 "watch.complications.builder.source" = "Källa";
-"watch.complications.builder.source_custom" = "Anpassad mall";
 "watch.complications.builder.source_entity" = "Entitet";
 "watch.complications.builder.source_entity_subtitle" = "Display entity state";
 "watch.complications.builder.source_template" = "Template";
 "watch.complications.builder.source_template_subtitle" = "Admin role required";
 "watch.complications.builder.style" = "Stil";
-"watch.complications.builder.template_color" = "Color";
 "watch.complications.builder.template_evaluating" = "Evaluating template…";
 "watch.complications.builder.template_invalid_hex" = "Result is not a hex color (e.g. #FF9500)";
 "watch.complications.builder.template_no_result" = "The server didn't return a result. Check the template for errors.";
@@ -1824,7 +1818,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.complications.builder.template_suggestions_more" = "More";
 "watch.complications.builder.templates" = "Mallar";
 "watch.complications.builder.text_color" = "Textfärg";
-"watch.complications.builder.text_template" = "Text template";
 "watch.complications.builder.title" = "Komplikationer";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2198,9 +2191,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.last_updated" = "Uppdaterad %@";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
 "watch.settings.no_servers" = "Inga servrar har synkroniserats än. Öppna Home Assistant på din kopplade iPhone och uppdatera sedan från startskärmen.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Där åtgärderna utförs. I automatiskt läge används din iPhone när den befinner sig i närheten, annars ansluter Apple Watch direkt till Home Assistant.";
-"watch.settings.perform_action.footer_prefer_watch" = "Där åtgärderna körs. Auto ansluter direkt från Apple Watch till Home Assistant när det är möjligt, annars sker anslutningen via din iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Utför åtgärden med hjälp av";
 "watch.settings.refresh" = "Uppdatera";
