@@ -10,11 +10,16 @@ import WebKit
 /// hierarchy (e.g. two multi-window scenes show the loading logo at once), a fresh instance
 /// is created for the second caller, since a single `WKWebView` cannot live in two hierarchies
 /// at the same time.
+///
+/// Handing the warm instance out a second time reloads its SVG first: while it sat unparented
+/// between appearances, WebKit paused the page and may have suspended or terminated its web
+/// content process, which freezes the animation permanently. Reloading restarts the loop.
 @MainActor
 final class AnimatedSVGWebViewCache {
     static let shared = AnimatedSVGWebViewCache()
 
     private var warmWebViews: [String: WKWebView] = [:]
+    private var vendedResourceNames: Set<String> = []
 
     private init() {}
 
@@ -28,12 +33,21 @@ final class AnimatedSVGWebViewCache {
     /// otherwise creates and loads a fresh one so it can be parented independently.
     func webView(for resourceName: String) -> WKWebView {
         let warm = warmWebView(for: resourceName)
-        guard warm.superview != nil else {
-            return warm
+        guard warm.superview == nil else {
+            let webView = Self.makeWebView()
+            Self.loadSVG(named: resourceName, into: webView)
+            return webView
         }
-        let webView = Self.makeWebView()
-        Self.loadSVG(named: resourceName, into: webView)
-        return webView
+        if vendedResourceNames.contains(resourceName) {
+            // WebKit paused this page while it was unparented (and may have suspended or killed
+            // its content process), leaving the animation frozen — reload so it loops again.
+            // The first hand-out skips this: the preloaded document is still fresh, and reloading
+            // would forfeit the warm first paint the cache exists to provide.
+            Self.loadSVG(named: resourceName, into: warm)
+        } else {
+            vendedResourceNames.insert(resourceName)
+        }
+        return warm
     }
 
     private func warmWebView(for resourceName: String) -> WKWebView {

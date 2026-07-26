@@ -494,6 +494,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.more_info.search_commands" = "Search commands";
 "gestures.value.option.more_info.search_devices" = "Search devices";
 "gestures.value.option.more_info.search_entities" = "Search entities";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Next server";
 "gestures.value.option.none" = "None";
@@ -506,6 +507,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";
@@ -1786,13 +1788,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.insert_token" = "Insert";
-"watch.complications.builder.token_attributes" = "Attributes";
-"watch.complications.builder.token_entity_name" = "Entity name";
-"watch.complications.builder.token_template" = "Template";
-"watch.complications.builder.token_text" = "Text";
-"watch.complications.builder.token_value" = "Value";
 "watch.complications.builder.custom_colors" = "Custom colors";
+"watch.complications.builder.customize" = "Customize";
+"watch.complications.builder.customize_footer" = "Customize how each size shows its name, value, gauge, and colors.";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
 "watch.complications.builder.empty" = "No complications yet. Tap + to create one from an entity or a template.";
@@ -1802,6 +1800,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.gauge_template" = "Gauge template";
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.icon_color" = "Icon color";
+"watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
 "watch.complications.builder.name" = "Name (optional)";
@@ -1813,10 +1812,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
+"watch.complications.builder.show_icon" = "Show icon";
 "watch.complications.builder.show_max" = "Show maximum";
 "watch.complications.builder.show_min" = "Show minimum";
+"watch.complications.builder.show_name" = "Show name";
 "watch.complications.builder.show_progress_bar" = "Show progress bar";
 "watch.complications.builder.show_unit" = "Show unit";
+"watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.show_when_inactive" = "Show when inactive";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
@@ -1838,6 +1840,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.text_color" = "Text color";
 "watch.complications.builder.text_template" = "Text template";
 "watch.complications.builder.title" = "Complications";
+"watch.complications.builder.token_attributes" = "Attributes";
+"watch.complications.builder.token_entity_name" = "Entity name";
+"watch.complications.builder.token_template" = "Template";
+"watch.complications.builder.token_text" = "Text";
+"watch.complications.builder.token_value" = "Value";
 "watch.complications.builder.unit" = "Unit";
 "watch.complications.builder.unit_automatic" = "Automatic";
 "watch.complications.builder.value_source" = "Value";
