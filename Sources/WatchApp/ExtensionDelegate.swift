@@ -535,6 +535,7 @@ enum WatchWidgetComplicationSnapshotStore {
         write(snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots, defaults: defaults)
 
         guard !configs.isEmpty else { return [] }
+        ComplicationRefreshDebugNotifier.notifyStarted(count: configs.count)
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
         var outcomes: [ComplicationRefreshOutcome] = []
         for config in configs {
@@ -576,6 +577,7 @@ enum WatchWidgetComplicationSnapshotStore {
             type: .backgroundOperation,
             payload: ["live": liveCount, "cached": cachedCount, "failed": failedCount]
         ))
+        ComplicationRefreshDebugNotifier.notifyFinished(outcomes)
         return outcomes
     }
 
@@ -593,6 +595,7 @@ enum WatchWidgetComplicationSnapshotStore {
         let legacy = ((try? WatchComplication.all()) ?? [])
             .map(WatchWidgetComplicationSnapshot.init(complication:))
 
+        ComplicationRefreshDebugNotifier.notifyStarted(count: 1)
         let result = await WatchWidgetComplicationSnapshot.make(config: config)
         let snapshot: WatchWidgetComplicationSnapshot
         let outcome: ComplicationRefreshOutcome
@@ -613,6 +616,7 @@ enum WatchWidgetComplicationSnapshotStore {
         }
         write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
         persistRecords([outcome], keepingIds: configs.map(\.id), defaults: defaults)
+        ComplicationRefreshDebugNotifier.notifyFinished([outcome])
         return outcome
     }
 
