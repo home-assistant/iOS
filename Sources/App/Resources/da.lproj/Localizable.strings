@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "Synkroniserer serverdata... (%li/%li)";
 "database_updater.toast.title" = "Opdaterer %@";
 "debug.reset.entities_database.title" = "Nulstil appens entitetsdatabase";
-"debug_section_label" = "Fejlsøg";
 "delete" = "Slet";
 "device_name.primary_button.title" = "Gem";
 "device_name.subtitle" = "Dette bruges til at identificere din enhed i din Home Assistant.";
@@ -1030,7 +1029,6 @@ Fjernadgang, når du er klar.";
 "onboarding.server_import.message" = "Vent lidt - vi indsamler dine servere.";
 "onboarding.server_import.reauthenticate.continue_button" = "Fortsæt";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "Log ind blev annulleret.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Kan ikke vise login-processen lige nu.";
 "onboarding.server_import.reauthenticate.message" = "Et trin mere: Log ind igen for at afslutte gendannelsen %@.";
 "onboarding.server_import.reauthenticate.title" = "Genopret forbindelse til Home Assistant";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Vælg en forbindelse";
@@ -1781,7 +1779,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
-"watch.complications.builder.customize_footer" = "Customize how each size shows its name, value, gauge, and colors.";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
 "watch.complications.builder.empty" = "No complications yet. Tap + to create one from an entity or a template.";
@@ -1799,7 +1796,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.complications.builder.precision" = "Decimals";
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
-"watch.complications.builder.preview_footer" = "A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -1814,13 +1810,11 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
 "watch.complications.builder.source" = "Source";
-"watch.complications.builder.source_custom" = "Custom template";
 "watch.complications.builder.source_entity" = "Entity";
 "watch.complications.builder.source_entity_subtitle" = "Display entity state";
 "watch.complications.builder.source_template" = "Template";
 "watch.complications.builder.source_template_subtitle" = "Admin role required";
 "watch.complications.builder.style" = "Style";
-"watch.complications.builder.template_color" = "Color";
 "watch.complications.builder.template_evaluating" = "Evaluating template…";
 "watch.complications.builder.template_invalid_hex" = "Result is not a hex color (e.g. #FF9500)";
 "watch.complications.builder.template_no_result" = "The server didn't return a result. Check the template for errors.";
@@ -1829,7 +1823,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.complications.builder.template_suggestions_more" = "More";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Text color";
-"watch.complications.builder.text_template" = "Text template";
 "watch.complications.builder.title" = "Complications";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2203,9 +2196,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.last_updated" = "Opdateret %@";
 "watch.settings.no_items.phone.title" = "Ingen elementer konfigureret. Vælg venligst elementer nedenfor.";
 "watch.settings.no_servers" = "Ingen servere er synkroniseret endnu. Åbn Home Assistant på din parrede iPhone, og opdatér derefter fra startskærmen.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Hvor handlingerne udføres. Auto bruger din iPhone, når den er i nærheden; ellers opretter Apple Watch direkte forbindelse til Home Assistant.";
-"watch.settings.perform_action.footer_prefer_watch" = "Hvor handlinger kører. Forbinder automatisk direkte fra Apple Watch til Home Assistant, når det er muligt, ellers videresender den via din iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Udfør handling ved hjælp af";
 "watch.settings.refresh" = "Opdatér";

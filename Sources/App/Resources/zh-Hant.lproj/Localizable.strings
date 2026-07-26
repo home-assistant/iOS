@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "正在同步伺服器資料... (%li/%li)";
 "database_updater.toast.title" = "正在更新 %@";
 "debug.reset.entities_database.title" = "重置應用程式實體資料庫";
-"debug_section_label" = "回報錯誤";
 "delete" = "刪除";
 "device_name.primary_button.title" = "儲存";
 "device_name.subtitle" = "用以於 Home Assistant 中識別裝置。";
@@ -1030,7 +1029,6 @@
 "onboarding.server_import.message" = "請稍候，我們正在為您整理伺服器。";
 "onboarding.server_import.reauthenticate.continue_button" = "繼續";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "登入已取消。";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "目前無法顯示登入流程。";
 "onboarding.server_import.reauthenticate.message" = "還有一個步驟：請再次登入以完成回復 %@。";
 "onboarding.server_import.reauthenticate.title" = "重新連線 Home Assistant";
 "onboarding.server_import.reauthenticate.url_picker_title" = "選擇連線";
@@ -1781,7 +1779,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "自訂顏色";
 "watch.complications.builder.customize" = "自訂";
-"watch.complications.builder.customize_footer" = "自訂每個尺寸的名稱、數值、量表與顏色顯示方式。";
 "watch.complications.builder.display_name" = "顯示名稱";
 "watch.complications.builder.edit_title" = "編輯複雜功能";
 "watch.complications.builder.empty" = "尚未有複雜功能。點選 + 以從實體或範本建立一個。";
@@ -1799,7 +1796,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.precision" = "小數";
 "watch.complications.builder.precision_automatic" = "自動";
 "watch.complications.builder.preview" = "預覽";
-"watch.complications.builder.preview_footer" = "每種尺寸的即時預覽。點選尺寸以進行自訂，然後將複雜功能新增至錶面上的任何位置。";
 "watch.complications.builder.progress_bar_color" = "進度條顏色";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "顯示為量表／圓環";
@@ -1814,13 +1810,11 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.size_options" = "%1$@ 選項";
 "watch.complications.builder.size_options_footer" = "這些設定會套用到所選的尺寸。請切換上方的預覽尺寸，以分別自訂各個尺寸。";
 "watch.complications.builder.source" = "來源";
-"watch.complications.builder.source_custom" = "自訂模板";
 "watch.complications.builder.source_entity" = "實體";
 "watch.complications.builder.source_entity_subtitle" = "顯示實體狀態";
 "watch.complications.builder.source_template" = "模板";
 "watch.complications.builder.source_template_subtitle" = "需要管理員權限";
 "watch.complications.builder.style" = "樣式";
-"watch.complications.builder.template_color" = "顏色";
 "watch.complications.builder.template_evaluating" = "評估模板…";
 "watch.complications.builder.template_invalid_hex" = "結果並非十六進位色碼（例如 #FF9500）";
 "watch.complications.builder.template_no_result" = "伺服器未傳回結果。請檢查模板是否有錯誤。";
@@ -1829,7 +1823,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.template_suggestions_more" = "更多";
 "watch.complications.builder.templates" = "模板";
 "watch.complications.builder.text_color" = "文字顏色";
-"watch.complications.builder.text_template" = "文字模板";
 "watch.complications.builder.title" = "複雜功能";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2203,9 +2196,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.settings.last_updated" = "已更新 %@";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
 "watch.settings.no_servers" = "尚未同步任何伺服器。請在配對的 iPhone 上開啟 Home Assistant，然後從主畫面重新整理。";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "操作執行位置。自動將在 iPhone 靠近時使用 iPhone，否則 Apple Watch 將直接連線至 Home Assistant。";
-"watch.settings.perform_action.footer_prefer_watch" = "操作執行位置。如果可以，Apple Watch 會直接連線至 Home Assistant；否則，會透過 iPhone 進行中繼。";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "使用以下方式執行操作";
 "watch.settings.refresh" = "更新";

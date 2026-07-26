@@ -413,7 +413,6 @@
 "database_updater.toast.syncing_with_progress" = "Serveri andmete sünkroonimine... (%li/%li)";
 "database_updater.toast.title" = "Värskendamine %@";
 "debug.reset.entities_database.title" = "Rakenduse olemite andmebaasi lähtestamine";
-"debug_section_label" = "Silumine";
 "delete" = "Kustuta";
 "device_name.primary_button.title" = "Salvesta";
 "device_name.subtitle" = "Seda kasutatakse seadme tuvastamiseks Home Assistantis.";
@@ -1030,7 +1029,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.server_import.message" = "Kannatust, me otsime teie serverid üles.";
 "onboarding.server_import.reauthenticate.continue_button" = "Jätka";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "Sisselogimine tühistati.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Sisselogimisvoogu ei saa praegu kuvada.";
 "onboarding.server_import.reauthenticate.message" = "Veel üks samm: logi uuesti sisse, et lõpetada taastamine %@.";
 "onboarding.server_import.reauthenticate.title" = "Home Assistanti taasühendamine";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Vali ühendus";
@@ -1781,7 +1779,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.complications.builder.content_default" = "Default";
 "watch.complications.builder.custom_colors" = "Kohandatud värvid";
 "watch.complications.builder.customize" = "Kohanda";
-"watch.complications.builder.customize_footer" = "Kohanda iga suuruse nime, väärtuse, gabariidi ja värvide kuvamist.";
 "watch.complications.builder.display_name" = "Kuvatav nimi";
 "watch.complications.builder.edit_title" = "Muuda komplikatsiooni";
 "watch.complications.builder.empty" = "Pole veel mingeid komplikatsioone. Puuduta plussmärki (+), et luua see olemi või malli põhjal.";
@@ -1799,7 +1796,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.complications.builder.precision" = "Kümnendkohad";
 "watch.complications.builder.precision_automatic" = "Automaatne";
 "watch.complications.builder.preview" = "Eelvaade";
-"watch.complications.builder.preview_footer" = "Reaalajas eelvaade igas suuruses. Suuruse kohandamiseks puuduta seda ja seejärel lisa komplikatsioon oma kella sihverplaadi mis tahes pessa.";
 "watch.complications.builder.progress_bar_color" = "Edenemisriba värv";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Näita mõõdikuna / ringina";
@@ -1814,13 +1810,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.complications.builder.size_options" = "%1$@ valikud";
 "watch.complications.builder.size_options_footer" = "Need seaded kehtivad valitud suuruse kohta. Muuda ülal asuvat eelvaate suurust, et kohandada iga suurust eraldi.";
 "watch.complications.builder.source" = "Allikas";
-"watch.complications.builder.source_custom" = "Kohandatud mall";
 "watch.complications.builder.source_entity" = "Üksus";
 "watch.complications.builder.source_entity_subtitle" = "Kuva üksuse olek";
 "watch.complications.builder.source_template" = "Mall";
 "watch.complications.builder.source_template_subtitle" = "Vajalik on administraatori roll";
 "watch.complications.builder.style" = "Stiil";
-"watch.complications.builder.template_color" = "Värv";
 "watch.complications.builder.template_evaluating" = "Malli hindamine…";
 "watch.complications.builder.template_invalid_hex" = "Tulemus ei ole kuueteistkümnendsüsteemis esitatud värvikood (nt #FF9500)";
 "watch.complications.builder.template_no_result" = "Server ei tagastanud tulemust. Kontrolli malli vigade osas.";
@@ -1829,7 +1823,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.complications.builder.template_suggestions_more" = "Rohkem";
 "watch.complications.builder.templates" = "Mallid";
 "watch.complications.builder.text_color" = "Teksti värv";
-"watch.complications.builder.text_template" = "Teksti mall";
 "watch.complications.builder.title" = "Komplikatsioonid";
 "watch.complications.builder.token_attributes" = "Attributes";
 "watch.complications.builder.token_entity_name" = "Entity name";
@@ -2203,9 +2196,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.settings.last_updated" = "Uuendatud %@";
 "watch.settings.no_items.phone.title" = "Üksusi pole konfigureeritud, vali allolevad üksused.";
 "watch.settings.no_servers" = "Ühtegi serverit pole veel sünkroonitud. Ava oma seotud iPhone'is rakendus Home Assistant ja seejärel värskenda avakuvalt.";
-"watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Kus toimingud toimuvad. Kasutab automaatselt teie iPhone'i, kui see on läheduses, vastasel juhul loob Apple Watch otseühenduse Home Assistantiga.";
-"watch.settings.perform_action.footer_prefer_watch" = "Kus toimingud toimuvad. Ühendub automaatselt otse Apple Watchist Home Assistantiga, kui see on võimalik, vastasel juhul edastab see teavet iPhone'i kaudu.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Tee toiming kasutades";
 "watch.settings.refresh" = "Värskenda";
