@@ -1,4 +1,5 @@
 import Foundation
+import os
 import UserNotifications
 
 /// Posts local notifications tracing the widget's own complication self fetch while the developer
@@ -28,8 +29,13 @@ enum WatchWidgetRefreshNotifier {
         content.title = title
         content.body = body
         UNUserNotificationCenter.current().add(
-            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil),
-            withCompletionHandler: nil
-        )
+            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        ) { error in
+            // Never affects the refresh itself; the log explains a silent toggle (e.g. notifications
+            // not authorized, or the system refusing delivery from the widget extension).
+            if let error {
+                Logger().error("Failed to post widget refresh debug notification: \(error.localizedDescription)")
+            }
+        }
     }
 }

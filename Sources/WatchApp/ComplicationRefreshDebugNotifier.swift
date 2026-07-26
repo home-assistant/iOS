@@ -40,8 +40,13 @@ enum ComplicationRefreshDebugNotifier {
         content.title = title
         content.body = body
         UNUserNotificationCenter.current().add(
-            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil),
-            withCompletionHandler: nil
-        )
+            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        ) { error in
+            // Never affects the refresh itself; surfacing the error explains a silent toggle (e.g.
+            // notifications not authorized on this watch).
+            if let error {
+                Current.Log.error("Failed to post complication refresh debug notification: \(error)")
+            }
+        }
     }
 }
