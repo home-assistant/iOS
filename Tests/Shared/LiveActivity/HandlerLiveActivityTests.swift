@@ -211,6 +211,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             "title": "Test",
             "message": "Body",
             "webhook_id": "wh-1",
+            LocalPushManager.confirmIDUserInfoKey: "confirm-1",
         ]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         // ActivityKit is unavailable in the extension, so the registry is not touched directly...
@@ -222,13 +223,31 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(pending.first?.title, "Test")
         XCTAssertEqual(pending.first?.serverWebhookId, "wh-1")
         XCTAssertEqual(pending.first?.state.message, "Body")
-        // A non-silent update carries alert = true so the drain fires an ActivityKit alert.
+        XCTAssertEqual(pending.first?.confirmID, "confirm-1")
+        // A non-silent local-push update carries alert = true so the drain fires an ActivityKit
+        // alert — the replacement for the banner the local-push flow suppresses.
         XCTAssertEqual(pending.first?.alert, true)
+    }
+
+    func testHandle_inAppExtension_withoutConfirmID_handsOffWithAlertFalse() throws {
+        // No confirm id means the request came over the remote flow (NotificationService hand-off),
+        // where the APNs banner already alerted — the drain must not fire a second ActivityKit alert.
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "message": "Body"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.alert, false)
     }
 
     func testHandle_inAppExtension_silent_handsOffWithAlertFalse() throws {
         Current.isAppExtension = true
-        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "silent": true]
+        let payload: [String: Any] = [
+            "tag": "test-tag",
+            "title": "Test",
+            "silent": true,
+            LocalPushManager.confirmIDUserInfoKey: "confirm-1",
+        ]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         let pending = LiveActivityPendingStart.drainAll()
         XCTAssertEqual(pending.count, 1)
@@ -320,6 +339,66 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         // Still true — unchanged
         XCTAssertTrue(Current.settingsStore.hasSeenLiveActivityDisclosure)
+    }
+}
+
+// MARK: - LiveActivityPendingStart requeue
+
+@available(iOS 17.2, *)
+final class LiveActivityPendingStartRequeueTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        _ = LiveActivityPendingStart.drainAll()
+        _ = LiveActivityPendingEnd.drainAll()
+    }
+
+    override func tearDown() {
+        _ = LiveActivityPendingStart.drainAll()
+        _ = LiveActivityPendingEnd.drainAll()
+        super.tearDown()
+    }
+
+    private func makeRequest(tag: String, message: String = "m") -> LiveActivityPendingStart.Request {
+        .init(
+            tag: tag,
+            title: "Title",
+            serverWebhookId: nil,
+            state: .init(message: message),
+            confirmID: nil,
+            alert: false
+        )
+    }
+
+    func testRequeue_emptySlot_storesRequestForNextDrain() {
+        LiveActivityPendingStart.requeue(makeRequest(tag: "retry-tag"))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.tag, "retry-tag")
+    }
+
+    func testRequeue_fresherRequestAlreadyQueued_keepsFresher() {
+        // A request that arrived while the failed one was draining is newer — it must win.
+        LiveActivityPendingStart.append(makeRequest(tag: "retry-tag", message: "fresh"))
+        LiveActivityPendingStart.requeue(makeRequest(tag: "retry-tag", message: "stale"))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.state.message, "fresh")
+    }
+
+    func testRequeue_endQueuedForTag_isDropped() {
+        // An end that arrived while the failed start was draining must not be resurrected.
+        LiveActivityPendingEnd.append(tag: "retry-tag")
+        LiveActivityPendingStart.requeue(makeRequest(tag: "retry-tag"))
+        XCTAssertTrue(LiveActivityPendingStart.drainAll().isEmpty)
+        XCTAssertEqual(LiveActivityPendingEnd.drainAll(), ["retry-tag"])
+    }
+
+    func testRequeue_endQueuedForOtherTag_stillStores() {
+        LiveActivityPendingEnd.append(tag: "other-tag")
+        LiveActivityPendingStart.requeue(makeRequest(tag: "retry-tag"))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.tag, "retry-tag")
     }
 }
 

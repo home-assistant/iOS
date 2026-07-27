@@ -100,7 +100,11 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
             confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
-            alert: (payload["silent"] as? Bool) != true
+            // The drain-path ActivityKit alert replaces the banner the local-push flow suppresses,
+            // so it fires only for local-push requests (identified by their confirm id). A request
+            // handed off from the remote flow (NotificationService) has no confirm id — its APNs
+            // banner already alerted, and a second ActivityKit alert would double-chime.
+            alert: payload[LocalPushManager.confirmIDUserInfoKey] != nil && (payload["silent"] as? Bool) != true
         )
     }
 

@@ -33,6 +33,15 @@ enum LiveActivityPendingEnd {
         Current.Log.verbose("LiveActivityPendingEnd: enqueued '\(tag)', pending=\(tags.count)")
     }
 
+    /// Whether an end is queued for `tag` (checked before a failed start is requeued for retry,
+    /// so the retry never resurrects an activity the extension has since asked to end).
+    static func contains(tag: String) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return false }
+        return (defaults.stringArray(forKey: storeKey) ?? []).contains(tag)
+    }
+
     /// Remove a queued end for `tag` (called when a newer start is enqueued for the same tag).
     static func remove(tag: String) {
         lock.lock()

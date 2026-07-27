@@ -105,6 +105,21 @@ enum LiveActivityPendingStart {
         Current.Log.verbose("LiveActivityPendingStart: enqueued '\(request.tag)', pending=\(requests.count)")
     }
 
+    /// Put a failed start back for the next drain (launch/foreground). Unlike `append`, the retry
+    /// is old news — anything that arrived for the tag meanwhile must win — so it neither cancels
+    /// a queued end nor replaces a fresher queued request; it only fills an empty slot.
+    static func requeue(_ request: Request) {
+        guard !LiveActivityPendingEnd.contains(tag: request.tag) else { return }
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var requests = load(from: defaults)
+        guard !requests.contains(where: { $0.tag == request.tag }) else { return }
+        requests.append(request)
+        store(requests, to: defaults)
+        Current.Log.verbose("LiveActivityPendingStart: requeued '\(request.tag)' for retry")
+    }
+
     /// Remove a queued start for `tag` (called when a newer end is enqueued for the same tag).
     static func remove(tag: String) {
         lock.lock()
@@ -282,6 +297,10 @@ public final class LiveActivityPendingStartObserver {
                             Current.Log.error(
                                 "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"
                             )
+                            // Requeue so the next drain (launch/foreground) retries. A start drained
+                            // while the app is running in the background throws an ActivityKit
+                            // visibility error and would otherwise be lost for good.
+                            LiveActivityPendingStart.requeue(request)
                         }
                     }
                     DispatchQueue.main.async { seal.fulfill(()) }

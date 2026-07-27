@@ -12,6 +12,8 @@ description: Live Activities and push notifications across the local-push and re
 
 Both flows converge on `NotificationCommandManager` → `HandlerStartOrUpdateLiveActivity` → `LiveActivityRegistry` (`Sources/Shared/LiveActivity`), with the UI rendered by `Sources/Extensions/Widgets/LiveActivity`.
 
+Neither extension can touch ActivityKit, so both hand Live Activity starts/updates off to the app via the App Group queue + Darwin signal (`LiveActivityPendingStart`/`LiveActivityPendingEnd`): the `PushProvider` for local-push events, and the `NotificationService` for remote pushes (without this, a backgrounded phone would depend entirely on the server-side ActivityKit push-to-start path, which is best-effort). The app drains the queues on the Darwin signal, at launch, and on foreground; a start that fails to drain (e.g. ActivityKit visibility error while background-running) is requeued for the next drain. The drain-path ActivityKit alert fires only for local-push requests (identified by their `hass_confirm_id`) — it replaces the banner the local-push flow suppresses, while remote pushes already alerted via their APNs banner.
+
 Practical checklist when changing this area:
 - If you add or read a notification/Live-Activity payload field, confirm it survives **both** the local-push parser promotion list and the remote-push payload.
 - Verify alerting behavior (sound, haptics, banner suppression, the `silent` flag) on **both** flows — local push presents notifications through `LocalPushManager`, not the system directly.
