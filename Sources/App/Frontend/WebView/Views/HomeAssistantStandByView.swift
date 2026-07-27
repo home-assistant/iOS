@@ -8,7 +8,6 @@ struct HomeAssistantStandByView: View {
     static let logoDismissTapThreshold = 10
 
     private static let headerAccessorySize = CGSize(width: 44, height: 44)
-    private static let loadingLogoSize = CGSize(width: 110, height: 110)
     static let loadingLogoResourceName = "home-assistant-logo-loading"
     private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
     private static let reauthenticationIconSize: CGFloat = 56
@@ -40,6 +39,8 @@ struct HomeAssistantStandByView: View {
     @State private var showsCleanCacheButton = false
     @State private var loaderCountdownRestartToken = 0
     @State private var hasAppeared = false
+    @State private var showsServerPill = false
+    @State private var showsAnimatedLogo: Bool
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
 
     private var showsEmptyState: Bool { emptyState != nil }
@@ -61,26 +62,19 @@ struct HomeAssistantStandByView: View {
     private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
 
     /// Without another registered server there is nothing to identify or switch to (a zero count — as in
-    /// previews or a transiently empty registry — behaves the same), so the pill row is hidden and the
-    /// loading logo mirrors the splash logo exactly (size and full-screen-centered position) so the
-    /// splash-to-stand-by hand-off is a pure crossfade with no movement.
+    /// previews or a transiently empty registry — behaves the same), so the pill row is hidden. The pill
+    /// hangs below the logo as an overlay so it never shifts the logo away from the splash position.
     private var hasMultipleServers: Bool { Current.servers.all.count > 1 }
 
     private var logoSize: CGSize {
-        if showsEmptyState {
-            Self.emptyStateLogoSize
-        } else if hasMultipleServers {
-            Self.loadingLogoSize
-        } else {
-            LaunchSplashOverlayView.Constants.splashLogoSize
-        }
+        // While loading, the logo mirrors the splash logo exactly (size and full-screen-centered
+        // position) so the launch-screen → splash → stand-by hand-off is a pure crossfade with no
+        // movement; the logo only moves (to the top, smaller) for the empty/error state.
+        showsEmptyState ? Self.emptyStateLogoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
     private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
         guard !showsEmptyState else { return 0 }
-        if hasMultipleServers {
-            return -DesignSystem.Spaces.eight
-        }
         // The splash logo is centered against the full screen while this content is laid out inside
         // the safe area; shift by the safe-area asymmetry so the two centers coincide.
         return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
@@ -109,6 +103,7 @@ struct HomeAssistantStandByView: View {
         self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
         self.cleanCacheButtonDelay = cleanCacheButtonDelay
         self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
+        self._showsAnimatedLogo = State(initialValue: emptyState == nil)
     }
 
     var body: some View {
@@ -122,8 +117,6 @@ struct HomeAssistantStandByView: View {
             iconView
             if let emptyState {
                 emptyStateBody(for: emptyState)
-            } else if hasMultipleServers {
-                currentServerPill
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
@@ -133,6 +126,22 @@ struct HomeAssistantStandByView: View {
             maxHeight: .infinity,
             alignment: showsEmptyState ? .top : .center
         )
+        .overlay {
+            // Overlaid (not a stack sibling) so the pill takes no layout space and the loading logo
+            // stays exactly at the splash position; it hangs below the screen-centered logo.
+            if !showsEmptyState, hasMultipleServers {
+                currentServerPill
+                    .padding(.horizontal, DesignSystem.Spaces.three)
+                    .offset(y: logoSize.height / 2 + DesignSystem.Spaces.three + Self.serverPillHeight / 2)
+                    // Held invisible until the launch splash overlay is gone, then faded in, so it
+                    // never pops in fully formed behind the splash fade. Opacity alone keeps the
+                    // view tappable and visible to VoiceOver, so disable both while hidden.
+                    .opacity(showsServerPill ? 1 : 0)
+                    .allowsHitTesting(showsServerPill)
+                    .accessibilityHidden(!showsServerPill)
+                    .transition(.opacity)
+            }
+        }
         .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
@@ -183,11 +192,8 @@ struct HomeAssistantStandByView: View {
                 showsEmptyStateContent = emptyState != nil
             }
         }
-        .onChange(of: emptyState != nil) { showsEmptyState in
-            withAnimation(DesignSystem.Animation.default) {
-                showsEmptyStateContent = showsEmptyState
-            }
-        }
+        .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
+        .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
@@ -197,6 +203,9 @@ struct HomeAssistantStandByView: View {
         ) { _ in
             networkType = Current.connectivity.simpleNetworkType()
         }
+        // `$phase` replays its current value on subscription, so when the splash already finished
+        // (server switches, reloads) the pill fades in immediately on appear.
+        .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             guard !showsEmptyState else { return }
             showsDelayedSettingsButton = false
@@ -207,6 +216,35 @@ struct HomeAssistantStandByView: View {
             id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
             runDelayedButtonsCountdown
         )
+    }
+
+    private func handleEmptyStateChange(_ showsEmptyState: Bool) {
+        if showsEmptyState {
+            // Un-animated, so the WKWebView-backed loading logo is gone before the move-to-top
+            // starts and only the pixel-identical static logo underneath runs the transition —
+            // the webview can't track animated frame changes and would show a second logo.
+            showsAnimatedLogo = false
+        }
+        withAnimation(DesignSystem.Animation.default) {
+            showsEmptyStateContent = showsEmptyState
+        }
+    }
+
+    @Sendable
+    private func restoreAnimatedLogoIfNeeded() async {
+        guard !showsEmptyState, !showsAnimatedLogo else { return }
+        // Restore the animated logo only after the move back to center settled; re-inserting
+        // the webview mid-animation would desync it from the static logo again.
+        try? await Task.sleep(for: .milliseconds(400))
+        guard !Task.isCancelled else { return }
+        showsAnimatedLogo = true
+    }
+
+    private func fadeInServerPillIfNeeded(for phase: LaunchSplashOverlayState.Phase) {
+        guard phase == .finished, !showsServerPill else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsServerPill = true
+        }
     }
 
     @Sendable
@@ -419,13 +457,20 @@ struct HomeAssistantStandByView: View {
                     // Keep the static logo behind the animated SVG while loading: the launch-splash
                     // hero morphs into a pixel-identical `Image(.logo)` (matched geometry), and it
                     // also fills any frame before the WKWebView paints. The animated SVG sits on top
-                    // once loaded.
+                    // once loaded, and is swapped out for the static logo around the empty-state
+                    // move since the webview can't track animated frame changes.
                     Image(.logo)
                         .resizable()
                         .scaledToFit()
-                    if !showsEmptyState {
-                        AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
-                    }
+                    // Hidden via opacity (never removed) with animation explicitly disabled, so the
+                    // swap to the static logo is always instantaneous — a conditional removal would
+                    // inherit the surrounding empty-state animation and fade out mid-move.
+                    AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
+                        .opacity(showsAnimatedLogo ? 1 : 0)
+                        .animation(nil, value: showsAnimatedLogo)
+                        // Decorative duplicate of the static logo; its webview is already
+                        // non-interactive, this also keeps it out of VoiceOver.
+                        .accessibilityHidden(true)
                     if case .inFlight = emptyState?.style {
                         inFlightIcon
                             .offset(x: 15, y: 15)
@@ -772,6 +817,9 @@ private extension HomeAssistantStandByView {
     Current.servers = FakeServerManager(initial: 2)
     // swiftlint:enable prohibit_environment_assignment
     let server = Current.servers.all.first ?? ServerFixture.standard
+    // No launch splash overlay in this preview; finish its state so the server pill fades in.
+    LaunchSplashOverlayState.shared.fadeOut()
+    LaunchSplashOverlayState.shared.finish()
     return HomeAssistantStandByView(
         server: server,
         emptyState: nil
