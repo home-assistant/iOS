@@ -1124,6 +1124,7 @@ Home Assistant — это приложение с открытым исходн�
 "sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
 "sensors.camera_motion.setting.clear_delay" = "Clear delay";
 "sensors.camera_motion.setting.frame_rate" = "Frame rate";
+"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
 "sensors.camera_stream.footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
 "sensors.camera_stream.setting.credentials_footer" = "Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Optional";

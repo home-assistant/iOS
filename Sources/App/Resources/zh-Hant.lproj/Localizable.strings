@@ -1124,6 +1124,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "sensors.camera_motion.setting.changed_area_threshold" = "變更區域臨界值";
 "sensors.camera_motion.setting.clear_delay" = "清除延遲";
 "sensors.camera_motion.setting.frame_rate" = "影格率";
+"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
 "sensors.camera_stream.footer" = "若要在 Home Assistant 中觀看此攝影機，請加入 MJPEG IP 攝影機整合，並使用上方的串流網址。此串流為未加密 HTTP；請在下方設定使用者名稱與密碼以啟用驗證，否則區域網路中的任何人都能進行觀看。串流只會在此 App 於前景開啟時可用。";
 "sensors.camera_stream.setting.credentials_footer" = "將兩者都留空可允許網路上的任何人觀看串流。設定完成後，請在 Home Assistant 中以相同的使用者名稱與密碼設定 MJPEG 整合。";
 "sensors.camera_stream.setting.credentials_placeholder" = "選項";

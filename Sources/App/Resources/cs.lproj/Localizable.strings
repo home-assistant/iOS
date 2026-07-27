@@ -1124,6 +1124,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "sensors.camera_motion.setting.changed_area_threshold" = "Změněný práh oblasti";
 "sensors.camera_motion.setting.clear_delay" = "Zpoždění detekce";
 "sensors.camera_motion.setting.frame_rate" = "Snímková frekvence";
+"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
 "sensors.camera_stream.footer" = "Chcete-li sledovat tuto kameru v Home Assistantovi, přidejte integraci \"MJPEG IP Camera\" a použijte výše uvedenou URL adresu proudu. Proud je čisté HTTP bez šifrování; níže nastavte uživatelské jméno a heslo, které vyžadují ověření, jinak jej bude moci sledovat kdokoli ve vaší místní síti. Proud je k dispozici jen tehdy, když je aplikace otevřená v popředí.";
 "sensors.camera_stream.setting.credentials_footer" = "Nechte obě pole prázdná, aby si proud mohl prohlížet kdokoli ve vaší síti. Po nastavení nakonfigurujte integraci MJPEG v Home Assistantov se stejným uživatelským jménem a heslem.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Volitelné";
