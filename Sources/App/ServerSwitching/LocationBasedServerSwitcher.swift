@@ -16,8 +16,6 @@ import UIKit
 final class LocationBasedServerSwitcher {
     static let shared = LocationBasedServerSwitcher()
 
-    private static let toastID = "location-based-server-switch"
-    private static let toastDuration: TimeInterval = 4
     private static let locationTimeout: TimeInterval = 5
     /// How long the app must stay in the background before the once-per-visit memory expires and
     /// the matched server is applied again on the next activation.
@@ -105,17 +103,16 @@ final class LocationBasedServerSwitcher {
               matched.identifier != currentServer?.identifier else { return }
 
         Current.Log.info("location-based server switch to \(matched.identifier)")
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: "Switched server based on location to \(matched.info.name)",
+            type: .locationUpdate,
+            payload: [
+                "server_name": matched.info.name,
+                "server_id": matched.identifier.rawValue,
+            ]
+        ))
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: matched)
-        }
-        if #available(iOS 18, *) {
-            ToastPresenter.shared.show(
-                id: Self.toastID,
-                symbol: .arrowLeftArrowRight,
-                symbolForegroundStyle: (.white, .haPrimary),
-                title: L10n.Settings.ServerSwitching.switchedToast(matched.info.name),
-                duration: Self.toastDuration
-            )
         }
     }
 
