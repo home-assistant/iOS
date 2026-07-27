@@ -595,9 +595,11 @@ struct DebugView: View {
             api.connection.disconnect()
         }
         resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.removingServers
-        for server in Current.servers.all {
-            Current.servers.remove(identifier: server.identifier)
+        let removedServerIdentifiers = Current.servers.all.map(\.identifier)
+        for identifier in removedServerIdentifiers {
+            Current.servers.remove(identifier: identifier)
         }
+        Current.resetAPICache(for: removedServerIdentifiers)
         resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.clearingDatabases
         resetStores()
         setDefaults()

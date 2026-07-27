@@ -271,8 +271,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
         let waitAtLeast = after(seconds: 3.0)
 
+        // Revoke only this server's token — revoking every server's token would sign the
+        // user out of the servers that are staying.
+        let revocations = [Current.api(for: server)?.tokenManager.revokeToken()].compactMap { $0 }
         await race(
-            when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
+            when(resolved: revocations).asVoid(),
             after(seconds: 10.0)
         ).async()
 
@@ -280,6 +283,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
         Current.api(for: server)?.connection.disconnect()
         Current.servers.remove(identifier: server.identifier)
+        // Drop the cached API so stale Server references can't fetch it back and keep a
+        // live connection to a deleted server.
+        Current.resetAPICache(for: [server.identifier])
         Current.onboardingObservation.needed(.logout)
     }
 

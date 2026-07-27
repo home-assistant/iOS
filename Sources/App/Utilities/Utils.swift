@@ -23,10 +23,20 @@ func resetStores() {
         Current.Log.error("Error when trying to delete everything from Keychain!")
     }
 
+    // Wiping the app-group domain would also wipe the deleted-server tombstones, and
+    // without them a late writer holding a Server reference — e.g. the local-push
+    // extension refreshing a token in its own process — re-creates the entry in the
+    // shared Keychain and the "deleted" servers come back on next launch.
+    let deletedServerTombstones = prefs.array(forKey: ServerManagerImpl.deletedServersPrefsKey)
+
     let bundleId = Bundle.main.bundleIdentifier!
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
     prefs.removePersistentDomain(forName: AppConstants.AppGroupID)
+
+    if let deletedServerTombstones {
+        prefs.set(deletedServerTombstones, forKey: ServerManagerImpl.deletedServersPrefsKey)
+    }
 
     do {
         try Current.database().eraseAllData()
