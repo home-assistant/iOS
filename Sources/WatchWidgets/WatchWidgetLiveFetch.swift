@@ -99,10 +99,11 @@ enum WatchWidgetLiveFetch {
         return (updates, details)
     }
 
-    /// A fresh formatted value plus the raw attributes, so slot formulas that reference attributes
-    /// can be re-resolved without another fetch.
+    /// A fresh formatted value plus the raw state and attributes, so slot formulas and gauge
+    /// fractions that reference them can be re-resolved without another fetch.
     private struct LiveValue {
         let value: String
+        let state: String
         let attributes: [String: Any]
     }
 
@@ -232,6 +233,7 @@ enum WatchWidgetLiveFetch {
         return (
             LiveValue(
                 value: format(rawValue, unit: unit, precision: config.valuePrecision),
+                state: state,
                 attributes: attributes
             ),
             nil
@@ -294,6 +296,12 @@ enum WatchWidgetLiveFetch {
                 attributeValue: { update.attributes[$0].map { String(describing: $0) } }
             )
             refreshSlotTexts(in: &snapshots[index], config: config, context: context)
+            refreshFractions(
+                in: &snapshots[index],
+                config: config,
+                state: update.state,
+                attributes: update.attributes
+            )
         }
         if let encoded = try? JSONEncoder().encode(snapshots) {
             defaults.set(encoded, forKey: WatchWidgetConstants.defaultsKey)
@@ -320,6 +328,65 @@ enum WatchWidgetLiveFetch {
             if options.value != nil { options.value = slotText(.value) }
             if options.bottomText != nil { options.bottomText = slotText(.bottomText) }
             snapshot.perFamily?[family.rawValue] = options
+        }
+    }
+
+    /// Re-computes a snapshot's gauge fractions from the fresh entity data. Without this the value
+    /// text updates but the gauge ring/bar keeps its previous position until the WatchApp's next
+    /// full refresh.
+    private static func refreshFractions(
+        in snapshot: inout WatchWidgetComplicationSnapshot,
+        config: WatchComplicationConfig,
+        state: String,
+        attributes: [String: Any]
+    ) {
+        snapshot.fraction = fraction(config: config, family: config.widgetFamily, state: state, attributes: attributes)
+        for family in WatchComplicationConfig.Family.allCases {
+            guard var options = snapshot.perFamily?[family.rawValue] else { continue }
+            options.fraction = fraction(config: config, family: family, state: state, attributes: attributes)
+            snapshot.perFamily?[family.rawValue] = options
+        }
+    }
+
+    /// The gauge fill for a family, mirroring the WatchApp's snapshot builder: the gauge attribute,
+    /// else the value attribute, else the state, scaled into the configured range.
+    private static func fraction(
+        config: WatchComplicationConfig,
+        family: WatchComplicationConfig.Family,
+        state: String,
+        attributes: [String: Any]
+    ) -> Double? {
+        guard let range = config.gaugeRange(for: family), range.max > range.min else { return nil }
+        let source: Any = config.gaugeAttribute(for: family).flatMap { attributes[$0] }
+            ?? config.valueAttribute.flatMap { attributes[$0] }
+            ?? state
+        guard let raw = number(from: source) else { return nil }
+        return min(max((raw - range.min) / (range.max - range.min), 0), 1)
+    }
+
+    /// Forgiving number parsing for states/attribute values, mirroring
+    /// `WatchComplication.percentileNumber` (which lives in the app-only Shared target).
+    private static func number(from source: Any) -> Double? {
+        switch source {
+        case let value as String:
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            // Non-locale-aware server strings ("0.33") first, then the user's locale ("0,33").
+            for locale in [Locale(identifier: "en_US_POSIX"), Locale.current] {
+                formatter.locale = locale
+                if let value = formatter.number(from: value)?.doubleValue {
+                    return value
+                }
+            }
+            return nil
+        case let value as Int:
+            return Double(value)
+        case let value as Double:
+            return value
+        case let value as Float:
+            return Double(value)
+        default:
+            return number(from: String(describing: source))
         }
     }
 }
