@@ -493,6 +493,7 @@
 "gestures.value.option.more_info.search_commands" = "Otsi käske";
 "gestures.value.option.more_info.search_devices" = "Otsi seadmeid";
 "gestures.value.option.more_info.search_entities" = "Otsi olemeid";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Mine järgmisele lehele";
 "gestures.value.option.next_server" = "Järgmine server";
 "gestures.value.option.none" = "Puudub";
@@ -505,6 +506,7 @@
 "gestures.value.option.servers_list" = "Serverite loend";
 "gestures.value.option.show_settings" = "Ava rakenduse seaded";
 "gestures.value.option.show_sidebar" = "Kuva külgriba";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Andmebaasile (GRDB) ei pääsenud juurde, tõrge: %@";
 "grdb.config.migration_error.failed_to_save" = "Uue konfiguratsiooni salvestamine nurjus, tõrge: %@";
 "ha_api.api_error.cant_build_url" = "API URL-i ei saa luua";
@@ -1959,6 +1961,14 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.configurator.sections.icon.header" = "Ikoon";
 "watch.configurator.sections.ring.footer" = "Rõngas mis näitab teksti ümber edenemist.";
 "watch.configurator.sections.ring.header" = "Sõõr";
+"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
+"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
+"watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
+"watch.debug.complication_refresh.finished.title" = "Complications reload finished";
+"watch.debug.complication_refresh.finished.unknown_reason" = "unknown reason";
+"watch.debug.complication_refresh.finished.updated_line" = "%1$@ updated to %2$@ in %3$@";
+"watch.debug.complication_refresh.started.body" = "Reloading %1$li complication(s): %2$@";
+"watch.debug.complication_refresh.started.title" = "Complications reload started";
 "watch.debug.delete_db.alert.failed.message" = "Konfiguratsiooni kustutamine nurjus, viga: %@";
 "watch.debug.delete_db.alert.title" = "Kas soovid kindlasti kella konfiguratsiooni kustutada? Seda ei saa tagasi võtta";
 "watch.debug.delete_db.reset.title" = "Lähtesta konfiguratsioon";
@@ -2184,6 +2194,8 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.settings.developer.allow_choosing_route.title" = "Luba marsruudi valimine";
 "watch.settings.developer.audio_probe.footer" = "Katsetus: hoia otsesünkroniseerimise ajal helisessiooni aktiivseks, et kontrollida, kas see võimaldab WebSocketi ühendust selle kellaga. Sünkroniseerimise ajal kostab vaikne helisignaal.";
 "watch.settings.developer.audio_probe.title" = "Heliseansi kontroll";
+"watch.settings.developer.complication_refresh_notifications.footer" = "Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.";
+"watch.settings.developer.complication_refresh_notifications.title" = "Complication reload alerts";
 "watch.settings.developer.direct_sync.footer" = "Lae selle kella andmed otse Home Assistantist WebSocketi kaudu, selle asemel et sünkroniseerida neid iPhone’i kaudu. Eksperimentaalne: enamik kelli ei toeta WebSocketi-ühendusi; sel juhul peatub andmete uuendamine, kuni see funktsioon välja lülitatakse.";
 "watch.settings.developer.direct_sync.title" = "Otsene serveri sünkroonimine";
 "watch.settings.developer.iphone_unreachable_icon.footer" = "Kuvab avakuva päises kaldkriipsuga iPhone'i ikooni, kui seotud iPhone pole kättesaadav. Toimingud käivitatakse kellast endast, seega on see kasulik ainult iPhone'i lingi silumisel.";
