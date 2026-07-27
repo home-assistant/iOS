@@ -40,7 +40,7 @@ struct ServersListView: View {
                 titleVisibility: .visible
             ) {
                 Button(L10n.Settings.ConnectionSection.DeleteServer.title, role: .destructive) {
-                    Task { await observer.deleteServer(server) }
+                    Task { await server.deleteFromApp() }
                 }
                 Button(L10n.cancelLabel, role: .cancel) {}
             } message: {

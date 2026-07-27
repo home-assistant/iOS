@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import HAKit
-import PromiseKit
 import Shared
 import UIKit
 
@@ -269,24 +268,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         isDeleting = true
         defer { isDeleting = false }
 
-        let waitAtLeast = after(seconds: 3.0)
-
-        // Revoke only this server's token — revoking every server's token would sign the
-        // user out of the servers that are staying.
-        let revocations = [Current.api(for: server)?.tokenManager.revokeToken()].compactMap { $0 }
-        await race(
-            when(resolved: revocations).asVoid(),
-            after(seconds: 10.0)
-        ).async()
-
-        await waitAtLeast.async()
-
-        Current.api(for: server)?.connection.disconnect()
-        Current.servers.remove(identifier: server.identifier)
-        // Drop the cached API so stale Server references can't fetch it back and keep a
-        // live connection to a deleted server.
-        Current.resetAPICache(for: [server.identifier])
-        Current.onboardingObservation.needed(.logout)
+        await server.deleteFromApp(minimumDuration: 3.0)
     }
 
     // MARK: - Client Certificate
