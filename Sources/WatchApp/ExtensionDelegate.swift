@@ -129,6 +129,29 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
 
+                // The system watchdog kills the app if this task isn't completed within its
+                // wall-clock budget: 15s when warm, 25s when cold-launched for the refresh
+                // (CSLHandleBackgroundRefreshAction transgression). The refresh work below talks
+                // to the network with timeouts larger than that budget, so completing "when done"
+                // isn't enough — always complete at a hard deadline, even mid-work. Both paths run
+                // on the main queue (PromiseKit's default), so the flag needs no synchronization.
+                var didComplete = false
+                let completeTask = {
+                    guard !didComplete else { return }
+                    didComplete = true
+                    backgroundTask.setTaskCompletedWithSnapshot(false)
+                }
+
+                // Schedule the next refresh up front so a deadline hit can't skip it.
+                Current.backgroundRefreshScheduler.schedule().cauterize()
+
+                after(seconds: 10).done {
+                    if !didComplete {
+                        Current.Log.info("completing background refresh task at deadline; work still running")
+                    }
+                    completeTask()
+                }
+
                 firstly {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
                 }.then { _ -> Promise<Void> in
@@ -142,7 +165,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                             // an unreachable server can't eat the background-task runtime budget.
                             let directSync = Task { await Current.watchDirectDatabaseSync.syncAll(force: false) }
                             let timeout = Task {
-                                try? await Task.sleep(for: .seconds(15))
+                                try? await Task.sleep(for: .seconds(5))
                                 Current.watchDirectDatabaseSync.cancel()
                             }
                             _ = await directSync.value
@@ -151,10 +174,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                             seal.fulfill(())
                         }
                     }
-                }.ensureThen {
-                    Current.backgroundRefreshScheduler.schedule()
                 }.ensure {
-                    backgroundTask.setTaskCompletedWithSnapshot(false)
+                    completeTask()
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
@@ -288,7 +309,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     // we endeavor to not need this timer, but apple's api is so difficult to micromanage
                     // that it's just safer to guess and check every few seconds
                     Current.Log.info("ending background task due to our own watchdog timer")
-                    self?.endWatchConnectivityBackgroundTaskIfNecessary()
+                    // Force: data can stay "pending" indefinitely (e.g. a wedged file transfer), and
+                    // holding the task past ~15s gets the app killed (CSLHandleBackgroundWCSessionAction
+                    // transgression). The system delivers a new task when the data actually arrives.
+                    self?.endWatchConnectivityBackgroundTaskIfNecessary(force: true)
                 }
 
                 watchConnectivityBackgroundPromise.done {
@@ -300,9 +324,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
     }
 
-    private func endWatchConnectivityBackgroundTaskIfNecessary() {
+    private func endWatchConnectivityBackgroundTaskIfNecessary(force: Bool = false) {
         DispatchQueue.main.async { [self] in
-            guard !Communicator.shared.hasPendingDataToBeReceived else { return }
+            guard force || !Communicator.shared.hasPendingDataToBeReceived else { return }
 
             // complete the current one
             watchConnectivityBackgroundSeal(())
