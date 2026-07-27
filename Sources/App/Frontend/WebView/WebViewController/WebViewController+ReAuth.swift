@@ -3,6 +3,19 @@ import Shared
 import SwiftUI
 import UIKit
 
+extension WebViewController: OnboardingStateObserver {
+    /// Surfaces the re-authentication empty state when the server rejects this server's refresh
+    /// token (e.g. HTTP 401 from `/auth/token` after the token was revoked server-side).
+    /// `OnboardingStateObservation` may notify from a non-main thread, so hop to the main actor
+    /// before touching the web view.
+    nonisolated func onboardingStateDidChange(to state: OnboardingState) {
+        guard case let .needed(.unauthenticated(serverId, code)) = state else { return }
+        Task { @MainActor [weak self] in
+            self?.showReAuthPopup(serverId: serverId, code: code)
+        }
+    }
+}
+
 extension WebViewController {
     func performReauthentication(using urlType: ConnectionInfo.URLType) {
         let connectionInfo = server.info.connection
