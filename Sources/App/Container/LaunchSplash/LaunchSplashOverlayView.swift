@@ -11,6 +11,8 @@ struct LaunchSplashOverlayView: View {
     enum Constants {
         /// Mirrors the icon constraints in `LaunchScreen.storyboard`.
         static let splashLogoSize = CGSize(width: 120, height: 120)
+        /// Mirrors the storyboard's icon centerY constraint constant (logo sits above screen center).
+        static let splashLogoCenterYOffset: CGFloat = -80
         /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
         static let ohfLogoSize = CGSize(width: 220, height: 25)
         /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
@@ -113,11 +115,11 @@ struct LaunchSplashOverlayView: View {
         }
     }
 
-    /// Centered like the storyboard's centerX/centerY constraints against the full screen.
+    /// Positioned like the storyboard's centerX/centerY(+offset) constraints against the full screen.
     private func splashLogoFrame(in size: CGSize) -> CGRect {
         CGRect(
             x: (size.width - Constants.splashLogoSize.width) / 2,
-            y: (size.height - Constants.splashLogoSize.height) / 2,
+            y: (size.height - Constants.splashLogoSize.height) / 2 + Constants.splashLogoCenterYOffset,
             width: Constants.splashLogoSize.width,
             height: Constants.splashLogoSize.height
         )

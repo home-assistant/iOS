@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="launchScreen-logo" translatesAutoresizingMaskIntoConstraints="NO" id="mQh-tn-BC1" userLabel="Icon">
-                                <rect key="frame" x="147" y="388" width="120" height="120"/>
+                                <rect key="frame" x="147" y="308" width="120" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="xXY-zT-zVi"/>
                                     <constraint firstAttribute="height" constant="120" id="y4R-Bz-WCE"/>
@@ -46,7 +46,7 @@
                             <constraint firstItem="9Kv-2m-Wq7" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3Rp-8n-Lc4"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="top" secondItem="9Kv-2m-Wq7" secondAttribute="bottom" id="7Tj-5w-Xa2"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BRP-Fw-g6e"/>
-                            <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="gXx-Ta-dWp"/>
+                            <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-80" id="gXx-Ta-dWp"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hcu-i7-wKs"/>
                             <constraint firstItem="ESo-tq-1hR" firstAttribute="bottom" secondItem="pDB-na-0R2" secondAttribute="bottom" constant="32" id="zkR-fD-4jl"/>
                         </constraints>
