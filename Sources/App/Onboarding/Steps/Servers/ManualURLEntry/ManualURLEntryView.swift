@@ -45,8 +45,8 @@ struct ManualURLEntryView: View, KeyboardReadable {
             }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title) {
                 guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                 if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
-                    dismiss()
                     connectAction(url)
+                    dismiss()
                 } else {
                     showInvalidURLError = true
                 }
