@@ -4723,10 +4723,6 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }
     }
     public enum ServerSwitching {
-      /// Switched to %@
-      public static func switchedToast(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "settings.server_switching.switched_toast", String(describing: p1))
-      }
       /// Server Switching
       public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
       public enum ByLocation {
