@@ -1,3 +1,4 @@
+import CryptoKit
 import PromiseKit
 import Shared
 import UIKit
@@ -518,6 +519,10 @@ enum WatchWidgetComplicationSnapshotStore {
 
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     static let recordsKey = "watchComplicationRefreshRecords"
+    /// Fingerprint of the snapshot content this app last submitted to WidgetKit via
+    /// `reloadAllTimelines`, kept separate from the store itself: the store can hold content the
+    /// face was never re-rendered with (see `write`).
+    private static let reloadFingerprintKey = "watchWidgetComplicationSnapshotsReloadFingerprint"
 
     /// Fire-and-forget refresh for synchronous callers (launch, mirror receipt, home sync).
     static func update() {
@@ -756,27 +761,43 @@ enum WatchWidgetComplicationSnapshotStore {
             Current.Log.error("Missing app group defaults for watch widget complication snapshots")
             return
         }
-        // Skip the write + WidgetKit reload when the model didn't change. Reloads are budgeted on
-        // watchOS; spending one on identical content can get a later, real change throttled — the
-        // face then keeps showing a stale value even though the store holds the fresh one. The
-        // stored blob is decoded and compared as a model (not byte-wise) so JSON dictionary key
-        // ordering can't fake a change.
-        if let stored = defaults.data(forKey: defaultsKey),
-           let previous = try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: stored),
-           previous == snapshots {
-            return
-        }
-        guard let data = try? JSONEncoder().encode(snapshots) else {
+        // Sorted keys so equal models always encode to identical bytes, keeping the reload
+        // fingerprint below stable across launches (dictionary key order is otherwise random).
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        guard let data = try? encoder.encode(snapshots) else {
             Current.Log.error("Failed to encode watch widget complication snapshots")
             return
         }
-        defaults.set(data, forKey: defaultsKey)
+        // Reloads are budgeted on watchOS, so identical content shouldn't burn one — but "the store
+        // already holds this content" is not proof the face is showing it: the widget's self fetch
+        // writes fresh values into the store without reloading the other widget instances, and a
+        // suspension between a write and its reload call leaves the store fresh while the face is
+        // stale. Skipping on store equality alone therefore made that staleness permanent — every
+        // later refresh fetched the same value, matched the store, and never re-requested the reload.
+        // The skip is instead keyed on the content this app last actually submitted to WidgetKit:
+        // only content that is both unchanged AND already submitted is safe to skip. The stored blob
+        // is decoded and compared as a model (not byte-wise) so writes from the widget process
+        // (whose encoder doesn't sort keys) can't fake a change.
+        let contentUnchanged = defaults.data(forKey: defaultsKey)
+            .flatMap { try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: $0) }
+            .map { $0 == snapshots } ?? false
+        let fingerprint = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        if contentUnchanged, defaults.string(forKey: reloadFingerprintKey) == fingerprint {
+            return
+        }
+        if !contentUnchanged {
+            defaults.set(data, forKey: defaultsKey)
+        }
         // Reload every kind rather than a single `kind` string: the widget registers its kind from the
         // extension's `Bundle.main.bundleIdentifier`, which can differ from this app-process-derived
         // value (e.g. debug `.dev` suffixing), and a mismatched `ofKind:` is a silent no-op that leaves
         // the freshly-written snapshot unread. There is only one widget, so reloading all is equivalent.
         WidgetCenter.shared.reloadAllTimelines()
         WidgetCenter.shared.invalidateConfigurationRecommendations()
+        // Recorded only after the reload was requested, so a suspension in between retries the
+        // reload on the next refresh instead of losing it.
+        defaults.set(fingerprint, forKey: reloadFingerprintKey)
     }
 }
 
