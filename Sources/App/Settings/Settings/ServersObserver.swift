@@ -36,4 +36,11 @@ final class ServersObserver: ObservableObject, ServerObserver {
         // Update local array immediately for responsive UI
         servers = updatedServers
     }
+
+    func makeDefault(_ server: Server) {
+        guard let index = servers.firstIndex(where: { $0.identifier == server.identifier }), index != 0 else {
+            return
+        }
+        moveServers(from: IndexSet(integer: index), to: 0)
+    }
 }
