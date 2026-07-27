@@ -134,8 +134,11 @@ struct HomeAssistantStandByView: View {
                     .padding(.horizontal, DesignSystem.Spaces.three)
                     .offset(y: logoSize.height / 2 + DesignSystem.Spaces.three + Self.serverPillHeight / 2)
                     // Held invisible until the launch splash overlay is gone, then faded in, so it
-                    // never pops in fully formed behind the splash fade.
+                    // never pops in fully formed behind the splash fade. Opacity alone keeps the
+                    // view tappable and visible to VoiceOver, so disable both while hidden.
                     .opacity(showsServerPill ? 1 : 0)
+                    .allowsHitTesting(showsServerPill)
+                    .accessibilityHidden(!showsServerPill)
                     .transition(.opacity)
             }
         }
@@ -465,6 +468,9 @@ struct HomeAssistantStandByView: View {
                     AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
                         .opacity(showsAnimatedLogo ? 1 : 0)
                         .animation(nil, value: showsAnimatedLogo)
+                        // Decorative duplicate of the static logo; its webview is already
+                        // non-interactive, this also keeps it out of VoiceOver.
+                        .accessibilityHidden(true)
                     if case .inFlight = emptyState?.style {
                         inFlightIcon
                             .offset(x: 15, y: 15)
