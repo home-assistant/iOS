@@ -107,8 +107,8 @@ final class LocationBasedServerSwitcher {
             text: "Switched server based on location to \(matched.info.name)",
             type: .locationUpdate,
             payload: [
-                "server": matched.info.name,
-                "server_identifier": matched.identifier.rawValue,
+                "server_name": matched.info.name,
+                "server_id": matched.identifier.rawValue,
             ]
         ))
         Current.sceneManager.appCoordinator.done { coordinator in
