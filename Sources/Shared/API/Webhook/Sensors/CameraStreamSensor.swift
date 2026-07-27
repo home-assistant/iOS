@@ -71,7 +71,7 @@ final class CameraStreamSensor: SensorProvider {
             "Clients": server.clientCount,
             "Stream URL": server.streamURL ?? "unavailable (no Wi-Fi address)",
         ]
-        sensor.detailFooter = L10n.Sensors.CameraStream.footer
+        sensor.detailFooter = L10n.Sensors.CameraStream.detailFooter
 
         sensor.Settings = [
             .init(
