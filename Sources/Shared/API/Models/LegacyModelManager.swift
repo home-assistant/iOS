@@ -163,7 +163,21 @@ public class LegacyModelManager: ServerObserver {
             }
         }
 
-        return promise
+        // Hold a background task while the writes run: cleanup is triggered by `serversDidChange`,
+        // which can fire while the app is backgrounded. The expiring-activity protection in the
+        // database accessor cannot abort a statement that is already executing, so without
+        // protected time a write caught mid-statement at the process freeze holds the app-group
+        // SQLite file lock and the system kills the app with 0xdead10cc.
+        return Current.backgroundTask(withName: BackgroundTask.legacyModelCleanup.rawValue) { _ in promise }
+            .recover { error -> Promise<Void> in
+                // Out of background time: suspend GRDB right away, aborting any in-flight write so
+                // the file lock is released before the process is frozen. Ordinary write failures
+                // (rethrown below) must not suspend the database.
+                if case BackgroundTaskError.outOfTime = error {
+                    AppDatabaseSuspension.suspend()
+                }
+                throw error
+            }
     }
 
     public struct SubscribeDefinition {

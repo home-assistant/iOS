@@ -23,6 +23,7 @@ public enum BackgroundTask: String {
     case realmWrite = "realm-write"
     case pushLocationRequest = "push-location-request"
     case remindersSync = "reminders-sync"
+    case legacyModelCleanup = "legacy-model-cleanup"
 }
 
 public enum BackgroundTaskError: Error {
