@@ -75,9 +75,11 @@ struct HomeAssistantStandByView: View {
 
     private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
         guard !showsEmptyState else { return 0 }
-        // The splash logo is centered against the full screen while this content is laid out inside
-        // the safe area; shift by the safe-area asymmetry so the two centers coincide.
+        // The splash logo sits at an offset from the full-screen center while this content is laid
+        // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
+        // two logos coincide.
         return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
+            + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
     }
 
     init(
@@ -842,7 +844,10 @@ private extension HomeAssistantStandByView {
                     width: LaunchSplashOverlayView.Constants.splashLogoSize.width,
                     height: LaunchSplashOverlayView.Constants.splashLogoSize.height
                 )
-                .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+                .position(
+                    x: proxy.size.width / 2,
+                    y: proxy.size.height / 2 + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+                )
         }
         .ignoresSafeArea()
         .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
