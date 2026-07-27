@@ -1124,6 +1124,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
 "sensors.camera_motion.setting.clear_delay" = "Clear delay";
 "sensors.camera_motion.setting.frame_rate" = "Framerate";
+"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
 "sensors.camera_stream.footer" = "Om deze camera in Home Assistant te bekijken, voeg je de integratie 'MJPEG IP Camera' toe en gebruik je de bovenstaande stream-URL. De stream is via gewoon te benaderen via HTTP, zonder versleuteling. Stel hieronder een gebruikersnaam en wachtwoord in om authenticatie verplicht te stellen, anders kan iedereen op je lokale netwerk de beelden bekijken. De stream is alleen beschikbaar zolang de app op de voorgrond openstaat.";
 "sensors.camera_stream.setting.credentials_footer" = "Laat beide velden leeg om iedereen in je netwerk toegang te geven tot de stream. Als je deze velden invult, moet je de MJPEG-integratie in Home Assistant configureren met dezelfde gebruikersnaam en hetzelfde wachtwoord.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Optioneel";
