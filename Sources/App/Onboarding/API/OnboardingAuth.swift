@@ -233,6 +233,7 @@ class OnboardingAuth {
         }.done {
             api.connection.disconnect()
             Current.servers.remove(identifier: api.server.identifier)
+            Current.resetAPICache(for: [api.server.identifier])
         }
     }
 }
