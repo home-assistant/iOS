@@ -23,6 +23,8 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var invitationLoading = false
     @Published var showCenterLoader = true
 
+    var pendingManualURL: URL?
+
     private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
