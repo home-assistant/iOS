@@ -4,6 +4,7 @@ import SwiftUI
 struct ServersListView: View {
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
+    @State private var serverPendingDeletion: Server?
     @Environment(\.editMode) private var editMode
 
     var body: some View {
@@ -17,6 +18,33 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
                 }
+                if observer.servers.first?.identifier != server.identifier {
+                    Button {
+                        observer.makeDefault(server)
+                    } label: {
+                        Label(L10n.Settings.ConnectionSection.makeDefault, systemSymbol: .star)
+                    }
+                }
+                Button(role: .destructive) {
+                    serverPendingDeletion = server
+                } label: {
+                    Label(L10n.Settings.ConnectionSection.DeleteServer.title, systemSymbol: .trash)
+                }
+            }
+            .confirmationDialog(
+                L10n.Settings.ConnectionSection.DeleteServer.title,
+                isPresented: Binding(
+                    get: { serverPendingDeletion?.identifier == server.identifier },
+                    set: { if !$0 { serverPendingDeletion = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button(L10n.Settings.ConnectionSection.DeleteServer.title, role: .destructive) {
+                    Task { await observer.deleteServer(server) }
+                }
+                Button(L10n.cancelLabel, role: .cancel) {}
+            } message: {
+                Text(L10n.Settings.ConnectionSection.DeleteServer.message)
             }
         }
         .onMove { source, destination in
