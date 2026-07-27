@@ -88,6 +88,12 @@ private struct ServerCache {
 public final class ServerManagerImpl: ServerManager {
     private static let restoredMirroredServersKey = "restoredMirroredServers"
 
+    /// Prefs key holding tombstones for deleted server identifiers. Every persistence write
+    /// checks this list first, so it must survive an app-data reset (see `resetStores()` in the
+    /// app target) — otherwise an in-flight writer, like the local-push extension refreshing a
+    /// token, can resurrect a just-deleted server in the shared Keychain.
+    public static let deletedServersPrefsKey = "deletedServers"
+
     private var keychain: ServerManagerKeychain
     private var historicKeychain: ServerManagerKeychain
     private var mirrorStore: ServerManagerMirrorStore
@@ -110,11 +116,12 @@ public final class ServerManagerImpl: ServerManager {
 
     private var deletedServers: Set<Identifier<Server>> {
         get {
-            let identifiers = HANetworkingEnvironment.current.prefs.array(forKey: "deletedServers") as? [String] ?? []
+            let identifiers = HANetworkingEnvironment.current.prefs
+                .array(forKey: Self.deletedServersPrefsKey) as? [String] ?? []
             return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
         }
         set {
-            HANetworkingEnvironment.current.prefs.set(newValue.map(\.rawValue), forKey: "deletedServers")
+            HANetworkingEnvironment.current.prefs.set(newValue.map(\.rawValue), forKey: Self.deletedServersPrefsKey)
         }
     }
 
@@ -185,13 +192,15 @@ public final class ServerManagerImpl: ServerManager {
                 lhs.1.sortOrder < rhs.1.sortOrder
             })
 
-        let deletedServersUnchanged = self.deletedServers == deletedServers
         if let cachedOrFreshServers = cache.mutate(using: { cache -> [Server]? in
             if !cache.restrictCaching, let cachedServers = cache.all {
                 return cachedServers
             }
 
-            guard deletedServersUnchanged else {
+            // Compare tombstones inside the lock: remove() writes its tombstone before it
+            // mutates the cache, so a pre-lock comparison could pass and then cache a stale
+            // list that still contains a just-deleted server.
+            guard self.deletedServers == deletedServers else {
                 return nil
             }
 
@@ -350,11 +359,13 @@ public final class ServerManagerImpl: ServerManager {
                 return cached
             }
 
-            let deletedServers = self.deletedServers
             return cache.mutate { cache -> ServerInfo in
                 if !cache.restrictCaching, let info = cache.info[identifier] {
                     return info
                 } else {
+                    // Read tombstones inside the lock so a remove() completing between the
+                    // read and the cache write can't get its deletion re-cached here.
+                    let deletedServers = self.deletedServers
                     // Prefer live Keychain data, but fall back to the last startup
                     // snapshot in GRDB when the Keychain entry is gone.
                     let keychainInfo = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
@@ -387,8 +398,12 @@ public final class ServerManagerImpl: ServerManager {
             // intentionally not in the lock
             _ = serverInfo.connection.evaluateActiveURL()
 
-            let deletedServers = self?.deletedServers ?? []
             return cache.mutate { cache in
+                // Read tombstones inside the lock: remove() writes its tombstone before it
+                // deletes the Keychain entry, so an update racing a deletion (e.g. a token
+                // refresh finishing while the user deletes the server) sees the tombstone
+                // here and can't write the server back into the Keychain.
+                let deletedServers = self?.deletedServers ?? []
                 guard !deletedServers.contains(identifier) else {
                     HANetworkingEnvironment.current.log.verbose("ignoring update to deleted server \(identifier)")
                     return false

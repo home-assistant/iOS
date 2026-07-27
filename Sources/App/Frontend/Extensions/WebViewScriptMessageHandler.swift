@@ -132,6 +132,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
                 .revokeToken() ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { [weak self, server] _ in
             Current.servers.remove(identifier: server.identifier)
+            Current.resetAPICache(for: [server.identifier])
             let script = "\(callbackName)(true)"
 
             Current.Log.verbose("Running revoke external auth callback \(script)")

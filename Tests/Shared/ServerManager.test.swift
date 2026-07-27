@@ -561,6 +561,19 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(keychain.data[server1.identifier.rawValue]?.count, try encoder.encode(newInfo).count)
     }
 
+    func testRemoveWritesTombstoneUnderStablePrefsKey() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.remove(identifier: server1.identifier)
+
+        // resetStores() preserves this key across the app-data wipe so late writers can't
+        // resurrect deleted servers; the raw value must stay stable for stored tombstones.
+        XCTAssertEqual(ServerManagerImpl.deletedServersPrefsKey, "deletedServers")
+        let tombstones = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String]
+        XCTAssertEqual(tombstones, ["fake1"])
+    }
+
     func testSetupBackfillsMirrorForExistingKeychainServers() throws {
         let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
