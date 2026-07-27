@@ -279,6 +279,44 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .badServerResponse)
     }
 
+    func testShowReAuthPopupMarksAuthInvalidAndShowsReauthEmptyState() {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.showReAuthPopup(serverId: server.identifier.rawValue, code: 401)
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+    }
+
+    func testShowReAuthPopupIgnoresEventsForOtherServers() {
+        let sut = makeSUT(server: .fake())
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.showReAuthPopup(serverId: Server.fake().identifier.rawValue, code: 401)
+
+        XCTAssertEqual(sut.connectionState, .unknown)
+        XCTAssertNil(overlayState.emptyState)
+    }
+
+    func testUnauthenticatedOnboardingStateShowsReauthEmptyState() async {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.onboardingStateDidChange(to: .needed(.unauthenticated(server.identifier.rawValue, 401)))
+
+        await waitUntil { sut.connectionState == .authInvalid }
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+    }
+
     func testRestoredURLRebuildsSavedPathOntoLiveBaseIgnoringSavedHost() throws {
         // A path saved on the internal base is restored against whatever base is active now (e.g. remote
         // UI), so only path/query/fragment carry over -- never the host.
@@ -313,6 +351,19 @@ final class WebViewControllerTests: XCTestCase {
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         return sut
+    }
+
+    private func waitUntil(
+        _ condition: @escaping () -> Bool,
+        timeout: TimeInterval = 2,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async {
+        let deadline = Date(timeIntervalSinceNow: timeout)
+        while !condition(), Date() < deadline {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(condition(), "condition not met within \(timeout)s", file: file, line: line)
     }
 }
 
