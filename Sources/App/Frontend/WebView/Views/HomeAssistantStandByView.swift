@@ -189,25 +189,8 @@ struct HomeAssistantStandByView: View {
                 showsEmptyStateContent = emptyState != nil
             }
         }
-        .onChange(of: emptyState != nil) { showsEmptyState in
-            if showsEmptyState {
-                // Un-animated, so the WKWebView-backed loading logo is gone before the move-to-top
-                // starts and only the pixel-identical static logo underneath runs the transition —
-                // the webview can't track animated frame changes and would show a second logo.
-                showsAnimatedLogo = false
-            }
-            withAnimation(DesignSystem.Animation.default) {
-                showsEmptyStateContent = showsEmptyState
-            }
-        }
-        .task(id: showsEmptyState) {
-            guard !showsEmptyState, !showsAnimatedLogo else { return }
-            // Restore the animated logo only after the move back to center settled; re-inserting
-            // the webview mid-animation would desync it from the static logo again.
-            try? await Task.sleep(for: .milliseconds(400))
-            guard !Task.isCancelled else { return }
-            showsAnimatedLogo = true
-        }
+        .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
+        .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
         .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
             selectedReauthURLType = availableReauthURLTypes.first ?? .external
         }
@@ -219,12 +202,7 @@ struct HomeAssistantStandByView: View {
         }
         // `$phase` replays its current value on subscription, so when the splash already finished
         // (server switches, reloads) the pill fades in immediately on appear.
-        .onReceive(LaunchSplashOverlayState.shared.$phase) { phase in
-            guard phase == .finished, !showsServerPill else { return }
-            withAnimation(DesignSystem.Animation.default) {
-                showsServerPill = true
-            }
-        }
+        .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             guard !showsEmptyState else { return }
             showsDelayedSettingsButton = false
@@ -235,6 +213,35 @@ struct HomeAssistantStandByView: View {
             id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
             runDelayedButtonsCountdown
         )
+    }
+
+    private func handleEmptyStateChange(_ showsEmptyState: Bool) {
+        if showsEmptyState {
+            // Un-animated, so the WKWebView-backed loading logo is gone before the move-to-top
+            // starts and only the pixel-identical static logo underneath runs the transition —
+            // the webview can't track animated frame changes and would show a second logo.
+            showsAnimatedLogo = false
+        }
+        withAnimation(DesignSystem.Animation.default) {
+            showsEmptyStateContent = showsEmptyState
+        }
+    }
+
+    @Sendable
+    private func restoreAnimatedLogoIfNeeded() async {
+        guard !showsEmptyState, !showsAnimatedLogo else { return }
+        // Restore the animated logo only after the move back to center settled; re-inserting
+        // the webview mid-animation would desync it from the static logo again.
+        try? await Task.sleep(for: .milliseconds(400))
+        guard !Task.isCancelled else { return }
+        showsAnimatedLogo = true
+    }
+
+    private func fadeInServerPillIfNeeded(for phase: LaunchSplashOverlayState.Phase) {
+        guard phase == .finished, !showsServerPill else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsServerPill = true
+        }
     }
 
     @Sendable
