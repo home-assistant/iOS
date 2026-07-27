@@ -40,6 +40,14 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         XCTAssertFalse(mockWebViewController.evaluateJavaScriptCalled)
     }
 
+    @MainActor func testGetExternalAuthInBackgroundWithNonStringCallbackDoesNothing() {
+        sut.isAppInBackground = { true }
+
+        sut.handle(messageName: "getExternalAuth", messageBody: ["callback": 123])
+
+        XCTAssertFalse(mockWebViewController.evaluateJavaScriptCalled)
+    }
+
     @MainActor func testExternalBusInBackgroundIsIgnored() {
         sut.isAppInBackground = { true }
 

@@ -35,9 +35,12 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             // The frontend caches the pending getExternalAuth promise and never asks again while it
             // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
             // frontend can never reconnect until the web view is reloaded.
-            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth,
-               let callbackName = messageBody["callback"] {
-                sendGetExternalAuthFailure(callbackName: callbackName)
+            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth {
+                if let callbackName = messageBody["callback"] as? String {
+                    sendGetExternalAuthFailure(callbackName: callbackName)
+                } else {
+                    Current.Log.error("getExternalAuth message without a string callback name")
+                }
             }
             return
         }
@@ -83,7 +86,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     /// Retrieves an authentication token for the web view and invokes a JavaScript callback with the result.
     private func handleGetExternalAuth(_ messageBody: [String: Any]) {
-        guard let callbackName = messageBody["callback"], let server = webView?.server else { return }
+        guard let callbackName = messageBody["callback"] as? String, let server = webView?.server else { return }
         let force = messageBody["force"] as? Bool ?? false
 
         Current.Log.verbose("getExternalAuth called, forced: \(force)")
@@ -110,7 +113,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     /// Rejects a getExternalAuth request so the frontend can clear its pending token promise and retry.
-    private func sendGetExternalAuthFailure(callbackName: Any) {
+    private func sendGetExternalAuthFailure(callbackName: String) {
         webView?.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')") { _, error in
             if let error {
                 Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
