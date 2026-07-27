@@ -386,7 +386,7 @@ enum WatchWidgetLiveFetch {
         case let value as Float:
             return Double(value)
         default:
-            return number(from: String(describing: value))
+            return number(from: String(describing: source))
         }
     }
 }
