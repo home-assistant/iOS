@@ -491,6 +491,7 @@
 "gestures.value.option.more_info.search_commands" = "Sök kommandon";
 "gestures.value.option.more_info.search_devices" = "Sök enheter";
 "gestures.value.option.more_info.search_entities" = "Sök entiteter";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Gå till nästa sida";
 "gestures.value.option.next_server" = "Nästa server";
 "gestures.value.option.none" = "Ingen";
@@ -503,6 +504,7 @@
 "gestures.value.option.servers_list" = "Serverlista";
 "gestures.value.option.show_settings" = "Öppna appinställningar";
 "gestures.value.option.show_sidebar" = "Visa sidofält";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Det gick inte att komma åt databasen (GRDB), fel: %@";
 "grdb.config.migration_error.failed_to_save" = "Misslyckades med att spara ny konfiguration, fel: %@";
 "ha_api.api_error.cant_build_url" = "Kan inte skapa API-URL";
@@ -1954,6 +1956,14 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen visar förloppet runt texten.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
+"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
+"watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
+"watch.debug.complication_refresh.finished.title" = "Complications reload finished";
+"watch.debug.complication_refresh.finished.unknown_reason" = "unknown reason";
+"watch.debug.complication_refresh.finished.updated_line" = "%1$@ updated to %2$@ in %3$@";
+"watch.debug.complication_refresh.started.body" = "Reloading %1$li complication(s): %2$@";
+"watch.debug.complication_refresh.started.title" = "Complications reload started";
 "watch.debug.delete_db.alert.failed.message" = "Det gick inte att ta bort konfigurationen, fel: %@";
 "watch.debug.delete_db.alert.title" = "Är du säker på att du vill ta bort klockkonfigurationen? Detta kan inte återställas";
 "watch.debug.delete_db.reset.title" = "Nollställ konfiguration";
@@ -2179,6 +2189,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
 "watch.settings.developer.audio_probe.footer" = "Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.";
 "watch.settings.developer.audio_probe.title" = "Audio session probe";
+"watch.settings.developer.complication_refresh_notifications.footer" = "Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.";
+"watch.settings.developer.complication_refresh_notifications.title" = "Complication reload alerts";
 "watch.settings.developer.direct_sync.footer" = "Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.";
 "watch.settings.developer.direct_sync.title" = "Direct server sync";
 "watch.settings.developer.iphone_unreachable_icon.footer" = "Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.";
