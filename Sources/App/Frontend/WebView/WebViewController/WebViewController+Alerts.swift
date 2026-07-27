@@ -471,8 +471,16 @@ extension WebViewController {
             return
         }
 
+        // Repeated token failures (e.g. app and web view both retrying) collapse into one prompt.
+        guard connectionState != .authInvalid else {
+            return
+        }
+
+        Current.Log.info("showing re-auth prompt for server \(serverId), status code \(code)")
+
         // Avoid retrying from Home Assistant UI since this is a dead end
         connectionState = .authInvalid
+        overlayState?.connectionState = .authInvalid
         load(request: URLRequest(url: URL(string: "about:blank")!))
         showEmptyState()
     }
