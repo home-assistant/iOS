@@ -356,79 +356,100 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func buildRows(items: [MagicItem], cache: inout [String: CPListItem]) -> [CPListItem] {
         let entityToAreaMap = entityToAreaMap()
         var updatedItemsByKey: [String: CPListItem] = [:]
+        var rows: [CPListItem] = []
+        rows.reserveCapacity(items.count)
 
-        let rows: [CPListItem] = items.map { magicItem in
+        for magicItem in items {
             let key = rowCacheKey(for: magicItem)
-            let info = info(for: magicItem)
             let item = cache[key] ?? CPListItem(text: nil, detailText: nil)
 
             switch magicItem.type {
             case .entity:
-                if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
-                    item.setText(rowDisplayItem.title)
-                    item.setImage(rowDisplayItem.image)
-                    if isExecuting(magicItem) {
-                        item.setDetailText(CarPlayEntityListItem.executingSubtitle)
-                    } else {
-                        item.setDetailText(rowDisplayItem.subtitle)
-                    }
-                } else {
-                    item.setText("")
-                    item.setDetailText("")
-                    item.setImage(nil)
-                }
-                item.handler = { [weak self] _, _ in
-                    guard let self else { return }
-                    itemTap(
-                        magicItem: magicItem,
-                        info: info,
-                        currentItemState: resolvedEntity(for: magicItem)?.state ?? "",
-                        executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
-                        executionFinished: { [weak self] in self?.endExecuting(magicItem) }
-                    )
-                }
+                configureEntityRow(item, for: magicItem, entityToAreaMap: entityToAreaMap)
             case .folder:
-                item.setText(magicItem.name(info: info))
-                item.setDetailText(nil)
-                item.setImage(magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)))
-                item.accessoryType = .disclosureIndicator
-                item.handler = { [weak self] _, completion in
-                    self?.presentFolderContents(folder: magicItem)
-                    completion()
-                }
+                configureFolderRow(item, for: magicItem)
             case .assistPipeline, .assistPrompt:
-                item.setText(assistTitle(for: magicItem, info: info))
-                item.setDetailText(assistSubtitle(for: magicItem, info: info))
-                item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
-                item.handler = { [weak self] _, completion in
-                    guard let self else {
-                        completion()
-                        return
-                    }
-                    presentAssistSession(magicItem: magicItem, info: info)
-                    completion()
-                }
+                configureAssistRow(item, for: magicItem)
             default:
-                item.setText(magicItem.name(info: info))
-                item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
-                item.setImage(magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)))
-                item.handler = { [weak self] _, _ in
-                    guard let self else { return }
-                    itemTap(
-                        magicItem: magicItem,
-                        info: info,
-                        executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
-                        executionFinished: { [weak self] in self?.endExecuting(magicItem) }
-                    )
-                }
+                configureDefaultRow(item, for: magicItem)
             }
 
             updatedItemsByKey[key] = item
-            return item
+            rows.append(item)
         }
 
         cache = updatedItemsByKey
         return rows
+    }
+
+    private func configureEntityRow(_ item: CPListItem, for magicItem: MagicItem, entityToAreaMap: [String: String]) {
+        let info = info(for: magicItem)
+        if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
+            item.setText(rowDisplayItem.title)
+            item.setImage(rowDisplayItem.image)
+            if isExecuting(magicItem) {
+                item.setDetailText(CarPlayEntityListItem.executingSubtitle)
+            } else {
+                item.setDetailText(rowDisplayItem.subtitle)
+            }
+        } else {
+            item.setText("")
+            item.setDetailText("")
+            item.setImage(nil)
+        }
+        item.handler = { [weak self] _, _ in
+            guard let self else { return }
+            itemTap(
+                magicItem: magicItem,
+                info: info,
+                currentItemState: resolvedEntity(for: magicItem)?.state ?? "",
+                executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
+                executionFinished: { [weak self] in self?.endExecuting(magicItem) }
+            )
+        }
+    }
+
+    private func configureFolderRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(magicItem.name(info: info))
+        item.setDetailText(nil)
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentFolderContents(folder: magicItem)
+            completion()
+        }
+    }
+
+    private func configureAssistRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(assistTitle(for: magicItem, info: info))
+        item.setDetailText(assistSubtitle(for: magicItem, info: info))
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
+            presentAssistSession(magicItem: magicItem, info: info)
+            completion()
+        }
+    }
+
+    private func configureDefaultRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(magicItem.name(info: info))
+        item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
+        item.handler = { [weak self] _, _ in
+            guard let self else { return }
+            itemTap(
+                magicItem: magicItem,
+                info: info,
+                executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
+                executionFinished: { [weak self] in self?.endExecuting(magicItem) }
+            )
+        }
     }
 
     private func presentFolderContents(folder: MagicItem) {
