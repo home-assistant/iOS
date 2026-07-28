@@ -83,7 +83,8 @@ struct CarPlayConfigTests {
         let tabs: [CarPlayTab] = [.quickAccess, .folder(folderId: "abc"), .settings]
         let encoded = try JSONEncoder().encode(tabs)
         #expect(String(data: encoded, encoding: .utf8) == #"["quickAccess","folder:abc","settings"]"#)
-        #expect(try JSONDecoder().decode([CarPlayTab].self, from: encoded) == tabs)
+        let roundTripped = try JSONDecoder().decode([CarPlayTab].self, from: encoded)
+        #expect(roundTripped == tabs)
     }
 
     @Test func folderHelpersResolveFoldersAndNames() {
