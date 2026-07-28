@@ -357,6 +357,30 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
       }
     }
+    public enum FireEvent {
+      /// Fire an event on a Home Assistant server
+      public static var description: String { return L10n.tr("Localizable", "app_intents.fire_event.description") }
+      /// Fired event %@
+      public static func responseSuccess(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.fire_event.response_success", String(describing: p1))
+      }
+      /// Fire event
+      public static var title: String { return L10n.tr("Localizable", "app_intents.fire_event.title") }
+      public enum Error {
+        /// Unable to parse event data
+        public static var invalidPayload: String { return L10n.tr("Localizable", "app_intents.fire_event.error.invalid_payload") }
+      }
+      public enum EventData {
+        /// JSON data to send with the event
+        public static var description: String { return L10n.tr("Localizable", "app_intents.fire_event.event_data.description") }
+        /// Event data
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fire_event.event_data.title") }
+      }
+      public enum EventName {
+        /// Event name
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fire_event.event_name.title") }
+      }
+    }
     public enum GetCameraSnapshot {
       /// Get a single still frame from a camera
       public static var description: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.description") }

@@ -722,6 +722,7 @@
 			membershipExceptions = (
 				/Localized/Intents/Resources/AppIntentVocabulary.plist,
 				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
 				AppIntents/IntentCameraEntity.swift,
