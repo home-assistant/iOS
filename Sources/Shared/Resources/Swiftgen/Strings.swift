@@ -1621,6 +1621,8 @@ public enum L10n {
   }
 
   public enum EntityPicker {
+    /// Add all
+    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
@@ -1645,6 +1647,10 @@ public enum L10n {
         }
       }
       public enum GroupBy {
+        /// Group by Area
+        public static var area: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.area") }
+        /// Group by Domain
+        public static var domain: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.domain") }
         /// Group by
         public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.title") }
       }

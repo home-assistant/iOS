@@ -10,8 +10,8 @@ enum EntityGrouping: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .domain: return L10n.EntityPicker.Filter.Domain.title
-        case .area: return L10n.EntityPicker.Filter.Area.title
+        case .domain: return L10n.EntityPicker.Filter.GroupBy.domain
+        case .area: return L10n.EntityPicker.Filter.GroupBy.area
         }
     }
 }

@@ -119,7 +119,7 @@ struct EntityPicker: View {
             }
             filtersView
             ForEach(viewModel.filteredGroups) { group in
-                Section(group.title.uppercased()) {
+                Section {
                     ForEach(group.entities, id: \.id) { entity in
                         Button(action: {
                             if allowMultipleSelection {
@@ -136,6 +136,8 @@ struct EntityPicker: View {
                         })
                         .tint(.accentColor)
                     }
+                } header: {
+                    sectionHeader(for: group)
                 }
             }
         }
@@ -149,6 +151,22 @@ struct EntityPicker: View {
                 viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
             }
             isSearchFocused = true
+        }
+    }
+
+    @ViewBuilder
+    private func sectionHeader(for group: EntityPickerGroup) -> some View {
+        HStack {
+            Text(group.title.uppercased())
+            if allowMultipleSelection {
+                Spacer()
+                Button(L10n.EntityPicker.addAll) {
+                    addAll(in: group)
+                }
+                .textCase(nil)
+                .font(DesignSystem.Font.footnote)
+                .tint(.haPrimary)
+            }
         }
     }
 
@@ -183,6 +201,13 @@ struct EntityPicker: View {
         }
     }
 
+    private func addAll(in group: EntityPickerGroup) {
+        var existingIds = Set(selectedEntities.map(\.id))
+        for entity in group.entities where existingIds.insert(entity.id).inserted {
+            selectedEntities.append(entity)
+        }
+    }
+
     private func confirmMultipleSelection() {
         // A single entity keeps the normal flow (e.g. customization) via the selectedEntity binding;
         // two or more are reported directly so callers can add them with their default configuration.
@@ -204,9 +229,9 @@ struct EntityPicker: View {
                         .transition(.move(edge: .leading).combined(with: .opacity))
                 }
                 serverPicker
-                groupByPicker
-                domainPicker
                 areaPicker
+                domainPicker
+                groupByPicker
             }
             .padding(.horizontal, DesignSystem.Spaces.one)
         }
@@ -243,6 +268,7 @@ struct EntityPicker: View {
         if servers.count > 1 {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Server.title,
+                icon: .serverRack,
                 pickerItems: servers.sorted(by: { $0.info.sortOrder < $1.info.sortOrder }).map {
                     EntityFilterPickerView.PickerItem(id: $0.identifier.rawValue, title: $0.info.name)
                 },
@@ -256,13 +282,16 @@ struct EntityPicker: View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Domain.title,
+                icon: .tag,
                 pickerItems: [EntityFilterPickerView.PickerItem(
                     id: "",
                     title: L10n.EntityPicker.Filter.Domain.All.title
                 )] +
-                    viewModel.entitiesByDomain.keys.sorted().map {
-                        EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
-                    },
+                    viewModel.entitiesByDomain.keys.map { key in
+                        // Prefer the domain's localized name (backed by CoreStrings); fall back to the raw key.
+                        EntityFilterPickerView.PickerItem(id: key, title: Domain(rawValue: key)?.name ?? key)
+                    }
+                    .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending },
                 selectedItemId: Binding(
                     get: { viewModel.selectedDomainFilter ?? "" },
                     set: { viewModel.selectedDomainFilter = ($0?.isEmpty ?? true) ? nil : $0 }
@@ -276,6 +305,7 @@ struct EntityPicker: View {
         if !viewModel.areaData.isEmpty {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Area.title,
+                icon: .houseFill,
                 pickerItems: [EntityFilterPickerView.PickerItem(
                     id: "",
                     title: L10n.EntityPicker.Filter.Area.All.title
@@ -296,6 +326,7 @@ struct EntityPicker: View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.GroupBy.title,
+                icon: .listBulletRectangle,
                 pickerItems: EntityGrouping.allCases.map {
                     EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
                 },
