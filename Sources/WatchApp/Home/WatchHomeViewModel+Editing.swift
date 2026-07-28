@@ -250,7 +250,12 @@ extension WatchHomeViewModel {
                         let context = info.contextSubtitle.map { subtitle in
                             subtitle.hasPrefix(serverPrefix) ? String(subtitle.dropFirst(serverPrefix.count)) : subtitle
                         }
-                        return .init(item: item, info: info, contextSubtitle: context)
+                        return .init(
+                            item: item,
+                            info: info,
+                            contextSubtitle: context,
+                            areaName: magicItemProvider.getAreaName(for: item)
+                        )
                     }
                 return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }

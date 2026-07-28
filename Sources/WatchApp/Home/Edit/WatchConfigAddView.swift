@@ -102,7 +102,7 @@ struct WatchConfigAddView: View {
 }
 
 /// Fetches the addable entities from the phone and either shows the server picker (multiple servers)
-/// or jumps straight to the entity list (single server).
+/// or jumps straight to the area picker (single server).
 private struct WatchConfigAddEntitySourceView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
     let folderId: String?
@@ -141,7 +141,7 @@ private struct WatchConfigAddEntitySourceView: View {
                             .foregroundStyle(.secondary)
                     }
                 } else if groups.count == 1, let group = groups.first {
-                    WatchConfigAddEntityListView(
+                    WatchConfigAddAreaListView(
                         group: group,
                         viewModel: viewModel,
                         folderId: folderId,
@@ -151,7 +151,7 @@ private struct WatchConfigAddEntitySourceView: View {
                     List {
                         ForEach(groups, id: \.serverId) { group in
                             NavigationLink {
-                                WatchConfigAddEntityListView(
+                                WatchConfigAddAreaListView(
                                     group: group,
                                     viewModel: viewModel,
                                     folderId: folderId,
@@ -188,10 +188,49 @@ private struct WatchConfigAddEntitySourceView: View {
     }
 }
 
+/// Area layer of the add flow: pick an area — or "All areas" — before the entity list, so long
+/// entity lists stay navigable on the small screen.
+private struct WatchConfigAddAreaListView: View {
+    let group: WatchConfigAvailableItems.ServerGroup
+    @ObservedObject var viewModel: WatchHomeViewModel
+    let folderId: String?
+    let finish: () -> Void
+
+    var body: some View {
+        List {
+            areaRow(title: L10n.EntityPicker.Filter.Area.All.title, areaFilter: nil)
+            ForEach(areas, id: \.self) { area in
+                areaRow(title: area, areaFilter: area)
+            }
+        }
+        .navigationTitle(Text(verbatim: group.serverName))
+    }
+
+    private func areaRow(title: String, areaFilter: String?) -> some View {
+        NavigationLink {
+            WatchConfigAddEntityListView(
+                group: group,
+                areaFilter: areaFilter,
+                viewModel: viewModel,
+                folderId: folderId,
+                finish: finish
+            )
+        } label: {
+            Text(verbatim: title)
+        }
+    }
+
+    private var areas: [String] {
+        Array(Set(group.candidates.compactMap(\.areaName))).sorted()
+    }
+}
+
 /// The list of addable entities for a single server. Rows mirror the iOS entity picker: icon, name,
 /// and the `Area • Device` context underneath. Tapping pushes the name/icon editor.
 private struct WatchConfigAddEntityListView: View {
     let group: WatchConfigAvailableItems.ServerGroup
+    /// When set, only entities in this area are listed ("All areas" passes nil).
+    let areaFilter: String?
     @ObservedObject var viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
@@ -226,7 +265,7 @@ private struct WatchConfigAddEntityListView: View {
                 .watchHomeItemRowStyle(tint: nil)
             }
         }
-        .navigationTitle(Text(verbatim: group.serverName))
+        .navigationTitle(Text(verbatim: areaFilter ?? group.serverName))
     }
 
     private var domainFilter: some View {
@@ -244,14 +283,19 @@ private struct WatchConfigAddEntityListView: View {
         }
     }
 
-    /// The addable domains present in this server's candidates, in the watch's canonical order.
+    private var candidatesInArea: [WatchConfigAvailableItems.Candidate] {
+        guard let areaFilter else { return group.candidates }
+        return group.candidates.filter { $0.areaName == areaFilter }
+    }
+
+    /// The addable domains present in this area's candidates, in the watch's canonical order.
     private var availableDomains: [Domain] {
-        let present = Set(group.candidates.compactMap { Domain(entityId: $0.item.id) })
+        let present = Set(candidatesInArea.compactMap { Domain(entityId: $0.item.id) })
         return Domain.watchSupported.filter(present.contains)
     }
 
     private var filteredCandidates: [WatchConfigAvailableItems.Candidate] {
-        var candidates = group.candidates
+        var candidates = candidatesInArea
         if let selectedDomain {
             candidates = candidates.filter { Domain(entityId: $0.item.id) == selectedDomain }
         }
