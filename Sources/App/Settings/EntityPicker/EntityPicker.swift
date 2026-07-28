@@ -202,7 +202,8 @@ struct EntityPicker: View {
     }
 
     private func addAll(in group: EntityPickerGroup) {
-        for entity in group.entities where !selectedEntities.contains(where: { $0.id == entity.id }) {
+        var existingIds = Set(selectedEntities.map(\.id))
+        for entity in group.entities where existingIds.insert(entity.id).inserted {
             selectedEntities.append(entity)
         }
     }
