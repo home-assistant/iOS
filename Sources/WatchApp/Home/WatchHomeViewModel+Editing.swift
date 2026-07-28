@@ -229,18 +229,14 @@ extension WatchHomeViewModel {
 
     // MARK: Available items
 
-    /// Build the list of addable items (scripts/scenes/automations across all servers) from the
+    /// Build the list of addable items (watch-supported domains across all servers) from the
     /// locally-mirrored database, so the add flow works without the phone nearby. Mirrors the
-    /// phone-side `watchConfigAvailableItems` handler; items are stored as `type: .entity`.
+    /// phone-side picker's domain filter; items are stored as `type: .entity`.
     func fetchAvailableItems(
         completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
             -> Void
     ) {
-        let allowedDomains: Set<String> = [
-            Domain.script.rawValue,
-            Domain.scene.rawValue,
-            Domain.automation.rawValue,
-        ]
+        let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in

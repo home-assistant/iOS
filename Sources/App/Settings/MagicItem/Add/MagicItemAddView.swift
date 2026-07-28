@@ -12,7 +12,6 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
-        case scriptsScenesAutomations
         case assistPipelines
     }
 
@@ -34,17 +33,7 @@ struct MagicItemAddView: View {
         self.itemToAdd = itemToAdd
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
-            var options: [PickerOption] = []
-            if [.carPlay, .widget, .appIconShortcut].contains(context) {
-                options.append(.entities)
-            }
-            if context != .widget {
-                // In other context user can just select entities directly
-                // In Apple watch we don't have entity support yet
-                if context == .watch {
-                    options.append(.scriptsScenesAutomations)
-                }
-            }
+            var options: [PickerOption] = [.entities]
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
@@ -52,7 +41,6 @@ struct MagicItemAddView: View {
         }()
         self.visiblePickerOptions = resolvedPickerOptions
         let resolvedInitialItemType = initialItemType ?? Self.defaultItemType(
-            for: context,
             visiblePickerOptions: resolvedPickerOptions
         )
         self._viewModel = StateObject(wrappedValue: MagicItemAddViewModel(selectedItemType: resolvedInitialItemType))
@@ -66,13 +54,8 @@ struct MagicItemAddView: View {
                     VStack {
                         pickerView
                             .padding(.horizontal)
-                        entitiesPerServerList()
-                    }
-                case .scriptsScenesAutomations:
-                    VStack {
-                        pickerView
-                            .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: [.script, .scene, .automation])
+                        // The watch only offers what it can display and run; other contexts show everything.
+                        entitiesPerServerList(domainFilter: context == .watch ? Domain.watchSupported : nil)
                     }
                 case .assistPipelines:
                     VStack {
@@ -113,9 +96,6 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
-                    case .scriptsScenesAutomations:
-                        Text(verbatim: L10n.MagicItem.ItemType.ScriptsScenesAutomations.List.title)
-                            .tag(MagicItemAddType.scriptsScenesAutomations)
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
@@ -129,26 +109,12 @@ struct MagicItemAddView: View {
         }
     }
 
-    private static func defaultItemType(
-        for context: Context,
-        visiblePickerOptions: [PickerOption]
-    ) -> MagicItemAddType {
-        if let firstOption = visiblePickerOptions.first {
-            switch firstOption {
-            case .entities:
-                return .entities
-            case .scriptsScenesAutomations:
-                return .scriptsScenesAutomations
-            case .assistPipelines:
-                return .assistPipelines
-            }
-        }
-
-        switch context {
-        case .watch:
-            return .scriptsScenesAutomations
-        case .carPlay, .widget, .appIconShortcut:
+    private static func defaultItemType(visiblePickerOptions: [PickerOption]) -> MagicItemAddType {
+        switch visiblePickerOptions.first {
+        case .entities, .none:
             return .entities
+        case .assistPipelines:
+            return .assistPipelines
         }
     }
 

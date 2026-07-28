@@ -6549,6 +6549,14 @@ public enum L10n {
         /// Waiting for iPhone…
         public static var waiting: String { return L10n.tr("Localizable", "watch.home.sync.waiting") }
       }
+      public enum Unsupported {
+        /// %@ entities can't be controlled from the watch app.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.home.unsupported.message", String(describing: p1))
+        }
+        /// Not supported
+        public static var title: String { return L10n.tr("Localizable", "watch.home.unsupported.title") }
+      }
     }
     public enum Interaction {
       public enum Toast {

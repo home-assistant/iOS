@@ -501,6 +501,16 @@ public enum Domain: String, CaseIterable {
         Domain.carPlaySupported.contains(self)
     }
 
+    public var isWatchSupported: Bool {
+        Domain.watchSupported.contains(self)
+    }
+
+    /// Whether tapping an entity of this domain performs an action: its main action, or the
+    /// state-aware lock handling (lock has no single main action).
+    public var isActionable: Bool {
+        mainAction != nil || self == .lock
+    }
+
     public func localizedState(for state: String) -> String {
         switch self {
         case .button, .inputButton, .scene:
@@ -546,9 +556,19 @@ public extension Domain {
     ]
 
     static let watchSupported: [Domain] = [
-        .script,
-        .scene,
         .automation,
+        .button,
+        .cover,
+        .fan,
+        .humidifier,
+        .inputBoolean,
+        .inputButton,
+        .light,
+        .lock,
+        .scene,
+        .script,
+        .switch,
+        .valve,
     ]
 
     static let commonlyUsedWidgetSupported: [Domain] = [

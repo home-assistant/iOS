@@ -34,6 +34,20 @@ struct WatchMagicViewRow: View {
                 .tint(.red)
             }
         )
+        .alert(
+            Text(verbatim: L10n.Watch.Home.Unsupported.title),
+            isPresented: $viewModel.showUnsupportedAlert
+        ) {
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: L10n.Watch.Home.Unsupported.message(viewModel.domainName))
+        }
+        .onAppear {
+            viewModel.startStateUpdates()
+        }
+        .onDisappear {
+            viewModel.stopStateUpdates()
+        }
         .modify { view in
             if layout == .grid {
                 view.watchHomeItemGridStyle(tint: backgroundForWatchItem)
@@ -99,11 +113,16 @@ struct WatchMagicViewRow: View {
         } else {
             WatchHomeItemLabel(
                 name: viewModel.item.name(info: viewModel.itemInfo),
-                subtitle: subtitle,
+                subtitle: subtitleToDisplay,
                 textColor: textColor,
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
             )
         }
+    }
+
+    private var subtitleToDisplay: String? {
+        let combined = [viewModel.stateText, subtitle].compactMap { $0 }.joined(separator: " • ")
+        return combined.isEmpty ? nil : combined
     }
 
     private var iconToDisplay: some View {

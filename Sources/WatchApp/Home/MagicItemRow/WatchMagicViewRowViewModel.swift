@@ -30,6 +30,10 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
+    /// Alert shown when the tapped entity's domain has no action the watch can perform.
+    @Published var showUnsupportedAlert = false
+    /// Localized state of the entity, shown as the row subtitle while the row is visible.
+    @Published private(set) var stateText: String?
     /// Set when an execution fails, so the failure isn't silent. Presented full-screen by the row.
     @Published var errorMessage: String?
     /// Live log of the current execution, set only when the developer "Verbose item execution"
@@ -42,17 +46,80 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private var timeoutWorkItem: DispatchWorkItem?
     private var watchdogWorkItem: DispatchWorkItem?
+    private var stateTimer: Timer?
+    /// Raw state from the last fetch, passed to execution for state-aware domains (lock).
+    private var latestState: String?
+
+    private static let stateRefreshInterval: TimeInterval = 5
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
         self.itemInfo = itemInfo
     }
 
+    deinit {
+        stateTimer?.invalidate()
+    }
+
     func executeItem() {
+        guard isActionable else {
+            showUnsupportedAlert = true
+            return
+        }
         if itemInfo.customization?.requiresConfirmation ?? true {
             showConfirmationDialog = true
         } else {
             executeItemAction()
+        }
+    }
+
+    // MARK: - Entity state
+
+    var domainName: String {
+        item.domain?.name ?? ""
+    }
+
+    private var isActionable: Bool {
+        switch item.type {
+        case .entity:
+            return item.domain?.isActionable ?? false
+        default:
+            return true
+        }
+    }
+
+    /// State is only fetched for entity items whose domain reports a meaningful state — scripts
+    /// and scenes just report their last-triggered time (same rule as CarPlay).
+    private var displaysState: Bool {
+        guard item.type == .entity, let domain = item.domain else { return false }
+        return ![.script, .scene].contains(domain)
+    }
+
+    /// Polls the entity state while the row is on screen; `stopStateUpdates` (on disappear) ends it.
+    func startStateUpdates() {
+        stopStateUpdates()
+        guard displaysState else { return }
+        fetchState()
+        stateTimer = Timer
+            .scheduledTimer(withTimeInterval: Self.stateRefreshInterval, repeats: true) { [weak self] _ in
+                self?.fetchState()
+            }
+    }
+
+    func stopStateUpdates() {
+        stateTimer?.invalidate()
+        stateTimer = nil
+    }
+
+    private func fetchState() {
+        guard let domain = item.domain,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
+            return
+        }
+        WatchEntityStateFetcher.fetchState(entityId: item.id, server: server) { [weak self] entity in
+            guard let self, let entity else { return }
+            latestState = entity.state
+            stateText = domain.contextualStateDescription(for: entity)
         }
     }
 
@@ -98,7 +165,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         let onStep: ((String) -> Void)? = trace == nil ? nil : { [weak self] step in
             self?.trace?.log(.info, step)
         }
-        magicItem.execute(on: server, source: .Watch, onStep: onStep) { [weak self] success, error in
+        magicItem.execute(
+            on: server,
+            source: .Watch,
+            currentItemState: latestState ?? "",
+            onStep: onStep
+        ) { [weak self] success, error in
             if success {
                 self?.trace?.log(.success, "Server accepted the request")
             } else {
