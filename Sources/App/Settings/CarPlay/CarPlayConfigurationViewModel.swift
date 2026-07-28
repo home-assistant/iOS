@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Shared
+import UIKit
 
 final class CarPlayConfigurationViewModel: ObservableObject {
     @Published private(set) var config = CarPlayConfig()
@@ -74,8 +75,24 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     @MainActor
     private func setConfig(_ config: CarPlayConfig) {
-        self.config = config
+        self.config = sanitized(config)
         isInitialLoad = false
+    }
+
+    /// CarPlay folders can't contain other folders; strip any stray nested folders coming from
+    /// older/corrupt data so the configuration UI and the in-car rendering agree.
+    private func sanitized(_ config: CarPlayConfig) -> CarPlayConfig {
+        var config = config
+        config.quickAccessItems = config.quickAccessItems.map(Self.strippingNestedFolders)
+        config.tabFolders = config.tabFolders?.map(Self.strippingNestedFolders)
+        return config
+    }
+
+    private static func strippingNestedFolders(_ item: MagicItem) -> MagicItem {
+        guard item.type == .folder, let folderItems = item.items else { return item }
+        var item = item
+        item.items = folderItems.filter { $0.type != .folder }
+        return item
     }
 
     @discardableResult
@@ -116,9 +133,12 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func updateTab(_ tab: CarPlayTab, active: Bool) {
         if active {
+            // A row can be tapped again before the list refreshes; don't append duplicates.
+            guard !config.tabs.contains(tab) else { return }
             config.tabs.append(tab)
         } else {
             config.tabs.removeAll(where: { $0 == tab })
+            pruneUnreferencedTabFolders()
         }
     }
 
@@ -128,6 +148,19 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func deleteTab(at offsets: IndexSet) {
         config.tabs.remove(atOffsets: offsets)
+        pruneUnreferencedTabFolders()
+    }
+
+    /// Tab-only folders exist solely to back a tab; when their tab is removed they'd otherwise
+    /// linger invisibly, so delete them along with the tab.
+    private func pruneUnreferencedTabFolders() {
+        guard let tabFolders = config.tabFolders else { return }
+        let remaining = tabFolders.filter { folder in
+            config.tabs.contains(.folder(folderId: folder.id))
+        }
+        if remaining.count != tabFolders.count {
+            config.tabFolders = remaining
+        }
     }
 
     // MARK: - Quick access items
@@ -149,11 +182,102 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     }
 
     func deleteItem(at offsets: IndexSet) {
+        let removedFolderIds = offsets.compactMap { index -> String? in
+            guard config.quickAccessItems.indices.contains(index),
+                  config.quickAccessItems[index].type == .folder else { return nil }
+            return config.quickAccessItems[index].id
+        }
         config.quickAccessItems.remove(atOffsets: offsets)
+        guard !removedFolderIds.isEmpty else { return }
+        // A deleted folder can no longer back a tab.
+        config.tabs.removeAll { tab in
+            guard let folderId = tab.folderId else { return false }
+            return removedFolderIds.contains(folderId)
+        }
     }
 
     func moveItem(from source: IndexSet, to destination: Int) {
         config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
+    }
+
+    // MARK: - Folders
+
+    func addFolder(named name: String) {
+        config.quickAccessItems.append(makeFolder(named: name))
+    }
+
+    /// Creates a tab presented to the user as its own concept, backed by a folder that is stored
+    /// outside of Quick Access (so the Quick Access tab never shows it).
+    func addTabFolder(named name: String) {
+        let folderItem = makeFolder(named: name)
+        var tabFolders = config.tabFolders ?? []
+        tabFolders.append(folderItem)
+        config.tabFolders = tabFolders
+        config.tabs.append(.folder(folderId: folderItem.id))
+    }
+
+    private func makeFolder(named name: String) -> MagicItem {
+        MagicItem(
+            id: UUID().uuidString,
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: UIColor.haPrimary.hexString()),
+            action: .default,
+            displayText: name,
+            items: []
+        )
+    }
+
+    func updateFolder(_ folder: MagicItem) {
+        guard folder.type == .folder else { return }
+        mutateFolder(withId: folder.id) { existingFolder in
+            var updatedFolder = folder
+            // Preserve existing items in the folder
+            updatedFolder.items = existingFolder.items
+            existingFolder = updatedFolder
+        }
+    }
+
+    func addItemToFolder(folderId: String, item: MagicItem) {
+        guard item.type != .folder else { return }
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.append(item)
+            folder.items = folderItems
+        }
+    }
+
+    func updateItemInFolder(folderId: String, item: MagicItem) {
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            if let itemIndex = folderItems
+                .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+                folderItems[itemIndex] = item
+                folder.items = folderItems
+            }
+        }
+    }
+
+    func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.remove(atOffsets: offsets)
+            folder.items = folderItems
+        }
+    }
+
+    func moveItemWithinFolder(folderId: String, from source: IndexSet, to destination: Int) {
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.move(fromOffsets: source, toOffset: destination)
+            folder.items = folderItems
+        }
+    }
+
+    /// Applies a mutation to the folder with the given id, wherever it lives — Quick Access items
+    /// or tab-only folders.
+    private func mutateFolder(withId folderId: String, _ mutation: (inout MagicItem) -> Void) {
+        config.mutateFolder(withId: folderId, mutation)
     }
 
     // MARK: - Quick access layout

@@ -5,7 +5,19 @@ import Shared
 /// (`HAAppEntity`, `AppArea`, the entity registry) rather than a live connection, so the picker also
 /// works for servers that aren't the currently selected CarPlay server.
 final class CarPlayAddItemViewModel {
+    /// Where added/edited items live: the Quick Access list itself, or inside one of its folders.
+    enum Destination {
+        case quickAccess
+        case folder(folderId: String)
+    }
+
+    let destination: Destination
+
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
+
+    init(destination: Destination = .quickAccess) {
+        self.destination = destination
+    }
 
     /// Memoized compatible entities per server. `compatibleEntities(serverId:)` reads every cached entity and
     /// the registry, and the picker calls it once per navigation step (domains, areas, entity lists), so the
@@ -17,9 +29,16 @@ final class CarPlayAddItemViewModel {
         Current.servers.all
     }
 
-    var quickAccessItems: [MagicItem] {
+    /// Items the edit flow operates on: Quick Access root items, or the destination folder's items.
+    var editableItems: [MagicItem] {
         do {
-            return try CarPlayConfig.config()?.quickAccessItems ?? []
+            guard let config = try CarPlayConfig.config() else { return [] }
+            switch destination {
+            case .quickAccess:
+                return config.quickAccessItems
+            case let .folder(folderId):
+                return config.folder(withId: folderId)?.items ?? []
+            }
         } catch {
             Current.Log.error("Failed to fetch CarPlay quick access items: \(error.localizedDescription)")
             return []
@@ -95,8 +114,8 @@ final class CarPlayAddItemViewModel {
         MaterialDesignIcons(serversideValueNamed: area.icon ?? "mdi:circle")
     }
 
-    /// Appends the chosen entity to the Quick Access config; the CarPlay scene observes that table and
-    /// refreshes the tab.
+    /// Appends the chosen entity to the destination (Quick Access or a folder); the CarPlay scene
+    /// observes the config table and refreshes the tabs.
     func addEntityToQuickAccess(
         entityId: String,
         serverId: String,
@@ -111,7 +130,7 @@ final class CarPlayAddItemViewModel {
 
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
-            config.quickAccessItems.append(item)
+            guard append(item, to: &config) else { return }
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
@@ -133,7 +152,7 @@ final class CarPlayAddItemViewModel {
 
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
-            config.quickAccessItems.append(item)
+            guard append(item, to: &config) else { return }
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
@@ -143,17 +162,52 @@ final class CarPlayAddItemViewModel {
         }
     }
 
+    private func append(_ item: MagicItem, to config: inout CarPlayConfig) -> Bool {
+        switch destination {
+        case .quickAccess:
+            config.quickAccessItems.append(item)
+            return true
+        case let .folder(folderId):
+            let found = config.mutateFolder(withId: folderId) { folder in
+                var folderItems = folder.items ?? []
+                folderItems.append(item)
+                folder.items = folderItems
+            }
+            if !found {
+                Current.Log.error("Failed to find CarPlay folder \(folderId) to add item from car")
+            }
+            return found
+        }
+    }
+
     func deleteItemFromQuickAccess(_ item: MagicItem) {
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
-            guard let index = config.quickAccessItems.firstIndex(where: { $0.contentEquals(item) }) ??
-                config.quickAccessItems.firstIndex(where: {
-                    $0.serverUniqueId == item.serverUniqueId && $0.type == item.type
-                }) else {
-                Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
-                return
+            switch destination {
+            case .quickAccess:
+                guard let index = itemIndex(of: item, in: config.quickAccessItems) else {
+                    Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
+                    return
+                }
+                let removedItem = config.quickAccessItems.remove(at: index)
+                if removedItem.type == .folder {
+                    // A deleted folder can no longer back a tab.
+                    config.tabs.removeAll { $0.folderId == removedItem.id }
+                }
+            case let .folder(folderId):
+                var removed = false
+                config.mutateFolder(withId: folderId) { [self] folder in
+                    var folderItems = folder.items ?? []
+                    guard let index = itemIndex(of: item, in: folderItems) else { return }
+                    folderItems.remove(at: index)
+                    folder.items = folderItems
+                    removed = true
+                }
+                guard removed else {
+                    Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay folder \(folderId)")
+                    return
+                }
             }
-            config.quickAccessItems.remove(at: index)
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
@@ -166,18 +220,33 @@ final class CarPlayAddItemViewModel {
     func updateItemConfirmation(_ item: MagicItem, requiresConfirmation: Bool) {
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
-            guard let index = config.quickAccessItems.firstIndex(where: { $0.contentEquals(item) }) ??
-                config.quickAccessItems.firstIndex(where: {
-                    $0.serverUniqueId == item.serverUniqueId && $0.type == item.type
-                }) else {
-                Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
-                return
+            switch destination {
+            case .quickAccess:
+                guard let index = itemIndex(of: item, in: config.quickAccessItems) else {
+                    Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
+                    return
+                }
+                config.quickAccessItems[index] = updatingConfirmation(
+                    config.quickAccessItems[index],
+                    requiresConfirmation: requiresConfirmation
+                )
+            case let .folder(folderId):
+                var updated = false
+                config.mutateFolder(withId: folderId) { [self] folder in
+                    var folderItems = folder.items ?? []
+                    guard let index = itemIndex(of: item, in: folderItems) else { return }
+                    folderItems[index] = updatingConfirmation(
+                        folderItems[index],
+                        requiresConfirmation: requiresConfirmation
+                    )
+                    folder.items = folderItems
+                    updated = true
+                }
+                guard updated else {
+                    Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay folder \(folderId)")
+                    return
+                }
             }
-
-            var updatedItem = config.quickAccessItems[index]
-            updatedItem.customization = updatedItem.customization ?? .init()
-            updatedItem.customization?.requiresConfirmation = requiresConfirmation
-            config.quickAccessItems[index] = updatedItem
 
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
@@ -187,6 +256,20 @@ final class CarPlayAddItemViewModel {
             Current.Log
                 .error("Failed to update item confirmation in CarPlay quick access: \(error.localizedDescription)")
         }
+    }
+
+    private func itemIndex(of item: MagicItem, in items: [MagicItem]) -> Int? {
+        items.firstIndex(where: { $0.contentEquals(item) }) ??
+            items.firstIndex(where: {
+                $0.serverUniqueId == item.serverUniqueId && $0.type == item.type
+            })
+    }
+
+    private func updatingConfirmation(_ item: MagicItem, requiresConfirmation: Bool) -> MagicItem {
+        var updatedItem = item
+        updatedItem.customization = updatedItem.customization ?? .init()
+        updatedItem.customization?.requiresConfirmation = requiresConfirmation
+        return updatedItem
     }
 
     /// Entities on the server eligible for Quick Access: a CarPlay-supported domain, not hidden and not

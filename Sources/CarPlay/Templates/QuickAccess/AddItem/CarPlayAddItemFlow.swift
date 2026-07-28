@@ -105,6 +105,15 @@ final class CarPlayAddItemFlow {
         ) { [weak self] in self?.go(to: .domains(server)) }
         var rows = [areas, control]
 
+        // Folders can't contain other folders, so the folder option only shows when adding to
+        // the Quick Access list itself.
+        if case .quickAccess = viewModel.destination {
+            rows.append(navigationRow(
+                title: L10n.Watch.Configuration.Folder.defaultName,
+                image: MaterialDesignIcons.folderIcon.carPlayIcon()
+            ) { [weak self] in self?.presentFolderInfo() })
+        }
+
         if #available(iOS 26.4, *) {
             let assist = navigationRow(
                 title: L10n.Widgets.Action.Name.assist,
@@ -185,6 +194,18 @@ final class CarPlayAddItemFlow {
             rows: rows,
             emptyMessage: L10n.CarPlay.Labels.emptyAssistList
         )
+    }
+
+    private func presentFolderInfo() {
+        let okAction = CPAlertAction(title: L10n.okLabel, style: .default) { [weak self] _ in
+            self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
+        let actionSheet = CPActionSheetTemplate(
+            title: L10n.Watch.Configuration.Folder.defaultName,
+            message: L10n.CarPlay.QuickAccess.AddItem.Folder.message,
+            actions: [okAction]
+        )
+        interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
     }
 
     private func presentAssistPromptInfo() {

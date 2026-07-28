@@ -255,12 +255,16 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
-        CPListSection(items: CarPlayTab.allCases.map { tabItem(tab: $0, template: template) })
+        // Fetch the folders once and resolve tab names in-memory instead of per row.
+        let folders = viewModel.tabFolderItems
+        return CPListSection(items: viewModel.selectableTabs.map { tab in
+            tabItem(tab: tab, name: tab.name(folders: folders), template: template)
+        })
     }
 
-    private func tabItem(tab: CarPlayTab, template: CPListTemplate) -> CPListItem {
+    private func tabItem(tab: CarPlayTab, name: String, template: CPListTemplate) -> CPListItem {
         let item = CPListItem(
-            text: tab.name,
+            text: name,
             detailText: nil,
             image: viewModel.isTabActive(tab) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
         )

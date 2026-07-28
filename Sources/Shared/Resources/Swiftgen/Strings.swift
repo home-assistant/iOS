@@ -861,6 +861,24 @@ public enum L10n {
       public enum Tabs {
         /// Tabs
         public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.title") }
+        public enum Add {
+          /// Add Tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.add.title") }
+        }
+        public enum Maximum {
+          /// CarPlay limits how many tabs are displayed in the car (up to %li, depending on the vehicle). Extra tabs won't be shown.
+          public static func footer(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "carPlay.config.tabs.maximum.footer", p1)
+          }
+        }
+        public enum Name {
+          /// Tab Name
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.name.title") }
+        }
+        public enum New {
+          /// New Tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.new.title") }
+        }
       }
     }
     public enum Debug {
@@ -983,6 +1001,12 @@ public enum L10n {
           /// TTS Playback
           public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.title") }
         }
+      }
+    }
+    public enum Folder {
+      public enum Empty {
+        /// This folder is empty
+        public static var title: String { return L10n.tr("Localizable", "carPlay.folder.empty.title") }
       }
     }
     public enum Labels {
@@ -1136,6 +1160,10 @@ public enum L10n {
           public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.no_confirmation") }
           /// Require confirmation
           public static var require: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.require") }
+        }
+        public enum Folder {
+          /// Folders can only be created in the Home Assistant app on your iPhone.
+          public static var message: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.folder.message") }
         }
       }
       public enum EditItem {

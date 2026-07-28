@@ -98,6 +98,10 @@ final class CarPlayServerListViewModel {
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
             config.tabs = tabs
+            // Tab-only folders exist solely to back a tab; deactivating their tab deletes them.
+            config.tabFolders = config.tabFolders?.filter { folder in
+                tabs.contains(.folder(folderId: folder.id))
+            }
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
@@ -108,7 +112,24 @@ final class CarPlayServerListViewModel {
     }
 
     var tabsSummary: String {
-        tabs.map(\.name).joined(separator: ", ")
+        let folders = tabFolderItems
+        return tabs.map { $0.name(folders: folders) }.joined(separator: ", ")
+    }
+
+    /// All tabs selectable from the car: the built-in ones plus one per existing folder.
+    var selectableTabs: [CarPlayTab] {
+        CarPlayTab.allCases + tabFolderItems.map { .folder(folderId: $0.id) }
+    }
+
+    /// Every folder a tab can reference, fetched once so callers can resolve names in-memory
+    /// instead of hitting the database per tab.
+    var tabFolderItems: [MagicItem] {
+        do {
+            return try CarPlayConfig.config()?.allFolders ?? []
+        } catch {
+            Current.Log.error("Failed to fetch CarPlay folders: \(error.localizedDescription)")
+            return []
+        }
     }
 
     var quickAccessLayout: CarPlayQuickAccessLayout {

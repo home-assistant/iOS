@@ -46,6 +46,10 @@ struct CarPlayConfigTests {
             "CarPlay config showAddEditButtons should be nil when column is absent"
         )
         #expect(
+            carPlayConfig?.tabFolders == nil,
+            "CarPlay config tabFolders should be nil when column is absent"
+        )
+        #expect(
             carPlayConfig?.resolvedShowAddEditButtons == true,
             "CarPlay config should show Add/Edit buttons by default"
         )
@@ -56,5 +60,81 @@ struct CarPlayConfigTests {
         #expect(CarPlayConfig().resolvedShowAddEditButtons == true)
         #expect(CarPlayConfig(showAddEditButtons: false).resolvedShowAddEditButtons == false)
         #expect(CarPlayConfig(showAddEditButtons: true).resolvedShowAddEditButtons == true)
+    }
+
+    @Test func carPlayTabRawValueRoundTrip() {
+        #expect(CarPlayTab(rawValue: "quickAccess") == .quickAccess)
+        #expect(CarPlayTab(rawValue: "areas") == .areas)
+        #expect(CarPlayTab(rawValue: "domains") == .domains)
+        #expect(CarPlayTab(rawValue: "settings") == .settings)
+        #expect(CarPlayTab(rawValue: "folder:abc") == .folder(folderId: "abc"))
+        #expect(CarPlayTab(rawValue: "bogus") == nil)
+        #expect(CarPlayTab.folder(folderId: "abc").rawValue == "folder:abc")
+        #expect(CarPlayTab.folder(folderId: "abc").folderId == "abc")
+        #expect(CarPlayTab.quickAccess.folderId == nil)
+    }
+
+    @Test func carPlayTabCodableKeepsLegacyStringEncoding() throws {
+        // Configs persisted before folder tabs existed encode tabs as plain strings.
+        let legacyJSON = Data(#"["quickAccess","areas","settings"]"#.utf8)
+        let decoded = try JSONDecoder().decode([CarPlayTab].self, from: legacyJSON)
+        #expect(decoded == [.quickAccess, .areas, .settings])
+
+        let tabs: [CarPlayTab] = [.quickAccess, .folder(folderId: "abc"), .settings]
+        let encoded = try JSONEncoder().encode(tabs)
+        #expect(String(data: encoded, encoding: .utf8) == #"["quickAccess","folder:abc","settings"]"#)
+        let roundTripped = try JSONDecoder().decode([CarPlayTab].self, from: encoded)
+        #expect(roundTripped == tabs)
+    }
+
+    @Test func folderHelpersResolveFoldersAndNames() {
+        let folder = MagicItem(id: "folder-1", serverId: "", type: .folder, displayText: "Garage", items: [])
+        let config = CarPlayConfig(
+            tabs: [.quickAccess, .folder(folderId: "folder-1")],
+            quickAccessItems: [folder]
+        )
+        #expect(config.folders == [folder])
+        #expect(config.folder(withId: "folder-1")?.id == "folder-1")
+        #expect(config.folder(withId: "missing") == nil)
+        #expect(config.name(for: .folder(folderId: "folder-1")) == "Garage")
+        #expect(config.name(for: .folder(folderId: "missing")) == CarPlayTab.folder(folderId: "missing").name)
+        #expect(config.name(for: .quickAccess) == CarPlayTab.quickAccess.name)
+    }
+
+    @Test func tabOnlyFoldersResolveLikeQuickAccessFolders() {
+        let quickAccessFolder = MagicItem(id: "qa-folder", serverId: "", type: .folder, displayText: "Garage")
+        let tabFolder = MagicItem(id: "tab-folder", serverId: "", type: .folder, displayText: "Commute")
+        let config = CarPlayConfig(
+            tabs: [.quickAccess, .folder(folderId: "tab-folder")],
+            quickAccessItems: [quickAccessFolder],
+            tabFolders: [tabFolder]
+        )
+        // Tab-only folders resolve for tabs, but stay out of the Quick Access folder list.
+        #expect(config.folders == [quickAccessFolder])
+        #expect(config.allFolders == [quickAccessFolder, tabFolder])
+        #expect(config.folder(withId: "tab-folder")?.id == "tab-folder")
+        #expect(config.name(for: .folder(folderId: "tab-folder")) == "Commute")
+    }
+
+    @Test func mutateFolderFindsFoldersInBothCollections() {
+        var config = CarPlayConfig(
+            quickAccessItems: [MagicItem(id: "qa-folder", serverId: "", type: .folder, items: [])],
+            tabFolders: [MagicItem(id: "tab-folder", serverId: "", type: .folder, items: [])]
+        )
+        let child = MagicItem(id: "light.kitchen", serverId: "s1", type: .entity)
+
+        let foundQuickAccessFolder = config.mutateFolder(withId: "qa-folder") { folder in
+            folder.items = [child]
+        }
+        let foundTabFolder = config.mutateFolder(withId: "tab-folder") { folder in
+            folder.items = [child]
+        }
+        let foundMissingFolder = config.mutateFolder(withId: "missing") { _ in }
+
+        #expect(foundQuickAccessFolder)
+        #expect(foundTabFolder)
+        #expect(foundMissingFolder == false)
+        #expect(config.folder(withId: "qa-folder")?.items?.count == 1)
+        #expect(config.folder(withId: "tab-folder")?.items?.count == 1)
     }
 }

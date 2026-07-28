@@ -25,7 +25,7 @@ final class CarPlayEditItemFlow {
     }
 
     func start() {
-        let items = viewModel.quickAccessItems
+        let items = viewModel.editableItems
         guard !items.isEmpty else {
             Current.Log.error("Attempted to start CarPlay edit item flow without any items")
             onFinish()
@@ -80,10 +80,15 @@ final class CarPlayEditItemFlow {
             self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
         }
 
+        // Folders don't execute anything, so a run confirmation doesn't apply to them.
+        let actions: [CPAlertAction] = item.type == .folder
+            ? [deleteAction, cancelAction]
+            : [deleteAction, requireConfirmationAction, noConfirmationAction, cancelAction]
+
         let actionSheet = CPActionSheetTemplate(
             title: title,
             message: nil,
-            actions: [deleteAction, requireConfirmationAction, noConfirmationAction, cancelAction]
+            actions: actions
         )
         interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
     }
