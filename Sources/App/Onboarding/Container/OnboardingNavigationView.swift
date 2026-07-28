@@ -160,9 +160,10 @@ struct OnboardingNavigationView: View {
         )
     }
 
-    /// Held back while a screen below has its own sheet up (manual URL entry) — presenting on top
-    /// of it strands the mTLS prompt behind that sheet on Mac Catalyst. The request stays pending in
-    /// the presenter and is shown once the hold is released after the other sheet fully dismissed.
+    /// iOS only — Mac Catalyst pushes the import step as a page instead. Held back while a screen
+    /// below has its own sheet up (manual URL entry) so the mTLS prompt is never presented behind
+    /// it; the request stays pending in the presenter and is shown once the hold is released after
+    /// the other sheet fully dismissed.
     private var clientCertificateSheetItem: Binding<OnboardingClientCertificateRequest?> {
         Binding(
             get: { presenter.holdClientCertificateSheet ? nil : presenter.clientCertificateRequest },

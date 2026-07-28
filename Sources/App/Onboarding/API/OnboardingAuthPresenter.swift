@@ -11,14 +11,15 @@ final class OnboardingAuthPresenter: ObservableObject {
     @Published var path: [OnboardingDestination] = []
     /// A server-trust confirmation the connectivity step wants answered via an alert.
     @Published var certificateTrustRequest: OnboardingCertificateTrustRequest?
-    /// A client-certificate (mTLS) import prompt shown as a sheet.
+    /// A client-certificate (mTLS) import prompt shown as a sheet. iOS only — Mac Catalyst pushes
+    /// the import step onto `path` instead.
     @Published var clientCertificateRequest: OnboardingClientCertificateRequest?
-    /// While true, the client-certificate sheet is held back. Screens that present their own sheet
-    /// (manual URL entry) set this so the prompt is only shown after their sheet fully dismissed —
-    /// presenting both at once leaves the prompt stranded behind the other sheet on Mac Catalyst.
-    /// Deliberately NOT `@Published`: it flips as that sheet presents, and publishing then re-renders
-    /// the container mid-transition, which desyncs the sheet from UIKit on Mac Catalyst and leaves
-    /// its buttons unresponsive. `releaseClientCertificateHold()` republishes once it's safe.
+    /// iOS only. While true, the client-certificate sheet is held back. Screens that present their
+    /// own sheet (manual URL entry) set this so the prompt is only shown after their sheet fully
+    /// dismissed — presenting both at once can leave the prompt stranded behind the other sheet.
+    /// Deliberately NOT `@Published`: it flips as that sheet presents, and publishing then would
+    /// re-render the container mid-transition. `releaseClientCertificateHold()` republishes once
+    /// it's safe.
     var holdClientCertificateSheet = false
 
     /// Called when the sheet that was holding the prompt back has fully dismissed. If a certificate
