@@ -30,10 +30,11 @@ public enum WatchEntityStateFetcher {
         }
         let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
         tokenManager.bearerToken.done { token, _ in
-            var request = URLRequest(url: baseURL
+            let url = baseURL
                 .appendingPathComponent("api")
                 .appendingPathComponent("states")
-                .appendingPathComponent(entityId))
+                .appendingPathComponent(entityId)
+            var request = URLRequest(url: url)
             // Bounded below the poll interval so overlapping requests don't pile up.
             request.timeoutInterval = 4
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
