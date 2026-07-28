@@ -79,7 +79,9 @@ struct CarPlayFolderDetailView: View {
     }
 
     private var folderItems: [MagicItem] {
-        folder?.items ?? []
+        // Folders can't nest in CarPlay. The view model already strips nested folders when the
+        // configuration loads; filter here as well so this view never renders one.
+        (folder?.items ?? []).filter { $0.type != .folder }
     }
 
     @ViewBuilder

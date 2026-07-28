@@ -75,8 +75,24 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     @MainActor
     private func setConfig(_ config: CarPlayConfig) {
-        self.config = config
+        self.config = sanitized(config)
         isInitialLoad = false
+    }
+
+    /// CarPlay folders can't contain other folders; strip any stray nested folders coming from
+    /// older/corrupt data so the configuration UI and the in-car rendering agree.
+    private func sanitized(_ config: CarPlayConfig) -> CarPlayConfig {
+        var config = config
+        config.quickAccessItems = config.quickAccessItems.map(Self.strippingNestedFolders)
+        config.tabFolders = config.tabFolders?.map(Self.strippingNestedFolders)
+        return config
+    }
+
+    private static func strippingNestedFolders(_ item: MagicItem) -> MagicItem {
+        guard item.type == .folder, let folderItems = item.items else { return item }
+        var item = item
+        item.items = folderItems.filter { $0.type != .folder }
+        return item
     }
 
     @discardableResult
@@ -117,6 +133,8 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func updateTab(_ tab: CarPlayTab, active: Bool) {
         if active {
+            // A row can be tapped again before the list refreshes; don't append duplicates.
+            guard !config.tabs.contains(tab) else { return }
             config.tabs.append(tab)
         } else {
             config.tabs.removeAll(where: { $0 == tab })

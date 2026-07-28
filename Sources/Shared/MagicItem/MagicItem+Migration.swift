@@ -11,7 +11,15 @@ extension MagicItemProvider {
      This can happen when the user deletes the server and add it back again.
      */
     func migrateItemsIfNeeded(items: [MagicItem]) -> [MagicItem] {
-        let items = removingUnsupportedItems(from: items)
+        var items = removingUnsupportedItems(from: items)
+        // Folder children live one level deep; migrate them too, so entities inside folders are
+        // re-pointed when their server was removed and added back.
+        items = items.map { item in
+            guard item.type == .folder, let folderItems = item.items else { return item }
+            var item = item
+            item.items = migrateItemsIfNeeded(items: folderItems)
+            return item
+        }
         let infos = items.compactMap { getInfo(for: $0) }
 
         if infos.count == items.count {

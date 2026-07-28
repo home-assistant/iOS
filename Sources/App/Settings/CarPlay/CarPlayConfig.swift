@@ -94,7 +94,7 @@ public enum CarPlayTab: RawRepresentable, Codable, CaseIterable, DatabaseValueCo
 
     /// The fixed, built-in tabs. Folder tabs are user-created and are enumerated from the
     /// configuration's Quick Access folders instead.
-    public static var allCases: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
+    public static var allCases: [CarPlayTab] { [.quickAccess, .areas, .domains, .settings] }
 
     public init?(rawValue: String) {
         switch rawValue {
