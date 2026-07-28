@@ -19,6 +19,7 @@ struct MagicItemAddView: View {
     @StateObject private var viewModel: MagicItemAddViewModel
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
+    private let allowMultipleSelection: Bool
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
@@ -27,9 +28,11 @@ struct MagicItemAddView: View {
         context: Context,
         initialItemType: MagicItemAddType? = nil,
         visiblePickerOptions: [PickerOption]? = nil,
+        allowMultipleSelection: Bool = false,
         itemToAdd: @escaping (MagicItem?) -> Void
     ) {
         self.context = context
+        self.allowMultipleSelection = allowMultipleSelection
         self.itemToAdd = itemToAdd
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
@@ -125,7 +128,15 @@ struct MagicItemAddView: View {
                 .first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
             selectedEntity: $selectedEntity,
             domainFilter: domainFilter,
-            mode: .inline
+            mode: .inline,
+            allowMultipleSelection: allowMultipleSelection,
+            onMultipleSelectionConfirmed: { entities in
+                // Two or more entities skip customization and are added with their default configuration.
+                for entity in entities {
+                    itemToAdd(.init(id: entity.entityId, serverId: entity.serverId, type: .entity))
+                }
+                dismiss()
+            }
         )
         .background(
             NavigationLink("", isActive: .init(get: {

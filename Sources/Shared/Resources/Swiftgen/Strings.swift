@@ -1621,6 +1621,10 @@ public enum L10n {
   }
 
   public enum EntityPicker {
+    /// Add %lld
+    public static func addSelected(_ p1: Int) -> String {
+      return L10n.tr("Localizable", "entity_picker.add_selected", p1)
+    }
     /// Pick entity
     public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
     public enum Filter {

@@ -59,7 +59,7 @@ struct WidgetCreationView: View {
             }
         }
         .sheet(isPresented: $viewModel.showAddItem) {
-            MagicItemAddView(context: .widget) { magicItem in
+            MagicItemAddView(context: .widget, allowMultipleSelection: true) { magicItem in
                 guard let magicItem else { return }
                 viewModel.addItem(magicItem)
             }
