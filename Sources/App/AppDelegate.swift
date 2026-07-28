@@ -459,6 +459,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Force Realm migration to happen now
         _ = Realm.live()
         NotificationCategory.setupObserver()
+        Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
     }
 
     private func setupMenus() {
