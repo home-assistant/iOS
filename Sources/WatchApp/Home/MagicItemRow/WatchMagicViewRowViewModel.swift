@@ -127,6 +127,16 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
+    /// Reflect an executed action (e.g. a toggled light) quickly instead of waiting up to a full
+    /// poll interval. Skipped when the row is no longer polling (it disappeared meanwhile).
+    private func scheduleStateRefreshAfterExecution() {
+        guard displaysState, stateTimer != nil else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self, stateTimer != nil else { return }
+            fetchState()
+        }
+    }
+
     func confirmationAction() {
         executeItemAction()
     }
@@ -143,6 +153,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         executeMagicItem { [weak self] response in
             DispatchQueue.main.async { [weak self] in
                 self?.state = response.rowState
+                self?.scheduleStateRefreshAfterExecution()
             }
             self?.resetState()
         }
