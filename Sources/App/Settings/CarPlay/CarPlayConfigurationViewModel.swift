@@ -120,6 +120,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             config.tabs.append(tab)
         } else {
             config.tabs.removeAll(where: { $0 == tab })
+            pruneUnreferencedTabFolders()
         }
     }
 
@@ -129,6 +130,19 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func deleteTab(at offsets: IndexSet) {
         config.tabs.remove(atOffsets: offsets)
+        pruneUnreferencedTabFolders()
+    }
+
+    /// Tab-only folders exist solely to back a tab; when their tab is removed they'd otherwise
+    /// linger invisibly, so delete them along with the tab.
+    private func pruneUnreferencedTabFolders() {
+        guard let tabFolders = config.tabFolders else { return }
+        let remaining = tabFolders.filter { folder in
+            config.tabs.contains(.folder(folderId: folder.id))
+        }
+        if remaining.count != tabFolders.count {
+            config.tabFolders = remaining
+        }
     }
 
     // MARK: - Quick access items
@@ -171,7 +185,21 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     // MARK: - Folders
 
     func addFolder(named name: String) {
-        let folderItem = MagicItem(
+        config.quickAccessItems.append(makeFolder(named: name))
+    }
+
+    /// Creates a tab presented to the user as its own concept, backed by a folder that is stored
+    /// outside of Quick Access (so the Quick Access tab never shows it).
+    func addTabFolder(named name: String) {
+        let folderItem = makeFolder(named: name)
+        var tabFolders = config.tabFolders ?? []
+        tabFolders.append(folderItem)
+        config.tabFolders = tabFolders
+        config.tabs.append(.folder(folderId: folderItem.id))
+    }
+
+    private func makeFolder(named name: String) -> MagicItem {
+        MagicItem(
             id: UUID().uuidString,
             serverId: "",
             type: .folder,
@@ -180,62 +208,68 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             displayText: name,
             items: []
         )
-        config.quickAccessItems.append(folderItem)
     }
 
     func updateFolder(_ folder: MagicItem) {
         guard folder.type == .folder else { return }
-        if let indexToUpdate = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folder.id }) {
+        mutateFolder(withId: folder.id) { existingFolder in
             var updatedFolder = folder
             // Preserve existing items in the folder
-            updatedFolder.items = config.quickAccessItems[indexToUpdate].items
-            config.quickAccessItems[indexToUpdate] = updatedFolder
+            updatedFolder.items = existingFolder.items
+            existingFolder = updatedFolder
         }
     }
 
     func addItemToFolder(folderId: String, item: MagicItem) {
         guard item.type != .folder else { return }
-        guard let index = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
-        var folder = config.quickAccessItems[index]
-        var folderItems = folder.items ?? []
-        folderItems.append(item)
-        folder.items = folderItems
-        config.quickAccessItems[index] = folder
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.append(item)
+            folder.items = folderItems
+        }
     }
 
     func updateItemInFolder(folderId: String, item: MagicItem) {
-        guard let folderIndex = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
-        var folder = config.quickAccessItems[folderIndex]
-        var folderItems = folder.items ?? []
-        if let itemIndex = folderItems
-            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
-            folderItems[itemIndex] = item
-            folder.items = folderItems
-            config.quickAccessItems[folderIndex] = folder
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            if let itemIndex = folderItems
+                .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+                folderItems[itemIndex] = item
+                folder.items = folderItems
+            }
         }
     }
 
     func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
-        guard let index = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
-        var folder = config.quickAccessItems[index]
-        var folderItems = folder.items ?? []
-        folderItems.remove(atOffsets: offsets)
-        folder.items = folderItems
-        config.quickAccessItems[index] = folder
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.remove(atOffsets: offsets)
+            folder.items = folderItems
+        }
     }
 
     func moveItemWithinFolder(folderId: String, from source: IndexSet, to destination: Int) {
-        guard let index = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
-        var folder = config.quickAccessItems[index]
-        var folderItems = folder.items ?? []
-        folderItems.move(fromOffsets: source, toOffset: destination)
-        folder.items = folderItems
-        config.quickAccessItems[index] = folder
+        mutateFolder(withId: folderId) { folder in
+            var folderItems = folder.items ?? []
+            folderItems.move(fromOffsets: source, toOffset: destination)
+            folder.items = folderItems
+        }
+    }
+
+    /// Applies a mutation to the folder with the given id, wherever it lives — Quick Access items
+    /// or tab-only folders.
+    private func mutateFolder(withId folderId: String, _ mutation: (inout MagicItem) -> Void) {
+        if let index = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
+            var folder = config.quickAccessItems[index]
+            mutation(&folder)
+            config.quickAccessItems[index] = folder
+        } else if let index = config.tabFolders?
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
+            guard var folder = config.tabFolders?[index] else { return }
+            mutation(&folder)
+            config.tabFolders?[index] = folder
+        }
     }
 
     // MARK: - Quick access layout

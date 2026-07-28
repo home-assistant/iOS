@@ -75,6 +75,7 @@ public enum DatabaseTables {
         case quickAccessItems
         case quickAccessLayout
         case showAddEditButtons
+        case tabFolders
     }
 
     // Mac titlebar/toolbar configuration
