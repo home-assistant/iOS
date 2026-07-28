@@ -103,7 +103,11 @@ final class CarPlayAddItemFlow {
             title: L10n.CarPlay.Navigation.Tab.domains,
             image: MaterialDesignIcons.devicesIcon.carPlayIcon()
         ) { [weak self] in self?.go(to: .domains(server)) }
-        var rows = [areas, control]
+        let folder = navigationRow(
+            title: L10n.Watch.Configuration.Folder.defaultName,
+            image: MaterialDesignIcons.folderIcon.carPlayIcon()
+        ) { [weak self] in self?.presentFolderInfo() }
+        var rows = [areas, control, folder]
 
         if #available(iOS 26.4, *) {
             let assist = navigationRow(
@@ -185,6 +189,18 @@ final class CarPlayAddItemFlow {
             rows: rows,
             emptyMessage: L10n.CarPlay.Labels.emptyAssistList
         )
+    }
+
+    private func presentFolderInfo() {
+        let okAction = CPAlertAction(title: L10n.okLabel, style: .default) { [weak self] _ in
+            self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
+        let actionSheet = CPActionSheetTemplate(
+            title: L10n.Watch.Configuration.Folder.defaultName,
+            message: L10n.CarPlay.QuickAccess.AddItem.Folder.message,
+            actions: [okAction]
+        )
+        interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
     }
 
     private func presentAssistPromptInfo() {

@@ -255,12 +255,12 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
-        CPListSection(items: CarPlayTab.allCases.map { tabItem(tab: $0, template: template) })
+        CPListSection(items: viewModel.selectableTabs.map { tabItem(tab: $0, template: template) })
     }
 
     private func tabItem(tab: CarPlayTab, template: CPListTemplate) -> CPListItem {
         let item = CPListItem(
-            text: tab.name,
+            text: viewModel.tabName(tab),
             detailText: nil,
             image: viewModel.isTabActive(tab) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
         )

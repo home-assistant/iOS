@@ -208,6 +208,7 @@
 "carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
+"carPlay.config.tabs.maximum.footer" = "CarPlay limits how many tabs are displayed in the car (up to %li, depending on the vehicle). Extra tabs won't be shown.";
 "carPlay.config.tabs.title" = "Tabs";
 "carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
@@ -254,6 +255,7 @@
 "carPlay.debug.settings.tts_playback.playback_delay" = "Playback delay";
 "carPlay.debug.settings.tts_playback.playback_strategy" = "Playback strategy";
 "carPlay.debug.settings.tts_playback.title" = "TTS Playback";
+"carPlay.folder.empty.title" = "This folder is empty";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_area_list" = "No areas available";
 "carPlay.labels.empty_assist_list" = "No Assist pipelines with both speech-to-text and text-to-speech available";
@@ -296,6 +298,7 @@
 "carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.confirmation.no_confirmation" = "Add without confirmation";
 "carPlay.quick_access.add_item.confirmation.require" = "Require confirmation";
+"carPlay.quick_access.add_item.folder.message" = "Folders can only be created in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.title" = "Add item";
 "carPlay.quick_access.edit_item.button" = "Edit";
 "carPlay.quick_access.edit_item.confirmation.no_confirmation" = "Don't require confirmation";

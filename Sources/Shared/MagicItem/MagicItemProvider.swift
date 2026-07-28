@@ -317,6 +317,12 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
     private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {
         items.map { item in
+            if item.type == .folder {
+                var item = item
+                item.items = normalizeCarPlayItems(item.items ?? [])
+                return item
+            }
+
             guard item.type == .assistPipeline || item.type == .assistPrompt else { return item }
 
             var item = item

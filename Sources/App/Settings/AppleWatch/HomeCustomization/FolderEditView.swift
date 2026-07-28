@@ -7,13 +7,17 @@ struct FolderEditView: View {
     @State private var folder: MagicItem
     @State private var useCustomColors: Bool
 
+    /// The Watch configuration screens force a dark appearance; CarPlay's don't.
+    private let usesDarkColorScheme: Bool
+
     let onSave: (MagicItem) -> Void
 
-    init(folder: MagicItem, onSave: @escaping (MagicItem) -> Void) {
+    init(folder: MagicItem, usesDarkColorScheme: Bool = true, onSave: @escaping (MagicItem) -> Void) {
         self._folder = State(initialValue: folder)
         self._useCustomColors = State(
             initialValue: folder.customization?.backgroundColor != nil || folder.customization?.textColor != nil
         )
+        self.usesDarkColorScheme = usesDarkColorScheme
         self.onSave = onSave
     }
 
@@ -51,7 +55,7 @@ struct FolderEditView: View {
                 }
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(usesDarkColorScheme ? .dark : nil)
         .onAppear {
             preventNilCustomization()
         }

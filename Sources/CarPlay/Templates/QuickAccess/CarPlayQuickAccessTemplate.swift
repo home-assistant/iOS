@@ -27,16 +27,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private let viewModel: CarPlayQuickAccessViewModel
 
-    private let paginatedList = CarPlayPaginatedListTemplate(
-        title: L10n.CarPlay.Navigation.Tab.quickAccess,
-        items: [],
-        paginationStyle: .inline
-    )
+    private let paginatedList: CarPlayPaginatedListTemplate
     var template: CPListTemplate
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
     private var entityProviders: [CarPlayEntityListItem] = []
+    /// Entity providers for folder content lists pushed from the Quick Access list, keyed by folder id.
+    private var folderEntityProviders: [String: [CarPlayEntityListItem]] = [:]
+    /// Folder content lists currently pushed from the Quick Access list, refreshed on state changes.
+    private var openFolderTemplates: [(folderId: String, template: CPListTemplate)] = []
     private var currentItems: [MagicItem] = []
     private var currentLayout: CarPlayQuickAccessLayout = .grid
     private var currentShowAddEditButtons = true
@@ -49,19 +49,47 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var addItemFlow: CarPlayAddItemFlow?
     private var editItemFlow: CarPlayEditItemFlow?
 
-    init(viewModel: CarPlayQuickAccessViewModel) {
+    /// `folder` is provided when this template renders a folder promoted to its own tab
+    /// (`CarPlayQuickAccessViewModel.Source.folder`); it supplies the tab's title and icon.
+    init(viewModel: CarPlayQuickAccessViewModel, folder: MagicItem? = nil) {
         self.viewModel = viewModel
+
+        let title: String
+        let tabImage: UIImage
+        if let folder {
+            title = folder.displayText ?? L10n.Watch.Configuration.Folder.defaultName
+            tabImage = MaterialDesignIcons(
+                named: folder.customization?.icon ?? MaterialDesignIcons.folderIcon.name,
+                fallback: .folderIcon
+            ).carPlayIcon()
+        } else {
+            title = L10n.CarPlay.Navigation.Tab.quickAccess
+            tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
+        }
+
+        self.paginatedList = CarPlayPaginatedListTemplate(
+            title: title,
+            items: [],
+            paginationStyle: .inline
+        )
 
         guard let template = paginatedList.listTemplate else {
             fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
         }
         self.template = template
-        template.tabTitle = L10n.CarPlay.Navigation.Tab.quickAccess
-        template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
+        template.tabTitle = title
+        template.tabImage = tabImage
         template.tabSystemItem = .more
 
         self.viewModel.templateProvider = self
         presentEmptyState()
+    }
+
+    private var isFolderSource: Bool {
+        if case .folder = viewModel.source {
+            return true
+        }
+        return false
     }
 
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
@@ -148,6 +176,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     func templateWillAppear(template: CPTemplate) {
         if template == self.template {
+            // Returning to this template means any folder list pushed from it has been popped.
+            openFolderTemplates.removeAll()
+            folderEntityProviders.removeAll()
             update()
         }
     }
@@ -219,6 +250,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentEmptyState() {
+        guard !isFolderSource else {
+            presentEmptyFolderState()
+            return
+        }
+
         guard currentShowAddEditButtons else {
             presentAddEditHiddenEmptyState()
             return
@@ -241,7 +277,18 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         template.updateSections([.init(items: [item])])
     }
 
+    private func presentEmptyFolderState() {
+        let item = CPListItem(
+            text: L10n.CarPlay.Folder.Empty.title,
+            detailText: L10n.CarPlay.QuickAccess.Empty.body
+        )
+        template.trailingNavigationBarButtons = []
+        template.updateSections([.init(items: [item])])
+    }
+
     private func refreshCurrentPresentation() {
+        defer { refreshOpenFolderTemplates() }
+
         guard !currentItems.isEmpty else {
             presentEmptyState()
             return
@@ -253,8 +300,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 footerItems: gridActionFooterItems()
             )
         } else {
+            let built = buildListItems(items: currentItems)
+            entityProviders = built.providers
             paginatedList.updateItems(
-                items: listItems(items: currentItems),
+                items: built.rows,
                 footerItems: currentShowAddEditButtons ? [makeAddItemRow(), makeEditItemRow()] : []
             )
         }
@@ -266,8 +315,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return rowItems(displayItems: actionDisplayItems(includeEdit: true))
     }
 
-    private func listItems(items: [MagicItem]) -> [CPListItem] {
-        entityProviders = []
+    private func buildListItems(items: [MagicItem]) -> (rows: [CPListItem], providers: [CarPlayEntityListItem]) {
+        var providers: [CarPlayEntityListItem] = []
         let entityToAreaMap = entityToAreaMap()
 
         let items: [CPListItem?] = items.compactMap { magicItem in
@@ -300,8 +349,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                         executionFinished: { [weak self] in self?.endExecuting(magicItem) }
                     )
                 }
-                entityProviders.append(entityProvider)
+                providers.append(entityProvider)
                 return listItem
+            case .folder:
+                let item = CPListItem(
+                    text: magicItem.name(info: info),
+                    detailText: nil,
+                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
+                )
+                item.accessoryType = .disclosureIndicator
+                item.handler = { [weak self] _, completion in
+                    self?.presentFolderContents(folder: magicItem)
+                    completion()
+                }
+                return item
             case .assistPipeline, .assistPrompt:
                 let item = CPListItem(
                     text: assistTitle(for: magicItem, info: info),
@@ -332,7 +393,45 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             }
         }
 
-        return items.compactMap({ $0 })
+        return (items.compactMap({ $0 }), providers)
+    }
+
+    private func presentFolderContents(folder: MagicItem) {
+        let folderInfo = info(for: folder)
+        let listTemplate = CPListTemplate(title: folder.name(info: folderInfo), sections: [])
+        openFolderTemplates.append((folderId: folder.id, template: listTemplate))
+        updateFolderContents(folder: folder, in: listTemplate)
+        interfaceController?.pushTemplate(listTemplate, animated: true, completion: nil)
+    }
+
+    private func updateFolderContents(folder: MagicItem, in template: CPListTemplate) {
+        // Folders can't nest in CarPlay; drop any stray nested folders defensively.
+        let items = (folder.items ?? []).filter { $0.type != .folder }
+        guard !items.isEmpty else {
+            folderEntityProviders[folder.id] = nil
+            template.updateSections([.init(items: [CPListItem(
+                text: L10n.CarPlay.Folder.Empty.title,
+                detailText: L10n.CarPlay.QuickAccess.Empty.body
+            )])])
+            return
+        }
+
+        let built = buildListItems(items: items)
+        folderEntityProviders[folder.id] = built.providers
+        let maxItems = Int(CPListTemplate.maximumItemCount)
+        if built.rows.count > maxItems {
+            Current.Log.error("CarPlay folder list of \(built.rows.count) exceeds \(maxItems); truncating")
+        }
+        template.updateSections([.init(items: Array(built.rows.prefix(maxItems)))])
+    }
+
+    private func refreshOpenFolderTemplates() {
+        for entry in openFolderTemplates {
+            guard let folder = currentItems.first(where: { $0.type == .folder && $0.id == entry.folderId }) else {
+                continue
+            }
+            updateFolderContents(folder: folder, in: entry.template)
+        }
     }
 
     @available(iOS 26.0, *)
@@ -354,7 +453,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                         return
                     }
 
-                    if isAssistItem(displayItem.magicItem) {
+                    if displayItem.magicItem.type == .folder {
+                        presentFolderContents(folder: displayItem.magicItem)
+                    } else if isAssistItem(displayItem.magicItem) {
                         presentAssistSession(magicItem: displayItem.magicItem, info: displayItem.info)
                     } else {
                         itemTap(

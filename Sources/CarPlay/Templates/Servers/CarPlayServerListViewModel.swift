@@ -108,7 +108,32 @@ final class CarPlayServerListViewModel {
     }
 
     var tabsSummary: String {
-        tabs.map(\.name).joined(separator: ", ")
+        tabs.map { tabName($0) }.joined(separator: ", ")
+    }
+
+    /// All tabs selectable from the car: the built-in ones plus one per existing Quick Access folder.
+    var selectableTabs: [CarPlayTab] {
+        CarPlayTab.allCases + folderTabs
+    }
+
+    private var folderTabs: [CarPlayTab] {
+        do {
+            return try CarPlayConfig.config()?.folders.map { .folder(folderId: $0.id) } ?? []
+        } catch {
+            Current.Log.error("Failed to fetch CarPlay folders: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    /// Display name for a tab, resolving folder tabs to their folder's name.
+    func tabName(_ tab: CarPlayTab) -> String {
+        guard tab.folderId != nil else { return tab.name }
+        do {
+            return try CarPlayConfig.config()?.name(for: tab) ?? tab.name
+        } catch {
+            Current.Log.error("Failed to resolve CarPlay tab name: \(error.localizedDescription)")
+            return tab.name
+        }
     }
 
     var quickAccessLayout: CarPlayQuickAccessLayout {

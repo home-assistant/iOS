@@ -40,6 +40,20 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
             try CarPlayConfig.fetchOne(db)
         })
     }
+
+    /// Folders available in Quick Access; these can also be promoted to their own tab.
+    public var folders: [MagicItem] {
+        quickAccessItems.filter { $0.type == .folder }
+    }
+
+    public func folder(withId folderId: String) -> MagicItem? {
+        quickAccessItems.first(where: { $0.type == .folder && $0.id == folderId })
+    }
+
+    /// Display name for a tab, resolving folder tabs against this configuration's folders.
+    public func name(for tab: CarPlayTab) -> String {
+        tab.name(quickAccessItems: quickAccessItems)
+    }
 }
 
 public enum CarPlayQuickAccessLayout: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
@@ -56,11 +70,76 @@ public enum CarPlayQuickAccessLayout: String, Codable, CaseIterable, DatabaseVal
     }
 }
 
-public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
+public enum CarPlayTab: RawRepresentable, Codable, CaseIterable, DatabaseValueConvertible, Equatable, Hashable {
+    /// Prefix used to persist folder tabs as plain strings, keeping the stored format compatible
+    /// with the original String raw-value encoding used before folder tabs existed.
+    private static let folderRawValuePrefix = "folder:"
+
     case quickAccess
     case areas
     case domains
     case settings
+    /// A Quick Access folder promoted to its own tab; references the folder `MagicItem.id`.
+    case folder(folderId: String)
+
+    /// The fixed, built-in tabs. Folder tabs are user-created and are enumerated from the
+    /// configuration's Quick Access folders instead.
+    public static var allCases: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
+
+    public init?(rawValue: String) {
+        switch rawValue {
+        case "quickAccess":
+            self = .quickAccess
+        case "areas":
+            self = .areas
+        case "domains":
+            self = .domains
+        case "settings":
+            self = .settings
+        default:
+            guard rawValue.hasPrefix(Self.folderRawValuePrefix) else { return nil }
+            self = .folder(folderId: String(rawValue.dropFirst(Self.folderRawValuePrefix.count)))
+        }
+    }
+
+    public var rawValue: String {
+        switch self {
+        case .quickAccess:
+            return "quickAccess"
+        case .areas:
+            return "areas"
+        case .domains:
+            return "domains"
+        case .settings:
+            return "settings"
+        case let .folder(folderId):
+            return Self.folderRawValuePrefix + folderId
+        }
+    }
+
+    /// Explicit single-string Codable so the persisted format matches the original raw-value
+    /// encoding (an associated-value enum would otherwise synthesize a keyed representation).
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        guard let tab = Self(rawValue: rawValue) else {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Unknown CarPlayTab raw value: \(rawValue)"
+            )
+        }
+        self = tab
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+
+    public var folderId: String? {
+        guard case let .folder(folderId) = self else { return nil }
+        return folderId
+    }
 
     public var name: String {
         switch self {
@@ -72,6 +151,17 @@ public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible,
             return L10n.CarPlay.Navigation.Tab.domains
         case .settings:
             return L10n.CarPlay.Navigation.Tab.settings
+        case .folder:
+            return L10n.Watch.Configuration.Folder.defaultName
         }
+    }
+
+    /// Display name for the tab; folder tabs resolve their name from the folder item they reference.
+    public func name(quickAccessItems: [MagicItem]) -> String {
+        guard let folderId,
+              let folder = quickAccessItems.first(where: { $0.type == .folder && $0.id == folderId }) else {
+            return name
+        }
+        return folder.displayText ?? name
     }
 }
