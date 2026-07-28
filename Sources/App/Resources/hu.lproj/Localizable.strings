@@ -1208,6 +1208,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.location_send_type.setting.zone_only" = "Csak a zóna neve";
 "settings.connection_section.location_send_type.title" = "Helymeghatározás elküldve";
 "settings.connection_section.logged_in_as" = "Bejelentkezve mint";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Nincs URL";
 "settings.connection_section.refresh_server" = "Szerver információk frissítése";
 "settings.connection_section.remote_ui_url.title" = "Távoli felhasználói felület URL címe";

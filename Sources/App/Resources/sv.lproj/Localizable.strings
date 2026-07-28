@@ -1204,6 +1204,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.location_send_type.setting.zone_only" = "Endast zonnamn";
 "settings.connection_section.location_send_type.title" = "Plats skickad";
 "settings.connection_section.logged_in_as" = "Inloggad som";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Ingen URL";
 "settings.connection_section.refresh_server" = "Uppdatera serverinformation";
 "settings.connection_section.remote_ui_url.title" = "Fjärrgränssnitts-URL";

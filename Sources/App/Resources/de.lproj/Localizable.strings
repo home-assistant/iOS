@@ -1124,7 +1124,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "sensors.camera_motion.setting.changed_area_threshold" = "Bereichsschwelle geändert";
 "sensors.camera_motion.setting.clear_delay" = "Verzögerung aufheben";
 "sensors.camera_motion.setting.frame_rate" = "Bildrate";
-"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.detail_footer" = "Um diese Kamera in Home Assistant zu nutzen, füge die Integration „MJPEG IP Camera“ hinzu und verwende die oben genannte Stream-URL. Der Stream wird unverschlüsselt über HTTP übertragen. Lege oben in den Einstellungen einen Benutzernamen und ein Passwort fest, um eine Authentifizierung zu erzwingen. Andernfalls kann jeder in deinem lokalen Netzwerk den Stream ansehen. Der Stream ist nur verfügbar, solange die App im Vordergrund geöffnet ist.";
 "sensors.camera_stream.footer" = "Um diese Kamera in Home Assistant zu nutzen, füge die Integration „MJPEG IP Camera“ hinzu und verwende die oben genannte Stream-URL. Der Stream wird unverschlüsselt über HTTP übertragen. Lege unten einen Benutzernamen und ein Passwort fest, um eine Authentifizierung zu erzwingen. Andernfalls kann jeder in deinem lokalen Netzwerk den Stream ansehen. Der Stream ist nur verfügbar, solange die App im Vordergrund geöffnet ist.";
 "sensors.camera_stream.setting.credentials_footer" = "Lass beide Felder leer, damit jeder in deinem Netzwerk den Stream ansehen kann. Wenn du sie einstellst, konfiguriere die MJPEG-Integration in Home Assistant mit demselben Benutzernamen und Passwort.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Optional";
@@ -1209,6 +1209,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.location_send_type.setting.zone_only" = "Nur Zone";
 "settings.connection_section.location_send_type.title" = "Gesendeter Standort";
 "settings.connection_section.logged_in_as" = "Angemeldet als";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Keine URL";
 "settings.connection_section.refresh_server" = "Server-Informationen aktualisieren";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";

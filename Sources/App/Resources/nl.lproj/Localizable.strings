@@ -493,7 +493,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.more_info.search_commands" = "Commando's zoeken";
 "gestures.value.option.more_info.search_devices" = "Apparaten zoeken";
 "gestures.value.option.more_info.search_entities" = "Entiteiten zoeken";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
+"gestures.value.option.more_info.smart_back" = "Gaat terug naar de vorige pagina, of toont de zijbalk als er geen pagina is om naar terug te gaan";
 "gestures.value.option.next_page" = "Volgende pagina";
 "gestures.value.option.next_server" = "Volgende server";
 "gestures.value.option.none" = "Geen";
@@ -506,7 +506,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.servers_list" = "Serverlijst";
 "gestures.value.option.show_settings" = "Open app-instellingen";
 "gestures.value.option.show_sidebar" = "Toon zijbalk";
-"gestures.value.option.smart_back" = "Smart back";
+"gestures.value.option.smart_back" = "Slim terug";
 "grdb.config.migration_error.failed_access_grdb" = "Geen toegang tot database (GRDB), fout: %@";
 "grdb.config.migration_error.failed_to_save" = "Kan nieuwe configuratie niet opslaan, fout: %@";
 "ha_api.api_error.cant_build_url" = "Kon de API URL niet maken";
@@ -1124,7 +1124,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "sensors.camera_motion.setting.changed_area_threshold" = "Changed area threshold";
 "sensors.camera_motion.setting.clear_delay" = "Clear delay";
 "sensors.camera_motion.setting.frame_rate" = "Framerate";
-"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.detail_footer" = "Om deze camera in Home Assistant te bekijken, voeg je de integratie 'MJPEG IP Camera' toe en gebruik je de bovenstaande stream-URL. De stream is via gewoon te benaderen via HTTP, zonder versleuteling. Stel hierboven een gebruikersnaam en wachtwoord in om authenticatie verplicht te stellen, anders kan iedereen op je lokale netwerk de beelden bekijken. De stream is alleen beschikbaar zolang de app op de voorgrond openstaat.";
 "sensors.camera_stream.footer" = "Om deze camera in Home Assistant te bekijken, voeg je de integratie 'MJPEG IP Camera' toe en gebruik je de bovenstaande stream-URL. De stream is via gewoon te benaderen via HTTP, zonder versleuteling. Stel hieronder een gebruikersnaam en wachtwoord in om authenticatie verplicht te stellen, anders kan iedereen op je lokale netwerk de beelden bekijken. De stream is alleen beschikbaar zolang de app op de voorgrond openstaat.";
 "sensors.camera_stream.setting.credentials_footer" = "Laat beide velden leeg om iedereen in je netwerk toegang te geven tot de stream. Als je deze velden invult, moet je de MJPEG-integratie in Home Assistant configureren met dezelfde gebruikersnaam en hetzelfde wachtwoord.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Optioneel";
@@ -1209,6 +1209,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.location_send_type.setting.zone_only" = "Alleen zonenaam";
 "settings.connection_section.location_send_type.title" = "Locatie doorgeven";
 "settings.connection_section.logged_in_as" = "Ingelogd als";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Geen URL";
 "settings.connection_section.refresh_server" = "Serverinformatie bijwerken";
 "settings.connection_section.remote_ui_url.title" = "Gebruikersinterface op afstand URL";
@@ -1364,7 +1365,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.event_log.title" = "Event Log";
 "settings.greetings.flight.footer" = "Geeft een vriendelijke begroeting weer wanneer de app detecteert dat je aan boord van een vliegtuig bent, op basis van wifi-netwerken aan boord, je snelheid en je hoogte.";
 "settings.greetings.flight.title" = "Vlucht";
-"settings.greetings.title" = "Gegroet";
+"settings.greetings.title" = "Begroetingen";
 "settings.location_history.detail.explanation" = "De paarse cirkel is je locatie en de nauwkeurigheid ervan. Blauwe cirkels zijn je zones. Je bevindt je in een zone als de paarse cirkel een blauwe cirkel overlapt. Oranje cirkels zijn uitbreidingsgebieden die worden gebruikt voor zones onder de 100 meter.";
 "settings.location_history.empty" = "Geen locatiegeschiedenis";
 "settings.location_history.title" = "Locatiegeschiedenis";
@@ -1962,14 +1963,14 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
-"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
-"watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
-"watch.debug.complication_refresh.finished.title" = "Complications reload finished";
-"watch.debug.complication_refresh.finished.unknown_reason" = "unknown reason";
-"watch.debug.complication_refresh.finished.updated_line" = "%1$@ updated to %2$@ in %3$@";
-"watch.debug.complication_refresh.started.body" = "Reloading %1$li complication(s): %2$@";
-"watch.debug.complication_refresh.started.title" = "Complications reload started";
+"watch.debug.complication_refresh.finished.failed_line" = "%1$@ mislukte in %2$@: %3$@";
+"watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ mislukt in %2$@ (%3$@) — wordt nog steeds weergegeven %4$@";
+"watch.debug.complication_refresh.finished.summary" = "%1$li geslaagd, %2$li mislukt in %3$@";
+"watch.debug.complication_refresh.finished.title" = "Het herladen van de complicaties is voltooid";
+"watch.debug.complication_refresh.finished.unknown_reason" = "onbekende reden";
+"watch.debug.complication_refresh.finished.updated_line" = "%1$@ bijgewerkt naar %2$@ in %3$@";
+"watch.debug.complication_refresh.started.body" = "Herladen van %1$li complicatie(s): %2$@";
+"watch.debug.complication_refresh.started.title" = "Herladen van complicaties is gestart.";
 "watch.debug.delete_db.alert.failed.message" = "Kan configuratie niet verwijderen, fout: %@";
 "watch.debug.delete_db.alert.title" = "Weet je zeker dat je de Watch-configuratie wilt verwijderen? Dit kan niet worden teruggedraaid";
 "watch.debug.delete_db.reset.title" = "Configuratie resetten";
@@ -2195,8 +2196,8 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
 "watch.settings.developer.audio_probe.footer" = "Experimenteel: houd een audiosessie actief tijdens de directe synchronisatie om te testen of de WebSocket hierdoor verbinding kan maken op deze Watch. Er klinkt een zacht geluidje tijdens het synchroniseren.";
 "watch.settings.developer.audio_probe.title" = "Audio sessie-probe";
-"watch.settings.developer.complication_refresh_notifications.footer" = "Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.";
-"watch.settings.developer.complication_refresh_notifications.title" = "Complication reload alerts";
+"watch.settings.developer.complication_refresh_notifications.footer" = "Geeft een melding weer wanneer complicaties beginnen met het herladen van hun gegevens en wanneer dit is voltooid. Hierin wordt aangegeven of het is gelukt of waarom het is mislukt. Dit geldt zowel voor het herladen door de app als door de widget zelf.";
+"watch.settings.developer.complication_refresh_notifications.title" = "Waarschuwingen voor herladen van complicaties";
 "watch.settings.developer.direct_sync.footer" = "Haal de gegevens van deze Watch rechtstreeks via WebSocket uit Home Assistant op, in plaats van ze via de iPhone te synchroniseren. Experimenteel: de meeste horloges staan geen WebSocket-verbindingen toe; in dat geval worden de gegevens niet meer bijgewerkt totdat deze functie is uitgeschakeld.";
 "watch.settings.developer.direct_sync.title" = "Directe serversynchronisatie";
 "watch.settings.developer.iphone_unreachable_icon.footer" = "Er wordt een iPhone-icoon met een schuine streep weergegeven in de koptekst, zolang de gekoppelde iPhone niet bereikbaar is. De acties worden rechtstreeks vanaf het horloge uitgevoerd, dus dit is alleen nuttig bij het opsporen van fouten in de verbinding met de iPhone.";

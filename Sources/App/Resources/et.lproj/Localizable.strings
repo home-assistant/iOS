@@ -1209,6 +1209,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.location_send_type.setting.zone_only" = "Ainult tsoon";
 "settings.connection_section.location_send_type.title" = "Asukoht saadetud";
 "settings.connection_section.logged_in_as" = "Sisse logitud kui";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "URL puudub";
 "settings.connection_section.refresh_server" = "Värskenda serveri teavet";
 "settings.connection_section.remote_ui_url.title" = "Kaugliidese URL";

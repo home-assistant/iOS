@@ -1429,6 +1429,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.server_switching.how_it_works.title" = "How it works?";
 "settings.server_switching.how_it_works.wifi.body" = "If this device is connected to a Wi-Fi network that belongs to one of your servers, that server is considered closest. No location check is needed.";
 "settings.server_switching.how_it_works.wifi.title" = "Home network first";
+"settings.server_switching.switched_toast" = "Switched to %@";
 "settings.server_switching.title" = "Server Switching";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";

@@ -1209,6 +1209,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.location_send_type.setting.zone_only" = "Sadece bölge";
 "settings.connection_section.location_send_type.title" = "Konum Gönderildi";
 "settings.connection_section.logged_in_as" = "olarak giriş yaptı";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "URL yok";
 "settings.connection_section.refresh_server" = "Sunucu bilgilerini güncelle";
 "settings.connection_section.remote_ui_url.title" = "Uzak Kullanıcı Arabirimi URL'si";

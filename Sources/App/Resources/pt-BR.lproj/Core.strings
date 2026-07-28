@@ -112,7 +112,7 @@
 "component::humidifier::title" = "Umidificador";
 "component::image::title" = "Imagem";
 "component::image_processing::title" = "Processamento de imagem";
-"component::improv_ble::config::abort::already_configured" = "Dispositivo já está configurado";
+"component::improv_ble::config::abort::already_configured" = "O dispositivo já está configurado";
 "component::improv_ble::config::abort::cannot_connect" = "Falha ao conectar";
 "component::improv_ble::config::abort::characteristic_missing" = "O dispositivo já está conectado ao Wi-Fi ou não consegue mais se conectar ao Wi-Fi. Se você quiser conectá-lo a outra rede, tente primeiro restaurá-lo para as configurações de fábrica.";
 "component::improv_ble::config::abort::no_devices_found" = "Nenhum dispositivo encontrado na rede";
