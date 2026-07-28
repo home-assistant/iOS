@@ -6,43 +6,15 @@ import SwiftUI
 import UIKit
 
 struct CarPlayConfigurationView: View {
-    private enum AddItemDestination: String, Identifiable {
-        case entity
-        case assist
-        case assistPrompt
-
-        var id: String { rawValue }
-
-        var magicItemType: MagicItemAddType? {
-            switch self {
-            case .entity:
-                return .entities
-            case .assist:
-                return .assistPipelines
-            case .assistPrompt:
-                return nil
-            }
-        }
-
-        var pickerOption: MagicItemAddView.PickerOption? {
-            switch self {
-            case .entity:
-                return .entities
-            case .assist:
-                return .assistPipelines
-            case .assistPrompt:
-                return nil
-            }
-        }
-    }
-
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: CarPlayConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
     @State private var showAssistSettings = false
-    @State private var addItemDestination: AddItemDestination?
+    @State private var addItemDestination: CarPlayAddItemDestination?
+    @State private var showAddFolderSheet = false
+    @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
     private let needsNavigationController: Bool
 
@@ -121,6 +93,45 @@ struct CarPlayConfigurationView: View {
                 Text(verbatim: L10n.okLabel)
             })
         }
+        .sheet(isPresented: $showAddFolderSheet) {
+            addFolderSheet
+        }
+    }
+
+    @ViewBuilder
+    private var addFolderSheet: some View {
+        NavigationStack {
+            addFolderForm
+        }
+        .presentationDetents([.medium])
+    }
+
+    private var addFolderForm: some View {
+        Form {
+            Section(L10n.Watch.Configuration.FolderName.title) {
+                TextField(L10n.Watch.Configuration.Folder.defaultName, text: $newFolderName)
+                    .textInputAutocapitalization(.words)
+            }
+        }
+        .navigationTitle(L10n.Watch.Configuration.NewFolder.title)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: { showAddFolderSheet = false }) {
+                    Text(L10n.cancelLabel)
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    viewModel.addFolder(
+                        named: name.isEmpty ? L10n.Watch.Configuration.Folder.defaultName : name
+                    )
+                    showAddFolderSheet = false
+                }) {
+                    Text(L10n.Watch.Configuration.AddFolder.title)
+                }
+            }
+        }
     }
 
     private var itemsSection: some View {
@@ -189,57 +200,15 @@ struct CarPlayConfigurationView: View {
         }
     }
 
-    @ViewBuilder
     private var addItemButton: some View {
-        Menu {
-            Button {
-                addItemDestination = .entity
-            } label: {
-                Label {
-                    Text(L10n.MagicItem.ItemType.Entity.List.title)
-                } icon: {
-                    Image(systemSymbol: .lightbulb)
-                }
+        CarPlayAddItemMenu(
+            showAddFolder: true,
+            onSelectDestination: { addItemDestination = $0 },
+            onAddFolder: {
+                newFolderName = ""
+                showAddFolderSheet = true
             }
-
-            Button {
-                addItemDestination = .assist
-            } label: {
-                Label {
-                    Text(
-                        isAssistSupported ?
-                            L10n.Widgets.Action.Name.assist :
-                            L10n.MagicItem.Action.Assist.Unsupported.title
-                    )
-                } icon: {
-                    Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
-                        ofSize: .init(width: 18, height: 18),
-                        color: .label
-                    ))
-                }
-            }
-            .disabled(!isAssistSupported)
-
-            Button {
-                addItemDestination = .assistPrompt
-            } label: {
-                Label {
-                    Text(
-                        isAssistSupported ?
-                            L10n.MagicItem.ItemType.AssistPrompt.title :
-                            L10n.MagicItem.ItemType.AssistPrompt.Unsupported.title
-                    )
-                } icon: {
-                    Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                        ofSize: .init(width: 18, height: 18),
-                        color: .label
-                    ))
-                }
-            }
-            .disabled(!isAssistSupported)
-        } label: {
-            Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-        }
+        )
     }
 
     private func makeListItem(item: MagicItem) -> some View {
@@ -254,7 +223,16 @@ struct CarPlayConfigurationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        if item.type == .assistPrompt {
+        if item.type == .folder {
+            NavigationLink {
+                CarPlayFolderDetailView(
+                    folderId: item.id,
+                    viewModel: viewModel
+                )
+            } label: {
+                itemRow(item: item, info: info)
+            }
+        } else if item.type == .assistPrompt {
             NavigationLink {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
@@ -341,7 +319,7 @@ struct CarPlayConfigurationView: View {
             NavigationLink {
                 CarPlayTabsSelectionView(viewModel: viewModel)
             } label: {
-                Text(viewModel.config.tabs.compactMap(\.name).joined(separator: ", "))
+                Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
@@ -390,14 +368,6 @@ struct CarPlayConfigurationView: View {
             Text(L10n.CarPlay.Labels.Settings.Troubleshooting.Section.title)
         }
     }
-
-    private var isAssistSupported: Bool {
-        if #available(iOS 26.4, *) {
-            return true
-        } else {
-            return false
-        }
-    }
 }
 
 #Preview {
@@ -411,6 +381,7 @@ extension CarPlayConfigurationView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Carplay.Tab.QuickAccess.layout),
             SettingsSearchEntry(L10n.CarPlay.Config.Tabs.title),
             SettingsSearchEntry(L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.AddFolder.title),
             SettingsSearchEntry(L10n.Assist.Settings.title),
         ]
     }

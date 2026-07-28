@@ -1,3 +1,4 @@
+import CarPlay
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -13,7 +14,7 @@ struct CarPlayTabsSelectionView: View {
                         viewModel.updateTab(tab, active: false)
                     } label: {
                         HStack {
-                            Text(tab.name)
+                            Text(viewModel.config.name(for: tab))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             Image(systemSymbol: .line3Horizontal)
                                 .foregroundStyle(.gray)
@@ -30,18 +31,19 @@ struct CarPlayTabsSelectionView: View {
             } header: {
                 Text(L10n.CarPlay.Tabs.Active.title)
             } footer: {
-                Text(L10n.CarPlay.Tabs.Active.DeleteAction.title)
+                Text(
+                    L10n.CarPlay.Tabs.Active.DeleteAction.title + "\n"
+                        + L10n.CarPlay.Config.Tabs.Maximum.footer(CPTabBarTemplate.maximumTabCount)
+                )
             }
-            if viewModel.config.tabs.count != CarPlayTab.allCases.count {
+            if !inactiveTabs.isEmpty {
                 Section(L10n.CarPlay.Tabs.Inactive.title) {
-                    ForEach(CarPlayTab.allCases.filter({ tab in
-                        !viewModel.config.tabs.contains(tab)
-                    }), id: \.rawValue) { tab in
+                    ForEach(inactiveTabs, id: \.rawValue) { tab in
                         Button {
                             viewModel.updateTab(tab, active: true)
                         } label: {
                             HStack {
-                                Text(tab.name)
+                                Text(viewModel.config.name(for: tab))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Image(systemSymbol: .plusCircleFill)
                                     .foregroundStyle(.white, .green)
@@ -53,6 +55,17 @@ struct CarPlayTabsSelectionView: View {
                 }
             }
         }
+    }
+
+    /// Built-in tabs not yet active, followed by Quick Access folders not yet promoted to a tab.
+    private var inactiveTabs: [CarPlayTab] {
+        let standardTabs = CarPlayTab.allCases.filter { tab in
+            !viewModel.config.tabs.contains(tab)
+        }
+        let folderTabs = viewModel.config.folders
+            .map { CarPlayTab.folder(folderId: $0.id) }
+            .filter { !viewModel.config.tabs.contains($0) }
+        return standardTabs + folderTabs
     }
 }
 

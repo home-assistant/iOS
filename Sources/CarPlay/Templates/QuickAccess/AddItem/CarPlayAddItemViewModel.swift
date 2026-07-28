@@ -153,7 +153,11 @@ final class CarPlayAddItemViewModel {
                 Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
                 return
             }
-            config.quickAccessItems.remove(at: index)
+            let removedItem = config.quickAccessItems.remove(at: index)
+            if removedItem.type == .folder {
+                // A deleted folder can no longer back a tab.
+                config.tabs.removeAll { $0.folderId == removedItem.id }
+            }
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }

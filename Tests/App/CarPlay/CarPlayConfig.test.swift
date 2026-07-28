@@ -57,4 +57,42 @@ struct CarPlayConfigTests {
         #expect(CarPlayConfig(showAddEditButtons: false).resolvedShowAddEditButtons == false)
         #expect(CarPlayConfig(showAddEditButtons: true).resolvedShowAddEditButtons == true)
     }
+
+    @Test func carPlayTabRawValueRoundTrip() {
+        #expect(CarPlayTab(rawValue: "quickAccess") == .quickAccess)
+        #expect(CarPlayTab(rawValue: "areas") == .areas)
+        #expect(CarPlayTab(rawValue: "domains") == .domains)
+        #expect(CarPlayTab(rawValue: "settings") == .settings)
+        #expect(CarPlayTab(rawValue: "folder:abc") == .folder(folderId: "abc"))
+        #expect(CarPlayTab(rawValue: "bogus") == nil)
+        #expect(CarPlayTab.folder(folderId: "abc").rawValue == "folder:abc")
+        #expect(CarPlayTab.folder(folderId: "abc").folderId == "abc")
+        #expect(CarPlayTab.quickAccess.folderId == nil)
+    }
+
+    @Test func carPlayTabCodableKeepsLegacyStringEncoding() throws {
+        // Configs persisted before folder tabs existed encode tabs as plain strings.
+        let legacyJSON = Data(#"["quickAccess","areas","settings"]"#.utf8)
+        let decoded = try JSONDecoder().decode([CarPlayTab].self, from: legacyJSON)
+        #expect(decoded == [.quickAccess, .areas, .settings])
+
+        let tabs: [CarPlayTab] = [.quickAccess, .folder(folderId: "abc"), .settings]
+        let encoded = try JSONEncoder().encode(tabs)
+        #expect(String(data: encoded, encoding: .utf8) == #"["quickAccess","folder:abc","settings"]"#)
+        #expect(try JSONDecoder().decode([CarPlayTab].self, from: encoded) == tabs)
+    }
+
+    @Test func folderHelpersResolveFoldersAndNames() {
+        let folder = MagicItem(id: "folder-1", serverId: "", type: .folder, displayText: "Garage", items: [])
+        let config = CarPlayConfig(
+            tabs: [.quickAccess, .folder(folderId: "folder-1")],
+            quickAccessItems: [folder]
+        )
+        #expect(config.folders == [folder])
+        #expect(config.folder(withId: "folder-1")?.id == "folder-1")
+        #expect(config.folder(withId: "missing") == nil)
+        #expect(config.name(for: .folder(folderId: "folder-1")) == "Garage")
+        #expect(config.name(for: .folder(folderId: "missing")) == CarPlayTab.folder(folderId: "missing").name)
+        #expect(config.name(for: .quickAccess) == CarPlayTab.quickAccess.name)
+    }
 }

@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Shared
+import UIKit
 
 final class CarPlayConfigurationViewModel: ObservableObject {
     @Published private(set) var config = CarPlayConfig()
@@ -149,11 +150,92 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     }
 
     func deleteItem(at offsets: IndexSet) {
+        let removedFolderIds = offsets.compactMap { index -> String? in
+            guard config.quickAccessItems.indices.contains(index),
+                  config.quickAccessItems[index].type == .folder else { return nil }
+            return config.quickAccessItems[index].id
+        }
         config.quickAccessItems.remove(atOffsets: offsets)
+        guard !removedFolderIds.isEmpty else { return }
+        // A deleted folder can no longer back a tab.
+        config.tabs.removeAll { tab in
+            guard let folderId = tab.folderId else { return false }
+            return removedFolderIds.contains(folderId)
+        }
     }
 
     func moveItem(from source: IndexSet, to destination: Int) {
         config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
+    }
+
+    // MARK: - Folders
+
+    func addFolder(named name: String) {
+        let folderItem = MagicItem(
+            id: UUID().uuidString,
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: UIColor.haPrimary.hexString()),
+            action: .default,
+            displayText: name,
+            items: []
+        )
+        config.quickAccessItems.append(folderItem)
+    }
+
+    func updateFolder(_ folder: MagicItem) {
+        guard folder.type == .folder else { return }
+        if let indexToUpdate = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folder.id }) {
+            var updatedFolder = folder
+            // Preserve existing items in the folder
+            updatedFolder.items = config.quickAccessItems[indexToUpdate].items
+            config.quickAccessItems[indexToUpdate] = updatedFolder
+        }
+    }
+
+    func addItemToFolder(folderId: String, item: MagicItem) {
+        guard item.type != .folder else { return }
+        guard let index = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = config.quickAccessItems[index]
+        var folderItems = folder.items ?? []
+        folderItems.append(item)
+        folder.items = folderItems
+        config.quickAccessItems[index] = folder
+    }
+
+    func updateItemInFolder(folderId: String, item: MagicItem) {
+        guard let folderIndex = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = config.quickAccessItems[folderIndex]
+        var folderItems = folder.items ?? []
+        if let itemIndex = folderItems
+            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            folderItems[itemIndex] = item
+            folder.items = folderItems
+            config.quickAccessItems[folderIndex] = folder
+        }
+    }
+
+    func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
+        guard let index = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = config.quickAccessItems[index]
+        var folderItems = folder.items ?? []
+        folderItems.remove(atOffsets: offsets)
+        folder.items = folderItems
+        config.quickAccessItems[index] = folder
+    }
+
+    func moveItemWithinFolder(folderId: String, from source: IndexSet, to destination: Int) {
+        guard let index = config.quickAccessItems
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = config.quickAccessItems[index]
+        var folderItems = folder.items ?? []
+        folderItems.move(fromOffsets: source, toOffset: destination)
+        folder.items = folderItems
+        config.quickAccessItems[index] = folder
     }
 
     // MARK: - Quick access layout
