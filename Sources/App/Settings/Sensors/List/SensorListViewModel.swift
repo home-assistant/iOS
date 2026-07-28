@@ -1,49 +1,33 @@
-import Combine
-import CoreMotion
 import Foundation
-import HAKit
 import PromiseKit
 import Shared
 
 class SensorListViewModel: ObservableObject {
+    /// Every sensor, always sorted alphabetically no matter whether it is enabled or not.
     @Published var sensors: [WebhookSensor] = []
     @Published var lastUpdateDate: Date?
-    @Published var motionAuthorizationStatus: CMAuthorizationStatus?
-    @Published var focusAuthorizationStatus: FocusStatusWrapper.AuthorizationStatus?
-    @Published var isHealthKitAvailable = false
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
+    @Published var searchTerm: String = ""
     @Published var alertMessage: String?
     @Published var showAlert: Bool = false
 
-    private var refreshCancellable: AnyCancellable?
-    private var motionManager: CMMotionActivityManager?
-    private var cancellables = Set<AnyCancellable>()
+    var isSearching: Bool {
+        !searchTerm.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    /// The sensors matching the current search term, or all of them when not searching.
+    var filteredSensors: [WebhookSensor] {
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return sensors }
+        return sensors.filter { $0.Name?.localizedStandardContains(term) ?? false }
+    }
 
     init() {
         Current.sensors.register(observer: self)
-        updatePermissions()
     }
 
     deinit {
         Current.sensors.unregister(observer: self)
-    }
-
-    func updatePermissions() {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        isHealthKitAvailable = Current.healthKitService.isAvailable()
-        #endif
-
-        if Current.motion.isActivityAvailable() {
-            motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
-        } else {
-            motionAuthorizationStatus = nil
-        }
-
-        if Current.focusStatus.isAvailable() {
-            focusAuthorizationStatus = Current.focusStatus.authorizationStatus()
-        } else {
-            focusAuthorizationStatus = nil
-        }
     }
 
     func refresh() {
@@ -65,53 +49,19 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
-    @MainActor
-    func requestHealthAuthorization() async throws {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        try await Current.healthKitService.requestReadAuthorization()
-        isHealthKitAvailable = Current.healthKitService.isAvailable()
-        #endif
-    }
-
-    // MARK: - Permissions Handling
-
-    func requestMotionAuthorization(completion: @escaping () -> Void) {
-        guard Current.motion.isActivityAvailable() else {
-            completion()
-            return
-        }
-        let now = Current.date()
-        motionManager = CMMotionActivityManager()
-        motionManager?.queryActivityStarting(from: now, to: now, to: .main, withHandler: { [weak self] _, _ in
-            self?.motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
-            completion()
-        })
-    }
-
-    func openMotionSettings() {
-        URLOpener.shared.openSettings(destination: .motion, completionHandler: nil)
-    }
-
-    func requestFocusAuthorization(completion: @escaping () -> Void) {
-        guard Current.focusStatus.isAvailable() else {
-            completion()
-            return
-        }
-        Current.focusStatus.requestAuthorization().done { [weak self] _ in
-            self?.focusAuthorizationStatus = Current.focusStatus.authorizationStatus()
-            completion()
-        }.catch { _ in
-            completion()
-        }
-    }
-
-    func openFocusSettings() {
-        URLOpener.shared.openSettings(destination: .focus, completionHandler: nil)
-    }
-
     func updateAllSensors(isEnabled: Bool) {
         for sensor in sensors {
             Current.sensors.setEnabled(isEnabled, for: sensor)
+        }
+    }
+
+    static func sortedAlphabetically(_ sensors: [WebhookSensor]) -> [WebhookSensor] {
+        sensors.sorted { lhs, rhs in
+            let comparison = (lhs.Name ?? "").localizedStandardCompare(rhs.Name ?? "")
+            if comparison == .orderedSame {
+                return (lhs.UniqueID ?? "") < (rhs.UniqueID ?? "")
+            }
+            return comparison == .orderedAscending
         }
     }
 }
@@ -131,8 +81,9 @@ extension SensorListViewModel: SensorObserver {
         firstly {
             update.sensors
         }.done { [weak self] sensors in
+            let sorted = Self.sortedAlphabetically(sensors)
             DispatchQueue.main.async {
-                self?.sensors = sensors
+                self?.sensors = sorted
                 self?.lastUpdateDate = update.on
             }
         }.catch { [weak self] error in

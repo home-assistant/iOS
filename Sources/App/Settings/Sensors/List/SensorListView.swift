@@ -1,14 +1,10 @@
-import Combine
-import CoreMotion
 import Foundation
-import PromiseKit
-import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 struct SensorListView: View {
     @StateObject private var viewModel = SensorListViewModel()
+    @StateObject private var permissionsViewModel = SensorPermissionsViewModel()
 
     private let periodicOptions: [TimeInterval?] = {
         var options: [TimeInterval?] = [nil, 20, 60, 120, 300, 600, 900, 1800, 3600]
@@ -18,30 +14,78 @@ struct SensorListView: View {
         return options
     }()
 
-    private let sinceFormatter: DateFormatter = {
-        let sinceFormatter = DateFormatter()
-        sinceFormatter.formattingContext = .middleOfSentence
-        sinceFormatter.dateStyle = .none
-        sinceFormatter.timeStyle = .medium
-        return sinceFormatter
-    }()
-
     var body: some View {
         List {
-            AppleLikeListTopRowHeader(
-                image: .motionSensorIcon,
-                title: L10n.SettingsSensors.title,
-                subtitle: L10n.SettingsSensors.body
-            )
-            periodicUpdaterRow
-            #if os(iOS) && !targetEnvironment(macCatalyst)
-            healthKitSection
-            #endif
-            motionFocusPermissionNeededView
-            sensorsList
+            if !viewModel.isSearching {
+                AppleLikeListTopRowHeader(
+                    image: .motionSensorIcon,
+                    title: L10n.SettingsSensors.title,
+                    subtitle: L10n.SettingsSensors.body
+                )
+                Section(footer: Text(periodicUpdateFooter)) {
+                    Picker(
+                        selection: $viewModel.periodicUpdateInterval,
+                        label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
+                    ) {
+                        ForEach(periodicOptions, id: \.self) { option in
+                            Text(periodicUpdateDisplayText(for: option)).tag(option)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: viewModel.periodicUpdateInterval) { newValue in
+                        viewModel.setPeriodicUpdateInterval(newValue)
+                    }
+                }
+                if !permissionsViewModel.availablePermissions.isEmpty {
+                    Section {
+                        NavigationLink {
+                            SensorPermissionsView(viewModel: permissionsViewModel)
+                        } label: {
+                            Text(L10n.SettingsSensors.Permissions.header)
+                        }
+                        // A badge with zero is not rendered, so this only shows up while there are
+                        // permissions that were never presented to the user.
+                        .badge(permissionsViewModel.notDeterminedCount)
+                    }
+                }
+            }
+            Section {
+                if !viewModel.isSearching {
+                    Toggle(isOn: .init(get: {
+                        viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
+                    }, set: { newValue in
+                        viewModel.updateAllSensors(isEnabled: newValue)
+                    })) {
+                        Text(L10n.SettingsSensors.Sensors.enableAll)
+                    }
+                }
+                ForEach(viewModel.filteredSensors, id: \.UniqueID) { sensor in
+                    NavigationLink(destination: SensorDetailView(sensor: sensor)) {
+                        SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
+                    }
+                }
+                if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
+                    Text(L10n.SettingsSensors.Sensors.noResults)
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text(L10n.SettingsSensors.Sensors.header)
+            } footer: {
+                if let lastUpdate = viewModel.lastUpdateDate {
+                    Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
+                        Text(lastUpdate, style: .date) +
+                        Text(" ") +
+                        Text(lastUpdate, style: .time)
+                }
+            }
         }
+        .searchable(
+            text: $viewModel.searchTerm,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: Text(L10n.SettingsSensors.Sensors.searchPrompt)
+        )
         .onAppear {
-            viewModel.updatePermissions()
+            permissionsViewModel.update()
             viewModel.refresh()
         }
         .alert(isPresented: $viewModel.showAlert) {
@@ -56,124 +100,12 @@ struct SensorListView: View {
         }
     }
 
-    private var periodicUpdaterRow: some View {
-        Section(footer: Text(
-            PeriodicUpdateManager.supportsBackgroundPeriodicUpdates ? L10n.SettingsSensors
-                .PeriodicUpdate.descriptionMac : L10n.SettingsSensors.PeriodicUpdate.description
-        )) {
-            Picker(
-                selection: $viewModel.periodicUpdateInterval,
-                label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
-            ) {
-                ForEach(periodicOptions, id: \.self) { option in
-                    Text(periodicUpdateDisplayText(for: option)).tag(option)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: viewModel.periodicUpdateInterval) { newValue in
-                viewModel.setPeriodicUpdateInterval(newValue)
-            }
-        }
-    }
-
-    private var sensorsList: some View {
-        Section {
-            Toggle(isOn: .init(get: {
-                viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
-            }, set: { newValue in
-                viewModel.updateAllSensors(isEnabled: newValue)
-            })) {
-                Text(L10n.SettingsSensors.Sensors.enableAll)
-            }
-            ForEach(viewModel.sensors, id: \.UniqueID) { sensor in
-                NavigationLink(destination: SensorDetailView(sensor: sensor)) {
-                    SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
-                }
-            }
-        } header: {
-            Text(L10n.SettingsSensors.Sensors.header)
-        } footer: {
-            if let lastUpdate = viewModel.lastUpdateDate {
-                Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
-                    Text(lastUpdate, style: .date) +
-                    Text(" ") +
-                    Text(lastUpdate, style: .time)
-            }
-        }
-    }
-
-    private var healthKitSection: some View {
-        Section {
-            Button(action: {
-                Task { @MainActor [viewModel] in
-                    do {
-                        try await viewModel.requestHealthAuthorization()
-                        viewModel.refresh()
-                    } catch {
-                        viewModel.alertMessage = error.localizedDescription
-                        viewModel.showAlert = true
-                    }
-                }
-            }) {
-                Text(L10n.SettingsSensors.Health.requestAccess)
-            }
-            .disabled(!viewModel.isHealthKitAvailable)
-
-            HStack {
-                Text(L10n.SettingsSensors.Health.status)
-                Spacer()
-                Text(healthStatusDescription(isAvailable: viewModel.isHealthKitAvailable))
-                    .foregroundColor(.secondary)
-            }
-        } header: {
-            Text(L10n.SettingsSensors.Health.header)
-        } footer: {
-            Text(L10n.SettingsSensors.Health.footer)
-        }
-    }
-
-    @ViewBuilder
-    private var motionFocusPermissionNeededView: some View {
-        if viewModel.motionAuthorizationStatus != nil || viewModel.focusAuthorizationStatus != nil {
-            Section(L10n.SettingsSensors.Permissions.header) {
-                motionAuthorizationButton
-                focusAuthorizationButton
-            }
-        }
-    }
-
-    private var motionAuthorizationButton: some View {
-        Button(action: {
-            if viewModel.motionAuthorizationStatus == .notDetermined {
-                viewModel.requestMotionAuthorization {}
-            } else {
-                viewModel.openMotionSettings()
-            }
-        }) {
-            HStack {
-                Text(L10n.SettingsDetails.Location.MotionPermission.title)
-                Spacer()
-                Text(motionStatusDescription(viewModel.motionAuthorizationStatus ?? .notDetermined))
-                    .foregroundColor(.secondary)
-            }
-        }
-    }
-
-    private var focusAuthorizationButton: some View {
-        Button(action: {
-            if viewModel.focusAuthorizationStatus == .notDetermined {
-                viewModel.requestFocusAuthorization {}
-            } else {
-                viewModel.openFocusSettings()
-            }
-        }) {
-            HStack {
-                Text(L10n.SettingsSensors.FocusPermission.title)
-                Spacer()
-                Text(focusStatusDescription(viewModel.focusAuthorizationStatus ?? .notDetermined))
-                    .foregroundColor(.secondary)
-            }
-        }
+    /// On Mac the periodic update also runs while the app is in the background, everywhere else
+    /// the interval only applies while the app is on screen.
+    private var periodicUpdateFooter: String {
+        PeriodicUpdateManager.supportsBackgroundPeriodicUpdates
+            ? L10n.SettingsSensors.PeriodicUpdate.descriptionMac
+            : L10n.SettingsSensors.PeriodicUpdate.descriptionForeground
     }
 
     private func periodicUpdateDisplayText(for value: TimeInterval?) -> String {
@@ -186,47 +118,17 @@ struct SensorListView: View {
             return formatter.string(from: interval) ?? ""
         }
     }
+}
 
-    private func motionStatusDescription(_ status: CMAuthorizationStatus) -> String {
-        switch status {
-        case .notDetermined:
-            return L10n.SettingsDetails.Location.MotionPermission.needsRequest
-        case .restricted:
-            return L10n.SettingsDetails.Location.MotionPermission.restricted
-        case .denied:
-            return L10n.SettingsDetails.Location.MotionPermission.denied
-        case .authorized:
-            return L10n.SettingsDetails.Location.MotionPermission.enabled
-        @unknown default:
-            return L10n.SettingsDetails.Location.MotionPermission.needsRequest
-        }
-    }
-
-    private func focusStatusDescription(_ status: FocusStatusWrapper.AuthorizationStatus) -> String {
-        switch status {
-        case .notDetermined:
-            return L10n.SettingsDetails.Location.FocusPermission.needsRequest
-        case .restricted:
-            return L10n.SettingsDetails.Location.FocusPermission.restricted
-        case .denied:
-            return L10n.SettingsDetails.Location.FocusPermission.denied
-        case .authorized:
-            return L10n.SettingsDetails.Location.FocusPermission.enabled
-        @unknown default:
-            return L10n.SettingsDetails.Location.FocusPermission.needsRequest
-        }
-    }
-
-    private func healthStatusDescription(isAvailable: Bool) -> String {
-        isAvailable
-            ? L10n.SettingsSensors.Health.Status.available
-            : L10n.SettingsSensors.Health.Status.unavailable
+#Preview {
+    NavigationView {
+        SensorListView()
     }
 }
 
 extension SensorListView: SettingsScreenSearchable {
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        var entries = [
             SettingsSearchEntry(L10n.SettingsSensors.PeriodicUpdate.title),
             SettingsSearchEntry(L10n.SettingsSensors.Permissions.header),
             SettingsSearchEntry(L10n.SettingsDetails.Location.MotionPermission.title),
@@ -234,5 +136,9 @@ extension SensorListView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsSensors.Sensors.header),
             SettingsSearchEntry(L10n.SettingsSensors.Sensors.enableAll),
         ]
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.header))
+        #endif
+        return entries
     }
 }

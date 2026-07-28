@@ -31,6 +31,19 @@ public struct HealthKitService {
         )
     }
 
+    /// Whether the Apple Health permission sheet was already presented to the user.
+    ///
+    /// HealthKit never discloses whether read access was granted, so the outcome can't be read back.
+    /// What can be observed is that answering the sheet moves the requested types out of
+    /// `.notDetermined`, which is enough to tell "never asked" apart from "already asked".
+    public var hasRequestedReadAuthorization: () -> Bool = {
+        guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension else {
+            return false
+        }
+
+        return healthDataTypes().contains { healthStore.authorizationStatus(for: $0) != .notDetermined }
+    }
+
     public var queryStepCount: (Date, Date) async throws -> Int? = { start, end in
         guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension,
               let quantityType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
