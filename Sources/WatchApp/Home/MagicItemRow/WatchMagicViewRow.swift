@@ -123,6 +123,9 @@ struct WatchMagicViewRow: View {
                 .padding()
         }
         .watchRowIconContainer(color: viewModel.iconColor)
+        .overlay(alignment: .bottomTrailing) {
+            staleStateBadge
+        }
     }
 
     private var gridIcon: some View {
@@ -130,6 +133,20 @@ struct WatchMagicViewRow: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
             .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
+            .overlay(alignment: .bottomTrailing) {
+                staleStateBadge
+            }
+    }
+
+    /// Warns that the displayed state may be outdated (no successful refresh recently).
+    @ViewBuilder
+    private var staleStateBadge: some View {
+        if viewModel.isStateStale {
+            Image(systemSymbol: .exclamationmarkCircleFill)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(.black, .orange)
+                .font(.system(size: 12))
+        }
     }
 
     @ViewBuilder

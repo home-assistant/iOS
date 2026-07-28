@@ -36,6 +36,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
     /// state-aware execution (lock).
     @Published private(set) var liveEntity: HAEntity?
+    /// True when the state couldn't be refreshed within `staleInterval` — the row shows a small
+    /// warning badge so the displayed state isn't mistaken for current.
+    @Published private(set) var isStateStale = false
     /// Set when an execution fails, so the failure isn't silent. Presented full-screen by the row.
     @Published var errorMessage: String?
     /// Live log of the current execution, set only when the developer "Verbose item execution"
@@ -49,8 +52,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     private var timeoutWorkItem: DispatchWorkItem?
     private var watchdogWorkItem: DispatchWorkItem?
     private var stateTimer: Timer?
+    private var lastStateUpdate: Date?
+    private var pollingStarted: Date?
 
     private static let stateRefreshInterval: TimeInterval = 5
+    private static let staleInterval: TimeInterval = 10
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
@@ -132,9 +138,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     func startStateUpdates() {
         stopStateUpdates()
         guard displaysState else { return }
+        pollingStarted = Current.date()
+        isStateStale = false
         fetchState()
         stateTimer = Timer
             .scheduledTimer(withTimeInterval: Self.stateRefreshInterval, repeats: true) { [weak self] _ in
+                self?.updateStaleness()
                 self?.fetchState()
             }
     }
@@ -151,7 +160,16 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         WatchEntityStateFetcher.fetchState(entityId: item.id, server: server) { [weak self] entity in
             guard let self, let entity else { return }
             liveEntity = entity
+            lastStateUpdate = Current.date()
+            isStateStale = false
         }
+    }
+
+    /// Evaluated on every poll tick: fetches update `lastStateUpdate` on success only, so a run
+    /// of failed polls (or none at all since appearing) flips the badge on.
+    private func updateStaleness() {
+        guard let reference = lastStateUpdate ?? pollingStarted else { return }
+        isStateStale = Current.date().timeIntervalSince(reference) >= Self.staleInterval
     }
 
     /// Reflect an executed action (e.g. a toggled light) quickly instead of waiting up to a full
