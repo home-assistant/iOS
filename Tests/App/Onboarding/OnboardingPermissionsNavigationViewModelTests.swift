@@ -31,13 +31,41 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStep == .location)
     }
 
-    @Test("Initialization with HTTPS-only URLs skips local access step")
-    func initializationWithHTTPSOnlyURLsSkipsLocalAccessStep() async throws {
+    @Test("Initialization with HTTPS-only URLs skips local access and home network steps")
+    func initializationWithHTTPSOnlyURLsSkipsLocalAccessAndHomeNetworkSteps() async throws {
+        let server = Self.httpsOnlyServer(
+            identifier: "https-only",
+            externalURL: URL(string: "https://external.example.com")!,
+            internalURL: URL(string: "https://internal.example.com")!
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.location, .completion])
+        #expect(viewModel.steps.contains(.localAccess) == false)
+        #expect(viewModel.steps.contains(.homeNetwork) == false)
+        #expect(viewModel.currentStep == .location)
+    }
+
+    @Test("Initialization with HTTPS-only internal URL and no remote connection skips local network configuration")
+    func initializationWithHTTPSOnlyInternalURLSkipsLocalNetworkConfiguration() async throws {
+        let server = Self.httpsOnlyServer(
+            identifier: "https-only-internal",
+            externalURL: nil,
+            internalURL: URL(string: "https://internal.example.com")!
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.disclaimer, .location, .completion])
+        #expect(viewModel.steps.contains(.localAccess) == false)
+        #expect(viewModel.steps.contains(.homeNetwork) == false)
+    }
+
+    private static func httpsOnlyServer(identifier: String, externalURL: URL?, internalURL: URL?) -> Server {
         var info = ServerInfo(
             name: "HTTPS Only Server",
             connection: .init(
-                externalURL: URL(string: "https://external.example.com")!,
-                internalURL: URL(string: "https://internal.example.com")!,
+                externalURL: externalURL,
+                internalURL: internalURL,
                 cloudhookURL: nil,
                 remoteUIURL: nil,
                 webhookID: "webhook-id",
@@ -55,17 +83,12 @@ struct OnboardingPermissionsNavigationViewModelTests {
             ),
             version: "2026.1.0"
         )
-        let server = Server(identifier: "https-only", getter: {
+        return Server(identifier: .init(rawValue: identifier), getter: {
             info
         }, setter: { newInfo in
             info = newInfo
             return true
         })
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
-
-        #expect(viewModel.steps == [.location, .homeNetwork, .completion])
-        #expect(viewModel.steps.contains(.localAccess) == false)
-        #expect(viewModel.currentStep == .location)
     }
 
     @Test("Initialization with custom steps")

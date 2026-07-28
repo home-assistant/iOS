@@ -103,8 +103,10 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 defaultSteps = StepID.remoteConnectionCompatible
             }
 
+            // Local network configuration (security level and home network name) is only
+            // relevant when a non-HTTPS URL could be used to reach the server
             if connection.hasOnlyHTTPSURLOptions {
-                defaultSteps.removeAll { $0 == .localAccess }
+                defaultSteps.removeAll { $0 == .localAccess || $0 == .homeNetwork }
             }
             self.steps = defaultSteps
         }
