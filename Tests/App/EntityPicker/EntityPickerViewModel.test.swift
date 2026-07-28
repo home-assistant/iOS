@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -71,5 +72,49 @@ struct EntityPickerViewModelTests {
 
         #expect(vm.entitiesByDomain["light"]?.count == 2)
         #expect(vm.entitiesByDomain["switch"]?.count == 1)
+    }
+
+    @Test("Selectable domains keep only the preset domains that have entities")
+    func selectableDomainsRespectPresetFilter() async throws {
+        let entities: [HAAppEntity] = [
+            .make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: "A"),
+            .make("switch.pump", name: "Pump", domain: "switch", serverId: "A"),
+            // Not supported by the watch, so it must not be offered as a filter.
+            .make("sensor.temperature", name: "Temperature", domain: "sensor", serverId: "A"),
+        ]
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: nil)
+        vm.entities = entities
+        vm._test_groupByDomain()
+
+        #expect(Set(vm.selectableDomains) == ["light", "switch"])
+    }
+
+    @Test("Selectable domains are scoped to the selected server")
+    func selectableDomainsScopedToSelectedServer() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let entities: [HAAppEntity] = [
+            .make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: "A"),
+            .make("switch.pump", name: "Pump", domain: "switch", serverId: "B"),
+        ]
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: "A")
+        vm.entities = entities
+        vm._test_groupByDomain()
+
+        #expect(vm.selectableDomains == ["light"])
+    }
+
+    @Test("A preset domain filter still reports a user picked domain as an active filter")
+    func hasActiveFiltersWithPresetDomainFilter() async throws {
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: nil)
+
+        #expect(vm.hasActiveFilters == false)
+        vm.selectedDomainFilter = Domain.light.rawValue
+        #expect(vm.hasActiveFilters)
+        vm.resetFilters()
+        #expect(vm.hasActiveFilters == false)
     }
 }
