@@ -692,7 +692,11 @@ public extension MagicItem {
                 throw MagicItemError.unknownDomain
             }
             if domain == .lock {
-                guard let state = Domain.State(rawValue: currentItemState) else { return nil }
+                // Lock is state-aware; without a known state the call would guess wrong, so fail
+                // loudly instead of silently doing nothing (a nil here reads as a no-op success).
+                guard let state = Domain.State(rawValue: currentItemState) else {
+                    throw WatchRESTExecutionError.lockStateUnknown
+                }
                 switch state {
                 case .unlocking, .unlocked, .opening:
                     return WatchServiceCall(
@@ -707,7 +711,7 @@ public extension MagicItem {
                         data: ["entity_id": id]
                     )
                 default:
-                    return nil
+                    throw WatchRESTExecutionError.lockStateUnknown
                 }
             } else {
                 guard let action = domain.mainAction else { return nil }
@@ -831,6 +835,8 @@ public extension MagicItem {
         case tokenTimeout
         /// URLSession never called the data task back, not even past `timeoutInterval`.
         case noURLSessionCallback
+        /// The lock's current state hasn't been fetched (or isn't actionable, e.g. jammed).
+        case lockStateUnknown
 
         var errorDescription: String? {
             switch self {
@@ -846,6 +852,8 @@ public extension MagicItem {
                 return L10n.Watch.Home.Run.Error.tokenTimeout
             case .noURLSessionCallback:
                 return L10n.Watch.Home.Run.Error.noResponse
+            case .lockStateUnknown:
+                return L10n.Watch.Home.Run.Error.lockStateUnknown
             }
         }
     }

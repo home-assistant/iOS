@@ -10,9 +10,9 @@ import GRDB
 /// covers the reference tables itself when enabled — `apply()` then skips them so the two writers
 /// never fight — while complications, configs, and servers always travel on this mirror.
 ///
-/// Only what the add flow needs is included: scripts/scenes/automations (stored as entities), areas
+/// Only what the add flow needs is included: entities of watch-supported domains, areas
 /// (for the context line), and Assist pipelines. Device / entity-registry tables are intentionally
-/// omitted — they're large and device context is rarely set for scripts/scenes. Even so, this snapshot
+/// omitted — they're large and the context line works without them. Even so, this snapshot
 /// can exceed WatchConnectivity's per-message limit, so it is streamed as chunked guaranteed messages.
 public struct WatchDatabaseMirror: WatchCodable {
     /// Blob identifier used when the phone proactively *pushes* the mirror to the watch over
@@ -98,7 +98,7 @@ public struct WatchDatabaseMirror: WatchCodable {
 
     /// Domains the watch can add (mirrors the iPhone watch picker).
     private static var mirroredDomains: Set<String> {
-        [Domain.script.rawValue, Domain.scene.rawValue, Domain.automation.rawValue]
+        Set(Domain.watchSupported.map(\.rawValue))
     }
 
     /// Read the current reference tables from the local GRDB (called on the phone).

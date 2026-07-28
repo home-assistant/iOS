@@ -30,14 +30,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
 
     /// Whether the entity has a dynamic icon that changes based on state
     private var entityHasDynamicIcon: Bool {
-        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
-        return [.cover, .inputBoolean, .light, .lock, .switch].contains(entityDomain)
+        Domain(entityId: entity.entityId)?.hasStateDependentIcon ?? false
     }
 
     /// Whether the entity has a state that doesnt bring value to the user when accessing from the car
     private var entityHasIrrelevantState: Bool {
-        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
-        return [.script, .scene].contains(entityDomain)
+        Domain(entityId: entity.entityId)?.hasIrrelevantState ?? false
     }
 
     init(

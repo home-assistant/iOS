@@ -34,6 +34,20 @@ struct WatchMagicViewRow: View {
                 .tint(.red)
             }
         )
+        .alert(
+            Text(verbatim: L10n.Watch.Home.Unsupported.title),
+            isPresented: $viewModel.showUnsupportedAlert
+        ) {
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: L10n.Watch.Home.Unsupported.message(viewModel.domainName))
+        }
+        .onAppear {
+            viewModel.startStateUpdates()
+        }
+        .onDisappear {
+            viewModel.stopStateUpdates()
+        }
         .modify { view in
             if layout == .grid {
                 view.watchHomeItemGridStyle(tint: backgroundForWatchItem)
@@ -83,14 +97,6 @@ struct WatchMagicViewRow: View {
         }
     }
 
-    private var iconColor: UIColor {
-        if let hex = viewModel.itemInfo.customization?.iconColor {
-            .init(hex: hex)
-        } else {
-            .white
-        }
-    }
-
     @ViewBuilder
     private var label: some View {
         if layout == .grid {
@@ -99,11 +105,16 @@ struct WatchMagicViewRow: View {
         } else {
             WatchHomeItemLabel(
                 name: viewModel.item.name(info: viewModel.itemInfo),
-                subtitle: subtitle,
+                subtitle: subtitleToDisplay,
                 textColor: textColor,
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
             )
         }
+    }
+
+    private var subtitleToDisplay: String? {
+        let combined = [viewModel.stateText, subtitle].compactMap { $0 }.joined(separator: " • ")
+        return combined.isEmpty ? nil : combined
     }
 
     private var iconToDisplay: some View {
@@ -111,7 +122,10 @@ struct WatchMagicViewRow: View {
             stateIcon(size: 24)
                 .padding()
         }
-        .watchRowIconContainer(color: iconColor)
+        .watchRowIconContainer(color: viewModel.iconColor)
+        .overlay(alignment: .bottomTrailing) {
+            staleStateBadge
+        }
     }
 
     private var gridIcon: some View {
@@ -119,17 +133,31 @@ struct WatchMagicViewRow: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
             .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
+            .overlay(alignment: .bottomTrailing) {
+                staleStateBadge
+            }
+    }
+
+    /// Warns that the displayed state may be outdated (no successful refresh recently).
+    @ViewBuilder
+    private var staleStateBadge: some View {
+        if viewModel.isStateStale {
+            Image(systemSymbol: .exclamationmarkCircleFill)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(.black, .orange)
+                .font(.system(size: 12))
+        }
     }
 
     @ViewBuilder
     private func stateIcon(size: CGFloat) -> some View {
         switch viewModel.state {
         case .idle:
-            Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
+            Image(uiImage: viewModel.icon.image(
                 ofSize: .init(width: size, height: size),
-                color: iconColor
+                color: viewModel.iconColor
             ))
-            .foregroundStyle(Color(uiColor: iconColor))
+            .foregroundStyle(Color(uiColor: viewModel.iconColor))
         case .loading:
             ProgressView()
                 .progressViewStyle(.circular)

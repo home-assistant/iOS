@@ -12,7 +12,7 @@ import PromiseKit
 struct WatchDirectServerSync {
     /// Domains the watch stores as addable entities (mirrors the iPhone watch picker).
     private static var mirroredDomains: Set<String> {
-        [Domain.script.rawValue, Domain.scene.rawValue, Domain.automation.rawValue]
+        Set(Domain.watchSupported.map(\.rawValue))
     }
 
     let server: Server
@@ -40,7 +40,7 @@ struct WatchDirectServerSync {
         let registry = try HAAPIDataBridge.decode(EntityRegistryListForDisplay.self, from: registryValue)
         try await saveEntityRegistry(registry, serverId: serverId)
 
-        // Step 2: states → HAAppEntity (scripts/scenes/automations) and AppZone (zones).
+        // Step 2: states → HAAppEntity (watch-supported domains) and AppZone (zones).
         let statesValue = try await connection.send(command: "get_states")
         let states = HAAPIDataBridge.decodeArrayLeniently(HAEntity.self, from: statesValue)
         let mirroredEntities = states.filter { Self.mirroredDomains.contains($0.domain) }
