@@ -36,7 +36,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
-    private var entityProviders: [CarPlayEntityListItem] = []
+    private var listItemsByKey: [String: CPListItem] = [:]
     private var currentItems: [MagicItem] = []
     private var currentLayout: CarPlayQuickAccessLayout = .grid
     private var currentShowAddEditButtons = true
@@ -63,6 +63,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         self.viewModel.templateProvider = self
         presentEmptyState()
     }
+
+    private lazy var addItemFooterRow: CPListItem = makeAddItemRow()
+    private lazy var editItemFooterRow: CPListItem = makeEditItemRow()
 
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
     // is a list row appended to the end of the Quick Access list instead.
@@ -153,13 +156,36 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
+        let previousEntities = entitiesPerServer[serverId]
         entitiesPerServer[serverId] = entities
         guard !currentItems.isEmpty else { return }
+        guard hasRelevantEntityChange(serverId: serverId, previous: previousEntities, current: entities) else {
+            return
+        }
         refreshCurrentPresentation()
+    }
+
+    private func hasRelevantEntityChange(
+        serverId: String,
+        previous: HACachedStates?,
+        current: HACachedStates
+    ) -> Bool {
+        guard let previous else { return true }
+        let entityItems = currentItems.filter { $0.type == .entity && $0.serverId == serverId }
+        guard !entityItems.isEmpty else { return false }
+        return entityItems.contains { magicItem in
+            let old = previous[magicItem.id]
+            let new = current[magicItem.id]
+            return old?.state != new?.state || old?.lastUpdated != new?.lastUpdated
+        }
     }
 
     private func executionKey(for magicItem: MagicItem) -> String {
         magicItem.serverUniqueId
+    }
+
+    private func rowCacheKey(for magicItem: MagicItem) -> String {
+        "\(magicItem.serverUniqueId)-\(magicItem.type.rawValue)"
     }
 
     private func isExecuting(_ magicItem: MagicItem) -> Bool {
@@ -255,7 +281,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         } else {
             paginatedList.updateItems(
                 items: listItems(items: currentItems),
-                footerItems: currentShowAddEditButtons ? [makeAddItemRow(), makeEditItemRow()] : []
+                footerItems: currentShowAddEditButtons ? [addItemFooterRow, editItemFooterRow] : []
             )
         }
     }
@@ -267,72 +293,72 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
-        entityProviders = []
         let entityToAreaMap = entityToAreaMap()
+        var updatedItemsByKey: [String: CPListItem] = [:]
 
-        let items: [CPListItem?] = items.compactMap { magicItem in
+        let rows: [CPListItem] = items.map { magicItem in
+            let key = rowCacheKey(for: magicItem)
             let info = info(for: magicItem)
+            let item = listItemsByKey[key] ?? CPListItem(text: nil, detailText: nil)
+
             switch magicItem.type {
             case .entity:
-                guard let entity = resolvedEntity(for: magicItem),
-                      let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
-                    return .init(text: "", detailText: "")
-                }
-                let entityProvider = CarPlayEntityListItem(
-                    serverId: magicItem.serverId,
-                    entity: entity,
-                    magicItem: magicItem,
-                    magicItemInfo: info,
-                    area: area(for: magicItem, entityToAreaMap: entityToAreaMap)
-                )
-                let listItem = entityProvider.template
-                if isExecuting(magicItem) {
-                    listItem.setDetailText(CarPlayEntityListItem.executingSubtitle)
+                if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
+                    item.setText(rowDisplayItem.title)
+                    item.setImage(rowDisplayItem.image)
+                    if isExecuting(magicItem) {
+                        item.setDetailText(CarPlayEntityListItem.executingSubtitle)
+                    } else {
+                        item.setDetailText(rowDisplayItem.subtitle)
+                    }
                 } else {
-                    listItem.setDetailText(rowDisplayItem.subtitle)
+                    item.setText("")
+                    item.setDetailText("")
+                    item.setImage(nil)
                 }
-                listItem.handler = { [weak self] _, _ in
-                    self?.itemTap(
+                item.handler = { [weak self] _, _ in
+                    guard let self else { return }
+                    itemTap(
                         magicItem: magicItem,
                         info: info,
-                        currentItemState: rowDisplayItem.currentState,
+                        currentItemState: resolvedEntity(for: magicItem)?.state ?? "",
                         executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                         executionFinished: { [weak self] in self?.endExecuting(magicItem) }
                     )
                 }
-                entityProviders.append(entityProvider)
-                return listItem
             case .assistPipeline, .assistPrompt:
-                let item = CPListItem(
-                    text: assistTitle(for: magicItem, info: info),
-                    detailText: assistSubtitle(for: magicItem, info: info),
-                    image: magicItem.icon(info: info)
-                        .carPlayIcon(color: iconColor(for: info))
-                )
+                item.setText(assistTitle(for: magicItem, info: info))
+                item.setDetailText(assistSubtitle(for: magicItem, info: info))
+                item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
                 item.handler = { [weak self] _, completion in
-                    self?.presentAssistSession(magicItem: magicItem, info: info)
+                    guard let self else {
+                        completion()
+                        return
+                    }
+                    presentAssistSession(magicItem: magicItem, info: info)
                     completion()
                 }
-                return item
             default:
-                let item = CPListItem(
-                    text: magicItem.name(info: info),
-                    detailText: renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)),
-                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-                )
+                item.setText(magicItem.name(info: info))
+                item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
+                item.setImage(magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)))
                 item.handler = { [weak self] _, _ in
-                    self?.itemTap(
+                    guard let self else { return }
+                    itemTap(
                         magicItem: magicItem,
                         info: info,
                         executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                         executionFinished: { [weak self] in self?.endExecuting(magicItem) }
                     )
                 }
-                return item
             }
+
+            updatedItemsByKey[key] = item
+            return item
         }
 
-        return items.compactMap({ $0 })
+        listItemsByKey = updatedItemsByKey
+        return rows
     }
 
     @available(iOS 26.0, *)
