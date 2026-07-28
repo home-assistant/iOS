@@ -17,12 +17,24 @@ struct EntityPicker: View {
     @Binding private var selectedEntity: HAAppEntity?
     private let mode: Mode
 
+    /// When `true` the picker lets the user select several entities and only reports them once the
+    /// user confirms. A single selection still flows through `selectedEntity` so callers can keep
+    /// their existing single-selection behaviour (e.g. showing a customization screen).
+    private let allowMultipleSelection: Bool
+    /// Called when the user confirms a selection of two or more entities. Single selections are
+    /// reported through `selectedEntity` instead.
+    private let onMultipleSelectionConfirmed: (([HAAppEntity]) -> Void)?
+
+    @State private var selectedEntities: [HAAppEntity] = []
+
     init(
         selectedServerId: String? = nil,
         selectedEntity: Binding<HAAppEntity?>,
         domainFilter: [Domain]?,
         mode: Mode = .button,
-        initialSearchTerm: String? = nil
+        initialSearchTerm: String? = nil,
+        allowMultipleSelection: Bool = false,
+        onMultipleSelectionConfirmed: (([HAAppEntity]) -> Void)? = nil
     ) {
         self._selectedEntity = selectedEntity
         self._viewModel = .init(wrappedValue: EntityPickerViewModel(
@@ -31,6 +43,8 @@ struct EntityPicker: View {
             initialSearchTerm: initialSearchTerm
         ))
         self.mode = mode
+        self.allowMultipleSelection = allowMultipleSelection
+        self.onMultipleSelectionConfirmed = onMultipleSelectionConfirmed
     }
 
     var body: some View {
@@ -108,12 +122,16 @@ struct EntityPicker: View {
                 Section(group.title.uppercased()) {
                     ForEach(group.entities, id: \.id) { entity in
                         Button(action: {
-                            selectedEntity = entity
-                            viewModel.showList = false
+                            if allowMultipleSelection {
+                                toggleSelection(entity)
+                            } else {
+                                selectedEntity = entity
+                                viewModel.showList = false
+                            }
                         }, label: {
                             EntityRowView(
                                 entity: entity,
-                                isSelected: selectedEntity == entity
+                                isSelected: isSelected(entity)
                             )
                         })
                         .tint(.accentColor)
@@ -122,12 +140,56 @@ struct EntityPicker: View {
             }
         }
         .listStyle(.plain)
+        .safeAreaInset(edge: .bottom) {
+            multipleSelectionConfirmButton
+        }
         .onAppear {
             viewModel.fetchEntities()
             if viewModel.selectedServerId == nil {
                 viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
             }
             isSearchFocused = true
+        }
+    }
+
+    @ViewBuilder
+    private var multipleSelectionConfirmButton: some View {
+        if allowMultipleSelection, !selectedEntities.isEmpty {
+            Button(action: confirmMultipleSelection) {
+                Text(L10n.EntityPicker.addSelected(selectedEntities.count))
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.haPrimary)
+            .padding()
+            .background(.ultraThinMaterial)
+        }
+    }
+
+    private func isSelected(_ entity: HAAppEntity) -> Bool {
+        if allowMultipleSelection {
+            selectedEntities.contains(where: { $0.id == entity.id })
+        } else {
+            selectedEntity == entity
+        }
+    }
+
+    private func toggleSelection(_ entity: HAAppEntity) {
+        if let index = selectedEntities.firstIndex(where: { $0.id == entity.id }) {
+            selectedEntities.remove(at: index)
+        } else {
+            selectedEntities.append(entity)
+        }
+    }
+
+    private func confirmMultipleSelection() {
+        // A single entity keeps the normal flow (e.g. customization) via the selectedEntity binding;
+        // two or more are reported directly so callers can add them with their default configuration.
+        if selectedEntities.count == 1 {
+            selectedEntity = selectedEntities.first
+        } else {
+            onMultipleSelectionConfirmed?(selectedEntities)
         }
     }
 

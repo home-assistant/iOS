@@ -45,7 +45,7 @@ struct FolderDetailView: View {
             }
         }
         .sheet(isPresented: $showAddItem) {
-            MagicItemAddView(context: .watch) { itemToAdd in
+            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
             }

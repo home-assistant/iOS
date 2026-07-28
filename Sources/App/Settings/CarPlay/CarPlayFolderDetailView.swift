@@ -52,7 +52,8 @@ struct CarPlayFolderDetailView: View {
                     MagicItemAddView(
                         context: .carPlay,
                         initialItemType: magicItemType,
-                        visiblePickerOptions: [pickerOption]
+                        visiblePickerOptions: [pickerOption],
+                        allowMultipleSelection: true
                     ) { itemToAdd in
                         guard let itemToAdd else { return }
                         viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)

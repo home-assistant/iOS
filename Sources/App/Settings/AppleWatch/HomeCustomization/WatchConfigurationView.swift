@@ -68,7 +68,7 @@ struct WatchConfigurationView: View {
             }
         })
         .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView(context: .watch) { itemToAdd in
+            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
