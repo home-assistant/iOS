@@ -15,7 +15,9 @@ final class HomeAssistantViewModel: ObservableObject {
         }()
 
         static let loaderFadeOutDuration: Duration = .seconds(0.4)
-        static let pullToRefreshThreshold: CGFloat = 148
+        /// Upper bound for the pull distance; the observer shortens it on viewports too short to reach it
+        /// in a single swipe, such as iPhone landscape.
+        static let pullToRefreshMaximumThreshold: CGFloat = 148
     }
 
     let server: Server
@@ -157,7 +159,7 @@ final class HomeAssistantViewModel: ObservableObject {
         guard !Current.isCatalyst else { return }
         pullToRefreshObserver = HomeAssistantPullToRefreshObserver(
             webView: controller.webView,
-            threshold: Constants.pullToRefreshThreshold,
+            maximumThreshold: Constants.pullToRefreshMaximumThreshold,
             onStateChange: { [weak self] progress, isRefreshing in
                 self?.pullToRefreshProgress = progress
                 self?.isPullToRefreshActive = isRefreshing
