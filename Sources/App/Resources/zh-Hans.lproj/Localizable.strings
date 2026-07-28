@@ -1206,6 +1206,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.location_send_type.setting.zone_only" = "仅限区域";
 "settings.connection_section.location_send_type.title" = "位置已发送";
 "settings.connection_section.logged_in_as" = "当前用户";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "没有网址";
 "settings.connection_section.refresh_server" = "更新服务器信息";
 "settings.connection_section.remote_ui_url.title" = "远程UI URL";

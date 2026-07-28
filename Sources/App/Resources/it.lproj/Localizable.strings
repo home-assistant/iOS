@@ -1209,6 +1209,7 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings.connection_section.location_send_type.setting.zone_only" = "Solo nome della zona";
 "settings.connection_section.location_send_type.title" = "Posizione inviata";
 "settings.connection_section.logged_in_as" = "Connesso come";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Nessun URL";
 "settings.connection_section.refresh_server" = "Aggiorna informazioni server";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";

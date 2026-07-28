@@ -1209,6 +1209,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.location_send_type.setting.zone_only" = "Только зона";
 "settings.connection_section.location_send_type.title" = "Отправка местоположения";
 "settings.connection_section.logged_in_as" = "Вы вошли как";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Нет URL-адреса";
 "settings.connection_section.refresh_server" = "Обновить информацию о сервере";
 "settings.connection_section.remote_ui_url.title" = "URL внешнего интерфейса";

@@ -1124,7 +1124,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "sensors.camera_motion.setting.changed_area_threshold" = "변경 영역 임계값";
 "sensors.camera_motion.setting.clear_delay" = "해제 지연";
 "sensors.camera_motion.setting.frame_rate" = "프레임 레이트";
-"sensors.camera_stream.detail_footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password in the settings above to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.detail_footer" = "Home Assistant에서 이 카메라를 보려면 “MJPEG IP Camera” 통합구성요소를 추가하고 위의 스트림 URL을 사용하세요. 이 스트림은 암호화되지 않은 일반 HTTP입니다. 인증을 요구하려면 위 설정에서 사용자 이름과 비밀번호를 설정하세요. 그렇지 않으면 로컬 네트워크의 누구나 볼 수 있습니다. 앱이 포그라운드에서 열려 있는 동안에만 사용할 수 있습니다.";
 "sensors.camera_stream.footer" = "Home Assistant에서 이 카메라를 보려면 “MJPEG IP Camera” 통합을 추가하고 위의 스트림 URL을 사용하세요. 스트림은 암호화되지 않은 일반 HTTP입니다. 인증을 요구하려면 아래에 사용자 이름과 비밀번호를 설정하세요. 설정하지 않으면 로컬 네트워크의 누구나 볼 수 있습니다. 앱이 포그라운드에서 열려 있을 때만 사용할 수 있습니다.";
 "sensors.camera_stream.setting.credentials_footer" = "네트워크의 누구나 스트림을 볼 수 있게 하려면 둘 다 비워 두세요. 설정한 경우 Home Assistant의 MJPEG 통합에 같은 사용자 이름과 비밀번호를 구성하세요.";
 "sensors.camera_stream.setting.credentials_placeholder" = "선택 사항";
@@ -1209,6 +1209,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.location_send_type.setting.zone_only" = "영역만";
 "settings.connection_section.location_send_type.title" = "위치 전송됨";
 "settings.connection_section.logged_in_as" = "다음 계정으로 로그인";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "URL 없음";
 "settings.connection_section.refresh_server" = "서버 정보 업데이트";
 "settings.connection_section.remote_ui_url.title" = "원격 UI URL";
