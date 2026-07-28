@@ -76,7 +76,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     // MARK: - Entity state
 
     var domainName: String {
-        item.domain?.name ?? ""
+        if let domain = item.domain {
+            return domain.name
+        }
+        // Unknown domains still need a readable alert — fall back to the entity id prefix.
+        return item.id.components(separatedBy: ".").first ?? item.id
     }
 
     private var isActionable: Bool {

@@ -1977,6 +1977,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
+"watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
 "watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
 "watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
 "watch.home.run.error.no_response" = "The server didn't respond in time.";
