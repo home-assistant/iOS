@@ -26,52 +26,62 @@ struct ManualURLEntryView: View, KeyboardReadable {
     private let minCharsToActivateSection = URLScheme.allCases.map(\.rawValue.count).min() ?? 0
 
     var body: some View {
-        NavigationView {
-            BaseOnboardingView(illustration: {
-                Image(.Onboarding.pencil)
-            }, title: L10n.Onboarding.ManualUrlEntry.title, primaryDescription: "", content: {
-                VStack {
-                    HATextField(placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
-                        .keyboardType(.URL)
-                        .autocorrectionDisabled()
-                        .autocapitalization(.none)
-                        .focused($focused, equals: true)
-                        .onAppear {
-                            focused = true
+        // On Mac Catalyst this view is pushed as a page (the navigation bar provides Back), while
+        // iOS presents it as a sheet that brings its own navigation chrome and close button.
+        if Current.isCatalyst {
+            content
+        } else {
+            NavigationView {
+                content
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton {
+                                dismiss()
+                            }
                         }
-
-                    httpOrHttpsSection
-                }
-            }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title) {
-                guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-                if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
-                    connectAction(url)
-                    dismiss()
-                } else {
-                    showInvalidURLError = true
-                }
-            }
-            .hideOnboardingTitle(isKeyboardVisible)
-            .hideOnboardingIcon(isKeyboardVisible)
-            .navigationViewStyle(.stack)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton {
-                        dismiss()
                     }
-                }
             }
-            .alert(isPresented: $showInvalidURLError) {
-                Alert(
-                    title: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.title),
-                    message: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.message),
-                    dismissButton: .default(Text(verbatim: L10n.okLabel))
-                )
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    private var content: some View {
+        BaseOnboardingView(illustration: {
+            Image(.Onboarding.pencil)
+        }, title: L10n.Onboarding.ManualUrlEntry.title, primaryDescription: "", content: {
+            VStack {
+                HATextField(placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
+                    .keyboardType(.URL)
+                    .autocorrectionDisabled()
+                    .autocapitalization(.none)
+                    .focused($focused, equals: true)
+                    .onAppear {
+                        focused = true
+                    }
+
+                httpOrHttpsSection
             }
-            onReceive(keyboardPublisher) { newIsKeyboardVisible in
-                isKeyboardVisible = newIsKeyboardVisible
+        }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title) {
+            guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+            if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                connectAction(url)
+                dismiss()
+            } else {
+                showInvalidURLError = true
             }
+        }
+        .hideOnboardingTitle(isKeyboardVisible)
+        .hideOnboardingIcon(isKeyboardVisible)
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(isPresented: $showInvalidURLError) {
+            Alert(
+                title: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.title),
+                message: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.message),
+                dismissButton: .default(Text(verbatim: L10n.okLabel))
+            )
+        }
+        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            isKeyboardVisible = newIsKeyboardVisible
         }
     }
 

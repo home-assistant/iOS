@@ -9,12 +9,17 @@ enum OnboardingDestination: Hashable {
     case login(OnboardingAuthLoginViewModel)
     case deviceName(OnboardingDeviceNameRequest)
     case permissions(Server)
+    /// The client-certificate (mTLS) import step. Only used on Mac Catalyst, where sheet content
+    /// doesn't receive mouse events reliably; iOS presents the same view as a sheet instead.
+    case clientCertificate(OnboardingClientCertificateRequest)
+    /// The connection-error details. Only used on Mac Catalyst, for the same reason as above.
+    case connectionError(OnboardingConnectionErrorContext)
 
     /// Whether this page belongs to the auth flow (everything after the user picked a server).
     var isAuthFlowStep: Bool {
         switch self {
-        case .serversList: return false
-        case .login, .deviceName, .permissions: return true
+        case .serversList, .connectionError: return false
+        case .login, .deviceName, .permissions, .clientCertificate: return true
         }
     }
 
@@ -28,6 +33,10 @@ enum OnboardingDestination: Hashable {
             return lhsRequest === rhsRequest
         case let (.permissions(lhsServer), .permissions(rhsServer)):
             return lhsServer.identifier == rhsServer.identifier
+        case let (.clientCertificate(lhsRequest), .clientCertificate(rhsRequest)):
+            return lhsRequest === rhsRequest
+        case let (.connectionError(lhsContext), .connectionError(rhsContext)):
+            return lhsContext === rhsContext
         default:
             return false
         }
@@ -46,6 +55,12 @@ enum OnboardingDestination: Hashable {
         case let .permissions(server):
             hasher.combine(3)
             hasher.combine(server.identifier)
+        case let .clientCertificate(request):
+            hasher.combine(4)
+            hasher.combine(ObjectIdentifier(request))
+        case let .connectionError(context):
+            hasher.combine(5)
+            hasher.combine(ObjectIdentifier(context))
         }
     }
 }
