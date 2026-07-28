@@ -15,7 +15,11 @@ struct HealthSensorListView: View {
             ForEach(viewModel.visibleCategories, id: \.self) { category in
                 Section(category.name) {
                     ForEach(viewModel.metrics(in: category), id: \.uniqueID) { metric in
-                        HealthSensorRow(metric: metric, isEnabled: binding(for: metric))
+                        HealthSensorRow(
+                            metric: metric,
+                            stateDescription: viewModel.stateDescription(for: metric),
+                            isEnabled: binding(for: metric)
+                        )
                     }
                 }
             }

@@ -76,6 +76,16 @@ class SensorListViewModel: ObservableObject {
         #endif
     }
 
+    /// Everything except the Apple Health metrics, which have their own screen — there are over a
+    /// hundred of them, so leaving them here would bury the rest of the sensors.
+    var listedSensors: [WebhookSensor] {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        return sensors.filter { !HealthKitSensor.isHealthSensor(uniqueID: $0.UniqueID) }
+        #else
+        return sensors
+        #endif
+    }
+
     // MARK: - Permissions Handling
 
     func requestMotionAuthorization(completion: @escaping () -> Void) {
@@ -113,7 +123,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updateAllSensors(isEnabled: Bool) {
-        Current.sensors.setEnabled(isEnabled, forUniqueIDs: sensors.compactMap(\.UniqueID))
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: listedSensors.compactMap(\.UniqueID))
     }
 }
 

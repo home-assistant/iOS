@@ -59,16 +59,29 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         XCTAssertEqual(viewModel.enabledHealthSensorCount, 2)
     }
 
-    func testUpdateAllSensorsIncludesHealthSensors() {
-        Current.sensors.setEnabled(false, forUniqueID: HealthKitMetric.steps.uniqueID)
+    func testListedSensorsExcludesHealthSensors() {
         let viewModel = SensorListViewModelWithoutRefresh()
         viewModel.sensors = [
             WebhookSensor(name: "Health Steps", uniqueID: HealthKitMetric.steps.uniqueID),
+            WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue),
+        ]
+
+        XCTAssertEqual(viewModel.listedSensors.compactMap(\.UniqueID), [WebhookSensorId.activity.rawValue])
+    }
+
+    func testUpdateAllSensorsLeavesHealthSensorsAlone() {
+        Current.sensors.setEnabled(false, forUniqueID: HealthKitMetric.steps.uniqueID)
+        Current.sensors.setEnabled(false, forUniqueID: WebhookSensorId.activity.rawValue)
+        let viewModel = SensorListViewModelWithoutRefresh()
+        viewModel.sensors = [
+            WebhookSensor(name: "Health Steps", uniqueID: HealthKitMetric.steps.uniqueID),
+            WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue),
         ]
 
         viewModel.updateAllSensors(isEnabled: true)
 
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: HealthKitMetric.steps.uniqueID))
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
+        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: HealthKitMetric.steps.uniqueID))
     }
 
     @MainActor
@@ -108,6 +121,24 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
         viewModel.setAllEnabled(false)
         XCTAssertTrue(viewModel.enabledUniqueIDs.isEmpty)
+    }
+
+    @MainActor
+    func testHealthSensorListShowsReportedStates() async throws {
+        let viewModel = HealthSensorListViewModel()
+        let sensor = WebhookSensor(
+            name: "Health Steps",
+            uniqueID: HealthKitMetric.steps.uniqueID,
+            state: 1234,
+            unit: "steps"
+        )
+
+        viewModel.sensorContainer(Current.sensors, didUpdate: .init(sensors: .value([sensor])))
+
+        for _ in 0 ..< 100 where viewModel.stateDescriptions.isEmpty {
+            try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
+        }
+        XCTAssertEqual(viewModel.stateDescription(for: .steps), "1234 steps")
     }
 
     @MainActor
