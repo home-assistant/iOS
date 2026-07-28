@@ -4,54 +4,42 @@ import PromiseKit
 import XCTest
 
 class SensorListViewModelHealthKitTests: XCTestCase {
+    private static let prefsKeys = ["disabledSensors", "healthSensorsSeeded", "healthSensorsReported"]
+
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
-    private var previousDisabledSensors: Any?
+    private var previousPrefs: [String: Any?]!
 
     override func setUp() {
         super.setUp()
 
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
-        previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
+        previousPrefs = Self.prefsKeys.reduce(into: [String: Any?]()) { result, key in
+            result[key] = Current.settingsStore.prefs.object(forKey: key)
+        }
 
         Current.sensors = SensorContainer()
-        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
+        for key in Self.prefsKeys {
+            Current.settingsStore.prefs.removeObject(forKey: key)
+        }
         Current.healthKitService.isAvailable = { true }
     }
 
     override func tearDown() {
-        restore(previousDisabledSensors, forKey: "disabledSensors")
+        for (key, value) in previousPrefs {
+            if let value {
+                Current.settingsStore.prefs.set(value, forKey: key)
+            } else {
+                Current.settingsStore.prefs.removeObject(forKey: key)
+            }
+        }
         Current.healthKitService = originalHealthKitService
         Current.sensors = originalSensors
         originalHealthKitService = nil
         originalSensors = nil
+        previousPrefs = nil
         super.tearDown()
-    }
-
-    private func restore(_ value: Any?, forKey key: String) {
-        if let value {
-            Current.settingsStore.prefs.set(value, forKey: key)
-        } else {
-            Current.settingsStore.prefs.removeObject(forKey: key)
-        }
-    }
-
-    @MainActor
-    func testRequestHealthAuthorizationRefreshesHealthKitAvailability() async throws {
-        var requested = false
-        var isAvailable = false
-        Current.healthKitService.isAvailable = { isAvailable }
-        Current.healthKitService.requestReadAuthorization = {
-            requested = true
-            isAvailable = true
-        }
-        let viewModel = SensorListViewModel()
-
-        try await viewModel.requestHealthAuthorization()
-
-        XCTAssertTrue(requested)
-        XCTAssertTrue(viewModel.isHealthKitAvailable)
     }
 
     func testUpdatePermissionsUsesHealthKitAvailability() {
@@ -63,16 +51,105 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         XCTAssertFalse(viewModel.isHealthKitAvailable)
     }
 
+    func testEnabledHealthSensorCountReflectsTheSeededDefaults() {
+        let viewModel = SensorListViewModel()
+
+        viewModel.updatePermissions()
+
+        XCTAssertEqual(viewModel.enabledHealthSensorCount, 2)
+    }
+
     func testUpdateAllSensorsIncludesHealthSensors() {
-        Current.sensors.setEnabled(false, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
+        Current.sensors.setEnabled(false, forUniqueID: HealthKitMetric.steps.uniqueID)
         let viewModel = SensorListViewModelWithoutRefresh()
         viewModel.sensors = [
-            WebhookSensor(name: "Health Steps", uniqueID: HealthKitSensor.Metric.steps.uniqueID),
+            WebhookSensor(name: "Health Steps", uniqueID: HealthKitMetric.steps.uniqueID),
         ]
 
         viewModel.updateAllSensors(isEnabled: true)
 
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: HealthKitSensor.Metric.steps.uniqueID))
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: HealthKitMetric.steps.uniqueID))
+    }
+
+    @MainActor
+    func testHealthSensorListSeedsNewMetricsAsDisabled() {
+        let viewModel = HealthSensorListViewModel()
+
+        XCTAssertEqual(viewModel.enabledUniqueIDs, [
+            HealthKitMetric.steps.uniqueID,
+            HealthKitMetric.restingHeartRate.uniqueID,
+        ])
+        XCTAssertFalse(viewModel.areAllEnabled)
+    }
+
+    @MainActor
+    func testHealthSensorListTogglesIndividualMetrics() throws {
+        let viewModel = HealthSensorListViewModel()
+        let metric = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_heart_rate"))
+
+        viewModel.setEnabled(true, for: metric)
+
+        XCTAssertTrue(viewModel.isEnabled(metric))
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: metric.uniqueID))
+
+        viewModel.setEnabled(false, for: metric)
+
+        XCTAssertFalse(viewModel.isEnabled(metric))
+        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: metric.uniqueID))
+    }
+
+    @MainActor
+    func testHealthSensorListEnablesAndDisablesEverything() {
+        let viewModel = HealthSensorListViewModel()
+
+        viewModel.setAllEnabled(true)
+        XCTAssertTrue(viewModel.areAllEnabled)
+        XCTAssertEqual(viewModel.enabledUniqueIDs.count, HealthKitMetric.all.count)
+
+        viewModel.setAllEnabled(false)
+        XCTAssertTrue(viewModel.enabledUniqueIDs.isEmpty)
+    }
+
+    @MainActor
+    func testHealthSensorListSearchFiltersByName() {
+        let viewModel = HealthSensorListViewModel()
+
+        viewModel.searchTerm = "caffeine"
+
+        XCTAssertEqual(viewModel.visibleCategories, [.nutrition])
+        XCTAssertEqual(viewModel.metrics(in: .nutrition).map(\.uniqueID), ["health_dietary_caffeine"])
+    }
+
+    @MainActor
+    func testRequestingAccessWithNothingEnabledSurfacesAnError() async {
+        Current.sensors.setEnabled(false, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
+        Current.healthKitService.requestReadAuthorization = {
+            throw HealthKitService.HealthKitServiceError.noEnabledSensors
+        }
+        let viewModel = HealthSensorListViewModel()
+
+        await viewModel.requestAuthorization()
+
+        XCTAssertTrue(viewModel.showAlert)
+        XCTAssertEqual(viewModel.alertMessage, L10n.SettingsSensors.Health.Error.noEnabledSensors)
+    }
+
+    @MainActor
+    func testRequestingAccessRefreshesAvailability() async {
+        var requested = false
+        var isAvailable = false
+        Current.healthKitService.isAvailable = { isAvailable }
+        Current.healthKitService.requestReadAuthorization = {
+            requested = true
+            isAvailable = true
+        }
+        let viewModel = HealthSensorListViewModel()
+
+        await viewModel.requestAuthorization()
+
+        XCTAssertTrue(requested)
+        XCTAssertTrue(viewModel.isHealthKitAvailable)
+        XCTAssertFalse(viewModel.showAlert)
     }
 
     private final class SensorListViewModelWithoutRefresh: SensorListViewModel {

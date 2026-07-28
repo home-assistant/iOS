@@ -104,20 +104,14 @@ struct SensorListView: View {
 
     private var healthKitSection: some View {
         Section {
-            Button(action: {
-                Task { @MainActor [viewModel] in
-                    do {
-                        try await viewModel.requestHealthAuthorization()
-                        viewModel.refresh()
-                    } catch {
-                        viewModel.alertMessage = error.localizedDescription
-                        viewModel.showAlert = true
-                    }
+            NavigationLink(destination: HealthSensorListView()) {
+                HStack {
+                    Text(L10n.SettingsSensors.Health.Sensors.title)
+                    Spacer()
+                    Text("\(viewModel.enabledHealthSensorCount)")
+                        .foregroundColor(.secondary)
                 }
-            }) {
-                Text(L10n.SettingsSensors.Health.requestAccess)
             }
-            .disabled(!viewModel.isHealthKitAvailable)
 
             HStack {
                 Text(L10n.SettingsSensors.Health.status)
@@ -233,6 +227,8 @@ extension SensorListView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsSensors.FocusPermission.title),
             SettingsSearchEntry(L10n.SettingsSensors.Sensors.header),
             SettingsSearchEntry(L10n.SettingsSensors.Sensors.enableAll),
+            SettingsSearchEntry(L10n.SettingsSensors.Health.header),
+            SettingsSearchEntry(L10n.SettingsSensors.Health.Sensors.title),
         ]
     }
 }

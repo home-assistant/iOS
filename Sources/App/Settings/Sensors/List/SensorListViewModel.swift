@@ -30,6 +30,7 @@ class SensorListViewModel: ObservableObject {
 
     func updatePermissions() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
+        HealthKitSensor.seedInitialEnabledState()
         isHealthKitAvailable = Current.healthKitService.isAvailable()
         #endif
 
@@ -65,11 +66,13 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
-    @MainActor
-    func requestHealthAuthorization() async throws {
+    /// How many of the Apple Health metrics are currently switched on, shown next to the link into the
+    /// dedicated Apple Health sensor list.
+    var enabledHealthSensorCount: Int {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        try await Current.healthKitService.requestReadAuthorization()
-        isHealthKitAvailable = Current.healthKitService.isAvailable()
+        return HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }.count
+        #else
+        return 0
         #endif
     }
 
@@ -110,9 +113,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updateAllSensors(isEnabled: Bool) {
-        for sensor in sensors {
-            Current.sensors.setEnabled(isEnabled, for: sensor)
-        }
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: sensors.compactMap(\.UniqueID))
     }
 }
 

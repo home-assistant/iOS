@@ -101,10 +101,18 @@ public class SensorContainer {
     }
 
     public func setEnabled(_ value: Bool, forUniqueID id: String) {
+        setEnabled(value, forUniqueIDs: [id])
+    }
+
+    /// Bulk variant of `setEnabled(_:forUniqueID:)`, so changing many sensors at once writes the
+    /// preference — and signals observers — a single time.
+    public func setEnabled(_ value: Bool, forUniqueIDs ids: [String]) {
+        guard !ids.isEmpty else { return }
+
         if value {
-            disabledSensorIDs.remove(id)
+            disabledSensorIDs.subtract(ids)
         } else {
-            disabledSensorIDs.insert(id)
+            disabledSensorIDs.formUnion(ids)
         }
     }
 
