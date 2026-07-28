@@ -22,22 +22,103 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStep == .disclaimer)
     }
 
-    @Test("Initialization with remote connection setup")
+    @Test("Initialization with remote connection setup skips local network configuration")
     func initializationWithRemoteConnectionSetup() async throws {
+        ServerFixture.reset()
+        // Fixture has an HTTPS external URL and an HTTP internal URL, so the local
+        // network configuration steps are not needed
         let server = ServerFixture.withRemoteConnection
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
-        #expect(viewModel.steps == OnboardingPermissionsNavigationViewModel.StepID.remoteConnectionCompatible)
+        #expect(viewModel.steps == [.location, .completion])
         #expect(viewModel.currentStep == .location)
     }
 
-    @Test("Initialization with HTTPS-only URLs skips local access step")
-    func initializationWithHTTPSOnlyURLsSkipsLocalAccessStep() async throws {
+    @Test("Initialization with HTTPS-only URLs skips local access and home network steps")
+    func initializationWithHTTPSOnlyURLsSkipsLocalAccessAndHomeNetworkSteps() async throws {
+        let server = Self.makeServer(
+            identifier: "https-only",
+            externalURL: URL(string: "https://external.example.com")!,
+            internalURL: URL(string: "https://internal.example.com")!
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.location, .completion])
+        #expect(viewModel.steps.contains(.localAccess) == false)
+        #expect(viewModel.steps.contains(.homeNetwork) == false)
+        #expect(viewModel.currentStep == .location)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .mostSecure)
+    }
+
+    @Test("Initialization with HTTPS-only internal URL and no remote connection skips local network configuration")
+    func initializationWithHTTPSOnlyInternalURLSkipsLocalNetworkConfiguration() async throws {
+        let server = Self.makeServer(
+            identifier: "https-only-internal",
+            externalURL: nil,
+            internalURL: URL(string: "https://internal.example.com")!
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.disclaimer, .location, .completion])
+        #expect(viewModel.steps.contains(.localAccess) == false)
+        #expect(viewModel.steps.contains(.homeNetwork) == false)
+    }
+
+    @Test("Initialization with HTTP-only URLs keeps local network configuration steps")
+    func initializationWithHTTPOnlyURLsKeepsLocalNetworkConfigurationSteps() async throws {
+        let server = Self.makeServer(
+            identifier: "http-only",
+            externalURL: nil,
+            internalURL: URL(string: "http://internal.example.com")!
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == OnboardingPermissionsNavigationViewModel.StepID.default)
+    }
+
+    @Test("Initialization clears internal URL override when local network configuration is skipped")
+    func initializationClearsInternalURLOverrideWhenLocalNetworkConfigurationIsSkipped() async throws {
+        // Discovery pins the internal URL when internal+external URLs exist but the SSID
+        // is unknown; skipping the home network step means internalSSIDs will never be set
+        // to clear that override, so the view model has to clear it
+        let server = Self.makeServer(
+            identifier: "override-cleared",
+            externalURL: URL(string: "https://external.example.com")!,
+            internalURL: URL(string: "http://internal.example.com")!
+        )
+        server.update { info in
+            info.connection.overrideActiveURLType = .internal
+        }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps.contains(.homeNetwork) == false)
+        #expect(server.info.connection.overrideActiveURLType == nil)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .mostSecure)
+    }
+
+    @Test("Initialization keeps a previously selected security level when local network configuration is skipped")
+    func initializationKeepsPreviouslySelectedSecurityLevelWhenLocalNetworkConfigurationIsSkipped() async throws {
+        let server = Self.makeServer(
+            identifier: "level-already-decided",
+            externalURL: URL(string: "https://external.example.com")!,
+            internalURL: URL(string: "http://internal.example.com")!
+        )
+        server.update { info in
+            info.connection.connectionAccessSecurityLevel = .lessSecure
+        }
+
+        _ = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+    }
+
+    private static func makeServer(identifier: String, externalURL: URL?, internalURL: URL?) -> Server {
         var info = ServerInfo(
             name: "HTTPS Only Server",
             connection: .init(
-                externalURL: URL(string: "https://external.example.com")!,
-                internalURL: URL(string: "https://internal.example.com")!,
+                externalURL: externalURL,
+                internalURL: internalURL,
                 cloudhookURL: nil,
                 remoteUIURL: nil,
                 webhookID: "webhook-id",
@@ -55,17 +136,12 @@ struct OnboardingPermissionsNavigationViewModelTests {
             ),
             version: "2026.1.0"
         )
-        let server = Server(identifier: "https-only", getter: {
+        return Server(identifier: .init(rawValue: identifier), getter: {
             info
         }, setter: { newInfo in
             info = newInfo
             return true
         })
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
-
-        #expect(viewModel.steps == [.location, .homeNetwork, .completion])
-        #expect(viewModel.steps.contains(.localAccess) == false)
-        #expect(viewModel.currentStep == .location)
     }
 
     @Test("Initialization with custom steps")
