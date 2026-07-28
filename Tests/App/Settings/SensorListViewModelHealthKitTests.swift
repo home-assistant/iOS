@@ -38,29 +38,43 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     }
 
     @MainActor
-    func testRequestHealthAuthorizationRefreshesHealthKitAvailability() async throws {
-        var requested = false
-        var isAvailable = false
-        Current.healthKitService.isAvailable = { isAvailable }
-        Current.healthKitService.requestReadAuthorization = {
-            requested = true
-            isAvailable = true
-        }
-        let viewModel = SensorListViewModel()
+    func testHealthPermissionIsNotDeterminedUntilItWasRequested() {
+        Current.healthKitService.hasRequestedReadAuthorization = { false }
+        let viewModel = SensorPermissionsViewModel()
 
-        try await viewModel.requestHealthAuthorization()
+        XCTAssertTrue(viewModel.availablePermissions.contains(.health))
+        XCTAssertEqual(viewModel.status(for: .health), .notDetermined)
 
-        XCTAssertTrue(requested)
-        XCTAssertTrue(viewModel.isHealthKitAvailable)
+        Current.healthKitService.hasRequestedReadAuthorization = { true }
+        viewModel.update()
+
+        XCTAssertEqual(viewModel.status(for: .health), .requested)
     }
 
-    func testUpdatePermissionsUsesHealthKitAvailability() {
+    @MainActor
+    func testHealthPermissionIsNotListedWhenHealthKitIsUnavailable() {
         Current.healthKitService.isAvailable = { false }
-        let viewModel = SensorListViewModel()
+        let viewModel = SensorPermissionsViewModel()
 
-        viewModel.updatePermissions()
+        viewModel.update()
 
-        XCTAssertFalse(viewModel.isHealthKitAvailable)
+        XCTAssertFalse(viewModel.availablePermissions.contains(.health))
+        XCTAssertFalse(viewModel.statuses.keys.contains(.health))
+    }
+
+    @MainActor
+    func testNotDeterminedCountOnlyCountsNeverRequestedPermissions() {
+        Current.healthKitService.hasRequestedReadAuthorization = { true }
+        let viewModel = SensorPermissionsViewModel()
+
+        viewModel.update()
+
+        let expected = viewModel.availablePermissions
+            .filter { viewModel.status(for: $0) == .notDetermined }
+            .count
+        XCTAssertEqual(viewModel.notDeterminedCount, expected)
+        XCTAssertFalse(viewModel.availablePermissions.filter { viewModel.status(for: $0) == .notDetermined }
+            .contains(.health))
     }
 
     func testUpdateAllSensorsIncludesHealthSensors() {

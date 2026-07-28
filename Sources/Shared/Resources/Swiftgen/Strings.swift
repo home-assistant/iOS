@@ -5719,6 +5719,8 @@ public enum L10n {
     public enum PeriodicUpdate {
       /// When enabled, these sensors will update with this frequency while the app is open in the foreground.
       public static var description: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description") }
+      /// This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.
+      public static var descriptionForeground: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description_foreground") }
       /// When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.
       public static var descriptionMac: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description_mac") }
       /// Off
@@ -5727,14 +5729,36 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.title") }
     }
     public enum Permissions {
+      /// Some sensors only report data after you grant the permission they depend on.
+      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.footer") }
       /// Permissions
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.permissions.header") }
+      public enum Health {
+        /// Apple Health never tells apps whether reading health data was allowed, so this only shows whether access was already requested.
+        public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.health.footer") }
+      }
+      public enum Status {
+        /// Denied
+        public static var denied: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.denied") }
+        /// Granted
+        public static var granted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.granted") }
+        /// Not requested
+        public static var notRequested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.not_requested") }
+        /// Requested
+        public static var requested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.requested") }
+        /// Restricted
+        public static var restricted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.restricted") }
+      }
     }
     public enum Sensors {
       /// Enable all sensors
       public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.sensors.enable_all") }
       /// Sensors
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.header") }
+      /// No sensors match your search
+      public static var noResults: String { return L10n.tr("Localizable", "settings_sensors.sensors.no_results") }
+      /// Search sensors
+      public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.sensors.search_prompt") }
     }
     public enum Settings {
       /// Changes will be applied on the next update.
