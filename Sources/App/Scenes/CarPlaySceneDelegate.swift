@@ -53,7 +53,8 @@ class CarPlaySceneDelegate: UIResponder {
     private func setTemplates(config: CarPlayConfig?) {
         var visibleTemplates: [any CarPlayTemplateProvider] = []
         if let config {
-            subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems + (config.tabFolders ?? []))
+            let tabFolders: [MagicItem] = config.tabFolders ?? []
+            subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems + tabFolders)
             guard hasConfigChanged(config, comparedTo: cachedConfig) else { return }
             let previousTabs = cachedConfig?.tabs
             let previousFolderTabSignature = folderTabSignature(config: cachedConfig)
@@ -230,9 +231,15 @@ class CarPlaySceneDelegate: UIResponder {
     private func subscribeToQuickAccessEntitiesChanges(configEntities: [MagicItem]) {
         // Folder items live one level deep; include their children so entities inside folders
         // (rendered in folder tabs and pushed folder lists) receive state updates too.
-        let entityItems = configEntities
-            .flatMap { [$0] + ($0.items ?? []) }
-            .filter({ $0.type == .entity })
+        var entityItems: [MagicItem] = []
+        for item in configEntities {
+            if item.type == .entity {
+                entityItems.append(item)
+            }
+            for child in item.items ?? [] where child.type == .entity {
+                entityItems.append(child)
+            }
+        }
         let entityItemsByServer = Dictionary(grouping: entityItems, by: \.serverId)
         let subscriptionKey = entityItemsByServer.mapValues { items in
             Array(Set(items.map(\.id))).sorted()

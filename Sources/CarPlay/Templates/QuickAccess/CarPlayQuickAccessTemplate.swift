@@ -204,9 +204,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     ) -> Bool {
         guard let previous else { return true }
         // Folder children live one level deep and render in pushed folder lists.
-        let entityItems = currentItems
-            .flatMap { [$0] + ($0.items ?? []) }
-            .filter { $0.type == .entity && $0.serverId == serverId }
+        var entityItems: [MagicItem] = []
+        for item in currentItems {
+            if item.type == .entity, item.serverId == serverId {
+                entityItems.append(item)
+            }
+            for child in item.items ?? [] where child.type == .entity && child.serverId == serverId {
+                entityItems.append(child)
+            }
+        }
         guard !entityItems.isEmpty else { return false }
         return entityItems.contains { magicItem in
             let old = previous[magicItem.id]
