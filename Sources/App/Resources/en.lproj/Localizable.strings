@@ -73,6 +73,13 @@
 "app_intents.fan.off_state_icon.title" = "Icon for off state";
 "app_intents.fan.on_state_icon.title" = "Icon for on state";
 "app_intents.fan.title" = "Fan";
+"app_intents.fire_event.description" = "Fire an event on a Home Assistant server";
+"app_intents.fire_event.error.invalid_payload" = "Unable to parse event data";
+"app_intents.fire_event.event_data.description" = "JSON data to send with the event";
+"app_intents.fire_event.event_data.title" = "Event data";
+"app_intents.fire_event.event_name.title" = "Event name";
+"app_intents.fire_event.response_success" = "Fired event %@";
+"app_intents.fire_event.title" = "Fire event";
 "app_intents.get_camera_snapshot.camera.title" = "Camera";
 "app_intents.get_camera_snapshot.description" = "Get a single still frame from a camera";
 "app_intents.get_camera_snapshot.error.png_conversion" = "Image could not be converted to PNG";
