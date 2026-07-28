@@ -6,10 +6,15 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
     private enum Constants {
         static let hapticStepCount = 8
         static let minimumHapticIntensity: CGFloat = 0.35
+        /// UIScrollView's rubber-banding resists proportionally to the scroll view's height, so a fixed
+        /// threshold tuned for portrait needs an impossible single swipe on a short landscape viewport.
+        /// Scaling with the height keeps the required finger travel at a constant fraction of the screen.
+        static let thresholdHeightFraction: CGFloat = 0.2
+        static let minimumThreshold: CGFloat = 64
     }
 
     private weak var scrollView: UIScrollView?
-    private let threshold: CGFloat
+    private let maximumThreshold: CGFloat
     private let onStateChange: (CGFloat, Bool) -> Void
     private let onRefresh: () -> Void
 
@@ -23,12 +28,12 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
 
     init(
         webView: WKWebView,
-        threshold: CGFloat,
+        maximumThreshold: CGFloat,
         onStateChange: @escaping (CGFloat, Bool) -> Void,
         onRefresh: @escaping () -> Void
     ) {
         self.scrollView = webView.scrollView
-        self.threshold = threshold
+        self.maximumThreshold = maximumThreshold
         self.onStateChange = onStateChange
         self.onRefresh = onRefresh
 
@@ -74,12 +79,19 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
         onStateChange(0, false)
     }
 
+    /// Recomputed on every read so rotating the device immediately adopts the new viewport's threshold.
+    private var currentThreshold: CGFloat {
+        guard let scrollView, scrollView.bounds.height > 0 else { return maximumThreshold }
+        let heightBased = scrollView.bounds.height * Constants.thresholdHeightFraction
+        return min(maximumThreshold, max(Constants.minimumThreshold, heightBased))
+    }
+
     private func handleContentOffset(_ contentOffset: CGPoint) {
         guard let scrollView else { return }
 
         let topInset = scrollView.adjustedContentInset.top
         let pullDistance = max(0, -(contentOffset.y + topInset))
-        let progress = min(1, pullDistance / threshold)
+        let progress = min(1, pullDistance / currentThreshold)
 
         if !isRefreshing {
             emitPullProgressHapticIfNeeded(progress: progress, pullDistance: pullDistance)
@@ -124,7 +136,7 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
     @objc private func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .ended:
-            guard didCrossThreshold, currentPullDistance() >= threshold, !isRefreshing else {
+            guard didCrossThreshold, currentPullDistance() >= currentThreshold, !isRefreshing else {
                 didCrossThreshold = false
                 return
             }
