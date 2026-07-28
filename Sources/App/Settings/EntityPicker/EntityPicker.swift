@@ -191,6 +191,8 @@ struct EntityPicker: View {
         } else {
             onMultipleSelectionConfirmed?(selectedEntities)
         }
+        // Close the sheet when the picker presents its own (`.button` mode).
+        viewModel.showList = false
     }
 
     @ViewBuilder
