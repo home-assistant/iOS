@@ -114,24 +114,12 @@ final class CarPlayPaginatedListTemplate {
         if shouldUseInlinePagination {
             var pageItems: [any CPListTemplateItem] = Array(listItems[startIndex ..< endIndex])
             if currentPage > 0 {
-                let previousItem = CPListItem(text: nil, detailText: nil)
-                previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
-                previousItem.handler = { [weak self] _, completion in
-                    self?.changePage(to: .previous)
-                    completion()
-                }
-                pageItems.insert(previousItem, at: 0)
+                pageItems.insert(inlinePreviousItem, at: 0)
             }
             if endIndex < totalItems {
-                let nextItem = CPListItem(text: nil, detailText: nil)
-                nextItem.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
-                nextItem.handler = { [weak self] _, completion in
-                    self?.changePage(to: .next)
-                    completion()
-                }
-                pageItems.insert(nextItem, at: pageItems.endIndex)
+                pageItems.insert(inlineNextItem, at: pageItems.endIndex)
             }
-            listTemplate?.updateSections(sectionsAppendingFooter([CPListSection(items: pageItems)]))
+            applyListSections(sectionsAppendingFooter([CPListSection(items: pageItems)]))
             updateTrailingNavigationButtons([])
             return
         }
@@ -145,7 +133,7 @@ final class CarPlayPaginatedListTemplate {
         switch content {
         case .list:
             let section = CPListSection(items: Array(listItems[startIndex ..< endIndex]))
-            listTemplate?.updateSections(sectionsAppendingFooter([section]))
+            applyListSections(sectionsAppendingFooter([section]))
         case .grid:
             if #available(iOS 26.0, *), let listTemplate {
                 listTemplate.updateSections(sectionsAppendingFooter([]))
@@ -154,6 +142,41 @@ final class CarPlayPaginatedListTemplate {
                 gridTemplate?.updateGridButtons(Array(gridButtons[startIndex ..< endIndex]))
             }
         }
+    }
+
+    private lazy var inlinePreviousItem: CPListItem = {
+        let item = CPListItem(text: nil, detailText: nil)
+        item.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
+        item.handler = { [weak self] _, completion in
+            self?.changePage(to: .previous)
+            completion()
+        }
+        return item
+    }()
+
+    private lazy var inlineNextItem: CPListItem = {
+        let item = CPListItem(text: nil, detailText: nil)
+        item.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
+        item.handler = { [weak self] _, completion in
+            self?.changePage(to: .next)
+            completion()
+        }
+        return item
+    }()
+
+    private func applyListSections(_ sections: [CPListSection]) {
+        guard let listTemplate else { return }
+        if sectionsHaveIdenticalItems(listTemplate.sections, sections) {
+            return
+        }
+        listTemplate.updateSections(sections)
+    }
+
+    private func sectionsHaveIdenticalItems(_ lhs: [CPListSection], _ rhs: [CPListSection]) -> Bool {
+        let lhsItems = lhs.flatMap(\.items)
+        let rhsItems = rhs.flatMap(\.items)
+        guard lhsItems.count == rhsItems.count else { return false }
+        return zip(lhsItems, rhsItems).allSatisfy { ($0.0 as AnyObject) === ($0.1 as AnyObject) }
     }
 
     private var footerSection: CPListSection? {

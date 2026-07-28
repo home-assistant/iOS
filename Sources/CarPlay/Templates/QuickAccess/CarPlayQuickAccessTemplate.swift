@@ -32,9 +32,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
-    private var entityProviders: [CarPlayEntityListItem] = []
-    /// Entity providers for folder content lists pushed from the Quick Access list, keyed by folder id.
-    private var folderEntityProviders: [String: [CarPlayEntityListItem]] = [:]
+    private var listItemsByKey: [String: CPListItem] = [:]
+    /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
+    /// Rows are reused in place — same reasoning as `listItemsByKey`.
+    private var folderListItemsByKey: [String: [String: CPListItem]] = [:]
     /// Folder content lists currently pushed from the Quick Access list, refreshed on state changes.
     private var openFolderTemplates: [(folderId: String, template: CPListTemplate)] = []
     private var currentItems: [MagicItem] = []
@@ -91,6 +92,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
         return false
     }
+
+    private lazy var addItemFooterRow: CPListItem = makeAddItemRow()
+    private lazy var editItemFooterRow: CPListItem = makeEditItemRow()
 
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
     // is a list row appended to the end of the Quick Access list instead.
@@ -178,19 +182,45 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         if template == self.template {
             // Returning to this template means any folder list pushed from it has been popped.
             openFolderTemplates.removeAll()
-            folderEntityProviders.removeAll()
+            folderListItemsByKey.removeAll()
             update()
         }
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
+        let previousEntities = entitiesPerServer[serverId]
         entitiesPerServer[serverId] = entities
         guard !currentItems.isEmpty else { return }
+        guard hasRelevantEntityChange(serverId: serverId, previous: previousEntities, current: entities) else {
+            return
+        }
         refreshCurrentPresentation()
+    }
+
+    private func hasRelevantEntityChange(
+        serverId: String,
+        previous: HACachedStates?,
+        current: HACachedStates
+    ) -> Bool {
+        guard let previous else { return true }
+        // Folder children live one level deep and render in pushed folder lists.
+        let entityItems = currentItems
+            .flatMap { [$0] + ($0.items ?? []) }
+            .filter { $0.type == .entity && $0.serverId == serverId }
+        guard !entityItems.isEmpty else { return false }
+        return entityItems.contains { magicItem in
+            let old = previous[magicItem.id]
+            let new = current[magicItem.id]
+            return old?.state != new?.state || old?.lastUpdated != new?.lastUpdated
+        }
     }
 
     private func executionKey(for magicItem: MagicItem) -> String {
         magicItem.serverUniqueId
+    }
+
+    private func rowCacheKey(for magicItem: MagicItem) -> String {
+        "\(magicItem.serverUniqueId)-\(magicItem.type.rawValue)"
     }
 
     private func isExecuting(_ magicItem: MagicItem) -> Bool {
@@ -300,11 +330,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 footerItems: gridActionFooterItems()
             )
         } else {
-            let built = buildListItems(items: currentItems)
-            entityProviders = built.providers
             paginatedList.updateItems(
-                items: built.rows,
-                footerItems: currentShowAddEditButtons ? [makeAddItemRow(), makeEditItemRow()] : []
+                items: listItems(items: currentItems),
+                footerItems: currentShowAddEditButtons ? [addItemFooterRow, editItemFooterRow] : []
             )
         }
     }
@@ -315,85 +343,92 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return rowItems(displayItems: actionDisplayItems(includeEdit: true))
     }
 
-    private func buildListItems(items: [MagicItem]) -> (rows: [CPListItem], providers: [CarPlayEntityListItem]) {
-        var providers: [CarPlayEntityListItem] = []
-        let entityToAreaMap = entityToAreaMap()
+    private func listItems(items: [MagicItem]) -> [CPListItem] {
+        var cache = listItemsByKey
+        let rows = buildRows(items: items, cache: &cache)
+        listItemsByKey = cache
+        return rows
+    }
 
-        let items: [CPListItem?] = items.compactMap { magicItem in
+    /// Builds list rows for the given items, reusing rows from `cache` and updating them in place —
+    /// recreating rows resets the focused row on rotary-controlled (non-touch) displays. The cache
+    /// is replaced with the rows that are still in use.
+    private func buildRows(items: [MagicItem], cache: inout [String: CPListItem]) -> [CPListItem] {
+        let entityToAreaMap = entityToAreaMap()
+        var updatedItemsByKey: [String: CPListItem] = [:]
+
+        let rows: [CPListItem] = items.map { magicItem in
+            let key = rowCacheKey(for: magicItem)
             let info = info(for: magicItem)
+            let item = cache[key] ?? CPListItem(text: nil, detailText: nil)
+
             switch magicItem.type {
             case .entity:
-                guard let entity = resolvedEntity(for: magicItem),
-                      let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
-                    return .init(text: "", detailText: "")
-                }
-                let entityProvider = CarPlayEntityListItem(
-                    serverId: magicItem.serverId,
-                    entity: entity,
-                    magicItem: magicItem,
-                    magicItemInfo: info,
-                    area: area(for: magicItem, entityToAreaMap: entityToAreaMap)
-                )
-                let listItem = entityProvider.template
-                if isExecuting(magicItem) {
-                    listItem.setDetailText(CarPlayEntityListItem.executingSubtitle)
+                if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
+                    item.setText(rowDisplayItem.title)
+                    item.setImage(rowDisplayItem.image)
+                    if isExecuting(magicItem) {
+                        item.setDetailText(CarPlayEntityListItem.executingSubtitle)
+                    } else {
+                        item.setDetailText(rowDisplayItem.subtitle)
+                    }
                 } else {
-                    listItem.setDetailText(rowDisplayItem.subtitle)
+                    item.setText("")
+                    item.setDetailText("")
+                    item.setImage(nil)
                 }
-                listItem.handler = { [weak self] _, _ in
-                    self?.itemTap(
+                item.handler = { [weak self] _, _ in
+                    guard let self else { return }
+                    itemTap(
                         magicItem: magicItem,
                         info: info,
-                        currentItemState: rowDisplayItem.currentState,
+                        currentItemState: resolvedEntity(for: magicItem)?.state ?? "",
                         executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                         executionFinished: { [weak self] in self?.endExecuting(magicItem) }
                     )
                 }
-                providers.append(entityProvider)
-                return listItem
             case .folder:
-                let item = CPListItem(
-                    text: magicItem.name(info: info),
-                    detailText: nil,
-                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-                )
+                item.setText(magicItem.name(info: info))
+                item.setDetailText(nil)
+                item.setImage(magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)))
                 item.accessoryType = .disclosureIndicator
                 item.handler = { [weak self] _, completion in
                     self?.presentFolderContents(folder: magicItem)
                     completion()
                 }
-                return item
             case .assistPipeline, .assistPrompt:
-                let item = CPListItem(
-                    text: assistTitle(for: magicItem, info: info),
-                    detailText: assistSubtitle(for: magicItem, info: info),
-                    image: magicItem.icon(info: info)
-                        .carPlayIcon(color: iconColor(for: info))
-                )
+                item.setText(assistTitle(for: magicItem, info: info))
+                item.setDetailText(assistSubtitle(for: magicItem, info: info))
+                item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
                 item.handler = { [weak self] _, completion in
-                    self?.presentAssistSession(magicItem: magicItem, info: info)
+                    guard let self else {
+                        completion()
+                        return
+                    }
+                    presentAssistSession(magicItem: magicItem, info: info)
                     completion()
                 }
-                return item
             default:
-                let item = CPListItem(
-                    text: magicItem.name(info: info),
-                    detailText: renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)),
-                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-                )
+                item.setText(magicItem.name(info: info))
+                item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
+                item.setImage(magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)))
                 item.handler = { [weak self] _, _ in
-                    self?.itemTap(
+                    guard let self else { return }
+                    itemTap(
                         magicItem: magicItem,
                         info: info,
                         executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                         executionFinished: { [weak self] in self?.endExecuting(magicItem) }
                     )
                 }
-                return item
             }
+
+            updatedItemsByKey[key] = item
+            return item
         }
 
-        return (items.compactMap({ $0 }), providers)
+        cache = updatedItemsByKey
+        return rows
     }
 
     private func presentFolderContents(folder: MagicItem) {
@@ -408,7 +443,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         // Folders can't nest in CarPlay; drop any stray nested folders defensively.
         let items = (folder.items ?? []).filter { $0.type != .folder }
         guard !items.isEmpty else {
-            folderEntityProviders[folder.id] = nil
+            folderListItemsByKey[folder.id] = nil
             template.updateSections([.init(items: [CPListItem(
                 text: L10n.CarPlay.Folder.Empty.title,
                 detailText: L10n.CarPlay.QuickAccess.Empty.body
@@ -416,13 +451,27 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
 
-        let built = buildListItems(items: items)
-        folderEntityProviders[folder.id] = built.providers
+        var cache = folderListItemsByKey[folder.id] ?? [:]
+        let rows = buildRows(items: items, cache: &cache)
+        folderListItemsByKey[folder.id] = cache
+
         let maxItems = Int(CPListTemplate.maximumItemCount)
-        if built.rows.count > maxItems {
-            Current.Log.error("CarPlay folder list of \(built.rows.count) exceeds \(maxItems); truncating")
+        if rows.count > maxItems {
+            Current.Log.error("CarPlay folder list of \(rows.count) exceeds \(maxItems); truncating")
         }
-        template.updateSections([.init(items: Array(built.rows.prefix(maxItems)))])
+        applyFolderSections(rows: Array(rows.prefix(maxItems)), to: template)
+    }
+
+    /// Skips `updateSections` when the rows are the same instances — reloading resets the focused
+    /// row on rotary-controlled (non-touch) displays.
+    private func applyFolderSections(rows: [CPListItem], to template: CPListTemplate) {
+        let existingItems = template.sections.flatMap(\.items)
+        let isIdentical = existingItems.count == rows.count && zip(existingItems, rows)
+            .allSatisfy { ($0.0 as AnyObject) === ($0.1 as AnyObject) }
+        if isIdentical {
+            return
+        }
+        template.updateSections([CPListSection(items: rows)])
     }
 
     private func refreshOpenFolderTemplates() {
