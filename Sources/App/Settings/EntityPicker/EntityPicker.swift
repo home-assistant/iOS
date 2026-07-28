@@ -277,9 +277,11 @@ struct EntityPicker: View {
         }
     }
 
+    // Shown whenever there is more than one domain to choose from, including contexts that preset a
+    // list of allowed domains (e.g. the watch, which supports every actionable domain).
     @ViewBuilder
     private var domainPicker: some View {
-        if viewModel.domainFilter == nil {
+        if viewModel.selectableDomains.count > 1 {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Domain.title,
                 icon: .tag,
@@ -287,7 +289,7 @@ struct EntityPicker: View {
                     id: "",
                     title: L10n.EntityPicker.Filter.Domain.All.title
                 )] +
-                    viewModel.entitiesByDomain.keys.map { key in
+                    viewModel.selectableDomains.map { key in
                         // Prefer the domain's localized name (backed by CoreStrings); fall back to the raw key.
                         EntityFilterPickerView.PickerItem(id: key, title: Domain(rawValue: key)?.name ?? key)
                     }
@@ -321,9 +323,10 @@ struct EntityPicker: View {
         }
     }
 
+    // Grouping by domain only says something when several domains are listed.
     @ViewBuilder
     private var groupByPicker: some View {
-        if viewModel.domainFilter == nil {
+        if viewModel.selectableDomains.count > 1 {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.GroupBy.title,
                 icon: .listBulletRectangle,

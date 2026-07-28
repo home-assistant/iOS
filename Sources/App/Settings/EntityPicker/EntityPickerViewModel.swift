@@ -41,10 +41,18 @@ final class EntityPickerViewModel: ObservableObject {
 
     /// Returns true if any filter (excluding server) has a non-default value
     var hasActiveFilters: Bool {
-        let isDomainFilterActive = domainFilter == nil && selectedDomainFilter != nil
+        let isDomainFilterActive = selectedDomainFilter != nil
         let isAreaFilterActive = selectedAreaFilter != nil
         let isGroupingFilterActive = selectedGrouping != .area
         return isDomainFilterActive || isAreaFilterActive || isGroupingFilterActive
+    }
+
+    /// The domains the user can narrow the list down to: the domains present in the current server's
+    /// entities, already restricted to the caller's preset `domainFilter` when one was given.
+    /// Contexts that allow a single domain (e.g. scripts) have nothing to pick, so the picker hides
+    /// itself when this holds fewer than two domains.
+    var selectableDomains: [String] {
+        Array(entitiesByDomain.keys)
     }
 
     /// Resets all filters (except server) to their default values
@@ -124,6 +132,12 @@ final class EntityPickerViewModel: ObservableObject {
             // Prime server cache for this server
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             rebuildFuzzyIndex(for: serverId)
+            // The available domains belong to the server that is now selected, so a domain the
+            // previous server had but this one doesn't is dropped instead of emptying the list.
+            groupByDomain()
+            if let pickedDomain = selectedDomainFilter, !entitiesByDomain.keys.contains(pickedDomain) {
+                selectedDomainFilter = nil
+            }
             updateFilteredEntities()
         } catch {
             Current.Log.error("Failed to fetch server data for entity picker, error: \(error)")
@@ -138,13 +152,13 @@ final class EntityPickerViewModel: ObservableObject {
     func fetchEntities() {
         do {
             entities = try HAAppEntity.config()
-            groupByDomain()
 
-            // Rebuild caches with current data
+            // Rebuild caches with current data before grouping, which reads the server cache.
             rebuildAreaCaches()
             if let serverId = selectedServerId {
                 cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             }
+            groupByDomain()
 
             // Fetch server-specific data if a server is already selected
             if let serverId = selectedServerId {
@@ -158,7 +172,10 @@ final class EntityPickerViewModel: ObservableObject {
     }
 
     private func groupByDomain() {
-        var groups = Dictionary(grouping: entities) { entity in
+        // Scoped to the selected server so the domain filter never offers a domain that only exists
+        // on another server (which would show an empty list).
+        let scopedEntities = selectedServerId == nil ? entities : entitiesForCurrentServer()
+        var groups = Dictionary(grouping: scopedEntities) { entity in
             entity.domain
         }
 
