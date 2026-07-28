@@ -1208,6 +1208,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings.connection_section.location_send_type.setting.zone_only" = "Zona saja";
 "settings.connection_section.location_send_type.title" = "Lokasi Terkirim";
 "settings.connection_section.logged_in_as" = "Masuk sebagai";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "Tidak ada URL";
 "settings.connection_section.refresh_server" = "Perbarui informasi server";
 "settings.connection_section.remote_ui_url.title" = "URL Antarmuka Jarak Jauh";

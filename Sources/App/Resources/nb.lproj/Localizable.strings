@@ -1209,6 +1209,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.location_send_type.setting.zone_only" = "Kun sonenavn";
 "settings.connection_section.location_send_type.title" = "Plassering sendt";
 "settings.connection_section.logged_in_as" = "Pålogget som";
+"settings.connection_section.make_default" = "Make default";
 "settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.refresh_server" = "Update server information";
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
