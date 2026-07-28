@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import HAKit
 import Shared
 import WatchKit
 
@@ -32,8 +33,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published var showConfirmationDialog = false
     /// Alert shown when the tapped entity's domain has no action the watch can perform.
     @Published var showUnsupportedAlert = false
-    /// Localized state of the entity, shown as the row subtitle while the row is visible.
-    @Published private(set) var stateText: String?
+    /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
+    /// state-aware execution (lock).
+    @Published private(set) var liveEntity: HAEntity?
     /// Set when an execution fails, so the failure isn't silent. Presented full-screen by the row.
     @Published var errorMessage: String?
     /// Live log of the current execution, set only when the developer "Verbose item execution"
@@ -47,8 +49,6 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     private var timeoutWorkItem: DispatchWorkItem?
     private var watchdogWorkItem: DispatchWorkItem?
     private var stateTimer: Timer?
-    /// Raw state from the last fetch, passed to execution for state-aware domains (lock).
-    private var latestState: String?
 
     private static let stateRefreshInterval: TimeInterval = 5
 
@@ -83,6 +83,35 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         return item.id.components(separatedBy: ".").first ?? item.id
     }
 
+    var stateText: String? {
+        guard let liveEntity, let domain = item.domain else { return nil }
+        return domain.contextualStateDescription(for: liveEntity)
+    }
+
+    /// Mirrors CarPlay: dynamic domains render the live state-driven icon and color unless the
+    /// user explicitly picked a custom icon; everything else uses the configured icon and color.
+    var icon: MaterialDesignIcons {
+        if let liveEntity, usesLiveIcon {
+            return liveEntity.getMDI()
+        }
+        return item.icon(info: itemInfo)
+    }
+
+    var iconColor: UIColor {
+        if let liveEntity, usesLiveIcon {
+            return liveEntity.carPlayIconColor() ?? .white
+        }
+        if let hex = itemInfo.customization?.iconColor {
+            return UIColor(hex: hex)
+        }
+        return .white
+    }
+
+    private var usesLiveIcon: Bool {
+        guard item.type == .entity, let domain = item.domain else { return false }
+        return domain.hasStateDependentIcon && itemInfo.customization?.iconIsCustomized != true
+    }
+
     private var isActionable: Bool {
         switch item.type {
         case .entity:
@@ -92,11 +121,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    /// State is only fetched for entity items whose domain reports a meaningful state — scripts
-    /// and scenes just report their last-triggered time (same rule as CarPlay).
+    /// State is only fetched for entity items whose domain reports a meaningful state — same
+    /// rule as CarPlay.
     private var displaysState: Bool {
         guard item.type == .entity, let domain = item.domain else { return false }
-        return ![.script, .scene].contains(domain)
+        return !domain.hasIrrelevantState
     }
 
     /// Polls the entity state while the row is on screen; `stopStateUpdates` (on disappear) ends it.
@@ -116,14 +145,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     private func fetchState() {
-        guard let domain = item.domain,
-              let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
             return
         }
         WatchEntityStateFetcher.fetchState(entityId: item.id, server: server) { [weak self] entity in
             guard let self, let entity else { return }
-            latestState = entity.state
-            stateText = domain.contextualStateDescription(for: entity)
+            liveEntity = entity
         }
     }
 
@@ -183,7 +210,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         magicItem.execute(
             on: server,
             source: .Watch,
-            currentItemState: latestState ?? "",
+            currentItemState: liveEntity?.state ?? "",
             onStep: onStep
         ) { [weak self] success, error in
             if success {

@@ -511,6 +511,18 @@ public enum Domain: String, CaseIterable {
         mainAction != nil || self == .lock
     }
 
+    /// Whether the entity icon changes with state/device class (e.g. cover open vs closed),
+    /// so list UIs (CarPlay, watch) should render the live entity icon over a saved one.
+    public var hasStateDependentIcon: Bool {
+        [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
+    }
+
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report
+    /// their last-triggered time.
+    public var hasIrrelevantState: Bool {
+        [.script, .scene].contains(self)
+    }
+
     public func localizedState(for state: String) -> String {
         switch self {
         case .button, .inputButton, .scene:

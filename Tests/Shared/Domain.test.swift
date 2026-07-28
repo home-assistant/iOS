@@ -284,6 +284,26 @@ struct DomainMappingTests {
             #expect(domain.isActionable == expected, "isActionable mismatch for Domain.\(domain)")
         }
     }
+
+    @Test func stateDependentIconMembership() {
+        let expected: Set<Domain> = [.cover, .inputBoolean, .light, .lock, .switch]
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasStateDependentIcon == expected.contains(domain),
+                "hasStateDependentIcon mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
+    @Test func irrelevantStateMembership() {
+        let expected: Set<Domain> = [.script, .scene]
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasIrrelevantState == expected.contains(domain),
+                "hasIrrelevantState mismatch for Domain.\(domain)"
+            )
+        }
+    }
 }
 
 struct MagicItemWidgetInteractionTests {

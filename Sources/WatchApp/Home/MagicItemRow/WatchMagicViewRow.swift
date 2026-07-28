@@ -97,14 +97,6 @@ struct WatchMagicViewRow: View {
         }
     }
 
-    private var iconColor: UIColor {
-        if let hex = viewModel.itemInfo.customization?.iconColor {
-            .init(hex: hex)
-        } else {
-            .white
-        }
-    }
-
     @ViewBuilder
     private var label: some View {
         if layout == .grid {
@@ -130,7 +122,7 @@ struct WatchMagicViewRow: View {
             stateIcon(size: 24)
                 .padding()
         }
-        .watchRowIconContainer(color: iconColor)
+        .watchRowIconContainer(color: viewModel.iconColor)
     }
 
     private var gridIcon: some View {
@@ -144,11 +136,11 @@ struct WatchMagicViewRow: View {
     private func stateIcon(size: CGFloat) -> some View {
         switch viewModel.state {
         case .idle:
-            Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
+            Image(uiImage: viewModel.icon.image(
                 ofSize: .init(width: size, height: size),
-                color: iconColor
+                color: viewModel.iconColor
             ))
-            .foregroundStyle(Color(uiColor: iconColor))
+            .foregroundStyle(Color(uiColor: viewModel.iconColor))
         case .loading:
             ProgressView()
                 .progressViewStyle(.circular)
