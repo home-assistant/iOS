@@ -1978,6 +1978,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
+"watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
 "watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
 "watch.home.run.error.no_active_url_hint" = "Open Settings → Servers on this watch to review the server's URL options.";
 "watch.home.run.error.no_response" = "The server didn't respond in time.";
@@ -1985,6 +1986,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
 "watch.home.sync.syncing" = "Syncing with iPhone…";
 "watch.home.sync.waiting" = "Waiting for iPhone…";
+"watch.home.unsupported.message" = "%@ entities can't be controlled from the watch app.";
+"watch.home.unsupported.title" = "Not supported";
 "watch.interaction.toast.action" = "Ran an action";
 "watch.interaction.toast.config" = "Sent watch configuration";
 "watch.interaction.toast.database" = "Sent offline data";

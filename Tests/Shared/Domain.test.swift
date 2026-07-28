@@ -277,6 +277,33 @@ struct DomainMappingTests {
             #expect(domain.mainAction == expected, "mainAction mismatch for Domain.\(domain)")
         }
     }
+
+    @Test func actionabilityFollowsMainActionWithLockException() {
+        for domain in Domain.allCases {
+            let expected = domain.mainAction != nil || domain == .lock
+            #expect(domain.isActionable == expected, "isActionable mismatch for Domain.\(domain)")
+        }
+    }
+
+    @Test func stateDependentIconMembership() {
+        let expected: Set<Domain> = [.cover, .inputBoolean, .light, .lock, .switch]
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasStateDependentIcon == expected.contains(domain),
+                "hasStateDependentIcon mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
+    @Test func irrelevantStateMembership() {
+        let expected: Set<Domain> = [.script, .scene]
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasIrrelevantState == expected.contains(domain),
+                "hasIrrelevantState mismatch for Domain.\(domain)"
+            )
+        }
+    }
 }
 
 struct MagicItemWidgetInteractionTests {
@@ -316,8 +343,19 @@ struct DomainFeatureSupportTests {
     }
 
     @Test func watchSupportedMembership() {
-        let expected: Set<Domain> = [.script, .scene, .automation]
+        let expected: Set<Domain> = [
+            .automation, .button, .cover, .fan, .humidifier, .inputBoolean, .inputButton,
+            .light, .lock, .scene, .script, .switch, .valve,
+        ]
         #expect(Set(Domain.watchSupported) == expected, "Domain.watchSupported membership changed")
+    }
+
+    @Test func watchSupportedDomainsAreActionable() {
+        // The watch only offers domains it can actually run; a non-actionable domain in the
+        // list would tap into the "unsupported" alert.
+        for domain in Domain.watchSupported {
+            #expect(domain.isActionable, "Domain.\(domain) is watch-supported but has no action")
+        }
     }
 
     @Test func commonlyUsedWidgetSupportedMembership() {

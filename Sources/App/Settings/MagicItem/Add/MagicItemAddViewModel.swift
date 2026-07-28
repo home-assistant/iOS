@@ -2,7 +2,6 @@ import Combine
 import Foundation
 
 enum MagicItemAddType {
-    case scriptsScenesAutomations
     case entities
     case assistPipelines
 }

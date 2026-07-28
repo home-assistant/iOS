@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import HAKit
 import Shared
 import WatchKit
 
@@ -30,6 +31,14 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
+    /// Alert shown when the tapped entity's domain has no action the watch can perform.
+    @Published var showUnsupportedAlert = false
+    /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
+    /// state-aware execution (lock).
+    @Published private(set) var liveEntity: HAEntity?
+    /// True when the state couldn't be refreshed within `staleInterval` — the row shows a small
+    /// warning badge so the displayed state isn't mistaken for current.
+    @Published private(set) var isStateStale = false
     /// Set when an execution fails, so the failure isn't silent. Presented full-screen by the row.
     @Published var errorMessage: String?
     /// Live log of the current execution, set only when the developer "Verbose item execution"
@@ -42,17 +51,134 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private var timeoutWorkItem: DispatchWorkItem?
     private var watchdogWorkItem: DispatchWorkItem?
+    private var stateTimer: Timer?
+    private var lastStateUpdate: Date?
+    private var pollingStarted: Date?
+
+    private static let stateRefreshInterval: TimeInterval = 5
+    private static let staleInterval: TimeInterval = 10
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
         self.itemInfo = itemInfo
     }
 
+    deinit {
+        stateTimer?.invalidate()
+    }
+
     func executeItem() {
+        guard isActionable else {
+            showUnsupportedAlert = true
+            return
+        }
         if itemInfo.customization?.requiresConfirmation ?? true {
             showConfirmationDialog = true
         } else {
             executeItemAction()
+        }
+    }
+
+    // MARK: - Entity state
+
+    var domainName: String {
+        if let domain = item.domain {
+            return domain.name
+        }
+        // Unknown domains still need a readable alert — fall back to the entity id prefix.
+        return item.id.components(separatedBy: ".").first ?? item.id
+    }
+
+    var stateText: String? {
+        guard let liveEntity, let domain = item.domain else { return nil }
+        return domain.contextualStateDescription(for: liveEntity)
+    }
+
+    /// Mirrors CarPlay: dynamic domains render the live state-driven icon and color unless the
+    /// user explicitly picked a custom icon; everything else uses the configured icon and color.
+    var icon: MaterialDesignIcons {
+        if let liveEntity, usesLiveIcon {
+            return liveEntity.getMDI()
+        }
+        return item.icon(info: itemInfo)
+    }
+
+    var iconColor: UIColor {
+        if let liveEntity, usesLiveIcon {
+            return liveEntity.carPlayIconColor() ?? .white
+        }
+        if let hex = itemInfo.customization?.iconColor {
+            return UIColor(hex: hex)
+        }
+        return .white
+    }
+
+    private var usesLiveIcon: Bool {
+        guard item.type == .entity, let domain = item.domain else { return false }
+        return domain.hasStateDependentIcon && itemInfo.customization?.iconIsCustomized != true
+    }
+
+    private var isActionable: Bool {
+        switch item.type {
+        case .entity:
+            return item.domain?.isActionable ?? false
+        default:
+            return true
+        }
+    }
+
+    /// State is only fetched for entity items whose domain reports a meaningful state — same
+    /// rule as CarPlay.
+    private var displaysState: Bool {
+        guard item.type == .entity, let domain = item.domain else { return false }
+        return !domain.hasIrrelevantState
+    }
+
+    /// Polls the entity state while the row is on screen; `stopStateUpdates` (on disappear) ends it.
+    func startStateUpdates() {
+        stopStateUpdates()
+        guard displaysState else { return }
+        pollingStarted = Current.date()
+        isStateStale = false
+        fetchState()
+        stateTimer = Timer
+            .scheduledTimer(withTimeInterval: Self.stateRefreshInterval, repeats: true) { [weak self] _ in
+                self?.updateStaleness()
+                self?.fetchState()
+            }
+    }
+
+    func stopStateUpdates() {
+        stateTimer?.invalidate()
+        stateTimer = nil
+    }
+
+    private func fetchState() {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
+            return
+        }
+        WatchEntityStateFetcher.fetchState(entityId: item.id, server: server) { [weak self] entity in
+            guard let self, let entity else { return }
+            liveEntity = entity
+            lastStateUpdate = Current.date()
+            isStateStale = false
+        }
+    }
+
+    /// Evaluated on every poll tick: fetches update `lastStateUpdate` on success only, so a run
+    /// of failed polls (or none at all since appearing) flips the badge on.
+    private func updateStaleness() {
+        guard let reference = lastStateUpdate ?? pollingStarted else { return }
+        isStateStale = Current.date().timeIntervalSince(reference) >= Self.staleInterval
+    }
+
+    /// Reflect an executed action (e.g. a toggled light) quickly instead of waiting up to a full
+    /// poll interval. Skipped when the row is no longer polling (it disappeared meanwhile).
+    private func scheduleStateRefreshAfterExecution() {
+        guard displaysState, stateTimer != nil else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self, stateTimer != nil else { return }
+            fetchState()
         }
     }
 
@@ -72,6 +198,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         executeMagicItem { [weak self] response in
             DispatchQueue.main.async { [weak self] in
                 self?.state = response.rowState
+                self?.scheduleStateRefreshAfterExecution()
             }
             self?.resetState()
         }
@@ -98,7 +225,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         let onStep: ((String) -> Void)? = trace == nil ? nil : { [weak self] step in
             self?.trace?.log(.info, step)
         }
-        magicItem.execute(on: server, source: .Watch, onStep: onStep) { [weak self] success, error in
+        magicItem.execute(
+            on: server,
+            source: .Watch,
+            currentItemState: liveEntity?.state ?? "",
+            onStep: onStep
+        ) { [weak self] success, error in
             if success {
                 self?.trace?.log(.success, "Server accepted the request")
             } else {

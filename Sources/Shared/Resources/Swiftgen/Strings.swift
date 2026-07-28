@@ -6535,6 +6535,8 @@ public enum L10n {
           }
         }
         public enum Error {
+          /// The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.
+          public static var lockStateUnknown: String { return L10n.tr("Localizable", "watch.home.run.error.lock_state_unknown") }
           /// The action couldn't be run. The Apple Watch may not be able to reach this server directly.
           public static var message: String { return L10n.tr("Localizable", "watch.home.run.error.message") }
           /// Open Settings → Servers on this watch to review the server's URL options.
@@ -6552,6 +6554,14 @@ public enum L10n {
         public static var syncing: String { return L10n.tr("Localizable", "watch.home.sync.syncing") }
         /// Waiting for iPhone…
         public static var waiting: String { return L10n.tr("Localizable", "watch.home.sync.waiting") }
+      }
+      public enum Unsupported {
+        /// %@ entities can't be controlled from the watch app.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.home.unsupported.message", String(describing: p1))
+        }
+        /// Not supported
+        public static var title: String { return L10n.tr("Localizable", "watch.home.unsupported.title") }
       }
     }
     public enum Interaction {
