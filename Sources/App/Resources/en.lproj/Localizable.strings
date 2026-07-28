@@ -441,6 +441,8 @@
 "entity_picker.filter.area.title" = "Area";
 "entity_picker.filter.domain.all.title" = "All domains";
 "entity_picker.filter.domain.title" = "Domain";
+"entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";

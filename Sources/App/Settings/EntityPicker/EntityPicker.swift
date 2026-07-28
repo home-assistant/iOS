@@ -228,9 +228,9 @@ struct EntityPicker: View {
                         .transition(.move(edge: .leading).combined(with: .opacity))
                 }
                 serverPicker
-                groupByPicker
-                domainPicker
                 areaPicker
+                domainPicker
+                groupByPicker
             }
             .padding(.horizontal, DesignSystem.Spaces.one)
         }
@@ -286,9 +286,11 @@ struct EntityPicker: View {
                     id: "",
                     title: L10n.EntityPicker.Filter.Domain.All.title
                 )] +
-                    viewModel.entitiesByDomain.keys.sorted().map {
-                        EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
-                    },
+                    viewModel.entitiesByDomain.keys.map { key in
+                        // Prefer the domain's localized name (backed by CoreStrings); fall back to the raw key.
+                        EntityFilterPickerView.PickerItem(id: key, title: Domain(rawValue: key)?.name ?? key)
+                    }
+                    .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending },
                 selectedItemId: Binding(
                     get: { viewModel.selectedDomainFilter ?? "" },
                     set: { viewModel.selectedDomainFilter = ($0?.isEmpty ?? true) ? nil : $0 }

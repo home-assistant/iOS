@@ -16,21 +16,24 @@ struct EntityFilterPickerViewTests {
                 selectedItemId: .constant("1")
             )
             EntityFilterPickerView(
-                title: "Domain",
-                icon: .tag,
-                pickerItems: [.init(id: "", title: "All domains"), .init(id: "light", title: "LIGHT")],
-                selectedItemId: .constant("light")
-            )
-            EntityFilterPickerView(
                 title: "Area",
                 icon: .houseFill,
                 pickerItems: [.init(id: "", title: "All areas"), .init(id: "kitchen", title: "Kitchen")],
                 selectedItemId: .constant(nil)
             )
             EntityFilterPickerView(
+                title: "Domain",
+                icon: .tag,
+                pickerItems: [.init(id: "", title: "All domains"), .init(id: "light", title: "Light")],
+                selectedItemId: .constant("light")
+            )
+            EntityFilterPickerView(
                 title: "Group by",
                 icon: .listBulletRectangle,
-                pickerItems: [.init(id: "area", title: "Area"), .init(id: "domain", title: "Domain")],
+                pickerItems: [
+                    .init(id: "area", title: "Group by Area"),
+                    .init(id: "domain", title: "Group by Domain"),
+                ],
                 selectedItemId: .constant("domain")
             )
         }
