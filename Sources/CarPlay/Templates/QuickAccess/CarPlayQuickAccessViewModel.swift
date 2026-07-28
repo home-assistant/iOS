@@ -53,13 +53,7 @@ final class CarPlayQuickAccessViewModel {
     }
 
     private func showAddEditButtons(config: CarPlayConfig?) -> Bool {
-        switch source {
-        case .quickAccess:
-            return config?.resolvedShowAddEditButtons ?? true
-        case .folder:
-            // Folder contents are managed from the iPhone app only.
-            return false
-        }
+        config?.resolvedShowAddEditButtons ?? true
     }
 
     private func filterItems(_ items: [MagicItem]) -> [MagicItem] {

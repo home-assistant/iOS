@@ -277,17 +277,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     /// Applies a mutation to the folder with the given id, wherever it lives — Quick Access items
     /// or tab-only folders.
     private func mutateFolder(withId folderId: String, _ mutation: (inout MagicItem) -> Void) {
-        if let index = config.quickAccessItems
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
-            var folder = config.quickAccessItems[index]
-            mutation(&folder)
-            config.quickAccessItems[index] = folder
-        } else if let index = config.tabFolders?
-            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
-            guard var folder = config.tabFolders?[index] else { return }
-            mutation(&folder)
-            config.tabFolders?[index] = folder
-        }
+        config.mutateFolder(withId: folderId, mutation)
     }
 
     // MARK: - Quick access layout

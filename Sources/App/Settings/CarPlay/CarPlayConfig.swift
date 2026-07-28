@@ -60,6 +60,25 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         allFolders.first(where: { $0.type == .folder && $0.id == folderId })
     }
 
+    /// Applies a mutation to the folder with the given id, wherever it lives — Quick Access items
+    /// or tab-only folders. Returns true when the folder was found.
+    @discardableResult
+    public mutating func mutateFolder(withId folderId: String, _ mutation: (inout MagicItem) -> Void) -> Bool {
+        if let index = quickAccessItems.firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
+            var folder = quickAccessItems[index]
+            mutation(&folder)
+            quickAccessItems[index] = folder
+            return true
+        }
+        if let index = tabFolders?.firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
+            guard var folder = tabFolders?[index] else { return false }
+            mutation(&folder)
+            tabFolders?[index] = folder
+            return true
+        }
+        return false
+    }
+
     /// Display name for a tab, resolving folder tabs against this configuration's folders.
     public func name(for tab: CarPlayTab) -> String {
         tab.name(folders: allFolders)

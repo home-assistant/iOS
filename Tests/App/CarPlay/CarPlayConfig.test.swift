@@ -115,4 +115,26 @@ struct CarPlayConfigTests {
         #expect(config.folder(withId: "tab-folder")?.id == "tab-folder")
         #expect(config.name(for: .folder(folderId: "tab-folder")) == "Commute")
     }
+
+    @Test func mutateFolderFindsFoldersInBothCollections() {
+        var config = CarPlayConfig(
+            quickAccessItems: [MagicItem(id: "qa-folder", serverId: "", type: .folder, items: [])],
+            tabFolders: [MagicItem(id: "tab-folder", serverId: "", type: .folder, items: [])]
+        )
+        let child = MagicItem(id: "light.kitchen", serverId: "s1", type: .entity)
+
+        let foundQuickAccessFolder = config.mutateFolder(withId: "qa-folder") { folder in
+            folder.items = [child]
+        }
+        let foundTabFolder = config.mutateFolder(withId: "tab-folder") { folder in
+            folder.items = [child]
+        }
+        let foundMissingFolder = config.mutateFolder(withId: "missing") { _ in }
+
+        #expect(foundQuickAccessFolder)
+        #expect(foundTabFolder)
+        #expect(foundMissingFolder == false)
+        #expect(config.folder(withId: "qa-folder")?.items?.count == 1)
+        #expect(config.folder(withId: "tab-folder")?.items?.count == 1)
+    }
 }

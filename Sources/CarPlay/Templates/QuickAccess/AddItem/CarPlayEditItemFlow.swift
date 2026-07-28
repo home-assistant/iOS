@@ -25,7 +25,7 @@ final class CarPlayEditItemFlow {
     }
 
     func start() {
-        let items = viewModel.quickAccessItems
+        let items = viewModel.editableItems
         guard !items.isEmpty else {
             Current.Log.error("Attempted to start CarPlay edit item flow without any items")
             onFinish()

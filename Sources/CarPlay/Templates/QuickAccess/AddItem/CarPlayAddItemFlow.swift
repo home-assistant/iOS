@@ -103,11 +103,16 @@ final class CarPlayAddItemFlow {
             title: L10n.CarPlay.Navigation.Tab.domains,
             image: MaterialDesignIcons.devicesIcon.carPlayIcon()
         ) { [weak self] in self?.go(to: .domains(server)) }
-        let folder = navigationRow(
-            title: L10n.Watch.Configuration.Folder.defaultName,
-            image: MaterialDesignIcons.folderIcon.carPlayIcon()
-        ) { [weak self] in self?.presentFolderInfo() }
-        var rows = [areas, control, folder]
+        var rows = [areas, control]
+
+        // Folders can't contain other folders, so the folder option only shows when adding to
+        // the Quick Access list itself.
+        if case .quickAccess = viewModel.destination {
+            rows.append(navigationRow(
+                title: L10n.Watch.Configuration.Folder.defaultName,
+                image: MaterialDesignIcons.folderIcon.carPlayIcon()
+            ) { [weak self] in self?.presentFolderInfo() })
+        }
 
         if #available(iOS 26.4, *) {
             let assist = navigationRow(

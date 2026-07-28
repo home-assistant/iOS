@@ -2,9 +2,20 @@ import Shared
 import SwiftUI
 
 struct FolderEditView: View {
+    /// Reference-type holder for the folder being edited. `MagicItem`'s `Equatable` compares
+    /// identity only (id/server/type), so storing the folder directly in `@State` makes SwiftUI
+    /// consider content-only edits (icon, colors, name) as "no change" and skip re-rendering.
+    private final class Draft: ObservableObject {
+        @Published var folder: MagicItem
+
+        init(folder: MagicItem) {
+            self.folder = folder
+        }
+    }
+
     @Environment(\.dismiss) private var dismiss
 
-    @State private var folder: MagicItem
+    @StateObject private var draft: Draft
     @State private var useCustomColors: Bool
 
     /// The Watch configuration screens force a dark appearance; CarPlay's don't.
@@ -13,7 +24,7 @@ struct FolderEditView: View {
     let onSave: (MagicItem) -> Void
 
     init(folder: MagicItem, usesDarkColorScheme: Bool = true, onSave: @escaping (MagicItem) -> Void) {
-        self._folder = State(initialValue: folder)
+        self._draft = StateObject(wrappedValue: Draft(folder: folder))
         self._useCustomColors = State(
             initialValue: folder.customization?.backgroundColor != nil || folder.customization?.textColor != nil
         )
@@ -28,12 +39,14 @@ struct FolderEditView: View {
         }
         .onChange(of: useCustomColors) { newValue in
             if newValue {
-                folder.customization?.backgroundColor = folder.customization?.backgroundColor ?? UIColor.black
+                draft.folder.customization?.backgroundColor = draft.folder.customization?.backgroundColor ?? UIColor
+                    .black
                     .hexString()
-                folder.customization?.textColor = folder.customization?.textColor ?? UIColor.white.hexString()
+                draft.folder.customization?.textColor = draft.folder.customization?.textColor ?? UIColor.white
+                    .hexString()
             } else {
-                folder.customization?.backgroundColor = nil
-                folder.customization?.textColor = nil
+                draft.folder.customization?.backgroundColor = nil
+                draft.folder.customization?.textColor = nil
             }
         }
         .navigationTitle(L10n.MagicItem.edit)
@@ -41,7 +54,7 @@ struct FolderEditView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    onSave(folder)
+                    onSave(draft.folder)
                     dismiss()
                 } label: {
                     Text(L10n.saveLabel)
@@ -62,24 +75,24 @@ struct FolderEditView: View {
     }
 
     private func preventNilCustomization() {
-        if folder.customization == nil {
-            folder.customization = .init()
+        if draft.folder.customization == nil {
+            draft.folder.customization = .init()
         }
     }
 
     private var folderName: String {
-        folder.displayText ?? folder.id
+        draft.folder.displayText ?? draft.folder.id
     }
 
     private var folderIcon: MaterialDesignIcons {
-        if let iconName = folder.customization?.icon {
+        if let iconName = draft.folder.customization?.icon {
             return MaterialDesignIcons(named: iconName, fallback: .folderIcon)
         }
         return .folderIcon
     }
 
     private var iconColor: Color {
-        if let iconColorHex = folder.customization?.iconColor {
+        if let iconColorHex = draft.folder.customization?.iconColor {
             return Color(hex: iconColorHex)
         }
         return Color.haPrimary
@@ -92,7 +105,7 @@ struct FolderEditView: View {
                     selectedIcon: .init(get: {
                         folderIcon
                     }, set: { newIcon in
-                        folder.customization?.icon = newIcon?.name
+                        draft.folder.customization?.icon = newIcon?.name
                     }),
                     selectedColor: .init(get: {
                         iconColor
@@ -104,9 +117,9 @@ struct FolderEditView: View {
                     folderName
                 }, set: { newValue in
                     if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        folder.displayText = nil
+                        draft.folder.displayText = nil
                     } else {
-                        folder.displayText = newValue
+                        draft.folder.displayText = newValue
                     }
                 }))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -120,26 +133,26 @@ struct FolderEditView: View {
         Section {
             ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
                 var color = Color.haPrimary
-                if let configIconColor = folder.customization?.iconColor {
+                if let configIconColor = draft.folder.customization?.iconColor {
                     color = Color(hex: configIconColor)
                 } else {
-                    folder.customization?.iconColor = color.hex()
+                    draft.folder.customization?.iconColor = color.hex()
                 }
                 return color
             }, set: { newColor in
-                folder.customization?.iconColor = newColor.hex()
+                draft.folder.customization?.iconColor = newColor.hex()
             }), supportsOpacity: false)
             Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
             if useCustomColors {
                 ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                    Color(hex: folder.customization?.backgroundColor)
+                    Color(hex: draft.folder.customization?.backgroundColor)
                 }, set: { newColor in
-                    folder.customization?.backgroundColor = newColor.hex()
+                    draft.folder.customization?.backgroundColor = newColor.hex()
                 }), supportsOpacity: false)
                 ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                    Color(hex: folder.customization?.textColor)
+                    Color(hex: draft.folder.customization?.textColor)
                 }, set: { newColor in
-                    folder.customization?.textColor = newColor.hex()
+                    draft.folder.customization?.textColor = newColor.hex()
                 }), supportsOpacity: false)
             }
         }

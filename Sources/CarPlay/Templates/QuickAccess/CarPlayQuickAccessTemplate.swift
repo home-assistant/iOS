@@ -22,6 +22,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let iconColor: UIColor?
         let title: String
         let subtitle: String?
+        /// SF Symbol shown as trailing accessory; folders use a chevron to signal navigation.
+        let accessorySymbolName: String?
         let handler: (@escaping () -> Void) -> Void
     }
 
@@ -36,6 +38,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
     /// Rows are reused in place — same reasoning as `listItemsByKey`.
     private var folderListItemsByKey: [String: [String: CPListItem]] = [:]
+    /// Add/Edit footer rows of pushed folder lists, keyed by folder id. Cached so refreshes keep
+    /// the same row instances and skip `updateSections` (which resets rotary focus).
+    private var folderFooterRows: [String: [CPListItem]] = [:]
     /// Folder content lists currently pushed from the Quick Access list, refreshed on state changes.
     private var openFolderTemplates: [(folderId: String, template: CPListTemplate)] = []
     private var currentItems: [MagicItem] = []
@@ -93,39 +98,53 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return false
     }
 
-    private lazy var addItemFooterRow: CPListItem = makeAddItemRow()
-    private lazy var editItemFooterRow: CPListItem = makeEditItemRow()
+    private lazy var addItemFooterRow: CPListItem = makeAddItemRow(destination: mainDestination)
+    private lazy var editItemFooterRow: CPListItem = makeEditItemRow(destination: mainDestination)
 
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
     // is a list row appended to the end of the Quick Access list instead.
-    private func makeAddItemRow() -> CPListItem {
+    private func makeAddItemRow(destination: CarPlayAddItemViewModel.Destination) -> CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.AddItem.button,
             detailText: nil,
             image: MaterialDesignIcons.plusCircleOutlineIcon.carPlayIcon()
         )
         item.handler = { [weak self] _, completion in
-            self?.presentAddItemFlow()
+            self?.presentAddItemFlow(destination: destination)
             completion()
         }
         return item
     }
 
-    private func makeEditItemRow() -> CPListItem {
+    private func makeEditItemRow(destination: CarPlayAddItemViewModel.Destination) -> CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.EditItem.button,
             detailText: L10n.CarPlay.QuickAccess.EditItem.subtitle,
             image: MaterialDesignIcons.pencilCircleOutlineIcon.carPlayIcon()
         )
         item.handler = { [weak self] _, completion in
-            self?.presentEditItemFlow()
+            self?.presentEditItemFlow(destination: destination)
             completion()
         }
         return item
     }
 
-    private func presentAddItemFlow() {
-        let flow = CarPlayAddItemFlow(interfaceController: interfaceController) { [weak self] in
+    /// Where this template's own add/edit affordances write: the Quick Access list, or — when the
+    /// template renders a folder tab — that folder.
+    private var mainDestination: CarPlayAddItemViewModel.Destination {
+        switch viewModel.source {
+        case .quickAccess:
+            return .quickAccess
+        case let .folder(folderId):
+            return .folder(folderId: folderId)
+        }
+    }
+
+    private func presentAddItemFlow(destination: CarPlayAddItemViewModel.Destination) {
+        let flow = CarPlayAddItemFlow(
+            interfaceController: interfaceController,
+            viewModel: CarPlayAddItemViewModel(destination: destination)
+        ) { [weak self] in
             // Defer release so the flow isn't deallocated mid-callback.
             DispatchQueue.main.async { self?.addItemFlow = nil }
         }
@@ -133,10 +152,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         flow.start()
     }
 
-    private func presentEditItemFlow() {
+    private func presentEditItemFlow(destination: CarPlayAddItemViewModel.Destination) {
         let entityToAreaMap = entityToAreaMap()
         let flow = CarPlayEditItemFlow(
             interfaceController: interfaceController,
+            viewModel: CarPlayAddItemViewModel(destination: destination),
             itemDisplay: { [weak self] item in
                 guard let self,
                       let displayItem = rowDisplayItem(for: item, entityToAreaMap: entityToAreaMap) else {
@@ -183,6 +203,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             // Returning to this template means any folder list pushed from it has been popped.
             openFolderTemplates.removeAll()
             folderListItemsByKey.removeAll()
+            folderFooterRows.removeAll()
             update()
         }
     }
@@ -300,7 +321,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             paginatedList.updateItems(items: rowItems(displayItems: actionDisplayItems(includeEdit: false)))
         } else {
             template.trailingNavigationBarButtons = []
-            template.updateSections([.init(items: [makeAddItemRow()])])
+            template.updateSections([.init(items: [makeAddItemRow(destination: mainDestination)])])
         }
     }
 
@@ -313,13 +334,19 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         template.updateSections([.init(items: [item])])
     }
 
+    /// Empty state of a folder tab: offer to add items into the folder from the car, matching the
+    /// Quick Access tab's empty state; an info row when the add/edit affordances are hidden.
     private func presentEmptyFolderState() {
-        let item = CPListItem(
-            text: L10n.CarPlay.Folder.Empty.title,
-            detailText: L10n.CarPlay.QuickAccess.Empty.body
-        )
         template.trailingNavigationBarButtons = []
-        template.updateSections([.init(items: [item])])
+        if currentShowAddEditButtons {
+            template.updateSections([.init(items: [makeAddItemRow(destination: mainDestination)])])
+        } else {
+            let item = CPListItem(
+                text: L10n.CarPlay.Folder.Empty.title,
+                detailText: L10n.CarPlay.QuickAccess.Empty.body
+            )
+            template.updateSections([.init(items: [item])])
+        }
     }
 
     private func refreshCurrentPresentation() {
@@ -467,14 +494,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func updateFolderContents(folder: MagicItem, in template: CPListTemplate) {
+        let footerRows = folderFooterRows(for: folder)
+
         // Folders can't nest in CarPlay; drop any stray nested folders defensively.
         let items = (folder.items ?? []).filter { $0.type != .folder }
         guard !items.isEmpty else {
             folderListItemsByKey[folder.id] = nil
-            template.updateSections([.init(items: [CPListItem(
-                text: L10n.CarPlay.Folder.Empty.title,
-                detailText: L10n.CarPlay.QuickAccess.Empty.body
-            )])])
+            if let addRow = footerRows.first {
+                applyFolderSections(rows: [addRow], to: template)
+            } else {
+                template.updateSections([.init(items: [CPListItem(
+                    text: L10n.CarPlay.Folder.Empty.title,
+                    detailText: L10n.CarPlay.QuickAccess.Empty.body
+                )])])
+            }
             return
         }
 
@@ -482,11 +515,27 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let rows = buildRows(items: items, cache: &cache)
         folderListItemsByKey[folder.id] = cache
 
-        let maxItems = Int(CPListTemplate.maximumItemCount)
+        let maxItems = max(1, Int(CPListTemplate.maximumItemCount) - footerRows.count)
         if rows.count > maxItems {
             Current.Log.error("CarPlay folder list of \(rows.count) exceeds \(maxItems); truncating")
         }
-        applyFolderSections(rows: Array(rows.prefix(maxItems)), to: template)
+        applyFolderSections(rows: Array(rows.prefix(maxItems)) + footerRows, to: template)
+    }
+
+    /// Add/Edit rows targeting the given folder, cached per folder so refreshed lists keep the
+    /// same row instances. Empty when the add/edit affordances are hidden.
+    private func folderFooterRows(for folder: MagicItem) -> [CPListItem] {
+        guard currentShowAddEditButtons else {
+            folderFooterRows[folder.id] = nil
+            return []
+        }
+        if let rows = folderFooterRows[folder.id] {
+            return rows
+        }
+        let destination = CarPlayAddItemViewModel.Destination.folder(folderId: folder.id)
+        let rows = [makeAddItemRow(destination: destination), makeEditItemRow(destination: destination)]
+        folderFooterRows[folder.id] = rows
+        return rows
     }
 
     /// Skips `updateSections` when the rows are the same instances — reloading resets the focused
@@ -523,6 +572,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconColor: displayItem.iconColor,
                 title: displayItem.title,
                 subtitle: displayItem.subtitle,
+                accessorySymbolName: magicItem.type == .folder ? "chevron.forward" : nil,
                 handler: { [weak self] completion in
                     guard let self else {
                         completion()
@@ -555,8 +605,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             iconColor: nil,
             title: L10n.CarPlay.QuickAccess.AddItem.button,
             subtitle: nil,
+            accessorySymbolName: nil,
             handler: { [weak self] completion in
-                self?.presentAddItemFlow()
+                guard let self else {
+                    completion()
+                    return
+                }
+                presentAddItemFlow(destination: mainDestination)
                 completion()
             }
         )]
@@ -567,8 +622,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconColor: nil,
                 title: L10n.CarPlay.QuickAccess.EditItem.button,
                 subtitle: L10n.CarPlay.QuickAccess.EditItem.subtitle,
+                accessorySymbolName: nil,
                 handler: { [weak self] completion in
-                    self?.presentEditItemFlow()
+                    guard let self else {
+                        completion()
+                        return
+                    }
+                    presentEditItemFlow(destination: mainDestination)
                     completion()
                 }
             ))
@@ -590,7 +650,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     imageShape: .circular,
                     title: item.title,
                     subtitle: item.subtitle,
-                    accessorySymbolName: nil
+                    accessorySymbolName: item.accessorySymbolName
                 )
             }
 
