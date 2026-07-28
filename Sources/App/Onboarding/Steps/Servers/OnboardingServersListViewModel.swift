@@ -107,6 +107,12 @@ final class OnboardingServersListViewModel: ObservableObject {
                     if let pmkError = error as? PMKError, pmkError.isCancelled {
                         /* No action needed, user cancelled flow */
                         self?.resetFlow()
+                    } else if Current.isCatalyst {
+                        // Pushed in the same update as the pop above so the path change is atomic;
+                        // a sheet is not used here because sheets don't receive mouse events
+                        // reliably on Mac Catalyst.
+                        self?.resetFlow()
+                        presenter.push(.connectionError(.init(error: error)))
                     } else {
                         self?.error = error
                         self?.showError = true

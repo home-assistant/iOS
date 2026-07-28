@@ -7,13 +7,6 @@ struct OnboardingServersListView: View {
         static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
         static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
         static let delayUntilAutoconnect: TimeInterval = 2
-
-        enum MacSheetSize {
-            static let errorDetailsMinWidth: CGFloat = 760
-            static let errorDetailsMinHeight: CGFloat = 680
-            static let manualInputMinWidth: CGFloat = 720
-            static let manualInputMinHeight: CGFloat = 600
-        }
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -25,6 +18,8 @@ struct OnboardingServersListView: View {
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
+    /// Mac Catalyst pushes manual entry as a page instead of presenting the sheet above.
+    @State private var showManualInputPage = false
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
@@ -98,30 +93,48 @@ struct OnboardingServersListView: View {
                 )
             }
         }
+        // iOS only — on Mac Catalyst the view model pushes `.connectionError` instead, because
+        // sheet content doesn't receive mouse events reliably there.
         .sheet(isPresented: $viewModel.showError) {
             errorView
-                .macOnboardingSheetFrame(
-                    minWidth: Constants.MacSheetSize.errorDetailsMinWidth,
-                    minHeight: Constants.MacSheetSize.errorDetailsMinHeight
-                )
+        }
+        // If the mTLS prompt arrives while manual URL entry is still up, dismiss the entry sheet
+        // first; the container holds the prompt back until `onDismiss` below releases it.
+        .onChange(of: presenter.clientCertificateRequest?.id) { newValue in
+            if newValue != nil, showManualInput {
+                showManualInput = false
+            }
         }
         // Start the flow only in `onDismiss`; mutating observed state while the sheet animates out left
         // it stuck on Mac Catalyst with the mTLS prompt (presented by the container above) stranded behind.
         .sheet(isPresented: $showManualInput, onDismiss: {
-            if let connectURL = viewModel.pendingManualURL {
-                viewModel.pendingManualURL = nil
-                viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
-            }
+            presenter.releaseClientCertificateHold()
+            startPendingManualConnection()
         }) {
             ManualURLEntryView { connectURL in
                 viewModel.pendingManualURL = connectURL
             }
-            .macOnboardingSheetFrame(
-                minWidth: Constants.MacSheetSize.manualInputMinWidth,
-                minHeight: Constants.MacSheetSize.manualInputMinHeight
-            )
         }
+        // On Mac Catalyst manual entry is a pushed page instead of a sheet: sheet content doesn't
+        // receive mouse events reliably there, and pages avoid the sheet-over-sheet ordering issues
+        // with the mTLS prompt entirely.
+        .navigationDestination(isPresented: $showManualInputPage) {
+            ManualURLEntryView { connectURL in
+                viewModel.pendingManualURL = connectURL
+            }
+            .onDisappear {
+                startPendingManualConnection()
+            }
+        }
+    }
+
+    /// Runs after manual URL entry goes away (sheet dismissed / page popped) so the flow never
+    /// starts while that UI is still on screen.
+    private func startPendingManualConnection() {
+        guard let connectURL = viewModel.pendingManualURL else { return }
+        viewModel.pendingManualURL = nil
+        viewModel.manualInputLoading = true
+        viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
     }
 
     @ViewBuilder
@@ -384,7 +397,14 @@ struct OnboardingServersListView: View {
 
     private var manualInputButton: some View {
         Button(action: {
-            showManualInput = true
+            if Current.isCatalyst {
+                showManualInputPage = true
+            } else {
+                // Hold back the container's mTLS sheet while ours is up; released in the sheet's
+                // `onDismiss` so the prompt is never presented behind it.
+                presenter.holdClientCertificateSheet = true
+                showManualInput = true
+            }
         }) {
             Text(L10n.Onboarding.Scanning.Manual.Button.title)
         }

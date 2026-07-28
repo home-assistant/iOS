@@ -1152,6 +1152,7 @@
 				API/OnboardingAuthTokenExchange.swift,
 				API/OnboardingCertificateTrustRequest.swift,
 				API/OnboardingClientCertificateRequest.swift,
+				API/OnboardingConnectionErrorContext.swift,
 				API/OnboardingDestination.swift,
 				API/OnboardingDeviceNameRequest.swift,
 				API/Steps/OnboardingAuthStepConfig.swift,

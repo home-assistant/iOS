@@ -63,7 +63,7 @@ struct OnboardingNavigationView: View {
         } message: { request in
             Text(request.message)
         }
-        .sheet(item: $presenter.clientCertificateRequest) { request in
+        .sheet(item: clientCertificateSheetItem) { request in
             clientCertificateSheet(request: request)
         }
         .onChange(of: viewModel.shouldDismiss) { newValue in
@@ -102,6 +102,25 @@ struct OnboardingNavigationView: View {
             )
             .navigationBarBackButtonHidden(true)
             .toolbar(.hidden, for: .navigationBar)
+        case let .clientCertificate(request):
+            // Mac Catalyst only; the user resolves the step through the page's own buttons.
+            ClientCertificateOnboardingView(
+                onImport: { certificate in
+                    request.complete(with: certificate)
+                },
+                onCancel: {
+                    request.cancel()
+                }
+            )
+            .navigationBarBackButtonHidden(true)
+        case let .connectionError(context):
+            // Mac Catalyst only; iOS shows the same details as a sheet over the servers list.
+            ConnectionErrorDetailsView(
+                server: nil,
+                error: context.error,
+                showSettingsEntry: false,
+                expandMoreDetails: true
+            )
         }
     }
 
@@ -136,6 +155,20 @@ struct OnboardingNavigationView: View {
             set: { isPresented in
                 if !isPresented, presenter.certificateTrustRequest?.isAnswered == true {
                     presenter.certificateTrustRequest = nil
+                }
+            }
+        )
+    }
+
+    /// Held back while a screen below has its own sheet up (manual URL entry) — presenting on top
+    /// of it strands the mTLS prompt behind that sheet on Mac Catalyst. The request stays pending in
+    /// the presenter and is shown once the hold is released after the other sheet fully dismissed.
+    private var clientCertificateSheetItem: Binding<OnboardingClientCertificateRequest?> {
+        Binding(
+            get: { presenter.holdClientCertificateSheet ? nil : presenter.clientCertificateRequest },
+            set: { newValue in
+                if newValue == nil {
+                    presenter.clientCertificateRequest = nil
                 }
             }
         )
