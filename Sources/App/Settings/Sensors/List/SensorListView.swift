@@ -34,6 +34,7 @@ struct SensorListView: View {
                 subtitle: L10n.SettingsSensors.body
             )
             periodicUpdaterRow
+            healthKitSection
             motionFocusPermissionNeededView
             sensorsList
         }
@@ -96,6 +97,36 @@ struct SensorListView: View {
                     Text(" ") +
                     Text(lastUpdate, style: .time)
             }
+        }
+    }
+
+    private var healthKitSection: some View {
+        Section {
+            Button(action: {
+                Task { @MainActor [viewModel] in
+                    do {
+                        try await viewModel.requestHealthAuthorization()
+                        viewModel.refresh()
+                    } catch {
+                        viewModel.alertMessage = error.localizedDescription
+                        viewModel.showAlert = true
+                    }
+                }
+            }) {
+                Text(L10n.SettingsSensors.Health.requestAccess)
+            }
+            .disabled(!viewModel.isHealthKitAvailable)
+
+            HStack {
+                Text(L10n.SettingsSensors.Health.status)
+                Spacer()
+                Text(healthStatusDescription(isAvailable: viewModel.isHealthKitAvailable))
+                    .foregroundColor(.secondary)
+            }
+        } header: {
+            Text(L10n.SettingsSensors.Health.header)
+        } footer: {
+            Text(L10n.SettingsSensors.Health.footer)
         }
     }
 
@@ -182,6 +213,12 @@ struct SensorListView: View {
         @unknown default:
             return L10n.SettingsDetails.Location.FocusPermission.needsRequest
         }
+    }
+
+    private func healthStatusDescription(isAvailable: Bool) -> String {
+        isAvailable
+            ? L10n.SettingsSensors.Health.Status.available
+            : L10n.SettingsSensors.Health.Status.unavailable
     }
 }
 

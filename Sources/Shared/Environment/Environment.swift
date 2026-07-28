@@ -380,6 +380,9 @@ public class AppEnvironment {
         $0.register(provider: KioskScreensaverSensor.self)
         $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        $0.register(provider: HealthKitSensor.self)
+        #endif
     }
 
     public var localized = LocalizedManager()
@@ -617,6 +620,10 @@ public class AppEnvironment {
     }
 
     public var pedometer = Pedometer()
+
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    public var healthKitService = HealthKitService()
+    #endif
 
     /// Wrapper around CMAltimeter for barometric pressure readings
     public struct Barometer {
