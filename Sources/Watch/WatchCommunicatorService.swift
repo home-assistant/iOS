@@ -457,8 +457,8 @@ final class WatchCommunicatorService {
     }
 
     /// Build the list of items the user can add to the watch configuration and reply to the watch.
-    /// Mirrors the iPhone watch picker (`MagicItemAddView` context `.watch`): scripts, scenes and
-    /// automations, all stored as `type: .entity`.
+    /// Mirrors the iPhone watch picker (`MagicItemAddView` context `.watch`): all watch-supported
+    /// domains, stored as `type: .entity`.
     ///
     /// - Note: Deprecated wire flow with no sender in current watch builds — the watch builds this
     ///   list locally from the mirrored database (`WatchHomeViewModel+Editing`). Kept for one
@@ -466,11 +466,7 @@ final class WatchCommunicatorService {
     ///   `watchConfigAvailableItems` message and response cases.
     private func watchConfigAvailableItems(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigAvailableItemsResponse.rawValue
-        let allowedDomains: Set<String> = [
-            Domain.script.rawValue,
-            Domain.scene.rawValue,
-            Domain.automation.rawValue,
-        ]
+        let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
