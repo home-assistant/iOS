@@ -34,7 +34,9 @@ struct SensorListView: View {
                 subtitle: L10n.SettingsSensors.body
             )
             periodicUpdaterRow
+            #if os(iOS) && !targetEnvironment(macCatalyst)
             healthKitSection
+            #endif
             motionFocusPermissionNeededView
             sensorsList
         }

@@ -29,7 +29,9 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updatePermissions() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         isHealthKitAvailable = Current.healthKitService.isAvailable()
+        #endif
 
         if Current.motion.isActivityAvailable() {
             motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
@@ -65,8 +67,10 @@ class SensorListViewModel: ObservableObject {
 
     @MainActor
     func requestHealthAuthorization() async throws {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         try await Current.healthKitService.requestReadAuthorization()
         isHealthKitAvailable = Current.healthKitService.isAvailable()
+        #endif
     }
 
     // MARK: - Permissions Handling
