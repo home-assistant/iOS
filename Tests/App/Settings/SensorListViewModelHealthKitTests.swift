@@ -56,13 +56,13 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
         viewModel.updatePermissions()
 
-        XCTAssertEqual(viewModel.enabledHealthSensorCount, 2)
+        XCTAssertEqual(viewModel.enabledHealthSensorCount, 1)
     }
 
     func testListedSensorsExcludesHealthSensors() {
         let viewModel = SensorListViewModelWithoutRefresh()
         viewModel.sensors = [
-            WebhookSensor(name: "Health Steps", uniqueID: HealthKitMetric.steps.uniqueID),
+            WebhookSensor(name: "Resting Heart Rate", uniqueID: HealthKitMetric.restingHeartRate.uniqueID),
             WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue),
         ]
 
@@ -70,28 +70,25 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     }
 
     func testUpdateAllSensorsLeavesHealthSensorsAlone() {
-        Current.sensors.setEnabled(false, forUniqueID: HealthKitMetric.steps.uniqueID)
+        Current.sensors.setEnabled(false, forUniqueID: HealthKitMetric.restingHeartRate.uniqueID)
         Current.sensors.setEnabled(false, forUniqueID: WebhookSensorId.activity.rawValue)
         let viewModel = SensorListViewModelWithoutRefresh()
         viewModel.sensors = [
-            WebhookSensor(name: "Health Steps", uniqueID: HealthKitMetric.steps.uniqueID),
+            WebhookSensor(name: "Resting Heart Rate", uniqueID: HealthKitMetric.restingHeartRate.uniqueID),
             WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue),
         ]
 
         viewModel.updateAllSensors(isEnabled: true)
 
         XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: HealthKitMetric.steps.uniqueID))
+        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     @MainActor
     func testHealthSensorListSeedsNewMetricsAsDisabled() {
         let viewModel = HealthSensorListViewModel()
 
-        XCTAssertEqual(viewModel.enabledUniqueIDs, [
-            HealthKitMetric.steps.uniqueID,
-            HealthKitMetric.restingHeartRate.uniqueID,
-        ])
+        XCTAssertEqual(viewModel.enabledUniqueIDs, [HealthKitMetric.restingHeartRate.uniqueID])
         XCTAssertFalse(viewModel.areAllEnabled)
     }
 
@@ -127,10 +124,10 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     func testHealthSensorListShowsReportedStates() async throws {
         let viewModel = HealthSensorListViewModel()
         let sensor = WebhookSensor(
-            name: "Health Steps",
-            uniqueID: HealthKitMetric.steps.uniqueID,
-            state: 1234,
-            unit: "steps"
+            name: "Resting Heart Rate",
+            uniqueID: HealthKitMetric.restingHeartRate.uniqueID,
+            state: 62,
+            unit: "bpm"
         )
 
         viewModel.sensorContainer(Current.sensors, didUpdate: .init(sensors: .value([sensor])))
@@ -138,7 +135,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         for _ in 0 ..< 100 where viewModel.stateDescriptions.isEmpty {
             try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
         }
-        XCTAssertEqual(viewModel.stateDescription(for: .steps), "1234 steps")
+        XCTAssertEqual(viewModel.stateDescription(for: .restingHeartRate), "62 bpm")
     }
 
     @MainActor

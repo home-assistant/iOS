@@ -63,22 +63,26 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
+    func testStepCountIsLeftToThePedometerSensor() {
+        // `PedometerSensor` has reported "Steps" for a long time; a HealthKit copy would duplicate it.
+        XCTAssertNil(HealthKitMetric.metric(uniqueID: "health_steps"))
+        XCTAssertFalse(HealthKitMetric.all.contains { $0.identifier == "HKQuantityTypeIdentifierStepCount" })
+    }
+
     func testShippedMetricsKeepTheirIdentityStable() {
-        XCTAssertEqual(HealthKitMetric.steps.uniqueID, "health_steps")
-        XCTAssertEqual(HealthKitMetric.steps.name, "Health Steps")
-        XCTAssertEqual(HealthKitMetric.steps.icon, "mdi:walk")
-        XCTAssertEqual(HealthKitMetric.steps.unit, "steps")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.uniqueID, "health_resting_heart_rate")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.name, "Resting Heart Rate")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.icon, "mdi:heart-pulse")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.unit, "bpm")
     }
 
-    func testStateAppliesScaleAndRounding() {
-        XCTAssertEqual(HealthKitMetric.steps.state(for: 1234.4) as? Int, 1234)
+    func testStateAppliesScaleAndRounding() throws {
         XCTAssertEqual(HealthKitMetric.restingHeartRate.state(for: 62.4) as? Double, 62.4)
 
-        let bodyFat = HealthKitMetric.all.first { $0.uniqueID == "health_body_fat_percentage" }
-        XCTAssertEqual(bodyFat?.state(for: 0.1234) as? Double, 12.3)
+        let energy = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_active_energy_burned"))
+        XCTAssertEqual(energy.state(for: 1234.4) as? Int, 1234)
+
+        let bodyFat = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_body_fat_percentage"))
+        XCTAssertEqual(bodyFat.state(for: 0.1234) as? Double, 12.3)
     }
 }

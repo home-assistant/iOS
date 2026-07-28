@@ -18,11 +18,14 @@ class HealthKitSensorTests: XCTestCase {
     private var queryWindows = [String: (start: Date, end: Date)]()
     private var stubbedValues = [String: Double]()
 
-    private var steps: HealthKitMetric { .steps }
     private var restingHeartRate: HealthKitMetric { .restingHeartRate }
+    /// A cumulative metric to pair with the default-enabled resting heart rate.
+    private var activeEnergy: HealthKitMetric!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+
+        activeEnergy = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_active_energy_burned"))
 
         originalDate = Current.date
         originalCalendar = Current.calendar
@@ -46,7 +49,10 @@ class HealthKitSensorTests: XCTestCase {
             Current.settingsStore.prefs.removeObject(forKey: key)
         }
 
-        stubbedValues = [steps.uniqueID: 1234, restingHeartRate.uniqueID: 62.4]
+        HealthKitSensor.seedInitialEnabledState()
+        Current.sensors.setEnabled(true, forUniqueID: activeEnergy.uniqueID)
+
+        stubbedValues = [activeEnergy.uniqueID: 1234, restingHeartRate.uniqueID: 62.4]
         Current.healthKitService.isAvailable = { true }
         Current.healthKitService.queryValue = { [weak self] metric, _, _ in
             self?.recordQuery(metric.uniqueID)
@@ -71,6 +77,7 @@ class HealthKitSensorTests: XCTestCase {
         originalHealthKitService = nil
         originalSensors = nil
         previousPrefs = nil
+        activeEnergy = nil
         super.tearDown()
     }
 
@@ -118,15 +125,17 @@ class HealthKitSensorTests: XCTestCase {
         sensors.first(where: { $0.UniqueID == metric.uniqueID })
     }
 
-    func testOnlyTheOriginalMetricsAreEnabledByDefault() throws {
-        let sensors = try generateSensors()
-
-        XCTAssertEqual(sensors.compactMap(\.UniqueID), [steps.uniqueID, restingHeartRate.uniqueID])
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: steps.uniqueID))
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: restingHeartRate.uniqueID))
-        for metric in HealthKitMetric.all where !sensors.contains(where: { $0.UniqueID == metric.uniqueID }) {
-            XCTAssertFalse(Current.sensors.isEnabled(uniqueID: metric.uniqueID), metric.uniqueID)
+    func testOnlyRestingHeartRateIsEnabledByDefault() {
+        // Undo the extra metric setUp switches on, so this sees a first-launch state.
+        Current.sensors = SensorContainer()
+        for key in Self.prefsKeys {
+            Current.settingsStore.prefs.removeObject(forKey: key)
         }
+
+        HealthKitSensor.seedInitialEnabledState()
+
+        let enabled = HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }
+        XCTAssertEqual(enabled.map(\.uniqueID), [restingHeartRate.uniqueID])
     }
 
     func testUnavailableHealthKitReturnsUnavailableSensorsAndDoesNotQueryHealthKit() throws {
@@ -134,20 +143,20 @@ class HealthKitSensorTests: XCTestCase {
 
         let sensors = try generateSensors()
 
-        XCTAssertEqual(sensor(steps, in: sensors)?.State as? String, "unavailable")
+        XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? String, "unavailable")
         XCTAssertEqual(sensor(restingHeartRate, in: sensors)?.State as? String, "unavailable")
-        XCTAssertEqual(queryCount(steps.uniqueID), 0)
+        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 0)
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
     }
 
     func testSuccessfulDataMapsBothSensors() throws {
         let sensors = try generateSensors()
 
-        let steps = try XCTUnwrap(sensor(self.steps, in: sensors))
-        XCTAssertEqual(steps.Name, "Health Steps")
-        XCTAssertEqual(steps.Icon, "mdi:walk")
-        XCTAssertEqual(steps.UnitOfMeasurement, "steps")
-        XCTAssertEqual(steps.State as? Int, 1234)
+        let energy = try XCTUnwrap(sensor(activeEnergy, in: sensors))
+        XCTAssertEqual(energy.Name, "Active Energy")
+        XCTAssertEqual(energy.Icon, "mdi:fire")
+        XCTAssertEqual(energy.UnitOfMeasurement, "kcal")
+        XCTAssertEqual(energy.State as? Int, 1234)
 
         let restingHeartRate = try XCTUnwrap(sensor(self.restingHeartRate, in: sensors))
         XCTAssertEqual(restingHeartRate.Name, "Resting Heart Rate")
@@ -161,7 +170,7 @@ class HealthKitSensorTests: XCTestCase {
 
         let sensors = try generateSensors()
 
-        XCTAssertEqual(sensor(steps, in: sensors)?.State as? String, "unavailable")
+        XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? String, "unavailable")
         XCTAssertEqual(sensor(restingHeartRate, in: sensors)?.State as? String, "unavailable")
     }
 
@@ -172,9 +181,9 @@ class HealthKitSensorTests: XCTestCase {
 
         let sensors = try generateSensors()
 
-        XCTAssertNotNil(sensor(steps, in: sensors))
+        XCTAssertNotNil(sensor(activeEnergy, in: sensors))
         XCTAssertEqual(sensor(restingHeartRate, in: sensors)?.State as? String, "unavailable")
-        XCTAssertEqual(queryCount(steps.uniqueID), 1)
+        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 1)
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
     }
 
@@ -188,7 +197,7 @@ class HealthKitSensorTests: XCTestCase {
 
         _ = try generateSensors()
 
-        XCTAssertEqual(queryCount(steps.uniqueID), 1)
+        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 1)
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 1)
     }
 
@@ -200,7 +209,7 @@ class HealthKitSensorTests: XCTestCase {
 
         _ = try generateSensors()
 
-        XCTAssertEqual(queryCount(steps.uniqueID), 1)
+        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 1)
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 1)
     }
 
@@ -218,7 +227,6 @@ class HealthKitSensorTests: XCTestCase {
 
     func testMetricsUseTheirOwnQueryWindow() throws {
         let bodyMass = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_body_mass"))
-        HealthKitSensor.seedInitialEnabledState()
         Current.sensors.setEnabled(true, forUniqueID: bodyMass.uniqueID)
         Current.healthKitService.queryValue = { [weak self] metric, start, end in
             self?.recordWindow(start: start, end: end, for: metric.uniqueID)
@@ -229,9 +237,9 @@ class HealthKitSensorTests: XCTestCase {
 
         let now = Date(timeIntervalSince1970: 1_000_000)
         let calendar = Calendar(identifier: .gregorian)
-        let stepsWindow = try XCTUnwrap(window(steps.uniqueID))
-        XCTAssertEqual(stepsWindow.start, calendar.startOfDay(for: now))
-        XCTAssertEqual(stepsWindow.end, now)
+        let energyWindow = try XCTUnwrap(window(activeEnergy.uniqueID))
+        XCTAssertEqual(energyWindow.start, calendar.startOfDay(for: now))
+        XCTAssertEqual(energyWindow.end, now)
 
         let bodyMassWindow = try XCTUnwrap(window(bodyMass.uniqueID))
         XCTAssertEqual(bodyMassWindow.start, calendar.date(byAdding: .day, value: -365, to: now))

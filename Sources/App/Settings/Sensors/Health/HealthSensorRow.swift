@@ -41,7 +41,7 @@ struct HealthSensorRow: View {
 
 #Preview {
     List {
-        HealthSensorRow(metric: .steps, stateDescription: "1234 steps", isEnabled: .constant(true))
+        HealthSensorRow(metric: .restingHeartRate, stateDescription: "62 bpm", isEnabled: .constant(true))
         HealthSensorRow(metric: .restingHeartRate, stateDescription: nil, isEnabled: .constant(false))
     }
 }

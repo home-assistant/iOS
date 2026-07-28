@@ -8,9 +8,8 @@ public final class HealthKitSensor: SensorProvider {
     private static let maximumConcurrentQueries = 8
 
     /// Metrics that stay enabled by default. Everything else is opt-in, so adding the full Apple Health
-    /// catalog doesn't register a hundred extra entities for people who only wanted step count.
+    /// catalog doesn't register a hundred extra entities for people who only wanted a heart rate.
     private static let defaultEnabledUniqueIDs: Set<String> = [
-        HealthKitMetric.steps.uniqueID,
         HealthKitMetric.restingHeartRate.uniqueID,
     ]
 

@@ -2,23 +2,8 @@
 import Foundation
 
 public extension HealthKitMetric {
-    /// Shipped before the full Apple Health catalog existed; its ID must stay stable.
-    static let steps = HealthKitMetric(
-        uniqueID: "health_steps",
-        identifier: "HKQuantityTypeIdentifierStepCount",
-        name: "Health Steps",
-        icon: "mdi:walk",
-        unit: "steps",
-        queryUnit: .count,
-        aggregation: .cumulativeSum,
-        category: .activity,
-        stateClass: .totalIncreasing,
-        decimalPlaces: 0
-    )
-
     /// Movement, workouts and energy metrics.
     static let activityMetrics: [HealthKitMetric] = [
-        steps,
         HealthKitMetric(
             uniqueID: "health_distance_walking_running",
             identifier: "HKQuantityTypeIdentifierDistanceWalkingRunning",
