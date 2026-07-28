@@ -103,8 +103,27 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 defaultSteps = StepID.remoteConnectionCompatible
             }
 
-            if connection.hasOnlyHTTPSURLOptions {
-                defaultSteps.removeAll { $0 == .localAccess }
+            // Local network configuration (security level and home network name) is only
+            // relevant when the server can exclusively be reached over non-HTTPS URLs;
+            // with an HTTPS URL available the active URL always has a secure option to use
+            if connection.hasHTTPSURLOption {
+                defaultSteps.removeAll { $0 == .localAccess || $0 == .homeNetwork }
+
+                onboardingServer.update { info in
+                    // Since the user is not asked, auto select the most secure level:
+                    // non-HTTPS URLs are only used when the device is on the home network
+                    if info.connection.connectionAccessSecurityLevel == .undefined {
+                        info.connection.connectionAccessSecurityLevel = .mostSecure
+                    }
+
+                    // Discovery may have pinned the internal URL while the SSID was still unknown
+                    // (see `OnboardingAuth`); since the home network step is skipped, nothing will
+                    // set `internalSSIDs` to clear that override, so clear it here to avoid staying
+                    // pinned to the internal URL when off the home network
+                    if info.connection.overrideActiveURLType == .internal {
+                        info.connection.overrideActiveURLType = nil
+                    }
+                }
             }
             self.steps = defaultSteps
         }

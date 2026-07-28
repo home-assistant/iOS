@@ -52,12 +52,10 @@ public struct ConnectionInfo: Codable, Equatable {
         configuredURLs.contains { $0.scheme?.lowercased() != "https" }
     }
 
-    public var hasOnlyHTTPSURLOptions: Bool {
-        guard !configuredURLs.isEmpty else {
-            return false
-        }
-
-        return configuredURLs.allSatisfy { $0.scheme?.lowercased() == "https" }
+    /// `true` when at least one configured URL uses HTTPS, meaning the active URL
+    /// always has a secure option to fall back on regardless of local network configuration
+    public var hasHTTPSURLOption: Bool {
+        configuredURLs.contains { $0.scheme?.lowercased() == "https" }
     }
 
     public var overrideActiveURLType: URLType?

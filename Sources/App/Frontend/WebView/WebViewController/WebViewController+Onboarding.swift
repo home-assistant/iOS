@@ -10,17 +10,30 @@ extension WebViewController {
     func checkForLocalSecurityLevelDecisionNeeded() {
         let connection = server.info.connection
 
+        // Local network configuration is only needed when the server can exclusively be
+        // reached over non-HTTPS URLs; with an HTTPS URL available the active URL always
+        // has a secure option to use
+        guard !connection.hasHTTPSURLOption else {
+            if connection.connectionAccessSecurityLevel == .undefined {
+                Current.Log.verbose("Auto selecting most secure local access level because an HTTPS URL is available")
+                server.update { info in
+                    info.connection.connectionAccessSecurityLevel = .mostSecure
+                }
+            } else {
+                Current.Log.verbose("Skipping local access security level decision because an HTTPS URL is available")
+            }
+            return
+        }
+
         if Current.location.permissionStatus == .notDetermined, connection.hasNonHTTPSURLOptions {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
-        } else if connection.connectionAccessSecurityLevel == .undefined, !connection.hasOnlyHTTPSURLOptions {
+        } else if connection.connectionAccessSecurityLevel == .undefined {
             Current.Log.verbose("User has not decided local access security level yet")
             showOnboardingPermissions(
                 steps: OnboardingPermissionsNavigationViewModel.StepID
                     .updateLocalAccessSecurityLevelPreference
             )
-        } else if connection.hasOnlyHTTPSURLOptions {
-            Current.Log.verbose("Skipping local access security level decision because all configured URLs use HTTPS")
         } else {
             Current.Log
                 .verbose(

@@ -158,7 +158,7 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(urls.api, url?.appendingPathComponent("api"))
     }
 
-    func testHasOnlyHTTPSURLOptions() {
+    func testHasHTTPSURLOptionTrueWhenAllURLsUseHTTPS() {
         let info = ConnectionInfo(
             externalURL: URL(string: "https://external.example.com"),
             internalURL: URL(string: "https://internal.example.com"),
@@ -173,11 +173,11 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertTrue(info.hasOnlyHTTPSURLOptions)
+        XCTAssertTrue(info.hasHTTPSURLOption)
         XCTAssertFalse(info.hasNonHTTPSURLOptions)
     }
 
-    func testHasOnlyHTTPSURLOptionsFalseWhenHTTPURLExists() {
+    func testHasHTTPSURLOptionTrueWhenMixedURLSchemesExist() {
         let info = ConnectionInfo(
             externalURL: URL(string: "https://external.example.com"),
             internalURL: URL(string: "http://internal.example.com"),
@@ -192,7 +192,26 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertFalse(info.hasOnlyHTTPSURLOptions)
+        XCTAssertTrue(info.hasHTTPSURLOption)
+        XCTAssertTrue(info.hasNonHTTPSURLOptions)
+    }
+
+    func testHasHTTPSURLOptionFalseWhenOnlyHTTPURLsExist() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "http://external.example.com"),
+            internalURL: URL(string: "http://internal.example.com"),
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        XCTAssertFalse(info.hasHTTPSURLOption)
         XCTAssertTrue(info.hasNonHTTPSURLOptions)
     }
 
