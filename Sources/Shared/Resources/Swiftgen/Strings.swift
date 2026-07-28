@@ -861,11 +861,23 @@ public enum L10n {
       public enum Tabs {
         /// Tabs
         public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.title") }
+        public enum Add {
+          /// Add Tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.add.title") }
+        }
         public enum Maximum {
           /// CarPlay limits how many tabs are displayed in the car (up to %li, depending on the vehicle). Extra tabs won't be shown.
           public static func footer(_ p1: Int) -> String {
             return L10n.tr("Localizable", "carPlay.config.tabs.maximum.footer", p1)
           }
+        }
+        public enum Name {
+          /// Tab Name
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.name.title") }
+        }
+        public enum New {
+          /// New Tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.new.title") }
         }
       }
     }

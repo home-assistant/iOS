@@ -46,6 +46,10 @@ struct CarPlayConfigTests {
             "CarPlay config showAddEditButtons should be nil when column is absent"
         )
         #expect(
+            carPlayConfig?.tabFolders == nil,
+            "CarPlay config tabFolders should be nil when column is absent"
+        )
+        #expect(
             carPlayConfig?.resolvedShowAddEditButtons == true,
             "CarPlay config should show Add/Edit buttons by default"
         )
@@ -94,5 +98,20 @@ struct CarPlayConfigTests {
         #expect(config.name(for: .folder(folderId: "folder-1")) == "Garage")
         #expect(config.name(for: .folder(folderId: "missing")) == CarPlayTab.folder(folderId: "missing").name)
         #expect(config.name(for: .quickAccess) == CarPlayTab.quickAccess.name)
+    }
+
+    @Test func tabOnlyFoldersResolveLikeQuickAccessFolders() {
+        let quickAccessFolder = MagicItem(id: "qa-folder", serverId: "", type: .folder, displayText: "Garage")
+        let tabFolder = MagicItem(id: "tab-folder", serverId: "", type: .folder, displayText: "Commute")
+        let config = CarPlayConfig(
+            tabs: [.quickAccess, .folder(folderId: "tab-folder")],
+            quickAccessItems: [quickAccessFolder],
+            tabFolders: [tabFolder]
+        )
+        // Tab-only folders resolve for tabs, but stay out of the Quick Access folder list.
+        #expect(config.folders == [quickAccessFolder])
+        #expect(config.allFolders == [quickAccessFolder, tabFolder])
+        #expect(config.folder(withId: "tab-folder")?.id == "tab-folder")
+        #expect(config.name(for: .folder(folderId: "tab-folder")) == "Commute")
     }
 }

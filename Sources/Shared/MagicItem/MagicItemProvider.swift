@@ -70,6 +70,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
         carPlayConfig.quickAccessItems = normalizeCarPlayItems(carPlayConfig.quickAccessItems)
+        if let tabFolders = carPlayConfig.tabFolders {
+            carPlayConfig.tabFolders = normalizeCarPlayItems(migrateItemsIfNeeded(items: tabFolders))
+        }
 
         do {
             try Current.database().write { db in

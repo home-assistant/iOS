@@ -208,7 +208,10 @@
 "carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Requires iOS 26 or later";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Show buttons to add and edit Quick Access items directly from the car.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Show Add and Edit buttons";
+"carPlay.config.tabs.add.title" = "Add Tab";
 "carPlay.config.tabs.maximum.footer" = "CarPlay limits how many tabs are displayed in the car (up to %li, depending on the vehicle). Extra tabs won't be shown.";
+"carPlay.config.tabs.name.title" = "Tab Name";
+"carPlay.config.tabs.new.title" = "New Tab";
 "carPlay.config.tabs.title" = "Tabs";
 "carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";

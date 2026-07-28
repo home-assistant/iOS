@@ -8,19 +8,24 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
     public var quickAccessItems: [MagicItem] = []
     public var quickAccessLayout: CarPlayQuickAccessLayout?
     public var showAddEditButtons: Bool?
+    /// Folders created directly as tabs. They back a `.folder` tab like Quick Access folders do,
+    /// but are not part of `quickAccessItems`, so the Quick Access tab never renders them.
+    public var tabFolders: [MagicItem]?
 
     public init(
         id: String = CarPlayConfig.carPlayConfigId,
         tabs: [CarPlayTab] = [.quickAccess, .areas, .settings],
         quickAccessItems: [MagicItem] = [],
         quickAccessLayout: CarPlayQuickAccessLayout? = nil,
-        showAddEditButtons: Bool? = nil
+        showAddEditButtons: Bool? = nil,
+        tabFolders: [MagicItem]? = nil
     ) {
         self.id = id
         self.tabs = tabs
         self.quickAccessItems = quickAccessItems
         self.quickAccessLayout = quickAccessLayout
         self.showAddEditButtons = showAddEditButtons
+        self.tabFolders = tabFolders
     }
 
     public var resolvedQuickAccessLayout: CarPlayQuickAccessLayout {
@@ -46,13 +51,18 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         quickAccessItems.filter { $0.type == .folder }
     }
 
+    /// Every folder a tab can reference: Quick Access folders plus tab-only folders.
+    public var allFolders: [MagicItem] {
+        folders + (tabFolders ?? [])
+    }
+
     public func folder(withId folderId: String) -> MagicItem? {
-        quickAccessItems.first(where: { $0.type == .folder && $0.id == folderId })
+        allFolders.first(where: { $0.type == .folder && $0.id == folderId })
     }
 
     /// Display name for a tab, resolving folder tabs against this configuration's folders.
     public func name(for tab: CarPlayTab) -> String {
-        tab.name(quickAccessItems: quickAccessItems)
+        tab.name(folders: allFolders)
     }
 }
 
@@ -157,9 +167,9 @@ public enum CarPlayTab: RawRepresentable, Codable, CaseIterable, DatabaseValueCo
     }
 
     /// Display name for the tab; folder tabs resolve their name from the folder item they reference.
-    public func name(quickAccessItems: [MagicItem]) -> String {
+    public func name(folders: [MagicItem]) -> String {
         guard let folderId,
-              let folder = quickAccessItems.first(where: { $0.type == .folder && $0.id == folderId }) else {
+              let folder = folders.first(where: { $0.type == .folder && $0.id == folderId }) else {
             return name
         }
         return folder.displayText ?? name

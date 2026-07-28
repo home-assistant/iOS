@@ -53,7 +53,7 @@ class CarPlaySceneDelegate: UIResponder {
     private func setTemplates(config: CarPlayConfig?) {
         var visibleTemplates: [any CarPlayTemplateProvider] = []
         if let config {
-            subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems)
+            subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems + (config.tabFolders ?? []))
             guard hasConfigChanged(config, comparedTo: cachedConfig) else { return }
             let previousTabs = cachedConfig?.tabs
             let previousFolderTabSignature = folderTabSignature(config: cachedConfig)
@@ -155,6 +155,7 @@ class CarPlaySceneDelegate: UIResponder {
         guard let cached else { return true }
         return config != cached
             || config.quickAccessItems.map(\.contentHash) != cached.quickAccessItems.map(\.contentHash)
+            || config.tabFolders?.map(\.contentHash) != cached.tabFolders?.map(\.contentHash)
     }
 
     /// Signature of the folder tabs' display metadata (name/icon), which is baked into the tab bar
