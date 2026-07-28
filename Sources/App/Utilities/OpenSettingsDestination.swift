@@ -7,6 +7,7 @@ enum OpenSettingsDestination {
     case notification
     case focus
     case backgroundRefresh
+    case health
 
     var url: URL? {
         if Current.isCatalyst {
@@ -23,7 +24,7 @@ enum OpenSettingsDestination {
             case .notification, .focus:
                 bundleIdentifier = "com.apple.preference.notifications"
                 query = nil
-            case .backgroundRefresh:
+            case .backgroundRefresh, .health:
                 bundleIdentifier = nil
                 query = nil
             }
