@@ -119,7 +119,7 @@ struct EntityPicker: View {
             }
             filtersView
             ForEach(viewModel.filteredGroups) { group in
-                Section(group.title.uppercased()) {
+                Section {
                     ForEach(group.entities, id: \.id) { entity in
                         Button(action: {
                             if allowMultipleSelection {
@@ -136,6 +136,8 @@ struct EntityPicker: View {
                         })
                         .tint(.accentColor)
                     }
+                } header: {
+                    sectionHeader(for: group)
                 }
             }
         }
@@ -149,6 +151,22 @@ struct EntityPicker: View {
                 viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
             }
             isSearchFocused = true
+        }
+    }
+
+    @ViewBuilder
+    private func sectionHeader(for group: EntityPickerGroup) -> some View {
+        HStack {
+            Text(group.title.uppercased())
+            if allowMultipleSelection {
+                Spacer()
+                Button(L10n.EntityPicker.addAll) {
+                    addAll(in: group)
+                }
+                .textCase(nil)
+                .font(DesignSystem.Font.footnote)
+                .tint(.haPrimary)
+            }
         }
     }
 
@@ -179,6 +197,12 @@ struct EntityPicker: View {
         if let index = selectedEntities.firstIndex(where: { $0.id == entity.id }) {
             selectedEntities.remove(at: index)
         } else {
+            selectedEntities.append(entity)
+        }
+    }
+
+    private func addAll(in group: EntityPickerGroup) {
+        for entity in group.entities where !selectedEntities.contains(where: { $0.id == entity.id }) {
             selectedEntities.append(entity)
         }
     }
@@ -243,6 +267,7 @@ struct EntityPicker: View {
         if servers.count > 1 {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Server.title,
+                icon: .serverRack,
                 pickerItems: servers.sorted(by: { $0.info.sortOrder < $1.info.sortOrder }).map {
                     EntityFilterPickerView.PickerItem(id: $0.identifier.rawValue, title: $0.info.name)
                 },
@@ -256,6 +281,7 @@ struct EntityPicker: View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Domain.title,
+                icon: .tag,
                 pickerItems: [EntityFilterPickerView.PickerItem(
                     id: "",
                     title: L10n.EntityPicker.Filter.Domain.All.title
@@ -276,6 +302,7 @@ struct EntityPicker: View {
         if !viewModel.areaData.isEmpty {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Area.title,
+                icon: .houseFill,
                 pickerItems: [EntityFilterPickerView.PickerItem(
                     id: "",
                     title: L10n.EntityPicker.Filter.Area.All.title
@@ -296,6 +323,7 @@ struct EntityPicker: View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.GroupBy.title,
+                icon: .listBulletRectangle,
                 pickerItems: EntityGrouping.allCases.map {
                     EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
                 },

@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -13,12 +14,20 @@ struct EntityFilterPickerView: View {
     }
 
     let title: String
+    let icon: SFSymbol?
     let pickerItems: [PickerItem]
     @Binding var selectedItemId: String?
     let style: Style
 
-    init(title: String, pickerItems: [PickerItem], selectedItemId: Binding<String?>, style: Style = .compact) {
+    init(
+        title: String,
+        icon: SFSymbol? = nil,
+        pickerItems: [PickerItem],
+        selectedItemId: Binding<String?>,
+        style: Style = .compact
+    ) {
         self.title = title
+        self.icon = icon
         self.pickerItems = pickerItems
         self._selectedItemId = selectedItemId
         self.style = style
@@ -33,17 +42,24 @@ struct EntityFilterPickerView: View {
         }
     }
 
+    // A `Menu` is used instead of a `.menu`-styled `Picker` because the latter drops images from a
+    // custom label, which would hide the filter icon.
     var compactContent: some View {
-        Picker(selection: Binding(
-            get: { selectedItemId ?? "" },
-            set: { newValue in selectedItemId = newValue.isEmpty ? nil : newValue }
-        ), label: Text(pickerItems.first { $0.id == selectedItemId }?.title ?? title)) {
+        Menu {
             ForEach(pickerItems, id: \.id) { item in
-                Text(item.title).tag(item.id)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Button {
+                    selectedItemId = item.id.isEmpty ? nil : item.id
+                } label: {
+                    if item.id == (selectedItemId ?? "") {
+                        Label(item.title, systemSymbol: .checkmark)
+                    } else {
+                        Text(item.title)
+                    }
+                }
             }
+        } label: {
+            compactLabel
         }
-        .pickerStyle(.menu)
         .frame(maxWidth: .infinity, alignment: .leading)
         .font(DesignSystem.Font.callout)
         .foregroundStyle(.secondary)
@@ -60,10 +76,29 @@ struct EntityFilterPickerView: View {
         }
     }
 
+    // Always shows the filter's icon (and, when nothing is selected, its title) so the capsule
+    // communicates which dimension it filters even after a value is picked.
+    @ViewBuilder
+    private var compactLabel: some View {
+        let selectedTitle = pickerItems.first { $0.id == selectedItemId }?.title
+        HStack(spacing: DesignSystem.Spaces.half) {
+            if let icon {
+                Image(systemSymbol: icon)
+            }
+            Text(selectedTitle ?? title)
+        }
+    }
+
     var descriptionContent: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Text(title)
-                .font(.caption2.bold())
+            Label {
+                Text(title)
+            } icon: {
+                if let icon {
+                    Image(systemSymbol: icon)
+                }
+            }
+            .font(.caption2.bold())
             Menu {
                 ForEach(pickerItems, id: \.id) { item in
                     Button {
@@ -105,13 +140,15 @@ struct EntityFilterPickerView: View {
     ScrollView(.horizontal) {
         HStack {
             EntityFilterPickerView(
-                title: "Filter 1",
-                pickerItems: [.init(id: "1", title: "Abc"), .init(id: "2", title: "Def")],
+                title: "Servers",
+                icon: .serverRack,
+                pickerItems: [.init(id: "1", title: "Home"), .init(id: "2", title: "Office")],
                 selectedItemId: .constant("1")
             )
             EntityFilterPickerView(
-                title: "Filter 1",
-                pickerItems: [.init(id: "1", title: "Abc"), .init(id: "2", title: "Def")],
+                title: "Area",
+                icon: .houseFill,
+                pickerItems: [.init(id: "1", title: "Kitchen"), .init(id: "2", title: "Living room")],
                 selectedItemId: .constant("1")
             )
         }

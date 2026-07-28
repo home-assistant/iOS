@@ -1621,6 +1621,8 @@ public enum L10n {
   }
 
   public enum EntityPicker {
+    /// Add all
+    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
