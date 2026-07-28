@@ -10,6 +10,7 @@ class HealthKitSensorTests: XCTestCase {
     private var originalDate: (() -> Date)!
     private var originalCalendar: (() -> Calendar)!
     private var originalHealthKitService: HealthKitService!
+    private var originalSensors: SensorContainer!
     private var previousDisabledSensors: Any?
 
     override func setUp() {
@@ -18,6 +19,7 @@ class HealthKitSensorTests: XCTestCase {
         originalDate = Current.date
         originalCalendar = Current.calendar
         originalHealthKitService = Current.healthKitService
+        originalSensors = Current.sensors
         previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
         request = .init(
@@ -31,6 +33,7 @@ class HealthKitSensorTests: XCTestCase {
         restingHeartRateQueryCount = 0
         Current.date = { Date(timeIntervalSince1970: 1_000_000) }
         Current.calendar = { Calendar(identifier: .gregorian) }
+        Current.sensors = SensorContainer()
         Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.restingHeartRate.uniqueID)
@@ -50,9 +53,11 @@ class HealthKitSensorTests: XCTestCase {
         Current.date = originalDate
         Current.calendar = originalCalendar
         Current.healthKitService = originalHealthKitService
+        Current.sensors = originalSensors
         originalDate = nil
         originalCalendar = nil
         originalHealthKitService = nil
+        originalSensors = nil
         super.tearDown()
     }
 

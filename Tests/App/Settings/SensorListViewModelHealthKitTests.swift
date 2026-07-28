@@ -5,14 +5,17 @@ import XCTest
 
 class SensorListViewModelHealthKitTests: XCTestCase {
     private var originalHealthKitService: HealthKitService!
+    private var originalSensors: SensorContainer!
     private var previousDisabledSensors: Any?
 
     override func setUp() {
         super.setUp()
 
         originalHealthKitService = Current.healthKitService
+        originalSensors = Current.sensors
         previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
+        Current.sensors = SensorContainer()
         Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
         Current.healthKitService.isAvailable = { true }
     }
@@ -20,7 +23,9 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     override func tearDown() {
         restore(previousDisabledSensors, forKey: "disabledSensors")
         Current.healthKitService = originalHealthKitService
+        Current.sensors = originalSensors
         originalHealthKitService = nil
+        originalSensors = nil
         super.tearDown()
     }
 
@@ -60,7 +65,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
     func testUpdateAllSensorsIncludesHealthSensors() {
         Current.sensors.setEnabled(false, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
-        let viewModel = SensorListViewModel()
+        let viewModel = SensorListViewModelWithoutRefresh()
         viewModel.sensors = [
             WebhookSensor(name: "Health Steps", uniqueID: HealthKitSensor.Metric.steps.uniqueID),
         ]
@@ -68,5 +73,9 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         viewModel.updateAllSensors(isEnabled: true)
 
         XCTAssertTrue(Current.sensors.isEnabled(uniqueID: HealthKitSensor.Metric.steps.uniqueID))
+    }
+
+    private final class SensorListViewModelWithoutRefresh: SensorListViewModel {
+        override func refresh() {}
     }
 }
