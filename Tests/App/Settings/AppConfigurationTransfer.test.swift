@@ -40,11 +40,14 @@ struct AppConfigurationTransferTests {
         try withConfigurationTestWorld { _ in
             let counts = try AppConfigurationTransfer.entryCounts(appSettings: AppSettingsSnapshot.capture())
 
-            for category in AppConfigurationCategory.allCases where category != .appSettings {
+            // App settings always exist, and the snooze actions table seeds its defaults when it is
+            // created, so both travel in an export even from a device that configured nothing.
+            let alwaysPresent: Set<AppConfigurationCategory> = [.appSettings, .notificationSnoozeActions]
+            for category in AppConfigurationCategory.allCases where !alwaysPresent.contains(category) {
                 #expect(counts[category] == 0, "expected \(category.rawValue) to be empty")
             }
-            // App settings always exist, so they are always part of an export.
             #expect(counts[.appSettings] == 1)
+            #expect((counts[.notificationSnoozeActions] ?? 0) > 0)
         }
     }
 
@@ -69,12 +72,14 @@ struct AppConfigurationTransferTests {
         try withConfigurationTestWorld { database in
             try seedEveryCategory(in: database, serverId: validServerId)
             let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+            // The seeded action plus the defaults the table creates for itself.
+            let snoozeActionCount = try database.read { db in try NotificationSnoozeAction.fetchCount(db) }
 
             let counts = try AppConfigurationTransfer.inspectImportFile(from: url)
 
             #expect(counts[.customWidgets] == 1)
             #expect(counts[.nfcTags] == 1)
-            #expect(counts[.notificationSnoozeActions] == 1)
+            #expect(counts[.notificationSnoozeActions] == snoozeActionCount)
             #expect(counts[.kiosk] == 1)
         }
     }
