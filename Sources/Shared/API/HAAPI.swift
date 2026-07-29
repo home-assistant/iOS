@@ -966,9 +966,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func registerSensors() -> Promise<Void> {
+    /// - Parameter limitedToUniqueIDs: when given, only these sensors are registered. Used to push a
+    ///   single enablement change without re-registering everything.
+    public func registerSensors(limitedToUniqueIDs uniqueIDs: Set<String>? = nil) -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)
+        }.map { sensors in
+            guard let uniqueIDs else { return sensors }
+            return sensors.filter { $0.UniqueID.map(uniqueIDs.contains) ?? false }
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { [server] sensor in
@@ -1622,7 +1627,15 @@ extension HomeAssistantAPI: SensorObserver {
         lastUpdate: SensorObserverUpdate?
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
-            UpdateSensors(trigger: .Signaled)
+            firstly { () -> Promise<Void> in
+                guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
+                    return .value(())
+                }
+                // Carries the new enablement to Home Assistant, which only `register_sensor` can do.
+                return registerSensors(limitedToUniqueIDs: Set(changedUniqueIDs))
+            }.then {
+                self.UpdateSensors(trigger: .Signaled)
+            }
         }.cauterize()
     }
 
