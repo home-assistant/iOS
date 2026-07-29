@@ -487,7 +487,9 @@ private extension DebugDatabaseTransfer {
     }
 }
 
-private extension [MagicItem] {
+extension [MagicItem] {
+    /// Drops items belonging to a server this device does not know about, recursing into folders.
+    /// Shared with `AppConfigurationTransfer`, which sanitizes the same item lists.
     func sanitized(knownServerIds: Set<String>) -> [MagicItem] {
         compactMap { item in
             var item = item
