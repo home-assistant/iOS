@@ -5999,8 +5999,6 @@ public enum L10n {
         public static var granted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.granted") }
         /// Not requested
         public static var notRequested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.not_requested") }
-        /// Requested
-        public static var requested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.requested") }
         /// Restricted
         public static var restricted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.restricted") }
         /// While in use

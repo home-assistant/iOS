@@ -1819,7 +1819,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.permissions.status.denied" = "Denied";
 "settings_sensors.permissions.status.granted" = "Granted";
 "settings_sensors.permissions.status.not_requested" = "Not requested";
-"settings_sensors.permissions.status.requested" = "Requested";
 "settings_sensors.permissions.status.restricted" = "Restricted";
 "settings_sensors.permissions.status.while_in_use" = "While in use";
 "settings_sensors.sensors.enable_all" = "Enable all sensors";
