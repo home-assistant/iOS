@@ -2,6 +2,7 @@
 import Foundation
 import PromiseKit
 import Shared
+import UIKit
 
 @MainActor
 class HealthSensorListViewModel: ObservableObject {
