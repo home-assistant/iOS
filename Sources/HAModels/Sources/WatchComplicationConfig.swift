@@ -95,6 +95,11 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// see `showsCustomized()`.
     public var isCustomized: Bool?
 
+    /// Whether the user opted into the editor's "Custom colors" toggle, so it reopens in the state it
+    /// was saved in — an opt-in that kept the default colors is no longer read back as "off". Nullable
+    /// so pre-existing rows fall back to inferring it from the stored colors; see `usesCustomColors()`.
+    public var customColorsEnabled: Bool?
+
     public struct FamilyOptions: Codable, Equatable {
         public var showName: Bool?
         public var showValue: Bool?
@@ -155,6 +160,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case showValue, showUnit, showWhenInactive, showMin, showMax
         case customTextTemplate, customGaugeTemplate, sortOrder, families, isCustomized
         case customGaugeColorTemplate, customIconColorTemplate, customTextColorTemplate
+        case customColorsEnabled
     }
 
     public init(
@@ -185,7 +191,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         customTextColorTemplate: String? = nil,
         sortOrder: Int = 0,
         families: [String: FamilyOptions]? = nil,
-        isCustomized: Bool? = nil
+        isCustomized: Bool? = nil,
+        customColorsEnabled: Bool? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -215,6 +222,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.sortOrder = sortOrder
         self.families = families
         self.isCustomized = isCustomized
+        self.customColorsEnabled = customColorsEnabled
     }
 
     /// Whether the editor's "Customize" (per-size options) disclosure should start expanded: the
@@ -222,6 +230,39 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// (pre-existing rows).
     public func showsCustomized() -> Bool {
         isCustomized ?? (families?.isEmpty == false)
+    }
+
+    /// Whether the editor's "Custom colors" toggle should start on: the user's explicit choice when
+    /// stored, else inferred from any stored color (pre-existing rows). The inference covers the
+    /// color *templates* too — a template-only color setup left the toggle off, which hid the very
+    /// template fields that were driving the complication's colors.
+    public func usesCustomColors() -> Bool {
+        if let customColorsEnabled { return customColorsEnabled }
+        return hasStoredCustomColors
+    }
+
+    /// Whether any customizable color is actually stored — static pickers (global icon color, and the
+    /// per-size gauge tint / text color) or the color templates.
+    private var hasStoredCustomColors: Bool {
+        if iconColor != nil { return true }
+        if families?.values.contains(where: { $0.tint != nil || $0.textColor != nil }) == true { return true }
+        return [customGaugeColorTemplate, customIconColorTemplate, customTextColorTemplate]
+            .contains { !($0 ?? "").isEmpty }
+    }
+
+    /// Clears every customizable color, so turning "Custom colors" off leaves nothing behind that would
+    /// keep tinting the complication (and would read back as the toggle being on).
+    public mutating func clearCustomColors() {
+        iconColor = nil
+        customGaugeColorTemplate = nil
+        customIconColorTemplate = nil
+        customTextColorTemplate = nil
+        families = families?.mapValues { options in
+            var options = options
+            options.tint = nil
+            options.textColor = nil
+            return options
+        }
     }
 
     public var displayName: String {

@@ -302,6 +302,8 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
                     t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
                     t.column(DatabaseTables.WatchComplicationConfig.isCustomized.rawValue, .boolean)
+                    // Nullable: absent means "infer from the stored colors" (see usesCustomColors()).
+                    t.column(DatabaseTables.WatchComplicationConfig.customColorsEnabled.rawValue, .boolean)
                 }
             }
         } else {

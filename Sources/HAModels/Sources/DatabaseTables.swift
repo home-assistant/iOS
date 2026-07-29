@@ -242,6 +242,7 @@ public enum DatabaseTables {
         case sortOrder
         case families
         case isCustomized
+        case customColorsEnabled
     }
 
     // Default notification quick actions (e.g. snooze presets)
