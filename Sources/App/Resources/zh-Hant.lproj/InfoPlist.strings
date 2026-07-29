@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "拍照並上傳至 Home Assistant 伺服器。";
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
 "NSFocusStatusUsageDescription" = "以感測器方式回報專注狀態。";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "與 Home Assistant 設備確認與進行通訊。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 另外還需要設定 '永遠' 允許存取位置權限，以便應用程式可以執行背景操作。\n\n ⚠️ 沒有此權限，應用程式將無法決定在背景使用哪個連線（本地或遠端），並將始終使用遠端連線。";
 "NSLocationAlwaysUsageDescription" = "程式需要提供以下權限，如存取 iBeacons、地址圍欄、背景運作等功能來取得目前的座標更新與精確度回報資訊。";
