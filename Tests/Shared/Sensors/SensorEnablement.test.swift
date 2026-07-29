@@ -19,6 +19,7 @@ class SensorEnablementTests: XCTestCase {
 
         SensorEnablementStore.resetForTesting()
         container = SensorContainer()
+        container.register(provider: MockEnablementSensorProvider.self)
     }
 
     override func tearDown() {
@@ -151,10 +152,11 @@ class SensorEnablementTests: XCTestCase {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
 
         try generateSensors(withUniqueIDs: ["some_other_sensor"], limitedToProvider: true)
-        try generateSensors(withUniqueIDs: [dynamicSensorID])
+        // A limited run can't stand in for the complete set, so it decides nothing on its own.
+        XCTAssertFalse(container.isEnabled(uniqueID: "some_other_sensor"))
 
-        // A run that only asked some of the providers can't stand in for the complete set, so the
-        // battery below still gets its chance to carry over.
+        // Which leaves the battery below still able to carry over on the next full run.
+        try generateSensors(withUniqueIDs: [dynamicSensorID])
         XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID))
     }
 
@@ -206,7 +208,6 @@ class SensorEnablementTests: XCTestCase {
         MockEnablementSensorProvider.returnedSensors = uniqueIDs.map {
             WebhookSensor(name: $0, uniqueID: $0)
         }
-        container.register(provider: MockEnablementSensorProvider.self)
 
         let response = container.sensors(
             reason: .trigger("unit-test"),
