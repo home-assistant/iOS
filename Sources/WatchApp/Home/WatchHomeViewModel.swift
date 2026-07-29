@@ -169,7 +169,7 @@ final class WatchHomeViewModel: ObservableObject {
         }
         homeType = .undefined
         guard Communicator.shared.currentReachability != .notReachable else {
-            Current.Log.info("iPhone reachability is not immediate reachable")
+            Current.Log.info("iPhone is not immediately reachable")
             degradeToBackgroundPull(userInitiated: userInitiated)
             return
         }
@@ -195,8 +195,11 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func degradeToBackgroundPull(userInitiated: Bool) {
         resetSyncState()
-        // Clears `isSyncInFlight` too, so a later reload isn't blocked by this abandoned sync.
-        updateLoading(isLoading: false)
+        // Cleared here rather than through `updateLoading`, which hops through the main queue: that
+        // block would land after the status set below and blank it. Clearing `isSyncInFlight` also
+        // keeps this abandoned sync from blocking a later reload.
+        isLoading = false
+        isSyncInFlight = false
         loadCache()
         setLoadingStatus(L10n.Watch.Home.Sync.waiting)
         enqueueGuaranteedConfigPull()
@@ -665,20 +668,25 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishCacheLoad() {
         guard !isSyncInFlight else { return }
-        updateLoading(isLoading: false)
+        // The cache finishing rendering is not what ends a wait, so any status the caller deliberately
+        // left up — "waiting for iPhone" after a deferred sync — stays on screen.
+        updateLoading(isLoading: false, clearStatus: false)
     }
 
-    private func updateLoading(isLoading: Bool) {
+    private func updateLoading(isLoading: Bool, clearStatus: Bool = true) {
         DispatchQueue.main.async { [weak self] in
             self?.isLoading = isLoading
             if !isLoading {
                 // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
-                // start. Cancel any pending throttled status update and clear immediately.
+                // start.
                 self?.isSyncInFlight = false
-                self?.pendingStatusWork?.cancel()
-                self?.pendingStatusWork = nil
-                self?.loadingStatus = nil
                 self?.syncProgress = nil
+                if clearStatus {
+                    // Cancel any pending throttled status update and clear immediately.
+                    self?.pendingStatusWork?.cancel()
+                    self?.pendingStatusWork = nil
+                    self?.loadingStatus = nil
+                }
             }
         }
     }
