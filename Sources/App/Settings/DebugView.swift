@@ -78,6 +78,15 @@ struct DebugView: View {
                     )
                 }
 
+                NavigationLink {
+                    ImportExportConfigurationView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .arrowLeftArrowRight),
+                        title: L10n.Settings.Debugging.ConfigurationTransfer.title
+                    )
+                }
+
                 if #available(iOS 17, *), !Current.isCatalyst {
                     NavigationLink {
                         ThreadCredentialsManagementView()
@@ -946,6 +955,7 @@ extension DebugView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.EventLog.title),
             SettingsSearchEntry(L10n.Settings.LocationHistory.title),
             SettingsSearchEntry(L10n.Settings.DatabaseExplorer.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.ConfigurationTransfer.title),
             SettingsSearchEntry(L10n.Settings.Debugging.CachedEntityData.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ClearWebCache.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ResetApp.title),
