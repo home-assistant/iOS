@@ -1633,6 +1633,10 @@ extension HomeAssistantAPI: SensorObserver {
                 }
                 // Carries the new enablement to Home Assistant, which only `register_sensor` can do.
                 return registerSensors(limitedToUniqueIDs: Set(changedUniqueIDs))
+            }.recover { error -> Promise<Void> in
+                // A failed registration must not stop the state update that follows it.
+                Current.Log.error("failed to register sensors after enablement change: \(error)")
+                return .value(())
             }.then {
                 self.UpdateSensors(trigger: .Signaled)
             }
