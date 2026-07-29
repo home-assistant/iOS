@@ -1476,6 +1476,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.search_keywords.reminders_sync" = "reminders, todo, to-do, tasks, lists, shopping list, sync";
 "settings.search_keywords.sensors" = "battery, motion, pedometer, focus, device data";
 "settings.search_keywords.servers" = "connection, url, account, instance, add server";
+"settings.search_keywords.spatial_scanner" = "roomplan, lidar, floor plan, 3d, room scan, spatial";
 "settings.search_keywords.watch" = "apple watch, watchos, configuration";
 "settings.search_keywords.widgets" = "home screen, lock screen, custom widgets";
 "settings.sections.customize_experience.header" = "Customize your experience";
@@ -1485,6 +1486,27 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.sections.quick_access.header" = "Quick access";
 "settings.sections.share_from_device.header" = "Share from this device";
 "settings.sections.stay_informed.header" = "Stay informed";
+
+"spatial_scanner.camera_denied" = "Camera access is required to scan a room. Allow camera access in Settings and try again.";
+"spatial_scanner.capture.cancel" = "Cancel";
+"spatial_scanner.capture.done" = "Done";
+"spatial_scanner.capture.guide" = "Move slowly and include every wall, doorway, window, and large object.";
+"spatial_scanner.capture.processing" = "Building your 3D room…";
+"spatial_scanner.error.generic" = "The spatial scan could not be completed. %@";
+"spatial_scanner.error.no_server" = "Choose a Home Assistant server before starting a scan.";
+"spatial_scanner.error.open_settings" = "Open Settings";
+"spatial_scanner.error.title" = "Spatial Scanner";
+"spatial_scanner.intro" = "Use your device’s LiDAR scanner to capture walls, doors, windows, and furniture as precise parametric geometry. Photos and textures are not recorded.";
+"spatial_scanner.preparing" = "Checking connection…";
+"spatial_scanner.preview.scan_again" = "Scan Again";
+"spatial_scanner.preview.send" = "Send to Home Assistant";
+"spatial_scanner.preview.sending" = "Sending scan…";
+"spatial_scanner.server.footer" = "The selected server must have the Spatial Scanner receiver installed and your account must be an administrator.";
+"spatial_scanner.server.header" = "Home Assistant Server";
+"spatial_scanner.start" = "Start Room Scan";
+"spatial_scanner.success.detail" = "Scan %@ was received and stored by Home Assistant.";
+"spatial_scanner.success.title" = "Scan Sent";
+"spatial_scanner.title" = "Spatial Scanner";
 "settings.server_select.title" = "Server";
 "settings.server_switching.by_location.footer" = "When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.";
 "settings.server_switching.by_location.title" = "Switch Server by Location";

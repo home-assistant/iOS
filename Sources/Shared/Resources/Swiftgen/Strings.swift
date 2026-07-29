@@ -4916,6 +4916,8 @@ public enum L10n {
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
       public static var servers: String { return L10n.tr("Localizable", "settings.search_keywords.servers") }
+      /// roomplan, lidar, floor plan, 3d, room scan, spatial
+      public static var spatialScanner: String { return L10n.tr("Localizable", "settings.search_keywords.spatial_scanner") }
       /// apple watch, watchos, configuration
       public static var watch: String { return L10n.tr("Localizable", "settings.search_keywords.watch") }
       /// home screen, lock screen, custom widgets
@@ -6036,6 +6038,63 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum SpatialScanner {
+    /// Camera access is required to scan a room. Allow camera access in Settings and try again.
+    public static var cameraDenied: String { return L10n.tr("Localizable", "spatial_scanner.camera_denied") }
+    /// Use your device’s LiDAR scanner to capture walls, doors, windows, and furniture as precise parametric geometry. Photos and textures are not recorded.
+    public static var intro: String { return L10n.tr("Localizable", "spatial_scanner.intro") }
+    /// Checking connection…
+    public static var preparing: String { return L10n.tr("Localizable", "spatial_scanner.preparing") }
+    /// Start Room Scan
+    public static var start: String { return L10n.tr("Localizable", "spatial_scanner.start") }
+    /// Spatial Scanner
+    public static var title: String { return L10n.tr("Localizable", "spatial_scanner.title") }
+    public enum Capture {
+      /// Cancel
+      public static var cancel: String { return L10n.tr("Localizable", "spatial_scanner.capture.cancel") }
+      /// Done
+      public static var done: String { return L10n.tr("Localizable", "spatial_scanner.capture.done") }
+      /// Move slowly and include every wall, doorway, window, and large object.
+      public static var guide: String { return L10n.tr("Localizable", "spatial_scanner.capture.guide") }
+      /// Building your 3D room…
+      public static var processing: String { return L10n.tr("Localizable", "spatial_scanner.capture.processing") }
+    }
+    public enum Error {
+      /// The spatial scan could not be completed. %@
+      public static func generic(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "spatial_scanner.error.generic", String(describing: p1))
+      }
+      /// Choose a Home Assistant server before starting a scan.
+      public static var noServer: String { return L10n.tr("Localizable", "spatial_scanner.error.no_server") }
+      /// Open Settings
+      public static var openSettings: String { return L10n.tr("Localizable", "spatial_scanner.error.open_settings") }
+      /// Spatial Scanner
+      public static var title: String { return L10n.tr("Localizable", "spatial_scanner.error.title") }
+    }
+    public enum Preview {
+      /// Scan Again
+      public static var scanAgain: String { return L10n.tr("Localizable", "spatial_scanner.preview.scan_again") }
+      /// Send to Home Assistant
+      public static var send: String { return L10n.tr("Localizable", "spatial_scanner.preview.send") }
+      /// Sending scan…
+      public static var sending: String { return L10n.tr("Localizable", "spatial_scanner.preview.sending") }
+    }
+    public enum Server {
+      /// The selected server must have the Spatial Scanner receiver installed and your account must be an administrator.
+      public static var footer: String { return L10n.tr("Localizable", "spatial_scanner.server.footer") }
+      /// Home Assistant Server
+      public static var header: String { return L10n.tr("Localizable", "spatial_scanner.server.header") }
+    }
+    public enum Success {
+      /// Scan %@ was received and stored by Home Assistant.
+      public static func detail(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "spatial_scanner.success.detail", String(describing: p1))
+      }
+      /// Scan Sent
+      public static var title: String { return L10n.tr("Localizable", "spatial_scanner.success.title") }
     }
   }
 

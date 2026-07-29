@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if os(iOS) && !targetEnvironment(macCatalyst)
+import RoomPlan
+#endif
 
 enum SettingsItem: String, Hashable, CaseIterable {
     case servers
@@ -12,6 +15,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case notifications
     case liveActivities
     case sensors
+    case spatialScanner
     case nfc
     case macToolbar
     case widgets
@@ -38,6 +42,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
+        case .spatialScanner: return L10n.SpatialScanner.title
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
@@ -79,6 +84,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: Self.iconSize)
             case .sensors:
                 MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: Self.iconSize)
+            case .spatialScanner:
+                MaterialDesignIconsImage(icon: .cubeScanIcon, size: Self.iconSize)
             case .nfc:
                 MaterialDesignIconsImage(icon: .nfcVariantIcon, size: Self.iconSize)
             case .widgets:
@@ -145,6 +152,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
             #endif
         case .sensors:
             SensorListView()
+        case .spatialScanner:
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            SpatialScannerView()
+            #else
+            EmptyView()
+            #endif
         case .nfc:
             TagsView()
         case .widgets:
@@ -201,6 +214,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .remindersSync:
             // Labs feature, limited to TestFlight builds while it matures.
             return Current.isTestFlight
+        case .spatialScanner:
+            return Self.canShowSpatialScanner
         case .macToolbar:
             // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
             return Current.isCatalyst
@@ -235,6 +250,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
+        case .spatialScanner: return L10n.Settings.SearchKeywords.spatialScanner
         case .nfc: return L10n.Settings.SearchKeywords.nfc
         case .widgets: return L10n.Settings.SearchKeywords.widgets
         case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
@@ -272,6 +288,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return []
             #endif
         case .sensors: return SensorListView.settingsSearchEntries
+        case .spatialScanner:
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            return SpatialScannerView.settingsSearchEntries
+            #else
+            return []
+            #endif
         case .nfc: return TagsView.settingsSearchEntries
         case .widgets: return CustomWidgetsListView.settingsSearchEntries
         case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries
@@ -330,6 +352,14 @@ enum SettingsItem: String, Hashable, CaseIterable {
         } else {
             return false
         }
+        #else
+        return false
+        #endif
+    }
+
+    private static var canShowSpatialScanner: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        return RoomCaptureSession.isSupported
         #else
         return false
         #endif
