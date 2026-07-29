@@ -10,12 +10,30 @@ public protocol MagicItemProviderProtocol {
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    var entitiesPerServer: [String: [HAAppEntity]] = [:]
+    var entitiesPerServer: [String: [HAAppEntity]] = [:] {
+        didSet { rebuildEntityIndex() }
+    }
+
+    /// Per-server `entityId → entity` lookup, kept in sync with `entitiesPerServer`. Callers resolve
+    /// info one item at a time — and the watch add flow resolves *every* addable entity in a single
+    /// pass — so a linear search per lookup made that pass quadratic in the number of entities.
+    private var entityIndexPerServer: [String: [String: HAAppEntity]] = [:]
     /// Per-server entity→area and entity→device lookups, built once when entities are loaded so
     /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
     private var areasPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
     private var floorNamesPerServer: [String: [String: String]] = [:]
+
+    private func rebuildEntityIndex() {
+        entityIndexPerServer = entitiesPerServer.mapValues { entities in
+            // First wins, matching the `first(where:)` lookups this index replaced.
+            Dictionary(entities.map { ($0.entityId, $0) }, uniquingKeysWith: { first, _ in first })
+        }
+    }
+
+    private func entity(serverId: String, entityId: String) -> HAAppEntity? {
+        entityIndexPerServer[serverId]?[entityId]
+    }
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
         loadAppEntities { [weak self] in
@@ -178,13 +196,14 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                         .fetchAll(db)
                 }
-                self?.entitiesPerServer[serverId] = entities
                 // Build the entity→area / entity→device lookups once per server (each is a small,
                 // fixed number of DB reads) so `getInfo` can attach the context line per item without
                 // a per-item database read.
                 self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
                 self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
                 self?.floorNamesPerServer[serverId] = entities.floorNamesMap(for: serverId)
+                // Assigned last: it rebuilds the entity index, which the lookups above don't need.
+                self?.entitiesPerServer[serverId] = entities
             } catch {
                 Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
@@ -199,9 +218,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     func getInfo(for item: MagicItem) -> MagicItem.Info? {
         switch item.type {
         case .script:
-            guard let scriptsForServer = entitiesPerServer[item.serverId]?
-                .filter({ $0.domain == Domain.script.rawValue }),
-                let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
+            guard let scriptItem = entity(serverId: item.serverId, entityId: item.id),
+                  scriptItem.domain == Domain.script.rawValue else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
@@ -217,9 +235,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 contextSubtitle: entityContextSubtitle(for: scriptItem)
             )
         case .scene:
-            guard let scenesForServer = entitiesPerServer[item.serverId]?
-                .filter({ $0.domain == Domain.scene.rawValue }),
-                let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
+            guard let sceneItem = entity(serverId: item.serverId, entityId: item.id),
+                  sceneItem.domain == Domain.scene.rawValue else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
@@ -235,8 +252,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 contextSubtitle: entityContextSubtitle(for: sceneItem)
             )
         case .entity:
-            guard let entitiesForServer = entitiesPerServer[item.serverId],
-                  let entityItem = entitiesForServer.first(where: { $0.entityId == item.id }) else {
+            guard let entityItem = entity(serverId: item.serverId, entityId: item.id) else {
                 Current.Log
                     .error(
                         "Failed to get magic item entity info for item id: \(item.id)"
@@ -288,16 +304,28 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func getAreaName(for item: MagicItem) -> String? {
-        guard let entitiesForServer = entitiesPerServer[item.serverId] else {
-            return nil
-        }
-
-        let areaName = entitiesForServer.areasMap(for: item.serverId)[item.id]?.name
+        let areaName = areaMap(for: item.serverId)[item.id]?.name
         if let areaName, !areaName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return areaName
         }
 
         return nil
+    }
+
+    /// The entity→area map for a server, reusing the one built by `loadAppEntities`. Built (and
+    /// cached) on demand when entities were assigned without going through that path, so it's still
+    /// resolved — but never once per item: rebuilding it meant a full areas fetch from the database
+    /// for every single item, which is what made the watch add flow's area resolution so slow.
+    private func areaMap(for serverId: String) -> [String: AppArea] {
+        if let areas = areasPerServer[serverId] {
+            return areas
+        }
+        guard let entitiesForServer = entitiesPerServer[serverId] else {
+            return [:]
+        }
+        let areas = entitiesForServer.areasMap(for: serverId)
+        areasPerServer[serverId] = areas
+        return areas
     }
 
     /// Builds the "Server • Area • Device" context line for an entity-backed item, reusing the

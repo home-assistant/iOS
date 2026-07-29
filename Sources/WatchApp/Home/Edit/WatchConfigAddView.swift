@@ -7,7 +7,11 @@ import SwiftUI
 /// The phone owns the entity database, so the entity list is fetched from it. Committing performs the
 /// mutation, persists, and dismisses the whole sheet via `finish`.
 struct WatchConfigAddView: View {
-    @ObservedObject var viewModel: WatchHomeViewModel
+    /// Held without `@ObservedObject` on purpose: the add flow only *calls* the view model (fetch and
+    /// mutate) and renders none of its published state, so observing it would rebuild this whole
+    /// navigation stack on every unrelated publish — a background sync alone republishes its progress
+    /// and status for every chunk it receives.
+    let viewModel: WatchHomeViewModel
     /// When set, added items go into this folder instead of the root. Folder creation is only offered
     /// at the root (folders don't nest on the watch).
     let folderId: String?
@@ -101,15 +105,18 @@ struct WatchConfigAddView: View {
     }
 }
 
-/// Fetches the addable entities from the phone and either shows the server picker (multiple servers)
-/// or jumps straight to the area picker (single server).
+/// Resolves the addable entities from the mirrored database and either shows the server picker
+/// (multiple servers) or jumps straight to the area picker (single server). The result is loaded once
+/// and kept for the lifetime of the flow — the mirror doesn't change while the sheet is open.
 private struct WatchConfigAddEntitySourceView: View {
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 
     @State private var available: WatchConfigAvailableItems?
     @State private var loadState: LoadState = .loading
+    /// Guards against a second fetch while one is already running (`onAppear` can fire more than once).
+    @State private var isFetching = false
 
     enum LoadState: Equatable {
         case loading
@@ -170,8 +177,15 @@ private struct WatchConfigAddEntitySourceView: View {
     }
 
     private func load() {
+        // `onAppear` fires again every time the user navigates back to this screen from a deeper one.
+        // Re-fetching there swapped the loaded list back to a spinner and rebuilt every candidate from
+        // the database just to show the same rows again, so a load that already succeeded is kept. A
+        // failed load still retries on the next appearance.
+        guard available == nil, !isFetching else { return }
+        isFetching = true
         loadState = .loading
         viewModel.fetchAvailableItems { result in
+            isFetching = false
             switch result {
             case let .success(items):
                 available = items
@@ -192,7 +206,7 @@ private struct WatchConfigAddEntitySourceView: View {
 /// entity lists stay navigable on the small screen.
 private struct WatchConfigAddAreaListView: View {
     let group: WatchConfigAvailableItems.ServerGroup
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 
@@ -231,7 +245,7 @@ private struct WatchConfigAddEntityListView: View {
     let group: WatchConfigAvailableItems.ServerGroup
     /// When set, only entities in this area are listed ("All areas" passes nil).
     let areaFilter: String?
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 
