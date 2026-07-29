@@ -203,11 +203,11 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     func testHealthSensorListSearchFiltersByName() {
         let viewModel = HealthSensorListViewModel()
 
-        viewModel.searchTerm = "caffeine"
+        viewModel.searchTerm = "water"
 
         XCTAssertTrue(viewModel.isSearching)
         XCTAssertEqual(viewModel.visibleCategories, [.nutrition])
-        XCTAssertEqual(viewModel.metrics(in: .nutrition).map(\.uniqueID), ["health_dietary_caffeine"])
+        XCTAssertEqual(viewModel.metrics(in: .nutrition).map(\.uniqueID), ["health_dietary_water"])
     }
 
     private final class SensorListViewModelWithoutRefresh: SensorListViewModel {

@@ -1716,11 +1716,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.health.category.activity" = "Activity";
 "settings_sensors.health.category.body" = "Body Measurements";
-"settings_sensors.health.category.hearing" = "Hearing";
 "settings_sensors.health.category.heart" = "Heart";
-"settings_sensors.health.category.mobility" = "Mobility";
 "settings_sensors.health.category.nutrition" = "Nutrition";
-"settings_sensors.health.category.other" = "Other Data";
 "settings_sensors.health.category.respiratory" = "Respiratory";
 "settings_sensors.health.category.vitals" = "Vitals";
 "settings_sensors.health.error.no_enabled_sensors" = "Turn on at least one Apple Health sensor before requesting access.";

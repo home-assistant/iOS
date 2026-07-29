@@ -60,47 +60,6 @@ public extension HealthKitMetric {
             availableFromIOS: 11
         ),
         HealthKitMetric(
-            uniqueID: "health_heart_rate_recovery_one_minute",
-            identifier: "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute",
-            name: "Heart Rate Recovery",
-            icon: "mdi:heart-pulse",
-            unit: "bpm",
-            queryUnit: .countPerMinute,
-            aggregation: .mostRecent,
-            category: .heart,
-            stateClass: .measurement,
-            decimalPlaces: 0,
-            availableFromIOS: 16
-        ),
-        HealthKitMetric(
-            uniqueID: "health_atrial_fibrillation_burden",
-            identifier: "HKQuantityTypeIdentifierAtrialFibrillationBurden",
-            name: "Atrial Fibrillation Burden",
-            icon: "mdi:heart-flash",
-            unit: "%",
-            queryUnit: .percent,
-            aggregation: .mostRecent,
-            category: .heart,
-            stateClass: .measurement,
-            lookbackDays: 30,
-            scale: 100,
-            decimalPlaces: 1,
-            availableFromIOS: 16
-        ),
-        HealthKitMetric(
-            uniqueID: "health_peripheral_perfusion_index",
-            identifier: "HKQuantityTypeIdentifierPeripheralPerfusionIndex",
-            name: "Peripheral Perfusion Index",
-            icon: "mdi:heart-pulse",
-            unit: "%",
-            queryUnit: .percent,
-            aggregation: .mostRecent,
-            category: .heart,
-            stateClass: .measurement,
-            scale: 100,
-            decimalPlaces: 1
-        ),
-        HealthKitMetric(
             uniqueID: "health_blood_pressure_systolic",
             identifier: "HKQuantityTypeIdentifierBloodPressureSystolic",
             name: "Blood Pressure Systolic",

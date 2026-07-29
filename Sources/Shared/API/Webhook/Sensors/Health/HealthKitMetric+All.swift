@@ -4,18 +4,17 @@ import Foundation
 public extension HealthKitMetric {
     /// Every Apple Health metric the app knows how to report, grouped by category.
     ///
-    /// Metrics whose `identifier` or unit the running version of iOS doesn't provide are skipped when
-    /// a query runs, so this list can stay ahead of the deployment target.
+    /// This is deliberately a subset of HealthKit: the metrics the Android companion already reports
+    /// through Health Connect, plus the ones named in the iOS feature requests. Metrics whose
+    /// `identifier` or unit the running version of iOS doesn't provide are skipped when a query runs,
+    /// so the list can still name types newer than the deployment target.
     static let all: [HealthKitMetric] = [
         activityMetrics,
         bodyMetrics,
         heartMetrics,
-        hearingMetrics,
-        mobilityMetrics,
         nutritionMetrics,
         respiratoryMetrics,
         vitalsMetrics,
-        otherMetrics,
     ].flatMap { $0 }
 
     /// The metrics of one category, in the order they should be displayed.

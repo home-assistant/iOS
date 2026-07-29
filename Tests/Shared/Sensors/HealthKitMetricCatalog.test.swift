@@ -20,7 +20,7 @@ class HealthKitMetricCatalogTests: XCTestCase {
     }
 
     func testCatalogIsNotEmptyAndCoversEveryCategory() {
-        XCTAssertGreaterThan(HealthKitMetric.all.count, 100)
+        XCTAssertGreaterThan(HealthKitMetric.all.count, 20)
         for category in HealthKitMetricCategory.allCases {
             XCTAssertFalse(HealthKitMetric.metrics(in: category).isEmpty, category.rawValue)
         }

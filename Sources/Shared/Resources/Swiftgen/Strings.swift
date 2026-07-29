@@ -5698,16 +5698,10 @@ public enum L10n {
         public static var activity: String { return L10n.tr("Localizable", "settings_sensors.health.category.activity") }
         /// Body Measurements
         public static var body: String { return L10n.tr("Localizable", "settings_sensors.health.category.body") }
-        /// Hearing
-        public static var hearing: String { return L10n.tr("Localizable", "settings_sensors.health.category.hearing") }
         /// Heart
         public static var heart: String { return L10n.tr("Localizable", "settings_sensors.health.category.heart") }
-        /// Mobility
-        public static var mobility: String { return L10n.tr("Localizable", "settings_sensors.health.category.mobility") }
         /// Nutrition
         public static var nutrition: String { return L10n.tr("Localizable", "settings_sensors.health.category.nutrition") }
-        /// Other Data
-        public static var other: String { return L10n.tr("Localizable", "settings_sensors.health.category.other") }
         /// Respiratory
         public static var respiratory: String { return L10n.tr("Localizable", "settings_sensors.health.category.respiratory") }
         /// Vitals
