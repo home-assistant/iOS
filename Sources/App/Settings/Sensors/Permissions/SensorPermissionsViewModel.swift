@@ -51,10 +51,11 @@ final class SensorPermissionsViewModel: ObservableObject {
         statuses = updatedStatuses
     }
 
-    /// Requests the permission when it was never asked for, otherwise sends the user to the
-    /// system settings, which is the only place a decided permission can be changed.
+    /// Requests the permission when it was never asked for, otherwise sends the user to the system
+    /// settings. Permissions that aren't listed there — Apple Health — are asked for again instead,
+    /// since HealthKit only prompts for the types it hasn't been asked about yet.
     func handleTap(on permission: SensorPermission) {
-        guard status(for: permission) == .notDetermined else {
+        guard status(for: permission) == .notDetermined || !permission.isChangedInSystemSettings else {
             openSettings(for: permission)
             return
         }

@@ -110,9 +110,15 @@ struct SensorListView: View {
                 NavigationLink {
                     HealthSensorListView()
                 } label: {
-                    Text(L10n.SettingsSensors.Health.Sensors.title)
+                    HStack {
+                        Text(L10n.SettingsSensors.Health.Sensors.title)
+                        Spacer()
+                        // Inside the label rather than `.badge`, so the count sits between the
+                        // title and the disclosure chevron instead of after it.
+                        Text("\(viewModel.enabledHealthSensorCount)")
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                .badge(viewModel.enabledHealthSensorCount)
             }
         }
         #endif
