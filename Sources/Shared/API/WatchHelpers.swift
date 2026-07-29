@@ -130,39 +130,60 @@ public extension HomeAssistantAPI {
     private static let watchContextSyncQueue = DispatchQueue(label: "watch-context-sync", qos: .utility)
     private static let watchContextSyncGate = NSLock()
     private static var watchContextSyncInFlight = false
+    /// The newest context that arrived while an update was in flight, delivered as soon as that update
+    /// returns. Only the newest is kept — the ones it replaces are already obsolete.
+    private static var pendingWatchContext: HAWatchConnectivity.Context?
 
     /// Hand the context to `updateApplicationContext` off the caller's thread, keeping at most one
-    /// update in flight: when WCSession is stalled the stuck call already carries the freshest
-    /// context that could be delivered, and stacking more would just park more threads behind it.
+    /// update in flight: a call stuck inside WCSession would otherwise park a thread per caller.
+    /// Later contexts are coalesced rather than dropped — the in-flight call is carrying an *older*
+    /// snapshot, so discarding the new one would strand the watch on stale data until some unrelated
+    /// trigger happened to sync again.
     private static func enqueueWatchContextSync(_ context: HAWatchConnectivity.Context) {
         watchContextSyncGate.lock()
-        let alreadyInFlight = watchContextSyncInFlight
-        watchContextSyncInFlight = true
-        watchContextSyncGate.unlock()
-        guard !alreadyInFlight else {
-            Current.Log.info("Skipping watch context sync: previous update still in flight (WCSession stalled?)")
+        guard !watchContextSyncInFlight else {
+            pendingWatchContext = context
+            watchContextSyncGate.unlock()
+            Current.Log.info("Coalescing watch context sync: previous update still in flight (WCSession stalled?)")
             return
         }
+        watchContextSyncInFlight = true
+        watchContextSyncGate.unlock()
+
         watchContextSyncQueue.async {
-            defer {
+            var next: HAWatchConnectivity.Context? = context
+            while let current = next {
+                syncWatchContextNow(current)
+                // Claim the next context (or stand down) under the same lock the producer takes, so a
+                // context enqueued right as this update finishes can't be stranded.
                 watchContextSyncGate.lock()
-                watchContextSyncInFlight = false
+                if let pending = pendingWatchContext {
+                    next = pending
+                    pendingWatchContext = nil
+                } else {
+                    next = nil
+                    watchContextSyncInFlight = false
+                }
                 watchContextSyncGate.unlock()
             }
-            do {
-                try syncRespectingSizeLimit(context)
-                Current.Log.info("updated context")
-                Current.clientEventStore.addEvent(.init(
-                    text: "Synced watch context to Apple Watch (updateApplicationContext)",
-                    type: .database
-                ))
-            } catch {
-                Current.Log.error("Updating the context failed: \(error)")
-                Current.clientEventStore.addEvent(.init(
-                    text: "Failed to sync watch context: \(error.localizedDescription)",
-                    type: .database
-                ))
-            }
+        }
+    }
+
+    /// The blocking `updateApplicationContext` call itself, always on `watchContextSyncQueue`.
+    private static func syncWatchContextNow(_ context: HAWatchConnectivity.Context) {
+        do {
+            try syncRespectingSizeLimit(context)
+            Current.Log.info("updated context")
+            Current.clientEventStore.addEvent(.init(
+                text: "Synced watch context to Apple Watch (updateApplicationContext)",
+                type: .database
+            ))
+        } catch {
+            Current.Log.error("Updating the context failed: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to sync watch context: \(error.localizedDescription)",
+                type: .database
+            ))
         }
     }
     #endif

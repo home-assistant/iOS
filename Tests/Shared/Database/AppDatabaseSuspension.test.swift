@@ -105,6 +105,48 @@ struct AppDatabaseSuspensionTests {
         #expect(finished.wait(timeout: .now() + 5) == .success)
     }
 
+    @Test("Suspension waits for the last in-flight protected access")
+    func protectedAccessesAreRefcounted() {
+        let (suspension, recorder) = makeSuspension()
+
+        suspension.beginProtectedAccess()
+        suspension.beginProtectedAccess()
+        #expect(recorder.posted == [Database.resumeNotification, Database.resumeNotification])
+
+        // The first access finishing must not suspend — the second is still writing, and suspending
+        // aborts its statement mid-transaction ("SQLite error 4: Database is suspended").
+        suspension.endProtectedAccess(suspend: true)
+        #expect(recorder.posted.last == Database.resumeNotification)
+
+        suspension.endProtectedAccess(suspend: true)
+        #expect(recorder.posted.last == Database.suspendNotification)
+    }
+
+    @Test("An expiring activity does not suspend while another access is still running")
+    func suspendIfIdleRespectsInFlightAccess() {
+        let (suspension, recorder) = makeSuspension()
+
+        suspension.beginProtectedAccess()
+        suspension.suspendIfIdle()
+        #expect(recorder.posted == [Database.resumeNotification])
+
+        suspension.endProtectedAccess(suspend: true)
+        #expect(recorder.posted.last == Database.suspendNotification)
+    }
+
+    @Test("An access that ends while foregrounded leaves the database resumed")
+    func endProtectedAccessCanKeepDatabaseResumed() {
+        let (suspension, recorder) = makeSuspension()
+
+        suspension.beginProtectedAccess()
+        suspension.endProtectedAccess(suspend: false)
+        #expect(recorder.posted == [Database.resumeNotification])
+
+        // The count still returned to zero, so a later idle check can suspend.
+        suspension.suspendIfIdle()
+        #expect(recorder.posted.last == Database.suspendNotification)
+    }
+
     @Test("A stale expiration after foreground resume does not re-suspend")
     func staleExpirationDoesNotSuspend() throws {
         let (suspension, recorder) = makeSuspension()

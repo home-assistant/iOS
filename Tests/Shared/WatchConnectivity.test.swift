@@ -574,4 +574,21 @@ struct WatchConnectivityQueue_test {
         manager.send(interactive("d"))
         #expect(sentIdentifiers(fake) == ["d"])
     }
+
+    /// Callers degrade to a background retry on these instead of showing the user an error, so the
+    /// classification has to hold for every shape the unreachable error arrives in.
+    @Test func unreachableErrorsAreRecognisedThroughEveryWrapping() {
+        let unreachable = WCError(.notReachable)
+        typealias Subject = HAWatchConnectivity.ConnectivityError
+
+        #expect(Subject.isCounterpartUnreachable(Subject.notReachable))
+        #expect(Subject.isCounterpartUnreachable(unreachable))
+        #expect(Subject.isCounterpartUnreachable(Subject.deliveryFailed(underlying: unreachable)))
+
+        // Real failures must stay failures.
+        #expect(!Subject.isCounterpartUnreachable(Subject.replyTimedOut))
+        #expect(!Subject.isCounterpartUnreachable(Subject.payloadTooLarge))
+        #expect(!Subject.isCounterpartUnreachable(WCError(.payloadTooLarge)))
+        #expect(!Subject.isCounterpartUnreachable(Subject.deliveryFailed(underlying: WCError(.deliveryFailed))))
+    }
 }

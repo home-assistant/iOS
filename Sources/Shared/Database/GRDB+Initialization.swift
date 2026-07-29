@@ -145,6 +145,11 @@ public final class AppDatabaseSuspension {
     private var wantsSuspension = false
     /// Parks the thread of the currently-armed expiring activity; nil when none is armed.
     private var activitySemaphore: DispatchSemaphore?
+    /// How many background accesses are currently running under `beginProtectedAccess()`. Suspension
+    /// is only re-applied once this reaches zero: suspending is process-wide, so letting the first
+    /// access to finish suspend would abort a sibling's in-flight statement ("SQLite error 4:
+    /// Database is suspended") and roll back its transaction.
+    private var protectedAccessCount = 0
 
     private let performExpiringActivity: (String, @escaping (Bool) -> Void) -> Void
     private let postNotification: (Notification.Name) -> Void
@@ -169,6 +174,51 @@ public final class AppDatabaseSuspension {
 
     public static func resume() {
         shared.resume()
+    }
+
+    public static func beginProtectedAccess() {
+        shared.beginProtectedAccess()
+    }
+
+    public static func endProtectedAccess(suspend shouldSuspend: Bool) {
+        shared.endProtectedAccess(suspend: shouldSuspend)
+    }
+
+    public static func suspendIfIdle() {
+        shared.suspendIfIdle()
+    }
+
+    /// Resume the database for one background access and register it as in flight. Every call must be
+    /// balanced with `endProtectedAccess(suspend:)`, which re-suspends only once the last access ends.
+    func beginProtectedAccess() {
+        lock.lock()
+        protectedAccessCount += 1
+        lock.unlock()
+        resume()
+    }
+
+    /// End one access started by `beginProtectedAccess()`. `shouldSuspend` says whether this caller
+    /// still wants the database suspended (i.e. the app is backgrounded); it only takes effect when no
+    /// other access is left running.
+    func endProtectedAccess(suspend shouldSuspend: Bool) {
+        lock.lock()
+        if protectedAccessCount > 0 {
+            protectedAccessCount -= 1
+        }
+        let isIdle = protectedAccessCount == 0
+        lock.unlock()
+        guard isIdle, shouldSuspend else { return }
+        suspend()
+    }
+
+    /// Suspend unless a protected access is still running. Used when an expiring activity is denied or
+    /// expires without having claimed an access of its own.
+    func suspendIfIdle() {
+        lock.lock()
+        let isIdle = protectedAccessCount == 0
+        lock.unlock()
+        guard isIdle else { return }
+        suspend()
     }
 
     func suspend() {
