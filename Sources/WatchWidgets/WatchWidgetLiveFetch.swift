@@ -39,18 +39,13 @@ enum WatchWidgetLiveFetch {
             WatchWidgetRefreshNotifier.notifyFinished("Skipped: no complication configured for \(complicationID)")
             return
         }
-        guard !isThrottled(complicationID) else {
+        guard claimFetchSlot(complicationID) else {
             WatchWidgetRefreshNotifier.notifyFinished(
                 "Skipped \(target.displayName): fetched less than "
                     + "\(Int(WatchWidgetConstants.selfFetchThrottleInterval))s ago"
             )
             return
         }
-
-        // Claimed before the request, not after: WidgetKit can run several instances' timeline calls
-        // concurrently in one process, and marking on completion would let them all pass the throttle
-        // together — exactly the stampede this is here to prevent.
-        markFetched(complicationID)
 
         WatchWidgetRefreshNotifier.notifyStarted(names: [target.displayName])
         let started = Date()
@@ -62,31 +57,35 @@ enum WatchWidgetLiveFetch {
 
     // MARK: - Throttle
 
-    /// Whether this complication was fetched recently enough that another network round trip would be
-    /// wasted work. Keyed per complication so an unrelated one is never held back.
-    private static func isThrottled(_ complicationID: String) -> Bool {
-        guard let last = lastFetchDates()[complicationID] else { return false }
-        let elapsed = Date().timeIntervalSince(last)
-        // A negative elapsed means the clock moved backwards; treat it as stale rather than blocking
-        // the fetch until the recorded date is reached.
-        return elapsed >= 0 && elapsed < WatchWidgetConstants.selfFetchThrottleInterval
-    }
+    /// Serializes the throttle's read-then-write. WidgetKit can run several instances'
+    /// `timeline(for:in:)` calls concurrently in one process, so checking the timestamp and recording
+    /// the claim as separate steps would let them all pass together — the stampede this exists to stop.
+    private static let throttleLock = NSLock()
 
-    private static func markFetched(_ complicationID: String) {
-        guard let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID) else { return }
-        var dates = lastFetchDates()
-        dates[complicationID] = Date()
-        guard let data = try? JSONEncoder().encode(dates) else { return }
-        defaults.set(data, forKey: WatchWidgetConstants.lastSelfFetchKey)
-    }
+    /// Claims this complication's fetch slot, returning false when it was fetched recently enough that
+    /// another round trip would be wasted work.
+    ///
+    /// The claim is recorded before the request rather than after it, so a slow fetch still holds the
+    /// slot against the instances reloading alongside it. Each complication gets its own defaults key:
+    /// a single shared dictionary would need a read-modify-write, and concurrent claims for different
+    /// complications would drop each other's timestamp.
+    private static func claimFetchSlot(_ complicationID: String) -> Bool {
+        throttleLock.lock()
+        defer { throttleLock.unlock() }
 
-    private static func lastFetchDates() -> [String: Date] {
-        guard let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID),
-              let data = defaults.data(forKey: WatchWidgetConstants.lastSelfFetchKey),
-              let dates = try? JSONDecoder().decode([String: Date].self, from: data) else {
-            return [:]
+        let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID)
+        let key = WatchWidgetConstants.lastSelfFetchKeyPrefix + complicationID
+        let now = Date()
+        if let last = defaults?.object(forKey: key) as? Date {
+            let elapsed = now.timeIntervalSince(last)
+            // A negative elapsed means the clock moved backwards; treat it as stale rather than
+            // blocking the fetch until the recorded date is reached.
+            if elapsed >= 0, elapsed < WatchWidgetConstants.selfFetchThrottleInterval {
+                return false
+            }
         }
-        return dates
+        defaults?.set(now, forKey: key)
+        return true
     }
 
     /// The actual refresh. Returns a human-readable outcome for the developer-option notification —

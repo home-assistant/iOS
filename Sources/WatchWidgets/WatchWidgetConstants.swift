@@ -27,8 +27,9 @@ enum WatchWidgetConstants {
     /// change or a `reloadAllTimelines()` fires them together — without this, N instances of the same
     /// complication mean N simultaneous requests in one extension process.
     static let selfFetchThrottleInterval: TimeInterval = 60
-    /// App-group defaults key holding `[complicationID: lastFetchDate]` for the throttle above.
-    static let lastSelfFetchKey = "watchWidgetComplicationLastSelfFetch"
+    /// Prefix for the app-group defaults key holding a complication's last self-fetch date. One key per
+    /// complication, so concurrent claims never read-modify-write a shared blob.
+    static let lastSelfFetchKeyPrefix = "watchWidgetComplicationLastSelfFetch-"
 
     enum DeepLink {
         static let releaseScheme = "homeassistant"

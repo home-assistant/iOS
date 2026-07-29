@@ -569,15 +569,9 @@ enum WatchWidgetComplicationSnapshotStore {
         let previous = readSnapshots(defaults)
 
         // Write the synchronous set first so the face is never empty. Carry the last-known config
-        // snapshots through so their live values aren't dropped while the async refresh runs. When
-        // configs follow, this write only has to land in the store — the write below reloads with the
-        // fresh values, and reloading twice per refresh just burns budget and extension launches.
+        // snapshots through so their live values aren't dropped while the async refresh runs.
         let cachedConfigSnapshots = configs.compactMap { previous[$0.id] }
-        write(
-            snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots,
-            defaults: defaults,
-            requestReload: configs.isEmpty
-        )
+        write(snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots, defaults: defaults)
 
         guard !configs.isEmpty else { return [] }
         ComplicationRefreshDebugNotifier.notifyStarted(names: configs.map(\.displayName))
@@ -765,18 +759,7 @@ enum WatchWidgetComplicationSnapshotStore {
         return Dictionary(snapshots.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     }
 
-    /// Persists the snapshot set and asks WidgetKit to re-render it.
-    ///
-    /// `requestReload: false` persists without reloading, for a write that a second write is about to
-    /// supersede within the same refresh. Every reload launches the widget extension, so the
-    /// pre-write's reload was pure overhead: it re-rendered values the fresh write replaced moments
-    /// later. The fingerprint is left untouched too, so if the process is suspended before that second
-    /// write the content still counts as never-submitted and the next refresh reloads it.
-    private static func write(
-        snapshots: [WatchWidgetComplicationSnapshot],
-        defaults: UserDefaults?,
-        requestReload: Bool = true
-    ) {
+    private static func write(snapshots: [WatchWidgetComplicationSnapshot], defaults: UserDefaults?) {
         guard let defaults else {
             Current.Log.error("Missing app group defaults for watch widget complication snapshots")
             return
@@ -809,7 +792,6 @@ enum WatchWidgetComplicationSnapshotStore {
         if !contentUnchanged {
             defaults.set(data, forKey: defaultsKey)
         }
-        guard requestReload else { return }
         // Reload every kind rather than a single `kind` string: the widget registers its kind from the
         // extension's `Bundle.main.bundleIdentifier`, which can differ from this app-process-derived
         // value (e.g. debug `.dev` suffixing), and a mismatched `ofKind:` is a silent no-op that leaves
