@@ -141,8 +141,8 @@ class SensorEnablementTests: XCTestCase {
         let laterSensorID = "connectivity_sim_2"
         try generateSensors(withUniqueIDs: [dynamicSensorID, laterSensorID])
 
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID))
-        XCTAssertFalse(container.isEnabled(uniqueID: laterSensorID))
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID), storedEnablementState)
+        XCTAssertFalse(container.isEnabled(uniqueID: laterSensorID), storedEnablementState)
 
         container.setEnabled(true, forUniqueID: laterSensorID)
         XCTAssertTrue(container.isEnabled(uniqueID: laterSensorID))
@@ -152,12 +152,13 @@ class SensorEnablementTests: XCTestCase {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
 
         try generateSensors(withUniqueIDs: ["some_other_sensor"], limitedToProvider: true)
-        // A limited run can't stand in for the complete set, so it decides nothing on its own.
-        XCTAssertFalse(container.isEnabled(uniqueID: "some_other_sensor"))
 
-        // Which leaves the battery below still able to carry over on the next full run.
-        try generateSensors(withUniqueIDs: [dynamicSensorID])
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID), storedEnablementState)
+        // A limited run only asks some of the providers, so it can't stand in for the complete set
+        // and must decide nothing: were it to seed, this sensor would come back enabled.
+        // Carrying dynamic IDs over on the next full run is covered by the first-generation test,
+        // which doesn't need a second `hang()` to get there — every one of those spins the run
+        // loop, letting another suite's in-flight generation finish this migration first.
+        XCTAssertFalse(container.isEnabled(uniqueID: "some_other_sensor"), storedEnablementState)
     }
 
     /// The persisted enablement state, for failure messages: the migration is driven entirely by
