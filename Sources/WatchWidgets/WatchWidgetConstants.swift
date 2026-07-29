@@ -18,6 +18,17 @@ enum WatchWidgetConstants {
     static let previewValueText = "--"
     static let previewGaugeFraction: Double = 0.5
     static let timelineRefreshInterval: TimeInterval = 15 * 60
+    /// Per-request and whole-resource ceiling for the widget's self fetch. The extension runs under a
+    /// short watchdog budget, so a request left on `URLSession`'s 60s default can outlive the process
+    /// it is running in — the system then kills the extension and WidgetKit stops reloading it.
+    static let selfFetchTimeout: TimeInterval = 8
+    /// How long a complication's freshly fetched value is reused before the widget hits the network
+    /// again. Every widget instance on the face gets its own `timeline(for:in:)` call, and a face
+    /// change or a `reloadAllTimelines()` fires them together — without this, N instances of the same
+    /// complication mean N simultaneous requests in one extension process.
+    static let selfFetchThrottleInterval: TimeInterval = 60
+    /// App-group defaults key holding `[complicationID: lastFetchDate]` for the throttle above.
+    static let lastSelfFetchKey = "watchWidgetComplicationLastSelfFetch"
 
     enum DeepLink {
         static let releaseScheme = "homeassistant"
