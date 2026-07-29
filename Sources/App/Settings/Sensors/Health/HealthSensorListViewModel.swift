@@ -37,6 +37,10 @@ class HealthSensorListViewModel: ObservableObject {
         enabledUniqueIDs.count == HealthKitMetric.all.count
     }
 
+    var totalSensorCount: Int {
+        HealthKitMetric.all.count
+    }
+
     func metrics(in category: HealthKitMetricCategory) -> [HealthKitMetric] {
         let metrics = HealthKitMetric.metrics(in: category)
         let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -62,15 +66,35 @@ class HealthSensorListViewModel: ObservableObject {
         enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
     }
 
+    func enableAll(in category: HealthKitMetricCategory) {
+        Current.sensors.setEnabled(true, forUniqueIDs: metrics(in: category).map(\.uniqueID))
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+    }
+
     /// HealthKit only prompts for types it hasn't been asked about, so asking again after switching
     /// more sensors on is what gets permission for them.
     func requestAuthorization() async {
         do {
             try await Current.healthKitService.requestReadAuthorization()
             isHealthKitAvailable = Current.healthKitService.isAvailable()
+            refreshSensors()
         } catch {
             alertMessage = error.localizedDescription
             showAlert = true
+        }
+    }
+
+    func refreshSensors() {
+        firstly {
+            HomeAssistantAPI.manuallyUpdate(
+                applicationState: UIApplication.shared.applicationState,
+                type: .userRequested
+            )
+        }.catch { [weak self] error in
+            Task { @MainActor in
+                self?.alertMessage = error.localizedDescription
+                self?.showAlert = true
+            }
         }
     }
 

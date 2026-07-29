@@ -7,6 +7,7 @@ import SwiftUI
 /// for being sent to Home Assistant.
 struct HealthSensorListView: View {
     @StateObject private var viewModel = HealthSensorListViewModel()
+    @State private var showEnableAllConfirmation = false
 
     var body: some View {
         List {
@@ -14,9 +15,25 @@ struct HealthSensorListView: View {
                 Section(footer: Text(L10n.SettingsSensors.Health.Sensors.footer)) {
                     Toggle(isOn: .init(
                         get: { viewModel.areAllEnabled },
-                        set: { viewModel.setAllEnabled($0) }
+                        set: { isOn in
+                            if isOn {
+                                showEnableAllConfirmation = true
+                            } else {
+                                viewModel.setAllEnabled(false)
+                            }
+                        }
                     )) {
                         Text(L10n.SettingsSensors.Health.Sensors.enableAll)
+                    }
+                    .alert(
+                        L10n.SettingsSensors.Health.Sensors.EnableAll.Confirmation.title(viewModel.totalSensorCount),
+                        isPresented: $showEnableAllConfirmation
+                    ) {
+                        Button(L10n.cancelLabel, role: .cancel) {}
+                        Button(L10n.SettingsSensors.Health.Sensors.EnableAll.Confirmation.confirm) {
+                            viewModel.setAllEnabled(true)
+                            Task { await viewModel.requestAuthorization() }
+                        }
                     }
                     Button {
                         Task { await viewModel.requestAuthorization() }
@@ -27,7 +44,7 @@ struct HealthSensorListView: View {
                 }
             }
             ForEach(viewModel.visibleCategories, id: \.self) { category in
-                Section(category.name) {
+                Section {
                     ForEach(viewModel.metrics(in: category), id: \.uniqueID) { metric in
                         HealthSensorRow(
                             metric: metric,
@@ -35,6 +52,8 @@ struct HealthSensorListView: View {
                             isEnabled: binding(for: metric)
                         )
                     }
+                } header: {
+                    sectionHeader(for: category)
                 }
             }
             if viewModel.isSearching, viewModel.visibleCategories.isEmpty {
@@ -48,10 +67,34 @@ struct HealthSensorListView: View {
             prompt: Text(L10n.SettingsSensors.Sensors.searchPrompt)
         )
         .navigationTitle(L10n.SettingsSensors.Health.Sensors.title)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.refreshSensors()
+                } label: {
+                    Image(systemSymbol: .arrowClockwise)
+                }
+                .accessibilityLabel(L10n.SettingsSensors.Health.reload)
+            }
+        }
         .alert(L10n.errorLabel, isPresented: $viewModel.showAlert) {
             Button(L10n.okLabel, role: .cancel) {}
         } message: {
             Text(viewModel.alertMessage ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private func sectionHeader(for category: HealthKitMetricCategory) -> some View {
+        HStack {
+            Text(category.name.uppercased())
+            Spacer()
+            Button(L10n.SettingsSensors.Health.Sensors.enableAllSection) {
+                viewModel.enableAll(in: category)
+            }
+            .textCase(nil)
+            .font(DesignSystem.Font.footnote)
+            .tint(.haPrimary)
         }
     }
 

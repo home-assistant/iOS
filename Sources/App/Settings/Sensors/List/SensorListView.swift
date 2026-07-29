@@ -39,17 +39,25 @@ struct SensorListView: View {
                 if !permissionsViewModel.availablePermissions.isEmpty {
                     Section {
                         NavigationLink {
-                            SensorPermissionsView(viewModel: permissionsViewModel)
+                            SensorPermissionsView()
                         } label: {
-                            Text(L10n.SettingsSensors.Permissions.header)
+                            HStack {
+                                Text(L10n.SettingsSensors.Permissions.header)
+                                Spacer()
+                                if permissionsViewModel.notDeterminedCount > 0 {
+                                    Text("\(permissionsViewModel.notDeterminedCount)")
+                                        .font(.footnote.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(.orange, in: Capsule())
+                                }
+                            }
                         }
-                        // A badge with zero is not rendered, so this only shows up while there are
-                        // permissions that were never presented to the user.
-                        .badge(permissionsViewModel.notDeterminedCount)
                     }
                 }
-                healthSensorsSection
             }
+            healthSensorsSection
             Section {
                 if !viewModel.isSearching {
                     Toggle(isOn: .init(get: {
@@ -105,7 +113,7 @@ struct SensorListView: View {
     @ViewBuilder
     private var healthSensorsSection: some View {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if viewModel.isHealthKitAvailable {
+        if viewModel.showHealthSection {
             Section(footer: Text(L10n.SettingsSensors.Health.footer)) {
                 NavigationLink {
                     HealthSensorListView()
@@ -163,6 +171,7 @@ extension SensorListView: SettingsScreenSearchable {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.header))
         entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.Sensors.title))
+        entries.append(contentsOf: HealthKitMetric.all.map { SettingsSearchEntry($0.name) })
         #endif
         return entries
     }

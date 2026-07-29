@@ -1,20 +1,22 @@
+import AVFoundation
 import Combine
+import CoreBluetooth
+import CoreLocation
 import CoreMotion
 import Foundation
 import PromiseKit
 import Shared
+import Speech
+import UserNotifications
 
-/// View model backing `SensorPermissionsView`. Tracks the status of every permission the sensors
-/// depend on, and knows how many of them were never presented to the user.
 @MainActor
 final class SensorPermissionsViewModel: ObservableObject {
     @Published private(set) var statuses: [SensorPermission: SensorPermissionStatus] = [:]
     @Published var alertMessage: String?
     @Published var showAlert = false
 
-    private var motionManager: CMMotionActivityManager?
+    private var bluetoothRequester: BluetoothAuthorizationRequester?
 
-    /// The permissions this device can actually be asked for, in the order they are displayed.
     var availablePermissions: [SensorPermission] {
         SensorPermission.allCases.filter { permission in
             switch permission {
@@ -22,10 +24,8 @@ final class SensorPermissionsViewModel: ObservableObject {
                 return Current.motion.isActivityAvailable()
             case .focus:
                 return Current.focusStatus.isAvailable()
-            #if os(iOS) && !targetEnvironment(macCatalyst)
-            case .health:
-                return Current.healthKitService.isAvailable()
-            #endif
+            case .location, .notification, .camera, .microphone, .speech, .bluetooth, .localNetwork:
+                return true
             }
         }
     }
@@ -45,100 +45,150 @@ final class SensorPermissionsViewModel: ObservableObject {
 
     func update() {
         var updatedStatuses: [SensorPermission: SensorPermissionStatus] = [:]
-        for permission in availablePermissions {
-            updatedStatuses[permission] = systemStatus(for: permission)
+        for permission in availablePermissions where permission != .notification {
+            updatedStatuses[permission] = synchronousStatus(for: permission)
         }
         statuses = updatedStatuses
+        refreshNotificationStatus()
     }
 
-    /// Requests the permission when it was never asked for, otherwise sends the user to the system
-    /// settings. Permissions that aren't listed there — Apple Health — are asked for again instead,
-    /// since HealthKit only prompts for the types it hasn't been asked about yet.
+    /// Requests a permission that was never answered, otherwise sends the user to system settings,
+    /// the only place an already-answered permission can be changed.
     func handleTap(on permission: SensorPermission) {
-        guard status(for: permission) == .notDetermined || !permission.isChangedInSystemSettings else {
+        guard status(for: permission) == .notDetermined else {
             openSettings(for: permission)
             return
         }
-
-        switch permission {
-        case .motion:
-            requestMotionAuthorization()
-        case .focus:
-            requestFocusAuthorization()
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        case .health:
-            requestHealthAuthorization()
-        #endif
-        }
+        request(permission)
     }
 
     // MARK: - Status
 
-    private func systemStatus(for permission: SensorPermission) -> SensorPermissionStatus {
+    private func synchronousStatus(for permission: SensorPermission) -> SensorPermissionStatus {
         switch permission {
         case .motion:
             return .init(CMMotionActivityManager.authorizationStatus())
         case .focus:
             return .init(Current.focusStatus.authorizationStatus())
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        case .health:
-            return Current.healthKitService.hasRequestedReadAuthorization() ? .requested : .notDetermined
-        #endif
+        case .location:
+            return .init(CLLocationManager().authorizationStatus)
+        case .camera:
+            return .init(AVCaptureDevice.authorizationStatus(for: .video))
+        case .microphone:
+            if #available(iOS 17.0, *) {
+                return .init(AVAudioApplication.shared.recordPermission)
+            } else {
+                return .init(AVAudioSession.sharedInstance().recordPermission)
+            }
+        case .speech:
+            return .init(SFSpeechRecognizer.authorizationStatus())
+        case .bluetooth:
+            return .init(CBCentralManager.authorization)
+        case .notification:
+            return status(for: .notification)
+        case .localNetwork:
+            return .unknown
+        }
+    }
+
+    private func refreshNotificationStatus() {
+        guard availablePermissions.contains(.notification) else { return }
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            let status = SensorPermissionStatus(settings.authorizationStatus)
+            Task { @MainActor in
+                self?.statuses[.notification] = status
+            }
         }
     }
 
     // MARK: - Requesting
 
-    private func requestMotionAuthorization() {
-        guard Current.motion.isActivityAvailable() else { return }
-        // Motion has no explicit request API, querying it is what prompts the user.
-        let now = Current.date()
-        motionManager = CMMotionActivityManager()
-        motionManager?.queryActivityStarting(from: now, to: now, to: .main, withHandler: { [weak self] _, _ in
-            Task { @MainActor in
-                self?.update()
+    private func request(_ permission: SensorPermission) {
+        switch permission {
+        case .location, .notification, .motion, .focus:
+            requestViaPermissionType(for: permission)
+        case .camera:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] _ in
+                Task { @MainActor in self?.update() }
             }
-        })
-    }
-
-    private func requestFocusAuthorization() {
-        guard Current.focusStatus.isAvailable() else { return }
-        Current.focusStatus.requestAuthorization().done { [weak self] _ in
-            Task { @MainActor in
-                self?.update()
+        case .microphone:
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { [weak self] _ in
+                    Task { @MainActor in self?.update() }
+                }
+            } else {
+                AVAudioSession.sharedInstance().requestRecordPermission { [weak self] _ in
+                    Task { @MainActor in self?.update() }
+                }
             }
+        case .speech:
+            SFSpeechRecognizer.requestAuthorization { [weak self] _ in
+                Task { @MainActor in self?.update() }
+            }
+        case .bluetooth:
+            bluetoothRequester = BluetoothAuthorizationRequester { [weak self] in
+                Task { @MainActor in self?.update() }
+            }
+            bluetoothRequester?.request()
+        case .localNetwork:
+            openSettings(for: permission)
         }
     }
 
-    #if os(iOS) && !targetEnvironment(macCatalyst)
-    private func requestHealthAuthorization() {
-        Task { [weak self] in
-            do {
-                try await Current.healthKitService.requestReadAuthorization()
-            } catch {
-                Current.Log.error("Failed to request Apple Health authorization: \(error.localizedDescription)")
-                self?.alertMessage = error.localizedDescription
-                self?.showAlert = true
-            }
-            self?.update()
+    private func requestViaPermissionType(for permission: SensorPermission) {
+        guard let type = permissionType(for: permission) else { return }
+        type.request { [weak self] _, _ in
+            Task { @MainActor in self?.update() }
         }
     }
-    #endif
 
     // MARK: - Settings
 
     private func openSettings(for permission: SensorPermission) {
-        let destination: OpenSettingsDestination
+        URLOpener.shared.openSettings(destination: settingsDestination(for: permission), completionHandler: nil)
+    }
+
+    private func permissionType(for permission: SensorPermission) -> PermissionType? {
         switch permission {
-        case .motion:
-            destination = .motion
-        case .focus:
-            destination = .focus
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        case .health:
-            destination = .health
-        #endif
+        case .location: return .location
+        case .notification: return .notification
+        case .motion: return .motion
+        case .focus: return .focus
+        case .camera, .microphone, .speech, .bluetooth, .localNetwork: return nil
         }
-        URLOpener.shared.openSettings(destination: destination, completionHandler: nil)
+    }
+
+    private func settingsDestination(for permission: SensorPermission) -> OpenSettingsDestination {
+        switch permission {
+        case .location: return .location
+        case .notification: return .notification
+        case .motion: return .motion
+        case .focus: return .focus
+        case .camera: return .camera
+        case .microphone: return .microphone
+        case .speech: return .speech
+        case .bluetooth: return .bluetooth
+        case .localNetwork: return .localNetwork
+        }
+    }
+}
+
+/// Instantiating a `CBCentralManager` is what surfaces the Bluetooth prompt; the delegate callback
+/// reports the outcome so the list can refresh.
+private final class BluetoothAuthorizationRequester: NSObject, CBCentralManagerDelegate {
+    private var manager: CBCentralManager?
+    private let onChange: () -> Void
+
+    init(onChange: @escaping () -> Void) {
+        self.onChange = onChange
+        super.init()
+    }
+
+    func request() {
+        manager = CBCentralManager(delegate: self, queue: nil)
+    }
+
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        onChange()
     }
 }

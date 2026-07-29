@@ -17,7 +17,7 @@ struct HAApp: App {
                 // SwiftUI copy of the launch screen; hides the system-splash → first-screen hand-off by
                 // morphing the splash logo into the first screen's logo before fading out.
                 .overlay { LaunchSplashOverlayView(state: .shared) }
-                .toggleStyle(BrandedSwitchToggleStyle())
+                .toggleStyle(.haStyle)
         }
         .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
         .commands {
@@ -28,7 +28,7 @@ struct HAApp: App {
         // Mac Settings
         WindowGroup {
             SettingsView()
-                .toggleStyle(BrandedSwitchToggleStyle())
+                .toggleStyle(.haStyle)
         }
         .handlesExternalEvents(matching: [SceneActivity.settings.activityIdentifier])
 
@@ -38,21 +38,21 @@ struct HAApp: App {
                 AboutView()
             }
             .navigationViewStyle(.stack)
-            .toggleStyle(BrandedSwitchToggleStyle())
+            .toggleStyle(.haStyle)
         }
         .handlesExternalEvents(matching: [SceneActivity.about.activityIdentifier])
 
         // Mac Assist
         WindowGroup {
             AssistWindowView()
-                .toggleStyle(BrandedSwitchToggleStyle())
+                .toggleStyle(.haStyle)
         }
         .handlesExternalEvents(matching: [SceneActivity.assist.activityIdentifier])
 
         // Mac Onboarding
         WindowGroup {
             OnboardingNavigationView(onboardingStyle: .secondary)
-                .toggleStyle(BrandedSwitchToggleStyle())
+                .toggleStyle(.haStyle)
         }
         .handlesExternalEvents(matching: [SceneActivity.onboarding.activityIdentifier])
     }

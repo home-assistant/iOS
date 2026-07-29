@@ -8,7 +8,7 @@ public extension View {
         // Every UIKit-hosted SwiftUI screen flows through here, so the brand toggle style applies
         // app-wide from this single seam (the SwiftUI scene roots in HAApp apply it themselves).
         let hostingAccessingView = environmentObject(provider)
-            .toggleStyle(BrandedSwitchToggleStyle())
+            .toggleStyle(.haStyle)
         let hostingController = UIHostingController(rootView: hostingAccessingView)
         provider.viewController = hostingController
         return hostingController
@@ -65,6 +65,7 @@ private struct InjectViewControllerProvider: ViewModifier {
     func body(content: Content) -> some View {
         content
             .environmentObject(provider)
+            .toggleStyle(.haStyle)
             .background(ViewControllerResolver { provider.viewController = $0 })
     }
 }

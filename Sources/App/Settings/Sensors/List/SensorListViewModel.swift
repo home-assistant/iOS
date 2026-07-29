@@ -33,6 +33,20 @@ class SensorListViewModel: ObservableObject {
         #endif
     }
 
+    /// The Apple Health link stays visible while searching when the query matches its screen, so
+    /// health sensors remain reachable even though they live on their own screen.
+    var showHealthSection: Bool {
+        guard isHealthKitAvailable else { return false }
+        guard isSearching else { return true }
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        if L10n.SettingsSensors.Health.Sensors.title.localizedStandardContains(term) { return true }
+        return HealthKitMetric.all.contains { $0.name.localizedStandardContains(term) }
+        #else
+        return false
+        #endif
+    }
+
     /// The sensors matching the current search term, or all of them when not searching.
     var filteredSensors: [WebhookSensor] {
         let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
