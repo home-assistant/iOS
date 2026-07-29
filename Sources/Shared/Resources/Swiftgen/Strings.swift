@@ -5716,7 +5716,7 @@ public enum L10n {
       public enum Sensors {
         /// Enable all Apple Health sensors
         public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all") }
-        /// Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant, and you need to grant Apple Health access from the Permissions screen afterwards.
+        /// Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant — request access again after turning more of them on, so Apple Health can grant permission for the new ones.
         public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.footer") }
         /// Apple Health Sensors
         public static var title: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.title") }

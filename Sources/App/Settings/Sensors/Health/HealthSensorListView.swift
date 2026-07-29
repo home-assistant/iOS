@@ -18,6 +18,12 @@ struct HealthSensorListView: View {
                     )) {
                         Text(L10n.SettingsSensors.Health.Sensors.enableAll)
                     }
+                    Button {
+                        Task { await viewModel.requestAuthorization() }
+                    } label: {
+                        Text(L10n.SettingsSensors.Health.requestAccess)
+                    }
+                    .disabled(!viewModel.isHealthKitAvailable)
                 }
             }
             ForEach(viewModel.visibleCategories, id: \.self) { category in
@@ -42,6 +48,11 @@ struct HealthSensorListView: View {
             prompt: Text(L10n.SettingsSensors.Sensors.searchPrompt)
         )
         .navigationTitle(L10n.SettingsSensors.Health.Sensors.title)
+        .alert(L10n.errorLabel, isPresented: $viewModel.showAlert) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text(viewModel.alertMessage ?? "")
+        }
     }
 
     private func binding(for metric: HealthKitMetric) -> Binding<Bool> {

@@ -6,6 +6,9 @@ import Shared
 @MainActor
 class HealthSensorListViewModel: ObservableObject {
     @Published var searchTerm = ""
+    @Published var alertMessage: String?
+    @Published var showAlert = false
+    @Published private(set) var isHealthKitAvailable = false
     /// Mirrored here so toggling a sensor re-renders the list; `SensorContainer` isn't observable.
     @Published private(set) var enabledUniqueIDs: Set<String> = []
     /// Latest reported value per metric. Apple Health sensors are kept out of the main sensor list, so
@@ -13,6 +16,7 @@ class HealthSensorListViewModel: ObservableObject {
     @Published private(set) var stateDescriptions: [String: String] = [:]
 
     init() {
+        self.isHealthKitAvailable = Current.healthKitService.isAvailable()
         self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
         Current.sensors.register(observer: self)
     }
@@ -56,6 +60,18 @@ class HealthSensorListViewModel: ObservableObject {
     func setAllEnabled(_ isEnabled: Bool) {
         Current.sensors.setEnabled(isEnabled, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
         enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+    }
+
+    /// HealthKit only prompts for types it hasn't been asked about, so asking again after switching
+    /// more sensors on is what gets permission for them.
+    func requestAuthorization() async {
+        do {
+            try await Current.healthKitService.requestReadAuthorization()
+            isHealthKitAvailable = Current.healthKitService.isAvailable()
+        } catch {
+            alertMessage = error.localizedDescription
+            showAlert = true
+        }
     }
 
     private static func currentlyEnabledUniqueIDs() -> Set<String> {

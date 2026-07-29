@@ -1726,7 +1726,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.request_access" = "Request Apple Health Access";
 "settings_sensors.health.sensors.enable_all" = "Enable all Apple Health sensors";
-"settings_sensors.health.sensors.footer" = "Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant, and you need to grant Apple Health access from the Permissions screen afterwards.";
+"settings_sensors.health.sensors.footer" = "Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant — request access again after turning more of them on, so Apple Health can grant permission for the new ones.";
 "settings_sensors.health.sensors.title" = "Apple Health Sensors";
 "settings_sensors.health.status" = "Health Data";
 "settings_sensors.health.status.available" = "Available";

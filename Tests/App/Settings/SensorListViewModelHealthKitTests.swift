@@ -200,6 +200,20 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     }
 
     @MainActor
+    func testHealthSensorListRequestsAccessAndSurfacesFailures() async {
+        Current.healthKitService.requestReadAuthorization = {
+            throw HealthKitService.HealthKitServiceError.noEnabledSensors
+        }
+        let viewModel = HealthSensorListViewModel()
+        XCTAssertTrue(viewModel.isHealthKitAvailable)
+
+        await viewModel.requestAuthorization()
+
+        XCTAssertTrue(viewModel.showAlert)
+        XCTAssertEqual(viewModel.alertMessage, L10n.SettingsSensors.Health.Error.noEnabledSensors)
+    }
+
+    @MainActor
     func testHealthSensorListSearchFiltersByName() {
         let viewModel = HealthSensorListViewModel()
 
