@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="launchScreen-logo" translatesAutoresizingMaskIntoConstraints="NO" id="mQh-tn-BC1" userLabel="Icon">
-                                <rect key="frame" x="152" y="328" width="110" height="110"/>
+                                <rect key="frame" x="149.5" y="340.5" width="115" height="115"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="110" id="xXY-zT-zVi"/>
-                                    <constraint firstAttribute="height" constant="110" id="y4R-Bz-WCE"/>
+                                    <constraint firstAttribute="width" constant="115" id="xXY-zT-zVi"/>
+                                    <constraint firstAttribute="height" constant="115" id="y4R-Bz-WCE"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ohf-inline" translatesAutoresizingMaskIntoConstraints="NO" id="pDB-na-0R2">
@@ -46,7 +46,7 @@
                             <constraint firstItem="9Kv-2m-Wq7" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3Rp-8n-Lc4"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="top" secondItem="9Kv-2m-Wq7" secondAttribute="bottom" id="7Tj-5w-Xa2"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BRP-Fw-g6e"/>
-                            <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-65" id="gXx-Ta-dWp"/>
+                            <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-50" id="gXx-Ta-dWp"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hcu-i7-wKs"/>
                             <constraint firstItem="ESo-tq-1hR" firstAttribute="bottom" secondItem="pDB-na-0R2" secondAttribute="bottom" constant="32" id="zkR-fD-4jl"/>
                         </constraints>

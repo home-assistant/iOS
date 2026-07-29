@@ -10,9 +10,9 @@ struct LaunchSplashOverlayView: View {
     /// Tweak these to adjust the transition; the previews below replay it.
     enum Constants {
         /// Mirrors the icon constraints in `LaunchScreen.storyboard`.
-        static let splashLogoSize = CGSize(width: 110, height: 110)
+        static let splashLogoSize = CGSize(width: 115, height: 115)
         /// Mirrors the storyboard's icon centerY constraint constant (logo sits above screen center).
-        static let splashLogoCenterYOffset: CGFloat = -65
+        static let splashLogoCenterYOffset: CGFloat = -50
         /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
         static let ohfLogoSize = CGSize(width: 220, height: 25)
         /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
