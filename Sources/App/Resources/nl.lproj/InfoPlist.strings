@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Maak foto's en stuur ze naar je Home Assistant-server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Schakel optioneel cross-website tracking in als je configuratie dit vereist.";
 "NSFocusStatusUsageDescription" = "Rapporteer je focusstatus als een sensor.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Zoek en communiceer met je Home Assistant-instantie.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We raden aan om \"Altijd toestaan\" te selecteren voor de beste locatie-ervaring. Als je \"Alleen tijdens gebruik van de app\" selecteert, worden iBeacons, geofences, locatie-updates op de achtergrond en nauwkeurige rapportage uitgeschakeld.";
 "NSLocationAlwaysUsageDescription" = "We hebben altijd toegang tot je locatie nodig voor functies zoals iBeacons, geofences, locatie updates (op de achtergrond) voor een nauwkeurige locatie bepaling.";

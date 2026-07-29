@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Делайте фотографии и отправляйте их на свой сервер Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "При необходимости включите межсайтовое отслеживание, если этого требует ваша конфигурация.";
 "NSFocusStatusUsageDescription" = "Сообщить о своем статусе фокусирования в качестве датчика.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Найти свой экземпляр Home Assistant и подключиться к нему.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Нам также требуется разрешение на доступ к местоположению 'Всегда', чтобы приложение могло выполнять фоновые операции. \n\n ⚠️ Без этого приложение не сможет решить, какое соединение (локальное или удаленное) использовать в фоновом режиме, и всегда будет использовать удаленное.";
 "NSLocationAlwaysUsageDescription" = "Постоянный доступ к геопозиции необходим для таких функций, как iBeacons, геозоны и фоновая отправка геопозиции.";

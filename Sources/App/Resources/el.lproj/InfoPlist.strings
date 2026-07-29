@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Τραβήξτε φωτογραφίες και στείλτε τις στο διακομιστή του Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Προαιρετικά, ενεργοποιήστε την παρακολούθηση μεταξύ ιστότοπων εάν το απαιτεί η διαμόρφωση.";
 "NSFocusStatusUsageDescription" = "Αναφέρετε την κατάσταση εστίασης ως αισθητήρα.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Εντοπίστε και επικοινωνήστε με την υπόσταση του Home Assistant σας.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Χρειαζόμαστε επίσης άδεια πρόσβασης στη θέση 'Πάντα', ώστε η εφαρμογή να μπορεί να εκτελεί λειτουργίες στο παρασκήνιο. \n\n ⚠️ Χωρίς αυτό, η Εφαρμογή δεν είναι σε θέση να αποφασίσει ποια σύνδεση (τοπική ή απομακρυσμένη) θα χρησιμοποιήσει στο παρασκήνιο και θα χρησιμοποιεί πάντα την απομακρυσμένη.";
 "NSLocationAlwaysUsageDescription" = "Χρειαζόμαστε πάντα πρόσβαση στην τοποθεσία σας για λειτουργίες όπως το iBeacons, τα γεωγραφικά πεδία, τις ενημερώσεις τοποθεσίας στο παρασκήνιο και την ακριβή αναφορά.";

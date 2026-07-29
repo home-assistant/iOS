@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Tag fotos og send dem til din Home Assistant-server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Du kan vælge at aktivere sporing på tværs af websitet, hvis din konfiguration kræver det.";
 "NSFocusStatusUsageDescription" = "Rapportér din fokusstatus som en sensor.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Finde og kommunikere med din Home Assistant-installation.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi skal også bruge tilladelse til at få adgang til lokalitet 'Altid', så appen kan udføre baggrundshandlinger. \n\n ⚠️ Uden den kan appen ikke vide, hvilken forbindelse (lokal eller fjern) der skal bruges i baggrunden, og vil altid bruge fjernadgang.";
 "NSLocationAlwaysUsageDescription" = "Vi har altid brug for adgang til din lokalitet for funktioner som iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
