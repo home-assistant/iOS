@@ -1,4 +1,5 @@
 import Foundation
+import WatchConnectivity
 
 public extension HAWatchConnectivity {
     enum ConnectivityError: LocalizedError {
@@ -28,6 +29,30 @@ public extension HAWatchConnectivity {
                 return underlying.localizedDescription
             }
         }
+    }
+}
+
+public extension HAWatchConnectivity.ConnectivityError {
+    /// Whether `error` means "the counterpart wasn't reachable at that instant" rather than a real
+    /// failure — either our own pre-send check (`.notReachable`) or WatchConnectivity's own
+    /// `WCError.notReachable` (7007), which arrives wrapped in `.deliveryFailed` or raw depending on
+    /// the call site.
+    ///
+    /// Reachability flaps constantly on watchOS: it can flip between a caller's pre-send check and the
+    /// send itself, and the counterpart is usually back within a second. Callers use this to retry in
+    /// the background instead of reporting a failure the user can't act on.
+    static func isCounterpartUnreachable(_ error: Error) -> Bool {
+        if let connectivityError = error as? Self {
+            if case .notReachable = connectivityError {
+                return true
+            }
+            if case let .deliveryFailed(underlying) = connectivityError {
+                return isCounterpartUnreachable(underlying)
+            }
+            return false
+        }
+        let nsError = error as NSError
+        return nsError.domain == WCErrorDomain && nsError.code == WCError.Code.notReachable.rawValue
     }
 }
 

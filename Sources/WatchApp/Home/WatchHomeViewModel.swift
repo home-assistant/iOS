@@ -169,17 +169,8 @@ final class WatchHomeViewModel: ObservableObject {
         }
         homeType = .undefined
         guard Communicator.shared.currentReachability != .notReachable else {
-            Current.Log.error("iPhone reachability is not immediate reachable")
-            loadCache()
-            // Queue a background pull so the phone answers once it's reachable again, then updates the
-            // screen via the guaranteed-response reconcile — no need for the phone to be foreground.
-            setLoadingStatus(L10n.Watch.Home.Sync.waiting)
-            enqueueGuaranteedConfigPull()
-            // An explicit reload can't refresh now: tell the user the data will catch up in the
-            // background once the phone is reachable again (the automatic sync stays silent).
-            if userInitiated {
-                showNotReachableAlert = true
-            }
+            Current.Log.info("iPhone is not immediately reachable")
+            degradeToBackgroundPull(userInitiated: userInitiated)
             return
         }
         isSyncInFlight = true
@@ -193,6 +184,30 @@ final class WatchHomeViewModel: ObservableObject {
         // Full reference-database sync (chunked, ordered, acknowledged). On completion it pulls the
         // watch config and clears loading; on failure it surfaces a friendly error.
         startDatabaseSync()
+    }
+
+    /// Fall back to a background pull when the phone isn't reachable, instead of failing the sync.
+    ///
+    /// Used both by the pre-send reachability check and by a send that came back with
+    /// `WCError.notReachable`: the two are the same situation, only observed a few milliseconds apart.
+    /// The queued guaranteed pull is answered whenever the phone comes back — no foreground needed —
+    /// and updates the screen through the reconcile path.
+    @MainActor
+    private func degradeToBackgroundPull(userInitiated: Bool) {
+        resetSyncState()
+        // Cleared here rather than through `updateLoading`, which hops through the main queue: that
+        // block would land after the status set below and blank it. Clearing `isSyncInFlight` also
+        // keeps this abandoned sync from blocking a later reload.
+        isLoading = false
+        isSyncInFlight = false
+        loadCache()
+        setLoadingStatus(L10n.Watch.Home.Sync.waiting)
+        enqueueGuaranteedConfigPull()
+        // An explicit reload can't refresh now: tell the user the data will catch up in the
+        // background once the phone is reachable again (the automatic sync stays silent).
+        if userInitiated {
+            showNotReachableAlert = true
+        }
     }
 
     /// Pull the watch config from the phone and reconcile it (adopt / push offline edits / conflict).
@@ -360,11 +375,11 @@ final class WatchHomeViewModel: ObservableObject {
     private static let syncPipelineWindow = 3
 
     /// Kick off a full database sync. Requires the phone reachable (interactive request/reply); if it
-    /// isn't, surface a friendly message rather than hang, and still try the config pull from cache.
+    /// isn't, fall back to the background pull rather than hang or fail loudly.
     @MainActor
     private func startDatabaseSync() {
         guard Communicator.shared.currentReachability == .immediatelyReachable else {
-            failSync(L10n.Watch.Sync.Error.unreachable)
+            degradeToBackgroundPull(userInitiated: isSyncUserInitiated)
             return
         }
         resetSyncState()
@@ -381,9 +396,17 @@ final class WatchHomeViewModel: ObservableObject {
             }
         ), priority: .background, errorHandler: { [weak self] error in
             Task { @MainActor in
+                guard let self else { return }
+                // Reachability flipped between the guard above and the send. That's transient, not a
+                // failure worth alerting on — degrade to the background pull like the pre-check does.
+                guard !HAWatchConnectivity.ConnectivityError.isCounterpartUnreachable(error) else {
+                    Current.Log.info("Database sync start deferred: iPhone became unreachable mid-send")
+                    self.degradeToBackgroundPull(userInitiated: self.isSyncUserInitiated)
+                    return
+                }
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
-                self?.failSync(
-                    L10n.Watch.Sync.Error.unreachable,
+                self.failSync(
+                    L10n.Watch.Sync.Error.generic,
                     detail: "sync start request failed: \(error.localizedDescription)"
                 )
             }
@@ -645,20 +668,25 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishCacheLoad() {
         guard !isSyncInFlight else { return }
-        updateLoading(isLoading: false)
+        // The cache finishing rendering is not what ends a wait, so any status the caller deliberately
+        // left up — "waiting for iPhone" after a deferred sync — stays on screen.
+        updateLoading(isLoading: false, clearStatus: false)
     }
 
-    private func updateLoading(isLoading: Bool) {
+    private func updateLoading(isLoading: Bool, clearStatus: Bool = true) {
         DispatchQueue.main.async { [weak self] in
             self?.isLoading = isLoading
             if !isLoading {
                 // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
-                // start. Cancel any pending throttled status update and clear immediately.
+                // start.
                 self?.isSyncInFlight = false
-                self?.pendingStatusWork?.cancel()
-                self?.pendingStatusWork = nil
-                self?.loadingStatus = nil
                 self?.syncProgress = nil
+                if clearStatus {
+                    // Cancel any pending throttled status update and clear immediately.
+                    self?.pendingStatusWork?.cancel()
+                    self?.pendingStatusWork = nil
+                    self?.loadingStatus = nil
+                }
             }
         }
     }
