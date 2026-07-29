@@ -4,11 +4,10 @@ import GRDB
 
 /// A snapshot of the phone's reference GRDB tables that the watch needs to configure itself offline.
 ///
-/// This phone-relayed sync is the DEFAULT: real watches block `URLSessionWebSocketTask` for
-/// ordinary apps (TN3135), so the watch generally can't fetch from Home Assistant directly. The
-/// experimental direct websocket sync (`WatchDirectDatabaseSync`, watch Settings → Developer)
-/// covers the reference tables itself when enabled — `apply()` then skips them so the two writers
-/// never fight — while complications, configs, and servers always travel on this mirror.
+/// The watch is fed entirely through this phone-relayed sync: real watches block
+/// `URLSessionWebSocketTask` for ordinary apps (TN3135), so the watch can't fetch from Home
+/// Assistant directly. Reference tables, complications, configs, and servers all travel on this
+/// mirror.
 ///
 /// Only what the add flow needs is included: entities of watch-supported domains, areas
 /// (for the context line), and Assist pipelines. Device / entity-registry tables are intentionally
@@ -144,18 +143,8 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// registry rows are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
-            // When the experimental direct websocket sync owns the reference tables (developer
-            // toggle), the phone's copies are skipped: the direct sync writes fresher data
-            // per-server and the two write shapes must not interleave.
-            #if os(watchOS)
-            let directSyncOwnsReferenceTables = WatchUserDefaults.shared.directDatabaseSyncEnabled
-            #else
-            let directSyncOwnsReferenceTables = false
-            #endif
-            if !directSyncOwnsReferenceTables {
-                try applyReferenceTables(in: db)
-            }
-            try applyComplicationTables(in: db, includeRegistryRows: !directSyncOwnsReferenceTables)
+            try applyReferenceTables(in: db)
+            try applyComplicationTables(in: db, includeRegistryRows: true)
         }
     }
 

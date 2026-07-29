@@ -7,11 +7,7 @@ import Shared
 /// screen (the attention dot on the settings gear).
 enum WatchServerURLAttention {
     static func serverIdsNeedingAttention() async -> Set<String> {
-        // The direct-sync experiment keeps its own record of servers it couldn't reach on the
-        // last sync; fold it in only while that option is on.
-        var needingAttention = WatchUserDefaults.shared.directDatabaseSyncEnabled
-            ? WatchUserDefaults.shared.directSyncNoReachableURLServerIds
-            : Set<String>()
+        var needingAttention = Set<String>()
         for server in Current.servers.all where await server.activeURL() == nil {
             needingAttention.insert(server.identifier.rawValue)
         }
