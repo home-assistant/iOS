@@ -43,6 +43,7 @@ public class SensorContainer {
     private let providers = HAProtected<[SensorProvider.Type]>(value: [])
     private let observers = HAProtected<NSHashTable<AnyObject>>(value: .init(options: .weakMemory))
     private let providerDependencies: SensorProviderDependencies
+    private let enablement = SensorEnablementStore()
 
     init() {
         self.providerDependencies = SensorProviderDependencies()
@@ -67,23 +68,13 @@ public class SensorContainer {
         observers.mutate { $0.remove(observer) }
     }
 
-    private var disabledSensorIDs: Set<String> {
-        get {
-            Set(Current.settingsStore.prefs.object(forKey: "disabledSensors") as? [String] ?? [])
-        }
-        set {
-            Current.settingsStore.prefs.set(Array(newValue), forKey: "disabledSensors")
-            notifySignal(reason: .settingsChange)
-        }
-    }
-
     public func isEnabled(sensor: WebhookSensor) -> Bool {
         guard let id = sensor.UniqueID else { return false }
         return isEnabled(uniqueID: id)
     }
 
     public func isEnabled(uniqueID: String) -> Bool {
-        !disabledSensorIDs.contains(uniqueID)
+        enablement.isEnabled(uniqueID: uniqueID)
     }
 
     public func isAllowedToSend(sensor: WebhookSensor, for server: Server) -> Bool {
@@ -101,26 +92,15 @@ public class SensorContainer {
     }
 
     public func setEnabled(_ value: Bool, forUniqueID id: String) {
-        if value {
-            disabledSensorIDs.remove(id)
-        } else {
-            disabledSensorIDs.insert(id)
-        }
+        guard enablement.setEnabled(value, forUniqueID: id) else { return }
+        notifySignal(reason: .settingsChange)
     }
 
-    /// Disables a sensor the first time it is ever seen, so opt-in sensors (e.g. camera-based
-    /// ones, which must not prompt for permission unless the user asks) don't follow the
-    /// enabled-by-default behavior. Subsequent calls are no-ops, preserving the user's choice.
-    public func disableInitially(sensorId: WebhookSensorId) {
-        let key = Self.initialDisableKey(for: sensorId)
-        let prefs = Current.settingsStore.prefs
-        guard prefs.object(forKey: key) == nil else { return }
-        prefs.set(true, forKey: key)
-        setEnabled(false, forUniqueID: sensorId.rawValue)
-    }
-
-    static func initialDisableKey(for sensorId: WebhookSensorId) -> String {
-        "sensor_initially_disabled_\(sensorId.rawValue)"
+    /// Applies the sensor selection a first-time install starts with. Sensors outside it stay off
+    /// until the user enables them, so there is nothing to switch off here.
+    public func applyFirstRunSensorDefaults() {
+        guard enablement.applyFirstRunDefaults() else { return }
+        notifySignal(reason: .settingsChange)
     }
 
     private let lastUpdate = HAProtected<SensorObserverUpdate?>(value: nil)
@@ -197,6 +177,13 @@ public class SensorContainer {
                     return nil
                 }
             }.flatMap { $0 }
+        }.map { [weak self] sensors -> [WebhookSensor] in
+            // A limited run only asks some of the providers, so it can't stand in for the complete
+            // set the migration needs to decide the sensors whose IDs only exist at runtime.
+            if limitedTo == nil {
+                self?.enablement.seedDynamicIDsIfNeeded(from: Set(sensors.compactMap(\.UniqueID)))
+            }
+            return sensors
         }
 
         setLastUpdate(.init(sensors: generatedSensors.map { [lastSentSensors] new in

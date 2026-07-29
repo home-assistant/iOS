@@ -54,10 +54,6 @@ final class CameraMotionSensor: SensorProvider {
             return .init(error: CameraMotionError.unavailable)
         }
 
-        // The camera must never turn on (nor its permission prompt appear) without an
-        // explicit user opt-in, so this sensor starts disabled instead of enabled-by-default.
-        Current.sensors.disableInitially(sensorId: .cameraMotion)
-
         let isDetected = manager.isMotionDetected
 
         let sensor = WebhookSensor(
