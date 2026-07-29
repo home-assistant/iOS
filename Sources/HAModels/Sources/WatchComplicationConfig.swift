@@ -224,6 +224,36 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         isCustomized ?? (families?.isEmpty == false)
     }
 
+    /// Whether any customizable color is set: the static pickers (the global icon color and the
+    /// per-size gauge tint / text color) or the color templates. This is what the editor's "Custom
+    /// colors" toggle reads, so the toggle always describes the complication rather than a separately
+    /// stored opinion about it — which is only true because turning the toggle off clears the colors
+    /// (see `clearCustomColors()`).
+    ///
+    /// The templates count too: a template-only color setup used to read as "off", hiding the very
+    /// template fields that were driving the complication's colors.
+    public func usesCustomColors() -> Bool {
+        if iconColor != nil { return true }
+        if families?.values.contains(where: { $0.tint != nil || $0.textColor != nil }) == true { return true }
+        return [customGaugeColorTemplate, customIconColorTemplate, customTextColorTemplate]
+            .contains { !($0 ?? "").isEmpty }
+    }
+
+    /// Clears every customizable color, so turning "Custom colors" off leaves nothing behind that would
+    /// keep tinting the complication (and would read back as the toggle being on).
+    public mutating func clearCustomColors() {
+        iconColor = nil
+        customGaugeColorTemplate = nil
+        customIconColorTemplate = nil
+        customTextColorTemplate = nil
+        families = families?.mapValues { options in
+            var options = options
+            options.tint = nil
+            options.textColor = nil
+            return options
+        }
+    }
+
     public var displayName: String {
         name ?? entityDisplayName ?? entityId ?? "Complication"
     }

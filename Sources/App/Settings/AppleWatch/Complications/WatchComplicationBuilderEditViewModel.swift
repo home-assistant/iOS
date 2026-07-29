@@ -23,8 +23,18 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
     /// brand-new complication, so the form reveals itself step by step: source → server → entity /
     /// template → value options. Editing an existing config starts with its kind selected.
     @Published private(set) var selectedSource: WatchComplicationConfig.Kind?
-    /// Nested opt-in under "Customize": reveals the color pickers.
-    @Published var useCustomColors: Bool
+    /// Nested opt-in under "Customize": reveals the color pickers. Not stored on its own — it reads
+    /// back from the colors the config actually carries, so turning it off has to clear them. That
+    /// keeps the toggle honest in both directions: the complication stops being tinted, and the
+    /// toggle can't reopen on because of a color nothing is using any more.
+    @Published var useCustomColors: Bool {
+        didSet {
+            guard !useCustomColors else { return }
+            useTemplateColor = false
+            config.clearCustomColors()
+        }
+    }
+
     /// Opt-in for the template flow: the colors come from templates rendering hex strings — one per
     /// static color picker. Turning it off clears the stored templates so the static colors apply
     /// again.
@@ -53,8 +63,7 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         )
         self.config = initial
         self.selectedSource = existing?.kind
-        self.useCustomColors = initial.iconColor != nil
-            || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false)
+        self.useCustomColors = initial.usesCustomColors()
         self.useTemplateColor = [
             initial.customGaugeColorTemplate, initial.customIconColorTemplate, initial.customTextColorTemplate,
         ].contains { !($0 ?? "").isEmpty }
