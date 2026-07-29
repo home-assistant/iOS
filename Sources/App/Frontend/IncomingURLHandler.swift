@@ -513,8 +513,10 @@ class IncomingURLHandler {
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        let appCoordinator: AppCoordinator? = coordinator
-        let view = TagApprovalBottomSheet(
+        // Built empty first so `onDismiss` can weakly reference the controller it lives in: it has to dismiss
+        // this sheet specifically — not whatever is top-most, which may be an overlay that appeared above it.
+        let controller = UIHostingController(rootView: AnyView(EmptyView()))
+        controller.rootView = AnyView(TagApprovalBottomSheet(
             tag: tag,
             onAllowOnce: { [weak self] in
                 self?.fireApprovedTag(tag, type: type)
@@ -523,14 +525,10 @@ class IncomingURLHandler {
                 AllowedTag.add(tag)
                 self?.fireApprovedTag(tag, type: type)
             },
-            onDismiss: {
-                // The sheet presents on top of everything, so it is the top-most controller — dismissing
-                // the frontend's presented controller instead could tear down an unrelated sheet.
-                appCoordinator?.presentedViewController?.dismiss(animated: false)
+            onDismiss: { [weak controller] in
+                controller?.dismiss(animated: false)
             }
-        )
-
-        let controller = UIHostingController(rootView: view)
+        ))
         controller.modalPresentationStyle = .overFullScreen
         controller.view.backgroundColor = .clear
         presentOnTopmost(controller, animated: false)
