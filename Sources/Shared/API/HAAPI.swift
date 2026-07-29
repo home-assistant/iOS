@@ -971,9 +971,12 @@ public class HomeAssistantAPI {
     public func registerSensors(limitedToUniqueIDs uniqueIDs: Set<String>? = nil) -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)
-        }.map { sensors in
+        }.map { (sensors: [WebhookSensor]) -> [WebhookSensor] in
             guard let uniqueIDs else { return sensors }
-            return sensors.filter { $0.UniqueID.map(uniqueIDs.contains) ?? false }
+            return sensors.filter { sensor in
+                guard let uniqueID = sensor.UniqueID else { return false }
+                return uniqueIDs.contains(uniqueID)
+            }
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { [server] sensor in
