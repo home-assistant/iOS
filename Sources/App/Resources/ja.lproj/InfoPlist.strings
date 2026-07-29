@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "写真を撮って、Home Assistant serverに送ることができます。";
 "NSCrossWebsiteTrackingUsageDescription" = "必要に応じて、クロス Web サイト トラッキングを有効にします。";
 "NSFocusStatusUsageDescription" = "フォーカスの状態をセンサーとして報告します。";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Home Assistantのインスタンスを見つけて通信します。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 アプリがバックグラウンド操作を実行できるようにするには、位置情報への「常時」アクセス権限も必要です。 \n\n ⚠️ これがないと、アプリはバックグラウンドでどの接続 (ローカルまたはリモート) を使用するかを決定できず、常にリモートを使用します。";
 "NSLocationAlwaysUsageDescription" = "iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートなどの機能のために、常に位置情報にアクセスする必要があります。";

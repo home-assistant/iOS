@@ -4251,6 +4251,167 @@ public enum L10n {
         /// Components Library
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.components_library.title") }
       }
+      public enum ConfigurationTransfer {
+        /// Import/Export configuration
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.title") }
+        public enum Actions {
+          /// The export is a plain JSON file you can inspect before sharing it. Importing replaces every category listed above and cannot be undone.
+          public static var footer: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.actions.footer") }
+        }
+        public enum Category {
+          public enum AppQuickActions {
+            /// Shortcuts offered when the app icon is long pressed.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.app_quick_actions.explanation") }
+            /// App quick actions
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.app_quick_actions.title") }
+          }
+          public enum AppSettings {
+            /// Gestures, page zoom, full screen, location sources, privacy choices, notification and web view options, and the selected app icon.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.app_settings.explanation") }
+            /// App settings
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.app_settings.title") }
+          }
+          public enum CarplayConfiguration {
+            /// Quick access items shown on the CarPlay screen.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.carplay_configuration.explanation") }
+            /// CarPlay configuration
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.carplay_configuration.title") }
+          }
+          public enum CustomWidgets {
+            /// Widgets built in the widget editor, with their items.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.custom_widgets.explanation") }
+            /// Custom widgets
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.custom_widgets.title") }
+          }
+          public enum Kiosk {
+            /// Kiosk dashboard, screensaver and lock options.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.kiosk.explanation") }
+            /// Kiosk mode
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.kiosk.title") }
+          }
+          public enum MacToolbar {
+            /// Entities you added to the Mac window toolbar.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.mac_toolbar.explanation") }
+            /// Mac toolbar items
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.mac_toolbar.title") }
+          }
+          public enum NfcTags {
+            /// NFC tags this app has been allowed to read.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.nfc_tags.explanation") }
+            /// Approved NFC tags
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.nfc_tags.title") }
+          }
+          public enum NotificationCategories {
+            /// Actionable notification categories and their actions.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.notification_categories.explanation") }
+            /// Notification categories
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.notification_categories.title") }
+          }
+          public enum NotificationSnoozeActions {
+            /// Snooze durations offered on notifications.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.notification_snooze_actions.explanation") }
+            /// Notification snooze actions
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.notification_snooze_actions.title") }
+          }
+          public enum RemindersSync {
+            /// Pairings between Apple Reminders lists and to-do entities.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.reminders_sync.explanation") }
+            /// Reminders sync
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.reminders_sync.title") }
+          }
+          public enum WatchComplications {
+            /// Complications configured for the Apple Watch face.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.watch_complications.explanation") }
+            /// Watch complications
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.watch_complications.title") }
+          }
+          public enum WatchConfiguration {
+            /// Items and Assist options shown on the Apple Watch.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.watch_configuration.explanation") }
+            /// Apple Watch configuration
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.category.watch_configuration.title") }
+          }
+        }
+        public enum Contents {
+          /// Everything above is written into a single JSON file. The counts show what is configured on this device right now.
+          public static var footer: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.contents.footer") }
+          /// Included in the export
+          public static var header: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.contents.header") }
+        }
+        public enum Error {
+          /// This is not a full configuration export. Single feature export files are imported from their own settings screen.
+          public static var notAConfigurationFile: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.error.not_a_configuration_file") }
+          /// Configuration transfer failed
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.error.title") }
+          /// Select a JSON configuration export file.
+          public static var unsupportedFile: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.error.unsupported_file") }
+          /// This file was created by a newer version of the app and cannot be imported.
+          public static var unsupportedSchema: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.error.unsupported_schema") }
+        }
+        public enum Excluded {
+          /// Cached entities, areas, panels and registries
+          public static var cachedData: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.excluded.cached_data") }
+          /// Servers, access tokens and keychain items
+          public static var credentials: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.excluded.credentials") }
+          /// Logs, client events and location history
+          public static var diagnostics: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.excluded.diagnostics") }
+          /// Sign in to your servers on the other device before importing: configuration pointing at a server that is missing there is dropped during the import.
+          public static var footer: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.excluded.footer") }
+          /// Never included
+          public static var header: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.excluded.header") }
+        }
+        public enum Export {
+          /// Export
+          public static var button: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.export.button") }
+        }
+        public enum Header {
+          /// Save everything you configured in this app to one file, or restore it from one.
+          public static var subtitle: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.header.subtitle") }
+          /// Configuration
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.header.title") }
+        }
+        public enum Import {
+          /// Import
+          public static var button: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.button") }
+          public enum Confirmation {
+            /// Replace configuration
+            public static var button: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.confirmation.button") }
+            /// This file contains no configuration.
+            public static var emptyFile: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.confirmation.empty_file") }
+            /// %1$@ contains:
+            /// %2$@
+            /// 
+            /// Importing replaces every category listed on this screen, including app settings. This cannot be undone.
+            public static func message(_ p1: Any, _ p2: Any) -> String {
+              return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.confirmation.message", String(describing: p1), String(describing: p2))
+            }
+            /// Replace this app's configuration?
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.confirmation.title") }
+          }
+          public enum Progress {
+            /// Importing configuration
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.progress.title") }
+          }
+          public enum Success {
+            /// Imported %li item(s).
+            public static func message(_ p1: Int) -> String {
+              return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.success.message", p1)
+            }
+            /// Configuration imported
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.import.success.title") }
+          }
+        }
+        public enum State {
+          /// Included
+          public static var included: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.state.included") }
+          /// %li item(s)
+          public static func itemCount(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings.debugging.configuration_transfer.state.item_count", p1)
+          }
+          /// Not configured
+          public static var notConfigured: String { return L10n.tr("Localizable", "settings.debugging.configuration_transfer.state.not_configured") }
+        }
+      }
       public enum CriticalSection {
         /// Make sure you are aware that these operations cannot be reverted.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }

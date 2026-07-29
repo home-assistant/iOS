@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Prenez des photos et envoyez-les à votre serveur Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Activez en option le suivi inter-sites si votre configuration le nécessite.";
 "NSFocusStatusUsageDescription" = "Signalez votre état de concentration via un capteur.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Localisez et communiquez avec votre instance Home Assistant.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  Nous avons également besoin de l'autorisation d'accès à la position réglée sur « Toujours » pour que l'application puisse effectuer des opérations en arrière-plan. \n\n ⚠️  Sans cela, l'application ne pourra pas déterminer quelle connexion (locale ou distante) utiliser en arrière-plan et utilisera toujours la connexion distante.";
 "NSLocationAlwaysUsageDescription" = "Nous avons toujours besoin d'accéder à votre emplacement pour des fonctionnalités telles que les balises iBeacons, le géorepérage, les mises à jour d'emplacement en arrière-plan et les rapports précis.";
