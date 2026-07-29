@@ -157,7 +157,17 @@ class SensorEnablementTests: XCTestCase {
 
         // Which leaves the battery below still able to carry over on the next full run.
         try generateSensors(withUniqueIDs: [dynamicSensorID])
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID))
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID), storedEnablementState)
+    }
+
+    /// The persisted enablement state, for failure messages: the migration is driven entirely by
+    /// these three keys, so they say which step went wrong.
+    private var storedEnablementState: String {
+        let prefs = Current.settingsStore.prefs
+        let enabled = prefs.object(forKey: "enabledSensors") as? [String] ?? []
+        let disabled = prefs.object(forKey: "disabledSensors") as? [String] ?? []
+        let state = prefs.string(forKey: "sensorEnablementMigrationState") ?? "nil"
+        return "migration=\(state) disabled=\(disabled) enabled(\(enabled.count))=\(enabled.suffix(6))"
     }
 
     // MARK: - First-time installs
