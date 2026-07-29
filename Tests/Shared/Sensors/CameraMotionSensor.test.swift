@@ -18,19 +18,14 @@ class CameraMotionSensorTests: XCTestCase {
 
         motionDetection = FakeMotionDetectionManager()
         Current.motionDetection = motionDetection
-        resetSensorEnablement()
+        SensorEnablementStore.resetForTesting()
     }
 
     override func tearDown() {
         super.tearDown()
 
         Current.motionDetection = MotionDetectionManager()
-        resetSensorEnablement()
-    }
-
-    private func resetSensorEnablement() {
-        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
-        Current.settingsStore.prefs.removeObject(forKey: SensorContainer.initialDisableKey(for: .cameraMotion))
+        SensorEnablementStore.resetForTesting()
     }
 
     func testNotAvailable() {
@@ -70,7 +65,7 @@ class CameraMotionSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].State as? Bool, false)
     }
 
-    func testDisabledInitiallyButUserChoiceSticks() throws {
+    func testDisabledByDefaultButUserChoiceSticks() throws {
         motionDetection.overrideCanDetectMotion = true
 
         _ = try hang(CameraMotionSensor(request: request).sensors())

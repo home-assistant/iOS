@@ -11,7 +11,6 @@ class HealthKitSensorTests: XCTestCase {
     private var originalCalendar: (() -> Calendar)!
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
-    private var previousDisabledSensors: Any?
 
     override func setUp() {
         super.setUp()
@@ -20,7 +19,6 @@ class HealthKitSensorTests: XCTestCase {
         originalCalendar = Current.calendar
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
-        previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
         request = .init(
             reason: .trigger("unit-test"),
@@ -34,7 +32,7 @@ class HealthKitSensorTests: XCTestCase {
         Current.date = { Date(timeIntervalSince1970: 1_000_000) }
         Current.calendar = { Calendar(identifier: .gregorian) }
         Current.sensors = SensorContainer()
-        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
+        SensorEnablementStore.resetForTesting()
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
         Current.sensors.setEnabled(true, forUniqueID: HealthKitSensor.Metric.restingHeartRate.uniqueID)
         Current.healthKitService.isAvailable = { true }
@@ -49,7 +47,7 @@ class HealthKitSensorTests: XCTestCase {
     }
 
     override func tearDown() {
-        restore(previousDisabledSensors, forKey: "disabledSensors")
+        SensorEnablementStore.resetForTesting()
         Current.date = originalDate
         Current.calendar = originalCalendar
         Current.healthKitService = originalHealthKitService
@@ -59,14 +57,6 @@ class HealthKitSensorTests: XCTestCase {
         originalHealthKitService = nil
         originalSensors = nil
         super.tearDown()
-    }
-
-    private func restore(_ value: Any?, forKey key: String) {
-        if let value {
-            Current.settingsStore.prefs.set(value, forKey: key)
-        } else {
-            Current.settingsStore.prefs.removeObject(forKey: key)
-        }
     }
 
     func testUnavailableHealthKitReturnsUnavailableSensorsAndDoesNotQueryHealthKit() throws {

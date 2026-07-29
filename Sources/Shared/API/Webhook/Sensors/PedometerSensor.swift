@@ -9,6 +9,11 @@ public class PedometerSensor: SensorProvider {
         case noData
     }
 
+    /// The unique IDs of every pedometer sensor, for `SensorRegistry`.
+    public static var allSensorIDs: [String] {
+        PedometerSensor.allCases.map(\.rawValue)
+    }
+
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
         self.request = request
