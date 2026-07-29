@@ -115,8 +115,8 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    /// Static and internal (not private) so the watch's `WatchDirectServerSync` composes areas
-    /// with exactly the same logic the iPhone pipeline uses.
+    /// Maps each area to the set of entities it contains, resolving both directly-assigned
+    /// entities and those inherited from their device's area.
     static func getAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [EntityRegistryListForDisplay.Entity]

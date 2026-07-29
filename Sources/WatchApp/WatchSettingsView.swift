@@ -233,7 +233,6 @@ private struct WatchServersListView: View {
                         forServerId: context.serverId
                     )
                     WatchServerSync.applyURLOverrides()
-                    Task { await Current.watchDirectDatabaseSync.syncAll(force: true) }
                     viewModel.reload()
                 },
                 onNotNow: {

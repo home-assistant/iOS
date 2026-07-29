@@ -6848,14 +6848,6 @@ public enum L10n {
       }
     }
     public enum InternalUrlPrompt {
-      /// Learn More
-      public static var learnMore: String { return L10n.tr("Localizable", "watch.internal_url_prompt.learn_more") }
-      /// Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?
-      public static func message(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "watch.internal_url_prompt.message", String(describing: p1))
-      }
-      /// Use Internal URL?
-      public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.title") }
       public enum Info {
         /// When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.
         /// 
@@ -7465,23 +7457,11 @@ public enum L10n {
           /// Allow choosing route
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
         }
-        public enum AudioProbe {
-          /// Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.
-          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
-          /// Audio session probe
-          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.title") }
-        }
         public enum ComplicationRefreshNotifications {
           /// Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.footer") }
           /// Complication reload alerts
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.title") }
-        }
-        public enum DirectSync {
-          /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.
-          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.footer") }
-          /// Direct server sync
-          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.title") }
         }
         public enum IphoneUnreachableIcon {
           /// Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.
