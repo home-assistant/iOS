@@ -117,7 +117,7 @@ struct ImportExportConfigurationViewModelTests {
 
     private func withViewModelTestWorld(
         database: DatabaseQueue? = nil,
-        perform work: (DatabaseQueue, ImportExportConfigurationViewModel) async throws -> Void
+        perform work: @MainActor (DatabaseQueue, ImportExportConfigurationViewModel) async throws -> Void
     ) async throws {
         let database = try database ?? makeViewModelDatabase()
         let restore = prepareWorld(database: database)
@@ -133,7 +133,7 @@ struct ImportExportConfigurationViewModelTests {
     /// defaults, so the snapshot taken here is re-applied on the way out: it covers exactly the
     /// preferences an import can touch, using the same code path. The menu bar template is restored
     /// by key on top of that, because `apply()` skips it when its server is gone.
-    private func prepareWorld(database: DatabaseQueue) -> () -> Void {
+    private func prepareWorld(database: DatabaseQueue) -> @MainActor () -> Void {
         let previousDatabase = Current.database
         let previousServers = Current.servers
         let previousModelManager = Current.modelManager

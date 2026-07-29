@@ -167,7 +167,7 @@ struct AppConfigurationTransferTests {
         database: DatabaseQueue? = nil,
         modelManager: LegacyModelManager = NoOpConfigurationModelManager(),
         appDatabaseUpdater: AppDatabaseUpdaterProtocol = RecordingConfigurationAppDatabaseUpdater(),
-        perform work: (DatabaseQueue) async throws -> Void
+        perform work: @MainActor (DatabaseQueue) async throws -> Void
     ) async throws {
         let database = try database ?? makeConfigurationDatabase()
         let previousDatabase = Current.database
@@ -205,7 +205,7 @@ struct AppConfigurationTransferTests {
 
     private func withConfigurationTestWorld<T>(
         database: DatabaseQueue? = nil,
-        perform work: (DatabaseQueue) throws -> T
+        perform work: @MainActor (DatabaseQueue) throws -> T
     ) throws -> T {
         let database = try database ?? makeConfigurationDatabase()
         let previousDatabase = Current.database
