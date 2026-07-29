@@ -35,7 +35,7 @@ class SensorEnablementTests: XCTestCase {
 
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
         XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.appVersion.rawValue))
     }
 
     func testUpgradeLeavesOptInSensorsOffWhenTheDeviceNeverProducedThem() {
@@ -67,7 +67,8 @@ class SensorEnablementTests: XCTestCase {
         XCTAssertTrue(container.isEnabled(uniqueID: "battery_state"))
         XCTAssertTrue(container.isEnabled(uniqueID: "camera_in_use"))
         XCTAssertTrue(container.isEnabled(uniqueID: "active_camera"))
-        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
+        // Apple Health is opt-in, so upgrading is not enough to start reading it.
+        XCTAssertFalse(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     func testUpgradeRunsOnlyOnce() {

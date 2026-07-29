@@ -103,6 +103,9 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     }
 
     func testRequestingAccessWithNothingEnabledFails() async {
+        // Established explicitly rather than assumed: with a sensor enabled this reaches real
+        // HealthKit, which never returns on a headless simulator and hangs the whole suite.
+        Current.sensors.setEnabled(false, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
         var thrown: Error?
 
         do {

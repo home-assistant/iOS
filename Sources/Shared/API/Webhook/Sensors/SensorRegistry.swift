@@ -29,12 +29,20 @@ public enum SensorRegistry {
         return ids
     }()
 
-    /// Sensors that must never switch on without the user asking for them: both turn the camera on
-    /// and surface its permission prompt.
-    public static let optInSensorIDs: Set<String> = [
-        WebhookSensorId.cameraMotion.rawValue,
-        WebhookSensorId.cameraStream.rawValue,
-    ]
+    /// Sensors that must never switch on without the user asking for them, so the migration leaves
+    /// them off unless the old denylist proves the user had turned one on. The camera ones turn the
+    /// camera on and surface its permission prompt; Apple Health reads someone's health data, which
+    /// shouldn't start happening because they installed an update.
+    public static let optInSensorIDs: Set<String> = {
+        var ids: Set<String> = [
+            WebhookSensorId.cameraMotion.rawValue,
+            WebhookSensorId.cameraStream.rawValue,
+        ]
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        ids.formUnion(HealthKitMetric.all.map(\.uniqueID))
+        #endif
+        return ids
+    }()
 
     /// The sensors a first-time install starts with. Everything else stays off until the user
     /// enables it in settings.

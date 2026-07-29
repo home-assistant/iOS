@@ -33,11 +33,13 @@ class SensorRegistryTests: XCTestCase {
         }
     }
 
-    func testOptInSensorsAreTheCameraOnes() {
-        XCTAssertEqual(SensorRegistry.optInSensorIDs, [
-            WebhookSensorId.cameraMotion.rawValue,
-            WebhookSensorId.cameraStream.rawValue,
-        ])
+    func testOptInSensorsAreTheCameraAndAppleHealthOnes() {
+        XCTAssertTrue(SensorRegistry.optInSensorIDs.contains(WebhookSensorId.cameraMotion.rawValue))
+        XCTAssertTrue(SensorRegistry.optInSensorIDs.contains(WebhookSensorId.cameraStream.rawValue))
+        for metric in HealthKitMetric.all {
+            XCTAssertTrue(SensorRegistry.optInSensorIDs.contains(metric.uniqueID), metric.uniqueID)
+        }
+        XCTAssertEqual(SensorRegistry.optInSensorIDs.count, HealthKitMetric.all.count + 2)
     }
 
     func testOptInSensorsAreNeverOnByDefault() {
