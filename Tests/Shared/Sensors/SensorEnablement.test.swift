@@ -215,14 +215,14 @@ class SensorEnablementTests: XCTestCase {
         )
         _ = try hang(Promise(response))
     }
-}
 
-private class MockEnablementSensorProvider: SensorProvider {
-    static var returnedSensors: [WebhookSensor] = []
+    private class MockEnablementSensorProvider: SensorProvider {
+        static var returnedSensors: [WebhookSensor] = []
 
-    required init(request: SensorProviderRequest) {}
+        required init(request: SensorProviderRequest) {}
 
-    func sensors() -> Promise<[WebhookSensor]> {
-        .value(Self.returnedSensors)
+        func sensors() -> Promise<[WebhookSensor]> {
+            .value(Self.returnedSensors)
+        }
     }
 }
