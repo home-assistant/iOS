@@ -35,7 +35,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
 
-        WKApplication.shared().registerForRemoteNotifications()
+        // No `registerForRemoteNotifications()` here: the watch target carries no `aps-environment`
+        // entitlement (see Configuration/Entitlements/WatchApp.entitlements), so registration could
+        // only ever fail with "no valid aps-environment entitlement string found for application" on
+        // every launch. Notifications reach the watch forwarded from the paired iPhone.
 
         UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
@@ -87,26 +90,34 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// Runs database work delivered while the app may be backgrounded/suspending (WCSession callbacks)
     /// inside an expiring background activity, so the system keeps the process alive for the write
     /// instead of suspending it mid-commit (0xdead10cc). If the activity expires, GRDB is re-suspended,
-    /// which aborts the in-flight write and releases the file lock. `completion` runs on the main queue
-    /// after the work finished (not when it expired).
+    /// which aborts the in-flight write and releases the file lock.
+    ///
+    /// The claim is refcounted because these callbacks arrive in bursts — the phone can deliver several
+    /// mirror blobs within milliseconds, and each gets its own activity. Suspension is process-wide, so
+    /// without the refcount the first block to finish would abort the writes still running behind it.
+    ///
+    /// `work` reports whether it succeeded; `completion` runs on the main queue only for a successful
+    /// run, so callers don't publish side effects for a write that rolled back.
     private static func performProtectedDatabaseWork(
         reason: String,
-        _ work: @escaping () -> Void,
+        _ work: @escaping () -> Bool,
         completion: (() -> Void)? = nil
     ) {
         ProcessInfo.processInfo.performExpiringActivity(withReason: reason) { expired in
             if expired {
-                AppDatabaseSuspension.suspend()
+                // Nothing was claimed on this path, so only suspend if no sibling is mid-write.
+                AppDatabaseSuspension.suspendIfIdle()
                 return
             }
-            AppDatabaseSuspension.resume()
-            work()
+            AppDatabaseSuspension.beginProtectedAccess()
+            let didSucceed = work()
             DispatchQueue.main.async {
-                // Re-suspend when still backgrounded; harmless when active (any `Current.database()`
-                // access resumes it again).
-                if WKApplication.shared().applicationState == .background {
-                    AppDatabaseSuspension.suspend()
-                }
+                // Re-suspend when this was the last access in flight and we're still backgrounded;
+                // harmless when active (any `Current.database()` access resumes it again).
+                AppDatabaseSuspension.endProtectedAccess(
+                    suspend: WKApplication.shared().applicationState == .background
+                )
+                guard didSucceed else { return }
                 completion?()
             }
         }
@@ -239,7 +250,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
 
         Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { [weak self] message in
-            Current.Log.verbose("Received guaranteed message! \(message)")
+            // Identifier and shape only. Interpolating the message itself dumped the whole payload —
+            // tens of KB of serialized plist per config response, carrying the user's entity ids,
+            // script names and server names — into a log file users attach to bug reports.
+            Current.Log.verbose(
+                "Received guaranteed message! \(message.identifier) (keys: \(message.content.keys.sorted()))"
+            )
 
             if message.identifier == GuaranteedMessages.sync.rawValue {
                 HomeAssistantAPI.syncWatchContext()
@@ -264,7 +280,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // the application context; those keys are simply ignored.
 
         Communicator.shared.complicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
-            Current.Log.verbose("Received complication info: \(complicationInfo)")
+            // Count only — the payload carries user-identifying complication content (see above).
+            Current.Log.verbose("Received complication info: \(complicationInfo.content.count) key(s)")
 
             self.updateComplications()
         }
@@ -349,12 +366,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
                     type: .database
                 ))
+                return true
             } catch {
+                // `apply()` is one transaction, so a failure here left the database untouched. Report
+                // it and skip the completion below rather than republishing the unchanged data.
                 Current.Log.error("Failed to apply pushed watch database mirror: \(error)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Failed to apply pushed watch database mirror (\(data.count) bytes): \(error)",
                     type: .database
                 ))
+                return false
             }
         } completion: { [weak self] in
             // The mirror also carries the servers; keep them in step with the reference tables.
@@ -383,15 +404,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             WatchWidgetComplicationSnapshotStore.update()
             endWatchConnectivityBackgroundTaskIfNecessary()
         }.cauterize()
-    }
-
-    func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
-        let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
-    }
-
-    func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-        Current.Log.error("Error when trying to register for push: \(error)")
     }
 }
 
@@ -466,8 +478,8 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
 
 /// Result of refreshing a single modern complication, surfaced to the watch's on-device diagnostics
 /// (the "Refresh complications" button in Settings).
-struct ComplicationRefreshOutcome: Identifiable {
-    enum Status: String, Codable {
+struct ComplicationRefreshOutcome: Identifiable, Sendable {
+    enum Status: String, Codable, Sendable {
         case live
         case cached
         case failed
@@ -527,13 +539,43 @@ enum WatchWidgetComplicationSnapshotStore {
         WatchWidgetServerCredential.write(credentials, to: defaults)
     }
 
+    /// Serializes `refresh()` so overlapping triggers share one run instead of racing.
+    private actor RefreshCoordinator {
+        static let shared = RefreshCoordinator()
+
+        private var inFlight: Task<[ComplicationRefreshOutcome], Never>?
+
+        /// Callers arriving while a refresh is running await that run rather than starting a competing
+        /// one. Triggers land in bursts — one per pushed database mirror, plus the complication reload
+        /// that follows each — and running them concurrently multiplies the REST round-trips (each on
+        /// its own mTLS handshake) while they race to write the same snapshot list into the app group.
+        func run(
+            _ body: @escaping @Sendable () async -> [ComplicationRefreshOutcome]
+        ) async -> [ComplicationRefreshOutcome] {
+            if let inFlight {
+                return await inFlight.value
+            }
+            let task = Task { await body() }
+            inFlight = task
+            let outcomes = await task.value
+            inFlight = nil
+            return outcomes
+        }
+    }
+
     /// Rebuilds every complication snapshot. Legacy complications render synchronously from their
     /// server-rendered data; modern configs fetch their live value directly from Home Assistant over
     /// REST — no paired iPhone required, so this also refreshes when the watch is on its own (e.g. on
     /// LTE), provided the server has a reachable URL. `async` so a background task can await it before
     /// completing (otherwise the app may be suspended before the REST fetch returns).
+    ///
+    /// Coalesced: concurrent callers join the run already in flight (see `RefreshCoordinator`).
     @discardableResult
     static func refresh() async -> [ComplicationRefreshOutcome] {
+        await RefreshCoordinator.shared.run { await performRefresh() }
+    }
+
+    private static func performRefresh() async -> [ComplicationRefreshOutcome] {
         MaterialDesignIcons.register()
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
 
