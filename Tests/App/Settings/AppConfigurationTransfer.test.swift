@@ -94,7 +94,7 @@ struct AppConfigurationTransferTests {
 
         let destinationDatabase = try makeConfigurationDatabase()
         let staleItem = MagicItem(id: "stale-item", serverId: validServerId, type: .script)
-        try destinationDatabase.write { db in
+        try await destinationDatabase.write { db in
             try CustomWidget(id: "stale", name: "Stale", items: [staleItem]).insert(db)
             try AllowedTag(tag: "stale-tag").insert(db)
         }
@@ -113,24 +113,24 @@ struct AppConfigurationTransferTests {
             #expect(appDatabaseUpdater.updatedServerIds == [validServerId])
 
             // The stale rows are gone, replaced by the file's contents.
-            let widgets = try database.read { db in try CustomWidget.fetchAll(db) }
+            let widgets = try await database.read { db in try CustomWidget.fetchAll(db) }
             #expect(widgets.map(\.id) == ["imported-widget"])
-            let tags = try database.read { db in try AllowedTag.fetchAll(db) }
+            let tags = try await database.read { db in try AllowedTag.fetchAll(db) }
             #expect(tags.map(\.tag) == ["imported-tag"])
 
             // Items belonging to a server this device does not know about never land in the database.
-            let storedCarPlayConfig = try database.read { db in try CarPlayConfig.fetchOne(db) }
+            let storedCarPlayConfig = try await database.read { db in try CarPlayConfig.fetchOne(db) }
             let carPlayConfig = try #require(storedCarPlayConfig)
             #expect(carPlayConfig.quickAccessItems.map(\.id) == ["imported-carplay-valid"])
             #expect(counts[.carPlayConfiguration] == 1)
 
-            let remindersConfigs = try database.read { db in try RemindersSyncConfig.fetchAll(db) }
+            let remindersConfigs = try await database.read { db in try RemindersSyncConfig.fetchAll(db) }
             #expect(remindersConfigs.map(\.id) == ["imported-reminders-valid"])
 
-            let categories = try database.read { db in try NotificationCategory.fetchAll(db) }
+            let categories = try await database.read { db in try NotificationCategory.fetchAll(db) }
             #expect(categories.map(\.identifier) == ["imported-category-valid"])
 
-            let storedKiosk = try database.read { db in try KioskSettings.fetchOne(db) }
+            let storedKiosk = try await database.read { db in try KioskSettings.fetchOne(db) }
             let kiosk = try #require(storedKiosk)
             #expect(kiosk.serverId == validServerId)
         }

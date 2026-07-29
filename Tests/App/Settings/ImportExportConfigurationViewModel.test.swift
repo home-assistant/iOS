@@ -58,7 +58,7 @@ struct ImportExportConfigurationViewModelTests {
             #expect(viewModel.pendingImportFilename.isEmpty)
             #expect(viewModel.errorMessage != nil)
 
-            let widgets = try database.read { db in try CustomWidget.fetchAll(db) }
+            let widgets = try await database.read { db in try CustomWidget.fetchAll(db) }
             #expect(widgets.map(\.id) == ["existing"])
         }
     }
@@ -83,7 +83,7 @@ struct ImportExportConfigurationViewModelTests {
             await viewModel.confirmImport()
 
             #expect(viewModel.isImporting == false)
-            let widgets = try database.read { db in try CustomWidget.fetchAll(db) }
+            let widgets = try await database.read { db in try CustomWidget.fetchAll(db) }
             #expect(widgets.map(\.id) == ["existing"])
         }
     }
@@ -108,7 +108,7 @@ struct ImportExportConfigurationViewModelTests {
             #expect(viewModel.pendingImportFilename.isEmpty)
             #expect(viewModel.entryCount(for: .customWidgets) == 1)
 
-            let widgets = try database.read { db in try CustomWidget.fetchAll(db) }
+            let widgets = try await database.read { db in try CustomWidget.fetchAll(db) }
             #expect(widgets.map(\.id) == ["imported"])
         }
     }
