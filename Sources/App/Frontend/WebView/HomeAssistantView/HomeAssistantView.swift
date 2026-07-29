@@ -60,7 +60,7 @@ struct HomeAssistantView: View, WebFrontendView {
             standByView
         }
         .sheet(isPresented: $showServerSelection) {
-            ServerSelectView(prompt: nil, includeSettings: false, selectAction: viewModel.selectServer)
+            ServerSelectView(prompt: nil, includeSettings: true, selectAction: viewModel.selectServer)
                 .presentationDetents([.medium, .large])
                 .presentationBackground(Color(uiColor: .systemBackground))
                 .modify { view in
