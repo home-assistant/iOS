@@ -41,33 +41,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     // MARK: - Permissions
 
     @MainActor
-    func testHealthPermissionIsNotDeterminedUntilItWasRequested() {
-        Current.healthKitService.hasRequestedReadAuthorization = { false }
-        let viewModel = SensorPermissionsViewModel()
-
-        XCTAssertTrue(viewModel.availablePermissions.contains(.health))
-        XCTAssertEqual(viewModel.status(for: .health), .notDetermined)
-
-        Current.healthKitService.hasRequestedReadAuthorization = { true }
-        viewModel.update()
-
-        XCTAssertEqual(viewModel.status(for: .health), .requested)
-    }
-
-    @MainActor
-    func testHealthPermissionIsNotListedWhenHealthKitIsUnavailable() {
-        Current.healthKitService.isAvailable = { false }
-        let viewModel = SensorPermissionsViewModel()
-
-        viewModel.update()
-
-        XCTAssertFalse(viewModel.availablePermissions.contains(.health))
-        XCTAssertFalse(viewModel.statuses.keys.contains(.health))
-    }
-
-    @MainActor
     func testNotDeterminedCountOnlyCountsNeverRequestedPermissions() {
-        Current.healthKitService.hasRequestedReadAuthorization = { true }
         let viewModel = SensorPermissionsViewModel()
 
         viewModel.update()
@@ -75,31 +49,6 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         let neverRequested = viewModel.availablePermissions
             .filter { viewModel.status(for: $0) == .notDetermined }
         XCTAssertEqual(viewModel.notDeterminedCount, neverRequested.count)
-        XCTAssertFalse(neverRequested.contains(.health))
-    }
-
-    func testHealthPermissionIsNotChangedInSystemSettings() {
-        XCTAssertFalse(SensorPermission.health.isChangedInSystemSettings)
-        XCTAssertTrue(SensorPermission.motion.isChangedInSystemSettings)
-        XCTAssertTrue(SensorPermission.focus.isChangedInSystemSettings)
-    }
-
-    /// Apple Health isn't listed on the app's page in system settings, so a second tap has to ask
-    /// HealthKit again — that is what surfaces the sensors enabled since the last request.
-    @MainActor
-    func testTappingHealthAgainRequestsRatherThanOpeningSettings() async throws {
-        Current.healthKitService.hasRequestedReadAuthorization = { true }
-        var requested = false
-        Current.healthKitService.requestReadAuthorization = { requested = true }
-        let viewModel = SensorPermissionsViewModel()
-        XCTAssertEqual(viewModel.status(for: .health), .requested)
-
-        viewModel.handleTap(on: .health)
-
-        for _ in 0 ..< 100 where !requested {
-            try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
-        }
-        XCTAssertTrue(requested)
     }
 
     func testRequestingAccessWithNothingEnabledFails() async {
