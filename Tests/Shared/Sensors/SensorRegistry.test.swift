@@ -28,7 +28,7 @@ class SensorRegistryTests: XCTestCase {
         for uniqueID in PedometerSensor.allSensorIDs {
             XCTAssertTrue(SensorRegistry.staticSensorIDs.contains(uniqueID))
         }
-        for metric in HealthKitSensor.Metric.allCases {
+        for metric in HealthKitMetric.all {
             XCTAssertTrue(SensorRegistry.staticSensorIDs.contains(metric.uniqueID))
         }
     }
@@ -58,7 +58,7 @@ class SensorRegistryTests: XCTestCase {
         XCTAssertFalse(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.storage.rawValue))
         XCTAssertFalse(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.activity.rawValue))
         XCTAssertFalse(
-            SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: HealthKitSensor.Metric.steps.uniqueID)
+            SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: HealthKitMetric.restingHeartRate.uniqueID)
         )
     }
 }

@@ -35,7 +35,7 @@ class SensorEnablementTests: XCTestCase {
 
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
         XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitSensor.Metric.steps.uniqueID))
+        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     func testUpgradeLeavesOptInSensorsOffWhenTheDeviceNeverProducedThem() {
@@ -67,7 +67,7 @@ class SensorEnablementTests: XCTestCase {
         XCTAssertTrue(container.isEnabled(uniqueID: "battery_state"))
         XCTAssertTrue(container.isEnabled(uniqueID: "camera_in_use"))
         XCTAssertTrue(container.isEnabled(uniqueID: "active_camera"))
-        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitSensor.Metric.restingHeartRate.uniqueID))
+        XCTAssertTrue(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     func testUpgradeRunsOnlyOnce() {
@@ -183,7 +183,7 @@ class SensorEnablementTests: XCTestCase {
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: HealthKitSensor.Metric.steps.uniqueID))
+        XCTAssertFalse(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     func testFirstRunDefaultsPickUpThisDevicesBatterySensors() throws {

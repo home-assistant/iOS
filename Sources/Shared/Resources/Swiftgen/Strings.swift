@@ -5685,7 +5685,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum Health {
-      /// Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.
+      /// Apple Health sensors have their own screen because there are so many of them. They all start switched off, and health data is read only during normal sensor updates.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
       /// Apple Health
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.health.header") }
@@ -5693,9 +5693,39 @@ public enum L10n {
       public static var requestAccess: String { return L10n.tr("Localizable", "settings_sensors.health.request_access") }
       /// Health Data
       public static var status: String { return L10n.tr("Localizable", "settings_sensors.health.status") }
+      public enum Category {
+        /// Activity
+        public static var activity: String { return L10n.tr("Localizable", "settings_sensors.health.category.activity") }
+        /// Body Measurements
+        public static var body: String { return L10n.tr("Localizable", "settings_sensors.health.category.body") }
+        /// Hearing
+        public static var hearing: String { return L10n.tr("Localizable", "settings_sensors.health.category.hearing") }
+        /// Heart
+        public static var heart: String { return L10n.tr("Localizable", "settings_sensors.health.category.heart") }
+        /// Mobility
+        public static var mobility: String { return L10n.tr("Localizable", "settings_sensors.health.category.mobility") }
+        /// Nutrition
+        public static var nutrition: String { return L10n.tr("Localizable", "settings_sensors.health.category.nutrition") }
+        /// Other Data
+        public static var other: String { return L10n.tr("Localizable", "settings_sensors.health.category.other") }
+        /// Respiratory
+        public static var respiratory: String { return L10n.tr("Localizable", "settings_sensors.health.category.respiratory") }
+        /// Vitals
+        public static var vitals: String { return L10n.tr("Localizable", "settings_sensors.health.category.vitals") }
+      }
       public enum Error {
+        /// Turn on at least one Apple Health sensor before requesting access.
+        public static var noEnabledSensors: String { return L10n.tr("Localizable", "settings_sensors.health.error.no_enabled_sensors") }
         /// Apple Health is not available on this device.
         public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.error.unavailable") }
+      }
+      public enum Sensors {
+        /// Enable all Apple Health sensors
+        public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all") }
+        /// Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant, and you need to grant Apple Health access from the Permissions screen afterwards.
+        public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.footer") }
+        /// Apple Health Sensors
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.title") }
       }
       public enum Status {
         /// Available

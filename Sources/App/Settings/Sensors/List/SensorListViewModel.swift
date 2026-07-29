@@ -15,6 +15,24 @@ class SensorListViewModel: ObservableObject {
         !searchTerm.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    /// Whether the Apple Health sensor screen can be reached from here.
+    var isHealthKitAvailable: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        return Current.healthKitService.isAvailable()
+        #else
+        return false
+        #endif
+    }
+
+    /// How many Apple Health metrics are switched on, shown as the badge of the link to their screen.
+    var enabledHealthSensorCount: Int {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        return HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }.count
+        #else
+        return 0
+        #endif
+    }
+
     /// The sensors matching the current search term, or all of them when not searching.
     var filteredSensors: [WebhookSensor] {
         let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -50,9 +68,17 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updateAllSensors(isEnabled: Bool) {
-        for sensor in sensors {
-            Current.sensors.setEnabled(isEnabled, for: sensor)
-        }
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: sensors.compactMap(\.UniqueID))
+    }
+
+    /// Apple Health metrics are managed on their own screen — there are over a hundred of them, so
+    /// leaving them here would bury every other sensor.
+    static func excludingHealthSensors(_ sensors: [WebhookSensor]) -> [WebhookSensor] {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        return sensors.filter { !HealthKitSensor.isHealthSensor(uniqueID: $0.UniqueID) }
+        #else
+        return sensors
+        #endif
     }
 
     static func sortedAlphabetically(_ sensors: [WebhookSensor]) -> [WebhookSensor] {
@@ -81,7 +107,7 @@ extension SensorListViewModel: SensorObserver {
         firstly {
             update.sensors
         }.done { [weak self] sensors in
-            let sorted = Self.sortedAlphabetically(sensors)
+            let sorted = Self.sortedAlphabetically(Self.excludingHealthSensors(sensors))
             DispatchQueue.main.async {
                 self?.sensors = sorted
                 self?.lastUpdateDate = update.on

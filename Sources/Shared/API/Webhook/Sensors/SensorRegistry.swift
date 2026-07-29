@@ -23,7 +23,7 @@ public enum SensorRegistry {
         ids.formUnion(PedometerSensor.allSensorIDs)
 
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        ids.formUnion(HealthKitSensor.Metric.allCases.map(\.uniqueID))
+        ids.formUnion(HealthKitMetric.all.map(\.uniqueID))
         #endif
 
         return ids

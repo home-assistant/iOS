@@ -48,6 +48,7 @@ struct SensorListView: View {
                         .badge(permissionsViewModel.notDeterminedCount)
                     }
                 }
+                healthSensorsSection
             }
             Section {
                 if !viewModel.isSearching {
@@ -100,6 +101,23 @@ struct SensorListView: View {
         }
     }
 
+    /// Apple Health has too many sensors to mix into the list below, so they get their own screen.
+    @ViewBuilder
+    private var healthSensorsSection: some View {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if viewModel.isHealthKitAvailable {
+            Section(footer: Text(L10n.SettingsSensors.Health.footer)) {
+                NavigationLink {
+                    HealthSensorListView()
+                } label: {
+                    Text(L10n.SettingsSensors.Health.Sensors.title)
+                }
+                .badge(viewModel.enabledHealthSensorCount)
+            }
+        }
+        #endif
+    }
+
     /// On Mac the periodic update also runs while the app is in the background, everywhere else
     /// the interval only applies while the app is on screen.
     private var periodicUpdateFooter: String {
@@ -138,6 +156,7 @@ extension SensorListView: SettingsScreenSearchable {
         ]
         #if os(iOS) && !targetEnvironment(macCatalyst)
         entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.header))
+        entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.Sensors.title))
         #endif
         return entries
     }
