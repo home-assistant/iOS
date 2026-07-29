@@ -273,7 +273,6 @@
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
-		FADE000000000000000000A5 /* HAAPI in Frameworks */ = {isa = PBXBuildFile; productRef = FADE000000000000000000A4 /* HAAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
