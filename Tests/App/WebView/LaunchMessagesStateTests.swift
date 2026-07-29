@@ -1,6 +1,5 @@
 @testable import HomeAssistant
 @testable import Shared
-import SFSafeSymbols
 import XCTest
 
 @MainActor
