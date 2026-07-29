@@ -401,11 +401,11 @@ final class WatchHomeViewModel: ObservableObject {
                 // failure worth alerting on — degrade to the background pull like the pre-check does.
                 guard !HAWatchConnectivity.ConnectivityError.isCounterpartUnreachable(error) else {
                     Current.Log.info("Database sync start deferred: iPhone became unreachable mid-send")
-                    degradeToBackgroundPull(userInitiated: isSyncUserInitiated)
+                    self.degradeToBackgroundPull(userInitiated: self.isSyncUserInitiated)
                     return
                 }
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
-                failSync(
+                self.failSync(
                     L10n.Watch.Sync.Error.generic,
                     detail: "sync start request failed: \(error.localizedDescription)"
                 )
