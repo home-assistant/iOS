@@ -8,6 +8,7 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var showSettingsCalled = false
     private(set) var showSettingsPushedOntoNavigationStack = false
     private(set) var showAssistSettingsCalled = false
+    private(set) var dismissPresentedContentCallCount = 0
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
 
@@ -55,4 +56,9 @@ final class MockAppCoordinator: AppCoordinator {
         queryParameters: [URLQueryItem]?,
         isComingFromAppIntent: Bool
     ) {}
+
+    func dismissPresentedContent(completion: (() -> Void)?) {
+        dismissPresentedContentCallCount += 1
+        completion?()
+    }
 }
