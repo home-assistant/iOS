@@ -41,8 +41,21 @@ final class AppContainerCoordinator: AppCoordinator {
 
     var window: UIWindow? { frontend?.presentationWindow }
 
+    /// The controller every presentation of this scene hangs off. Falls back to the active scene's key
+    /// window because a full-screen presentation detaches the frontend's own view, which would otherwise
+    /// leave us with no way to reach — or clear — what is on screen.
+    private var presentationRoot: UIViewController? {
+        if let root = window?.rootViewController {
+            return root
+        }
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        let keyWindow = scene?.windows.first { $0.isKeyWindow } ?? scene?.windows.first
+        return keyWindow?.rootViewController
+    }
+
     var presentedViewController: UIViewController? {
-        var current = frontend?.presentationWindow?.rootViewController
+        var current = presentationRoot
         while let next = current?.presentedViewController {
             current = next
         }
@@ -92,7 +105,11 @@ final class AppContainerCoordinator: AppCoordinator {
 
     func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {
         pendingServerSelection = completion
-        onSelectServer?(prompt, includeSettings)
+        // The picker is a sheet on the container, so anything already presented (Settings, What's New, …)
+        // would swallow it — clear the screen first.
+        dismissPresentedContent { [weak self] in
+            self?.onSelectServer?(prompt, includeSettings)
+        }
     }
 
     /// Called by `ContainerView`'s server-picker sheet when the user picks a server.
@@ -113,10 +130,29 @@ final class AppContainerCoordinator: AppCoordinator {
             prefillURL: inviteURL,
             shouldDismissOnSuccess: true
         )
-        frontend.presentOverlayController(
-            controller: onboardingView.embeddedInHostingController(),
-            animated: true
-        )
+        // An invite link opens the app to launch something, so it takes over from whatever is on screen.
+        dismissPresentedContent {
+            frontend.presentOverlayController(
+                controller: onboardingView.embeddedInHostingController(),
+                animated: true
+            )
+        }
+    }
+
+    func dismissPresentedContent(completion: (() -> Void)?) {
+        // Clear the SwiftUI bindings before dismissing their controllers: left at `true` they strand the
+        // presentation state and block whatever wants to be presented next.
+        AppPresentationDismisser.shared.dismissAll()
+
+        // Dismissing from the root tears down the whole presentation chain, SwiftUI sheets included. The
+        // frontend's own overlays are the fallback for a link handled before there is a scene root.
+        if let root = presentationRoot, root.presentedViewController != nil {
+            root.dismiss(animated: true, completion: completion)
+        } else if let frontend {
+            frontend.dismissOverlayController(animated: true, completion: completion)
+        } else {
+            completion?()
+        }
     }
 
     func setup() {
@@ -193,13 +229,23 @@ final class AppContainerCoordinator: AppCoordinator {
     }
 
     private func navigate(to url: URL, on server: Server, avoidUnnecessaryReload: Bool, isComingFromAppIntent: Bool) {
-        open(server: server).done { frontend in
-            frontend.dismissOverlayController(animated: true, completion: nil)
-            if isComingFromAppIntent {
-                frontend.openPanel(url)
-            } else {
-                frontend.open(inline: url, avoidUnnecessaryReload: avoidUnnecessaryReload)
+        open(server: server).done { [weak self] frontend in
+            let performNavigation = {
+                if isComingFromAppIntent {
+                    frontend.openPanel(url)
+                } else {
+                    frontend.open(inline: url, avoidUnnecessaryReload: avoidUnnecessaryReload)
+                }
             }
+            guard let self else {
+                performNavigation()
+                return
+            }
+            // Everything on screen has to go first, not just the frontend's own overlays: a SwiftUI sheet
+            // left up would hide the navigation entirely and make the link look ignored. Navigating only
+            // once it's gone also keeps the sheet's teardown (which can refresh a stale web view) from
+            // landing on top of the destination.
+            dismissPresentedContent(completion: performNavigation)
         }
     }
 

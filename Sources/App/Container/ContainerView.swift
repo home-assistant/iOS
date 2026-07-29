@@ -63,6 +63,9 @@ struct ContainerView: View {
         .onChange(of: state.screen) { screen in
             fadeOutLaunchSplashIfNeeded(for: screen)
         }
+        // `fullScreenCover` is deliberately left alone: it carries the forced onboarding-permissions
+        // decision, which a deep link must not be able to skip.
+        .dismissesOnAppNavigation { viewModel.presentedSheet = nil }
         .sheet(item: $viewModel.presentedSheet) { sheet in
             switch sheet {
             case .assistSettings:

@@ -89,15 +89,14 @@ class IncomingURLHandler {
                     Current.Log.error("No server found for open camera URL: \(url)")
                     return false
                 }
-                Current.sceneManager.webViewControllerPromise
-                    .done { webViewController in
-                        let view = CameraPlayerView(
-                            server: server,
-                            cameraEntityId: entityId
-                        ).embeddedInHostingController()
-                        view.modalPresentationStyle = .overFullScreen
-                        webViewController.present(view, animated: true)
-                    }
+                presentOverFrontend { webViewController in
+                    let view = CameraPlayerView(
+                        server: server,
+                        cameraEntityId: entityId
+                    ).embeddedInHostingController()
+                    view.modalPresentationStyle = .overFullScreen
+                    webViewController.present(view, animated: true)
+                }
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -182,35 +181,33 @@ class IncomingURLHandler {
                     $0.identifier.rawValue == serverId
                 }) ?? Current.servers.all.first else { return false }
 
-                Current.sceneManager.webViewControllerPromise
-                    .done { webViewController in
-                        webViewController.webViewExternalMessageHandler.showAssist(
-                            server: server,
-                            pipeline: pipelineId,
-                            autoStartRecording: startlistening
-                        )
-                    }
+                presentOverFrontend { webViewController in
+                    webViewController.webViewExternalMessageHandler.showAssist(
+                        server: server,
+                        pipeline: pipelineId,
+                        autoStartRecording: startlistening
+                    )
+                }
             case .createCustomWidget:
-                Current.sceneManager.webViewControllerPromise
-                    .done { webViewController in
-                        let mainView = CustomWidgetsListView()
-                            .toolbar {
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    CloseButton {
-                                        webViewController.dismissOverlayController(
-                                            animated: true,
-                                            completion: nil
-                                        )
-                                    }
+                presentOverFrontend { webViewController in
+                    let mainView = CustomWidgetsListView()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                CloseButton {
+                                    webViewController.dismissOverlayController(
+                                        animated: true,
+                                        completion: nil
+                                    )
                                 }
                             }
-                        let controller = UIHostingController(rootView: AnyView(
-                            NavigationStack {
-                                mainView
-                            }
-                        ))
-                        webViewController.presentOverlayController(controller: controller, animated: true)
-                    }
+                        }
+                    let controller = UIHostingController(rootView: AnyView(
+                        NavigationStack {
+                            mainView
+                        }
+                    ))
+                    webViewController.presentOverlayController(controller: controller, animated: true)
+                }
             case .invite:
                 // homeassistant://invite#url=http%3A%2F%2Fhomeassistant.local%3A8123
                 Current.Log.verbose("Received Home Assistant invitation URL: \(url)")
@@ -452,6 +449,38 @@ class IncomingURLHandler {
         }
     }
 
+    /// Clears whatever is on screen — SwiftUI sheets included — before handing the frontend to `present`.
+    /// A link that opens the app to launch something has to take over from the content the user had open,
+    /// otherwise presenting over the web view fails and the link looks ignored.
+    private func presentOverFrontend(_ present: @escaping (WebViewController) -> Void) {
+        // The handler is a throwaway created per incoming link, so the coordinator is captured up front
+        // rather than reached through `self`, which is gone by the time the promise resolves.
+        let appCoordinator: AppCoordinator? = coordinator
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            guard let appCoordinator else {
+                present(webViewController)
+                return
+            }
+            appCoordinator.dismissPresentedContent {
+                present(webViewController)
+            }
+        }
+    }
+
+    /// Presents on top of everything currently on screen. Used for the transient prompts (confirmations,
+    /// results, tag approval) that only need to be seen — unlike `presentOverFrontend(_:)` they don't take
+    /// the screen over, so a sheet the user opened stays where it was.
+    private func presentOnTopmost(_ controller: UIViewController, animated: Bool = true) {
+        let appCoordinator: AppCoordinator? = coordinator
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            guard let appCoordinator else {
+                webViewController.present(controller, animated: animated, completion: nil)
+                return
+            }
+            appCoordinator.present(controller, animated: animated, completion: nil)
+        }
+    }
+
     private func confirmAction(
         title: String,
         message: String,
@@ -480,32 +509,29 @@ class IncomingURLHandler {
             }
         ))
 
-        Current.sceneManager.webViewControllerPromise.done {
-            $0.present(alert, animated: true, completion: nil)
-        }
+        presentOnTopmost(alert)
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        Current.sceneManager.webViewControllerPromise.done { [weak self] webViewController in
-            let view = TagApprovalBottomSheet(
-                tag: tag,
-                onAllowOnce: { [weak self] in
-                    self?.fireApprovedTag(tag, type: type)
-                },
-                onAllowAlways: { [weak self] in
-                    AllowedTag.add(tag)
-                    self?.fireApprovedTag(tag, type: type)
-                },
-                onDismiss: { [weak webViewController] in
-                    webViewController?.dismiss(animated: false)
-                }
-            )
-
-            let controller = UIHostingController(rootView: view)
-            controller.modalPresentationStyle = .overFullScreen
-            controller.view.backgroundColor = .clear
-            webViewController.present(controller, animated: false)
-        }
+        // Built empty first so `onDismiss` can weakly reference the controller it lives in: it has to dismiss
+        // this sheet specifically — not whatever is top-most, which may be an overlay that appeared above it.
+        let controller = UIHostingController(rootView: AnyView(EmptyView()))
+        controller.rootView = AnyView(TagApprovalBottomSheet(
+            tag: tag,
+            onAllowOnce: { [weak self] in
+                self?.fireApprovedTag(tag, type: type)
+            },
+            onAllowAlways: { [weak self] in
+                AllowedTag.add(tag)
+                self?.fireApprovedTag(tag, type: type)
+            },
+            onDismiss: { [weak controller] in
+                controller?.dismiss(animated: false)
+            }
+        ))
+        controller.modalPresentationStyle = .overFullScreen
+        controller.view.backgroundColor = .clear
+        presentOnTopmost(controller, animated: false)
     }
 
     private func fireApprovedTag(_ tag: String, type: TagManagerHandleResult.HandledType) {
@@ -541,9 +567,7 @@ class IncomingURLHandler {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-        Current.sceneManager.webViewControllerPromise.done {
-            $0.present(alert, animated: true, completion: nil)
-        }
+        presentOnTopmost(alert)
     }
 
     private func showMy(for url: URL) -> Bool {

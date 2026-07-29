@@ -46,6 +46,10 @@ struct ConnectionSecurityLevelBlockView: View {
             .onAppear {
                 viewModel.loadRequirements()
             }
+            .dismissesOnAppNavigation {
+                showHomeNetworkSettings = false
+                showConnectionSecurityPreferences = false
+            }
             #if targetEnvironment(macCatalyst)
             .fullScreenCover(isPresented: $showHomeNetworkSettings) {
                 homeNetworkView
