@@ -523,6 +523,9 @@ enum WatchWidgetComplicationSnapshotStore {
     /// `reloadAllTimelines`, kept separate from the store itself: the store can hold content the
     /// face was never re-rendered with (see `write`).
     private static let reloadFingerprintKey = "watchWidgetComplicationSnapshotsReloadFingerprint"
+    /// Identity of the complication set the picker was last told about, so `recommendations()` is only
+    /// re-queried when that set actually changed (see `invalidateRecommendationsIfNeeded`).
+    private static let recommendationsIdentityKey = "watchWidgetComplicationRecommendationsIdentity"
 
     /// Fire-and-forget refresh for synchronous callers (launch, mirror receipt, home sync).
     static func update() {
@@ -794,10 +797,25 @@ enum WatchWidgetComplicationSnapshotStore {
         // value (e.g. debug `.dev` suffixing), and a mismatched `ofKind:` is a silent no-op that leaves
         // the freshly-written snapshot unread. There is only one widget, so reloading all is equivalent.
         WidgetCenter.shared.reloadAllTimelines()
-        WidgetCenter.shared.invalidateConfigurationRecommendations()
+        invalidateRecommendationsIfNeeded(for: snapshots, defaults: defaults)
         // Recorded only after the reload was requested, so a suspension in between retries the
         // reload on the next refresh instead of losing it.
         defaults.set(fingerprint, forKey: reloadFingerprintKey)
+    }
+
+    /// Re-queries the widget's `recommendations()` only when the *set* of complications changed.
+    /// Invalidating is a separate extension launch from the reload, and the recommendation list
+    /// depends on which complications exist — not on their values — so doing it on every value change
+    /// doubled the extension launches for no benefit.
+    private static func invalidateRecommendationsIfNeeded(
+        for snapshots: [WatchWidgetComplicationSnapshot],
+        defaults: UserDefaults
+    ) {
+        // Name included, not just the id: renaming a complication changes what the picker lists.
+        let identity = snapshots.map { "\($0.id)=\($0.menuName ?? "")" }.sorted().joined(separator: "|")
+        guard defaults.string(forKey: recommendationsIdentityKey) != identity else { return }
+        WidgetCenter.shared.invalidateConfigurationRecommendations()
+        defaults.set(identity, forKey: recommendationsIdentityKey)
     }
 }
 

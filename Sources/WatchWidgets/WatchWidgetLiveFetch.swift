@@ -15,17 +15,77 @@ import Security
 /// Everything degrades gracefully: if the configs, credentials, or a live value can't be read, it
 /// leaves the stored snapshot untouched and the widget renders the last known values.
 enum WatchWidgetLiveFetch {
-    /// Refresh the configured complication (or all, when `configuredID` is nil), updating the stored
+    /// Complications rendered entirely from static content, so there is nothing to fetch for them.
+    private static let builtInIDs = [
+        WatchWidgetComplicationSnapshot.placeholderID,
+        WatchWidgetComplicationSnapshot.assistID,
+    ]
+
+    /// Refresh a single complication — the one the calling widget instance renders — updating its stored
     /// snapshot's value text in the app group. Best-effort; never throws.
-    static func refresh(configuredID: String?) async {
+    ///
+    /// Deliberately scoped to one complication: every instance on the face runs its own
+    /// `timeline(for:in:)`, so refreshing all of them here meant N instances × N complications of
+    /// sequential networking inside a single extension process. The watch app's periodic refresh remains
+    /// responsible for the complications that aren't currently on screen.
+    static func refresh(complicationID: String?) async {
+        // The built-in placeholder and Assist complications have no live value to fetch.
+        guard let complicationID, !builtInIDs.contains(complicationID) else { return }
+
         let configs = readConfigs()
-        let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
-        WatchWidgetRefreshNotifier.notifyStarted(names: targets.map(\.displayName))
+        guard let target = configs.first(where: { $0.id == complicationID }) else {
+            // Either the mirrored database couldn't be read, or the face still points at a
+            // complication that no longer exists (deleted, or recreated with a new id).
+            WatchWidgetRefreshNotifier.notifyFinished("Skipped: no complication configured for \(complicationID)")
+            return
+        }
+        guard claimFetchSlot(complicationID) else {
+            WatchWidgetRefreshNotifier.notifyFinished(
+                "Skipped \(target.displayName): fetched less than "
+                    + "\(Int(WatchWidgetConstants.selfFetchThrottleInterval))s ago"
+            )
+            return
+        }
+
+        WatchWidgetRefreshNotifier.notifyStarted(names: [target.displayName])
         let started = Date()
-        let summary = await performRefresh(configs: configs, targets: targets)
+        let summary = await performRefresh(configs: configs, targets: [target])
         WatchWidgetRefreshNotifier.notifyFinished(
             summary + String(format: " — total %.1fs", Date().timeIntervalSince(started))
         )
+    }
+
+    // MARK: - Throttle
+
+    /// Serializes the throttle's read-then-write. WidgetKit can run several instances'
+    /// `timeline(for:in:)` calls concurrently in one process, so checking the timestamp and recording
+    /// the claim as separate steps would let them all pass together — the stampede this exists to stop.
+    private static let throttleLock = NSLock()
+
+    /// Claims this complication's fetch slot, returning false when it was fetched recently enough that
+    /// another round trip would be wasted work.
+    ///
+    /// The claim is recorded before the request rather than after it, so a slow fetch still holds the
+    /// slot against the instances reloading alongside it. Each complication gets its own defaults key:
+    /// a single shared dictionary would need a read-modify-write, and concurrent claims for different
+    /// complications would drop each other's timestamp.
+    private static func claimFetchSlot(_ complicationID: String) -> Bool {
+        throttleLock.lock()
+        defer { throttleLock.unlock() }
+
+        let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID)
+        let key = WatchWidgetConstants.lastSelfFetchKeyPrefix + complicationID
+        let now = Date()
+        if let last = defaults?.object(forKey: key) as? Date {
+            let elapsed = now.timeIntervalSince(last)
+            // A negative elapsed means the clock moved backwards; treat it as stale rather than
+            // blocking the fetch until the recorded date is reached.
+            if elapsed >= 0, elapsed < WatchWidgetConstants.selfFetchThrottleInterval {
+                return false
+            }
+        }
+        defaults?.set(now, forKey: key)
+        return true
     }
 
     /// The actual refresh. Returns a human-readable outcome for the developer-option notification —
@@ -146,8 +206,7 @@ enum WatchWidgetLiveFetch {
             "client_id": credential.clientID,
         ]).data(using: .utf8)
 
-        let delegate = WatchWidgetTLSDelegate(credential: credential)
-        let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        let session = makeSession(for: credential)
         defer { session.finishTasksAndInvalidate() }
 
         guard let (data, response) = try? await session.data(for: request),
@@ -183,6 +242,23 @@ enum WatchWidgetLiveFetch {
 
     // MARK: - Fetch
 
+    /// A session bounded by `selfFetchTimeout`. Extensions get a much shorter watchdog budget than the
+    /// app, so `URLSession`'s 60s request / 7-day resource defaults would let one unreachable server
+    /// hold the process open until the system kills it — which reads to WidgetKit as a crashing
+    /// extension and stops the reloads entirely.
+    private static func makeSession(for credential: WatchWidgetServerCredential) -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = WatchWidgetConstants.selfFetchTimeout
+        configuration.timeoutIntervalForResource = WatchWidgetConstants.selfFetchTimeout
+        // Fail fast instead of parking the request until the watch has a route to the server.
+        configuration.waitsForConnectivity = false
+        return URLSession(
+            configuration: configuration,
+            delegate: WatchWidgetTLSDelegate(credential: credential),
+            delegateQueue: nil
+        )
+    }
+
     /// Fetches the entity's live state. On failure the value is nil and `failure` says why
     /// (transport error, HTTP status, malformed body), so the developer notification can report the
     /// actual cause instead of a generic "fetch failed".
@@ -194,8 +270,7 @@ enum WatchWidgetLiveFetch {
         var request = URLRequest(url: credential.baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(credential.token)", forHTTPHeaderField: "Authorization")
 
-        let delegate = WatchWidgetTLSDelegate(credential: credential)
-        let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        let session = makeSession(for: credential)
         defer { session.finishTasksAndInvalidate() }
 
         let data: Data
