@@ -80,6 +80,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
             BuildableName = "HomeAssistant-WatchApp.app"
+            BlueprintName = "WatchApp"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -97,6 +98,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
             BuildableName = "HomeAssistant-WatchApp.app"
+            BlueprintName = "WatchApp"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

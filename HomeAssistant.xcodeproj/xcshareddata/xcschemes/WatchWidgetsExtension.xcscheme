@@ -32,6 +32,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
                BuildableName = "HomeAssistant-WatchApp.app"
+               BlueprintName = "WatchApp"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,6 +46,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -76,6 +78,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "423FB76B2FFFDFDE000CB8FD"
             BuildableName = "Extensions-WatchWidgets.appex"
+            BlueprintName = "Extensions-WatchWidgets"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -84,6 +87,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
             BuildableName = "HomeAssistant-WatchApp.app"
+            BlueprintName = "WatchApp"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -117,6 +121,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "423FB76B2FFFDFDE000CB8FD"
             BuildableName = "Extensions-WatchWidgets.appex"
+            BlueprintName = "Extensions-WatchWidgets"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
