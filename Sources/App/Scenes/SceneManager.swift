@@ -64,6 +64,10 @@ protocol AppCoordinator: AnyObject {
         queryParameters: [URLQueryItem]?,
         isComingFromAppIntent: Bool
     )
+    /// Clears everything presented over the frontend — SwiftUI sheets and covers as well as UIKit overlays —
+    /// and runs `completion` once the screen is free. Anything that opens the app to launch something goes
+    /// through this, so it is never swallowed by content the user already had open.
+    func dismissPresentedContent(completion: (() -> Void)?)
 }
 
 extension AppCoordinator {

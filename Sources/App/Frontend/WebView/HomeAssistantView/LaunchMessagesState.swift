@@ -20,7 +20,8 @@ final class LaunchMessagesState: ObservableObject {
 
     @Published var presented: Message?
 
-    private var pending: [Message] = []
+    /// Non-private for tests.
+    var pending: [Message] = []
     /// Evaluated once per app session — `HomeAssistantView` is recreated on server switches, which
     /// should not re-present the launch messages.
     private static var didEvaluate = false
@@ -45,5 +46,13 @@ final class LaunchMessagesState: ObservableObject {
     func showNext() {
         guard presented == nil, !pending.isEmpty else { return }
         presented = pending.removeFirst()
+    }
+
+    /// Drops the whole queue when an incoming navigation takes over the screen. Clearing `pending` too
+    /// matters: the sheet's `onDismiss` calls `showNext()`, which would otherwise immediately cover the
+    /// destination the link just navigated to.
+    func dismissAll() {
+        pending = []
+        presented = nil
     }
 }

@@ -98,6 +98,10 @@ struct HomeAssistantView: View, WebFrontendView {
             viewModel.updateReduceMotion(reduceMotion)
         }
         .onDisappear { viewModel.disappear(reduceMotion: reduceMotion) }
+        .dismissesOnAppNavigation {
+            showServerSelection = false
+            launchMessages.dismissAll()
+        }
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
             switch message {
             case let .whatsNew(release):
