@@ -21,8 +21,15 @@ class SensorContainerTests: XCTestCase {
         server2 = servers.addFake()
         Current.servers = servers
 
+        SensorEnablementStore.resetForTesting()
         observer = MockSensorObserver()
         container = SensorContainer()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        SensorEnablementStore.resetForTesting()
     }
 
     func testNoProvidersNoCachedDoesntNotify() {

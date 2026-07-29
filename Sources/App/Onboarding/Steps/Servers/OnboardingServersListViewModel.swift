@@ -25,7 +25,6 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     var pendingManualURL: URL?
 
-    private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
     private let shouldDismissOnSuccess: Bool
@@ -35,7 +34,6 @@ final class OnboardingServersListViewModel: ObservableObject {
     init(shouldDismissOnSuccess: Bool) {
         self.shouldDismissOnSuccess = shouldDismissOnSuccess
         discovery.observer = self
-        Current.sensors.register(observer: self)
         Current.onboardingObservation.register(observer: self)
     }
 
@@ -137,28 +135,19 @@ final class OnboardingServersListViewModel: ObservableObject {
     private func authenticationSucceeded(server: Server) {
         discovery.stop()
         onboardingServer = server
-        disableNonEssentialSensors(server)
+        applyDefaultSensorSelection()
         // Advance the pushed auth flow directly into the permissions steps.
         authPresenter?.push(.permissions(server))
     }
 
-    private func disableNonEssentialSensors(_ server: Server) {
+    /// Sensors are enabled individually rather than all at once, so a first-time install only needs
+    /// to be pointed at the default selection — there is nothing left here to switch off.
+    private func applyDefaultSensorSelection() {
         guard Current.servers.all.count == 1 else {
             Current.Log.verbose("Avoid overriding sensors if user has already servers setup in place.")
             return
         }
-        let sensorsToKeepEnabled: [WebhookSensorId] = [
-            .appVersion,
-            .locationPermission,
-        ]
-        for sensor in webhookSensors {
-            if let uniqueId = sensor.UniqueID,
-               uniqueId.contains("battery") || sensorsToKeepEnabled.map(\.rawValue).contains(uniqueId) {
-                Current.sensors.setEnabled(true, for: sensor)
-            } else {
-                Current.sensors.setEnabled(false, for: sensor)
-            }
-        }
+        Current.sensors.applyFirstRunSensorDefaults()
     }
 }
 
@@ -176,22 +165,6 @@ extension OnboardingServersListViewModel: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String) {
         DispatchQueue.main.async { [weak self] in
             self?.discoveredInstances.removeAll { $0.bonjourName == name }
-        }
-    }
-}
-
-extension OnboardingServersListViewModel: SensorObserver {
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        /* no-op */
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
-            self?.webhookSensors = sensors
         }
     }
 }

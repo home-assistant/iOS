@@ -6,35 +6,25 @@ import XCTest
 class SensorListViewModelHealthKitTests: XCTestCase {
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
-    private var previousDisabledSensors: Any?
 
     override func setUp() {
         super.setUp()
 
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
-        previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
         Current.sensors = SensorContainer()
-        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
+        SensorEnablementStore.resetForTesting()
         Current.healthKitService.isAvailable = { true }
     }
 
     override func tearDown() {
-        restore(previousDisabledSensors, forKey: "disabledSensors")
+        SensorEnablementStore.resetForTesting()
         Current.healthKitService = originalHealthKitService
         Current.sensors = originalSensors
         originalHealthKitService = nil
         originalSensors = nil
         super.tearDown()
-    }
-
-    private func restore(_ value: Any?, forKey key: String) {
-        if let value {
-            Current.settingsStore.prefs.set(value, forKey: key)
-        } else {
-            Current.settingsStore.prefs.removeObject(forKey: key)
-        }
     }
 
     @MainActor

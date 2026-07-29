@@ -21,7 +21,7 @@ class CameraStreamSensorTests: XCTestCase {
         Current.motionDetection = motionDetection
         server = FakeCameraStreamServer()
         Current.cameraStreamServer = server
-        resetSensorEnablement()
+        SensorEnablementStore.resetForTesting()
     }
 
     override func tearDown() {
@@ -29,12 +29,7 @@ class CameraStreamSensorTests: XCTestCase {
 
         Current.motionDetection = MotionDetectionManager()
         Current.cameraStreamServer = CameraStreamServer()
-        resetSensorEnablement()
-    }
-
-    private func resetSensorEnablement() {
-        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
-        Current.settingsStore.prefs.removeObject(forKey: SensorContainer.initialDisableKey(for: .cameraStream))
+        SensorEnablementStore.resetForTesting()
     }
 
     func testNotAvailable() {
@@ -78,7 +73,7 @@ class CameraStreamSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Attributes?["Stream URL"] as? String, "http://192.168.1.2:8090/")
     }
 
-    func testDisabledInitiallyButUserChoiceSticks() throws {
+    func testDisabledByDefaultButUserChoiceSticks() throws {
         motionDetection.overrideCanDetectMotion = true
 
         _ = try hang(CameraStreamSensor(request: request).sensors())
