@@ -16,4 +16,8 @@ public struct BrandedSwitchToggleStyle: ToggleStyle {
             .tint(.haPrimary)
     }
 }
+
+public extension ToggleStyle where Self == BrandedSwitchToggleStyle {
+    static var haStyle: BrandedSwitchToggleStyle { BrandedSwitchToggleStyle() }
+}
 #endif

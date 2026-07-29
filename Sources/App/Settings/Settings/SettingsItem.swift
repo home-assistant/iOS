@@ -20,6 +20,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case carPlay
     case complications
     case help
+    case permissions
     case privacy
     case debugging
     case whatsNew
@@ -44,6 +45,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
         case .help: return L10n.helpLabel
+        case .permissions: return L10n.SettingsSensors.Permissions.header
         case .privacy: return L10n.SettingsDetails.Privacy.title
         case .debugging: return L10n.Settings.Debugging.title
         case .whatsNew: return L10n.Settings.WhatsNew.title
@@ -91,6 +93,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .chartDonutIcon, size: Self.iconSize)
             case .help:
                 MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: Self.iconSize)
+            case .permissions:
+                MaterialDesignIconsImage(icon: .shieldKeyOutlineIcon, size: Self.iconSize)
             case .privacy:
                 MaterialDesignIconsImage(icon: .lockOutlineIcon, size: Self.iconSize)
             case .debugging:
@@ -156,6 +160,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             SettingsComplicationsView()
         case .help:
             EmptyView()
+        case .permissions:
+            SensorPermissionsView()
         case .privacy:
             PrivacyView()
         case .debugging:
@@ -236,6 +242,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .carPlay: return L10n.Settings.SearchKeywords.carPlay
         case .complications: return L10n.Settings.SearchKeywords.complications
         case .help: return L10n.Settings.SearchKeywords.help
+        case .permissions: return L10n.Settings.SearchKeywords.permissions
         case .privacy: return L10n.Settings.SearchKeywords.privacy
         case .debugging: return L10n.Settings.SearchKeywords.debugging
         case .whatsNew: return nil
@@ -271,6 +278,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return WatchConfigurationView.settingsSearchEntries
         case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
         case .complications: return ComplicationsRootView.settingsSearchEntries
+        case .permissions: return SensorPermissionsView.settingsSearchEntries
         case .privacy: return PrivacyView.settingsSearchEntries
         case .debugging: return DebugView.settingsSearchEntries
         case .help, .whatsNew: return []

@@ -92,7 +92,15 @@ public class SensorContainer {
     }
 
     public func setEnabled(_ value: Bool, forUniqueID id: String) {
-        guard enablement.setEnabled(value, forUniqueID: id) else { return }
+        setEnabled(value, forUniqueIDs: [id])
+    }
+
+    /// Bulk variant of `setEnabled(_:forUniqueID:)`, so changing many sensors at once signals
+    /// observers a single time instead of once per sensor.
+    public func setEnabled(_ value: Bool, forUniqueIDs ids: [String]) {
+        // `filter` rather than a short-circuiting reduce, so every ID is actually written.
+        let changed = ids.filter { enablement.setEnabled(value, forUniqueID: $0) }
+        guard !changed.isEmpty else { return }
         notifySignal(reason: .settingsChange)
     }
 

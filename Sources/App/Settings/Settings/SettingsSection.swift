@@ -8,6 +8,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
     case shareFromDevice
     case quickAccess
     case otherDevices
+    case privacySecurity
     case helpSupport
 
     var header: String {
@@ -17,6 +18,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
         case .shareFromDevice: return L10n.Settings.Sections.ShareFromDevice.header
         case .quickAccess: return L10n.Settings.Sections.QuickAccess.header
         case .otherDevices: return L10n.Settings.Sections.OtherDevices.header
+        case .privacySecurity: return L10n.Settings.Sections.PrivacySecurity.header
         case .helpSupport: return L10n.Settings.Sections.HelpSupport.header
         }
     }
@@ -29,7 +31,8 @@ enum SettingsSection: String, CaseIterable, Hashable {
         case .shareFromDevice: return [.location, .sensors, .remindersSync]
         case .quickAccess: return [.widgets, .appIconShortcuts, .nfc]
         case .otherDevices: return [.watch, .complications, .carPlay]
-        case .helpSupport: return [.help, .privacy, .debugging]
+        case .privacySecurity: return [.permissions, .privacy]
+        case .helpSupport: return [.help, .debugging]
         }
     }
 

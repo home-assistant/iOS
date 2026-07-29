@@ -2,7 +2,7 @@ import Foundation
 
 /// Mirrors Home Assistant's `SensorStateClass`, telling the backend how to treat a numeric
 /// sensor's state so it can render statistics and history graphs instead of state-change bars.
-public enum SensorStateClass: String, CaseIterable {
+public enum SensorStateClass: String, CaseIterable, Sendable {
     /// The state represents a measurement in present time.
     case measurement
     /// The state represents a total that can increase and decrease.

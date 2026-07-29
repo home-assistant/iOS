@@ -39,16 +39,25 @@ struct SensorListView: View {
                 if !permissionsViewModel.availablePermissions.isEmpty {
                     Section {
                         NavigationLink {
-                            SensorPermissionsView(viewModel: permissionsViewModel)
+                            SensorPermissionsView()
                         } label: {
-                            Text(L10n.SettingsSensors.Permissions.header)
+                            HStack {
+                                Text(L10n.SettingsSensors.Permissions.header)
+                                Spacer()
+                                if permissionsViewModel.notDeterminedCount > 0 {
+                                    Text("\(permissionsViewModel.notDeterminedCount)")
+                                        .font(.footnote.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(.orange, in: Capsule())
+                                }
+                            }
                         }
-                        // A badge with zero is not rendered, so this only shows up while there are
-                        // permissions that were never presented to the user.
-                        .badge(permissionsViewModel.notDeterminedCount)
                     }
                 }
             }
+            healthSensorsSection
             Section {
                 if !viewModel.isSearching {
                     Toggle(isOn: .init(get: {
@@ -100,6 +109,29 @@ struct SensorListView: View {
         }
     }
 
+    /// Apple Health has too many sensors to mix into the list below, so they get their own screen.
+    @ViewBuilder
+    private var healthSensorsSection: some View {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if viewModel.showHealthSection {
+            Section(footer: Text(L10n.SettingsSensors.Health.footer)) {
+                NavigationLink {
+                    HealthSensorListView()
+                } label: {
+                    HStack {
+                        Text(L10n.SettingsSensors.Health.Sensors.title)
+                        Spacer()
+                        // Inside the label rather than `.badge`, so the count sits between the
+                        // title and the disclosure chevron instead of after it.
+                        Text("\(viewModel.enabledHealthSensorCount)")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        #endif
+    }
+
     /// On Mac the periodic update also runs while the app is in the background, everywhere else
     /// the interval only applies while the app is on screen.
     private var periodicUpdateFooter: String {
@@ -138,6 +170,8 @@ extension SensorListView: SettingsScreenSearchable {
         ]
         #if os(iOS) && !targetEnvironment(macCatalyst)
         entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.header))
+        entries.append(SettingsSearchEntry(L10n.SettingsSensors.Health.Sensors.title))
+        entries.append(contentsOf: HealthKitMetric.all.map { SettingsSearchEntry($0.name) })
         #endif
         return entries
     }

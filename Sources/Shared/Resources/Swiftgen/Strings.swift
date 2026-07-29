@@ -4906,6 +4906,8 @@ public enum L10n {
       public static var nfc: String { return L10n.tr("Localizable", "settings.search_keywords.nfc") }
       /// push, alerts, sounds, badge, critical, categories
       public static var notifications: String { return L10n.tr("Localizable", "settings.search_keywords.notifications") }
+      /// permissions, access, camera, microphone, location, bluetooth, notifications, motion, speech, focus
+      public static var permissions: String { return L10n.tr("Localizable", "settings.search_keywords.permissions") }
       /// analytics, crash reports, data collection, consent
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
       /// reminders, todo, to-do, tasks, lists, shopping list, sync
@@ -4931,6 +4933,10 @@ public enum L10n {
       public enum OtherDevices {
         /// Apple Watch & CarPlay
         public static var header: String { return L10n.tr("Localizable", "settings.sections.other_devices.header") }
+      }
+      public enum PrivacySecurity {
+        /// Privacy & security
+        public static var header: String { return L10n.tr("Localizable", "settings.sections.privacy_security.header") }
       }
       public enum QuickAccess {
         /// Quick access
@@ -5846,17 +5852,55 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum Health {
-      /// Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.
+      /// Apple Health sensors have their own screen because there are so many of them. They all start switched off, and health data is read only during normal sensor updates.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
       /// Apple Health
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.health.header") }
+      /// Reload Sensors
+      public static var reload: String { return L10n.tr("Localizable", "settings_sensors.health.reload") }
       /// Request Apple Health Access
       public static var requestAccess: String { return L10n.tr("Localizable", "settings_sensors.health.request_access") }
       /// Health Data
       public static var status: String { return L10n.tr("Localizable", "settings_sensors.health.status") }
+      public enum Category {
+        /// Activity
+        public static var activity: String { return L10n.tr("Localizable", "settings_sensors.health.category.activity") }
+        /// Body Measurements
+        public static var body: String { return L10n.tr("Localizable", "settings_sensors.health.category.body") }
+        /// Heart
+        public static var heart: String { return L10n.tr("Localizable", "settings_sensors.health.category.heart") }
+        /// Nutrition
+        public static var nutrition: String { return L10n.tr("Localizable", "settings_sensors.health.category.nutrition") }
+        /// Respiratory
+        public static var respiratory: String { return L10n.tr("Localizable", "settings_sensors.health.category.respiratory") }
+        /// Vitals
+        public static var vitals: String { return L10n.tr("Localizable", "settings_sensors.health.category.vitals") }
+      }
       public enum Error {
+        /// Turn on at least one Apple Health sensor before requesting access.
+        public static var noEnabledSensors: String { return L10n.tr("Localizable", "settings_sensors.health.error.no_enabled_sensors") }
         /// Apple Health is not available on this device.
         public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.error.unavailable") }
+      }
+      public enum Sensors {
+        /// Enable all Apple Health sensors
+        public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all") }
+        /// Enable all
+        public static var enableAllSection: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all_section") }
+        /// Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant — request access again after turning more of them on, so Apple Health can grant permission for the new ones.
+        public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.footer") }
+        /// Apple Health Sensors
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.title") }
+        public enum EnableAll {
+          public enum Confirmation {
+            /// Enable All
+            public static var confirm: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all.confirmation.confirm") }
+            /// Enable all %d Apple Health sensors? They will all be read and sent to Home Assistant.
+            public static func title(_ p1: Int) -> String {
+              return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all.confirmation.title", p1)
+            }
+          }
+        }
       }
       public enum Status {
         /// Available
@@ -5890,25 +5934,75 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.title") }
     }
     public enum Permissions {
-      /// Some sensors only report data after you grant the permission they depend on.
-      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.footer") }
       /// Permissions
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.permissions.header") }
-      public enum Health {
-        /// Apple Health never tells apps whether reading health data was allowed, so this only shows whether access was already requested.
-        public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.health.footer") }
+      public enum Bluetooth {
+        /// Bluetooth
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.bluetooth.title") }
+        /// Sets up nearby devices.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.bluetooth.usage") }
+      }
+      public enum Camera {
+        /// Camera
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.camera.title") }
+        /// Scans QR codes, barcodes and shows camera stream on Kiosk Mode.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.camera.usage") }
+      }
+      public enum Focus {
+        /// Focus
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.focus.title") }
+        /// Reports your Focus status so automations can react to it.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.focus.usage") }
+      }
+      public enum LocalNetwork {
+        /// Local Network
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.local_network.title") }
+        /// Discovers and connects to Home Assistant on your local network.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.local_network.usage") }
+      }
+      public enum Location {
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.location.title") }
+        /// Runs location-based automations and reports where your device is.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.location.usage") }
+      }
+      public enum Microphone {
+        /// Microphone
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.microphone.title") }
+        /// Lets you talk to Assist with your voice.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.microphone.usage") }
+      }
+      public enum Motion {
+        /// Motion
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.motion.title") }
+        /// Reports steps, distance and activity from the motion sensor.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.motion.usage") }
+      }
+      public enum Notification {
+        /// Notifications
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.notification.title") }
+        /// Delivers push notifications and actionable alerts from Home Assistant.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.notification.usage") }
+      }
+      public enum Speech {
+        /// Speech Recognition
+        public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.speech.title") }
+        /// Transcribes your voice into Assist commands.
+        public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.speech.usage") }
       }
       public enum Status {
+        /// Always
+        public static var always: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.always") }
         /// Denied
         public static var denied: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.denied") }
         /// Granted
         public static var granted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.granted") }
         /// Not requested
         public static var notRequested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.not_requested") }
-        /// Requested
-        public static var requested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.requested") }
         /// Restricted
         public static var restricted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.restricted") }
+        /// While in use
+        public static var whileInUse: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.while_in_use") }
       }
     }
     public enum Sensors {
