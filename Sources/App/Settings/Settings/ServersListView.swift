@@ -51,13 +51,10 @@ struct ServersListView: View {
             observer.moveServers(from: source, to: destination)
         }
 
-        // Mac has system-level state restoration and doesn't roam between homes.
-        if !Current.isCatalyst {
-            NavigationLink(destination: ServerSwitchingSettingsView()) {
-                HStack {
-                    Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
-                    LabsLabel()
-                }
+        NavigationLink(destination: ServerSwitchingSettingsView()) {
+            HStack {
+                Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
+                LabsLabel()
             }
         }
 
