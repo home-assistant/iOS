@@ -81,6 +81,10 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var UnitOfMeasurement: String?
     public var entityCategory: String?
 
+    /// Whether Home Assistant should disable the matching entity. Only `register_sensor` acts on
+    /// this, so it's left out of state updates.
+    public var Disabled: Bool?
+
     public var Settings: [WebhookSensorSetting] = []
 
     /// Optional footer shown at the bottom of the sensor detail screen, e.g. setup
@@ -184,6 +188,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
 
         if !isUpdate {
             DeviceClass <- map["device_class"]
+            Disabled <- map["disabled"]
             entityCategory <- map["entity_category"]
             Name <- map["name"]
             StateClass <- map["state_class"]

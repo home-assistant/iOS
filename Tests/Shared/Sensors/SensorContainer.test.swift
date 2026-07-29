@@ -1,4 +1,5 @@
 import Foundation
+import ObjectMapper
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -376,6 +377,40 @@ class SensorContainerTests: XCTestCase {
         XCTAssertEqual(sensorS2.State as? String, "state")
         XCTAssertEqual(sensorS2.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(sensorS2.Name, underlying.Name)
+    }
+
+    func testRegistrationCarriesEnablement() throws {
+        container.register(provider: MockSensorProvider.self)
+
+        let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablement")
+        container.setEnabled(false, for: underlying)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let disabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
+        let disabledSensor = try XCTUnwrap(disabled.sensors.first)
+        XCTAssertEqual(disabledSensor.Disabled, true)
+        XCTAssertEqual(disabledSensor.toJSON()["disabled"] as? Bool, true)
+
+        container.setEnabled(true, for: underlying)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let enabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
+        XCTAssertEqual(try XCTUnwrap(enabled.sensors.first).Disabled, false)
+    }
+
+    func testStateUpdateOmitsEnablement() throws {
+        container.register(provider: MockSensorProvider.self)
+
+        let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablementOmitted")
+        container.setEnabled(false, for: underlying)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let result = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
+        let sensor = try XCTUnwrap(result.sensors.first)
+        XCTAssertNil(sensor.Disabled)
+
+        let updateJSON = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true)).toJSON(sensor)
+        XCTAssertNil(updateJSON["disabled"])
     }
 
     func testSensorsLimitedTo() throws {

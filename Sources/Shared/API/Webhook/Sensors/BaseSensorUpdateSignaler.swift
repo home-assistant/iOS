@@ -40,7 +40,7 @@ class BaseSensorUpdateSignaler: SensorObserver {
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
         lastUpdate: SensorObserverUpdate?
     ) {
-        guard reason == .settingsChange else { return }
+        guard case .settingsChange = reason else { return }
         updateObservation(sensorUpdates: lastUpdate)
     }
 

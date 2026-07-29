@@ -14,7 +14,10 @@ public struct SensorObserverUpdate {
 }
 
 public enum SensorContainerUpdateReason {
-    case settingsChange
+    /// - Parameter changedUniqueIDs: the sensors whose enablement changed, which need re-registering
+    ///   so Home Assistant enables or disables the matching entities. Empty when the change didn't
+    ///   come from a specific set of sensors.
+    case settingsChange(changedUniqueIDs: [String])
     case signal
 }
 
@@ -101,14 +104,14 @@ public class SensorContainer {
         // `filter` rather than a short-circuiting reduce, so every ID is actually written.
         let changed = ids.filter { enablement.setEnabled(value, forUniqueID: $0) }
         guard !changed.isEmpty else { return }
-        notifySignal(reason: .settingsChange)
+        notifySignal(reason: .settingsChange(changedUniqueIDs: changed))
     }
 
     /// Applies the sensor selection a first-time install starts with. Sensors outside it stay off
     /// until the user enables them, so there is nothing to switch off here.
     public func applyFirstRunSensorDefaults() {
         guard enablement.applyFirstRunDefaults() else { return }
-        notifySignal(reason: .settingsChange)
+        notifySignal(reason: .settingsChange(changedUniqueIDs: []))
     }
 
     private let lastUpdate = HAProtected<SensorObserverUpdate?>(value: nil)
@@ -224,11 +227,15 @@ public class SensorContainer {
         return generatedSensors.mapValues { [weak self] sensor -> WebhookSensor in
             guard let self else { return sensor }
 
-            if isAllowedToSend(sensor: sensor, for: server) {
-                return sensor
-            } else {
-                return WebhookSensor(redacting: sensor)
+            let outgoing = isAllowedToSend(sensor: sensor, for: server) ? sensor : WebhookSensor(redacting: sensor)
+
+            if request.reason == .registration {
+                // Registering is the only chance to tell Home Assistant to disable the entity, rather
+                // than leave it enabled and reporting `unavailable` forever.
+                outgoing.Disabled = !isEnabled(sensor: sensor)
             }
+
+            return outgoing
         }.map(SensorResponse.init(sensors:))
     }
 

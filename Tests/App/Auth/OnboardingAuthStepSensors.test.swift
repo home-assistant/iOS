@@ -51,7 +51,7 @@ private enum TestError: Error {
 
 private class FakeHomeAssistantAPI: HomeAssistantAPI {
     var registerSensorsResolver: Resolver<Void>?
-    override func registerSensors() -> Promise<Void> {
+    override func registerSensors(limitedToUniqueIDs uniqueIDs: Set<String>?) -> Promise<Void> {
         let (promise, resolver) = Promise<Void>.pending()
         registerSensorsResolver = resolver
         return promise
