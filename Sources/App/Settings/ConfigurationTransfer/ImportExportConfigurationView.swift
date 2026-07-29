@@ -75,7 +75,7 @@ struct ImportExportConfigurationView: View {
             Section {
                 HStack(spacing: DesignSystem.Spaces.two) {
                     Button {
-                        viewModel.export()
+                        Task { await viewModel.export() }
                     } label: {
                         Label(
                             L10n.Settings.Debugging.ConfigurationTransfer.Export.button,
@@ -102,7 +102,7 @@ struct ImportExportConfigurationView: View {
                         allowedContentTypes: [.json],
                         allowsMultipleSelection: false
                     ) { result in
-                        viewModel.handleFileSelection(result)
+                        Task { await viewModel.handleFileSelection(result) }
                     }
                     .alert(
                         L10n.Settings.Debugging.ConfigurationTransfer.Import.Confirmation.title,

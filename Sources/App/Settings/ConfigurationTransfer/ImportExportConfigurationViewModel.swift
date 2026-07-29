@@ -25,7 +25,7 @@ final class ImportExportConfigurationViewModel: ObservableObject {
 
     func refreshEntryCounts() {
         do {
-            entryCounts = try AppConfigurationTransfer.entryCounts()
+            entryCounts = try AppConfigurationTransfer.entryCounts(appSettings: AppSettingsSnapshot.capture())
         } catch {
             Current.Log.error("Failed to read app configuration entry counts: \(error.localizedDescription)")
             entryCounts = [:]
@@ -36,11 +36,15 @@ final class ImportExportConfigurationViewModel: ObservableObject {
         entryCounts[category] ?? 0
     }
 
-    func export() {
+    func export() async {
         Current.impactFeedback.impactOccurred(style: .light)
         isExporting = true
+        // Capturing the settings needs the main actor; encoding them and writing the file does not.
+        let appSettings = AppSettingsSnapshot.capture()
         do {
-            let url = try AppConfigurationTransfer.exportURL()
+            let url = try await Task.detached(priority: .userInitiated) { () -> URL in
+                try AppConfigurationTransfer.exportURL(appSettings: appSettings)
+            }.value
             shareWrapper = ShareWrapper(url: url)
         } catch {
             show(error: error)
@@ -53,7 +57,7 @@ final class ImportExportConfigurationViewModel: ObservableObject {
         showImporter = true
     }
 
-    func handleFileSelection(_ result: Result<[URL], Error>) {
+    func handleFileSelection(_ result: Result<[URL], Error>) async {
         switch result {
         case let .success(urls):
             guard let url = urls.first else {
@@ -61,7 +65,9 @@ final class ImportExportConfigurationViewModel: ObservableObject {
                 return
             }
             do {
-                let counts = try AppConfigurationTransfer.inspectImportFile(from: url)
+                let counts = try await Task.detached(priority: .userInitiated) {
+                    try AppConfigurationTransfer.inspectImportFile(from: url)
+                }.value
                 pendingImportURL = url
                 pendingImportFilename = url.lastPathComponent
                 pendingImportSummary = Self.summary(for: counts)

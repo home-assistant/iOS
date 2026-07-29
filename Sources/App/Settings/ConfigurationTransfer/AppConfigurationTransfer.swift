@@ -37,14 +37,16 @@ enum AppConfigurationTransfer {
     }
 
     /// How many entries each category currently holds on this device, for the disclosure list.
-    @MainActor
-    static func entryCounts() throws -> [AppConfigurationCategory: Int] {
-        try makePayload().entryCounts
+    ///
+    /// The app settings snapshot is passed in rather than captured here: capturing it has to happen
+    /// on the main actor, while everything in this type is deliberately free of actor isolation so
+    /// callers can run the encoding and file work off the main thread.
+    static func entryCounts(appSettings: AppSettingsSnapshot) throws -> [AppConfigurationCategory: Int] {
+        try makePayload(appSettings: appSettings).entryCounts
     }
 
-    @MainActor
-    static func exportURL() throws -> URL {
-        let payload = try makePayload()
+    static func exportURL(appSettings: AppSettingsSnapshot) throws -> URL {
+        let payload = try makePayload(appSettings: appSettings)
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -66,7 +68,8 @@ enum AppConfigurationTransfer {
         return payload.entryCounts
     }
 
-    @MainActor
+    /// Decoding and the database write run wherever this is called from — off the main actor when
+    /// the caller is; only applying app settings hops back onto it.
     static func importPayload(from url: URL) async throws -> [AppConfigurationCategory: Int] {
         Current.Log.info("Starting app configuration import from \(url.lastPathComponent)")
         let payload = try decodePayload(from: url)
@@ -77,7 +80,10 @@ enum AppConfigurationTransfer {
         Current.Log.info("Sanitized app configuration import: \(sanitized.summaryDescription)")
 
         try replaceDatabaseContent(with: sanitized)
-        sanitized.appSettings?.apply()
+        let appSettings = sanitized.appSettings
+        await MainActor.run {
+            appSettings?.apply()
+        }
         try await runPostImportMigration()
         refreshImportedSurfaces()
 
@@ -118,8 +124,7 @@ enum AppConfigurationTransfer {
         return payload
     }
 
-    @MainActor
-    private static func makePayload() throws -> Payload {
+    private static func makePayload(appSettings: AppSettingsSnapshot) throws -> Payload {
         var payload = try Current.database().read { db in
             try Payload(
                 exportedAt: Current.date(),
@@ -137,7 +142,7 @@ enum AppConfigurationTransfer {
                 remindersSyncConfigurations: RemindersSyncConfig.fetchAll(db)
             )
         }
-        payload.appSettings = AppSettingsSnapshot.capture()
+        payload.appSettings = appSettings
         return payload
     }
 

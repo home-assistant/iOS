@@ -12,7 +12,7 @@ struct AppConfigurationTransferTests {
         try withConfigurationTestWorld { database in
             try seedEveryCategory(in: database, serverId: validServerId)
 
-            let url = try AppConfigurationTransfer.exportURL()
+            let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
             let payload = try jsonPayload(from: url)
 
             #expect(payload["kind"] as? String == AppConfigurationTransfer.fileKind)
@@ -28,7 +28,7 @@ struct AppConfigurationTransferTests {
         try withConfigurationTestWorld { database in
             try seedEveryCategory(in: database, serverId: validServerId)
 
-            let counts = try AppConfigurationTransfer.entryCounts()
+            let counts = try AppConfigurationTransfer.entryCounts(appSettings: AppSettingsSnapshot.capture())
 
             for category in AppConfigurationCategory.allCases {
                 #expect((counts[category] ?? 0) > 0, "expected \(category.rawValue) to report entries")
@@ -38,7 +38,7 @@ struct AppConfigurationTransferTests {
 
     @Test func entryCountsAreZeroForUnconfiguredCategories() throws {
         try withConfigurationTestWorld { _ in
-            let counts = try AppConfigurationTransfer.entryCounts()
+            let counts = try AppConfigurationTransfer.entryCounts(appSettings: AppSettingsSnapshot.capture())
 
             for category in AppConfigurationCategory.allCases where category != .appSettings {
                 #expect(counts[category] == 0, "expected \(category.rawValue) to be empty")
@@ -68,7 +68,7 @@ struct AppConfigurationTransferTests {
     @Test func inspectReportsWhatTheFileContains() throws {
         try withConfigurationTestWorld { database in
             try seedEveryCategory(in: database, serverId: validServerId)
-            let url = try AppConfigurationTransfer.exportURL()
+            let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
 
             let counts = try AppConfigurationTransfer.inspectImportFile(from: url)
 
@@ -89,7 +89,7 @@ struct AppConfigurationTransferTests {
         )
 
         let url = try withConfigurationTestWorld(database: sourceDatabase) { _ in
-            try AppConfigurationTransfer.exportURL()
+            try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
         }
 
         let destinationDatabase = try makeConfigurationDatabase()
@@ -174,8 +174,11 @@ struct AppConfigurationTransferTests {
         let previousServers = Current.servers
         let previousModelManager = Current.modelManager
         let previousAppDatabaseUpdater = Current.appDatabaseUpdater
-        // Importing writes app settings back through `SettingsStore`, which is backed by the shared
-        // app group defaults; restore the keys it can touch so the suite leaves no residue.
+        // Importing applies an `AppSettingsSnapshot`, which writes across the shared app group
+        // defaults; re-applying the snapshot taken here restores exactly the preferences an import
+        // can touch, using the same code path. The menu bar template is restored by key on top of
+        // that, because `apply()` skips it when its server is gone.
+        let previousSettings = AppSettingsSnapshot.capture()
         let previousMenuItemTemplate = Current.settingsStore.prefs.string(forKey: "menuItemTemplate")
         let previousMenuItemTemplateServer = Current.settingsStore.prefs.string(forKey: "menuItemTemplate-server")
 
@@ -192,6 +195,7 @@ struct AppConfigurationTransferTests {
             Current.servers = previousServers
             Current.modelManager = previousModelManager
             Current.appDatabaseUpdater = previousAppDatabaseUpdater
+            previousSettings.apply()
             Current.settingsStore.prefs.set(previousMenuItemTemplate, forKey: "menuItemTemplate")
             Current.settingsStore.prefs.set(previousMenuItemTemplateServer, forKey: "menuItemTemplate-server")
         }

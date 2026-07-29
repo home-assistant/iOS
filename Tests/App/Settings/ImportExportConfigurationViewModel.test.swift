@@ -8,8 +8,8 @@ import Testing
 @MainActor
 @Suite(.serialized)
 struct ImportExportConfigurationViewModelTests {
-    @Test func refreshingCountsReportsWhatIsConfigured() throws {
-        try withViewModelTestWorld { database, viewModel in
+    @Test func refreshingCountsReportsWhatIsConfigured() async throws {
+        try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "widget")
 
             viewModel.refreshEntryCounts()
@@ -20,11 +20,11 @@ struct ImportExportConfigurationViewModelTests {
         }
     }
 
-    @Test func exportOffersTheFileForSharing() throws {
-        try withViewModelTestWorld { database, viewModel in
+    @Test func exportOffersTheFileForSharing() async throws {
+        try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "widget")
 
-            viewModel.export()
+            await viewModel.export()
 
             let shareWrapper = try #require(viewModel.shareWrapper)
             #expect(shareWrapper.url.pathExtension == "json")
@@ -33,12 +33,12 @@ struct ImportExportConfigurationViewModelTests {
         }
     }
 
-    @Test func choosingAConfigurationFileAsksForConfirmationFirst() throws {
-        try withViewModelTestWorld { database, viewModel in
+    @Test func choosingAConfigurationFileAsksForConfirmationFirst() async throws {
+        try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "widget")
-            let url = try AppConfigurationTransfer.exportURL()
+            let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
 
-            viewModel.handleFileSelection(.success([url]))
+            await viewModel.handleFileSelection(.success([url]))
 
             #expect(viewModel.showImportConfirmation)
             #expect(viewModel.pendingImportFilename == url.lastPathComponent)
@@ -47,12 +47,12 @@ struct ImportExportConfigurationViewModelTests {
         }
     }
 
-    @Test func choosingASingleFeatureFileFailsWithoutTouchingTheDatabase() throws {
-        try withViewModelTestWorld { database, viewModel in
+    @Test func choosingASingleFeatureFileFailsWithoutTouchingTheDatabase() async throws {
+        try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "existing")
             let url = try DebugDatabaseTransfer.exportURL(part: .customWidgets)
 
-            viewModel.handleFileSelection(.success([url]))
+            await viewModel.handleFileSelection(.success([url]))
 
             #expect(viewModel.showImportConfirmation == false)
             #expect(viewModel.pendingImportFilename.isEmpty)
@@ -63,11 +63,11 @@ struct ImportExportConfigurationViewModelTests {
         }
     }
 
-    @Test func cancellingForgetsTheSelectedFile() throws {
-        try withViewModelTestWorld { database, viewModel in
+    @Test func cancellingForgetsTheSelectedFile() async throws {
+        try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "widget")
-            let url = try AppConfigurationTransfer.exportURL()
-            viewModel.handleFileSelection(.success([url]))
+            let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+            await viewModel.handleFileSelection(.success([url]))
 
             viewModel.cancelImport()
 
@@ -91,15 +91,15 @@ struct ImportExportConfigurationViewModelTests {
     @Test func confirmingImportReplacesConfigurationAndRefreshesCounts() async throws {
         let sourceDatabase = try makeViewModelDatabase()
         try seedCustomWidget(in: sourceDatabase, id: "imported")
-        let url = try withViewModelTestWorld(database: sourceDatabase) { _, _ in
-            try AppConfigurationTransfer.exportURL()
-        }
+        let restoreSource = prepareWorld(database: sourceDatabase)
+        let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+        restoreSource()
 
         let destinationDatabase = try makeViewModelDatabase()
         try seedCustomWidget(in: destinationDatabase, id: "existing")
 
         try await withViewModelTestWorld(database: destinationDatabase) { database, viewModel in
-            viewModel.handleFileSelection(.success([url]))
+            await viewModel.handleFileSelection(.success([url]))
 
             await viewModel.confirmImport()
 
@@ -126,24 +126,19 @@ struct ImportExportConfigurationViewModelTests {
         try await work(database, ImportExportConfigurationViewModel())
     }
 
-    private func withViewModelTestWorld<T>(
-        database: DatabaseQueue? = nil,
-        perform work: (DatabaseQueue, ImportExportConfigurationViewModel) throws -> T
-    ) throws -> T {
-        let database = try database ?? makeViewModelDatabase()
-        let restore = prepareWorld(database: database)
-        defer { restore() }
-
-        return try work(database, ImportExportConfigurationViewModel())
-    }
-
     /// Points the world at an isolated database with a single known server, and returns the closure
-    /// that puts everything — including the app group defaults an import writes to — back.
+    /// that puts everything back.
+    ///
+    /// Importing applies an `AppSettingsSnapshot`, which writes across the shared app group
+    /// defaults, so the snapshot taken here is re-applied on the way out: it covers exactly the
+    /// preferences an import can touch, using the same code path. The menu bar template is restored
+    /// by key on top of that, because `apply()` skips it when its server is gone.
     private func prepareWorld(database: DatabaseQueue) -> () -> Void {
         let previousDatabase = Current.database
         let previousServers = Current.servers
         let previousModelManager = Current.modelManager
         let previousAppDatabaseUpdater = Current.appDatabaseUpdater
+        let previousSettings = AppSettingsSnapshot.capture()
         let previousMenuItemTemplate = Current.settingsStore.prefs.string(forKey: "menuItemTemplate")
         let previousMenuItemTemplateServer = Current.settingsStore.prefs.string(forKey: "menuItemTemplate-server")
 
@@ -160,6 +155,7 @@ struct ImportExportConfigurationViewModelTests {
             Current.servers = previousServers
             Current.modelManager = previousModelManager
             Current.appDatabaseUpdater = previousAppDatabaseUpdater
+            previousSettings.apply()
             Current.settingsStore.prefs.set(previousMenuItemTemplate, forKey: "menuItemTemplate")
             Current.settingsStore.prefs.set(previousMenuItemTemplateServer, forKey: "menuItemTemplate-server")
         }
