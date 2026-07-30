@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WidgetKit
 
 /// The rectangular complication's on-face content: optional icon + name/subtitle, then either the
@@ -98,7 +99,7 @@ public extension RectangularComplicationRenderModel {
         textColor: Color? = nil
     ) -> RectangularComplicationRenderModel {
         RectangularComplicationRenderModel(
-            iconImage: icon ? Image(systemName: "bolt.fill") : nil,
+            iconImage: icon ? sampleBoltIcon() : nil,
             showsIcon: icon,
             title: title,
             showsName: !title.isEmpty,
@@ -115,6 +116,12 @@ public extension RectangularComplicationRenderModel {
             textColor: textColor
         )
     }
+}
+
+/// A white template symbol for the sample icon slot. Built via `UIImage(systemName:)` rather than the
+/// SwiftUI symbol initializer, to keep this lean package free of an SFSafeSymbols dependency.
+private func sampleBoltIcon() -> Image {
+    Image(uiImage: (UIImage(systemName: "bolt.fill") ?? UIImage()).withRenderingMode(.alwaysTemplate))
 }
 
 /// Renders on a dark rounded "watch face" so the default `.primary` text is legible, matching the

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The iPhone-side (and snapshot) rendering of the corner complication, stacked from the watch face
 /// corner inward: icon, name, value (more prominent than the name), then the gauge arcing below them.
@@ -135,7 +136,7 @@ public extension CornerComplicationRenderModel {
         textColor: Color? = nil
     ) -> CornerComplicationRenderModel {
         CornerComplicationRenderModel(
-            iconImage: icon ? Image(systemName: "bolt.fill") : nil,
+            iconImage: icon ? sampleBoltIcon() : nil,
             title: title ?? "",
             showsName: title != nil,
             valueText: value,
@@ -145,6 +146,12 @@ public extension CornerComplicationRenderModel {
             textColor: textColor
         )
     }
+}
+
+/// A white template symbol for the sample icon slot. Built via `UIImage(systemName:)` rather than the
+/// SwiftUI symbol initializer, to keep this lean package free of an SFSafeSymbols dependency.
+private func sampleBoltIcon() -> Image {
+    Image(uiImage: (UIImage(systemName: "bolt.fill") ?? UIImage()).withRenderingMode(.alwaysTemplate))
 }
 
 @available(iOS 16.0, watchOS 10.0, *)

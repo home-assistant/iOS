@@ -19,10 +19,7 @@ func assertWatchSnapshot(
     scale: CGFloat = 2,
     perPixelTolerance: Int = 12,
     differingPixelRatio: Double = 0.02,
-    fileID: StaticString = #fileID,
-    filePath: StaticString = #filePath,
-    line: UInt = #line,
-    column: UInt = #column
+    filePath: StaticString = #filePath
 ) {
     let renderer = ImageRenderer(content: view)
     renderer.scale = scale
@@ -35,9 +32,16 @@ func assertWatchSnapshot(
     let fileManager = FileManager.default
     let shouldRecord = ProcessInfo.processInfo.environment["RECORD_SNAPSHOTS"] != nil
 
-    guard !shouldRecord, fileManager.fileExists(atPath: referenceURL.path) else {
+    // Record mode (RECORD_SNAPSHOTS) overwrites the reference; a missing reference is recorded and then
+    // reported so the run fails until there is something to assert against.
+    let referenceExists = fileManager.fileExists(atPath: referenceURL.path)
+    if shouldRecord || !referenceExists {
         write(pngData, to: referenceURL)
-        Issue.record("No reference found on disk; recorded snapshot at \(referenceURL.path). Re-run to assert.")
+        Issue.record(
+            referenceExists
+                ? "Recorded snapshot (RECORD_SNAPSHOTS) at \(referenceURL.path)."
+                : "No reference found on disk; recorded snapshot at \(referenceURL.path). Re-run to assert."
+        )
         return
     }
 
@@ -76,11 +80,15 @@ private func Self_referenceURL(filePath: StaticString, named: String) -> URL {
 
 @MainActor
 private func write(_ data: Data, to url: URL) {
-    try? FileManager.default.createDirectory(
-        at: url.deletingLastPathComponent(),
-        withIntermediateDirectories: true
-    )
-    try? data.write(to: url)
+    do {
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try data.write(to: url)
+    } catch {
+        Issue.record("Failed to write snapshot to \(url.path): \(error)")
+    }
 }
 
 /// Returns a human-readable reason when the two images differ beyond the tolerances, else nil.

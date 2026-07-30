@@ -65,26 +65,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "42D14C52301BB5C50058088E"
-               BuildableName = "HomeAssistant-WatchAppTests.xctest"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "42D14C5F301BB5EE0058088E"
-               BuildableName = "HomeAssistant-WatchAppTests.xctest"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "42D14C6C301BB6330058088E"
                BuildableName = "HomeAssistant-WatchAppTests.xctest"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">

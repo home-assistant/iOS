@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WidgetKit
 
 /// The circular complication's on-face content: a gauge around the center content (icon / value /
@@ -131,7 +132,7 @@ public extension CircularComplicationRenderModel {
         textColor: Color? = nil
     ) -> CircularComplicationRenderModel {
         CircularComplicationRenderModel(
-            iconImage: icon ? Image(systemName: "bolt.fill") : nil,
+            iconImage: icon ? sampleBoltIcon() : nil,
             showsIcon: icon,
             valueText: value,
             showsValue: showValue,
@@ -145,6 +146,12 @@ public extension CircularComplicationRenderModel {
             textColor: textColor
         )
     }
+}
+
+/// A white template symbol for the sample icon slot. Built via `UIImage(systemName:)` rather than the
+/// SwiftUI symbol initializer, to keep this lean package free of an SFSafeSymbols dependency.
+private func sampleBoltIcon() -> Image {
+    Image(uiImage: (UIImage(systemName: "bolt.fill") ?? UIImage()).withRenderingMode(.alwaysTemplate))
 }
 
 /// Renders on a dark rounded "watch face" so the default `.primary` text is legible, matching the
