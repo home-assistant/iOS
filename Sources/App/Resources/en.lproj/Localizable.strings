@@ -1775,7 +1775,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.health.category.vitals" = "Vitals";
 "settings_sensors.health.error.no_enabled_sensors" = "Turn on at least one Apple Health sensor before requesting access.";
 "settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";
-"settings_sensors.health.footer" = "Apple Health sensors have their own screen because there are so many of them. They all start switched off, and health data is read only during normal sensor updates.";
+"settings_sensors.health.footer" = "Apple Health sensors have their own screen because there are so many of them. They all start switched off. Once turned on, Apple Health data is read during sensor updates and whenever Apple Health records something new, even if the app is closed.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.reload" = "Reload Sensors";
 "settings_sensors.health.request_access" = "Request Apple Health Access";
