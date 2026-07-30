@@ -333,6 +333,27 @@ struct MagicItemWidgetInteractionTests {
     }
 }
 
+struct MagicItemWatchDisplayOnlyTests {
+    @Test func sensorEntitiesAreDisplayOnly() {
+        for entityId in ["sensor.temperature", "binary_sensor.front_door"] {
+            let item = MagicItem(id: entityId, serverId: "1", type: .entity)
+            #expect(item.isWatchDisplayOnly, "\(entityId) should be display-only on the watch")
+        }
+    }
+
+    @Test func runnableAndNonEntityItemsAreNotDisplayOnly() {
+        let runnable = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(!runnable.isWatchDisplayOnly)
+
+        // Only entity items can be display-only — the item type decides, not the id's domain.
+        let script = MagicItem(id: "sensor.temperature", serverId: "1", type: .script)
+        #expect(!script.isWatchDisplayOnly)
+
+        let folder = MagicItem(id: "folder", serverId: "", type: .folder)
+        #expect(!folder.isWatchDisplayOnly)
+    }
+}
+
 struct DomainFeatureSupportTests {
     @Test func carPlaySupportedMembership() {
         let expected: Set<Domain> = [
@@ -351,10 +372,40 @@ struct DomainFeatureSupportTests {
     }
 
     @Test func watchSupportedDomainsAreActionable() {
-        // The watch only offers domains it can actually run; a non-actionable domain in the
-        // list would tap into the "unsupported" alert.
+        // `watchSupported` is the list the watch can actually run; a non-actionable domain in it
+        // would tap into the "unsupported" alert. Display-only domains live in their own list.
         for domain in Domain.watchSupported {
             #expect(domain.isActionable, "Domain.\(domain) is watch-supported but has no action")
+        }
+    }
+
+    @Test func watchDisplayOnlyMembership() {
+        let expected: Set<Domain> = [.sensor, .binarySensor]
+        #expect(Set(Domain.watchDisplayOnly) == expected, "Domain.watchDisplayOnly membership changed")
+        for domain in Domain.allCases {
+            #expect(
+                domain.isWatchDisplayOnly == expected.contains(domain),
+                "isWatchDisplayOnly mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
+    @Test func watchDisplayOnlyDomainsHaveNoAction() {
+        // These are on the watch to be read: the row opens the details screen instead of running
+        // anything, so an actionable domain here would silently lose its action.
+        for domain in Domain.watchDisplayOnly {
+            #expect(!domain.isActionable, "Domain.\(domain) is display-only but has an action")
+        }
+    }
+
+    @Test func watchAddableIsRunnablePlusDisplayOnly() {
+        #expect(Domain.watchAddable == Domain.watchSupported + Domain.watchDisplayOnly)
+        #expect(Set(Domain.watchSupported).isDisjoint(with: Set(Domain.watchDisplayOnly)))
+        for domain in Domain.watchAddable {
+            #expect(
+                domain.isActionable || domain.isWatchDisplayOnly,
+                "Domain.\(domain) is addable to the watch but neither runnable nor display-only"
+            )
         }
     }
 
@@ -382,6 +433,8 @@ struct DomainFeatureSupportTests {
         let groups: [(String, [Domain])] = [
             ("carPlaySupported", Domain.carPlaySupported),
             ("watchSupported", Domain.watchSupported),
+            ("watchDisplayOnly", Domain.watchDisplayOnly),
+            ("watchAddable", Domain.watchAddable),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
             ("appDatabaseExcluded", Domain.appDatabaseExcluded),
@@ -396,6 +449,7 @@ struct DomainFeatureSupportTests {
         let featureLists: [(String, [Domain])] = [
             ("carPlaySupported", Domain.carPlaySupported),
             ("watchSupported", Domain.watchSupported),
+            ("watchAddable", Domain.watchAddable),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
         ]

@@ -233,7 +233,10 @@ struct MagicItemCustomizationView: View {
                 scriptActionDetails
             }
         }
-        if !(context == .carPlay && viewModel.item.type == .assistPipeline) {
+        // A watch sensor is only displayed — tapping it opens its details screen and runs nothing,
+        // so there is no action to confirm.
+        if !(context == .carPlay && viewModel.item.type == .assistPipeline),
+           !(context == .watch && viewModel.item.isWatchDisplayOnly) {
             Section {
                 Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
                     viewModel.item.customization?.requiresConfirmation ?? false

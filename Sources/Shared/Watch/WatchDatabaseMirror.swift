@@ -95,9 +95,10 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.servers = (try? container.decodeIfPresent(Data.self, forKey: .servers)).flatMap { $0 }
     }
 
-    /// Domains the watch can add (mirrors the iPhone watch picker).
+    /// Domains the watch can add (mirrors the iPhone watch picker), including the display-only
+    /// sensor domains — the watch resolves their names and icons from these rows too.
     private static var mirroredDomains: Set<String> {
-        Set(Domain.watchSupported.map(\.rawValue))
+        Set(Domain.watchAddable.map(\.rawValue))
     }
 
     /// Read the current reference tables from the local GRDB (called on the phone).

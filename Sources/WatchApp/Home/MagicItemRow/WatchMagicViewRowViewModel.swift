@@ -33,11 +33,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published var showConfirmationDialog = false
     /// Alert shown when the tapped entity's domain has no action the watch can perform.
     @Published var showUnsupportedAlert = false
+    /// Drives the details screen for a display-only (sensor) item, which runs nothing when tapped.
+    @Published var showDetails = false
     /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
     /// state-aware execution (lock).
     @Published private(set) var liveEntity: HAEntity?
-    /// True when the state couldn't be refreshed within `staleInterval` — the row shows a small
-    /// warning badge so the displayed state isn't mistaken for current.
+    /// True when the state couldn't be refreshed within the poller's stale interval — the row shows
+    /// a small warning badge so the displayed state isn't mistaken for current.
     @Published private(set) var isStateStale = false
     /// Set when an execution fails, so the failure isn't silent. Presented full-screen by the row.
     @Published var errorMessage: String?
@@ -51,23 +53,21 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private var timeoutWorkItem: DispatchWorkItem?
     private var watchdogWorkItem: DispatchWorkItem?
-    private var stateTimer: Timer?
-    private var lastStateUpdate: Date?
-    private var pollingStarted: Date?
-
-    private static let stateRefreshInterval: TimeInterval = 5
-    private static let staleInterval: TimeInterval = 10
+    /// Shared REST polling used by every screen that shows live state (see `WatchEntityStatePoller`).
+    private let poller: WatchEntityStatePoller
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
         self.itemInfo = itemInfo
-    }
-
-    deinit {
-        stateTimer?.invalidate()
+        self.poller = WatchEntityStatePoller(entityId: item.id, serverId: item.serverId)
     }
 
     func executeItem() {
+        // Sensors are on the watch to be read, not run: open their details screen instead.
+        guard !isDisplayOnly else {
+            showDetails = true
+            return
+        }
         guard isActionable else {
             showUnsupportedAlert = true
             return
@@ -118,6 +118,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         return domain.hasStateDependentIcon && itemInfo.customization?.iconIsCustomized != true
     }
 
+    /// Sensor rows are read-only: tapping shows the details screen instead of running an action, and
+    /// the row surfaces the value rather than an execution result.
+    var isDisplayOnly: Bool {
+        item.isWatchDisplayOnly
+    }
+
     private var isActionable: Bool {
         switch item.type {
         case .entity:
@@ -138,48 +144,21 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     func startStateUpdates() {
         stopStateUpdates()
         guard displaysState else { return }
-        pollingStarted = Current.date()
-        isStateStale = false
-        fetchState()
-        stateTimer = Timer
-            .scheduledTimer(withTimeInterval: Self.stateRefreshInterval, repeats: true) { [weak self] _ in
-                self?.updateStaleness()
-                self?.fetchState()
-            }
+        poller.start { [weak self] snapshot in
+            self?.liveEntity = snapshot.entity
+            self?.isStateStale = snapshot.isStale
+        }
     }
 
     func stopStateUpdates() {
-        stateTimer?.invalidate()
-        stateTimer = nil
-    }
-
-    private func fetchState() {
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
-            return
-        }
-        WatchEntityStateFetcher.fetchState(entityId: item.id, server: server) { [weak self] entity in
-            guard let self, let entity else { return }
-            liveEntity = entity
-            lastStateUpdate = Current.date()
-            isStateStale = false
-        }
-    }
-
-    /// Evaluated on every poll tick: fetches update `lastStateUpdate` on success only, so a run
-    /// of failed polls (or none at all since appearing) flips the badge on.
-    private func updateStaleness() {
-        guard let reference = lastStateUpdate ?? pollingStarted else { return }
-        isStateStale = Current.date().timeIntervalSince(reference) >= Self.staleInterval
+        poller.stop()
     }
 
     /// Reflect an executed action (e.g. a toggled light) quickly instead of waiting up to a full
     /// poll interval. Skipped when the row is no longer polling (it disappeared meanwhile).
     private func scheduleStateRefreshAfterExecution() {
-        guard displaysState, stateTimer != nil else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard let self, stateTimer != nil else { return }
-            fetchState()
-        }
+        guard displaysState else { return }
+        poller.refresh(after: 1)
     }
 
     func confirmationAction() {

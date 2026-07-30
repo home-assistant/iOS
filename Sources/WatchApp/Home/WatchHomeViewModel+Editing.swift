@@ -236,7 +236,7 @@ extension WatchHomeViewModel {
         completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
             -> Void
     ) {
-        let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in

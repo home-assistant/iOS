@@ -43,7 +43,7 @@ final class EntityAddToHandler {
                 // Watch is available on iPhone for supported domains
                 #if os(iOS)
                 if !Current.isCatalyst {
-                    let isWatchSupported = domain.map { Domain.watchSupported.contains($0) } ?? false
+                    let isWatchSupported = domain.map { Domain.watchAddable.contains($0) } ?? false
                     if isWatchSupported {
                         actions.append(WatchItemAction())
                     }
