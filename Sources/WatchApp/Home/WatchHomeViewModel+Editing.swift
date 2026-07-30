@@ -5,12 +5,6 @@ import SwiftUI
 // MARK: - On-watch editing
 
 extension WatchHomeViewModel {
-    enum WatchConfigEditError: Error {
-        case notReachable
-        case sendFailed
-        case decodeFailed
-    }
-
     /// Edits are applied locally first (so they work offline) and pushed to the phone — the source of
     /// truth — only when it's immediately reachable, matching `WatchServerSync.request()`. The mutation
     /// methods below mirror the iPhone `WatchConfigurationViewModel`; they run on the main thread
@@ -229,13 +223,33 @@ extension WatchHomeViewModel {
 
     // MARK: Available items
 
+    /// Serial queue the add flow's candidate build runs on. `loadInformation` and every info lookup
+    /// below are synchronous database work, so on the main thread they froze the UI until the whole
+    /// entity mirror had been resolved — which is exactly when the user is waiting for the picker to
+    /// appear. Serial (not a global concurrent queue) so repeated appearances queue behind each other
+    /// instead of contending for the same SQLite reader.
+    private static let availableItemsQueue = DispatchQueue(label: "watch-available-items", qos: .userInitiated)
+
     /// Build the list of addable items (watch-supported domains across all servers) from the
-    /// locally-mirrored database, so the add flow works without the phone nearby. Mirrors the
-    /// phone-side picker's domain filter; items are stored as `type: .entity`.
-    func fetchAvailableItems(
-        completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
-            -> Void
-    ) {
+    /// locally-mirrored database, so the add flow works without the phone nearby.
+    ///
+    /// The build runs off the main thread; `completion` is always delivered on the main queue. It can't
+    /// fail: it reads the local mirror, and anything it can't resolve simply yields no candidates for
+    /// that server, which the add flow shows as its empty state.
+    func fetchAvailableItems(completion: @escaping (WatchConfigAvailableItems) -> Void) {
+        Self.availableItemsQueue.async {
+            Self.buildAvailableItems { items in
+                DispatchQueue.main.async {
+                    completion(items)
+                }
+            }
+        }
+    }
+
+    /// Resolves every watch-supported entity across all servers into an addable candidate. Mirrors the
+    /// phone-side picker's domain filter; items are stored as `type: .entity`. Synchronous database
+    /// work throughout — call it on `availableItemsQueue`, never on the main thread.
+    private static func buildAvailableItems(completion: @escaping (WatchConfigAvailableItems) -> Void) {
         let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
@@ -259,9 +273,7 @@ extension WatchHomeViewModel {
                     }
                 return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }
-            DispatchQueue.main.async {
-                completion(.success(WatchConfigAvailableItems(servers: groups)))
-            }
+            completion(WatchConfigAvailableItems(servers: groups))
         }
     }
 
