@@ -54,17 +54,17 @@ lane :test do
   # this watch model + scale (see WatchImageSnapshot); keep this device in sync with wherever the
   # references were recorded.
   #
-  # Pin the OS explicitly: with OS=latest the runner matched this model across several watchOS runtimes
-  # (and both standalone and paired), so xcodebuild failed with "multiple devices matched".
+  # Use `devices:` (not a raw name+OS destination): on CI this model is both a standalone simulator and
+  # paired to an iPhone, so a name+OS destination matches multiple devices and xcodebuild errors out.
+  # `scan` resolves the name to a single simulator UDID, which is unambiguous.
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'WatchApp',
     only_testing: ['HomeAssistant-WatchAppTests'],
     result_bundle: false,
     skip_package_dependencies_resolution: true,
-    skip_detect_devices: true,
     skip_build: true,
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
-    destination: 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.5'
+    devices: ['Apple Watch Series 11 (46mm)']
   )
 end

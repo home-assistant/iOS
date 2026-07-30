@@ -31,7 +31,8 @@ struct RectangularComplicationPreview: View {
             bottomText: context.bottomText,
             showsBottomText: context.showsBottomText,
             tint: context.tint,
-            textColor: context.textColor
+            textColor: context.textColor,
+            bottomTextColor: context.bottomTextColor
         )
     }
 }
