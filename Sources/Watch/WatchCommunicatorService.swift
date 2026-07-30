@@ -466,7 +466,7 @@ final class WatchCommunicatorService {
     ///   `watchConfigAvailableItems` message and response cases.
     private func watchConfigAvailableItems(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigAvailableItemsResponse.rawValue
-        let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in

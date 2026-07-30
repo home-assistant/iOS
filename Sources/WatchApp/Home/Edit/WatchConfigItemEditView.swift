@@ -80,7 +80,8 @@ struct WatchConfigItemEditView: View {
                     WatchColorPicker(title: L10n.MagicItem.TextColor.title, colorHex: $textColorHex)
                 }
             }
-            if !isFolder {
+            // Folders and sensors never run anything, so there is nothing to confirm.
+            if !isFolder, !originalItem.isWatchDisplayOnly {
                 Section {
                     Toggle(isOn: $requiresConfirmation) {
                         Text(verbatim: L10n.Watch.Config.Edit.requireConfirmation)

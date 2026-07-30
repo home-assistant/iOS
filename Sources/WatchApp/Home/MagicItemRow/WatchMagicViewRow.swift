@@ -83,6 +83,10 @@ struct WatchMagicViewRow: View {
                 onDismiss: { viewModel.errorMessage = nil }
             )
         }
+        // Sensors run nothing when tapped: they open their own read-only details screen instead.
+        .sheet(isPresented: $viewModel.showDetails) {
+            WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+        }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.
         .fullScreenCover(isPresented: $viewModel.showTrace) {
@@ -129,13 +133,25 @@ struct WatchMagicViewRow: View {
     }
 
     private var gridIcon: some View {
-        stateIcon(size: 28)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .contentShape(Rectangle())
-            .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
-            .overlay(alignment: .bottomTrailing) {
-                staleStateBadge
+        VStack(spacing: DesignSystem.Spaces.half) {
+            stateIcon(size: 28)
+            // A grid tile shows only an icon, which says nothing about a sensor — so display-only
+            // items get their value under it, the whole point of putting them on the watch.
+            if viewModel.isDisplayOnly, let stateText = viewModel.stateText {
+                Text(verbatim: stateText)
+                    .font(.caption2)
+                    .foregroundStyle(textColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .padding(.horizontal, DesignSystem.Spaces.half)
             }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
+        .overlay(alignment: .bottomTrailing) {
+            staleStateBadge
+        }
     }
 
     /// Warns that the displayed state may be outdated (no successful refresh recently).
@@ -206,6 +222,10 @@ struct WatchMagicViewRow: View {
         WatchMagicViewRow(
             item: .init(id: "scene.one", serverId: "1", type: .scene),
             itemInfo: .init(id: "1", name: "New scene", iconName: "earth")
+        )
+        WatchMagicViewRow(
+            item: .init(id: "sensor.living_room_temperature", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Living room temperature", iconName: "mdi:thermometer")
         )
     }
     .background(Color.red)
