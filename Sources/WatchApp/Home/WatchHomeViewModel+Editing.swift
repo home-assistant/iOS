@@ -229,13 +229,34 @@ extension WatchHomeViewModel {
 
     // MARK: Available items
 
+    /// Serial queue the add flow's candidate build runs on. `loadInformation` and every info lookup
+    /// below are synchronous database work, so on the main thread they froze the UI until the whole
+    /// entity mirror had been resolved — which is exactly when the user is waiting for the picker to
+    /// appear. Serial (not a global concurrent queue) so repeated appearances queue behind each other
+    /// instead of contending for the same SQLite reader.
+    private static let availableItemsQueue = DispatchQueue(label: "watch-available-items", qos: .userInitiated)
+
     /// Build the list of addable items (watch-supported domains across all servers) from the
-    /// locally-mirrored database, so the add flow works without the phone nearby. Mirrors the
-    /// phone-side picker's domain filter; items are stored as `type: .entity`.
+    /// locally-mirrored database, so the add flow works without the phone nearby.
+    ///
+    /// The build runs off the main thread; `completion` is always delivered on the main queue.
     func fetchAvailableItems(
         completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
             -> Void
     ) {
+        Self.availableItemsQueue.async {
+            Self.buildAvailableItems { items in
+                DispatchQueue.main.async {
+                    completion(.success(items))
+                }
+            }
+        }
+    }
+
+    /// Resolves every watch-supported entity across all servers into an addable candidate. Mirrors the
+    /// phone-side picker's domain filter; items are stored as `type: .entity`. Synchronous database
+    /// work throughout — call it on `availableItemsQueue`, never on the main thread.
+    private static func buildAvailableItems(completion: @escaping (WatchConfigAvailableItems) -> Void) {
         let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
@@ -259,9 +280,7 @@ extension WatchHomeViewModel {
                     }
                 return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }
-            DispatchQueue.main.async {
-                completion(.success(WatchConfigAvailableItems(servers: groups)))
-            }
+            completion(WatchConfigAvailableItems(servers: groups))
         }
     }
 
