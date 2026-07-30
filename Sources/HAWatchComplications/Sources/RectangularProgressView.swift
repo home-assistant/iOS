@@ -10,6 +10,27 @@ public struct RectangularProgressView: View {
     public static let thumbHeight: CGFloat = 22
     public static let thumbWidth: CGFloat = 34
 
+    /// Layout and styling metrics for the progress bar.
+    private enum Layout {
+        /// Vertical gap between the bar and the min/max labels.
+        static let stackSpacing: CGFloat = 3
+        /// Opacity of the unfilled bar track.
+        static let trackOpacity: CGFloat = 0.25
+        static let thumbVerticalPadding: CGFloat = 1
+        static let thumbHorizontalPadding: CGFloat = 4
+        static let thumbTextMinimumScaleFactor: CGFloat = 0.5
+        static let minMaxLabelFontSize: CGFloat = 10
+    }
+
+    /// Weights and threshold for the perceived-luminance check that picks black vs. white value text.
+    private enum Luminance {
+        static let red: CGFloat = 0.299
+        static let green: CGFloat = 0.587
+        static let blue: CGFloat = 0.114
+        /// Luminance above this is considered "light", so value text switches to black.
+        static let lightThreshold: CGFloat = 0.6
+    }
+
     let fraction: Double
     let minLabel: String?
     let maxLabel: String?
@@ -33,16 +54,17 @@ public struct RectangularProgressView: View {
         guard renderingMode == .fullColor else { return .white }
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
-        return (0.299 * r + 0.587 * g + 0.114 * b) > 0.6 ? .black : .white
+        return (Luminance.red * r + Luminance.green * g + Luminance.blue * b) > Luminance.lightThreshold
+            ? .black : .white
     }
 
     public var body: some View {
         let clamped = min(max(fraction, 0), 1)
-        VStack(spacing: 3) {
+        VStack(spacing: Layout.stackSpacing) {
             GeometryReader { geo in
                 let width = geo.size.width
                 ZStack(alignment: .leading) {
-                    Capsule().fill(tint.opacity(0.25)).frame(height: Self.barHeight)
+                    Capsule().fill(tint.opacity(Layout.trackOpacity)).frame(height: Self.barHeight)
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
                         ZStack {
@@ -53,9 +75,9 @@ public struct RectangularProgressView: View {
                                 .font(.body.bold())
                                 .foregroundStyle(valueTextColor)
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .padding(.vertical, 1)
-                                .padding(.horizontal, 4)
+                                .minimumScaleFactor(Layout.thumbTextMinimumScaleFactor)
+                                .padding(.vertical, Layout.thumbVerticalPadding)
+                                .padding(.horizontal, Layout.thumbHorizontalPadding)
                         }
                         .frame(width: Self.thumbWidth, height: Self.thumbHeight)
                         .position(
@@ -67,13 +89,15 @@ public struct RectangularProgressView: View {
                 .frame(height: Self.thumbHeight)
             }
             .frame(height: Self.thumbHeight)
-            HStack {
-                Text(verbatim: minLabel ?? " ")
-                Spacer()
-                Text(verbatim: maxLabel ?? " ")
+            if minLabel != nil || maxLabel != nil {
+                HStack {
+                    Text(verbatim: minLabel ?? " ")
+                    Spacer()
+                    Text(verbatim: maxLabel ?? " ")
+                }
+                .font(.system(size: Layout.minMaxLabelFontSize))
+                .foregroundStyle(.secondary)
             }
-            .font(.system(size: 10))
-            .foregroundStyle(.secondary)
         }
     }
 }

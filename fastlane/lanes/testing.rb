@@ -48,4 +48,20 @@ lane :test do
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
+
+  # The rectangular-complication snapshot tests render the shared view on watchOS, so they run
+  # under the WatchApp scheme on a watch simulator — the iOS run above can't reach them. The
+  # reference images are tied to this watch model + scale (see WatchImageSnapshot); keep this
+  # device in sync with wherever the references were recorded.
+  run_tests(
+    project: 'HomeAssistant.xcodeproj',
+    scheme: 'WatchApp',
+    only_testing: ['HomeAssistant-WatchAppTests'],
+    result_bundle: false,
+    skip_package_dependencies_resolution: true,
+    skip_detect_devices: true,
+    skip_build: true,
+    xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
+    destination: 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=latest'
+  )
 end

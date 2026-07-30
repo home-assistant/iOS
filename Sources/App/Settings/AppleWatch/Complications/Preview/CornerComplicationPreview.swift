@@ -1,99 +1,33 @@
+import HAWatchComplications
 import Shared
 import SwiftUI
 
 /// iPhone preview of the corner complication, stacked from the watch face corner inward: icon, name,
 /// value (more prominent than the name), then the gauge arcing below them all.
+///
+/// The real watch corner complication renders via the native `widgetCurvesContent()` / `widgetLabel`
+/// APIs, which only work inside a widget host, so the layout here is the shared
+/// `CornerComplicationContentView` approximation. Both sides resolve their text / gauge through
+/// `CornerComplicationRenderModel`.
 struct CornerComplicationPreview: View {
     let context: ComplicationPreviewContext
 
-    // The layout is designed vertically — content stacked on the vertical axis, gauge arc symmetric
-    // around 12 o'clock below it — and the whole composition is rotated 45° into the top-trailing
-    // corner. That keeps everything centered on the curve by construction.
-    private let arcCenter = CGPoint(x: 50, y: 120)
-    /// The content stack hugs the corner and grows inward, whatever subset is visible.
-    private let stackTop: CGFloat = 10
-    private let stackHeight: CGFloat = 52
-    private let stackSpacing: CGFloat = 2
-
-    /// Estimated height of the visible icon/name/value stack, so the gauge can hang just below it.
-    private var stackContentHeight: CGFloat {
-        var heights: [CGFloat] = []
-        if context.iconImage != nil { heights.append(20) }
-        if context.showsName, !context.titleText.isEmpty { heights.append(11) }
-        if context.showsValue, !context.valueText.isEmpty { heights.append(17) }
-        guard !heights.isEmpty else { return 0 }
-        return heights.reduce(0, +) + CGFloat(heights.count - 1) * stackSpacing
+    var body: some View {
+        CornerComplicationContentView(model: renderModel)
+            .environment(\.colorScheme, .dark)
     }
 
-    /// The gauge is the innermost element, riding just below whatever the stack shows.
-    private var gaugeRadius: CGFloat { arcCenter.y - (stackTop + stackContentHeight + 9) }
-    /// Half the sweep (degrees), sized for a roughly constant ~55pt arc whatever the radius.
-    private var halfSpan: Double { min(32, 27.5 / gaugeRadius * 180 / .pi) }
-    private var startAngle: Double { -90 - halfSpan }
-    private var endAngle: Double { -90 + halfSpan }
-
-    var body: some View {
-        ZStack {
-            if context.showsGauge, let fraction = context.fraction {
-                Path { path in
-                    path.addArc(
-                        center: arcCenter,
-                        radius: gaugeRadius,
-                        startAngle: .degrees(startAngle),
-                        endAngle: .degrees(endAngle),
-                        clockwise: false
-                    )
-                }
-                .stroke(context.tint.opacity(0.28), style: StrokeStyle(lineWidth: 6, lineCap: .round))
-
-                Path { path in
-                    path.addArc(
-                        center: arcCenter,
-                        radius: gaugeRadius,
-                        startAngle: .degrees(startAngle),
-                        endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
-                        clockwise: false
-                    )
-                }
-                .stroke(context.tint, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-            }
-
-            // Corner inward: icon, name, value. The icon is already gated by the "show icon" toggle.
-            VStack(spacing: stackSpacing) {
-                if let iconImage = context.iconImage {
-                    iconImage
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        // Counter the composition's rotation: the icon stays upright, like the
-                        // widget's un-curved icon.
-                        .rotationEffect(.degrees(-45))
-                }
-                if context.showsName, !context.titleText.isEmpty {
-                    Text(context.titleText)
-                        .font(.system(size: 9, weight: .medium))
-                        .foregroundStyle(context.textColor.opacity(0.7))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        // Bound the width so long text scales down instead of clipping off the edge.
-                        .frame(maxWidth: 56)
-                }
-                if context.showsValue, !context.valueText.isEmpty {
-                    Text(context.valueText)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                        .foregroundStyle(context.textColor)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .frame(maxWidth: 56)
-                }
-            }
-            .frame(height: stackHeight, alignment: .top)
-            .position(x: arcCenter.x, y: stackTop + stackHeight / 2)
-        }
-        .frame(width: 100, height: 100)
-        // Designed upright, then swung into the top-trailing corner as one piece.
-        .rotationEffect(.degrees(45))
-        .environment(\.colorScheme, .dark)
+    private var renderModel: CornerComplicationRenderModel {
+        CornerComplicationRenderModel(
+            iconImage: context.iconImage,
+            title: context.titleText,
+            showsName: context.showsName,
+            valueText: context.valueText,
+            showsValue: context.showsValue,
+            fraction: context.showsGauge ? context.fraction : nil,
+            tint: context.tint,
+            textColor: context.textColor
+        )
     }
 }
 

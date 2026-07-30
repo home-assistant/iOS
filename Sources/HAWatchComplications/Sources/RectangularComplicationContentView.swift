@@ -14,6 +14,12 @@ public struct RectangularComplicationContentView: View {
         static let spacing: CGFloat = 6
         static let logoSize: CGFloat = 18
         static let textSpacing: CGFloat = 1
+        /// Opacity applied to secondary text (subtitle, bottom text).
+        static let secondaryTextOpacity: CGFloat = 0.8
+        /// Smallest fraction text is allowed to shrink to before truncating.
+        static let minimumScaleFactor: CGFloat = 0.5
+        static let titleLineLimit = 1
+        static let valueLineLimit = 2
     }
 
     public let model: RectangularComplicationRenderModel
@@ -36,14 +42,16 @@ public struct RectangularComplicationContentView: View {
                 if model.showsName, !model.title.isEmpty {
                     Text(model.title)
                         .font(.caption2.weight(.semibold))
-                        .lineLimit(1)
+                        .lineLimit(Layout.titleLineLimit)
                         .foregroundStyle(textColor)
+                        .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
                 if model.showsSubtitle, !model.subtitle.isEmpty {
                     Text(model.subtitle)
                         .font(.caption2)
-                        .lineLimit(1)
-                        .foregroundStyle(textColor.opacity(0.8))
+                        .lineLimit(Layout.titleLineLimit)
+                        .foregroundStyle(textColor.opacity(Layout.secondaryTextOpacity))
+                        .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
                 if let fraction = model.fraction {
                     RectangularProgressView(
@@ -56,14 +64,15 @@ public struct RectangularComplicationContentView: View {
                 } else if model.showsValue, !model.valueText.isEmpty {
                     Text(model.valueText)
                         .font(.caption2)
-                        .lineLimit(2)
+                        .lineLimit(Layout.valueLineLimit)
                         .foregroundStyle(textColor)
                 }
                 if model.showsBottomText, !model.bottomText.isEmpty {
                     Text(model.bottomText)
                         .font(.caption2)
-                        .lineLimit(1)
-                        .foregroundStyle(textColor.opacity(0.8))
+                        .lineLimit(Layout.titleLineLimit)
+                        .foregroundStyle(textColor.opacity(Layout.secondaryTextOpacity))
+                        .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
             }
             Spacer(minLength: 0)
@@ -83,6 +92,7 @@ public extension RectangularComplicationRenderModel {
         fraction: Double? = 0.68,
         value: String = "68%",
         showValue: Bool = true,
+        showMinMax: Bool = true,
         bottomText: String? = nil,
         tint: Color = .green,
         textColor: Color? = nil
@@ -95,8 +105,8 @@ public extension RectangularComplicationRenderModel {
             subtitle: subtitle ?? "",
             showsSubtitle: subtitle != nil,
             fraction: fraction,
-            minLabel: fraction != nil ? "0" : nil,
-            maxLabel: fraction != nil ? "100" : nil,
+            minLabel: fraction != nil && showMinMax ? "0" : nil,
+            maxLabel: fraction != nil && showMinMax ? "100" : nil,
             valueText: value,
             showsValue: showValue,
             bottomText: bottomText ?? "",
@@ -126,6 +136,17 @@ private func face(_ model: RectangularComplicationRenderModel) -> some View {
 @available(iOS 16.0, watchOS 10.0, *)
 #Preview("All slots") {
     face(.sample(title: "Living Room", subtitle: "Temperature", bottomText: "Updated 2m ago")).padding()
+}
+
+// Every slot populated, but the gauge's min/max labels are hidden.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("All slots, no min/max") {
+    face(.sample(
+        title: "Living Room",
+        subtitle: "Temperature",
+        showMinMax: false,
+        bottomText: "Updated 2m ago"
+    )).padding()
 }
 
 @available(iOS 16.0, watchOS 10.0, *)

@@ -178,6 +178,9 @@
 		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
 		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
 		42D14C7B301BBAF50058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C7A301BBAF50058088E /* HAWatchComplications */; };
+		42D14C99301BC37A0058088E /* CircularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */; };
+		42D14C9B301BC3840058088E /* InlineComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */; };
+		42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */; };
 		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
 		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
 		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
@@ -644,6 +647,9 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
+		42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineComplicationSnapshot.test.swift; sourceTree = "<group>"; };
+		42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
 		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
 		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
@@ -2337,6 +2343,9 @@
 			isa = PBXGroup;
 			children = (
 				42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */,
+				42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */,
+				42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */,
+				42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */,
 			);
 			path = WatchComplications;
 			sourceTree = "<group>";
@@ -3953,6 +3962,9 @@
 				42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */,
 				42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
+				42D14C99301BC37A0058088E /* CircularComplicationSnapshot.test.swift in Sources */,
+				42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */,
+				42D14C9B301BC3840058088E /* InlineComplicationSnapshot.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
