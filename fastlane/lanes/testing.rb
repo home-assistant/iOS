@@ -1,5 +1,7 @@
 # Testing and debugging lanes
 
+require 'json'
+
 desc 'Update the test cases from the fcm repo'
 lane :update_notification_test_cases do
   bundle_directory = File.expand_path('../Tests/Shared/notification_test_cases.bundle')
@@ -51,11 +53,26 @@ lane :test do
 
   # The complication snapshot tests render the shared views on watchOS, so they run under the WatchApp
   # scheme on a watch simulator — the iOS run above can't reach them. The reference images are tied to
-  # this watch model + scale (see WatchImageSnapshot); keep this device in sync with wherever the
-  # references were recorded.
+  # this watch model + scale (see WatchImageSnapshot), so the model must stay 46mm.
   #
-  # Pin the OS explicitly: with OS=latest the runner matched this model across several watchOS runtimes
-  # (and both standalone and paired), so xcodebuild failed with "multiple devices matched".
+  # Resolve a concrete simulator UDID rather than a name+OS destination: on CI this model exists across
+  # several watchOS runtimes and appears both standalone and paired, so a name+OS destination is
+  # ambiguous ("multiple devices matched"). A UDID is not. Prefer the runtime the references were
+  # recorded against; fall back to the newest available runtime, then to the bare name.
+  watch_model = 'Apple Watch Series 11 (46mm)'
+  preferred_os = '26.5'
+  matching_watches = JSON.parse(`xcrun simctl list devices available --json`)['devices']
+    .select { |runtime, _| runtime.include?('watchOS') }
+    .flat_map { |runtime, devices| devices.map { |device| [runtime, device] } }
+    .select { |_, device| device['name'] == watch_model }
+    .sort_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
+    .reverse
+  chosen_watch = matching_watches.find { |runtime, _| runtime.include?("watchOS-#{preferred_os.tr('.', '-')}") } ||
+                 matching_watches.first
+  watch_udid = chosen_watch&.last&.dig('udid')
+  watch_destination = watch_udid ? "platform=watchOS Simulator,id=#{watch_udid}" \
+                                 : "platform=watchOS Simulator,name=#{watch_model}"
+
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'WatchApp',
@@ -65,6 +82,6 @@ lane :test do
     skip_detect_devices: true,
     skip_build: true,
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
-    destination: 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.5'
+    destination: watch_destination
   )
 end
