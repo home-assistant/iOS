@@ -68,13 +68,15 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         // `name` afterwards — is also what keeps the skip-write below correct: both the freshly built
         // and the cached rows carry the same display name, so an unchanged refresh compares equal and
         // is skipped (no per-cycle rewrite churn).
-        let registryNames: [String: String] = (try? EntityRegistryListForDisplay.Entity.config(serverId: serverId))
-            .map { rows in
-                Dictionary(
-                    rows.compactMap { row in row.name.map { (row.entityId, $0) } },
-                    uniquingKeysWith: { first, _ in first }
-                )
-            } ?? [:]
+        let registryRows = (try? EntityRegistryListForDisplay.Entity.config(serverId: serverId)) ?? []
+        let registryNames: [String: String] = Dictionary(
+            registryRows.compactMap { row in row.name.map { (row.entityId, $0) } },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let registryEntityCategories: [String: Int] = Dictionary(
+            registryRows.compactMap { row in row.entityCategory.map { (row.entityId, $0) } },
+            uniquingKeysWith: { first, _ in first }
+        )
 
         let appEntities = appRelatedEntities.map({ HAAppEntity(
             id: ServerEntity.uniqueId(serverId: serverId, entityId: $0.entityId),
@@ -83,7 +85,8 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             domain: $0.domain,
             name: registryNames[$0.entityId] ?? $0.attributes.friendlyName ?? $0.entityId,
             icon: $0.attributes.icon,
-            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String
+            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String,
+            entityCategory: registryEntityCategories[$0.entityId]
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
