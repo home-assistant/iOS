@@ -49,6 +49,9 @@ final class WatchEntityStatePoller {
         stop()
         self.onChange = onChange
         startedAt = Current.date()
+        // Staleness is measured from this start until a fetch succeeds: keeping the previous run's
+        // `lastUpdate` would let an old timestamp flip the badge back on right after restarting.
+        lastUpdate = nil
         isStale = false
         timer = Timer.scheduledTimer(withTimeInterval: Self.refreshInterval, repeats: true) { [weak self] _ in
             self?.updateStaleness()

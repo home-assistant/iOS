@@ -6886,7 +6886,7 @@ public enum L10n {
       public static var lastUpdated: String { return L10n.tr("Localizable", "watch.entity_details.last_updated") }
       /// Reading current state…
       public static var loading: String { return L10n.tr("Localizable", "watch.entity_details.loading") }
-      /// Couldn't refresh from the server, this value may be out of date.
+      /// Couldn't refresh from the server. This value may be out of date.
       public static var stale: String { return L10n.tr("Localizable", "watch.entity_details.stale") }
     }
     public enum Home {
