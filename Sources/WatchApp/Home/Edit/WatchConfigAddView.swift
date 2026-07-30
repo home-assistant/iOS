@@ -7,7 +7,11 @@ import SwiftUI
 /// The phone owns the entity database, so the entity list is fetched from it. Committing performs the
 /// mutation, persists, and dismisses the whole sheet via `finish`.
 struct WatchConfigAddView: View {
-    @ObservedObject var viewModel: WatchHomeViewModel
+    /// Held without `@ObservedObject` on purpose: the add flow only *calls* the view model (fetch and
+    /// mutate) and renders none of its published state, so observing it would rebuild this whole
+    /// navigation stack on every unrelated publish — a background sync alone republishes its progress
+    /// and status for every chunk it receives.
+    let viewModel: WatchHomeViewModel
     /// When set, added items go into this folder instead of the root. Folder creation is only offered
     /// at the root (folders don't nest on the watch).
     let folderId: String?
@@ -101,21 +105,20 @@ struct WatchConfigAddView: View {
     }
 }
 
-/// Fetches the addable entities from the phone and either shows the server picker (multiple servers)
-/// or jumps straight to the area picker (single server).
+/// Resolves the addable entities from the mirrored database and either shows the server picker
+/// (multiple servers) or jumps straight to the area picker (single server). The result is loaded once
+/// and kept for the lifetime of the flow — the mirror doesn't change while the sheet is open.
 private struct WatchConfigAddEntitySourceView: View {
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 
+    /// `nil` until the first load finishes, which is what puts the spinner on screen. Everything the
+    /// build can't resolve — an unreadable or not-yet-synced mirror included — comes back as no
+    /// candidates, which the empty state below covers.
     @State private var available: WatchConfigAvailableItems?
-    @State private var loadState: LoadState = .loading
-
-    enum LoadState: Equatable {
-        case loading
-        case loaded
-        case failed(String)
-    }
+    /// Guards against a second fetch while one is already running (`onAppear` can fire more than once).
+    @State private var isFetching = false
 
     private var groups: [WatchConfigAvailableItems.ServerGroup] {
         (available?.servers ?? []).filter { !$0.candidates.isEmpty }
@@ -123,67 +126,52 @@ private struct WatchConfigAddEntitySourceView: View {
 
     var body: some View {
         Group {
-            switch loadState {
-            case .loading:
+            if available == nil {
                 ProgressView()
                     .progressViewStyle(.circular)
-            case let .failed(message):
+            } else if groups.isEmpty {
                 List {
-                    Text(verbatim: message)
+                    Text(verbatim: L10n.Watch.Config.Add.empty)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-            case .loaded:
-                if groups.isEmpty {
-                    List {
-                        Text(verbatim: L10n.Watch.Config.Add.empty)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if groups.count == 1, let group = groups.first {
-                    WatchConfigAddAreaListView(
-                        group: group,
-                        viewModel: viewModel,
-                        folderId: folderId,
-                        finish: finish
-                    )
-                } else {
-                    List {
-                        ForEach(groups, id: \.serverId) { group in
-                            NavigationLink {
-                                WatchConfigAddAreaListView(
-                                    group: group,
-                                    viewModel: viewModel,
-                                    folderId: folderId,
-                                    finish: finish
-                                )
-                            } label: {
-                                Text(verbatim: group.serverName)
-                            }
+            } else if groups.count == 1, let group = groups.first {
+                WatchConfigAddAreaListView(
+                    group: group,
+                    viewModel: viewModel,
+                    folderId: folderId,
+                    finish: finish
+                )
+            } else {
+                List {
+                    ForEach(groups, id: \.serverId) { group in
+                        NavigationLink {
+                            WatchConfigAddAreaListView(
+                                group: group,
+                                viewModel: viewModel,
+                                folderId: folderId,
+                                finish: finish
+                            )
+                        } label: {
+                            Text(verbatim: group.serverName)
                         }
                     }
-                    .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.selectServer))
                 }
+                .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.selectServer))
             }
         }
         .onAppear(perform: load)
     }
 
     private func load() {
-        loadState = .loading
-        viewModel.fetchAvailableItems { result in
-            switch result {
-            case let .success(items):
-                available = items
-                loadState = .loaded
-            case let .failure(error):
-                switch error {
-                case .notReachable:
-                    loadState = .failed(L10n.Watch.Config.Edit.Error.notReachable)
-                case .sendFailed, .decodeFailed:
-                    loadState = .failed(L10n.Watch.Config.Add.Error.fetchFailed)
-                }
-            }
+        // `onAppear` fires again every time the user navigates back to this screen from a deeper one.
+        // Re-fetching there swapped the loaded list back to a spinner and rebuilt every candidate from
+        // the database just to show the same rows again, so a finished load is kept.
+        guard available == nil, !isFetching else { return }
+        isFetching = true
+        viewModel.fetchAvailableItems { items in
+            available = items
+            isFetching = false
         }
     }
 }
@@ -192,7 +180,7 @@ private struct WatchConfigAddEntitySourceView: View {
 /// entity lists stay navigable on the small screen.
 private struct WatchConfigAddAreaListView: View {
     let group: WatchConfigAvailableItems.ServerGroup
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 
@@ -231,7 +219,7 @@ private struct WatchConfigAddEntityListView: View {
     let group: WatchConfigAvailableItems.ServerGroup
     /// When set, only entities in this area are listed ("All areas" passes nil).
     let areaFilter: String?
-    @ObservedObject var viewModel: WatchHomeViewModel
+    let viewModel: WatchHomeViewModel
     let folderId: String?
     let finish: () -> Void
 

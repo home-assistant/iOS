@@ -2,8 +2,8 @@
 "NSCameraUsageDescription" = "Pořídí fotky a odešle je na server Home Assistanta.";
 "NSCrossWebsiteTrackingUsageDescription" = "Volitelně povolte sledování napříč weby, pokud to Vaše konfigurace vyžaduje.";
 "NSFocusStatusUsageDescription" = "Hlásí stav zaostření jako senzor.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Čte vybrané metriky zaplikace Zdraví, aby je bylo možné sdílet s Home Assistantem jako senzory.";
+"NSHealthUpdateUsageDescription" = "Home Assistant neukládá žádná data do aplikace Zdraví.";
 "NSLocalNetworkUsageDescription" = "Hledá a komunikuje s Vaší instancí Home Assistanta.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n🔵 Také potřebujeme povolení k přístupu k poloze \"Trvale\", aby aplikace mohla provádět operace na pozadí.\n\n⚠️ Bez něj se aplikace nedokáže rozhodnout, které připojení (lokální nebo vzdálené) použije na pozadí, a bude vždy používat vzdálené.";
 "NSLocationAlwaysUsageDescription" = "Vždy potřebujeme přístup k Vaší poloze pro funkce, jako jsou iBeacons, geofence, aktualizace polohy na pozadí a přesné hlášení.";

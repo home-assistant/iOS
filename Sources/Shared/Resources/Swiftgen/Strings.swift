@@ -5852,7 +5852,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum Health {
-      /// Apple Health sensors have their own screen because there are so many of them. They all start switched off, and health data is read only during normal sensor updates.
+      /// Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
       /// Apple Health
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.health.header") }
@@ -5895,7 +5895,7 @@ public enum L10n {
           public enum Confirmation {
             /// Enable All
             public static var confirm: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all.confirmation.confirm") }
-            /// Enable all %d Apple Health sensors? They will all be read and sent to Home Assistant.
+            /// Enable all %li Apple Health sensors? They will all be read and sent to Home Assistant.
             public static func title(_ p1: Int) -> String {
               return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all.confirmation.title", p1)
             }
@@ -5934,6 +5934,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.title") }
     }
     public enum Permissions {
+      /// Some sensors only report data after you grant the permission they depend on.
+      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.footer") }
       /// Permissions
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.permissions.header") }
       public enum Bluetooth {
@@ -5953,6 +5955,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings_sensors.permissions.focus.title") }
         /// Reports your Focus status so automations can react to it.
         public static var usage: String { return L10n.tr("Localizable", "settings_sensors.permissions.focus.usage") }
+      }
+      public enum Health {
+        /// Apple Health never tells apps whether reading health data was allowed, so this only shows whether access was already requested.
+        public static var footer: String { return L10n.tr("Localizable", "settings_sensors.permissions.health.footer") }
       }
       public enum LocalNetwork {
         /// Local Network
@@ -5999,6 +6005,8 @@ public enum L10n {
         public static var granted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.granted") }
         /// Not requested
         public static var notRequested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.not_requested") }
+        /// Requested
+        public static var requested: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.requested") }
         /// Restricted
         public static var restricted: String { return L10n.tr("Localizable", "settings_sensors.permissions.status.restricted") }
         /// While in use
@@ -6954,6 +6962,14 @@ public enum L10n {
       }
     }
     public enum InternalUrlPrompt {
+      /// Learn More
+      public static var learnMore: String { return L10n.tr("Localizable", "watch.internal_url_prompt.learn_more") }
+      /// Your watch is currently not connected to a known network. Do you want to use %@ through your phone's connection?
+      public static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.internal_url_prompt.message", String(describing: p1))
+      }
+      /// Use Internal URL?
+      public static var title: String { return L10n.tr("Localizable", "watch.internal_url_prompt.title") }
       public enum Info {
         /// When your watch uses your iPhone's internet connection, it can't tell whether you're in a secure environment — it has no access to the Wi-Fi network name. To protect you in case you're on a public wireless network, your internal URL is not used by default.
         /// 
@@ -7563,11 +7579,23 @@ public enum L10n {
           /// Allow choosing route
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.allow_choosing_route.title") }
         }
+        public enum AudioProbe {
+          /// Experiment: keep an audio session active during the direct sync to test whether it lets the websocket connect on this watch. Plays a quiet tone while syncing.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.footer") }
+          /// Audio session probe
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.audio_probe.title") }
+        }
         public enum ComplicationRefreshNotifications {
           /// Posts a notification when complications start reloading their data and when they finish, saying whether each reload succeeded or why it failed. Covers reloads by the app and by the widget itself.
           public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.footer") }
           /// Complication reload alerts
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.complication_refresh_notifications.title") }
+        }
+        public enum DirectSync {
+          /// Fetch this watch's data directly from Home Assistant over websocket instead of syncing through the iPhone. Experimental: most watches don't allow websocket connections, in which case data stops updating until this is turned off.
+          public static var footer: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.footer") }
+          /// Direct server sync
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.direct_sync.title") }
         }
         public enum IphoneUnreachableIcon {
           /// Shows an iPhone icon with a slash in the Home header while the paired iPhone is unreachable. Actions run from the watch itself, so this is only useful when debugging the iPhone link.

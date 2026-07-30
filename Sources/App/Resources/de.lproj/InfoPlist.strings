@@ -2,8 +2,8 @@
 "NSCameraUsageDescription" = "Nimm Fotos auf und sende sie an deinen Home Assistant Server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Aktiviere optional das Cross-Site-Tracking, wenn deine Konfiguration dies erfordert.";
 "NSFocusStatusUsageDescription" = "Melde deinen Fokusstatus als Sensor.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Ausgewählte Apple Health-Messwerte auslesen, damit sie als Sensoren an Home Assistant weitergegeben werden können.";
+"NSHealthUpdateUsageDescription" = "Home Assistant schreibt keine Daten in Apple Health.";
 "NSLocalNetworkUsageDescription" = "Finde und kommuniziere mit deiner Home Assistant Instanz.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Wir benötigen außerdem die Berechtigung, „immer“ auf den Standort zuzugreifen, damit die App Hintergrundvorgänge ausführen kann. \n\n ⚠️ Ohne diese Berechtigung kann die App nicht entscheiden, welche Verbindung (lokal oder remote) im Hintergrund verwendet werden soll, und wird immer die Remoteverbindung verwenden.";
 "NSLocationAlwaysUsageDescription" = "Für Features wie iBeacons, Geofences, Hintergrundaktualisierungen des Standorts und akkurates Reporting benötigen wir immer Zugriff auf deinen Standort.";
