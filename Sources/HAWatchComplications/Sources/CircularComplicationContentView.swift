@@ -10,12 +10,13 @@ import WidgetKit
 /// layout — they only build a `CircularComplicationRenderModel`.
 @available(iOS 16.0, watchOS 10.0, *)
 public struct CircularComplicationContentView: View {
-    /// Layout metrics mirrored from the watch's `WatchWidgetConstants`.
+    /// Layout metrics mirrored from the watch's `WatchWidgetConstants`. Sized so that icon + value +
+    /// name still clear the open gauge's min/max labels — the center stack has to fit above them.
     private enum Layout {
-        static let iconSize: CGFloat = 18
-        /// Negative to counteract the value font's tall line box, which otherwise leaves too large a
-        /// gap above the name.
-        static let centerSpacing: CGFloat = -4
+        static let iconSize: CGFloat = 10
+        /// Slightly negative to counteract the value font's tall line box, which otherwise leaves too
+        /// large a gap above the name.
+        static let centerSpacing: CGFloat = -2
         static let logoPadding: CGFloat = 5
         /// Inset for the center content inside an open gauge ring, so it doesn't touch the ring.
         static let iconGaugePadding: CGFloat = 2
@@ -23,9 +24,13 @@ public struct CircularComplicationContentView: View {
 
     /// Font sizes and scaling mirrored from the watch's `WatchWidgetConstants.Font`.
     private enum FontMetrics {
+        /// Enlarged value used when the value is the only thing shown.
         static let valueOnlySize: CGFloat = 22
+        /// Value size when it shares the center with an icon and/or name, kept small so the stack
+        /// clears the gauge's min/max labels.
+        static let valueSize: CGFloat = 12
         static let valueMinScale: CGFloat = 0.2
-        static let nameSize: CGFloat = 9
+        static let nameSize: CGFloat = 8
         static let nameMinScale: CGFloat = 0.4
     }
 
@@ -87,7 +92,10 @@ public struct CircularComplicationContentView: View {
             }
             if model.showsValue, !model.valueText.isEmpty {
                 Text(model.valueText)
-                    .font(model.isValueOnly ? .system(size: FontMetrics.valueOnlySize, weight: .semibold) : nil)
+                    .font(.system(
+                        size: model.isValueOnly ? FontMetrics.valueOnlySize : FontMetrics.valueSize,
+                        weight: .semibold
+                    ))
                     .lineLimit(1)
                     .minimumScaleFactor(FontMetrics.valueMinScale)
                     .foregroundStyle(textColor)
