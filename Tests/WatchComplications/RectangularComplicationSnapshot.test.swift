@@ -2,6 +2,7 @@ import HAWatchComplications
 import SharedTesting
 import SwiftUI
 import Testing
+import WidgetKit
 
 /// Snapshots the shared `RectangularComplicationContentView` — the exact same view the watchOS
 /// complication (`RectangularComplicationView`) renders. Because the watch and the in-app editor
@@ -24,8 +25,31 @@ struct RectangularComplicationSnapshotTests {
         }
     }
 
-    private func face(_ model: RectangularComplicationRenderModel) -> some View {
+    /// The complication also renders in the watch face's accented and vibrant modes. This captures how
+    /// the shared view *adapts* to each `widgetRenderingMode` (e.g. the gauge's value text). It does not
+    /// reproduce the system's face-wide tint/desaturation compositing, which only happens on-device.
+    @MainActor @Test func renderingModeVariants() {
+        let model = RectangularComplicationRenderModel.sample(
+            title: "Living Room",
+            subtitle: "Temperature",
+            bottomText: "Updated 2m ago"
+        )
+        for mode in [WidgetRenderingMode.fullColor, .accented, .vibrant] {
+            assertSnapshot(
+                of: face(model, mode: mode),
+                layout: .fixed(width: 220, height: 120),
+                traits: .init(userInterfaceStyle: .dark),
+                named: "\(mode)"
+            )
+        }
+    }
+
+    private func face(
+        _ model: RectangularComplicationRenderModel,
+        mode: WidgetRenderingMode = .fullColor
+    ) -> some View {
         RectangularComplicationContentView(model: model)
+            .environment(\.widgetRenderingMode, mode)
             .padding(12)
             .frame(width: 200, alignment: .leading)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)

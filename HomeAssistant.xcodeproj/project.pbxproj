@@ -177,6 +177,7 @@
 		42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4A301BAFA10058088E /* HAWatchComplications */; };
 		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
 		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
+		42D14C7B301BBAF50058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C7A301BBAF50058088E /* HAWatchComplications */; };
 		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
 		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
 		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
@@ -384,6 +385,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B67CE82322200D420034C1D0;
 			remoteInfo = "Shared-watchOS";
+		};
+		42D14C71301BB6330058088E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B6CC5D812159D10D00833E5D;
+			remoteInfo = WatchApp;
 		};
 		4697F4C32D8A416400C5C467 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -635,6 +643,7 @@
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
+		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
 		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
 		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
@@ -1894,6 +1903,7 @@
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
@@ -2048,6 +2058,14 @@
 				42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */,
 				423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */,
 				423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		42D14C6A301BB6330058088E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				42D14C7B301BBAF50058088E /* HAWatchComplications in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2269,6 +2287,7 @@
 				D03D894320E0BC1800D4F28D /* Shared */,
 				B657A90A1CA646EB00121384 /* UI */,
 				42D14C45301BAD2E0058088E /* WatchComplications */,
+				42D14C6E301BB6330058088E /* WatchAppTests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -2437,6 +2456,7 @@
 				11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */,
 				46C62B882D8A3687002C0001 /* SharedTesting.framework */,
 				423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */,
+				42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2785,6 +2805,30 @@
 			productName = WatchWidgetsExtension;
 			productReference = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		42D14C6C301BB6330058088E /* HomeAssistant-WatchAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 42D14C73301BB6330058088E /* Build configuration list for PBXNativeTarget "HomeAssistant-WatchAppTests" */;
+			buildPhases = (
+				42D14C69301BB6330058088E /* Sources */,
+				42D14C6A301BB6330058088E /* Frameworks */,
+				42D14C6B301BB6330058088E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				42D14C72301BB6330058088E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				42D14C6E301BB6330058088E /* WatchAppTests */,
+			);
+			name = "HomeAssistant-WatchAppTests";
+			packageProductDependencies = (
+				42D14C7A301BBAF50058088E /* HAWatchComplications */,
+			);
+			productName = "HomeAssistant-WatchAppTests";
+			productReference = 42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		46C62B872D8A3687002C0001 /* SharedTesting */ = {
 			isa = PBXNativeTarget;
@@ -3266,6 +3310,9 @@
 					423FB76B2FFFDFDE000CB8FD = {
 						CreatedOnToolsVersion = 27.0;
 					};
+					42D14C6C301BB6330058088E = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					46C62B872D8A3687002C0001 = {
 						CreatedOnToolsVersion = 16.2;
 						LastSwiftMigration = 1620;
@@ -3497,6 +3544,7 @@
 				1155DD05250F4100003405C0 /* Extensions-Share */,
 				1171506824DFCDE60065E874 /* Extensions-Widgets */,
 				423FB76B2FFFDFDE000CB8FD /* Extensions-WatchWidgets */,
+				42D14C6C301BB6330058088E /* HomeAssistant-WatchAppTests */,
 			);
 		};
 /* End PBXProject section */
@@ -3545,6 +3593,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		423FB76A2FFFDFDE000CB8FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		42D14C6B301BB6330058088E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3841,6 +3896,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		42D14C69301BB6330058088E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		46C62B842D8A3687002C0001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4098,6 +4160,11 @@
 			isa = PBXTargetDependency;
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
 			targetProxy = 42B079852FFD7B3B00A22C46 /* PBXContainerItemProxy */;
+		};
+		42D14C72301BB6330058088E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B6CC5D812159D10D00833E5D /* WatchApp */;
+			targetProxy = 42D14C71301BB6330058088E /* PBXContainerItemProxy */;
 		};
 		4697F4C42D8A416400C5C467 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4538,6 +4605,151 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		42D14C74301BB6330058088E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QMQYCKL255;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant-WatchAppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		42D14C75301BB6330058088E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QMQYCKL255;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant-WatchAppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -5156,6 +5368,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		42D14C73301BB6330058088E /* Build configuration list for PBXNativeTarget "HomeAssistant-WatchAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42D14C74301BB6330058088E /* Debug */,
+				42D14C75301BB6330058088E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		46C62B942D8A3687002C0001 /* Build configuration list for PBXNativeTarget "SharedTesting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -5733,6 +5954,11 @@
 			productName = HAWatchComplications;
 		};
 		42D14C4C301BAFAC0058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14C7A301BBAF50058088E /* HAWatchComplications */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
 			productName = HAWatchComplications;
