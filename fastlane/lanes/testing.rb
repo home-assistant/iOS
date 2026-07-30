@@ -62,16 +62,19 @@ lane :test do
   watch_model = 'Apple Watch Series 11 (46mm)'
   preferred_os = '26.5'
   matching_watches = JSON.parse(`xcrun simctl list devices available --json`)['devices']
-    .select { |runtime, _| runtime.include?('watchOS') }
-    .flat_map { |runtime, devices| devices.map { |device| [runtime, device] } }
-    .select { |_, device| device['name'] == watch_model }
-    .sort_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
-    .reverse
+                         .select { |runtime, _| runtime.include?('watchOS') }
+                         .flat_map { |runtime, devices| devices.map { |device| [runtime, device] } }
+                         .select { |_, device| device['name'] == watch_model }
+                         .sort_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
+                         .reverse
   chosen_watch = matching_watches.find { |runtime, _| runtime.include?("watchOS-#{preferred_os.tr('.', '-')}") } ||
                  matching_watches.first
   watch_udid = chosen_watch&.last&.dig('udid')
-  watch_destination = watch_udid ? "platform=watchOS Simulator,id=#{watch_udid}" \
-                                 : "platform=watchOS Simulator,name=#{watch_model}"
+  watch_destination = if watch_udid
+                        "platform=watchOS Simulator,id=#{watch_udid}"
+                      else
+                        "platform=watchOS Simulator,name=#{watch_model}"
+                      end
 
   run_tests(
     project: 'HomeAssistant.xcodeproj',
