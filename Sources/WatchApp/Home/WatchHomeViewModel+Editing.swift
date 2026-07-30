@@ -5,12 +5,6 @@ import SwiftUI
 // MARK: - On-watch editing
 
 extension WatchHomeViewModel {
-    enum WatchConfigEditError: Error {
-        case notReachable
-        case sendFailed
-        case decodeFailed
-    }
-
     /// Edits are applied locally first (so they work offline) and pushed to the phone — the source of
     /// truth — only when it's immediately reachable, matching `WatchServerSync.request()`. The mutation
     /// methods below mirror the iPhone `WatchConfigurationViewModel`; they run on the main thread
@@ -239,15 +233,14 @@ extension WatchHomeViewModel {
     /// Build the list of addable items (watch-supported domains across all servers) from the
     /// locally-mirrored database, so the add flow works without the phone nearby.
     ///
-    /// The build runs off the main thread; `completion` is always delivered on the main queue.
-    func fetchAvailableItems(
-        completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
-            -> Void
-    ) {
+    /// The build runs off the main thread; `completion` is always delivered on the main queue. It can't
+    /// fail: it reads the local mirror, and anything it can't resolve simply yields no candidates for
+    /// that server, which the add flow shows as its empty state.
+    func fetchAvailableItems(completion: @escaping (WatchConfigAvailableItems) -> Void) {
         Self.availableItemsQueue.async {
             Self.buildAvailableItems { items in
                 DispatchQueue.main.async {
-                    completion(.success(items))
+                    completion(items)
                 }
             }
         }

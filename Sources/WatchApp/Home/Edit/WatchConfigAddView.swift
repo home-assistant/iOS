@@ -113,16 +113,12 @@ private struct WatchConfigAddEntitySourceView: View {
     let folderId: String?
     let finish: () -> Void
 
+    /// `nil` until the first load finishes, which is what puts the spinner on screen. Everything the
+    /// build can't resolve — an unreadable or not-yet-synced mirror included — comes back as no
+    /// candidates, which the empty state below covers.
     @State private var available: WatchConfigAvailableItems?
-    @State private var loadState: LoadState = .loading
     /// Guards against a second fetch while one is already running (`onAppear` can fire more than once).
     @State private var isFetching = false
-
-    enum LoadState: Equatable {
-        case loading
-        case loaded
-        case failed(String)
-    }
 
     private var groups: [WatchConfigAvailableItems.ServerGroup] {
         (available?.servers ?? []).filter { !$0.candidates.isEmpty }
@@ -130,47 +126,38 @@ private struct WatchConfigAddEntitySourceView: View {
 
     var body: some View {
         Group {
-            switch loadState {
-            case .loading:
+            if available == nil {
                 ProgressView()
                     .progressViewStyle(.circular)
-            case let .failed(message):
+            } else if groups.isEmpty {
                 List {
-                    Text(verbatim: message)
+                    Text(verbatim: L10n.Watch.Config.Add.empty)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-            case .loaded:
-                if groups.isEmpty {
-                    List {
-                        Text(verbatim: L10n.Watch.Config.Add.empty)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if groups.count == 1, let group = groups.first {
-                    WatchConfigAddAreaListView(
-                        group: group,
-                        viewModel: viewModel,
-                        folderId: folderId,
-                        finish: finish
-                    )
-                } else {
-                    List {
-                        ForEach(groups, id: \.serverId) { group in
-                            NavigationLink {
-                                WatchConfigAddAreaListView(
-                                    group: group,
-                                    viewModel: viewModel,
-                                    folderId: folderId,
-                                    finish: finish
-                                )
-                            } label: {
-                                Text(verbatim: group.serverName)
-                            }
+            } else if groups.count == 1, let group = groups.first {
+                WatchConfigAddAreaListView(
+                    group: group,
+                    viewModel: viewModel,
+                    folderId: folderId,
+                    finish: finish
+                )
+            } else {
+                List {
+                    ForEach(groups, id: \.serverId) { group in
+                        NavigationLink {
+                            WatchConfigAddAreaListView(
+                                group: group,
+                                viewModel: viewModel,
+                                folderId: folderId,
+                                finish: finish
+                            )
+                        } label: {
+                            Text(verbatim: group.serverName)
                         }
                     }
-                    .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.selectServer))
                 }
+                .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.selectServer))
             }
         }
         .onAppear(perform: load)
@@ -179,25 +166,12 @@ private struct WatchConfigAddEntitySourceView: View {
     private func load() {
         // `onAppear` fires again every time the user navigates back to this screen from a deeper one.
         // Re-fetching there swapped the loaded list back to a spinner and rebuilt every candidate from
-        // the database just to show the same rows again, so a load that already succeeded is kept. A
-        // failed load still retries on the next appearance.
+        // the database just to show the same rows again, so a finished load is kept.
         guard available == nil, !isFetching else { return }
         isFetching = true
-        loadState = .loading
-        viewModel.fetchAvailableItems { result in
+        viewModel.fetchAvailableItems { items in
+            available = items
             isFetching = false
-            switch result {
-            case let .success(items):
-                available = items
-                loadState = .loaded
-            case let .failure(error):
-                switch error {
-                case .notReachable:
-                    loadState = .failed(L10n.Watch.Config.Edit.Error.notReachable)
-                case .sendFailed, .decodeFailed:
-                    loadState = .failed(L10n.Watch.Config.Add.Error.fetchFailed)
-                }
-            }
         }
     }
 }

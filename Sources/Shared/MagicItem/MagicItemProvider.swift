@@ -239,7 +239,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                   sceneItem.domain == Domain.scene.rawValue else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id)"
+                        "Failed to get magic item Scene info for item id: \(item.id)"
                     )
                 return nil
             }
