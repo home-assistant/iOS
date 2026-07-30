@@ -63,10 +63,10 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
-    func testStepCountIsLeftToThePedometerSensor() {
-        // `PedometerSensor` has reported "Steps" for a long time; a HealthKit copy would duplicate it.
-        XCTAssertNil(HealthKitMetric.metric(uniqueID: "health_steps"))
-        XCTAssertFalse(HealthKitMetric.all.contains { $0.identifier == "HKQuantityTypeIdentifierStepCount" })
+    func testStepCountIsReportedFromHealthKit() {
+        // HealthKit's consolidated step count also sees an Apple Watch, unlike `PedometerSensor`.
+        XCTAssertEqual(HealthKitMetric.metric(uniqueID: "health_steps"), HealthKitMetric.steps)
+        XCTAssertTrue(HealthKitMetric.all.contains { $0.identifier == "HKQuantityTypeIdentifierStepCount" })
     }
 
     func testShippedMetricsKeepTheirIdentityStable() {
@@ -74,6 +74,11 @@ class HealthKitMetricCatalogTests: XCTestCase {
         XCTAssertEqual(HealthKitMetric.restingHeartRate.name, "Resting Heart Rate")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.icon, "mdi:heart-pulse")
         XCTAssertEqual(HealthKitMetric.restingHeartRate.unit, "bpm")
+
+        XCTAssertEqual(HealthKitMetric.steps.uniqueID, "health_steps")
+        XCTAssertEqual(HealthKitMetric.steps.name, "Health Steps")
+        XCTAssertEqual(HealthKitMetric.steps.icon, "mdi:walk")
+        XCTAssertEqual(HealthKitMetric.steps.unit, "steps")
     }
 
     func testStateAppliesScaleAndRounding() throws {
