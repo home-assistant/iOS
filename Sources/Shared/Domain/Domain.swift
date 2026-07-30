@@ -505,6 +505,12 @@ public enum Domain: String, CaseIterable {
         Domain.watchSupported.contains(self)
     }
 
+    /// Whether the watch shows this domain as a read-only item: tapping it runs nothing and opens
+    /// the entity's details screen instead.
+    public var isWatchDisplayOnly: Bool {
+        Domain.watchDisplayOnly.contains(self)
+    }
+
     /// Whether tapping an entity of this domain performs an action: its main action, or the
     /// state-aware lock handling (lock has no single main action).
     public var isActionable: Bool {
@@ -582,6 +588,18 @@ public extension Domain {
         .switch,
         .valve,
     ]
+
+    /// Sensor domains the watch can display but never run: tapping one opens its details screen
+    /// (state, last update, attributes) instead of performing an action.
+    static let watchDisplayOnly: [Domain] = [
+        .sensor,
+        .binarySensor,
+    ]
+
+    /// Everything the user can put on the watch home screen: the runnable domains plus the
+    /// display-only sensor ones. This is the filter every watch picker and the watch database
+    /// mirror use; `watchSupported` alone stays the list of domains the watch can execute.
+    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly
 
     static let commonlyUsedWidgetSupported: [Domain] = [
         .light,

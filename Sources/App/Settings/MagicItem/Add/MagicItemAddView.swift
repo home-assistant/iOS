@@ -58,7 +58,7 @@ struct MagicItemAddView: View {
                         pickerView
                             .padding(.horizontal)
                         // The watch only offers what it can display and run; other contexts show everything.
-                        entitiesPerServerList(domainFilter: context == .watch ? Domain.watchSupported : nil)
+                        entitiesPerServerList(domainFilter: context == .watch ? Domain.watchAddable : nil)
                     }
                 case .assistPipelines:
                     VStack {

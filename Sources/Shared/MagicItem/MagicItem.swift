@@ -68,6 +68,12 @@ public struct MagicItem: Codable, Equatable, Hashable {
         return hasher.finalize()
     }
 
+    /// True for items the watch only displays — a sensor entity, whose row opens a details screen
+    /// instead of running anything. Nothing else about the item (colors, name, icon) differs.
+    public var isWatchDisplayOnly: Bool {
+        type == .entity && domain?.isWatchDisplayOnly == true
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {

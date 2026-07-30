@@ -279,7 +279,7 @@ private struct WatchConfigAddEntityListView: View {
     /// The addable domains present in this area's candidates, in the watch's canonical order.
     private var availableDomains: [Domain] {
         let present = Set(candidatesInArea.compactMap { Domain(entityId: $0.item.id) })
-        return Domain.watchSupported.filter(present.contains)
+        return Domain.watchAddable.filter(present.contains)
     }
 
     private var filteredCandidates: [WatchConfigAvailableItems.Candidate] {

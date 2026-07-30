@@ -250,7 +250,7 @@ extension WatchHomeViewModel {
     /// phone-side picker's domain filter; items are stored as `type: .entity`. Synchronous database
     /// work throughout — call it on `availableItemsQueue`, never on the main thread.
     private static func buildAvailableItems(completion: @escaping (WatchConfigAvailableItems) -> Void) {
-        let allowedDomains = Set(Domain.watchSupported.map(\.rawValue))
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
