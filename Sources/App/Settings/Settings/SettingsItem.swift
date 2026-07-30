@@ -121,6 +121,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
+    @MainActor
     @ViewBuilder
     var destinationView: some View {
         switch self {

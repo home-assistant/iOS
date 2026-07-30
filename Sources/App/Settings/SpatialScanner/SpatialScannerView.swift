@@ -5,8 +5,13 @@ import SwiftUI
 struct SpatialScannerView: View {
     @StateObject private var viewModel: SpatialScannerViewModel
 
-    init(viewModel: SpatialScannerViewModel = SpatialScannerViewModel()) {
+    init(viewModel: SpatialScannerViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    @MainActor
+    init() {
+        self.init(viewModel: SpatialScannerViewModel())
     }
 
     var body: some View {

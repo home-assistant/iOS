@@ -8,6 +8,7 @@ import Shared
 final class SpatialScannerViewModel: ObservableObject {
     typealias Preflight = (Server) async throws -> Int
     typealias Upload = (SpatialScanPayload, Int, Server) async throws -> SpatialScanReceipt
+    typealias CameraAccess = () async -> Bool
 
     @Published var selectedServerID: String?
     @Published var isCapturePresented = false
@@ -22,14 +23,17 @@ final class SpatialScannerViewModel: ObservableObject {
 
     private let preflight: Preflight
     private let upload: Upload
+    private let cameraAccess: CameraAccess
     private var maxPayloadBytes = 0
 
     init(
         preflight: @escaping Preflight = SpatialScannerAPI.preflight,
-        upload: @escaping Upload = SpatialScannerAPI.upload
+        upload: @escaping Upload = SpatialScannerAPI.upload,
+        cameraAccess: @escaping CameraAccess = SpatialScannerViewModel.requestCameraAccess
     ) {
         self.preflight = preflight
         self.upload = upload
+        self.cameraAccess = cameraAccess
         self.selectedServerID = Current.servers.all.first?.identifier.rawValue
     }
 
@@ -48,7 +52,9 @@ final class SpatialScannerViewModel: ObservableObject {
         Task {
             do {
                 maxPayloadBytes = try await preflight(server)
-                try await requestCameraAccess()
+                guard await cameraAccess() else {
+                    throw CameraPermissionError.denied
+                }
                 capturedRoom = nil
                 receipt = nil
                 isScanning = true
@@ -110,18 +116,16 @@ final class SpatialScannerViewModel: ObservableObject {
         isUploading = false
     }
 
-    private func requestCameraAccess() async throws {
+    private static func requestCameraAccess() async -> Bool {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            return
+            return true
         case .notDetermined:
-            guard await AVCaptureDevice.requestAccess(for: .video) else {
-                throw CameraPermissionError.denied
-            }
+            return await AVCaptureDevice.requestAccess(for: .video)
         case .denied, .restricted:
-            throw CameraPermissionError.denied
+            return false
         @unknown default:
-            throw CameraPermissionError.denied
+            return false
         }
     }
 
