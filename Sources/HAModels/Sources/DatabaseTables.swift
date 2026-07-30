@@ -51,6 +51,7 @@ public enum DatabaseTables {
         case name
         case icon
         case rawDeviceClass
+        case entityCategory
     }
 
     public enum WatchConfig: String, CaseIterable {
