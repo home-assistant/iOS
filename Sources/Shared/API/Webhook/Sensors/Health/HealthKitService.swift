@@ -4,6 +4,11 @@ import HAKit
 import HealthKit
 
 public struct HealthKitService {
+    /// Called when HealthKit reports new samples. It's handed HealthKit's completion handler, which must be
+    /// called once the change has been dealt with: HealthKit keeps the app awake until then, and redelivers
+    /// the change if it never comes.
+    public typealias ChangeHandler = (_ completion: @escaping () -> Void) -> Void
+
     public enum HealthKitServiceError: LocalizedError, Equatable {
         case unavailable
         case noEnabledSensors
@@ -80,13 +85,7 @@ public struct HealthKitService {
 
     /// Observes `metrics` in the background, calling `onChange` whenever HealthKit reports new samples for
     /// one of them. An empty list tears every observation down.
-    ///
-    /// `onChange` is handed HealthKit's completion handler and must call it once the change has been dealt
-    /// with: HealthKit keeps the app awake until then, and redelivers the change if it never comes.
-    public var setObservedMetrics: (
-        _ metrics: [HealthKitMetric],
-        _ onChange: @escaping (_ completion: @escaping () -> Void) -> Void
-    ) -> Void = { metrics, onChange in
+    public var setObservedMetrics: ([HealthKitMetric], @escaping ChangeHandler) -> Void = { metrics, onChange in
         guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension else {
             return
         }
@@ -176,9 +175,9 @@ public struct HealthKitService {
         private let activeQueries = HAProtected<[String: HKObserverQuery]>(value: [:])
         /// Kept apart from the queries so a query, which outlives the `update` that started it, always
         /// reports to the newest handler.
-        private let changeHandler = HAProtected<((@escaping () -> Void) -> Void)?>(value: nil)
+        private let changeHandler = HAProtected<ChangeHandler?>(value: nil)
 
-        func update(to types: [HKQuantityType], onChange: @escaping (@escaping () -> Void) -> Void) {
+        func update(to types: [HKQuantityType], onChange: @escaping ChangeHandler) {
             let wanted = Set(types.map(\.identifier))
             changeHandler.mutate { $0 = onChange }
 

@@ -19,7 +19,7 @@ class HealthKitSensorTests: XCTestCase {
     private var stubbedValues = [String: Double]()
     private var failingMetricIDs = Set<String>()
     private var observedMetrics = [HealthKitMetric]()
-    private var healthKitChangeHandler: ((@escaping () -> Void) -> Void)?
+    private var healthKitChangeHandler: HealthKitService.ChangeHandler?
     private var originalDebounceInterval: TimeInterval!
     private var originalMinimumSignalInterval: TimeInterval!
 
@@ -120,10 +120,7 @@ class HealthKitSensorTests: XCTestCase {
         failingMetricIDs.insert(uniqueID)
     }
 
-    private func recordObservation(
-        of metrics: [HealthKitMetric],
-        onChange: ((@escaping () -> Void) -> Void)? = nil
-    ) {
+    private func recordObservation(of metrics: [HealthKitMetric], onChange: HealthKitService.ChangeHandler? = nil) {
         lock.lock()
         defer { lock.unlock() }
         observedMetrics = metrics
