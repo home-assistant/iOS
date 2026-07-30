@@ -234,3 +234,7 @@ private enum WhatsNewColors {
         colors[index % colors.count]
     }
 }
+
+#Preview {
+    WhatsNewView(release: WhatsNewCatalog.mock, onViewed: {})
+}
