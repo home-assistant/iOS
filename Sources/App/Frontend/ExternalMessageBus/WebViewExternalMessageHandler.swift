@@ -197,6 +197,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .frontendReloadAndClearCache:
+                reloadAndClearFrontendCache()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -611,6 +613,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         } catch {
             Current.Log.error("Failed to decode entity add to action: \(error)")
         }
+    }
+
+    @MainActor
+    private func reloadAndClearFrontendCache() {
+        Current.Log.info("Resetting frontend cache requested via external bus")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.webViewController?.refresh()
+            }
     }
 
     private func showCameraPlayer(entityId: String, cameraName: String?) {
