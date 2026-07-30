@@ -173,6 +173,10 @@
 		42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
+		42D14C49301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C48301BAF950058088E /* HAWatchComplications */; };
+		42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4A301BAFA10058088E /* HAWatchComplications */; };
+		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
+		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
 		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
 		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
 		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
@@ -630,6 +634,7 @@
 		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
+		42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
 		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
 		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
@@ -1228,7 +1233,6 @@
 				AppleWatch/Complications/Preview/CornerComplicationPreview.swift,
 				AppleWatch/Complications/Preview/InlineComplicationPreview.swift,
 				AppleWatch/Complications/Preview/RectangularComplicationPreview.swift,
-				AppleWatch/Complications/Preview/RectangularGaugePreview.swift,
 				AppleWatch/Complications/Preview/WatchComplicationLivePreview.swift,
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
@@ -1385,7 +1389,6 @@
 				AppleWatch/Complications/Preview/CornerComplicationPreview.swift,
 				AppleWatch/Complications/Preview/InlineComplicationPreview.swift,
 				AppleWatch/Complications/Preview/RectangularComplicationPreview.swift,
-				AppleWatch/Complications/Preview/RectangularGaugePreview.swift,
 				AppleWatch/Complications/Preview/WatchComplicationLivePreview.swift,
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
@@ -2042,6 +2045,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42EDB6173002F8380051FC9B /* HAModels in Frameworks */,
+				42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */,
 				423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */,
 				423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */,
 			);
@@ -2111,6 +2115,7 @@
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
 				42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
+				42D14C49301BAF950058088E /* HAWatchComplications in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				D090217B33959041E3137A59 /* RealmSwift in Frameworks */,
 			);
@@ -2123,6 +2128,7 @@
 				42886D562FFE88BE004EB33B /* HAKit in Frameworks */,
 				A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */,
 				426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */,
+				42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */,
 				420E64C12D676B2400A31E86 /* SnapshotTestingCustomDump in Frameworks */,
 				42886D582FFE88BE004EB33B /* HAKit+Mocks in Frameworks */,
 				426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */,
@@ -2262,6 +2268,7 @@
 				B657A8FF1CA646EB00121384 /* App */,
 				D03D894320E0BC1800D4F28D /* Shared */,
 				B657A90A1CA646EB00121384 /* UI */,
+				42D14C45301BAD2E0058088E /* WatchComplications */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -2305,6 +2312,14 @@
 				42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */,
 			);
 			path = ServerSwitching;
+			sourceTree = "<group>";
+		};
+		42D14C45301BAD2E0058088E /* WatchComplications */ = {
+			isa = PBXGroup;
+			children = (
+				42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */,
+			);
+			path = WatchComplications;
 			sourceTree = "<group>";
 		};
 		42D6FDD1300F71E800D4BEB9 /* FlightGreetings */ = {
@@ -2765,6 +2780,7 @@
 			name = "Extensions-WatchWidgets";
 			packageProductDependencies = (
 				42EDB6163002F8380051FC9B /* HAModels */,
+				42D14C4A301BAFA10058088E /* HAWatchComplications */,
 			);
 			productName = WatchWidgetsExtension;
 			productReference = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */;
@@ -2892,6 +2908,7 @@
 				4C014BAFE0BC019E4055ED11 /* RealmSwift */,
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
 				42991E602FF4474500C2C76B /* ImproviOS */,
+				42D14C48301BAF950058088E /* HAWatchComplications */,
 			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
@@ -2951,6 +2968,7 @@
 				42886D552FFE88BE004EB33B /* HAKit */,
 				42886D572FFE88BE004EB33B /* HAKit+Mocks */,
 				42886D592FFE88C6004EB33B /* PromiseKitDynamic */,
+				42D14C4C301BAFAC0058088E /* HAWatchComplications */,
 			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
@@ -3453,6 +3471,7 @@
 				42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */,
 				42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */,
 			);
 			preferredProjectObjectVersion = 55;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -3870,6 +3889,7 @@
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
 				42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */,
+				42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5251,6 +5271,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PromiseKitDynamic;
 		};
+		42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAWatchComplications;
+		};
 		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
@@ -5697,6 +5721,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 425E94862FFD4A8B0067FA73 /* XCRemoteSwiftPackageReference "ObjectMapper" */;
 			productName = ObjectMapper;
+		};
+		42D14C48301BAF950058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14C4A301BAFA10058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14C4C301BAFAC0058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
 		};
 		42DC44322E1C06E5001046C1 /* WebRTC */ = {
 			isa = XCSwiftPackageProductDependency;
