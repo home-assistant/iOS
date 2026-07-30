@@ -26,18 +26,14 @@ public final class HealthKitSensor: SensorProvider {
             return .value([])
         }
 
-        // Registration is the one update that has to carry every metric — it's what tells Home Assistant
-        // which entities to disable — so it keeps reporting the ones HealthKit wouldn't read.
+        // Registration is the only update that can tell Home Assistant to disable an entity, so it has to
+        // carry every metric — including the ones HealthKit wouldn't read.
         let reportsUnreadableMetrics = request.reason == .registration
 
         guard Current.healthKitService.isAvailable() else {
-            // Nothing in this process can read HealthKit: an app extension, or a device without Health.
-            // Staying quiet leaves the values the app itself sent in place.
             return .value(reportsUnreadableMetrics ? metrics.map { Self.sensor(metric: $0, value: nil) } : [])
         }
 
-        // Keeps HealthKit watching the enabled metrics, so a new sample gets sent without waiting for the
-        // next update to come along.
         let signaler: HealthKitSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
         signaler.observe(metrics: metrics.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) })
 
@@ -52,9 +48,8 @@ public final class HealthKitSensor: SensorProvider {
                 }
             }
 
-            // A read HealthKit refused isn't the same as "no samples": it happens on every update that
-            // lands while the device is locked, and reporting `unavailable` for those would flap the
-            // entity between its value and nothing at all.
+            // A read HealthKit refused isn't the same as "no samples", and happens on every update that
+            // lands while the device is locked, so those keep their state instead of going unavailable.
             let unreadable = Set(values.filter(\.isUnreadable).map(\.metric.uniqueID))
             let reported = reportsUnreadableMetrics ? metrics : metrics.filter { !unreadable.contains($0.uniqueID) }
 

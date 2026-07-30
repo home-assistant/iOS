@@ -136,7 +136,6 @@ class HealthKitSensorTests: XCTestCase {
         return observedMetrics.map(\.uniqueID)
     }
 
-    /// Stands in for HealthKit reporting new samples, `completion` being the handler HealthKit expects back.
     private func notifyHealthKitChange(completion: @escaping () -> Void) {
         lock.lock()
         let handler = healthKitChangeHandler
@@ -194,8 +193,6 @@ class HealthKitSensorTests: XCTestCase {
 
         let sensors = try generateSensors()
 
-        // Reporting `unavailable` from a process that simply can't read HealthKit would undo the values
-        // the app itself sent, so the metrics are left out of the update entirely.
         XCTAssertTrue(sensors.isEmpty)
         XCTAssertEqual(queryCount(activeEnergy.uniqueID), 0)
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
@@ -216,8 +213,6 @@ class HealthKitSensorTests: XCTestCase {
 
         let sensors = try generateSensors()
 
-        // HealthKit refuses reads while the device is locked; the entity keeps its last value instead of
-        // flapping to `unavailable` on every background update.
         XCTAssertNil(sensor(restingHeartRate, in: sensors))
         XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? Int, 1234)
     }
@@ -276,8 +271,7 @@ class HealthKitSensorTests: XCTestCase {
         _ = try generateSensors()
         wait(for: [observed], timeout: 5)
 
-        // HealthKit is only told the change was handled once the update has been asked for; until then it's
-        // what keeps the app awake.
+        // HealthKit is only told the change was handled once the update has been asked for.
         let acknowledged = expectation(description: "HealthKit acknowledged")
         notifyHealthKitChange { acknowledged.fulfill() }
 
@@ -306,7 +300,6 @@ class HealthKitSensorTests: XCTestCase {
         notifyHealthKitChange {}
         wait(for: [signaled], timeout: 5)
 
-        // The gap is what keeps a metric that changes constantly from becoming a webhook request each time.
         XCTAssertGreaterThan(Date().timeIntervalSince(secondChange), 0.3)
     }
 

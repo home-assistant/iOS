@@ -1,20 +1,14 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import Foundation
 
-/// Turns HealthKit's background delivery into sensor updates.
-///
-/// Apple Health sensors used to only reach Home Assistant when something else asked for an update, so a
-/// heart rate measured while the app was closed sat in HealthKit until the app was opened again. Observing
-/// the enabled metrics means HealthKit wakes the app — relaunching it in the background if it has to — and
-/// the new value goes out right then.
+/// Asks for a sensor update whenever HealthKit reports new samples for an enabled Apple Health metric,
+/// including when iOS wakes or relaunches the app in the background to deliver them.
 final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
-    /// Window over which HealthKit callbacks coalesce into a single update. One workout lands samples for a
-    /// dozen types at once and each of them calls back separately, so the window is what keeps that from
-    /// becoming a dozen webhook requests. A `var` only so tests don't have to wait it out.
+    /// Window over which HealthKit callbacks coalesce into one update; a workout lands samples for a dozen
+    /// types at once. A `var` only so tests don't have to wait it out.
     static var signalDebounceInterval: TimeInterval = 5
-    /// Shortest gap between two HealthKit-driven updates. Step counts and heart rates can change every few
-    /// seconds while the phone is being worn, and every update sends the whole sensor payload, so the gap is
-    /// what keeps background delivery from becoming a stream of webhook requests.
+    /// Shortest gap between two HealthKit-driven updates, so a metric that changes every few seconds can't
+    /// become a stream of webhook requests.
     static var minimumSignalInterval: TimeInterval = 30
 
     private let signal: () -> Void
@@ -23,14 +17,12 @@ final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
     private var observedIdentifiers: Set<String>?
     private var isSignalPending = false
     private var lastSignalDate: Date?
-    /// HealthKit's completion handlers for the changes waiting on the current window.
     private var pendingCompletions = [() -> Void]()
 
     init(signal: @escaping () -> Void) {
         self.signal = signal
     }
 
-    /// Points HealthKit's observation at `metrics`, the Apple Health sensors that are currently switched on.
     /// Called on every sensor update, so re-observing an unchanged set has to stay free.
     func observe(metrics: [HealthKitMetric]) {
         queue.async { [self] in
@@ -53,8 +45,8 @@ final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
     private func enqueue(completion: @escaping () -> Void) {
         pendingCompletions.append(completion)
 
-        // A fixed window rather than one that slides on every callback, so a long burst of changes can't
-        // keep pushing the update out past the time HealthKit is willing to wait.
+        // A fixed window rather than one sliding on every callback, so a burst can't push the update out
+        // past the time HealthKit is willing to wait.
         guard !isSignalPending else { return }
         isSignalPending = true
         queue.asyncAfter(deadline: .now() + delayUntilNextSignal()) { [weak self] in
@@ -82,8 +74,7 @@ final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
 
         signal()
 
-        // Answering HealthKit only now means it keeps the app awake across the window above; from here the
-        // sensor update carries its own background task.
+        // Answering HealthKit only now is what keeps the app awake across the window above.
         for completion in completions {
             completion()
         }
