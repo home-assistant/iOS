@@ -17,6 +17,11 @@ class HealthKitSensorTests: XCTestCase {
     private var queryCounts = [String: Int]()
     private var queryWindows = [String: (start: Date, end: Date)]()
     private var stubbedValues = [String: Double]()
+    private var failingMetricIDs = Set<String>()
+    private var observedMetrics = [HealthKitMetric]()
+    private var healthKitChangeHandler: HealthKitService.ChangeHandler?
+    private var originalDebounceInterval: TimeInterval!
+    private var originalMinimumSignalInterval: TimeInterval!
 
     private var restingHeartRate: HealthKitMetric { .restingHeartRate }
     /// A cumulative metric to pair with the newest-sample resting heart rate.
@@ -49,16 +54,29 @@ class HealthKitSensorTests: XCTestCase {
         // Enablement is an allowlist, so switch on the two metrics these tests report.
         Current.sensors.setEnabled(true, forUniqueIDs: [activeEnergy.uniqueID, restingHeartRate.uniqueID])
 
+        originalDebounceInterval = HealthKitSensorUpdateSignaler.signalDebounceInterval
+        originalMinimumSignalInterval = HealthKitSensorUpdateSignaler.minimumSignalInterval
+        HealthKitSensorUpdateSignaler.signalDebounceInterval = 0.05
+        HealthKitSensorUpdateSignaler.minimumSignalInterval = 0.05
+
         stubbedValues = [activeEnergy.uniqueID: 1234, restingHeartRate.uniqueID: 62.4]
         Current.healthKitService.isAvailable = { true }
         Current.healthKitService.queryValue = { [weak self] metric, _, _ in
             guard let self else { return nil }
             recordQuery(metric.uniqueID)
+            if isFailing(metric.uniqueID) {
+                throw HealthKitService.HealthKitServiceError.unavailable
+            }
             return stubbedValue(for: metric.uniqueID)
         }
+        Current.healthKitService.setObservedMetrics = { _, _ in }
     }
 
     override func tearDown() {
+        HealthKitSensorUpdateSignaler.signalDebounceInterval = originalDebounceInterval
+        HealthKitSensorUpdateSignaler.minimumSignalInterval = originalMinimumSignalInterval
+        originalDebounceInterval = nil
+        originalMinimumSignalInterval = nil
         SensorEnablementStore.resetForTesting()
         if let previousReported {
             Current.settingsStore.prefs.set(previousReported, forKey: Self.reportedKey)
@@ -88,6 +106,38 @@ class HealthKitSensorTests: XCTestCase {
         lock.lock()
         defer { lock.unlock() }
         return stubbedValues[uniqueID]
+    }
+
+    private func isFailing(_ uniqueID: String) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return failingMetricIDs.contains(uniqueID)
+    }
+
+    private func failReads(of uniqueID: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        failingMetricIDs.insert(uniqueID)
+    }
+
+    private func recordObservation(of metrics: [HealthKitMetric], onChange: HealthKitService.ChangeHandler? = nil) {
+        lock.lock()
+        defer { lock.unlock() }
+        observedMetrics = metrics
+        healthKitChangeHandler = onChange
+    }
+
+    private func observedMetricIDs() -> [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return observedMetrics.map(\.uniqueID)
+    }
+
+    private func notifyHealthKitChange(completion: @escaping () -> Void) {
+        lock.lock()
+        let handler = healthKitChangeHandler
+        lock.unlock()
+        handler?(completion)
     }
 
     private func queryCount(_ uniqueID: String) -> Int {
@@ -135,15 +185,144 @@ class HealthKitSensorTests: XCTestCase {
         XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
     }
 
-    func testUnavailableHealthKitReturnsUnavailableSensorsAndDoesNotQueryHealthKit() throws {
+    func testUnavailableHealthKitReportsNothingAndDoesNotQueryHealthKit() throws {
         Current.healthKitService.isAvailable = { false }
+
+        let sensors = try generateSensors()
+
+        XCTAssertTrue(sensors.isEmpty)
+        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 0)
+        XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
+    }
+
+    func testUnavailableHealthKitStillReportsUnavailableWhenRegistering() throws {
+        Current.healthKitService.isAvailable = { false }
+        request.reason = .registration
 
         let sensors = try generateSensors()
 
         XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? String, "unavailable")
         XCTAssertEqual(sensor(restingHeartRate, in: sensors)?.State as? String, "unavailable")
-        XCTAssertEqual(queryCount(activeEnergy.uniqueID), 0)
-        XCTAssertEqual(queryCount(restingHeartRate.uniqueID), 0)
+    }
+
+    func testMetricHealthKitRefusesToReadIsLeftOutOfTheUpdate() throws {
+        failReads(of: restingHeartRate.uniqueID)
+
+        let sensors = try generateSensors()
+
+        XCTAssertNil(sensor(restingHeartRate, in: sensors))
+        XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? Int, 1234)
+    }
+
+    func testMetricHealthKitRefusesToReadIsReportedUnavailableWhenRegistering() throws {
+        failReads(of: restingHeartRate.uniqueID)
+        request.reason = .registration
+
+        let sensors = try generateSensors()
+
+        XCTAssertEqual(sensor(restingHeartRate, in: sensors)?.State as? String, "unavailable")
+        XCTAssertEqual(sensor(activeEnergy, in: sensors)?.State as? Int, 1234)
+    }
+
+    func testEnabledMetricsAreObservedForBackgroundDelivery() throws {
+        let observed = expectation(description: "metrics observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, _ in
+            self?.recordObservation(of: metrics)
+            observed.fulfill()
+        }
+
+        _ = try generateSensors()
+
+        wait(for: [observed], timeout: 5)
+        XCTAssertEqual(observedMetricIDs().sorted(), [activeEnergy.uniqueID, restingHeartRate.uniqueID].sorted())
+    }
+
+    func testDisablingAMetricStopsObservingIt() throws {
+        var observed = expectation(description: "metrics observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, _ in
+            self?.recordObservation(of: metrics)
+            observed.fulfill()
+        }
+
+        _ = try generateSensors()
+        wait(for: [observed], timeout: 5)
+
+        observed = expectation(description: "observed metrics narrowed")
+        Current.sensors.setEnabled(false, forUniqueID: restingHeartRate.uniqueID)
+
+        _ = try generateSensors()
+
+        wait(for: [observed], timeout: 5)
+        XCTAssertEqual(observedMetricIDs(), [activeEnergy.uniqueID])
+    }
+
+    func testHealthKitReportingNewSamplesSignalsAnUpdate() throws {
+        let observed = expectation(description: "metrics observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, onChange in
+            self?.recordObservation(of: metrics, onChange: onChange)
+            observed.fulfill()
+        }
+        let signaled = expectation(description: "update signaled")
+        request.dependencies.updateSignalHandler = { _ in signaled.fulfill() }
+
+        _ = try generateSensors()
+        wait(for: [observed], timeout: 5)
+
+        // HealthKit is only told the change was handled once the update has been asked for.
+        let acknowledged = expectation(description: "HealthKit acknowledged")
+        notifyHealthKitChange { acknowledged.fulfill() }
+
+        wait(for: [signaled, acknowledged], timeout: 5)
+    }
+
+    func testUpdatesAreSpacedOutWhenHealthKitKeepsReportingChanges() throws {
+        HealthKitSensorUpdateSignaler.minimumSignalInterval = 0.5
+
+        let observed = expectation(description: "metrics observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, onChange in
+            self?.recordObservation(of: metrics, onChange: onChange)
+            observed.fulfill()
+        }
+        var signaled = expectation(description: "first update signaled")
+        request.dependencies.updateSignalHandler = { _ in signaled.fulfill() }
+
+        _ = try generateSensors()
+        wait(for: [observed], timeout: 5)
+
+        notifyHealthKitChange {}
+        wait(for: [signaled], timeout: 5)
+
+        signaled = expectation(description: "second update signaled")
+        let secondChange = Date()
+        notifyHealthKitChange {}
+        wait(for: [signaled], timeout: 5)
+
+        XCTAssertGreaterThan(Date().timeIntervalSince(secondChange), 0.3)
+    }
+
+    func testChangesArrivingTogetherAskForASingleUpdate() throws {
+        // Long enough that the changes below can't land in windows of their own.
+        HealthKitSensorUpdateSignaler.signalDebounceInterval = 1
+
+        let observed = expectation(description: "metrics observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, onChange in
+            self?.recordObservation(of: metrics, onChange: onChange)
+            observed.fulfill()
+        }
+        let signaled = expectation(description: "update signaled")
+        signaled.assertForOverFulfill = true
+        request.dependencies.updateSignalHandler = { _ in signaled.fulfill() }
+
+        _ = try generateSensors()
+        wait(for: [observed], timeout: 5)
+
+        let acknowledged = expectation(description: "every change acknowledged")
+        acknowledged.expectedFulfillmentCount = 3
+        for _ in 0 ..< 3 {
+            notifyHealthKitChange { acknowledged.fulfill() }
+        }
+
+        wait(for: [signaled, acknowledged], timeout: 5)
     }
 
     func testSuccessfulDataMapsBothSensors() throws {

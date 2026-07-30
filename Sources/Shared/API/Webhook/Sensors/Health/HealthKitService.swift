@@ -1,8 +1,14 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import Foundation
+import HAKit
 import HealthKit
 
 public struct HealthKitService {
+    /// Called when HealthKit reports new samples. It's handed HealthKit's completion handler, which must be
+    /// called once the change has been dealt with: HealthKit keeps the app awake until then, and redelivers
+    /// the change if it never comes.
+    public typealias ChangeHandler = (_ completion: @escaping () -> Void) -> Void
+
     public enum HealthKitServiceError: LocalizedError, Equatable {
         case unavailable
         case noEnabledSensors
@@ -77,10 +83,35 @@ public struct HealthKitService {
         }
     }
 
+    /// Observes `metrics` in the background, calling `onChange` whenever HealthKit reports new samples for
+    /// one of them. An empty list tears every observation down.
+    public var setObservedMetrics: ([HealthKitMetric], @escaping ChangeHandler) -> Void = { metrics, onChange in
+        guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension else {
+            return
+        }
+
+        HealthKitService.observations.update(
+            to: HealthKitService.observableTypes(for: metrics),
+            onChange: onChange
+        )
+    }
+
     public init() {}
 
+    private static let observations = Observations()
+
     private static func quantityType(for metric: HealthKitMetric) -> HKQuantityType? {
-        HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: metric.identifier))
+        quantityType(forIdentifier: metric.identifier)
+    }
+
+    private static func quantityType(forIdentifier identifier: String) -> HKQuantityType? {
+        HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))
+    }
+
+    private static func observableTypes(for metrics: [HealthKitMetric]) -> [HKQuantityType] {
+        metrics
+            .filter { $0.queryUnit.hkUnit != nil }
+            .compactMap { quantityType(for: $0) }
     }
 
     /// The read types behind the metrics the user turned on. Enablement is an allowlist, so a metric
@@ -90,9 +121,7 @@ public struct HealthKitService {
     }
 
     private static func readTypes(for metrics: [HealthKitMetric]) -> Set<HKObjectType> {
-        let types: [HKObjectType] = metrics
-            .filter { $0.queryUnit.hkUnit != nil }
-            .compactMap { quantityType(for: $0) }
+        let types: [HKObjectType] = observableTypes(for: metrics)
         return Set(types)
     }
 
@@ -138,6 +167,74 @@ public struct HealthKitService {
                 }
             }
             healthStore.execute(query)
+        }
+    }
+
+    /// Owns the running observer queries, keyed by quantity type identifier.
+    private final class Observations {
+        private let activeQueries = HAProtected<[String: HKObserverQuery]>(value: [:])
+        /// Kept apart from the queries so a query, which outlives the `update` that started it, always
+        /// reports to the newest handler.
+        private let changeHandler = HAProtected<ChangeHandler?>(value: nil)
+
+        func update(to types: [HKQuantityType], onChange: @escaping ChangeHandler) {
+            let wanted = Set(types.map(\.identifier))
+            changeHandler.mutate { $0 = onChange }
+
+            activeQueries.mutate { queries in
+                for (identifier, query) in queries.filter({ !wanted.contains($0.key) }) {
+                    queries[identifier] = nil
+                    stop(observing: identifier, query: query)
+                }
+
+                for type in types where queries[type.identifier] == nil {
+                    queries[type.identifier] = start(observing: type)
+                }
+            }
+        }
+
+        private func start(observing type: HKQuantityType) -> HKObserverQuery {
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { [self] _, completionHandler, error in
+                guard let error else {
+                    reportChange(completionHandler)
+                    return
+                }
+                // Left unanswered, HealthKit redelivers and eventually gives up on background delivery.
+                Current.Log.error("health observer query for \(type.identifier) failed: \(error)")
+                completionHandler()
+            }
+
+            HealthKitService.healthStore.execute(query)
+
+            HealthKitService.healthStore.enableBackgroundDelivery(for: type, frequency: .immediate) { _, error in
+                if let error {
+                    Current.Log.error("failed enabling health background delivery for \(type.identifier): \(error)")
+                }
+            }
+
+            return query
+        }
+
+        private func reportChange(_ completion: @escaping () -> Void) {
+            guard let onChange = changeHandler.read({ $0 }) else {
+                completion()
+                return
+            }
+            onChange(completion)
+        }
+
+        private func stop(observing identifier: String, query: HKObserverQuery) {
+            HealthKitService.healthStore.stop(query)
+
+            guard let type = HealthKitService.quantityType(forIdentifier: identifier) else {
+                return
+            }
+
+            HealthKitService.healthStore.disableBackgroundDelivery(for: type) { _, error in
+                if let error {
+                    Current.Log.error("failed disabling health background delivery for \(identifier): \(error)")
+                }
+            }
         }
     }
 }

@@ -26,9 +26,16 @@ public final class HealthKitSensor: SensorProvider {
             return .value([])
         }
 
+        // Registration is the only update that can tell Home Assistant to disable an entity, so it has to
+        // carry every metric — including the ones HealthKit wouldn't read.
+        let reportsUnreadableMetrics = request.reason == .registration
+
         guard Current.healthKitService.isAvailable() else {
-            return .value(metrics.map { Self.sensor(metric: $0, value: nil) })
+            return .value(reportsUnreadableMetrics ? metrics.map { Self.sensor(metric: $0, value: nil) } : [])
         }
+
+        let signaler: HealthKitSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
+        signaler.observe(metrics: metrics.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) })
 
         let now = Current.date()
         let (promise, seal) = Promise<[WebhookSensor]>.pending()
@@ -40,7 +47,13 @@ public final class HealthKitSensor: SensorProvider {
                     result[value.metric.uniqueID] = number
                 }
             }
-            seal.fulfill(metrics.map { Self.sensor(metric: $0, value: states[$0.uniqueID]) })
+
+            // A read HealthKit refused isn't the same as "no samples", and happens on every update that
+            // lands while the device is locked, so those keep their state instead of going unavailable.
+            let unreadable = Set(values.filter(\.isUnreadable).map(\.metric.uniqueID))
+            let reported = reportsUnreadableMetrics ? metrics : metrics.filter { !unreadable.contains($0.uniqueID) }
+
+            seal.fulfill(reported.map { Self.sensor(metric: $0, value: states[$0.uniqueID]) })
         }
 
         return promise
@@ -101,8 +114,14 @@ public final class HealthKitSensor: SensorProvider {
                 ?? calendar.startOfDay(for: now)
         }
 
-        let value = try? await Current.healthKitService.queryValue(metric, start, now)
-        return HealthSensorValue(metric: metric, value: value)
+        do {
+            let value = try await Current.healthKitService.queryValue(metric, start, now)
+            return HealthSensorValue(metric: metric, value: value)
+        } catch {
+            // Not an error case: HealthKit refuses reads whenever the device is locked.
+            Current.Log.info("could not read Apple Health metric \(metric.uniqueID): \(error)")
+            return HealthSensorValue(metric: metric, value: nil, isUnreadable: true)
+        }
     }
 
     private static func sensor(metric: HealthKitMetric, value: Double?) -> WebhookSensor {

@@ -5852,7 +5852,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum Health {
-      /// Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.
+      /// Apple Health sensors use the existing per-sensor controls below. Health data is read during sensor updates and whenever Apple Health records something new, even if the app is closed.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
       /// Apple Health
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.health.header") }
