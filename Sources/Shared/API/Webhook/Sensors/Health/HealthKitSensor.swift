@@ -118,7 +118,8 @@ public final class HealthKitSensor: SensorProvider {
             let value = try await Current.healthKitService.queryValue(metric, start, now)
             return HealthSensorValue(metric: metric, value: value)
         } catch {
-            Current.Log.error("failed reading Apple Health metric \(metric.uniqueID): \(error)")
+            // Not an error case: HealthKit refuses reads whenever the device is locked.
+            Current.Log.info("could not read Apple Health metric \(metric.uniqueID): \(error)")
             return HealthSensorValue(metric: metric, value: nil, isUnreadable: true)
         }
     }

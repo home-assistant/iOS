@@ -174,29 +174,30 @@ public struct HealthKitService {
     /// Owns the running observer queries, keyed by quantity type identifier.
     private final class Observations {
         private let activeQueries = HAProtected<[String: HKObserverQuery]>(value: [:])
+        /// Kept apart from the queries so a query, which outlives the `update` that started it, always
+        /// reports to the newest handler.
+        private let changeHandler = HAProtected<((@escaping () -> Void) -> Void)?>(value: nil)
 
         func update(to types: [HKQuantityType], onChange: @escaping (@escaping () -> Void) -> Void) {
             let wanted = Set(types.map(\.identifier))
+            changeHandler.mutate { $0 = onChange }
 
             activeQueries.mutate { queries in
                 for (identifier, query) in queries.filter({ !wanted.contains($0.key) }) {
                     queries[identifier] = nil
-                    Self.stop(observing: identifier, query: query)
+                    stop(observing: identifier, query: query)
                 }
 
                 for type in types where queries[type.identifier] == nil {
-                    queries[type.identifier] = Self.start(observing: type, onChange: onChange)
+                    queries[type.identifier] = start(observing: type)
                 }
             }
         }
 
-        private static func start(
-            observing type: HKQuantityType,
-            onChange: @escaping (@escaping () -> Void) -> Void
-        ) -> HKObserverQuery {
-            let query = HKObserverQuery(sampleType: type, predicate: nil) { _, completionHandler, error in
+        private func start(observing type: HKQuantityType) -> HKObserverQuery {
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { [self] _, completionHandler, error in
                 guard let error else {
-                    onChange(completionHandler)
+                    reportChange(completionHandler)
                     return
                 }
                 // Left unanswered, HealthKit redelivers and eventually gives up on background delivery.
@@ -215,7 +216,15 @@ public struct HealthKitService {
             return query
         }
 
-        private static func stop(observing identifier: String, query: HKObserverQuery) {
+        private func reportChange(_ completion: @escaping () -> Void) {
+            guard let onChange = changeHandler.read({ $0 }) else {
+                completion()
+                return
+            }
+            onChange(completion)
+        }
+
+        private func stop(observing identifier: String, query: HKObserverQuery) {
             HealthKitService.healthStore.stop(query)
 
             guard let type = HealthKitService.quantityType(forIdentifier: identifier) else {
