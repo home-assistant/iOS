@@ -58,7 +58,7 @@ struct WatchEntityDetailsTests {
 
         #expect(details.deviceClass == "Not a real device class")
         // Shown in its own row, so it must not also appear as an attribute.
-        #expect(!details.attributes.contains { $0.id == "device_class" })
+        #expect(!details.attributes.contains(where: { $0.id == "device_class" }))
     }
 
     @Test func noDeviceClassAttributeMeansNoDeviceClass() throws {
