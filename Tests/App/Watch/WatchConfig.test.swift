@@ -341,6 +341,36 @@ struct WatchDatabaseMirror_test {
         #expect(WatchDatabaseMirror.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
     }
 
+    @Test func entityCategoryRoundTripsThroughMirror() throws {
+        let diagnostic = HAAppEntity(
+            id: "server1-sensor.uptime",
+            entityId: "sensor.uptime",
+            serverId: "server1",
+            domain: "sensor",
+            name: "Uptime",
+            icon: nil,
+            rawDeviceClass: nil,
+            entityCategory: 1
+        )
+        let ordinary = HAAppEntity(
+            id: "server1-light.kitchen",
+            entityId: "light.kitchen",
+            serverId: "server1",
+            domain: "light",
+            name: "Kitchen",
+            icon: nil,
+            rawDeviceClass: nil
+        )
+        let original = WatchDatabaseMirror(entities: [diagnostic, ordinary], areas: [], pipelines: [])
+
+        let data = try original.encodeForWatch()
+        let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
+
+        #expect(decoded.entities == [diagnostic, ordinary])
+        #expect(decoded.entities?.first { $0.entityId == "sensor.uptime" }?.entityCategory == 1)
+        #expect(decoded.entities?.first { $0.entityId == "light.kitchen" }?.entityCategory == nil)
+    }
+
     @Test func partialMirrorRoundTripsNilTablesAsRetain() throws {
         // A delta payload: only areas carried, everything else omitted (nil = retain on the watch).
         let area = AppArea(

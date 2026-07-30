@@ -7,7 +7,9 @@ import GRDB
 /// from `config/entity_registry/list_for_display`):
 /// - `HAAppEntity` is every entity that currently has a state — including ones with no registry entry
 ///   (YAML/template/command-line entities, etc.) — and carries `domain` + `rawDeviceClass`, which the
-///   registry does not. It's what pickers/widgets enumerate as "all selectable entities".
+///   registry does not. It's what pickers/widgets enumerate as "all selectable entities". It also
+///   copies the registry's `entityCategory` at write time so consumers that never receive the full
+///   registry (the watch) can still exclude config/diagnostic entities.
 /// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
 ///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
 ///
@@ -30,6 +32,9 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     public let name: String
     public let icon: String?
     public let rawDeviceClass: String?
+    /// The registry entity category index (config / diagnostic), copied from
+    /// `EntityRegistryListForDisplay.Entity.entityCategory` at write time; `nil` for ordinary entities.
+    public let entityCategory: Int?
 
     public init(
         id: String,
@@ -39,6 +44,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         name: String,
         icon: String?,
         rawDeviceClass: String?,
+        entityCategory: Int? = nil,
     ) {
         self.id = id
         self.entityId = entityId
@@ -47,6 +53,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.name = name
         self.icon = icon
         self.rawDeviceClass = rawDeviceClass
+        self.entityCategory = entityCategory
     }
 
     public enum ConfigInclude {
