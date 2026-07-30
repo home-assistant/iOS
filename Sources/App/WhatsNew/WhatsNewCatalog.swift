@@ -1,3 +1,4 @@
+import Foundation
 import Shared
 
 /// Catalog of the native "What's New" release that can be shown after an app update.
@@ -81,6 +82,40 @@ enum WhatsNewCatalog {
                 body: L10n.WhatsNew.AppSupportUpdate.itemBody,
                 icon: .sfSymbol(.iphoneSlash),
                 destination: .link(AppConstants.WebURLs.appleDropSupportiOS15)
+            ),
+        ]
+    )
+
+    /// A sample release for previews and testing. Not presented to users.
+    static let mock = WhatsNewRelease(
+        id: WhatsNewReleaseId("mock-release"),
+        version: WhatsNewAppVersion(major: 2026, minor: 7, patch: 0),
+        targetPlatforms: [.iPhone, .iPad, .mac],
+        items: [
+            WhatsNewItem(
+                id: "widgets",
+                title: "Redesigned Widgets",
+                body: "Glanceable controls for your favorite entities, right on your Home Screen.",
+                icon: .sfSymbol(.squareGrid2x2Fill)
+            ),
+            WhatsNewItem(
+                id: "assist",
+                title: "Assist Improvements",
+                body: "Faster on-device speech and a refreshed conversation view. Tap to read more.",
+                icon: .materialDesign(.microphoneIcon),
+                destination: .article(ArticleMessage(
+                    icon: .materialDesign(.microphoneIcon),
+                    title: "Assist Improvements",
+                    body: "Assist now transcribes speech **on device** for lower latency and better privacy.",
+                    action: .init(title: "Learn more", url: URL(string: "https://www.home-assistant.io/")!)
+                ))
+            ),
+            WhatsNewItem(
+                id: "docs",
+                title: "Release Notes",
+                body: "Read the full details on our website.",
+                icon: .sfSymbol(.sparkles),
+                destination: .link(URL(string: "https://www.home-assistant.io/")!)
             ),
         ]
     )
