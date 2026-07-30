@@ -1,7 +1,5 @@
 # Testing and debugging lanes
 
-require 'json'
-
 desc 'Update the test cases from the fcm repo'
 lane :update_notification_test_cases do
   bundle_directory = File.expand_path('../Tests/Shared/notification_test_cases.bundle')
@@ -53,23 +51,11 @@ lane :test do
 
   # The complication snapshot tests render the shared views on watchOS, so they run under the WatchApp
   # scheme on a watch simulator — the iOS run above can't reach them. The reference images are tied to
-  # this watch model + scale (see WatchImageSnapshot), so the model must stay 46mm.
+  # this watch model + scale (see WatchImageSnapshot); keep this device in sync with wherever the
+  # references were recorded.
   #
-  # Resolve a concrete simulator UDID rather than a name+OS destination: on CI this model exists across
-  # several watchOS runtimes and appears both standalone and paired, so a name+OS destination is
-  # ambiguous ("multiple devices matched"). A UDID is not. Newest available runtime wins; fall back to
-  # the name if lookup fails.
-  watch_model = 'Apple Watch Series 11 (46mm)'
-  watch_udid = JSON.parse(`xcrun simctl list devices available --json`)['devices']
-    .select { |runtime, _| runtime.include?('watchOS') }
-    .sort_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
-    .reverse
-    .flat_map { |_, devices| devices }
-    .find { |device| device['name'] == watch_model }
-    &.dig('udid')
-  watch_destination = watch_udid ? "platform=watchOS Simulator,id=#{watch_udid}" \
-                                 : "platform=watchOS Simulator,name=#{watch_model},OS=latest"
-
+  # Pin the OS explicitly: with OS=latest the runner matched this model across several watchOS runtimes
+  # (and both standalone and paired), so xcodebuild failed with "multiple devices matched".
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'WatchApp',
@@ -79,6 +65,6 @@ lane :test do
     skip_detect_devices: true,
     skip_build: true,
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
-    destination: watch_destination
+    destination: 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.5'
   )
 end
