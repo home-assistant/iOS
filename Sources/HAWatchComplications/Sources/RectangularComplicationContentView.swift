@@ -72,7 +72,7 @@ public struct RectangularComplicationContentView: View {
                     Text(model.bottomText)
                         .font(.caption2)
                         .lineLimit(Layout.titleLineLimit)
-                        .foregroundStyle(textColor.opacity(Layout.secondaryTextOpacity))
+                        .foregroundStyle((model.bottomTextColor ?? textColor).opacity(Layout.secondaryTextOpacity))
                         .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
             }

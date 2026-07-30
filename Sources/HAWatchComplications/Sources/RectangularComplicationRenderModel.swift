@@ -25,6 +25,8 @@ public struct RectangularComplicationRenderModel {
     public var tint: Color
     /// nil resolves to `.primary` (white on the black watch face).
     public var textColor: Color?
+    /// Per-slot color override for the bottom text; nil falls back to `textColor`.
+    public var bottomTextColor: Color?
 
     public init(
         iconImage: Image? = nil,
@@ -41,7 +43,8 @@ public struct RectangularComplicationRenderModel {
         bottomText: String = "",
         showsBottomText: Bool = false,
         tint: Color = .accentColor,
-        textColor: Color? = nil
+        textColor: Color? = nil,
+        bottomTextColor: Color? = nil
     ) {
         self.iconImage = iconImage
         self.showsIcon = showsIcon
@@ -58,5 +61,6 @@ public struct RectangularComplicationRenderModel {
         self.showsBottomText = showsBottomText
         self.tint = tint
         self.textColor = textColor
+        self.bottomTextColor = bottomTextColor
     }
 }

@@ -978,6 +978,8 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var maxLabel: String?
         /// Hex color for the value text; nil uses the default.
         var textColor: String?
+        /// Per-slot color override for the bottom text; nil falls back to `textColor`.
+        var bottomTextColor: String? = nil
         /// Resolved slot texts (slot/formula model); optional so older widget builds ignore them.
         var title: String?
         var subtitle: String?
@@ -1229,6 +1231,7 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
                 textColor: textColorHex ?? config.textColor(for: family),
+                bottomTextColor: config.slotColor(.bottomText, for: family),
                 title: slotText(.title, family),
                 subtitle: slotText(.subtitle, family),
                 value: slotText(.value, family),

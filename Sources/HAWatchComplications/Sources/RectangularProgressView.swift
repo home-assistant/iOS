@@ -17,10 +17,13 @@ public struct RectangularProgressView: View {
         /// Opacity of the unfilled bar track.
         static let trackOpacity: CGFloat = 0.25
         static let thumbVerticalPadding: CGFloat = 1
-        static let thumbHorizontalPadding: CGFloat = 4
-        static let thumbTextMinimumScaleFactor: CGFloat = 0.5
+        static let thumbHorizontalPadding: CGFloat = 6
         static let minMaxLabelFontSize: CGFloat = 10
     }
+
+    /// Actual thumb width, measured so the pill can grow to fit longer values (e.g. "22.7°") while a
+    /// minimum keeps it pill-shaped for short ones. Used to keep the thumb clamped inside the bar.
+    @State private var thumbWidth: CGFloat = RectangularProgressView.thumbWidth
 
     /// Weights and threshold for the perceived-luminance check that picks black vs. white value text.
     private enum Luminance {
@@ -75,13 +78,24 @@ public struct RectangularProgressView: View {
                                 .font(.body.bold())
                                 .foregroundStyle(valueTextColor)
                                 .lineLimit(1)
-                                .minimumScaleFactor(Layout.thumbTextMinimumScaleFactor)
                                 .padding(.vertical, Layout.thumbVerticalPadding)
                                 .padding(.horizontal, Layout.thumbHorizontalPadding)
                         }
-                        .frame(width: Self.thumbWidth, height: Self.thumbHeight)
+                        // Fit the value: grow past the minimum pill width so it never crops, keeping a
+                        // fixed height. `fixedSize` sizes to the text on every platform (no async
+                        // measurement), and the measured width keeps the thumb clamped inside the bar.
+                        .frame(height: Self.thumbHeight)
+                        .frame(minWidth: Self.thumbWidth)
+                        .fixedSize(horizontal: true, vertical: false)
+                        .background(
+                            GeometryReader { proxy in
+                                Color.clear
+                                    .onAppear { thumbWidth = proxy.size.width }
+                                    .onChange(of: proxy.size.width) { thumbWidth = $0 }
+                            }
+                        )
                         .position(
-                            x: min(max(width * clamped, Self.thumbWidth / 2), width - Self.thumbWidth / 2),
+                            x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
                             y: Self.thumbHeight / 2
                         )
                     }

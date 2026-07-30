@@ -18,6 +18,17 @@ struct AllFamiliesComplicationPreview: View {
     /// Outer bezel radius of the compact single-family face — exposed so the floating panel's
     /// chrome can use a concentric radius that matches the fake watch shape.
     static let compactBezelCornerRadius: CGFloat = 46
+
+    /// Fake-screen size for the compact single-family face. Rectangular and inline are wide and short,
+    /// so they get a landscape screen that lets their content render much bigger; the round families
+    /// keep the tall portrait screen that matches a watch face.
+    static func compactScreenSize(for family: WatchComplicationConfig.Family) -> CGSize {
+        switch family {
+        case .rectangular, .inline: return CGSize(width: 220, height: 132)
+        case .circular, .corner: return CGSize(width: 140, height: 176)
+        }
+    }
+
     /// Reports the entity's unit (nil when none), so the editor can offer the "Show unit" toggle.
     var onUnit: (String?) -> Void = { _ in }
     /// Reports the entity's attribute names (sorted), offered as value sources.
@@ -98,8 +109,10 @@ struct AllFamiliesComplicationPreview: View {
         Group {
             if showsOnlySelectedFamily {
                 // Compact single-family face for the floating preview: the current family only,
-                // centered and zoomed to fit the screen.
-                let screenSize = CGSize(width: 140, height: 176)
+                // centered and zoomed to fit the screen. Wide, short families (rectangular / inline)
+                // get a landscape screen so their content can render much larger than in the tall
+                // portrait screen the round families use.
+                let screenSize = Self.compactScreenSize(for: selectedFamily)
                 let available = CGSize(width: screenSize.width - 24, height: screenSize.height - 24)
                 // Capped so tiny content (e.g. the inline capsule) isn't blown up absurdly.
                 let fitScale: CGFloat = selectedPreviewSize == .zero ? 1 : min(
@@ -235,7 +248,7 @@ struct AllFamiliesComplicationPreview: View {
                 return min(max(Double(raw), 0), 1)
             }()
             var iconImage: Image?
-            if familyConfig.showsIcon(for: family), let iconName = config.iconName {
+            if familyConfig.isSlotVisible(.icon, for: family), let iconName = config.iconName {
                 let color = (evaluatedHex(iconColorRenderer) ?? config.iconColor).map { UIColor(hex: $0) } ?? .white
                 iconImage = Image(
                     uiImage: MaterialDesignIcons(serversideValueNamed: iconName)

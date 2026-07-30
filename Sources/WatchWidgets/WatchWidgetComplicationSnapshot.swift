@@ -26,6 +26,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var maxLabel: String?
         /// Hex color for the value text; nil uses the default.
         var textColor: String?
+        /// Per-slot color override for the bottom text; nil falls back to `textColor`. Defaulted so
+        /// payloads written before this field still decode and construct.
+        var bottomTextColor: String? = nil
         /// Resolved slot texts (slot/formula model). All optional so payloads written before slots
         /// existed still decode — the accessors below then fall back to the top-level
         /// `title`/`subtitle`. Mutable so the widget's live self-fetch can update them in place.
@@ -112,6 +115,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// The value/text color for a given family, or nil to use the default.
     func textColor(for widgetFamily: WidgetFamily) -> Color? {
         options(for: widgetFamily)?.textColor.flatMap { Color(hex: $0) }
+    }
+
+    /// The bottom text's color override for a given family, or nil to fall back to `textColor`.
+    func bottomTextColor(for widgetFamily: WidgetFamily) -> Color? {
+        options(for: widgetFamily)?.bottomTextColor.flatMap { Color(hex: $0) }
     }
 
     /// Whether to show the state value as text for a given family (default true).
