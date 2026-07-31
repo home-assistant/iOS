@@ -270,10 +270,11 @@ final class RemindersSyncManager: ObservableObject {
 
         var details: [String] = []
         do {
+            let features = await todoListFeatures(server: server, entityId: config.todoEntityId)
             let todoItems = try await fetchTodoItems(api: api, listId: config.todoEntityId)
             let reminders = await fetchReminders(in: calendar)
             let todoSnapshots = Dictionary(
-                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0)) },
+                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
                 uniquingKeysWith: { first, _ in first }
             )
             let remindersById = Dictionary(
@@ -284,10 +285,18 @@ final class RemindersSyncManager: ObservableObject {
             let configId = config.id
             let links = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
                 .map(RemindersSyncPlanner.LinkState.init(link:))
+                .map { link in
+                    RemindersSyncPlanner.LinkState(
+                        todoItemUid: link.todoItemUid,
+                        reminderId: link.reminderId,
+                        snapshot: link.snapshot.trimmed(to: features)
+                    )
+                }
             details = try await applyPlan(
                 config: config,
                 api: api,
                 calendar: calendar,
+                features: features,
                 todoSnapshots: todoSnapshots,
                 remindersById: remindersById,
                 links: links
@@ -314,11 +323,14 @@ final class RemindersSyncManager: ObservableObject {
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         calendar: EKCalendar,
+        features: TodoListEntityFeature?,
         todoSnapshots: [String: RemindersSyncItemSnapshot],
         remindersById: [String: EKReminder],
         links: [RemindersSyncPlanner.LinkState]
     ) async throws -> [String] {
-        let reminderSnapshots = remindersById.mapValues(RemindersSyncItemSnapshot.init(reminder:))
+        let reminderSnapshots = remindersById.mapValues {
+            RemindersSyncItemSnapshot(reminder: $0).trimmed(to: features)
+        }
         let operations = RemindersSyncPlanner.plan(
             direction: config.direction,
             conflictResolution: RemindersSyncSettings.current.conflictResolution,
@@ -338,6 +350,7 @@ final class RemindersSyncManager: ObservableObject {
                     operation,
                     config: config,
                     calendar: calendar,
+                    features: features,
                     todoSnapshots: todoSnapshots,
                     remindersById: remindersById
                 )
@@ -435,6 +448,7 @@ final class RemindersSyncManager: ObservableObject {
         _ operation: RemindersSyncOperation,
         config: RemindersSyncConfig,
         calendar: EKCalendar,
+        features: TodoListEntityFeature?,
         todoSnapshots: [String: RemindersSyncItemSnapshot],
         remindersById: [String: EKReminder]
     ) async throws -> Bool {
@@ -443,7 +457,7 @@ final class RemindersSyncManager: ObservableObject {
             guard let snapshot = todoSnapshots[todoItemUid] else { return false }
             let reminder = EKReminder(eventStore: eventStore)
             reminder.calendar = calendar
-            apply(snapshot, to: reminder)
+            apply(snapshot, to: reminder, features: features)
             try eventStore.save(reminder, commit: false)
             await saveLink(
                 config: config,
@@ -455,7 +469,7 @@ final class RemindersSyncManager: ObservableObject {
         case let .updateReminder(todoItemUid, reminderId):
             guard let snapshot = todoSnapshots[todoItemUid],
                   let reminder = remindersById[reminderId] else { return false }
-            apply(snapshot, to: reminder)
+            apply(snapshot, to: reminder, features: features)
             try eventStore.save(reminder, commit: false)
             await saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
             return true
@@ -565,11 +579,40 @@ final class RemindersSyncManager: ObservableObject {
         }
     }
 
-    private func apply(_ snapshot: RemindersSyncItemSnapshot, to reminder: EKReminder) {
+    /// The todo entity's `supported_features` bitmask; nil when the state fetch fails, in which
+    /// case callers assume every field is supported.
+    private func todoListFeatures(server: Server, entityId: String) async -> TodoListEntityFeature? {
+        let attributes = await ControlEntityProvider(domains: [.todo]).attributes(server: server, entityId: entityId)
+        // NSNumber, not Int: the bitmask arrives as a JSON number whose bridged type isn't guaranteed.
+        guard let rawValue = (attributes?["supported_features"] as? NSNumber)?.intValue else { return nil }
+        return TodoListEntityFeature(rawValue: rawValue)
+    }
+
+    private func apply(
+        _ snapshot: RemindersSyncItemSnapshot,
+        to reminder: EKReminder,
+        features: TodoListEntityFeature?
+    ) {
         reminder.title = snapshot.title
-        reminder.notes = snapshot.notes
         reminder.isCompleted = snapshot.isCompleted
-        reminder.dueDateComponents = snapshot.dueComponents
+        // Fields the list can't store are owned by the reminder side: never overwrite them with
+        // the todo side's (necessarily empty or less precise) value.
+        if features?.contains(.setDescriptionOnItem) ?? true {
+            reminder.notes = snapshot.notes
+        }
+        if RemindersSyncItemSnapshot(reminder: reminder).trimmed(to: features).due != snapshot.due {
+            var newDue = snapshot.dueComponents
+            // A date-only value from a list that can't store times is a storage limitation, not
+            // the user removing the time: keep the reminder's local time on the changed date.
+            if let features, !features.contains(.setDueDatetimeOnItem),
+               newDue != nil, newDue?.hour == nil,
+               let existing = reminder.dueDateComponents, existing.hour != nil {
+                newDue?.hour = existing.hour
+                newDue?.minute = existing.minute
+                newDue?.second = existing.second
+            }
+            reminder.dueDateComponents = newDue
+        }
     }
 
     private func saveLink(

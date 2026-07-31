@@ -110,7 +110,12 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
             return
         }
         entitySubtitle = entity.contextualSubtitle
-        guard entity.entityId != config.entityId else { return }
+        // The same entity id on a different server is a different entity.
+        guard entity.entityId != config.entityId || entity.serverId != config.serverId else { return }
+        // The entity picker carries its own server filter, so the picked entity decides the server
+        // (the editor shows no separate server picker for the entity flow). Set it before the
+        // precision lookup below, which resolves against the config's server.
+        config.serverId = entity.serverId
         config.entityId = entity.entityId
         config.entityDisplayName = entity.name
         // A new entity's value source no longer applies to the old attributes.
