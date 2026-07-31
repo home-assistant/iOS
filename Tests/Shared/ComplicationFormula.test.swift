@@ -89,6 +89,11 @@ struct ComplicationFormulaTests {
         #expect(config.faceName == "Solar")
     }
 
+    @Test func templateKindFaceNameFallsBackWhenUnnamed() {
+        let config = WatchComplicationConfig(serverId: "server", kind: .customTemplate)
+        #expect(config.faceName == "Complication")
+    }
+
     @Test func defaultVisibilityMatchesLegacyFlags() {
         let config = entityConfig
         // Circular was value-only, rectangular led with icon + name, corner had name + value.
