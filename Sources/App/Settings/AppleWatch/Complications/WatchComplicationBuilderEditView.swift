@@ -198,6 +198,14 @@ struct WatchComplicationBuilderEditView: View {
         appearanceOptions
     }
 
+    /// Whether template colors currently drive the complication. Only the template kind renders
+    /// color templates, so this — not `useTemplateColor` alone — gates the template fields and the
+    /// static pickers' disabled state: switching the source back to entity re-enables the static
+    /// colors even while the template fields keep their content for a later switch back.
+    private var templateColorsActive: Bool {
+        viewModel.config.kind == .customTemplate && viewModel.useTemplateColor
+    }
+
     /// The complication's colors, shown inline with the value element (its own icon color lives with
     /// the icon in the display-name row). Always visible — no opt-in — so the colors are discoverable
     /// without hunting for a toggle. The gauge/progress color only applies when a gauge is shown; the
@@ -213,12 +221,12 @@ struct WatchComplicationBuilderEditView: View {
         }
         if familyHasProgressBar, viewModel.config.showsGauge(for: currentFamily) {
             staticColorPicker(gaugeColorTitle, selection: tintBinding)
-            if viewModel.useTemplateColor {
+            if templateColorsActive {
                 colorTemplateField(\.customGaugeColorTemplate, title: gaugeColorTitle)
             }
         }
         staticColorPicker(L10n.Watch.Complications.Builder.textColor, selection: textColorBinding)
-        if viewModel.useTemplateColor {
+        if templateColorsActive {
             colorTemplateField(\.customTextColorTemplate, title: L10n.Watch.Complications.Builder.textColor)
         }
     }
@@ -233,7 +241,7 @@ struct WatchComplicationBuilderEditView: View {
             style: .row(title: L10n.Watch.Complications.Slot.icon)
         )
         staticColorPicker(L10n.Watch.Complications.Builder.iconColor, selection: iconColorBinding)
-        if viewModel.config.kind == .customTemplate, viewModel.useTemplateColor {
+        if templateColorsActive {
             colorTemplateField(\.customIconColorTemplate, title: L10n.Watch.Complications.Builder.iconColor)
         }
     }
@@ -584,8 +592,8 @@ struct WatchComplicationBuilderEditView: View {
     /// A static color picker that reads as disabled while template colors drive the complication.
     private func staticColorPicker(_ title: String, selection: Binding<Color>) -> some View {
         ColorPicker(title, selection: selection, supportsOpacity: false)
-            .disabled(viewModel.useTemplateColor)
-            .opacity(viewModel.useTemplateColor ? 0.4 : 1)
+            .disabled(templateColorsActive)
+            .opacity(templateColorsActive ? 0.4 : 1)
     }
 
     /// A color template row: shows the evaluated color (or the template source) and opens the full
