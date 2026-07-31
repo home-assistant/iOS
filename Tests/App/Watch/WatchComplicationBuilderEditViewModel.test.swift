@@ -90,6 +90,22 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
+    @Test func pickingEntityFromAnotherServerAdoptsItsServer() throws {
+        try withBuilderTestWorld(serverIds: ["server-1", "server-2"]) { _ in
+            // The entity flow has no separate server picker: the entity picker's own server filter
+            // decides, so a picked entity carries its server into the config.
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            #expect(viewModel.config.serverId == "server-1")
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-2")
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.serverId == "server-2")
+            #expect(viewModel.config.entityId == "sensor.battery")
+        }
+    }
+
     @Test func reselectingSameServerKeepsEntity() throws {
         try withBuilderTestWorld { _ in
             let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
