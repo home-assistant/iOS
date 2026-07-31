@@ -62,6 +62,25 @@ struct RemindersSyncItemSnapshot: Equatable {
         }
     }
 
+    /// A copy without the fields the todo list can't store, so both sides compare equal on
+    /// fields that can never sync (`nil` features, from a failed state fetch, trims nothing).
+    /// A timed due is downgraded to its date part when the list only supports date-only dues.
+    func trimmed(to features: TodoListEntityFeature?) -> RemindersSyncItemSnapshot {
+        guard let features else { return self }
+        var copy = self
+        if !features.contains(.setDescriptionOnItem) {
+            copy.notes = nil
+        }
+        if let due {
+            if hasDueTime, !features.contains(.setDueDatetimeOnItem) {
+                copy.due = features.contains(.setDueDateOnItem) ? String(due.prefix(10)) : nil
+            } else if !hasDueTime, !features.contains(.setDueDateOnItem) {
+                copy.due = nil
+            }
+        }
+        return copy
+    }
+
     /// The due date as `EKReminder.dueDateComponents`.
     var dueComponents: DateComponents? {
         guard let due else { return nil }

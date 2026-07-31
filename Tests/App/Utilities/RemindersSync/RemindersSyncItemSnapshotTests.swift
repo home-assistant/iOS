@@ -130,6 +130,85 @@ struct RemindersSyncItemSnapshotTests {
         #expect(RemindersSyncItemSnapshot.normalizedNotes(" note \n") == "note")
     }
 
+    // MARK: - Trimming to the list's supported features
+
+    @Test func testTrimmedWithNilFeaturesKeepsEverything() {
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: "3x",
+            due: "2026-07-17"
+        )
+        #expect(snapshot.trimmed(to: nil) == snapshot)
+    }
+
+    @Test func testTrimmedRemovesNotesWhenDescriptionsUnsupported() {
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: "3x",
+            due: nil
+        )
+        let trimmed = snapshot.trimmed(to: [.createItem, .updateItem, .deleteItem])
+        #expect(trimmed.notes == nil)
+        #expect(trimmed.title == "Buy milk")
+    }
+
+    @Test func testTrimmedKeepsNotesWhenDescriptionsSupported() {
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: "3x",
+            due: nil
+        )
+        #expect(snapshot.trimmed(to: [.setDescriptionOnItem]).notes == "3x")
+    }
+
+    @Test func testTrimmedRemovesAllDayDueWhenDueDatesUnsupported() {
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: nil,
+            due: "2026-07-17"
+        )
+        #expect(snapshot.trimmed(to: [.setDescriptionOnItem]).due == nil)
+    }
+
+    @Test func testTrimmedDowngradesTimedDueToDateWhenOnlyDatesSupported() {
+        let due = RemindersSyncItemSnapshot.canonicalDueString(from: Date(timeIntervalSince1970: 1_784_000_000))
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: nil,
+            due: due
+        )
+        let trimmed = snapshot.trimmed(to: [.setDueDateOnItem])
+        #expect(trimmed.due == String(due.prefix(10)))
+        #expect(!trimmed.hasDueTime)
+    }
+
+    @Test func testTrimmedRemovesTimedDueWhenDueDatesUnsupported() {
+        let due = RemindersSyncItemSnapshot.canonicalDueString(from: Date(timeIntervalSince1970: 1_784_000_000))
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: nil,
+            due: due
+        )
+        #expect(snapshot.trimmed(to: []).due == nil)
+    }
+
+    @Test func testTrimmedKeepsTimedDueWhenDatetimesSupported() {
+        let due = RemindersSyncItemSnapshot.canonicalDueString(from: Date(timeIntervalSince1970: 1_784_000_000))
+        let snapshot = RemindersSyncItemSnapshot(
+            title: "Buy milk",
+            isCompleted: false,
+            notes: nil,
+            due: due
+        )
+        #expect(snapshot.trimmed(to: [.setDueDatetimeOnItem]).due == due)
+    }
+
     // MARK: - Comparing sides
 
     @Test func testSnapshotsFromBothSidesCompareEqualWhenContentMatches() {
