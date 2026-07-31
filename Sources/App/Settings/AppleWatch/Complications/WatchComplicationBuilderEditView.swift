@@ -227,7 +227,11 @@ struct WatchComplicationBuilderEditView: View {
     /// is visible. Template complications can also drive the icon color from a template.
     @ViewBuilder
     private var iconSlotOptions: some View {
-        IconPicker(selectedIcon: iconBinding, selectedColor: iconColorBinding)
+        IconPicker(
+            selectedIcon: iconBinding,
+            selectedColor: iconColorBinding,
+            style: .row(title: L10n.Watch.Complications.Slot.icon)
+        )
         if viewModel.config.kind == .customTemplate, viewModel.useTemplateColor {
             colorTemplateField(\.customIconColorTemplate, title: L10n.Watch.Complications.Builder.iconColor)
         }
@@ -276,8 +280,10 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             // The complication's name sits above everything else: it labels the complication in the
-            // iOS list and the watch gallery regardless of the source. A blank name falls back to the
-            // entity name (shown as the placeholder); template complications auto-generate one on save.
+            // iOS list and the watch gallery regardless of the source — it never renders on the face
+            // (the `{name}` token resolves to the entity name; see `WatchComplicationConfig.faceName`).
+            // A blank name falls back to the entity name (shown as the placeholder); template
+            // complications auto-generate one on save.
             Section {
                 TextField(text: stringBinding(\.name)) {
                     Text(verbatim: viewModel.namePlaceholder)

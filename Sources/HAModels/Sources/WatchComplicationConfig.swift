@@ -258,6 +258,18 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         name ?? entityDisplayName ?? entityId ?? "Complication"
     }
 
+    /// The name rendered on the complication face — what the `{name}` formula token resolves to.
+    /// Entity complications always show the entity's name here: the complication's own `name` only
+    /// labels it in the iOS list and the watch gallery (see `displayName`). Template complications
+    /// have no entity, so the complication name stands in — via `displayName`, so a missing name
+    /// still renders its non-empty "Complication" fallback instead of a blank title.
+    public var faceName: String {
+        switch kind {
+        case .entity: return entityDisplayName ?? entityId ?? ""
+        case .customTemplate: return displayName
+        }
+    }
+
     // MARK: - Per-family resolution (override → family default)
 
     /// Whether the complication's name is shown for this family. Circular is too small for a name, so

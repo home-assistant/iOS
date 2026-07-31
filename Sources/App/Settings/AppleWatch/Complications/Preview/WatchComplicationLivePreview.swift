@@ -24,7 +24,7 @@ struct ComplicationPreviewContext {
 
     private var family: WatchComplicationConfig.Family { config.widgetFamily }
 
-    var name: String { config.name ?? config.entityDisplayName ?? config.entityId ?? "" }
+    var name: String { config.faceName }
     var showsValue: Bool { config.isSlotVisible(.value, for: family) }
     var showsName: Bool { config.isSlotVisible(.title, for: family) }
     var showsSubtitle: Bool { config.isSlotVisible(.subtitle, for: family) }
@@ -203,6 +203,11 @@ extension ComplicationPreviewContext {
         familyConfig.gaugeMax = familyConfig.gaugeMax ?? 100
         if familyConfig.name == nil, familyConfig.entityDisplayName == nil, familyConfig.entityId == nil {
             familyConfig.name = "Battery"
+        }
+        // The face's name token ignores the complication name for the entity kind, so the pre-entity
+        // mock needs a stand-in entity name for the title to render.
+        if familyConfig.entityDisplayName == nil, familyConfig.entityId == nil {
+            familyConfig.entityDisplayName = familyConfig.name
         }
         var iconImage: Image?
         if familyConfig.isSlotVisible(.icon, for: family) {
