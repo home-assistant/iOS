@@ -10,6 +10,7 @@ final class RemindersSyncAddViewModel: ObservableObject {
     @Published var direction: RemindersSyncDirection = .bothWays
     @Published private(set) var todoEntitiesByServer: [(Server, [HAAppEntity])] = []
     @Published private(set) var reminderLists: [EKCalendar] = []
+    @Published private(set) var hasLoaded = false
 
     private var existingConfigs: [RemindersSyncConfig] = []
 
@@ -20,6 +21,12 @@ final class RemindersSyncAddViewModel: ObservableObject {
     var todoEntities: [HAAppEntity] {
         todoEntitiesByServer
             .first(where: { $0.0.identifier.rawValue == selectedServerId })?.1 ?? []
+    }
+
+    /// Whether any server has a todo list to sync with (servers without lists are filtered out
+    /// of `todoEntitiesByServer` on load).
+    var hasTodoLists: Bool {
+        !todoEntitiesByServer.isEmpty
     }
 
     /// The exact same list pairing already exists.
@@ -57,6 +64,7 @@ final class RemindersSyncAddViewModel: ObservableObject {
         if selectedReminderListId == nil {
             selectedReminderListId = reminderLists.first?.calendarIdentifier
         }
+        hasLoaded = true
     }
 
     func selectedServerChanged() {
