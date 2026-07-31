@@ -290,8 +290,6 @@ struct WatchComplicationBuilderEditView: View {
                 }
             } header: {
                 Text(L10n.Watch.Complications.Builder.complicationName)
-            } footer: {
-                Text(L10n.Watch.Complications.Builder.complicationNameFooter)
             }
 
             // Step 1: pick the source. Two radio-style cards side by side; the choice drives which of

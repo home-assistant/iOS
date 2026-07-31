@@ -6317,8 +6317,6 @@ public enum L10n {
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Complication name
         public static var complicationName: String { return L10n.tr("Localizable", "watch.complications.builder.complication_name") }
-        /// Only used to identify this complication in the list. Leave empty to use the entity name.
-        public static var complicationNameFooter: String { return L10n.tr("Localizable", "watch.complications.builder.complication_name_footer") }
         /// Content
         public static var content: String { return L10n.tr("Localizable", "watch.complications.builder.content") }
         /// Custom
