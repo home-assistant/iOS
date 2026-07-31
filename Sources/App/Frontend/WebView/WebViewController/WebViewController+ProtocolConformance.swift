@@ -5,19 +5,45 @@ import WebKit
 
 extension WebViewController: WebViewControllerProtocol {
     var canGoBack: Bool {
-        webView.canGoBack
+        webView.canGoBack && Self.shouldAllowBackForwardNavigation(
+            from: webView.url,
+            to: webView.backForwardList.backItem?.url
+        )
     }
 
     var canGoForward: Bool {
-        webView.canGoForward
+        webView.canGoForward && Self.shouldAllowBackForwardNavigation(
+            from: webView.url,
+            to: webView.backForwardList.forwardItem?.url
+        )
     }
 
     @objc func goBack() {
+        guard canGoBack else {
+            if webView.canGoBack {
+                Current.Log.info("preventing back navigation to a different base URL")
+            }
+            return
+        }
         webView.goBack()
     }
 
     @objc func goForward() {
+        guard canGoForward else {
+            if webView.canGoForward {
+                Current.Log.info("preventing forward navigation to a different base URL")
+            }
+            return
+        }
         webView.goForward()
+    }
+
+    /// History can span base URLs after an internal/external switch (the current path is re-loaded onto
+    /// the newly active base, see `resolvedLoadURL`), so going back or forward across that boundary would
+    /// leave the active URL for one that's likely unreachable on the current network. Non-private for tests.
+    static func shouldAllowBackForwardNavigation(from currentURL: URL?, to targetURL: URL?) -> Bool {
+        guard let currentURL, let targetURL else { return true }
+        return targetURL.baseIsEqual(to: currentURL)
     }
 
     var overlayedController: UIViewController? {

@@ -346,6 +346,50 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
     }
 
+    func testBackForwardNavigationAllowedWithinSameBase() {
+        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
+            from: URL(string: "http://homeassistant.local:8123/lovelace/0?external_auth=1"),
+            to: URL(string: "http://homeassistant.local:8123/history")
+        ))
+    }
+
+    func testBackForwardNavigationBlockedAcrossDifferentHosts() {
+        // An internal -> external switch re-loads the current path onto the new base, leaving the
+        // internal entry in history; going back to it would load a URL unreachable on this network.
+        XCTAssertFalse(WebViewController.shouldAllowBackForwardNavigation(
+            from: URL(string: "https://example.ui.nabu.casa/lovelace/0"),
+            to: URL(string: "http://homeassistant.local:8123/lovelace/0")
+        ))
+    }
+
+    func testBackForwardNavigationBlockedAcrossDifferentPortsOnSameHost() {
+        XCTAssertFalse(WebViewController.shouldAllowBackForwardNavigation(
+            from: URL(string: "http://homeassistant.local:8123/lovelace/0"),
+            to: URL(string: "http://homeassistant.local:8124/lovelace/0")
+        ))
+    }
+
+    func testBackForwardNavigationTreatsDefaultPortAsEquivalent() {
+        // WKWebView may strip default ports from navigated URLs; that must not read as a base change.
+        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
+            from: URL(string: "https://example.com/lovelace/0"),
+            to: URL(string: "https://example.com:443/history")
+        ))
+    }
+
+    func testBackForwardNavigationAllowedWhenEitherURLIsMissing() {
+        // Without both URLs there's no boundary to enforce; the web view's own
+        // canGoBack/canGoForward already gates whether a navigation can happen at all.
+        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
+            from: nil,
+            to: URL(string: "http://homeassistant.local:8123/lovelace/0")
+        ))
+        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
+            from: URL(string: "http://homeassistant.local:8123/lovelace/0"),
+            to: nil
+        ))
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
