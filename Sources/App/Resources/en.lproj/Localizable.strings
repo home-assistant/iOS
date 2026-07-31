@@ -1902,6 +1902,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Complication name";
+"watch.complications.builder.complication_name_footer" = "Only used to identify this complication in the list. Leave empty to use the entity name.";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";

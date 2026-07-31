@@ -355,18 +355,19 @@ enum WatchWidgetLiveFetch {
         }
         for index in snapshots.indices {
             guard let id = snapshots[index].id, let update = updates[id] else { continue }
-            let name = snapshots[index].menuName ?? snapshots[index].subtitle
+            let config = configs.first(where: { $0.id == id })
+            // The face name (entity name), never the complication's own name — that one only labels
+            // the config in lists. Resolved off the config, not the snapshot's stored strings, which
+            // can be stale relative to the current config.
+            let name = config?.faceName ?? snapshots[index].subtitle
             snapshots[index].title = update.value
             snapshots[index].inlineText = [name, update.value].filter { !$0.isEmpty }.joined(separator: " ")
 
             // Re-resolve the slot texts in place with the fresh state. Only entity complications
             // reach here, so every formula resolves on-device — no template rendering involved.
-            guard let config = configs.first(where: { $0.id == id }) else { continue }
-            // The config's display name, not the snapshot's stored one: the stored name can be
-            // stale relative to the current config, and the snapshot builder resolves against the
-            // config too.
+            guard let config else { continue }
             let context = ComplicationFormulaContext(
-                entityName: config.displayName,
+                entityName: config.faceName,
                 formattedState: update.value,
                 attributeValue: { update.attributes[$0].map { String(describing: $0) } }
             )
