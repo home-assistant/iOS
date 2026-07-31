@@ -80,6 +80,27 @@ final class AppContainerCoordinatorTests: XCTestCase {
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
     }
 
+    func testActivatingTheActiveServerSendsTheFrontendBackToTheRoot() {
+        var openedServer: Server?
+        coordinator.onOpenServer = { openedServer = $0 }
+
+        coordinator.activate(server: server)
+
+        XCTAssertEqual(frontend.navigateToRootCallCount, 1)
+        XCTAssertNil(openedServer)
+    }
+
+    func testActivatingAnotherServerOpensItWithoutNavigatingTheOutgoingFrontend() {
+        let otherServer = Server.fake()
+        var openedServer: Server?
+        coordinator.onOpenServer = { openedServer = $0 }
+
+        coordinator.activate(server: otherServer)
+
+        XCTAssertEqual(openedServer?.identifier, otherServer.identifier)
+        XCTAssertEqual(frontend.navigateToRootCallCount, 0)
+    }
+
     func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() {
         AppSettingsPresenter.shared.isSheetPresented = true
         var settingsSheetWasClearedBeforePresenting: Bool?

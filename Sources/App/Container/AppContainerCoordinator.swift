@@ -103,6 +103,17 @@ final class AppContainerCoordinator: AppCoordinator {
         return promise
     }
 
+    func activate(server: Server) {
+        if let current = frontend, current.server.identifier == server.identifier {
+            // Already showing this server, so `open(server:)` would be a no-op: send the frontend back to
+            // the root instead, so activating the server again recovers a user stuck on a broken screen.
+            current.navigateToRoot()
+        } else {
+            // Switching servers rebuilds the web view, which lands on the server root on its own.
+            open(server: server)
+        }
+    }
+
     func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {
         pendingServerSelection = completion
         // The picker is a sheet on the container, so anything already presented (Settings, What's New, …)
