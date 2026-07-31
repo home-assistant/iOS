@@ -583,7 +583,8 @@ final class RemindersSyncManager: ObservableObject {
     /// case callers assume every field is supported.
     private func todoListFeatures(server: Server, entityId: String) async -> TodoListEntityFeature? {
         let attributes = await ControlEntityProvider(domains: [.todo]).attributes(server: server, entityId: entityId)
-        guard let rawValue = attributes?["supported_features"] as? Int else { return nil }
+        // NSNumber, not Int: the bitmask arrives as a JSON number whose bridged type isn't guaranteed.
+        guard let rawValue = (attributes?["supported_features"] as? NSNumber)?.intValue else { return nil }
         return TodoListEntityFeature(rawValue: rawValue)
     }
 
@@ -600,7 +601,17 @@ final class RemindersSyncManager: ObservableObject {
             reminder.notes = snapshot.notes
         }
         if RemindersSyncItemSnapshot(reminder: reminder).trimmed(to: features).due != snapshot.due {
-            reminder.dueDateComponents = snapshot.dueComponents
+            var newDue = snapshot.dueComponents
+            // A date-only value from a list that can't store times is a storage limitation, not
+            // the user removing the time: keep the reminder's local time on the changed date.
+            if let features, !features.contains(.setDueDatetimeOnItem),
+               newDue != nil, newDue?.hour == nil,
+               let existing = reminder.dueDateComponents, existing.hour != nil {
+                newDue?.hour = existing.hour
+                newDue?.minute = existing.minute
+                newDue?.second = existing.second
+            }
+            reminder.dueDateComponents = newDue
         }
     }
 
