@@ -67,6 +67,14 @@ final class RemindersSyncAddViewModel: ObservableObject {
         hasLoaded = true
     }
 
+    /// Triggers a full app database update for every server, so newly created to-do lists show
+    /// up. Progress and completion are reported through the updater's toasts.
+    func reloadServers() {
+        for server in Current.servers.all {
+            server.refreshAppDatabase(forceUpdate: true, showProgress: true)
+        }
+    }
+
     func selectedServerChanged() {
         // Entities belong to one server; reset the selection when it no longer matches.
         if !todoEntities.contains(where: { $0.entityId == selectedTodoEntityId }) {

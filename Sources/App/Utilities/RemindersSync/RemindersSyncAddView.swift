@@ -76,6 +76,14 @@ struct RemindersSyncAddView: View {
                         dismiss()
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.reloadServers()
+                    } label: {
+                        Image(systemSymbol: .arrowClockwise)
+                    }
+                    .accessibilityLabel(L10n.Settings.ConnectionSection.refreshServer)
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     if !viewModel.hasLoaded || viewModel.hasTodoLists {
                         Button(L10n.saveLabel) {
@@ -92,6 +100,11 @@ struct RemindersSyncAddView: View {
             }
             .task {
                 await viewModel.load()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .appDatabaseUpdaterDidFinishRoutine)) { _ in
+                // Re-read the entity cache so a list created in Home Assistant appears once its
+                // server's update finishes.
+                Task { await viewModel.load() }
             }
         }
     }
