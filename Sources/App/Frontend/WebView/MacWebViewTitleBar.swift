@@ -369,8 +369,10 @@ extension MacWebViewTitleBar {
                     title: server.info.name,
                     state: server.identifier == selectedIdentifier ? .on : .off
                 ) { _ in
+                    // Not `activate(server:)`: like the server-cycling gestures, the toolbar menu
+                    // switches in place without sending the user back to the Home Assistant root.
                     Current.sceneManager.appCoordinator.done { coordinator in
-                        coordinator.activate(server: server)
+                        coordinator.open(server: server)
                     }
                 }
             }
