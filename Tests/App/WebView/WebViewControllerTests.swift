@@ -346,48 +346,100 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
     }
 
-    func testBackForwardNavigationAllowedWithinSameBase() {
-        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
-            from: URL(string: "http://homeassistant.local:8123/lovelace/0?external_auth=1"),
-            to: URL(string: "http://homeassistant.local:8123/history")
-        ))
+    func testBackForwardResolutionNavigatesNativelyWithinSameBase() throws {
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "http://homeassistant.local:8123/lovelace/0?external_auth=1")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history"))]
+        )
+
+        XCTAssertEqual(resolution, .navigate(index: 0))
     }
 
-    func testBackForwardNavigationBlockedAcrossDifferentHosts() {
-        // An internal -> external switch re-loads the current path onto the new base, leaving the
-        // internal entry in history; going back to it would load a URL unreachable on this network.
-        XCTAssertFalse(WebViewController.shouldAllowBackForwardNavigation(
-            from: URL(string: "https://example.ui.nabu.casa/lovelace/0"),
-            to: URL(string: "http://homeassistant.local:8123/lovelace/0")
-        ))
-    }
-
-    func testBackForwardNavigationBlockedAcrossDifferentPortsOnSameHost() {
-        XCTAssertFalse(WebViewController.shouldAllowBackForwardNavigation(
-            from: URL(string: "http://homeassistant.local:8123/lovelace/0"),
-            to: URL(string: "http://homeassistant.local:8124/lovelace/0")
-        ))
-    }
-
-    func testBackForwardNavigationTreatsDefaultPortAsEquivalent() {
+    func testBackForwardResolutionTreatsDefaultPortAsSameBase() throws {
         // WKWebView may strip default ports from navigated URLs; that must not read as a base change.
-        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
-            from: URL(string: "https://example.com/lovelace/0"),
-            to: URL(string: "https://example.com:443/history")
-        ))
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.com/lovelace/0")),
+            candidateURLs: [XCTUnwrap(URL(string: "https://example.com:443/history"))]
+        )
+
+        XCTAssertEqual(resolution, .navigate(index: 0))
     }
 
-    func testBackForwardNavigationAllowedWhenEitherURLIsMissing() {
-        // Without both URLs there's no boundary to enforce; the web view's own
-        // canGoBack/canGoForward already gates whether a navigation can happen at all.
-        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
-            from: nil,
-            to: URL(string: "http://homeassistant.local:8123/lovelace/0")
-        ))
-        XCTAssertTrue(WebViewController.shouldAllowBackForwardNavigation(
-            from: URL(string: "http://homeassistant.local:8123/lovelace/0"),
-            to: nil
-        ))
+    func testBackForwardResolutionRebasesCrossBaseItemOntoCurrentBase() throws {
+        // The internal entry left behind by an internal -> external switch is unreachable externally;
+        // its page is re-requested on the active base instead, keeping path, query and fragment.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?start=1#detail"))]
+        )
+
+        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1#detail"))))
+    }
+
+    func testBackForwardResolutionSkipsDuplicatedBoundaryEntryForCurrentPage() throws {
+        // The base switch re-loads the current path onto the new base, so the nearest cross-base entry
+        // is the page already showing; back must go to the previous distinct page, not reload this one.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0?external_auth=1")),
+            candidateURLs: [
+                XCTUnwrap(URL(string: "http://homeassistant.local:8123/lovelace/0")),
+                XCTUnwrap(URL(string: "http://homeassistant.local:8123/config")),
+            ]
+        )
+
+        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/config"))))
+    }
+
+    func testBackForwardResolutionSkipsBoundaryEntryWithLovelaceZeroSuffix() throws {
+        // HA appends /0 to the default lovelace path; that still counts as the same page.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/lovelace"))]
+        )
+
+        XCTAssertNil(resolution)
+    }
+
+    func testBackForwardResolutionReturnsNilWhenOnlyDuplicateOfCurrentPageExists() throws {
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/lovelace/0"))]
+        )
+
+        XCTAssertNil(resolution)
+    }
+
+    func testBackForwardResolutionSkipsAboutBlankEntries() throws {
+        // about:blank comes from the no-active-URL state and must never be rebased into "/blank".
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.com/lovelace/0")),
+            candidateURLs: [
+                XCTUnwrap(URL(string: "about:blank")),
+                XCTUnwrap(URL(string: "https://example.com/history")),
+            ]
+        )
+
+        XCTAssertEqual(resolution, .navigate(index: 1))
+    }
+
+    func testBackForwardResolutionReturnsNilWhileShowingAboutBlank() throws {
+        // While the no-active-URL screen shows, no base exists to rebase history onto.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "about:blank")),
+            candidateURLs: [XCTUnwrap(URL(string: "https://example.com/lovelace/0"))]
+        )
+
+        XCTAssertNil(resolution)
+    }
+
+    func testBackForwardResolutionWithoutCurrentURLPreservesPlainNavigation() throws {
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: nil,
+            candidateURLs: [XCTUnwrap(URL(string: "https://example.com/lovelace/0"))]
+        )
+
+        XCTAssertEqual(resolution, .navigate(index: 0))
+        XCTAssertNil(WebViewController.resolvedBackForwardNavigation(currentURL: nil, candidateURLs: []))
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {

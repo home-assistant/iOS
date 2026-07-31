@@ -5,45 +5,100 @@ import WebKit
 
 extension WebViewController: WebViewControllerProtocol {
     var canGoBack: Bool {
-        webView.canGoBack && Self.shouldAllowBackForwardNavigation(
-            from: webView.url,
-            to: webView.backForwardList.backItem?.url
-        )
+        Self.resolvedBackForwardNavigation(
+            currentURL: webView.url,
+            candidateURLs: webView.backForwardList.backList.reversed().map(\.url)
+        ) != nil
     }
 
     var canGoForward: Bool {
-        webView.canGoForward && Self.shouldAllowBackForwardNavigation(
-            from: webView.url,
-            to: webView.backForwardList.forwardItem?.url
-        )
+        Self.resolvedBackForwardNavigation(
+            currentURL: webView.url,
+            candidateURLs: webView.backForwardList.forwardList.map(\.url)
+        ) != nil
     }
 
     @objc func goBack() {
-        guard canGoBack else {
-            if webView.canGoBack {
-                Current.Log.info("preventing back navigation to a different base URL")
-            }
-            return
-        }
-        webView.goBack()
+        // Nearest-first: the immediate back item is last in `backList`.
+        performBackForwardNavigation(among: Array(webView.backForwardList.backList.reversed()))
     }
 
     @objc func goForward() {
-        guard canGoForward else {
-            if webView.canGoForward {
-                Current.Log.info("preventing forward navigation to a different base URL")
-            }
-            return
-        }
-        webView.goForward()
+        performBackForwardNavigation(among: webView.backForwardList.forwardList)
     }
 
-    /// History can span base URLs after an internal/external switch (the current path is re-loaded onto
-    /// the newly active base, see `resolvedLoadURL`), so going back or forward across that boundary would
-    /// leave the active URL for one that's likely unreachable on the current network. Non-private for tests.
-    static func shouldAllowBackForwardNavigation(from currentURL: URL?, to targetURL: URL?) -> Bool {
-        guard let currentURL, let targetURL else { return true }
-        return targetURL.baseIsEqual(to: currentURL)
+    private func performBackForwardNavigation(among items: [WKBackForwardListItem]) {
+        guard let resolution = Self.resolvedBackForwardNavigation(
+            currentURL: webView.url,
+            candidateURLs: items.map(\.url)
+        ) else { return }
+
+        switch resolution {
+        case let .navigate(index):
+            webView.go(to: items[index])
+        case let .load(url):
+            Current.Log.info("rebasing history navigation onto the active base URL: \(url.path)")
+            load(request: URLRequest(url: url))
+        }
+    }
+
+    enum BackForwardNavigationResolution: Equatable {
+        /// Navigate natively to the history item at this index of the nearest-first candidate list.
+        case navigate(index: Int)
+        /// The history item is on a different base; load its page rebuilt onto the current base instead.
+        case load(URL)
+    }
+
+    /// Resolves what back/forward should do so history navigation always stays on the current (active)
+    /// base URL. `candidateURLs` are the history item URLs on that side, ordered nearest-first.
+    ///
+    /// History can span base URLs after an internal/external switch: the current path is re-loaded onto
+    /// the newly active base (see `resolvedLoadURL`), leaving the old base's entries behind, and those
+    /// are likely unreachable on the current network. A same-base item navigates natively; a cross-base
+    /// item is rebased onto the current base and loaded as a fresh request -- except the duplicated
+    /// boundary entry for the page already showing, which is skipped so the navigation doesn't reduce to
+    /// a reload of the current page. `about:blank` entries (no-active-URL state) are skipped as well.
+    /// Returns `nil` when no candidate resolves to a different page. Non-private for tests.
+    static func resolvedBackForwardNavigation(
+        currentURL: URL?,
+        candidateURLs: [URL]
+    ) -> BackForwardNavigationResolution? {
+        guard let currentURL else {
+            // Nothing to compare against; preserve plain history navigation.
+            return candidateURLs.isEmpty ? nil : .navigate(index: 0)
+        }
+
+        for (index, candidateURL) in candidateURLs.enumerated() {
+            if candidateURL.baseIsEqual(to: currentURL) {
+                return .navigate(index: index)
+            }
+            guard let rebased = rebased(candidateURL, onto: currentURL) else { continue }
+            // Both directions because HA appends /0 to lovelace paths on only one side.
+            let isCurrentPage = rebased.isEqualIgnoringQueryParams(to: currentURL)
+                || currentURL.isEqualIgnoringQueryParams(to: rebased)
+            if !isCurrentPage {
+                return .load(rebased)
+            }
+        }
+        return nil
+    }
+
+    /// `url` with its scheme/host/port/credentials replaced by `baseURL`'s, keeping path, query and
+    /// fragment. `nil` when either side isn't a web URL (e.g. `about:blank`), which nothing can rebase.
+    private static func rebased(_ url: URL, onto baseURL: URL) -> URL? {
+        let webSchemes: Set<String> = ["http", "https"]
+        guard let scheme = url.scheme?.lowercased(), webSchemes.contains(scheme),
+              let baseScheme = baseURL.scheme?.lowercased(), webSchemes.contains(baseScheme),
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let baseComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.scheme = baseComponents.scheme
+        components.host = baseComponents.host
+        components.port = baseComponents.port
+        components.user = baseComponents.user
+        components.password = baseComponents.password
+        return components.url
     }
 
     var overlayedController: UIViewController? {
