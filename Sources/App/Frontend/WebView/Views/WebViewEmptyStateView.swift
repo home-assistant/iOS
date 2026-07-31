@@ -316,7 +316,7 @@ struct WebViewEmptyStateView: View {
             serverSelectionAction(server)
         } else {
             Current.sceneManager.appCoordinator.done { coordinator in
-                coordinator.open(server: server)
+                coordinator.activate(server: server)
             }
         }
     }

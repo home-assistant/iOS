@@ -370,7 +370,7 @@ extension MacWebViewTitleBar {
                     state: server.identifier == selectedIdentifier ? .on : .off
                 ) { _ in
                     Current.sceneManager.appCoordinator.done { coordinator in
-                        coordinator.open(server: server)
+                        coordinator.activate(server: server)
                     }
                 }
             }

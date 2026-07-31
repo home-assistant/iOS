@@ -73,7 +73,7 @@ final class WebViewGestureHandler {
     private func showServersList() {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.selectServer(prompt: nil, includeSettings: true) { server in
-                coordinator.open(server: server)
+                coordinator.activate(server: server)
             }
         }
     }
@@ -154,7 +154,7 @@ final class WebViewGestureHandler {
         let nextServer = servers[nextIndex]
 
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.open(server: nextServer)
+            coordinator.activate(server: nextServer)
         }
     }
 }

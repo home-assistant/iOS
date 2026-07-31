@@ -52,7 +52,7 @@ struct ServerPickerView: View {
                 onSelect(server)
             } else {
                 Current.sceneManager.appCoordinator.done { coordinator in
-                    coordinator.open(server: server)
+                    coordinator.activate(server: server)
                 }
             }
         }

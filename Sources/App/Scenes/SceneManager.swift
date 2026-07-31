@@ -46,6 +46,10 @@ protocol AppCoordinator: AnyObject {
     func showDownloadManager(_ viewModel: DownloadManagerViewModel)
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID])
     @discardableResult func open(server: Server) -> Guarantee<any WebFrontend>
+    /// Activates `server` in response to an explicit user action (server picker, server settings).
+    /// Unlike `open(server:)`, activating the already-active server is not a no-op: the frontend is sent
+    /// back to the Home Assistant root, so re-activating a server always recovers from a stuck screen.
+    func activate(server: Server)
     func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void)
     func presentInvitation(url: URL?)
     func setup()
