@@ -2099,6 +2099,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "Kas soovid kindlasti kella konfiguratsiooni kustutada? Seda ei saa tagasi võtta";
 "watch.debug.delete_db.reset.title" = "Lähtesta konfiguratsioon";
 "watch.debug.delete_db.title" = "Kustuta kella konfiguratsioon";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "Tühista ja kasuta vahemälu";
 "watch.home.loading.skip.title" = "Jäta vahele";
 "watch.home.run.confirmation.title" = "Kas oled kindel, et soovid käivitada \"%@\"?";

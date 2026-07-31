@@ -2099,6 +2099,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "Weet je zeker dat je de Watch-configuratie wilt verwijderen? Dit kan niet worden teruggedraaid";
 "watch.debug.delete_db.reset.title" = "Configuratie resetten";
 "watch.debug.delete_db.title" = "Watch-configuratie verwijderen";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
 "watch.home.loading.skip.title" = "Overslaan";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";

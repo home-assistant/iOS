@@ -1778,7 +1778,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.health.category.vitals" = "Vitals";
 "settings_sensors.health.error.no_enabled_sensors" = "Turn on at least one Apple Health sensor before requesting access.";
 "settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";
-"settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read during sensor updates and whenever Apple Health records something new, even if the app is closed.";
+"settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.reload" = "Reload Sensors";
 "settings_sensors.health.request_access" = "Request Apple Health Access";

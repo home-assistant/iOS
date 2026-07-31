@@ -2099,6 +2099,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "Êtes-vous sûr de vouloir supprimer la configuration de la montre ? Cette opération ne peut pas être annulée";
 "watch.debug.delete_db.reset.title" = "Réinitialiser la configuration";
 "watch.debug.delete_db.title" = "Supprimer la configuration de la montre";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "Annuler et utiliser le cache";
 "watch.home.loading.skip.title" = "Ignorer";
 "watch.home.run.confirmation.title" = "Êtes-vous sûr de vouloir exécuter « %@ » ?";

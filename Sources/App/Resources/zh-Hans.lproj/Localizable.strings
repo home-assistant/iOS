@@ -2098,6 +2098,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "您确定要删除手表配置吗 ？此操作无法恢复";
 "watch.debug.delete_db.reset.title" = "重置配置";
 "watch.debug.delete_db.title" = "删除手表配置";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
 "watch.home.loading.skip.title" = "跳过";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
