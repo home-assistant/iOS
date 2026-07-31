@@ -438,11 +438,50 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(resolution, .navigate(index: 1))
     }
 
+    func testBackForwardResolutionTreatsQueryDifferencesAsDistinctPages() throws {
+        // Only external_auth is ignored by duplicate detection; a cross-base entry that differs in any
+        // other query parameter is a distinct page that history navigation must still reach.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=2")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?start=1"))]
+        )
+
+        XCTAssertEqual(
+            resolution,
+            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1")))
+        )
+    }
+
+    func testBackForwardResolutionTreatsFragmentDifferencesAsDistinctPages() throws {
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/todo#list-a")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/todo#list-b"))]
+        )
+
+        XCTAssertEqual(
+            resolution,
+            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/todo?external_auth=1#list-b")))
+        )
+    }
+
     func testBackForwardResolutionReturnsNilWhileShowingAboutBlank() throws {
         // While the no-active-URL screen shows, no base exists to rebase history onto.
         let resolution = try WebViewController.resolvedBackForwardNavigation(
             currentURL: XCTUnwrap(URL(string: "about:blank")),
             candidateURLs: [XCTUnwrap(URL(string: "https://example.com/lovelace/0"))]
+        )
+
+        XCTAssertNil(resolution)
+    }
+
+    func testBackForwardResolutionReturnsNilWhileShowingAboutBlankWithAboutBlankHistory() throws {
+        // Two about:blank URLs compare as same-base; that must not surface as a navigable entry.
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "about:blank")),
+            candidateURLs: [
+                XCTUnwrap(URL(string: "about:blank")),
+                XCTUnwrap(URL(string: "https://example.com/lovelace/0")),
+            ]
         )
 
         XCTAssertNil(resolution)

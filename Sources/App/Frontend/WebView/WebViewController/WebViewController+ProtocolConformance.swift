@@ -57,7 +57,8 @@ extension WebViewController: WebViewControllerProtocol {
     /// are likely unreachable on the current network. A same-base item navigates natively; a cross-base
     /// item is rebased onto the current base and loaded as a fresh request -- except the duplicated
     /// boundary entry for the page already showing, which is skipped so the navigation doesn't reduce to
-    /// a reload of the current page. `about:blank` entries (no-active-URL state) are skipped as well.
+    /// a reload of the current page. `about:blank` entries (no-active-URL state) are skipped as well,
+    /// and while `about:blank` itself is showing there is no base to navigate within, so nothing resolves.
     /// Returns `nil` when no candidate resolves to a different page. Non-private for tests.
     static func resolvedBackForwardNavigation(
         currentURL: URL?,
@@ -68,19 +69,42 @@ extension WebViewController: WebViewControllerProtocol {
             return candidateURLs.isEmpty ? nil : .navigate(index: 0)
         }
 
+        guard isWebURL(currentURL) else { return nil }
+
         for (index, candidateURL) in candidateURLs.enumerated() {
             if candidateURL.baseIsEqual(to: currentURL) {
                 return .navigate(index: index)
             }
             guard let rebased = rebased(candidateURL, onto: currentURL) else { continue }
-            // Both directions because HA appends /0 to lovelace paths on only one side.
-            let isCurrentPage = rebased.isEqualIgnoringQueryParams(to: currentURL)
-                || currentURL.isEqualIgnoringQueryParams(to: rebased)
-            if !isCurrentPage {
+            if !isSamePage(rebased, currentURL) {
                 return .load(rebased)
             }
         }
         return nil
+    }
+
+    /// Whether two same-base URLs identify the same frontend page, i.e. one is the duplicated boundary
+    /// entry for the other. Only differences the base switch itself introduces are ignored: the
+    /// `external_auth` parameter and HA's `/0` suffix on default lovelace paths. Any other path, query
+    /// or fragment difference is a distinct page that history navigation must still reach.
+    private static func isSamePage(_ lhs: URL, _ rhs: URL) -> Bool {
+        guard lhs.path == rhs.path || lhs.path == rhs.path + "/0" || rhs.path == lhs.path + "/0" else {
+            return false
+        }
+        return queryItemsIgnoringExternalAuth(lhs) == queryItemsIgnoringExternalAuth(rhs)
+            && lhs.fragment == rhs.fragment
+    }
+
+    private static func queryItemsIgnoringExternalAuth(_ url: URL) -> [URLQueryItem] {
+        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.filter { $0.name != "external_auth" } ?? []
+        // Order-insensitive: the boundary load may append items in a different order than the original.
+        return items.sorted { ($0.name, $0.value ?? "") < ($1.name, $1.value ?? "") }
+    }
+
+    private static func isWebURL(_ url: URL) -> Bool {
+        guard let scheme = url.scheme?.lowercased() else { return false }
+        return scheme == "http" || scheme == "https"
     }
 
     /// `url` with its scheme/host/port/credentials replaced by `baseURL`'s, keeping path, query and
@@ -91,9 +115,7 @@ extension WebViewController: WebViewControllerProtocol {
     /// bare path, and without the parameter the frontend would use the browser login flow instead of
     /// the app's token bridge.
     private static func rebased(_ url: URL, onto baseURL: URL) -> URL? {
-        let webSchemes: Set<String> = ["http", "https"]
-        guard let scheme = url.scheme?.lowercased(), webSchemes.contains(scheme),
-              let baseScheme = baseURL.scheme?.lowercased(), webSchemes.contains(baseScheme),
+        guard isWebURL(url), isWebURL(baseURL),
               var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let baseComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             return nil
