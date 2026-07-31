@@ -69,6 +69,26 @@ struct ComplicationFormulaTests {
         WatchComplicationConfig(serverId: "server", kind: .entity, entityId: "sensor.sala")
     }
 
+    // MARK: - Face name vs. list name
+
+    @Test func complicationNameNeverOverridesEntityNameOnFace() {
+        var config = entityConfig
+        config.entityDisplayName = "Sala"
+        config.name = "My list label"
+        // The complication's own name only labels it in lists; the face shows the entity name.
+        #expect(config.faceName == "Sala")
+        #expect(config.displayName == "My list label")
+    }
+
+    @Test func entityFaceNameFallsBackToEntityId() {
+        #expect(entityConfig.faceName == "sensor.sala")
+    }
+
+    @Test func templateKindFaceNameUsesComplicationName() {
+        let config = WatchComplicationConfig(serverId: "server", kind: .customTemplate, name: "Solar")
+        #expect(config.faceName == "Solar")
+    }
+
     @Test func defaultVisibilityMatchesLegacyFlags() {
         let config = entityConfig
         // Circular was value-only, rectangular led with icon + name, corner had name + value.

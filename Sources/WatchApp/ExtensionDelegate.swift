@@ -605,7 +605,7 @@ enum WatchWidgetComplicationSnapshotStore {
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
         var outcomes: [ComplicationRefreshOutcome] = []
         for config in configs {
-            let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+            let name = config.displayName
             let fetchStarted = Date()
             let result = await WatchWidgetComplicationSnapshot.make(config: config)
             let duration = Date().timeIntervalSince(fetchStarted)
@@ -685,7 +685,7 @@ enum WatchWidgetComplicationSnapshotStore {
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
         let configs = (try? WatchComplicationConfig.all()) ?? []
         guard let config = configs.first(where: { $0.id == configId }) else { return nil }
-        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+        let name = config.displayName
         let previous = readSnapshots(defaults)
         let legacy = ((try? WatchComplication.all()) ?? [])
             .map(WatchWidgetComplicationSnapshot.init(complication:))
@@ -1195,7 +1195,9 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             String(Int(value.rounded()))
         }
 
-        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+        // The name rendered on the face — the entity's name for the entity kind. The complication's
+        // own `name` only labels it in the gallery menu (`menuName` below uses `displayName`).
+        let name = config.faceName
 
         // Slot resolution. Entity formulas resolve fully on-device from the fetched state (template
         // rendering is an admin-only server operation); template-kind formulas may reference extra
@@ -1256,7 +1258,7 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             tint: config.tint(for: config.widgetFamily),
             iconData: iconData,
             perFamily: perFamily,
-            menuName: name,
+            menuName: config.displayName,
             showWhenInactive: config.showsWhenInactive()
         )
         return (snapshot, isLive, failureReason)
