@@ -85,6 +85,11 @@ extension WebViewController: WebViewControllerProtocol {
 
     /// `url` with its scheme/host/port/credentials replaced by `baseURL`'s, keeping path, query and
     /// fragment. `nil` when either side isn't a web URL (e.g. `about:blank`), which nothing can rebase.
+    ///
+    /// The result is loaded as a fresh document, so `external_auth=1` is ensured like `webviewURL()`
+    /// does for app-initiated loads: history entries created by the frontend's own routing may carry a
+    /// bare path, and without the parameter the frontend would use the browser login flow instead of
+    /// the app's token bridge.
     private static func rebased(_ url: URL, onto baseURL: URL) -> URL? {
         let webSchemes: Set<String> = ["http", "https"]
         guard let scheme = url.scheme?.lowercased(), webSchemes.contains(scheme),
@@ -98,6 +103,11 @@ extension WebViewController: WebViewControllerProtocol {
         components.port = baseComponents.port
         components.user = baseComponents.user
         components.password = baseComponents.password
+        var queryItems = components.queryItems ?? []
+        if !queryItems.contains(where: { $0.name == "external_auth" }) {
+            queryItems.append(URLQueryItem(name: "external_auth", value: "1"))
+        }
+        components.queryItems = queryItems
         return components.url
     }
 

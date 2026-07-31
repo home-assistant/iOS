@@ -367,13 +367,29 @@ final class WebViewControllerTests: XCTestCase {
 
     func testBackForwardResolutionRebasesCrossBaseItemOntoCurrentBase() throws {
         // The internal entry left behind by an internal -> external switch is unreachable externally;
-        // its page is re-requested on the active base instead, keeping path, query and fragment.
+        // its page is re-requested on the active base instead, keeping path, query and fragment. The
+        // fresh document load needs external_auth like any app-initiated load.
         let resolution = try WebViewController.resolvedBackForwardNavigation(
             currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0")),
             candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?start=1#detail"))]
         )
 
-        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1#detail"))))
+        XCTAssertEqual(
+            resolution,
+            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1#detail")))
+        )
+    }
+
+    func testBackForwardResolutionDoesNotDuplicateExternalAuthWhenRebasing() throws {
+        let resolution = try WebViewController.resolvedBackForwardNavigation(
+            currentURL: XCTUnwrap(URL(string: "https://example.ui.nabu.casa/lovelace/0")),
+            candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?external_auth=1"))]
+        )
+
+        XCTAssertEqual(
+            resolution,
+            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?external_auth=1")))
+        )
     }
 
     func testBackForwardResolutionSkipsDuplicatedBoundaryEntryForCurrentPage() throws {
@@ -387,7 +403,7 @@ final class WebViewControllerTests: XCTestCase {
             ]
         )
 
-        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/config"))))
+        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/config?external_auth=1"))))
     }
 
     func testBackForwardResolutionSkipsBoundaryEntryWithLovelaceZeroSuffix() throws {
