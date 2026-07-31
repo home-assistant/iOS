@@ -232,6 +232,7 @@ struct WatchComplicationBuilderEditView: View {
             selectedColor: iconColorBinding,
             style: .row(title: L10n.Watch.Complications.Slot.icon)
         )
+        staticColorPicker(L10n.Watch.Complications.Builder.iconColor, selection: iconColorBinding)
         if viewModel.config.kind == .customTemplate, viewModel.useTemplateColor {
             colorTemplateField(\.customIconColorTemplate, title: L10n.Watch.Complications.Builder.iconColor)
         }
@@ -313,10 +314,12 @@ struct WatchComplicationBuilderEditView: View {
                 Text(L10n.Watch.Complications.Builder.source)
             }
 
-            // Step 2: the server. The first one is pre-selected in the view model, and with a single
-            // server the picker is omitted entirely — the flow skips straight to the entity/template
-            // step.
-            if viewModel.selectedSource != nil, viewModel.servers.count > 1 {
+            // Step 2: the server — template flow only, since templates render against a server but
+            // have no entity picker. The entity flow needs no separate picker: the entity picker
+            // carries its own server filter, and the picked entity decides the server. The first
+            // server is pre-selected in the view model, and with a single server the picker is
+            // omitted entirely.
+            if viewModel.selectedSource == .customTemplate, viewModel.servers.count > 1 {
                 Section {
                     Picker(selection: serverBinding) {
                         ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
