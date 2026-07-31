@@ -60,6 +60,16 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "42D14C6C301BB6330058088E"
+               BuildableName = "HomeAssistant-WatchAppTests.xctest"
+               ReferencedContainer = "container:HomeAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

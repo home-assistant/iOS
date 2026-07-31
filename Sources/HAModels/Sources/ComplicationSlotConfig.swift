@@ -8,9 +8,13 @@ public struct ComplicationSlotConfig: Codable, Equatable {
     public var isVisible: Bool?
     /// nil = the slot's default content.
     public var formula: ComplicationFormula?
+    /// Per-slot text color override (hex). nil = fall back to the family's text color. Only some slots
+    /// honor it in rendering (e.g. the rectangular bottom text).
+    public var color: String?
 
-    public init(isVisible: Bool? = nil, formula: ComplicationFormula? = nil) {
+    public init(isVisible: Bool? = nil, formula: ComplicationFormula? = nil, color: String? = nil) {
         self.isVisible = isVisible
         self.formula = formula
+        self.color = color
     }
 }

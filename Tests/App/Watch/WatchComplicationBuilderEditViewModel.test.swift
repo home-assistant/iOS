@@ -238,72 +238,12 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
-    // MARK: - Custom colors
+    // MARK: - Template colors
 
-    @Test func customColorsToggleReadsBackFromTheStoredColors() throws {
-        try withBuilderTestWorld { _ in
-            // Any stored color reads as "on" — the toggle describes the complication, nothing else.
-            let iconColor = WatchComplicationConfig(serverId: "server-1", iconColor: "#FF0000")
-            #expect(WatchComplicationBuilderEditViewModel(existing: iconColor).useCustomColors)
-
-            let familyColor = WatchComplicationConfig(
-                serverId: "server-1",
-                families: ["circular": .init(textColor: "#00FF00")]
-            )
-            #expect(WatchComplicationBuilderEditViewModel(existing: familyColor).useCustomColors)
-
-            // Template-driven colors count too — otherwise the toggle hid the template fields that
-            // were actually coloring the complication.
-            let templateColor = WatchComplicationConfig(
-                serverId: "server-1",
-                kind: .customTemplate,
-                customTextTemplate: "{{ 1 }}",
-                customTextColorTemplate: "{{ '#FF0000' }}"
-            )
-            let viewModel = WatchComplicationBuilderEditViewModel(existing: templateColor)
-            #expect(viewModel.useCustomColors)
-            #expect(viewModel.useTemplateColor)
-
-            let noColors = WatchComplicationConfig(serverId: "server-1")
-            #expect(WatchComplicationBuilderEditViewModel(existing: noColors).useCustomColors == false)
-        }
-    }
-
-    @Test func disablingCustomColorsClearsEveryStoredColor() throws {
-        try withBuilderTestWorld { _ in
-            let existing = WatchComplicationConfig(
-                serverId: "server-1",
-                kind: .customTemplate,
-                iconColor: "#FF0000",
-                customTextTemplate: "{{ 1 }}",
-                customGaugeColorTemplate: "{{ '#00FF00' }}",
-                families: [
-                    "circular": .init(tint: "#0000FF", textColor: "#FFFFFF"),
-                    "rectangular": .init(showIcon: true, tint: "#AABBCC"),
-                ]
-            )
-            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
-            #expect(viewModel.useCustomColors)
-
-            viewModel.useCustomColors = false
-
-            #expect(viewModel.config.iconColor == nil)
-            #expect(viewModel.config.customGaugeColorTemplate == nil)
-            #expect(viewModel.config.customIconColorTemplate == nil)
-            #expect(viewModel.config.customTextColorTemplate == nil)
-            #expect(viewModel.config.families?["circular"]?.tint == nil)
-            #expect(viewModel.config.families?["circular"]?.textColor == nil)
-            #expect(viewModel.config.families?["rectangular"]?.tint == nil)
-            // Only the colors are cleared — the other per-size options survive.
-            #expect(viewModel.config.families?["rectangular"]?.showIcon == true)
-            #expect(viewModel.useTemplateColor == false)
-        }
-    }
-
-    @Test func disablingCustomColorsSurvivesSaveAndReopen() throws {
+    @Test func customColorsSurviveSaveAndReopen() throws {
         try withBuilderTestWorld { database in
-            // The bug this guards: turning the toggle off left the colors on the row, so the saved
-            // complication stayed tinted and the editor reopened with the toggle back on.
+            // Colors are always applied now (no opt-in toggle), so a stored color must round-trip
+            // through save and reopen untouched.
             let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
             viewModel.selectSource(.entity)
             viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
@@ -311,19 +251,10 @@ struct WatchComplicationBuilderEditViewModelTests {
             viewModel.config.iconColor = "#FF0000"
             viewModel.save()
 
-            var saved = try database.read { db in
+            let saved = try database.read { db in
                 try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
             }
-            #expect(WatchComplicationBuilderEditViewModel(existing: saved).useCustomColors)
-
-            viewModel.useCustomColors = false
-            viewModel.save()
-
-            saved = try database.read { db in
-                try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
-            }
-            #expect(saved?.iconColor == nil)
-            #expect(WatchComplicationBuilderEditViewModel(existing: saved).useCustomColors == false)
+            #expect(saved?.iconColor == "#FF0000")
         }
     }
 

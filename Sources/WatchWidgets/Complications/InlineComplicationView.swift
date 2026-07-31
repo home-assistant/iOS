@@ -1,20 +1,25 @@
+import HAWatchComplications
 import SwiftUI
 import WidgetKit
 
 /// Inline complication: a single line of name / value. Inline has no icon or custom colors (watchOS
 /// renders it in the face's tint); the name and value are joined with " - ".
+///
+/// The line is rendered by the shared `InlineComplicationContentView` (in the HAWatchComplications
+/// package) so the in-app editor preview renders from the exact same code.
 @available(watchOS 10.0, *)
 struct InlineComplicationView: View {
     let complication: WatchWidgetComplicationSnapshot?
     let family: WidgetFamily
 
     var body: some View {
-        if let complication {
-            let text = inlineText(for: complication)
-            Text(text.isEmpty ? WatchWidgetConstants.appName : text)
-        } else {
-            Text(WatchWidgetConstants.appName)
-        }
+        InlineComplicationContentView(model: InlineComplicationRenderModel(text: resolvedText))
+    }
+
+    private var resolvedText: String {
+        guard let complication else { return WatchWidgetConstants.appName }
+        let text = inlineText(for: complication)
+        return text.isEmpty ? WatchWidgetConstants.appName : text
     }
 
     private func inlineText(for complication: WatchWidgetComplicationSnapshot) -> String {

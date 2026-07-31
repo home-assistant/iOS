@@ -1,108 +1,46 @@
+import HAWatchComplications
 import SwiftUI
 import WidgetKit
 
 /// Circular complication: a gauge around the center content (icon / value / name) when a value exists
 /// — an open arc (optionally with min/max labels) or a full capacity ring — otherwise just the center
 /// content. Legacy/built-ins show the icon alone.
+///
+/// The modern layout is rendered by the shared `CircularComplicationContentView` (in the
+/// HAWatchComplications package) so the in-app editor preview renders from the exact same code.
 @available(watchOS 10.0, *)
 struct CircularComplicationView: View {
     let complication: WatchWidgetComplicationSnapshot?
     let family: WidgetFamily
 
     var body: some View {
-        if let complication, let fraction = complication.fraction(for: family) {
-            if complication.isCapacityGauge(for: family) {
-                // Ring (capacity) fills the disc, so the center needs no extra padding.
-                Gauge(value: fraction) {
-                    center(complication, padded: false)
-                }
-                .gaugeStyle(.accessoryCircularCapacity)
-                .tint(complication.tintColor(for: family))
-            } else {
-                let labels = complication.gaugeLabels(for: family)
-                let showMin = complication.showsMin(for: family)
-                let showMax = complication.showsMax(for: family)
-                if let labels, showMin || showMax {
-                    Gauge(value: fraction) {
-                        EmptyView()
-                    } currentValueLabel: {
-                        center(complication, padded: true)
-                    } minimumValueLabel: {
-                        Text(showMin ? labels.min : "")
-                    } maximumValueLabel: {
-                        Text(showMax ? labels.max : "")
-                    }
-                    .gaugeStyle(.accessoryCircular)
-                    .tint(complication.tintColor(for: family))
-                } else {
-                    Gauge(value: fraction) {
-                        EmptyView()
-                    } currentValueLabel: {
-                        center(complication, padded: true)
-                    }
-                    .gaugeStyle(.accessoryCircular)
-                    .tint(complication.tintColor(for: family))
-                }
-            }
+        if let complication, complication.perFamily != nil {
+            CircularComplicationContentView(model: renderModel(complication))
         } else {
-            center(complication, padded: false)
+            // Legacy/built-ins (Home Assistant / Assist): the icon alone fills the disc.
+            ComplicationIconView(complication: complication)
                 .padding(WatchWidgetConstants.Layout.logoPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    /// Center of the complication: icon / value / name per the toggles for a modern config; the icon
-    /// alone for legacy/built-ins. `padded` insets it off the surrounding open-gauge ring.
-    @ViewBuilder
-    private func center(_ complication: WatchWidgetComplicationSnapshot?, padded: Bool) -> some View {
-        let valueOnly = isValueOnly(complication)
-        Group {
-            if let complication, complication.perFamily != nil {
-                VStack(spacing: WatchWidgetConstants.Layout.circularCenterSpacing) {
-                    if complication.showsIcon(for: family), let iconImage = complication.iconImage {
-                        iconImage
-                            .resizable()
-                            .scaledToFit()
-                            .frame(
-                                width: WatchWidgetConstants.Layout.circularIconSize,
-                                height: WatchWidgetConstants.Layout.circularIconSize
-                            )
-                            .widgetAccentable()
-                    }
-                    if complication.showsValue(for: family), !complication.valueText(for: family).isEmpty {
-                        Text(complication.valueText(for: family))
-                            .font(valueOnly ? .system(
-                                size: WatchWidgetConstants.Font.circularValueOnlySize,
-                                weight: .semibold
-                            ) : nil)
-                            .lineLimit(1)
-                            .minimumScaleFactor(WatchWidgetConstants.Font.circularValueMinScale)
-                            .foregroundStyle(complication.textColor(for: family) ?? .primary)
-                    }
-                    if complication.showsName(for: family), !complication.titleText(for: family).isEmpty {
-                        Text(complication.titleText(for: family))
-                            .font(.system(size: WatchWidgetConstants.Font.circularNameSize))
-                            .minimumScaleFactor(WatchWidgetConstants.Font.circularNameMinScale)
-                            .lineLimit(1)
-                            .foregroundStyle(complication.textColor(for: family) ?? .primary)
-                    }
-                }
-            } else {
-                ComplicationIconView(complication: complication)
-            }
-        }
-        // The value-only layout needs the full inner circle, so skip the ring inset that would
-        // otherwise shrink the enlarged value text.
-        .padding(padded && !valueOnly ? WatchWidgetConstants.Layout.circularIconGaugePadding : 0)
-    }
-
-    /// Whether the center renders only the state value (no icon and no name), so it can use the full
-    /// inner circle and a larger font.
-    private func isValueOnly(_ complication: WatchWidgetComplicationSnapshot?) -> Bool {
-        guard let complication, complication.perFamily != nil else { return false }
-        let showsIcon = complication.showsIcon(for: family) && complication.iconImage != nil
-        let showsName = complication.showsName(for: family) && !complication.titleText(for: family).isEmpty
-        return !showsIcon && !showsName
+    /// Resolves the family-specific snapshot values into the shared, target-agnostic render model.
+    private func renderModel(_ complication: WatchWidgetComplicationSnapshot) -> CircularComplicationRenderModel {
+        let labels = complication.gaugeLabels(for: family)
+        return CircularComplicationRenderModel(
+            iconImage: complication.iconImage,
+            showsIcon: complication.showsIcon(for: family),
+            valueText: complication.valueText(for: family),
+            showsValue: complication.showsValue(for: family),
+            title: complication.titleText(for: family),
+            showsName: complication.showsName(for: family),
+            fraction: complication.fraction(for: family),
+            isCapacityGauge: complication.isCapacityGauge(for: family),
+            minLabel: complication.showsMin(for: family) ? labels?.min : nil,
+            maxLabel: complication.showsMax(for: family) ? labels?.max : nil,
+            tint: complication.tintColor(for: family),
+            textColor: complication.textColor(for: family)
+        )
     }
 }
 

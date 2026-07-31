@@ -378,6 +378,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         families?[family.rawValue]?.textColor
     }
 
+    /// A slot's per-slot text color override (hex), or nil to fall back to the family's text color.
+    /// Only slots that honor it in rendering (e.g. the rectangular bottom text) read this.
+    public func slotColor(_ slot: ComplicationSlot, for family: Family) -> String? {
+        slotConfig(slot, for: family)?.color
+    }
+
     /// Mutable access to a family's options, creating an empty set if none exists yet.
     public func options(for family: Family) -> FamilyOptions {
         families?[family.rawValue] ?? FamilyOptions()

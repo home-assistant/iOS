@@ -156,8 +156,10 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
-    /// Unit + gauge options shown inside the value slot's section: they shape how the value
-    /// renders (unit suffix, gauge/progress bar, range and min/max labels).
+    /// Unit + gauge + color options shown inside the value slot's section: everything that shapes how
+    /// the value element renders (unit suffix, gauge/progress bar with its range and min/max labels,
+    /// and the complication's colors). Keeping these with the value keeps each section self-contained,
+    /// one per on-face element.
     @ViewBuilder
     private var valueSlotOptions: some View {
         if viewModel.config.kind == .entity,
@@ -193,6 +195,59 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
         }
+        appearanceOptions
+    }
+
+    /// The complication's colors, shown inline with the value element (its own icon color lives with
+    /// the icon in the display-name row). Always visible — no opt-in — so the colors are discoverable
+    /// without hunting for a toggle. The gauge/progress color only applies when a gauge is shown; the
+    /// text color governs every text slot (title / subtitle / value / bottom text).
+    @ViewBuilder
+    private var appearanceOptions: some View {
+        // Template complications can source each color from a template instead of the static pickers;
+        // the toggle swaps each picker for a template field below it.
+        if viewModel.config.kind == .customTemplate {
+            Toggle(isOn: $viewModel.useTemplateColor.animation()) {
+                Text(L10n.Watch.Complications.Builder.colorFromTemplate)
+            }
+        }
+        if familyHasProgressBar, viewModel.config.showsGauge(for: currentFamily) {
+            staticColorPicker(gaugeColorTitle, selection: tintBinding)
+            if viewModel.useTemplateColor {
+                colorTemplateField(\.customGaugeColorTemplate, title: gaugeColorTitle)
+            }
+        }
+        staticColorPicker(L10n.Watch.Complications.Builder.textColor, selection: textColorBinding)
+        if viewModel.useTemplateColor {
+            colorTemplateField(\.customTextColorTemplate, title: L10n.Watch.Complications.Builder.textColor)
+        }
+    }
+
+    /// The icon element's glyph + color (global icon config), shown in the Icon section once the icon
+    /// is visible. Template complications can also drive the icon color from a template.
+    @ViewBuilder
+    private var iconSlotOptions: some View {
+        IconPicker(selectedIcon: iconBinding, selectedColor: iconColorBinding)
+        if viewModel.config.kind == .customTemplate, viewModel.useTemplateColor {
+            colorTemplateField(\.customIconColorTemplate, title: L10n.Watch.Complications.Builder.iconColor)
+        }
+    }
+
+    /// The bottom text's own color: a per-slot override that falls back to the shared text color when
+    /// unset, so the picker starts on the effective color.
+    private var bottomTextColorBinding: Binding<Color> {
+        Binding(
+            get: {
+                let hex = viewModel.config.slotColor(.bottomText, for: currentFamily)
+                    ?? viewModel.config.textColor(for: currentFamily)
+                return hex.map { Color(uiColor: UIColor(hex: $0)) } ?? .primary
+            },
+            set: { value in
+                var slot = viewModel.config.slotConfig(.bottomText, for: currentFamily) ?? ComplicationSlotConfig()
+                slot.color = UIColor(value).hexString(true)
+                viewModel.config.setSlotConfig(slot, slot: .bottomText, for: currentFamily)
+            }
+        )
     }
 
     var body: some View {
@@ -218,6 +273,17 @@ struct WatchComplicationBuilderEditView: View {
                         withAnimation { isInlinePreviewVisible = false }
                     }
                 }
+            }
+
+            // The complication's name sits above everything else: it labels the complication in the
+            // iOS list and the watch gallery regardless of the source. A blank name falls back to the
+            // entity name (shown as the placeholder); template complications auto-generate one on save.
+            Section {
+                TextField(text: stringBinding(\.name)) {
+                    Text(verbatim: viewModel.namePlaceholder)
+                }
+            } header: {
+                Text(L10n.Watch.Complications.Builder.complicationName)
             }
 
             // Step 1: pick the source. Two radio-style cards side by side; the choice drives which of
@@ -342,37 +408,19 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            // Step 3 (template): name the complication, enter the templates, then the shared options
-            // reveal below. The text template stands in for the display name — same icon + row as
-            // the entity flow — showing its rendered result (or the template source) and opening the
-            // full editor in a sheet.
+            // Step 3 (template): enter the templates, then the shared options reveal below. The text
+            // template stands in for the display name — showing its rendered result (or the template
+            // source) and opening the full editor in a sheet. The complication name lives in the
+            // shared section above, so a blank name auto-generates "Complication-N" on save.
             if viewModel.selectedSource == .customTemplate, !viewModel.config.serverId.isEmpty,
                let server = viewModel.server {
-                // Without a name every template complication is listed as a generic
-                // "Complication"/"Template" in the iOS list and the watch gallery; the name labels
-                // it in both. Left empty, saving auto-generates "Complication-N" (the on-face text
-                // still comes from the text template below).
                 Section {
-                    TextField(text: stringBinding(\.name)) {
-                        Text(verbatim: L10n.Watch.Complications.Builder.complicationName)
-                    }
-                } header: {
-                    Text(L10n.Watch.Complications.Builder.complicationName)
-                }
-
-                Section {
-                    HStack(spacing: DesignSystem.Spaces.two) {
-                        IconPicker(
-                            selectedIcon: iconBinding,
-                            selectedColor: iconColorBinding
-                        )
-                        JinjaTemplateButton(
-                            server: server,
-                            title: L10n.Watch.Complications.Builder.displayName,
-                            text: templateBinding(\.customTextTemplate),
-                            placeholder: "{{ states('sensor.x') }}"
-                        )
-                    }
+                    JinjaTemplateButton(
+                        server: server,
+                        title: L10n.Watch.Complications.Builder.displayName,
+                        text: templateBinding(\.customTextTemplate),
+                        placeholder: "{{ states('sensor.x') }}"
+                    )
                 } header: {
                     Text(L10n.Watch.Complications.Builder.displayName)
                 }
@@ -393,26 +441,6 @@ struct WatchComplicationBuilderEditView: View {
             // the display options reveal: name/icon (entity flow — the template flow's display-name
             // row above edits the text template instead), then the per-slot sections.
             if viewModel.isSourceConfigured {
-                if viewModel.config.kind == .entity {
-                    Section {
-                        // Icon + name on one row, matching MagicItemCustomizationView. The icon is
-                        // auto-derived from the entity and can be overridden here; a blank name falls
-                        // back to the entity name.
-                        HStack(spacing: DesignSystem.Spaces.two) {
-                            IconPicker(
-                                selectedIcon: iconBinding,
-                                selectedColor: iconColorBinding
-                            )
-                            TextField(text: stringBinding(\.name)) {
-                                Text(verbatim: viewModel.namePlaceholder)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    } header: {
-                        Text(L10n.Watch.Complications.Builder.displayName)
-                    }
-                }
-
                 // Family switcher: selects the size the sections below configure — also the size
                 // the floating mini preview shows.
                 Section {
@@ -427,7 +455,8 @@ struct WatchComplicationBuilderEditView: View {
                 }
 
                 // One section per UI slot of the selected size: visibility, content formula, and —
-                // for the value slot — the unit and gauge options that shape how the value renders.
+                // for the value slot — the unit, gauge and color options that shape how that element
+                // renders. Each section is self-contained (one on-face element).
                 ForEach(ComplicationSlot.slots(for: currentFamily)) { slot in
                     Section {
                         ComplicationSlotRow(
@@ -436,60 +465,23 @@ struct WatchComplicationBuilderEditView: View {
                             server: viewModel.server,
                             attributeKeys: viewModel.config.kind == .entity ? viewModel.entityAttributeKeys : []
                         )
+                        // The icon's glyph + color live with the icon element; shown once it's visible.
+                        if slot == .icon, viewModel.config.isSlotVisible(.icon, for: currentFamily) {
+                            iconSlotOptions
+                        }
                         if slot == .value {
                             valueSlotOptions
                         }
+                        // Bottom text can override the shared text color with its own.
+                        if slot == .bottomText, viewModel.config.isSlotVisible(.bottomText, for: currentFamily) {
+                            ColorPicker(
+                                L10n.Watch.Complications.Builder.color,
+                                selection: bottomTextColorBinding,
+                                supportsOpacity: false
+                            )
+                        }
                     } header: {
                         Text(verbatim: slot.editorTitle)
-                    }
-                }
-
-                // Inline is rendered in the watch-face tint, so it has no custom colors.
-                if currentFamily != .inline {
-                    Section {
-                        Toggle(isOn: $viewModel.useCustomColors.animation()) {
-                            Text(L10n.Watch.Complications.Builder.customColors)
-                        }
-                        if viewModel.useCustomColors {
-                            // Template complications can source each color from a template instead
-                            // of the static pickers; the pickers stay visible but read as disabled,
-                            // and each gets its own template field below it.
-                            if viewModel.config.kind == .customTemplate {
-                                Toggle(isOn: $viewModel.useTemplateColor.animation()) {
-                                    Text(L10n.Watch.Complications.Builder.colorFromTemplate)
-                                }
-                            }
-                            if familyHasProgressBar, viewModel.config.showsGauge(for: currentFamily) {
-                                staticColorPicker(gaugeColorTitle, selection: tintBinding)
-                                if viewModel.useTemplateColor {
-                                    colorTemplateField(\.customGaugeColorTemplate, title: gaugeColorTitle)
-                                }
-                            }
-                            if viewModel.config.showsIcon(for: currentFamily) {
-                                staticColorPicker(
-                                    L10n.Watch.Complications.Builder.iconColor,
-                                    selection: iconColorBinding
-                                )
-                                if viewModel.useTemplateColor {
-                                    colorTemplateField(
-                                        \.customIconColorTemplate,
-                                        title: L10n.Watch.Complications.Builder.iconColor
-                                    )
-                                }
-                            }
-                            staticColorPicker(
-                                L10n.Watch.Complications.Builder.textColor,
-                                selection: textColorBinding
-                            )
-                            if viewModel.useTemplateColor {
-                                colorTemplateField(
-                                    \.customTextColorTemplate,
-                                    title: L10n.Watch.Complications.Builder.textColor
-                                )
-                            }
-                        }
-                    } header: {
-                        Text(L10n.Watch.Complications.Builder.colors)
                     }
                 }
             } // end if isSourceConfigured
@@ -700,6 +692,9 @@ struct WatchComplicationBuilderEditView: View {
     return NavigationView {
         WatchComplicationBuilderEditView(existing: WatchComplicationConfig(
             serverId: serverId,
+            // Rectangular has the most slots, so scrolling down shows the full element-centric layout:
+            // one section per slot, with the value section carrying the gauge and colors inline.
+            widgetFamily: .rectangular,
             entityId: "sensor.battery",
             entityDisplayName: "Battery",
             iconName: "mdi:battery",

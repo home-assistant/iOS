@@ -40,6 +40,8 @@ struct ComplicationPreviewContext {
     var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor($0)) } ?? .accentColor }
     /// Value/text color; defaults to white for contrast on the dark preview face.
     var textColor: Color { config.textColor(for: family).map { Color(uiColor: UIColor(hex: $0)) } ?? .white }
+    /// Per-slot bottom text color override; nil falls back to `textColor` in the rendered view.
+    var bottomTextColor: Color? { config.slotColor(.bottomText, for: family).map { Color(uiColor: UIColor(hex: $0)) } }
 
     /// Min/max are whole numbers.
     func label(_ value: Double) -> String { String(Int(value.rounded())) }
@@ -169,9 +171,9 @@ extension ComplicationPreviewContext {
             }
         }
 
-        // Icon is gated by the family's "show icon" toggle.
+        // Icon is gated by the icon slot's visibility (same resolution the watch uses).
         var iconImage: Image?
-        if familyConfig.showsIcon(for: family), let iconName = config.iconName {
+        if familyConfig.isSlotVisible(.icon, for: family), let iconName = config.iconName {
             let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
             iconImage = Image(
                 uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
@@ -203,7 +205,7 @@ extension ComplicationPreviewContext {
             familyConfig.name = "Battery"
         }
         var iconImage: Image?
-        if familyConfig.showsIcon(for: family) {
+        if familyConfig.isSlotVisible(.icon, for: family) {
             let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon
             let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
             iconImage = Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
@@ -335,7 +337,7 @@ struct WatchComplicationLivePreview: View {
     }
 
     private var iconImage: Image? {
-        guard config.showsIcon(for: config.widgetFamily), let iconName = config.iconName else { return nil }
+        guard config.isSlotVisible(.icon, for: config.widgetFamily), let iconName = config.iconName else { return nil }
         let image = MaterialDesignIcons(serversideValueNamed: iconName)
             .image(ofSize: CGSize(width: 64, height: 64), color: UIColor(iconColor))
         return Image(uiImage: image)
