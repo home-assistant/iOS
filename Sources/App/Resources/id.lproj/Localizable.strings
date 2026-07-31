@@ -2098,6 +2098,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "Yakin ingin menghapus konfigurasi Watch? Ini tidak dapat dikembalikan";
 "watch.debug.delete_db.reset.title" = "Setel ulang konfigurasi";
 "watch.debug.delete_db.title" = "Hapus konfigurasi Watch";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "Batalkan dan gunakan cache";
 "watch.home.loading.skip.title" = "Lewati";
 "watch.home.run.confirmation.title" = "Yakin ingin menjalankan \"%@\"?";

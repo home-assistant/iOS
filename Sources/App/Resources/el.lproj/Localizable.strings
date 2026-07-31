@@ -2099,6 +2099,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.debug.delete_db.alert.title" = "Θέλετε σίγουρα να διαγράψετε τη διαμόρφωση ρολογιού. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί";
 "watch.debug.delete_db.reset.title" = "Επαναφορά διαμόρφωσης";
 "watch.debug.delete_db.title" = "Διαγραφή διαμόρφωσης ρολογιού";
+"watch.entity_details.attributes" = "Attributes";
+"watch.entity_details.last_changed" = "Changed";
+"watch.entity_details.last_updated" = "Updated";
+"watch.entity_details.loading" = "Reading current state…";
+"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.home.cancel_and_use_cache.title" = "Ακύρωση και χρήση μνήμης cache";
 "watch.home.loading.skip.title" = "Παράλειψη";
 "watch.home.run.confirmation.title" = "Θέλετε σίγουρα να εκτελέσετε το \"%@\";";
