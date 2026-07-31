@@ -10,6 +10,7 @@ final class RemindersSyncAddViewModel: ObservableObject {
     @Published var direction: RemindersSyncDirection = .bothWays
     @Published private(set) var todoEntitiesByServer: [(Server, [HAAppEntity])] = []
     @Published private(set) var reminderLists: [EKCalendar] = []
+    @Published private(set) var hasLoaded = false
 
     private var existingConfigs: [RemindersSyncConfig] = []
 
@@ -20,6 +21,12 @@ final class RemindersSyncAddViewModel: ObservableObject {
     var todoEntities: [HAAppEntity] {
         todoEntitiesByServer
             .first(where: { $0.0.identifier.rawValue == selectedServerId })?.1 ?? []
+    }
+
+    /// Whether any server has a todo list to sync with (servers without lists are filtered out
+    /// of `todoEntitiesByServer` on load).
+    var hasTodoLists: Bool {
+        !todoEntitiesByServer.isEmpty
     }
 
     /// The exact same list pairing already exists.
@@ -48,14 +55,35 @@ final class RemindersSyncAddViewModel: ObservableObject {
         }
         reminderLists = RemindersSyncManager.shared.reminderLists()
 
+        // A reload can invalidate earlier selections (e.g. the selected server's last todo list
+        // was deleted): clear anything that no longer exists before filling in defaults.
+        if selectedServerId != nil, !servers.contains(where: { $0.identifier.rawValue == selectedServerId }) {
+            selectedServerId = nil
+        }
         if selectedServerId == nil {
             selectedServerId = servers.first?.identifier.rawValue
+        }
+        if selectedTodoEntityId != nil, !todoEntities.contains(where: { $0.entityId == selectedTodoEntityId }) {
+            selectedTodoEntityId = nil
         }
         if selectedTodoEntityId == nil {
             selectedTodoEntityId = todoEntities.first?.entityId
         }
+        if selectedReminderListId != nil,
+           !reminderLists.contains(where: { $0.calendarIdentifier == selectedReminderListId }) {
+            selectedReminderListId = nil
+        }
         if selectedReminderListId == nil {
             selectedReminderListId = reminderLists.first?.calendarIdentifier
+        }
+        hasLoaded = true
+    }
+
+    /// Triggers a full app database update for every server, so newly created to-do lists show
+    /// up. Progress and completion are reported through the updater's toasts.
+    func reloadServers() {
+        for server in Current.servers.all {
+            server.refreshAppDatabase(forceUpdate: true, showProgress: true)
         }
     }
 

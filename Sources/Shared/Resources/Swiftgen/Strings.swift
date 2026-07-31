@@ -3717,6 +3717,12 @@ public enum L10n {
         /// Home Assistant is the source of truth. Its items and changes overwrite the Apple Reminders list. Items that only exist in Reminders are left alone.
         public static var toReminders: String { return L10n.tr("Localizable", "reminders_sync.add.direction_footer.to_reminders") }
       }
+      public enum NoTodoLists {
+        /// To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.
+        public static var message: String { return L10n.tr("Localizable", "reminders_sync.add.no_todo_lists.message") }
+        /// No to-do lists
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.add.no_todo_lists.title") }
+      }
     }
     public enum Conflict {
       /// Home Assistant
