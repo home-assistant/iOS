@@ -21,6 +21,7 @@ struct RemindersSyncAddView: View {
                             .multilineTextAlignment(.center)
                     }
                     .padding(DesignSystem.Spaces.four)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     Form {
                         if viewModel.servers.count > 1 {

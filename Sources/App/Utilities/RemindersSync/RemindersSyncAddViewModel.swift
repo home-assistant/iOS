@@ -55,11 +55,23 @@ final class RemindersSyncAddViewModel: ObservableObject {
         }
         reminderLists = RemindersSyncManager.shared.reminderLists()
 
+        // A reload can invalidate earlier selections (e.g. the selected server's last todo list
+        // was deleted): clear anything that no longer exists before filling in defaults.
+        if selectedServerId != nil, !servers.contains(where: { $0.identifier.rawValue == selectedServerId }) {
+            selectedServerId = nil
+        }
         if selectedServerId == nil {
             selectedServerId = servers.first?.identifier.rawValue
         }
+        if selectedTodoEntityId != nil, !todoEntities.contains(where: { $0.entityId == selectedTodoEntityId }) {
+            selectedTodoEntityId = nil
+        }
         if selectedTodoEntityId == nil {
             selectedTodoEntityId = todoEntities.first?.entityId
+        }
+        if selectedReminderListId != nil,
+           !reminderLists.contains(where: { $0.calendarIdentifier == selectedReminderListId }) {
+            selectedReminderListId = nil
         }
         if selectedReminderListId == nil {
             selectedReminderListId = reminderLists.first?.calendarIdentifier
