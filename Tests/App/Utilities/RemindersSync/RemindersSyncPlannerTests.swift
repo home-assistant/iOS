@@ -215,21 +215,41 @@ struct RemindersSyncPlannerTests {
 
     // MARK: - Completed items
 
-    @Test func testUnlinkedCompletedItemsAreNeverSynced() {
-        let completed = snapshot(isCompleted: true)
-        for direction in RemindersSyncDirection.allCases {
-            let operations = RemindersSyncPlanner.plan(
-                direction: direction,
-                todoItems: ["todo-1": completed],
-                reminders: ["reminder-1": snapshot(title: "Other completed", isCompleted: true)],
-                links: []
-            )
-            #expect(operations.isEmpty)
-        }
+    @Test func testUnlinkedCompletedItemsAreSynced() {
+        let completedTodo = ["todo-1": snapshot(isCompleted: true)]
+        let completedReminder = ["reminder-1": snapshot(title: "Other completed", isCompleted: true)]
+
+        let bothWays = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: completedTodo,
+            reminders: completedReminder,
+            links: []
+        )
+        #expect(bothWays == [
+            .createReminder(todoItemUid: "todo-1"),
+            .createTodoItem(reminderId: "reminder-1"),
+        ])
+
+        // One-way syncs still only create on their target side.
+        let toReminders = RemindersSyncPlanner.plan(
+            direction: .toReminders,
+            todoItems: completedTodo,
+            reminders: completedReminder,
+            links: []
+        )
+        #expect(toReminders == [.createReminder(todoItemUid: "todo-1")])
+
+        let toHomeAssistant = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: completedTodo,
+            reminders: completedReminder,
+            links: []
+        )
+        #expect(toHomeAssistant == [.createTodoItem(reminderId: "reminder-1")])
     }
 
-    @Test func testUnlinkedCompletedItemsAreNotAdoptedByTitle() {
-        // Same title on both sides, but completed: leave both alone instead of linking them.
+    @Test func testUnlinkedCompletedItemsAreAdoptedByTitle() {
+        // Same completed item on both sides: link them instead of duplicating.
         let completed = snapshot(isCompleted: true)
         let operations = RemindersSyncPlanner.plan(
             direction: .bothWays,
@@ -237,7 +257,7 @@ struct RemindersSyncPlannerTests {
             reminders: ["reminder-1": completed],
             links: []
         )
-        #expect(operations.isEmpty)
+        #expect(operations == [.adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
     @Test func testCompletingALinkedReminderCompletesTheTodoItem() {
@@ -251,26 +271,27 @@ struct RemindersSyncPlannerTests {
         #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
-    @Test func testOneWayRestoreDropsTheLinkForCompletedItems() {
+    @Test func testOneWayRestoreRecreatesCompletedItems() {
         let completed = snapshot(isCompleted: true)
 
-        // Completed reminder whose HA item is gone: don't resurrect it in HA.
+        // Completed reminder whose HA item is gone: Reminders is the source of truth, so the
+        // item is restored in HA like any other.
         let toHomeAssistant = RemindersSyncPlanner.plan(
             direction: .toHomeAssistant,
             todoItems: [:],
             reminders: ["reminder-1": completed],
             links: [link(snapshot: completed)]
         )
-        #expect(toHomeAssistant == [.deleteLink(todoItemUid: "todo-1")])
+        #expect(toHomeAssistant == [.createTodoItem(reminderId: "reminder-1")])
 
-        // Completed HA item whose reminder is gone: don't resurrect it in Reminders.
+        // Completed HA item whose reminder is gone: restored in Reminders.
         let toReminders = RemindersSyncPlanner.plan(
             direction: .toReminders,
             todoItems: ["todo-1": completed],
             reminders: [:],
             links: [link(snapshot: completed)]
         )
-        #expect(toReminders == [.deleteLink(todoItemUid: "todo-1")])
+        #expect(toReminders == [.createReminder(todoItemUid: "todo-1")])
     }
 
     // MARK: - Deletions

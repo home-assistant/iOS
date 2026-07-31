@@ -548,6 +548,19 @@ final class RemindersSyncManager: ObservableObject {
                   let index = unlinkedItems
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
+            if snapshot.isCompleted {
+                // `todo.add_item` has no status argument, so new items always start as
+                // needs_action; mark items mirrored from a completed reminder right away.
+                try await api.updateTodoItem(
+                    listId: config.todoEntityId,
+                    itemId: item.uid,
+                    rename: snapshot.title,
+                    status: "completed",
+                    description: snapshot.notes,
+                    dueDate: snapshot.dueDateArgument,
+                    dueDateTime: snapshot.dueDateTimeArgument
+                )
+            }
             await saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }

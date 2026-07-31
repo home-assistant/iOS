@@ -52,13 +52,13 @@ enum RemindersSyncPlanner {
                 reminder: reminders[link.reminderId]
             ))
         }
-        // Completed items that were never linked are ignored: they are history, not work to
-        // mirror. Completion still propagates across linked pairs above.
+        // Completed items sync like everything else: both sides keep their completed history,
+        // so an item finished on one side still shows up as finished on the other.
         var unlinkedTodoUids = todoItems
-            .filter { !linkedUids.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedUids.contains($0.key) }
             .keys.sorted()
         var unlinkedReminderIds = reminders
-            .filter { !linkedReminderIds.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedReminderIds.contains($0.key) }
             .keys.sorted()
 
         // Adopt same-titled unlinked pairs first, so linking two lists that already contain the
@@ -130,30 +130,22 @@ enum RemindersSyncPlanner {
                 todoChanged: todoItem != link.snapshot,
                 reminderChanged: reminder != link.snapshot
             )]
-        case let (.some(todoItem), .none):
+        case (.some, .none):
             // The reminder was deleted.
             switch direction {
             case .bothWays, .toHomeAssistant:
                 return [.deleteTodoItem(todoItemUid: link.todoItemUid, reminderId: link.reminderId)]
             case .toReminders:
-                // Reminders only mirrors HA; restore the deleted reminder, unless it's
-                // completed history not worth resurrecting.
-                if todoItem.isCompleted {
-                    return [.deleteLink(todoItemUid: link.todoItemUid)]
-                }
+                // Reminders only mirrors HA; restore the deleted reminder.
                 return [.createReminder(todoItemUid: link.todoItemUid)]
             }
-        case let (.none, .some(reminder)):
+        case (.none, .some):
             // The Home Assistant item was deleted.
             switch direction {
             case .bothWays, .toReminders:
                 return [.deleteReminder(todoItemUid: link.todoItemUid, reminderId: link.reminderId)]
             case .toHomeAssistant:
-                // HA only mirrors Reminders; restore the deleted item, unless it's completed
-                // history not worth resurrecting.
-                if reminder.isCompleted {
-                    return [.deleteLink(todoItemUid: link.todoItemUid)]
-                }
+                // HA only mirrors Reminders; restore the deleted item.
                 return [.createTodoItem(reminderId: link.reminderId)]
             }
         case (.none, .none):
