@@ -86,7 +86,11 @@ struct WatchLightControlsView: View {
     private var brightnessSection: some View {
         Section {
             VStack(spacing: DesignSystem.Spaces.half) {
-                Slider(value: brightnessBinding, in: 0 ... 100, step: 10)
+                WatchGradientSlider(
+                    value: brightnessBinding,
+                    range: 0 ... 100,
+                    gradient: [Color(uiColor: .init(hex: "#1A1A1A")), .white]
+                )
                 Text(verbatim: "\(Int(viewModel.brightnessPercentage))%")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -100,7 +104,16 @@ struct WatchLightControlsView: View {
     private var colorTempSection: some View {
         Section {
             VStack(spacing: DesignSystem.Spaces.half) {
-                Slider(value: colorTempBinding, in: viewModel.colorTempRange, step: 100)
+                // Warm-to-cool, matching how Home Assistant's frontend paints the same control.
+                WatchGradientSlider(
+                    value: colorTempBinding,
+                    range: viewModel.colorTempRange,
+                    gradient: [
+                        Color(uiColor: .init(hex: "#FFA757")),
+                        .white,
+                        Color(uiColor: .init(hex: "#BFDDFF")),
+                    ]
+                )
                 Text(verbatim: "\(Int(viewModel.colorTempKelvin)) K")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
