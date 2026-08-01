@@ -14,6 +14,34 @@ struct ServiceTests {
         #expect(Service.openCover.rawValue == "open_cover", "Service.openCover raw value should be 'open_cover'")
         #expect(Service.closeCover.rawValue == "close_cover", "Service.closeCover raw value should be 'close_cover'")
         #expect(Service.trigger.rawValue == "trigger", "Service.trigger raw value should be 'trigger'")
+        #expect(
+            Service.setTemperature.rawValue == "set_temperature",
+            "Service.setTemperature raw value should be 'set_temperature'"
+        )
+        #expect(
+            Service.setHvacMode.rawValue == "set_hvac_mode",
+            "Service.setHvacMode raw value should be 'set_hvac_mode'"
+        )
+        #expect(
+            Service.setFanMode.rawValue == "set_fan_mode",
+            "Service.setFanMode raw value should be 'set_fan_mode'"
+        )
+        #expect(
+            Service.setSwingMode.rawValue == "set_swing_mode",
+            "Service.setSwingMode raw value should be 'set_swing_mode'"
+        )
+        #expect(
+            Service.setSwingHorizontalMode.rawValue == "set_swing_horizontal_mode",
+            "Service.setSwingHorizontalMode raw value should be 'set_swing_horizontal_mode'"
+        )
+        #expect(
+            Service.setPresetMode.rawValue == "set_preset_mode",
+            "Service.setPresetMode raw value should be 'set_preset_mode'"
+        )
+        #expect(
+            Service.setHumidity.rawValue == "set_humidity",
+            "Service.setHumidity raw value should be 'set_humidity'"
+        )
 
         // Test initialization from raw value
         #expect(Service(rawValue: "turn_on") == .turnOn, "Service(rawValue: 'turn_on') should initialize to .turnOn")
@@ -41,8 +69,8 @@ struct ServiceTests {
 
         // Test case count
         #expect(
-            Service.allCases.count == 10,
-            "Service enum should have 10 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
+            Service.allCases.count == 17,
+            "Service enum should have 17 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
         )
     }
 }

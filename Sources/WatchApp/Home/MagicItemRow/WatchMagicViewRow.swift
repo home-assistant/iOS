@@ -84,8 +84,14 @@ struct WatchMagicViewRow: View {
             )
         }
         // Sensors run nothing when tapped: they open their own read-only details screen instead.
-        .sheet(isPresented: $viewModel.showDetails) {
-            WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+        // Climate items open their control screen the same way.
+        .sheet(item: $viewModel.activeSheet) { sheet in
+            switch sheet {
+            case .details:
+                WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+            case .climateControl:
+                WatchClimateControlView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+            }
         }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.

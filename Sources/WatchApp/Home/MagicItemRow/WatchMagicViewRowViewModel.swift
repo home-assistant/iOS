@@ -29,12 +29,23 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
+    /// Screens the row can present. One enum drives a single `.sheet(item:)` — stacking multiple
+    /// sheet modifiers is unreliable on older watchOS (see `WatchHomeView.HomeSheet`).
+    enum RowSheet: String, Identifiable {
+        /// Read-only details for a display-only (sensor) item, which runs nothing when tapped.
+        case details
+        /// Control screen for domains without a single tap action (climate).
+        case climateControl
+
+        var id: String { rawValue }
+    }
+
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
     /// Alert shown when the tapped entity's domain has no action the watch can perform.
     @Published var showUnsupportedAlert = false
-    /// Drives the details screen for a display-only (sensor) item, which runs nothing when tapped.
-    @Published var showDetails = false
+    /// Drives the sheet the row presents instead of (or in addition to) running an action.
+    @Published var activeSheet: RowSheet?
     /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
     /// state-aware execution (lock).
     @Published private(set) var liveEntity: HAEntity?
@@ -65,7 +76,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     func executeItem() {
         // Sensors are on the watch to be read, not run: open their details screen instead.
         guard !isDisplayOnly else {
-            showDetails = true
+            activeSheet = .details
+            return
+        }
+        // Climate has no single tap action either: open its control screen (temperature, mode,
+        // fan…) instead of running anything.
+        if item.type == .entity, item.domain?.hasControlScreen == true {
+            activeSheet = .climateControl
             return
         }
         guard isActionable else {

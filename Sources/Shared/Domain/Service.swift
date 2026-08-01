@@ -11,4 +11,11 @@ public enum Service: String, CaseIterable {
     case openCover = "open_cover"
     case closeCover = "close_cover"
     case trigger = "trigger"
+    case setTemperature = "set_temperature"
+    case setHvacMode = "set_hvac_mode"
+    case setFanMode = "set_fan_mode"
+    case setSwingMode = "set_swing_mode"
+    case setSwingHorizontalMode = "set_swing_horizontal_mode"
+    case setPresetMode = "set_preset_mode"
+    case setHumidity = "set_humidity"
 }

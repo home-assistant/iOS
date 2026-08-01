@@ -12,6 +12,9 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
+    /// Control screen pushed for domains that have one (climate); forwarded lifecycle and state
+    /// events like the domains/areas tabs forward to this list.
+    private var childTemplateProvider: (any CarPlayTemplateProvider)?
 
     init(
         viewModel: CarPlayEntitiesListViewModel,
@@ -32,16 +35,21 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         if self.template == template {
             /* no-op */
         }
+        childTemplateProvider?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if self.template == template {
+            // Returning to this list means any pushed control screen has been popped.
+            childTemplateProvider = nil
             update()
         }
+        childTemplateProvider?.templateWillAppear(template: template)
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
         viewModel.updateStates(entities: entities)
+        childTemplateProvider?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
     func update() {
@@ -54,6 +62,13 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         } else {
             paginatedListTemplate.updateItems(items: listItems(entityProviders: entityProviders))
         }
+    }
+
+    func displayClimateControl(entity: HAEntity, server: Server) {
+        let provider = CarPlayClimateControlTemplate(viewModel: .init(server: server, entity: entity))
+        provider.interfaceController = interfaceController
+        childTemplateProvider = provider
+        interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
     }
 
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
