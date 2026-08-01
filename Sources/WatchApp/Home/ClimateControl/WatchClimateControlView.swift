@@ -67,11 +67,13 @@ struct WatchClimateControlView: View {
                                 }
                                 .buttonStyle(.bordered)
                                 .accessibilityLabel(Text(verbatim: L10n.Climate.Control.Temperature.decrease))
-                                Text(verbatim: control.targetTemperature
-                                    .map(ClimateControlState.formatTemperature) ?? "—")
-                                    .font(.title3.bold())
-                                    .minimumScaleFactor(0.6)
-                                    .frame(maxWidth: .infinity)
+                                Text(
+                                    verbatim: control.targetTemperature
+                                        .map(ClimateControlState.formatTemperature) ?? "—"
+                                )
+                                .font(.title3.bold())
+                                .minimumScaleFactor(0.6)
+                                .frame(maxWidth: .infinity)
                                 Button {
                                     viewModel.adjustTargetTemperature(by: 1)
                                 } label: {
@@ -97,11 +99,13 @@ struct WatchClimateControlView: View {
                                 }
                                 .buttonStyle(.bordered)
                                 .accessibilityLabel(Text(verbatim: L10n.Climate.Control.Temperature.decrease))
-                                Text(verbatim: control.targetTemperatureLow
-                                    .map(ClimateControlState.formatTemperature) ?? "—")
-                                    .font(.title3.bold())
-                                    .minimumScaleFactor(0.6)
-                                    .frame(maxWidth: .infinity)
+                                Text(
+                                    verbatim: control.targetTemperatureLow
+                                        .map(ClimateControlState.formatTemperature) ?? "—"
+                                )
+                                .font(.title3.bold())
+                                .minimumScaleFactor(0.6)
+                                .frame(maxWidth: .infinity)
                                 Button {
                                     viewModel.adjustTargetTemperatureLow(by: 1)
                                 } label: {
@@ -125,11 +129,13 @@ struct WatchClimateControlView: View {
                                 }
                                 .buttonStyle(.bordered)
                                 .accessibilityLabel(Text(verbatim: L10n.Climate.Control.Temperature.decrease))
-                                Text(verbatim: control.targetTemperatureHigh
-                                    .map(ClimateControlState.formatTemperature) ?? "—")
-                                    .font(.title3.bold())
-                                    .minimumScaleFactor(0.6)
-                                    .frame(maxWidth: .infinity)
+                                Text(
+                                    verbatim: control.targetTemperatureHigh
+                                        .map(ClimateControlState.formatTemperature) ?? "—"
+                                )
+                                .font(.title3.bold())
+                                .minimumScaleFactor(0.6)
+                                .frame(maxWidth: .infinity)
                                 Button {
                                     viewModel.adjustTargetTemperatureHigh(by: 1)
                                 } label: {
@@ -179,10 +185,12 @@ struct WatchClimateControlView: View {
                                     HStack {
                                         Text(verbatim: L10n.Climate.Control.FanMode.title)
                                             .frame(maxWidth: .infinity, alignment: .leading)
-                                        Text(verbatim: control.fanMode
-                                            .map(ClimateControlState.displayName(forMode:)) ?? "")
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
+                                        Text(
+                                            verbatim: control.fanMode
+                                                .map(ClimateControlState.displayName(forMode:)) ?? ""
+                                        )
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
                                     }
                                 }
                             }
@@ -199,10 +207,12 @@ struct WatchClimateControlView: View {
                                     HStack {
                                         Text(verbatim: L10n.Climate.Control.SwingMode.title)
                                             .frame(maxWidth: .infinity, alignment: .leading)
-                                        Text(verbatim: control.swingMode
-                                            .map(ClimateControlState.displayName(forMode:)) ?? "")
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
+                                        Text(
+                                            verbatim: control.swingMode
+                                                .map(ClimateControlState.displayName(forMode:)) ?? ""
+                                        )
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
                                     }
                                 }
                             }
@@ -219,10 +229,12 @@ struct WatchClimateControlView: View {
                                     HStack {
                                         Text(verbatim: L10n.Climate.Control.SwingHorizontalMode.title)
                                             .frame(maxWidth: .infinity, alignment: .leading)
-                                        Text(verbatim: control.swingHorizontalMode
-                                            .map(ClimateControlState.displayName(forMode:)) ?? "")
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
+                                        Text(
+                                            verbatim: control.swingHorizontalMode
+                                                .map(ClimateControlState.displayName(forMode:)) ?? ""
+                                        )
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
                                     }
                                 }
                             }
@@ -239,10 +251,12 @@ struct WatchClimateControlView: View {
                                     HStack {
                                         Text(verbatim: L10n.Climate.Control.PresetMode.title)
                                             .frame(maxWidth: .infinity, alignment: .leading)
-                                        Text(verbatim: control.presetMode
-                                            .map(ClimateControlState.displayName(forMode:)) ?? "")
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
+                                        Text(
+                                            verbatim: control.presetMode
+                                                .map(ClimateControlState.displayName(forMode:)) ?? ""
+                                        )
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
                                     }
                                 }
                             }
@@ -261,11 +275,13 @@ struct WatchClimateControlView: View {
                                 }
                                 .buttonStyle(.bordered)
                                 .accessibilityLabel(Text(verbatim: L10n.Climate.Control.Humidity.decrease))
-                                Text(verbatim: control.targetHumidity
-                                    .map(ClimateControlState.formatHumidity) ?? "—")
-                                    .font(.title3.bold())
-                                    .minimumScaleFactor(0.6)
-                                    .frame(maxWidth: .infinity)
+                                Text(
+                                    verbatim: control.targetHumidity
+                                        .map(ClimateControlState.formatHumidity) ?? "—"
+                                )
+                                .font(.title3.bold())
+                                .minimumScaleFactor(0.6)
+                                .frame(maxWidth: .infinity)
                                 Button {
                                     viewModel.adjustTargetHumidity(by: 1)
                                 } label: {

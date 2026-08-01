@@ -106,7 +106,7 @@ public struct WatchServiceCall {
                     format: "Token ready in %.2fs",
                     Current.date().timeIntervalSince(tokenStarted)
                 ))
-                self.send(
+                send(
                     baseURL: baseURL,
                     server: server,
                     token: token,
