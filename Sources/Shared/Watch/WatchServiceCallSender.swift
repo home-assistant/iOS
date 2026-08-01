@@ -16,6 +16,11 @@ public enum WatchServiceCallSender {
     }
 
     #if os(watchOS)
+    /// How long to wait for a bearer token before failing — `TokenManager` caches the in-flight
+    /// refresh promise, so a refresh that never resolves would otherwise swallow every call
+    /// silently, with `completion` never invoked (same reasoning as `MagicItem.executeViaREST`).
+    private static var tokenDeadline: TimeInterval { 10 }
+
     /// Calls `completion` on the main queue with whether the server accepted the call.
     public static func send(
         domain: Domain,
@@ -46,47 +51,98 @@ public enum WatchServiceCallSender {
             return
         }
         let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
-        tokenManager.bearerToken.done { token, _ in
-            let url = baseURL
-                .appendingPathComponent("api")
-                .appendingPathComponent("services")
-                .appendingPathComponent(domain.rawValue)
-                .appendingPathComponent(service.rawValue)
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            // Bounded so a dead route fails visibly instead of hanging the controls for 60s.
-            request.timeoutInterval = 10
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
-            request.httpBody = body
-            let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-            let task = session.dataTask(with: request) { [session] _, response, error in
-                // The session strongly retains its delegate until invalidated; do it once the task ends.
-                defer { session.finishTasksAndInvalidate() }
-                if let error {
-                    Current.Log.error(
-                        "REST \(domain.rawValue).\(service.rawValue) for \(entityId) failed: " +
-                            error.localizedDescription
-                    )
-                    finish(false)
-                    return
-                }
-                guard let http = response as? HTTPURLResponse,
-                      (200 ..< 300).contains(http.statusCode) else {
-                    finish(false)
-                    return
-                }
-                finish(true)
-            }
-            task.resume()
-        }.catch { error in
-            Current.Log.error(
-                "Token unavailable sending \(domain.rawValue).\(service.rawValue) from watch: " +
-                    error.localizedDescription
-            )
-            finish(false)
+
+        let lock = NSLock()
+        var settled = false
+        // First caller wins; the loser is discarded so `completion` runs exactly once. A late
+        // token still lands in the shared cache for the next call.
+        func settleOnce(_ body: () -> Void) {
+            lock.lock()
+            let shouldRun = !settled
+            settled = true
+            lock.unlock()
+            if shouldRun { body() }
         }
+
+        // Deadline so a stuck token refresh fails the call instead of silencing it. Main queue on
+        // purpose — it is the one queue proven to stay serviced on watch hardware (see
+        // `MagicItem.executeViaREST`).
+        DispatchQueue.main.asyncAfter(deadline: .now() + tokenDeadline) {
+            settleOnce {
+                Current.Log.error(
+                    "Token deadline elapsed sending \(domain.rawValue).\(service.rawValue) from watch"
+                )
+                finish(false)
+            }
+        }
+
+        tokenManager.bearerToken.done { token, _ in
+            settleOnce {
+                sendRequest(
+                    baseURL: baseURL,
+                    domain: domain,
+                    service: service,
+                    entityId: entityId,
+                    body: body,
+                    token: token,
+                    server: server,
+                    finish: finish
+                )
+            }
+        }.catch { error in
+            settleOnce {
+                Current.Log.error(
+                    "Token unavailable sending \(domain.rawValue).\(service.rawValue) from watch: " +
+                        error.localizedDescription
+                )
+                finish(false)
+            }
+        }
+    }
+
+    private static func sendRequest(
+        baseURL: URL,
+        domain: Domain,
+        service: Service,
+        entityId: String,
+        body: Data,
+        token: String,
+        server: Server,
+        finish: @escaping (Bool) -> Void
+    ) {
+        let url = baseURL
+            .appendingPathComponent("api")
+            .appendingPathComponent("services")
+            .appendingPathComponent(domain.rawValue)
+            .appendingPathComponent(service.rawValue)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        // Bounded so a dead route fails visibly instead of hanging the controls for 60s.
+        request.timeoutInterval = 10
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
+        request.httpBody = body
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        let task = session.dataTask(with: request) { [session] _, response, error in
+            // The session strongly retains its delegate until invalidated; do it once the task ends.
+            defer { session.finishTasksAndInvalidate() }
+            if let error {
+                Current.Log.error(
+                    "REST \(domain.rawValue).\(service.rawValue) for \(entityId) failed: " +
+                        error.localizedDescription
+                )
+                finish(false)
+                return
+            }
+            guard let http = response as? HTTPURLResponse,
+                  (200 ..< 300).contains(http.statusCode) else {
+                finish(false)
+                return
+            }
+            finish(true)
+        }
+        task.resume()
     }
     #endif
 }

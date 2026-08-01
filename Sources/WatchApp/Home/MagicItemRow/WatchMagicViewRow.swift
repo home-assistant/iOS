@@ -14,16 +14,20 @@ struct WatchMagicViewRow: View {
     }
 
     var body: some View {
-        Button {
-            // A grid tile is just the icon, so it always toggles; a list row's body opens the
-            // light controls screen when the entity has any (the icon stays the toggle).
-            if layout == .grid {
-                viewModel.executeItem()
+        // The confirmation dialog and alerts hang off this per-row container (not a shared parent
+        // list): which button triggers them depends on the row variant below.
+        Group {
+            if layout == .list, viewModel.hasLightControls {
+                // Two sibling tap targets — the icon toggles, the body opens the controls
+                // screen. Not wrapped in a row `Button`: SwiftUI doesn't support nested buttons.
+                splitLightLabel
             } else {
-                viewModel.primaryRowAction()
+                Button {
+                    viewModel.executeItem()
+                } label: {
+                    label
+                }
             }
-        } label: {
-            label
         }
         .confirmationDialog(
             L10n.Watch.Home.Run.Confirmation.title(viewModel.item.name(info: viewModel.itemInfo)),
@@ -127,34 +131,29 @@ struct WatchMagicViewRow: View {
                 name: viewModel.item.name(info: viewModel.itemInfo),
                 subtitle: subtitleToDisplay,
                 textColor: textColor,
-                icon: { iconArea },
-                accessory: {
-                    // Same chevron as folder rows: the row body navigates somewhere.
-                    if viewModel.hasLightControls {
-                        Image(systemSymbol: .chevronRight)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
             )
         }
     }
 
-    /// A capable light splits the row in two tap targets: its icon keeps toggling while the row
-    /// body opens the controls screen — so the icon becomes its own (plain) button. Every other
-    /// row keeps a single target and the icon is just decoration.
-    @ViewBuilder
-    private var iconArea: some View {
-        if viewModel.hasLightControls {
-            Button {
-                viewModel.executeItem()
-            } label: {
-                iconToDisplay.animation(.bouncy, value: viewModel.state)
-            }
-            .buttonStyle(.plain)
-        } else {
-            iconToDisplay.animation(.bouncy, value: viewModel.state)
-        }
+    /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
+    /// the row body opens the controls screen. `WatchHomeItemLabel` renders each as its own plain
+    /// button when both actions are set.
+    private var splitLightLabel: some View {
+        WatchHomeItemLabel(
+            name: viewModel.item.name(info: viewModel.itemInfo),
+            subtitle: subtitleToDisplay,
+            textColor: textColor,
+            icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
+            accessory: {
+                // Same chevron as folder rows: the row body navigates somewhere.
+                Image(systemSymbol: .chevronRight)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            },
+            onIconTap: { viewModel.executeItem() },
+            onBodyTap: { viewModel.primaryRowAction() }
+        )
     }
 
     /// The one sheet this row presents; which flag it maps to depends on what the row is
