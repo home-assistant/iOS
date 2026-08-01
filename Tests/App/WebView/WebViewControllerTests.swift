@@ -374,10 +374,8 @@ final class WebViewControllerTests: XCTestCase {
             candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?start=1#detail"))]
         )
 
-        XCTAssertEqual(
-            resolution,
-            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1#detail")))
-        )
+        let expected = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1#detail"))
+        XCTAssertEqual(resolution, .load(expected))
     }
 
     func testBackForwardResolutionDoesNotDuplicateExternalAuthWhenRebasing() throws {
@@ -386,10 +384,8 @@ final class WebViewControllerTests: XCTestCase {
             candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?external_auth=1"))]
         )
 
-        XCTAssertEqual(
-            resolution,
-            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?external_auth=1")))
-        )
+        let expected = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?external_auth=1"))
+        XCTAssertEqual(resolution, .load(expected))
     }
 
     func testBackForwardResolutionSkipsDuplicatedBoundaryEntryForCurrentPage() throws {
@@ -403,7 +399,8 @@ final class WebViewControllerTests: XCTestCase {
             ]
         )
 
-        XCTAssertEqual(resolution, .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/config?external_auth=1"))))
+        let expected = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa/config?external_auth=1"))
+        XCTAssertEqual(resolution, .load(expected))
     }
 
     func testBackForwardResolutionSkipsBoundaryEntryWithLovelaceZeroSuffix() throws {
@@ -446,10 +443,8 @@ final class WebViewControllerTests: XCTestCase {
             candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/history?start=1"))]
         )
 
-        XCTAssertEqual(
-            resolution,
-            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1")))
-        )
+        let expected = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa/history?start=1&external_auth=1"))
+        XCTAssertEqual(resolution, .load(expected))
     }
 
     func testBackForwardResolutionTreatsFragmentDifferencesAsDistinctPages() throws {
@@ -458,10 +453,8 @@ final class WebViewControllerTests: XCTestCase {
             candidateURLs: [XCTUnwrap(URL(string: "http://homeassistant.local:8123/todo#list-b"))]
         )
 
-        XCTAssertEqual(
-            resolution,
-            .load(XCTUnwrap(URL(string: "https://example.ui.nabu.casa/todo?external_auth=1#list-b")))
-        )
+        let expected = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa/todo?external_auth=1#list-b"))
+        XCTAssertEqual(resolution, .load(expected))
     }
 
     func testBackForwardResolutionReturnsNilWhileShowingAboutBlank() throws {
