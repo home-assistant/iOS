@@ -7476,6 +7476,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.labels.selected_pipeline.title") }
       }
     }
+    public enum LightControls {
+      /// Brightness
+      public static var brightness: String { return L10n.tr("Localizable", "watch.light_controls.brightness") }
+      /// Power
+      public static var power: String { return L10n.tr("Localizable", "watch.light_controls.power") }
+      /// Temperature
+      public static var temperature: String { return L10n.tr("Localizable", "watch.light_controls.temperature") }
+    }
     public enum Settings {
       /// Auto
       public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
