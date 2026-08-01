@@ -72,6 +72,7 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
+		42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -709,6 +710,7 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
+		42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateControlState.test.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2620,6 +2622,7 @@
 				42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */,
 				42EEEFE42E2792B20080E973 /* Service.test.swift */,
 				DA5459C05BEB77340680D8C6 /* Domain.test.swift */,
+				42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */,
 				42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */,
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
@@ -4070,6 +4073,7 @@
 				1165707C2702BAF5003906A7 /* DiskCache.test.swift in Sources */,
 				42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */,
 				17200629C6080FA329C8F802 /* Domain.test.swift in Sources */,
+				42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */,
 				42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */,
 				42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */,
 				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,

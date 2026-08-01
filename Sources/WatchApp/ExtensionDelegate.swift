@@ -865,7 +865,7 @@ private enum ComplicationStateFetcher {
     }
 
     /// Performs `request` on the server's mTLS/self-signed-aware session (so local servers work),
-    /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does. On failure the
+    /// invalidating the session afterwards as `WatchServiceCall.execute` does. On failure the
     /// data is nil and `failure` says why (transport error, HTTP status), so diagnostics can show
     /// the actual cause instead of a generic "unavailable".
     private static func data(for request: URLRequest, server: Server) async -> (data: Data?, failure: String?) {

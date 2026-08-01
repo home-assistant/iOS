@@ -357,10 +357,30 @@ struct MagicItemWatchDisplayOnlyTests {
 struct DomainFeatureSupportTests {
     @Test func carPlaySupportedMembership() {
         let expected: Set<Domain> = [
-            .automation, .button, .cover, .fan, .humidifier, .inputBoolean, .inputButton,
+            .automation, .button, .climate, .cover, .fan, .humidifier, .inputBoolean, .inputButton,
             .light, .lock, .scene, .script, .switch, .valve,
         ]
         #expect(Set(Domain.carPlaySupported) == expected, "Domain.carPlaySupported membership changed")
+    }
+
+    @Test func controlScreenMembership() {
+        let expected: Set<Domain> = [.climate]
+        #expect(Set(Domain.controlScreenDomains) == expected, "Domain.controlScreenDomains membership changed")
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasControlScreen == expected.contains(domain),
+                "hasControlScreen mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
+    @Test func controlScreenDomainsAreNeitherRunnableNorDisplayOnly() {
+        // A control-screen domain's tap opens its own screen; an action or the sensor details
+        // screen competing for the same tap would be ambiguous.
+        for domain in Domain.controlScreenDomains {
+            #expect(!domain.isActionable, "Domain.\(domain) has a control screen but also an action")
+            #expect(!domain.isWatchDisplayOnly, "Domain.\(domain) has a control screen but is display-only")
+        }
     }
 
     @Test func watchSupportedMembership() {
@@ -398,13 +418,15 @@ struct DomainFeatureSupportTests {
         }
     }
 
-    @Test func watchAddableIsRunnablePlusDisplayOnly() {
-        #expect(Domain.watchAddable == Domain.watchSupported + Domain.watchDisplayOnly)
+    @Test func watchAddableIsRunnablePlusDisplayOnlyPlusControlScreen() {
+        #expect(Domain.watchAddable == Domain.watchSupported + Domain.watchDisplayOnly + Domain.controlScreenDomains)
         #expect(Set(Domain.watchSupported).isDisjoint(with: Set(Domain.watchDisplayOnly)))
+        #expect(Set(Domain.watchSupported).isDisjoint(with: Set(Domain.controlScreenDomains)))
+        #expect(Set(Domain.watchDisplayOnly).isDisjoint(with: Set(Domain.controlScreenDomains)))
         for domain in Domain.watchAddable {
             #expect(
-                domain.isActionable || domain.isWatchDisplayOnly,
-                "Domain.\(domain) is addable to the watch but neither runnable nor display-only"
+                domain.isActionable || domain.isWatchDisplayOnly || domain.hasControlScreen,
+                "Domain.\(domain) is addable to the watch but neither runnable, display-only, nor control-screen"
             )
         }
     }
@@ -435,6 +457,7 @@ struct DomainFeatureSupportTests {
             ("watchSupported", Domain.watchSupported),
             ("watchDisplayOnly", Domain.watchDisplayOnly),
             ("watchAddable", Domain.watchAddable),
+            ("controlScreenDomains", Domain.controlScreenDomains),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
             ("appDatabaseExcluded", Domain.appDatabaseExcluded),
@@ -450,6 +473,7 @@ struct DomainFeatureSupportTests {
             ("carPlaySupported", Domain.carPlaySupported),
             ("watchSupported", Domain.watchSupported),
             ("watchAddable", Domain.watchAddable),
+            ("controlScreenDomains", Domain.controlScreenDomains),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
         ]
