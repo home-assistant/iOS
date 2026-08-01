@@ -94,8 +94,7 @@ struct GesturesSetupView: View {
                 ListPickerContent.Item(
                     id: action.rawValue,
                     title: action.localizedString,
-                    subtitle: action.moreInfo,
-                    showsLabsLabel: action.isLabsFeature
+                    subtitle: action.moreInfo
                 )
             }
             sections.append(.init(id: category.rawValue, title: category.localizedString, items: items))
