@@ -6,12 +6,9 @@ struct WatchFolderRow: View {
     let item: MagicItem
     let itemInfo: MagicItem.Info
     var layout: WatchLayout = .list
-    let onTap: () -> Void
 
     var body: some View {
-        Button {
-            onTap()
-        } label: {
+        NavigationLink(value: WatchHomeNavigation.folder(item.id)) {
             label
         }
         .modify { view in
@@ -108,7 +105,7 @@ struct WatchFolderRow: View {
                 iconName: "mdi:folder",
                 customization: .init(iconColor: "#03A9F4")
             )
-        ) {}
+        )
     }
 }
 
@@ -134,7 +131,7 @@ struct WatchFolderRow: View {
                     customization: .init(iconColor: "#03A9F4")
                 ),
                 layout: .grid
-            ) {}
+            )
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())

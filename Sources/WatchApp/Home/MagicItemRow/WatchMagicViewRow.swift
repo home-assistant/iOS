@@ -129,8 +129,7 @@ struct WatchMagicViewRow: View {
 
     /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
     /// the row body pushes the controls screen — the chevron promises a push, so it must not be
-    /// presented modally. The entity snapshot is passed along so the pushed screen opens with
-    /// current values instead of waiting for its own first fetch.
+    /// presented modally. The push value resolves in `WatchHomeView`'s destination registration.
     private var splitLightLabel: some View {
         WatchHomeItemLabel(
             name: viewModel.item.name(info: viewModel.itemInfo),
@@ -144,13 +143,7 @@ struct WatchMagicViewRow: View {
                     .foregroundStyle(.secondary)
             },
             onIconTap: { viewModel.executeItem() },
-            bodyDestination: {
-                WatchLightControlsView(
-                    item: viewModel.item,
-                    itemInfo: viewModel.itemInfo,
-                    initialEntity: viewModel.liveEntity
-                )
-            }
+            bodyNavigationValue: .lightControls(viewModel.item)
         )
     }
 

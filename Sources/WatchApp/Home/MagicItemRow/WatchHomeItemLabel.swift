@@ -5,34 +5,19 @@ import SwiftUI
 /// subtitle, and an optional trailing accessory (e.g. a chevron for folders). Keeps `WatchMagicViewRow`
 /// and `WatchFolderRow` visually identical.
 ///
-/// The split variant (`onIconTap` + `bodyDestination`) renders the icon as its own plain button
-/// and the rest of the row as a `NavigationLink` pushing the destination — two sibling tap
-/// targets, since SwiftUI doesn't support nesting a button inside another. A split row must not
-/// additionally be wrapped in its own `Button`, and needs a `NavigationStack` above it.
-struct WatchHomeItemLabel<Icon: View, Accessory: View, Destination: View>: View {
+/// The split variant (`onIconTap` + `bodyNavigationValue`) renders the icon as its own plain
+/// button and the rest of the row as a `NavigationLink(value:)` resolved by the home stack's
+/// `navigationDestination(for: WatchHomeNavigation.self)` registration — two sibling tap targets,
+/// since SwiftUI doesn't support nesting a button inside another. A split row must not
+/// additionally be wrapped in its own `Button`, and needs the home `NavigationStack` above it.
+struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
     let name: String
     let subtitle: String?
     let textColor: Color
     let icon: Icon
     let accessory: Accessory
     let onIconTap: (() -> Void)?
-    let bodyDestination: Destination?
-
-    init(
-        name: String,
-        subtitle: String? = nil,
-        textColor: Color,
-        @ViewBuilder icon: () -> Icon,
-        @ViewBuilder accessory: () -> Accessory = { EmptyView() }
-    ) where Destination == EmptyView {
-        self.name = name
-        self.subtitle = subtitle
-        self.textColor = textColor
-        self.icon = icon()
-        self.accessory = accessory()
-        self.onIconTap = nil
-        self.bodyDestination = nil
-    }
+    let bodyNavigationValue: WatchHomeNavigation?
 
     init(
         name: String,
@@ -40,8 +25,8 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View, Destination: View>: View 
         textColor: Color,
         @ViewBuilder icon: () -> Icon,
         @ViewBuilder accessory: () -> Accessory = { EmptyView() },
-        onIconTap: @escaping () -> Void,
-        @ViewBuilder bodyDestination: () -> Destination
+        onIconTap: (() -> Void)? = nil,
+        bodyNavigationValue: WatchHomeNavigation? = nil
     ) {
         self.name = name
         self.subtitle = subtitle
@@ -49,17 +34,17 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View, Destination: View>: View 
         self.icon = icon()
         self.accessory = accessory()
         self.onIconTap = onIconTap
-        self.bodyDestination = bodyDestination()
+        self.bodyNavigationValue = bodyNavigationValue
     }
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
-            if let onIconTap, let bodyDestination {
+            if let onIconTap, let bodyNavigationValue {
                 Button(action: onIconTap) {
                     icon
                 }
                 .buttonStyle(.plain)
-                NavigationLink(destination: bodyDestination) {
+                NavigationLink(value: bodyNavigationValue) {
                     bodyContent
                 }
                 .buttonStyle(.plain)

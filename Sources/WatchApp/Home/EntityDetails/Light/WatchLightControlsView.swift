@@ -25,9 +25,13 @@ struct WatchLightControlsView: View {
             if viewModel.isStale {
                 staleWarning
             }
-            Section {
-                Toggle(isOn: powerBinding) {
-                    Text(verbatim: L10n.Watch.LightControls.power)
+            // No controls until the first snapshot: a toggle rendered before the state is known
+            // would show "off" for a light that may well be on.
+            if viewModel.entity != nil {
+                Section {
+                    Toggle(isOn: powerBinding) {
+                        Text(verbatim: L10n.Watch.LightControls.power)
+                    }
                 }
             }
             if viewModel.capabilities?.supportsBrightness == true {
@@ -59,6 +63,15 @@ struct WatchLightControlsView: View {
                         .font(.title3.bold())
                         .multilineTextAlignment(.center)
                         .minimumScaleFactor(0.6)
+                } else {
+                    // Pushed before the first state fetch answers — the controls appear as soon
+                    // as the entity's capabilities are known.
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                    Text(verbatim: L10n.Watch.EntityDetails.loading)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
