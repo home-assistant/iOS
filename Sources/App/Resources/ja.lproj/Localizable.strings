@@ -1089,6 +1089,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "reminders_sync.add.duplicate_warning" = "These lists are already being synced.";
 "reminders_sync.add.lists_footer" = "The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.";
 "reminders_sync.add.lists_header" = "Lists to sync";
+"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
+"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
 "reminders_sync.add.reminders_list" = "Apple Reminders list";
 "reminders_sync.add.server" = "Server";
 "reminders_sync.add.title" = "New List Sync";
