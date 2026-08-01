@@ -10,7 +10,7 @@ final class HomeAssistantViewModel: ObservableObject {
             if Current.isCatalyst {
                 .seconds(0.8)
             } else {
-                .seconds(1.8)
+                .seconds(1.2)
             }
         }()
 
