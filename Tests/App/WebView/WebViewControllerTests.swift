@@ -1,3 +1,4 @@
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import UIKit
@@ -344,6 +345,45 @@ final class WebViewControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
+    }
+
+    /// SwiftUI defers status-bar appearance to the embedded controller, so the UIKit override must
+    /// resolve the kiosk hide-status-bar and full-screen settings itself.
+    func testPrefersStatusBarHiddenTracksKioskAndFullScreenSettings() throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousFullScreen = Current.settingsStore.fullScreen
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.settingsStore.fullScreen = previousFullScreen
+        }
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+        Current.settingsStore.fullScreen = false
+
+        func setKiosk(enabled: Bool, hideStatusBar: Bool) throws {
+            try database.write { db in
+                try KioskSettings(enabled: enabled, hideStatusBar: hideStatusBar).insert(db, onConflict: .replace)
+            }
+            Current.kiosk = KioskModeManager()
+        }
+
+        let sut = makeSUT()
+
+        try setKiosk(enabled: true, hideStatusBar: true)
+        XCTAssertTrue(sut.prefersStatusBarHidden)
+
+        try setKiosk(enabled: true, hideStatusBar: false)
+        XCTAssertFalse(sut.prefersStatusBarHidden)
+
+        try setKiosk(enabled: false, hideStatusBar: true)
+        XCTAssertFalse(sut.prefersStatusBarHidden)
+
+        Current.settingsStore.fullScreen = true
+        XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
