@@ -2288,6 +2288,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
 "watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Available on this Watch";

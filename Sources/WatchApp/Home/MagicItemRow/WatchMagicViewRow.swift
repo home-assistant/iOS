@@ -15,7 +15,13 @@ struct WatchMagicViewRow: View {
 
     var body: some View {
         Button {
-            viewModel.executeItem()
+            // A grid tile is just the icon, so it always toggles; a list row's body opens the
+            // light controls screen when the entity has any (the icon stays the toggle).
+            if layout == .grid {
+                viewModel.executeItem()
+            } else {
+                viewModel.primaryRowAction()
+            }
         } label: {
             label
         }
@@ -83,9 +89,19 @@ struct WatchMagicViewRow: View {
                 onDismiss: { viewModel.errorMessage = nil }
             )
         }
-        // Sensors run nothing when tapped: they open their own read-only details screen instead.
-        .sheet(isPresented: $viewModel.showDetails) {
-            WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+        // One sheet per row (stacking several is unreliable on older watchOS), covering the two
+        // mutually exclusive cases: a sensor's read-only details screen, or a capable light's
+        // controls screen (power/brightness/temperature).
+        .sheet(isPresented: detailsSheetBinding) {
+            if viewModel.isDisplayOnly {
+                WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
+            } else {
+                WatchLightControlsView(viewModel: .init(
+                    item: viewModel.item,
+                    itemInfo: viewModel.itemInfo,
+                    initialEntity: viewModel.liveEntity
+                ))
+            }
         }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.
@@ -111,9 +127,40 @@ struct WatchMagicViewRow: View {
                 name: viewModel.item.name(info: viewModel.itemInfo),
                 subtitle: subtitleToDisplay,
                 textColor: textColor,
-                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
+                icon: { iconArea },
+                accessory: {
+                    // Same chevron as folder rows: the row body navigates somewhere.
+                    if viewModel.hasLightControls {
+                        Image(systemSymbol: .chevronRight)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
             )
         }
+    }
+
+    /// A capable light splits the row in two tap targets: its icon keeps toggling while the row
+    /// body opens the controls screen — so the icon becomes its own (plain) button. Every other
+    /// row keeps a single target and the icon is just decoration.
+    @ViewBuilder
+    private var iconArea: some View {
+        if viewModel.hasLightControls {
+            Button {
+                viewModel.executeItem()
+            } label: {
+                iconToDisplay.animation(.bouncy, value: viewModel.state)
+            }
+            .buttonStyle(.plain)
+        } else {
+            iconToDisplay.animation(.bouncy, value: viewModel.state)
+        }
+    }
+
+    /// The one sheet this row presents; which flag it maps to depends on what the row is
+    /// (sensor details vs. light controls) — the two can never apply to the same entity.
+    private var detailsSheetBinding: Binding<Bool> {
+        viewModel.isDisplayOnly ? $viewModel.showDetails : $viewModel.showLightControls
     }
 
     private var subtitleToDisplay: String? {
@@ -226,6 +273,10 @@ struct WatchMagicViewRow: View {
         WatchMagicViewRow(
             item: .init(id: "sensor.living_room_temperature", serverId: "1", type: .entity),
             itemInfo: .init(id: "1", name: "Living room temperature", iconName: "mdi:thermometer")
+        )
+        WatchMagicViewRow(
+            item: .init(id: "light.kitchen", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Kitchen light", iconName: "mdi:lightbulb")
         )
     }
     .background(Color.red)
