@@ -9,6 +9,7 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var showSettingsPushedOntoNavigationStack = false
     private(set) var showAssistSettingsCalled = false
     private(set) var dismissPresentedContentCallCount = 0
+    private(set) var activatedServers: [Server] = []
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
 
@@ -34,6 +35,10 @@ final class MockAppCoordinator: AppCoordinator {
 
     func open(server: Server) -> Guarantee<any WebFrontend> {
         Guarantee<any WebFrontend> { _ in }
+    }
+
+    func activate(server: Server) {
+        activatedServers.append(server)
     }
 
     func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {}

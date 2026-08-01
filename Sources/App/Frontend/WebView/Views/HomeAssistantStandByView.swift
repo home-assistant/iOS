@@ -672,7 +672,7 @@ struct HomeAssistantStandByView: View {
 
     private func selectServer(_ server: Server) {
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.open(server: server)
+            coordinator.activate(server: server)
         }
     }
 
