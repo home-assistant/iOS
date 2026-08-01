@@ -853,8 +853,12 @@ private enum ComplicationStateFetcher {
         let attributes: [String: Any]
     }
 
+    private static func tokenManager(for server: Server) -> TokenManager {
+        Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+    }
+
     private static func bearerToken(for server: Server) async -> String? {
-        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        let tokenManager = Self.tokenManager(for: server)
         return try? await withCheckedThrowingContinuation { continuation in
             tokenManager.bearerToken.done { token, _ in
                 continuation.resume(returning: token)
@@ -868,7 +872,14 @@ private enum ComplicationStateFetcher {
     /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does. On failure the
     /// data is nil and `failure` says why (transport error, HTTP status), so diagnostics can show
     /// the actual cause instead of a generic "unavailable".
-    private static func data(for request: URLRequest, server: Server) async -> (data: Data?, failure: String?) {
+    /// `token` is the bearer already applied to `request`: when the server answers 401, that exact
+    /// token is reported rejected so the next fetch refreshes instead of re-sending it — otherwise
+    /// every refresh cycle logs invalid auth server-side until the watch's IP gets banned.
+    private static func data(
+        for request: URLRequest,
+        server: Server,
+        token: String
+    ) async -> (data: Data?, failure: String?) {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         defer { session.finishTasksAndInvalidate() }
         do {
@@ -879,6 +890,9 @@ private enum ComplicationStateFetcher {
             }
             guard (200 ..< 300).contains(http.statusCode) else {
                 Current.Log.error("[Complication] HTTP \(http.statusCode) for \(request.url?.absoluteString ?? "?")")
+                if http.statusCode == 401 {
+                    tokenManager(for: server).handleAccessTokenRejected(token)
+                }
                 return (nil, "HTTP \(http.statusCode)")
             }
             return (data, nil)
@@ -901,7 +915,7 @@ private enum ComplicationStateFetcher {
         var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
-        let result = await data(for: request, server: server)
+        let result = await data(for: request, server: server, token: token)
         guard let data = result.data else {
             return (nil, result.failure)
         }
@@ -946,7 +960,7 @@ private enum ComplicationStateFetcher {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["template": template])
-        guard let data = await data(for: request, server: server).data else { return nil }
+        guard let data = await data(for: request, server: server, token: token).data else { return nil }
         return String(data: data, encoding: .utf8)
     }
 }

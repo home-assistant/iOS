@@ -114,7 +114,8 @@ enum WatchWidgetLiveFetch {
             return "Failed: no valid access token for server(s) " + stored.keys.sorted().joined(separator: ", ")
         }
 
-        let (updates, details) = await fetchUpdates(targets: targets, usable: usable)
+        let (updates, details, rejectedServerIds) = await fetchUpdates(targets: targets, usable: usable)
+        if !rejectedServerIds.isEmpty { invalidateRejectedCredentials(rejectedServerIds, defaults: defaults) }
         if !updates.isEmpty { applyUpdates(updates, configs: configs) }
 
         let entityCount = targets.filter { $0.kind == .entity }.count
@@ -129,9 +130,10 @@ enum WatchWidgetLiveFetch {
     private static func fetchUpdates(
         targets: [WatchComplicationConfig],
         usable: [String: WatchWidgetServerCredential]
-    ) async -> (updates: [String: LiveValue], details: [String]) {
+    ) async -> (updates: [String: LiveValue], details: [String], rejectedServerIds: Set<String>) {
         var updates: [String: LiveValue] = [:] // config.id -> fresh value
         var details: [String] = []
+        var rejectedServerIds: Set<String> = []
         for config in targets {
             let label = config.entityId.map { "\(config.displayName) (\($0))" } ?? config.displayName
             guard config.kind == .entity else {
@@ -149,6 +151,9 @@ enum WatchWidgetLiveFetch {
             let started = Date()
             let result = await fetchValue(config: config, entityId: entityId, credential: credential)
             let elapsed = String(format: "%.1fs", Date().timeIntervalSince(started))
+            if result.unauthorized {
+                rejectedServerIds.insert(config.serverId)
+            }
             if let value = result.value {
                 updates[config.id] = value
                 details.append("\(label): updated to \(value.value) in \(elapsed)")
@@ -156,7 +161,31 @@ enum WatchWidgetLiveFetch {
                 details.append("\(label): failed in \(elapsed) — \(result.failure ?? "unknown reason")")
             }
         }
-        return (updates, details)
+        return (updates, details, rejectedServerIds)
+    }
+
+    /// The server answered 401 for these servers' tokens even though their client-side expiration
+    /// hadn't passed (revoked refresh token, server restored from backup, clock skew). Persist them
+    /// as expired so the next run mints a fresh token via the refresh token — or skips the server
+    /// entirely — instead of re-sending a token the server logs as invalid auth and, on repeats,
+    /// answers with an IP ban.
+    private static func invalidateRejectedCredentials(_ serverIds: Set<String>, defaults: UserDefaults?) {
+        let current = WatchWidgetServerCredential.read(from: defaults)
+        guard !current.isEmpty else { return }
+        let updated = current.map { credential -> WatchWidgetServerCredential in
+            guard serverIds.contains(credential.serverId) else { return credential }
+            return WatchWidgetServerCredential(
+                serverId: credential.serverId,
+                baseURL: credential.baseURL,
+                token: credential.token,
+                expiration: .distantPast,
+                refreshToken: credential.refreshToken,
+                clientID: credential.clientID,
+                clientCertLabel: credential.clientCertLabel,
+                trustExceptions: credential.trustExceptions
+            )
+        }
+        WatchWidgetServerCredential.write(updated, to: defaults)
     }
 
     /// A fresh formatted value plus the raw state and attributes, so slot formulas and gauge
@@ -261,12 +290,14 @@ enum WatchWidgetLiveFetch {
 
     /// Fetches the entity's live state. On failure the value is nil and `failure` says why
     /// (transport error, HTTP status, malformed body), so the developer notification can report the
-    /// actual cause instead of a generic "fetch failed".
+    /// actual cause instead of a generic "fetch failed". `unauthorized` flags an HTTP 401 — the
+    /// server rejected the token despite its client-side expiration — so the caller can retire the
+    /// credential instead of re-sending it.
     private static func fetchValue(
         config: WatchComplicationConfig,
         entityId: String,
         credential: WatchWidgetServerCredential
-    ) async -> (value: LiveValue?, failure: String?) {
+    ) async -> (value: LiveValue?, failure: String?, unauthorized: Bool) {
         var request = URLRequest(url: credential.baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(credential.token)", forHTTPHeaderField: "Authorization")
 
@@ -276,15 +307,17 @@ enum WatchWidgetLiveFetch {
         let data: Data
         do {
             let (body, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else { return (nil, "no HTTP response") }
-            guard (200 ..< 300).contains(http.statusCode) else { return (nil, "HTTP \(http.statusCode)") }
+            guard let http = response as? HTTPURLResponse else { return (nil, "no HTTP response", false) }
+            guard (200 ..< 300).contains(http.statusCode) else {
+                return (nil, "HTTP \(http.statusCode)", http.statusCode == 401)
+            }
             data = body
         } catch {
-            return (nil, error.localizedDescription)
+            return (nil, error.localizedDescription, false)
         }
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let state = json["state"] as? String else {
-            return (nil, "unexpected response body")
+            return (nil, "unexpected response body", false)
         }
         let attributes = json["attributes"] as? [String: Any] ?? [:]
 
@@ -311,7 +344,8 @@ enum WatchWidgetLiveFetch {
                 state: state,
                 attributes: attributes
             ),
-            nil
+            nil,
+            false
         )
     }
 

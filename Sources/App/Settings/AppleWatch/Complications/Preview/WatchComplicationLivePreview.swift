@@ -468,8 +468,20 @@ struct WatchComplicationLivePreview: View {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         defer { session.finishTasksAndInvalidate() }
         guard let (data, response) = try? await session.data(for: request),
-              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode),
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let http = response as? HTTPURLResponse else {
+            return nil
+        }
+        guard (200 ..< 300).contains(http.statusCode) else {
+            // The server rejected a token the client still considered valid; invalidate it so the
+            // next fetch refreshes instead of re-sending it (which the server logs as invalid auth
+            // and eventually answers with an IP ban).
+            if http.statusCode == 401 {
+                let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+                tokenManager.handleAccessTokenRejected(token)
+            }
+            return nil
+        }
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let state = json["state"] as? String else {
             return nil
         }
