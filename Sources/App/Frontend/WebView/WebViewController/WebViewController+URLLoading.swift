@@ -241,6 +241,19 @@ extension WebViewController {
         }
     }
 
+    /// Sends the web view back to the frontend root — the kiosk dashboard when kiosk mode targets this
+    /// server, the server default otherwise. Always loads, even when already at the root, so activating
+    /// the server again recovers a web view stuck on a broken page.
+    func navigateToRoot() {
+        Task { @MainActor [weak self] in
+            guard let self, let webviewURL = await server.webviewURL() else { return }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            Current.Log.info("navigating web view to root: \(target.path)")
+            loadViewIfNeeded()
+            load(request: URLRequest(url: target))
+        }
+    }
+
     func showNoActiveURLError() {
         // Load about:blank in webview to prevent any current connections
         load(request: URLRequest(url: URL(string: "about:blank")!))

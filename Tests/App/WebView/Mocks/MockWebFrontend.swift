@@ -9,6 +9,7 @@ final class MockWebFrontend: WebFrontend {
 
     private(set) var openedInlineURLs: [URL] = []
     private(set) var openedPanelURLs: [URL] = []
+    private(set) var navigateToRootCallCount = 0
     private(set) var dismissOverlayControllerCallCount = 0
     private(set) var presentedOverlayControllers: [UIViewController] = []
 
@@ -29,6 +30,10 @@ final class MockWebFrontend: WebFrontend {
     func openPanel(_ url: URL) {
         openedPanelURLs.append(url)
         onOpen?(url)
+    }
+
+    func navigateToRoot() {
+        navigateToRootCallCount += 1
     }
 
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {

@@ -284,7 +284,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
             }
         } else {
             Current.sceneManager.appCoordinator.done {
-                $0.open(server: self.server)
+                $0.activate(server: self.server)
             }
         }
     }

@@ -1090,6 +1090,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "reminders_sync.add.duplicate_warning" = "Neid loendeid juba sünkroonitakse.";
 "reminders_sync.add.lists_footer" = "Esimene sünkroonimine lingib üksused, mis kuvatakse mõlemas loendis sama pealkirja all. Kõik muu kopeeritakse vastavalt sünkroonimissuunale. Lõpetatud üksusi ei kopeerita.";
 "reminders_sync.add.lists_header" = "Sünkroonitavad loendid";
+"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
+"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
 "reminders_sync.add.reminders_list" = "Apple'i meeldetuletuste loend";
 "reminders_sync.add.server" = "Server";
 "reminders_sync.add.title" = "Uue loendi sünkroonimine";

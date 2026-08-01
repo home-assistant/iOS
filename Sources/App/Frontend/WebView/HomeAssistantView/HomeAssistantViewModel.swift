@@ -10,7 +10,7 @@ final class HomeAssistantViewModel: ObservableObject {
             if Current.isCatalyst {
                 .seconds(0.8)
             } else {
-                .seconds(1.8)
+                .seconds(1.2)
             }
         }()
 
@@ -287,7 +287,7 @@ final class HomeAssistantViewModel: ObservableObject {
 
     func selectServer(_ server: Server) {
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.open(server: server)
+            coordinator.activate(server: server)
         }
     }
 }

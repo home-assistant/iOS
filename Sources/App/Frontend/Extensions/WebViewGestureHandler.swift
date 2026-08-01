@@ -73,7 +73,7 @@ final class WebViewGestureHandler {
     private func showServersList() {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.selectServer(prompt: nil, includeSettings: true) { server in
-                coordinator.open(server: server)
+                coordinator.activate(server: server)
             }
         }
     }
@@ -153,6 +153,8 @@ final class WebViewGestureHandler {
 
         let nextServer = servers[nextIndex]
 
+        // Not `activate(server:)`: cycling servers with a gesture bypasses the server picker, so it
+        // switches in place without sending the user back to the Home Assistant root.
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: nextServer)
         }
