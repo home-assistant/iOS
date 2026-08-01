@@ -20,8 +20,9 @@ struct LaunchSplashOverlayView: View {
         /// Mirrors the "A PROJECT FROM THE" caption above the OHF logo in `LaunchScreen.storyboard`.
         static let ohfCaptionFontSize: CGFloat = 13
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
-        /// Kept in sync with `heroAnimation` — how long the overlay holds before starting to fade out.
-        static let heroDuration: Duration = .seconds(1)
+        /// How long the overlay holds before starting to fade out; the fade overlaps the tail of
+        /// `heroAnimation`'s spring so the hand-off feels immediate.
+        static let heroDuration: Duration = .milliseconds(200)
         static let fadeAnimation: SwiftUI.Animation = .easeOut(duration: 0.25)
         static let fadeDuration: Duration = .milliseconds(250)
         /// If no screen ever reports a logo (kiosk mode, unexpected flows), never block the app for
