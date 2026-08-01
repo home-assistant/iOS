@@ -583,6 +583,9 @@ class ServerManagerTests: XCTestCase {
                 keychainIdentifier: "client-cert-1",
                 displayName: "Client Certificate"
             )
+            $0.connection.additionalRequestHeaders = [
+                AdditionalRequestHeader(name: "CF-Access-Client-Id", value: "client-id"),
+            ]
         }
 
         try keychain.set(encoder.encode(info), key: "fake1")
@@ -599,6 +602,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
         XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(mirrored.connection.clientCertificate)
+        XCTAssertTrue(mirrored.connection.additionalRequestHeaders.isEmpty)
     }
 
     func testSetupReplacesOutdatedMirrorSnapshot() throws {
@@ -629,6 +633,9 @@ class ServerManagerTests: XCTestCase {
                 displayName: "Client Certificate"
             )
             $0.connection.webhookSecret = "webhook_secret"
+            $0.connection.additionalRequestHeaders = [
+                AdditionalRequestHeader(name: "CF-Access-Client-Secret", value: "client-secret"),
+            ]
             $0.hassDeviceId = "device-1"
         }
 
@@ -648,6 +655,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(restoredFromKeychain.connection.webhookSecret)
         XCTAssertEqual(restoredFromKeychain.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(restoredFromKeychain.connection.clientCertificate)
+        XCTAssertTrue(restoredFromKeychain.connection.additionalRequestHeaders.isEmpty)
 
         let restored = try XCTUnwrap(servers.server(for: "fake1"))
         XCTAssertEqual(restored.info.remoteName, info.remoteName)
@@ -659,6 +667,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertFalse(restored.info.connection.securityExceptions.hasExceptions)
         XCTAssertEqual(restored.info.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(restored.info.connection.clientCertificate)
+        XCTAssertTrue(restored.info.connection.additionalRequestHeaders.isEmpty)
         XCTAssertNotNil(mirrorStore.data["fake1"])
         XCTAssertFalse(servers.restoreKeychainFromMirrorIfNeeded())
     }
@@ -736,6 +745,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.webhookSecret)
         XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(mirrored.connection.clientCertificate)
+        XCTAssertTrue(mirrored.connection.additionalRequestHeaders.isEmpty)
     }
 
     func testDeletingLastServerDoesNotDeadlockWhenMirrorSnapshotExists() throws {

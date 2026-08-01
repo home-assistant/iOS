@@ -34,6 +34,7 @@ struct ConnectionSettingsView: View {
         List {
             detailsSection
             clientCertificateSection
+            additionalRequestHeadersSection
             privacySection
             statusSection
             deleteSection
@@ -413,6 +414,19 @@ struct ConnectionSettingsView: View {
         }
     }
 
+    // MARK: - Additional Request Headers Section
+
+    private var additionalRequestHeadersSection: some View {
+        AdditionalRequestHeadersSection(
+            headers: Binding(
+                get: { viewModel.additionalRequestHeaders },
+                set: { viewModel.updateAdditionalRequestHeaders($0) }
+            ),
+            addAction: viewModel.addAdditionalRequestHeader,
+            removeAction: { viewModel.removeAdditionalRequestHeader(id: $0) }
+        )
+    }
+
     // MARK: - Privacy Section
 
     private var privacySection: some View {
@@ -554,6 +568,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.AdditionalRequestHeaders.header),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.LocationSendType.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.SensorSendType.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.connectingVia),

@@ -930,6 +930,88 @@ class ConnectionInfoTests: XCTestCase {
         isOnInternalNetwork = await info.isOnInternalNetwork()
         XCTAssertFalse(isOnInternalNetwork)
     }
+
+    func testAdditionalRequestHeadersAllowsCloudflareAccessHeadersForConfiguredURL() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "https://ha.example.com"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined,
+            additionalRequestHeaders: [
+                AdditionalRequestHeader(name: "CF-Access-Client-Id", value: "client-id"),
+                AdditionalRequestHeader(name: "CF-Access-Client-Secret", value: "client-secret"),
+            ]
+        )
+
+        let headers = info.additionalRequestHeaders(for: URL(string: "https://ha.example.com/lovelace/default"))
+
+        XCTAssertEqual(headers.map(\.name), ["CF-Access-Client-Id", "CF-Access-Client-Secret"])
+        XCTAssertEqual(headers.map(\.value), ["client-id", "client-secret"])
+    }
+
+    func testAdditionalRequestHeadersRejectsReservedInvalidAndDuplicateHeaders() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "https://ha.example.com"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined,
+            additionalRequestHeaders: [
+                AdditionalRequestHeader(name: "Authorization", value: "Bearer bad"),
+                AdditionalRequestHeader(name: "Cookie", value: "session=bad"),
+                AdditionalRequestHeader(name: "Bad Header", value: "bad"),
+                AdditionalRequestHeader(name: "X-Allowed", value: "first"),
+                AdditionalRequestHeader(name: "x-allowed", value: "second"),
+                AdditionalRequestHeader(name: "X-Empty", value: ""),
+                AdditionalRequestHeader(name: "X-Newline", value: "bad\nvalue"),
+            ]
+        )
+
+        let headers = info.additionalRequestHeaders(for: URL(string: "https://ha.example.com/api/"))
+
+        XCTAssertEqual(headers.count, 1)
+        XCTAssertEqual(headers.first?.name, "X-Allowed")
+        XCTAssertEqual(headers.first?.value, "first")
+    }
+
+    func testAdditionalRequestHeadersOnlyApplyToConfiguredServerURL() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "https://proxy.example.com/homeassistant"),
+            internalURL: nil,
+            cloudhookURL: URL(string: "https://hooks.nabu.casa/webhook"),
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined,
+            additionalRequestHeaders: [
+                AdditionalRequestHeader(name: "CF-Access-Client-Id", value: "client-id"),
+            ]
+        )
+
+        XCTAssertFalse(
+            info.additionalRequestHeaders(for: URL(string: "https://proxy.example.com/homeassistant/lovelace")).isEmpty
+        )
+        XCTAssertTrue(info.additionalRequestHeaders(for: URL(string: "https://other.example.com/homeassistant")).isEmpty)
+        XCTAssertTrue(info.additionalRequestHeaders(for: URL(string: "https://proxy.example.com/other")).isEmpty)
+        XCTAssertTrue(info.additionalRequestHeaders(for: URL(string: "https://hooks.nabu.casa/webhook")).isEmpty)
+    }
 }
 
 private extension ConnectionInfo {

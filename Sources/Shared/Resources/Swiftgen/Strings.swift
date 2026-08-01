@@ -3955,6 +3955,26 @@ public enum L10n {
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
       /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
+      public enum AdditionalRequestHeaders {
+        /// Add Header
+        public static var add: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.add") }
+        /// Advanced: add headers sent to this server's configured URLs for reverse proxies or Zero Trust gateways. Values are sensitive and are not included in the server metadata mirror.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.footer") }
+        /// Additional Request Headers
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.header") }
+        /// This header name is not allowed.
+        public static var invalidName: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.invalid_name") }
+        /// Remove header
+        public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.remove") }
+        public enum Name {
+          /// Header name
+          public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.name.placeholder") }
+        }
+        public enum Value {
+          /// Header value
+          public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.additional_request_headers.value.placeholder") }
+        }
+      }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }

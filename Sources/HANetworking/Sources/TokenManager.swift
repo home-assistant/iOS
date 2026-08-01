@@ -62,7 +62,8 @@ public final class TokenManager: @unchecked Sendable {
             authorizationCode: code,
             baseURL: url,
             exceptions: exceptions,
-            clientCertificate: clientCertificate
+            clientCertificate: clientCertificate,
+            additionalRequestHeaders: connectionInfo.additionalRequestHeaders
         ).asyncValue()
     }
 

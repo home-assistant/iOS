@@ -233,6 +233,7 @@ public extension ServerInfo {
         info.connection.webhookSecret = nil
         info.connection.securityExceptions = .init()
         info.connection.clientCertificate = nil
+        info.connection.additionalRequestHeaders = []
         return info
     }
 

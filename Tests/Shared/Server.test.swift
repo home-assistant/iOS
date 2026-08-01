@@ -188,6 +188,10 @@ class ServerTests: XCTestCase {
             keychainIdentifier: "client-cert-1",
             displayName: "Client Certificate"
         )
+        info.connection.additionalRequestHeaders = [
+            AdditionalRequestHeader(name: "CF-Access-Client-Id", value: "client-id"),
+            AdditionalRequestHeader(name: "CF-Access-Client-Secret", value: "client-secret"),
+        ]
 
         let mirrored = info.mirroredForPersistence
 
@@ -197,6 +201,7 @@ class ServerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.webhookSecret)
         XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
         XCTAssertNil(mirrored.connection.clientCertificate)
+        XCTAssertTrue(mirrored.connection.additionalRequestHeaders.isEmpty)
     }
 
     func testActiveURLReturnsInternalWhenOnInternalNetwork() async {

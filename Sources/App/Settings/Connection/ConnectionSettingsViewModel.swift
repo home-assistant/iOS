@@ -29,6 +29,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
+    @Published var additionalRequestHeaders: [AdditionalRequestHeader] = []
 
     // MARK: - Properties
 
@@ -149,6 +150,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         securityLevel = info.connection.connectionAccessSecurityLevel
         locationPrivacy = info.setting(for: .locationPrivacy)
         sensorPrivacy = info.setting(for: .sensorPrivacy)
+        additionalRequestHeaders = info.connection.additionalRequestHeaders
         updateURLs()
         updateCanRetryLocalPush()
     }
@@ -235,6 +237,28 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.setSetting(value: privacy, for: .sensorPrivacy)
         sensorPrivacy = privacy
         Current.api(for: server)?.registerSensors().cauterize()
+    }
+
+    func addAdditionalRequestHeader() {
+        additionalRequestHeaders.append(AdditionalRequestHeader(name: "", value: ""))
+        persistAdditionalRequestHeaders()
+    }
+
+    func updateAdditionalRequestHeaders(_ headers: [AdditionalRequestHeader]) {
+        additionalRequestHeaders = headers
+        persistAdditionalRequestHeaders()
+    }
+
+    func removeAdditionalRequestHeader(id: AdditionalRequestHeader.ID) {
+        additionalRequestHeaders.removeAll { $0.id == id }
+        persistAdditionalRequestHeaders()
+    }
+
+    private func persistAdditionalRequestHeaders() {
+        let headers = additionalRequestHeaders
+        server.update { info in
+            info.connection.additionalRequestHeaders = headers
+        }
     }
 
     func shareServer() -> UIActivityViewController? {

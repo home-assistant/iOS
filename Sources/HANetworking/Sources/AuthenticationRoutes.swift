@@ -4,9 +4,15 @@ import Foundation
 struct RouteInfo: Alamofire.URLRequestConvertible {
     let route: AuthenticationRoute
     let baseURL: URL
+    var additionalRequestHeaders: [AdditionalRequestHeader] = []
 
     func asURLRequest() throws -> URLRequest {
-        try route.asURLRequestWith(baseURL: baseURL)
+        var request = try route.asURLRequestWith(baseURL: baseURL)
+        for header in AdditionalRequestHeader.sanitizedHeaders(from: additionalRequestHeaders)
+            where request.value(forHTTPHeaderField: header.name) == nil {
+            request.setValue(header.value, forHTTPHeaderField: header.name)
+        }
+        return request
     }
 }
 

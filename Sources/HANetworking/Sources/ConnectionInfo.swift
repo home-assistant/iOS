@@ -24,6 +24,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
     /// Client certificate for mTLS authentication (optional, iOS only)
     public var clientCertificate: ClientCertificate?
+    public var additionalRequestHeaders: [AdditionalRequestHeader] = []
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -105,7 +106,8 @@ public struct ConnectionInfo: Codable, Equatable {
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
         connectionAccessSecurityLevel: ConnectionSecurityLevel,
-        clientCertificate: ClientCertificate? = nil
+        clientCertificate: ClientCertificate? = nil,
+        additionalRequestHeaders: [AdditionalRequestHeader] = []
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -119,6 +121,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.securityExceptions = securityExceptions
         self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
         self.clientCertificate = clientCertificate
+        self.additionalRequestHeaders = additionalRequestHeaders
     }
 
     public init(from decoder: Decoder) throws {
@@ -146,6 +149,10 @@ public struct ConnectionInfo: Codable, Equatable {
             ClientCertificate.self,
             forKey: .clientCertificate
         )
+        self.additionalRequestHeaders = try container.decodeIfPresent(
+            [AdditionalRequestHeader].self,
+            forKey: .additionalRequestHeaders
+        ) ?? []
     }
 
     // Localized `description` (CustomStringConvertible) is added retroactively in the Shared module
@@ -342,6 +349,20 @@ public struct ConnectionInfo: Codable, Equatable {
         address(for: type)
     }
 
+    public func additionalRequestHeaders(for url: URL?) -> [(name: String, value: String)] {
+        guard let url, shouldApplyAdditionalRequestHeaders(to: url) else {
+            return []
+        }
+
+        return AdditionalRequestHeader.sanitizedHeaders(from: additionalRequestHeaders)
+    }
+
+    private func shouldApplyAdditionalRequestHeaders(to url: URL) -> Bool {
+        configuredURLs.contains { configuredURL in
+            url.baseIsEqual(to: configuredURL) && url.pathIsUnderServerBasePath(configuredURL)
+        }
+    }
+
     public mutating func set(address: URL?, for addressType: URLType) {
         switch addressType {
         case .internal:
@@ -450,6 +471,23 @@ public final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
             }
         }
 
+        updatedRequest.addAdditionalRequestHeaders(from: server.info.connection)
+
         completion(.success(updatedRequest))
+    }
+}
+
+private extension URL {
+    func pathIsUnderServerBasePath(_ serverURL: URL) -> Bool {
+        let serverPath = serverURL.normalizedServerPath
+        guard serverPath != "/" else { return true }
+
+        let requestPath = normalizedServerPath
+        return requestPath == serverPath || requestPath.hasPrefix(serverPath + "/")
+    }
+
+    var normalizedServerPath: String {
+        let path = sanitized().path
+        return path.isEmpty ? "/" : path
     }
 }

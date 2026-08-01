@@ -45,10 +45,14 @@ public class AuthenticationAPI {
         if server.info.connection.clientCertificate != nil {
             self.session = Session(
                 delegate: ClientCertificateSessionDelegate(server: server),
+                interceptor: Interceptor(adapters: [ServerRequestAdapter(server: server)]),
                 serverTrustManager: CustomServerTrustManager(server: server)
             )
         } else {
-            self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
+            self.session = Session(
+                interceptor: Interceptor(adapters: [ServerRequestAdapter(server: server)]),
+                serverTrustManager: CustomServerTrustManager(server: server)
+            )
         }
     }
 
@@ -64,7 +68,8 @@ public class AuthenticationAPI {
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.refreshToken(token: token),
-                baseURL: activeUrl
+                baseURL: activeUrl,
+                additionalRequestHeaders: server.info.connection.additionalRequestHeaders
             )
             let request = session.request(routeInfo)
 
@@ -91,7 +96,8 @@ public class AuthenticationAPI {
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.revokeToken(token: token),
-                baseURL: activeUrl
+                baseURL: activeUrl,
+                additionalRequestHeaders: server.info.connection.additionalRequestHeaders
             )
             let request = session.request(routeInfo)
 
@@ -105,7 +111,8 @@ public class AuthenticationAPI {
         authorizationCode: String,
         baseURL: URL,
         exceptions: SecurityExceptions,
-        clientCertificate: ClientCertificate? = nil
+        clientCertificate: ClientCertificate? = nil,
+        additionalRequestHeaders: [AdditionalRequestHeader] = []
     ) -> Promise<TokenInfo> {
         let session: Session
 
@@ -127,7 +134,8 @@ public class AuthenticationAPI {
         return Promise { seal in
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                baseURL: baseURL
+                baseURL: baseURL,
+                additionalRequestHeaders: additionalRequestHeaders
             )
             let request = session.request(routeInfo)
 

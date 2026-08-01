@@ -1167,6 +1167,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
+"settings.connection_section.additional_request_headers.add" = "Add Header";
+"settings.connection_section.additional_request_headers.footer" = "Advanced: add headers sent to this server's configured URLs for reverse proxies or Zero Trust gateways. Values are sensitive and are not included in the server metadata mirror.";
+"settings.connection_section.additional_request_headers.header" = "Additional Request Headers";
+"settings.connection_section.additional_request_headers.invalid_name" = "This header name is not allowed.";
+"settings.connection_section.additional_request_headers.name.placeholder" = "Header name";
+"settings.connection_section.additional_request_headers.remove" = "Remove header";
+"settings.connection_section.additional_request_headers.value.placeholder" = "Header value";
 "settings.connection_section.client_certificate.expired" = "Certificate expired";
 "settings.connection_section.client_certificate.expires_at" = "Expires %@";
 "settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
