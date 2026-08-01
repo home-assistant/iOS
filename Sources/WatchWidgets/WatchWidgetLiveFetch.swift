@@ -148,6 +148,12 @@ enum WatchWidgetLiveFetch {
                 details.append("\(label): failed — no valid credential for its server")
                 continue
             }
+            // Once this run saw a 401 for the server, don't send its rejected token again for the
+            // remaining complications — each repeat is another invalid-auth hit toward an IP ban.
+            guard !rejectedServerIds.contains(config.serverId) else {
+                details.append("\(label): skipped — server rejected this run's token")
+                continue
+            }
             let started = Date()
             let result = await fetchValue(config: config, entityId: entityId, credential: credential)
             let elapsed = String(format: "%.1fs", Date().timeIntervalSince(started))
