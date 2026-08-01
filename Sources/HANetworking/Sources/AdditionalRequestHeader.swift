@@ -40,13 +40,16 @@ public struct AdditionalRequestHeader: Codable, Equatable, Identifiable {
     public static func isAllowedName(_ name: String) -> Bool {
         guard !name.isEmpty else { return false }
 
-        let allowedScalars = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "!#$%&'*+-.^_`|~"))
-        guard name.unicodeScalars.allSatisfy({ allowedScalars.contains($0) }) else {
+        guard name.unicodeScalars.allSatisfy({ allowedHeaderNameScalars.contains($0) }) else {
             return false
         }
 
         return !reservedHeaderNames.contains(name.lowercased())
     }
+
+    private static let allowedHeaderNameScalars = Set(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&'*+-.^_`|~".unicodeScalars
+    )
 
     private static let reservedHeaderNames: Set<String> = [
         "accept",

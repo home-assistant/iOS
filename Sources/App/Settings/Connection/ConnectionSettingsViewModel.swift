@@ -38,6 +38,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
     private var canRetryLocalPushTask: Task<Void, Never>?
+    private var additionalRequestHeadersPersistTask: Task<Void, Never>?
 
     // MARK: - Computed Properties
 
@@ -72,6 +73,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     deinit {
         tokens.forEach { $0.cancel() }
         localPushObserver?.cancel()
+        additionalRequestHeadersPersistTask?.cancel()
         if let observer = notificationCenterObserver {
             NotificationCenter.default.removeObserver(observer)
         }
@@ -241,17 +243,32 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     func addAdditionalRequestHeader() {
         additionalRequestHeaders.append(AdditionalRequestHeader(name: "", value: ""))
-        persistAdditionalRequestHeaders()
+        scheduleAdditionalRequestHeadersPersist()
     }
 
     func updateAdditionalRequestHeaders(_ headers: [AdditionalRequestHeader]) {
         additionalRequestHeaders = headers
-        persistAdditionalRequestHeaders()
+        scheduleAdditionalRequestHeadersPersist()
     }
 
     func removeAdditionalRequestHeader(id: AdditionalRequestHeader.ID) {
         additionalRequestHeaders.removeAll { $0.id == id }
+        additionalRequestHeadersPersistTask?.cancel()
         persistAdditionalRequestHeaders()
+    }
+
+    func flushAdditionalRequestHeaders() {
+        additionalRequestHeadersPersistTask?.cancel()
+        persistAdditionalRequestHeaders()
+    }
+
+    private func scheduleAdditionalRequestHeadersPersist() {
+        additionalRequestHeadersPersistTask?.cancel()
+        additionalRequestHeadersPersistTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard !Task.isCancelled, let self else { return }
+            persistAdditionalRequestHeaders()
+        }
     }
 
     private func persistAdditionalRequestHeaders() {

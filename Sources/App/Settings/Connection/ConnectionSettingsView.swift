@@ -205,6 +205,7 @@ struct ConnectionSettingsView: View {
             Text(error.localizedDescription)
         }
         .onDisappear {
+            viewModel.flushAdditionalRequestHeaders()
             onDismiss?()
         }
         .alert(

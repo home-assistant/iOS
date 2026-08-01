@@ -973,6 +973,7 @@ class ConnectionInfoTests: XCTestCase {
                 AdditionalRequestHeader(name: "Authorization", value: "Bearer bad"),
                 AdditionalRequestHeader(name: "Cookie", value: "session=bad"),
                 AdditionalRequestHeader(name: "Bad Header", value: "bad"),
+                AdditionalRequestHeader(name: "X-Áccess", value: "unicode"),
                 AdditionalRequestHeader(name: "X-Allowed", value: "first"),
                 AdditionalRequestHeader(name: "x-allowed", value: "second"),
                 AdditionalRequestHeader(name: "X-Empty", value: ""),

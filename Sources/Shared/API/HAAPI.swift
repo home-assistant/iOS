@@ -204,8 +204,6 @@ public class HomeAssistantAPI {
         configuration: URLSessionConfiguration = .ephemeral,
         onStep: ((String) -> Void)? = nil
     ) -> URLSession {
-        addAdditionalRequestHeaders(to: configuration, server: server)
-
         let certificateProvider = HomeAssistantCertificateProvider(server: server, onStep: onStep)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
         #if os(watchOS)
@@ -242,15 +240,6 @@ public class HomeAssistantAPI {
             interceptor: interceptor,
             serverTrustManager: trustManager
         )
-    }
-
-    private static func addAdditionalRequestHeaders(to configuration: URLSessionConfiguration, server: Server) {
-        var headers = configuration.httpAdditionalHeaders ?? [:]
-        for header in AdditionalRequestHeader.sanitizedHeaders(from: server.info.connection.additionalRequestHeaders)
-            where !headers.hasHeader(named: header.name) {
-            headers[header.name] = header.value
-        }
-        configuration.httpAdditionalHeaders = headers
     }
 
     private func newInterceptor() -> Interceptor {
@@ -1395,15 +1384,6 @@ public class HomeAssistantAPI {
         }
 
         return url
-    }
-}
-
-private extension Dictionary where Key == AnyHashable, Value == Any {
-    func hasHeader(named name: String) -> Bool {
-        let lowercasedName = name.lowercased()
-        return keys.contains { key in
-            (key.base as? String)?.lowercased() == lowercasedName
-        }
     }
 }
 

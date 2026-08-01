@@ -332,7 +332,27 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         XCTAssertTrue(session.delegate is HAURLSessionDelegate)
     }
 
-    private func makeServer(clientCertificate: ClientCertificate?) -> Server {
+    func testCertificateAwareSessionDoesNotSetAdditionalRequestHeadersOnConfiguration() {
+        let server = makeServer(
+            clientCertificate: nil,
+            additionalRequestHeaders: [
+                AdditionalRequestHeader(name: "CF-Access-Client-Id", value: "client-id"),
+                AdditionalRequestHeader(name: "CF-Access-Client-Secret", value: "client-secret"),
+            ]
+        )
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+
+        let headers = session.configuration.httpAdditionalHeaders ?? [:]
+        XCTAssertNil(headers["CF-Access-Client-Id"])
+        XCTAssertNil(headers["CF-Access-Client-Secret"])
+    }
+
+    private func makeServer(
+        clientCertificate: ClientCertificate?,
+        additionalRequestHeaders: [AdditionalRequestHeader] = []
+    ) -> Server {
         var info = ServerInfo(
             name: "Certificate Server",
             connection: .init(
@@ -347,7 +367,8 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
                 isLocalPushEnabled: false,
                 securityExceptions: .init(exceptions: []),
                 connectionAccessSecurityLevel: .undefined,
-                clientCertificate: clientCertificate
+                clientCertificate: clientCertificate,
+                additionalRequestHeaders: additionalRequestHeaders
             ),
             token: .init(accessToken: "access-token", refreshToken: "refresh-token", expiration: Date()),
             version: "2026.4.1"
