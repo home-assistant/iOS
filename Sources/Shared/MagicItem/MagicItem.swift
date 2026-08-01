@@ -812,6 +812,13 @@ public extension MagicItem {
                     Current.Log.error(
                         "REST execution of magic item \(self.id) returned \(http.statusCode): \(body ?? "<no body>")"
                     )
+                    // The server rejected a token the client still considered valid; invalidate it
+                    // so the next run refreshes instead of re-sending it — repeats get logged as
+                    // invalid auth server-side and eventually IP-ban the watch.
+                    if http.statusCode == 401 {
+                        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+                        tokenManager.handleAccessTokenRejected(token)
+                    }
                     completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
                 }
             }

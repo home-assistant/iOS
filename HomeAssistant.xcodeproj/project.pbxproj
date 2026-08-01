@@ -208,6 +208,7 @@
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
 		42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */; };
+		42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */; };
 		42F1C0323140B00011AACC02 /* ConnectivityWrapper.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */; };
 		42F384052FB49C9500390AFC /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42F384042FB49C9500390AFC /* DebugSwift */; };
 		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
@@ -669,6 +670,7 @@
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
 		42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAPITokenFetchFailure.test.swift; sourceTree = "<group>"; };
+		42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerAccessTokenRejection.test.swift; sourceTree = "<group>"; };
 		42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityWrapper.test.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
@@ -2611,6 +2613,7 @@
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 				42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */,
 				42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */,
+				42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */,
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 				42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */,
 				480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */,
@@ -4080,6 +4083,7 @@
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
 				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
+				42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,

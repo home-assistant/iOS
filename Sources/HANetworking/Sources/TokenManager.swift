@@ -87,6 +87,26 @@ public final class TokenManager: @unchecked Sendable {
         }
     }
 
+    /// Call when the server answered a request with HTTP 401 for an access token this manager handed
+    /// out. The client-side expiration said the token was still valid, yet the server rejected it —
+    /// typically because its refresh token was revoked (device deleted from the HA profile) or the
+    /// server was restored from a backup. Without this, every poll re-sends the same rejected token,
+    /// which the server logs as invalid auth and eventually answers with an IP ban.
+    ///
+    /// Marking the stored token expired makes every future `bearerToken` refuse to hand it out and go
+    /// through a refresh instead: either the refresh mints a working token, or it fails with
+    /// 400...403 and the reauthentication-required flow kicks in — in both cases the rejected token is
+    /// never sent again.
+    public func handleAccessTokenRejected(_ rejectedToken: String) {
+        // A refresh may have already replaced the token by the time the 401 lands; only the
+        // currently stored token must be invalidated, never its fresh successor.
+        guard server.info.token.accessToken == rejectedToken else { return }
+        HANetworkingEnvironment.current.log.error(
+            "Server rejected access token \(rejectedToken.hash) before its expiration; forcing refresh"
+        )
+        server.update { $0.token.expiration = .distantPast }
+    }
+
     public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
         firstly { () -> Promise<(String, Date)> in
             if forceRefresh {

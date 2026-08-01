@@ -46,6 +46,11 @@ public enum WatchEntityStateFetcher {
                 guard let data,
                       let http = response as? HTTPURLResponse,
                       (200 ..< 300).contains(http.statusCode) else {
+                    // The server rejected a token the client still considered valid; stop polling
+                    // with it, or every cycle logs invalid auth server-side until an IP ban.
+                    if (response as? HTTPURLResponse)?.statusCode == 401 {
+                        tokenManager.handleAccessTokenRejected(token)
+                    }
                     finish(nil)
                     return
                 }
