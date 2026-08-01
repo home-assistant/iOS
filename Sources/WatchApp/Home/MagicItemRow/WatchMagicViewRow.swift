@@ -93,19 +93,10 @@ struct WatchMagicViewRow: View {
                 onDismiss: { viewModel.errorMessage = nil }
             )
         }
-        // One sheet per row (stacking several is unreliable on older watchOS), covering the two
-        // mutually exclusive cases: a sensor's read-only details screen, or a capable light's
-        // controls screen (power/brightness/temperature).
-        .sheet(isPresented: detailsSheetBinding) {
-            if viewModel.isDisplayOnly {
-                WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
-            } else {
-                WatchLightControlsView(viewModel: .init(
-                    item: viewModel.item,
-                    itemInfo: viewModel.itemInfo,
-                    initialEntity: viewModel.liveEntity
-                ))
-            }
+        // Sensors run nothing when tapped: they open their own read-only details screen instead.
+        // (A capable light's controls screen is not a sheet — its row body pushes it.)
+        .sheet(isPresented: $viewModel.showDetails) {
+            WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
         }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.
@@ -137,8 +128,9 @@ struct WatchMagicViewRow: View {
     }
 
     /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
-    /// the row body opens the controls screen. `WatchHomeItemLabel` renders each as its own plain
-    /// button when both actions are set.
+    /// the row body pushes the controls screen — the chevron promises a push, so it must not be
+    /// presented modally. The entity snapshot is passed along so the pushed screen opens with
+    /// current values instead of waiting for its own first fetch.
     private var splitLightLabel: some View {
         WatchHomeItemLabel(
             name: viewModel.item.name(info: viewModel.itemInfo),
@@ -152,14 +144,14 @@ struct WatchMagicViewRow: View {
                     .foregroundStyle(.secondary)
             },
             onIconTap: { viewModel.executeItem() },
-            onBodyTap: { viewModel.primaryRowAction() }
+            bodyDestination: {
+                WatchLightControlsView(
+                    item: viewModel.item,
+                    itemInfo: viewModel.itemInfo,
+                    initialEntity: viewModel.liveEntity
+                )
+            }
         )
-    }
-
-    /// The one sheet this row presents; which flag it maps to depends on what the row is
-    /// (sensor details vs. light controls) — the two can never apply to the same entity.
-    private var detailsSheetBinding: Binding<Bool> {
-        viewModel.isDisplayOnly ? $viewModel.showDetails : $viewModel.showLightControls
     }
 
     private var subtitleToDisplay: String? {

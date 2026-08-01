@@ -46,17 +46,22 @@ struct WatchHomeView: View {
     }
 
     var body: some View {
-        Group {
-            if let folderId = openFolderId {
-                WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        openFolderId = nil
+        // The stack exists so rows can push detail screens (e.g. a light's controls). The home
+        // and folder screens hide the navigation bar themselves, so visually nothing changes
+        // at the root; only pushed screens show the system bar with a back button.
+        NavigationStack {
+            Group {
+                if let folderId = openFolderId {
+                    WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            openFolderId = nil
+                        }
                     }
+                    .transition(.move(edge: .trailing))
+                } else {
+                    content
+                        .transition(.move(edge: .leading))
                 }
-                .transition(.move(edge: .trailing))
-            } else {
-                content
-                    .transition(.move(edge: .leading))
             }
         }
         ._statusBarHidden(true)

@@ -3,47 +3,41 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Controls screen a light row opens when tapped: power, brightness and — when the light supports
-/// it — color temperature. Lights without any of these capabilities never get here; their row
-/// toggles directly.
+/// Controls screen a light row pushes when its body is tapped: power, brightness and — when the
+/// light supports it — color temperature. Lights without any of these capabilities never get
+/// here; their row toggles directly. Pushed (not presented modally) to honor the row's chevron,
+/// so it relies on the home screen's `NavigationStack` for the bar and back button.
 struct WatchLightControlsView: View {
     @StateObject private var viewModel: WatchLightControlsViewModel
-    @Environment(\.dismiss) private var dismiss
 
-    init(viewModel: WatchLightControlsViewModel) {
-        self._viewModel = .init(wrappedValue: viewModel)
+    /// The view model is built inside `StateObject`'s autoclosure so a `NavigationLink` can hold
+    /// this view without instantiating a poller per row render — creation is deferred until the
+    /// screen is actually pushed.
+    init(item: MagicItem, itemInfo: MagicItem.Info, initialEntity: HAEntity? = nil) {
+        self._viewModel = .init(
+            wrappedValue: WatchLightControlsViewModel(item: item, itemInfo: itemInfo, initialEntity: initialEntity)
+        )
     }
 
     var body: some View {
-        NavigationView {
-            List {
-                header
-                if viewModel.isStale {
-                    staleWarning
-                }
-                Section {
-                    Toggle(isOn: powerBinding) {
-                        Text(verbatim: L10n.Watch.LightControls.power)
-                    }
-                }
-                if viewModel.capabilities?.supportsBrightness == true {
-                    brightnessSection
-                }
-                if viewModel.capabilities?.supportsColorTemp == true {
-                    colorTempSection
+        List {
+            header
+            if viewModel.isStale {
+                staleWarning
+            }
+            Section {
+                Toggle(isOn: powerBinding) {
+                    Text(verbatim: L10n.Watch.LightControls.power)
                 }
             }
-            .navigationTitle(Text(verbatim: viewModel.name))
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemSymbol: .xmark)
-                    }
-                }
+            if viewModel.capabilities?.supportsBrightness == true {
+                brightnessSection
+            }
+            if viewModel.capabilities?.supportsColorTemp == true {
+                colorTempSection
             }
         }
+        .navigationTitle(Text(verbatim: viewModel.name))
         .onAppear {
             viewModel.startStateUpdates()
         }
@@ -169,5 +163,8 @@ struct WatchLightControlsView: View {
         ],
         context: .init(id: "", userId: "", parentId: "")
     )
-    return WatchLightControlsView(viewModel: .init(item: item, itemInfo: info, initialEntity: entity))
+    // In the app this screen is pushed by a row inside the home's NavigationStack.
+    return NavigationStack {
+        WatchLightControlsView(item: item, itemInfo: info, initialEntity: entity)
+    }
 }

@@ -35,9 +35,6 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     @Published var showUnsupportedAlert = false
     /// Drives the details screen for a display-only (sensor) item, which runs nothing when tapped.
     @Published var showDetails = false
-    /// Drives the controls screen (power/brightness/temperature) for a light row whose entity
-    /// reports adjustable capabilities.
-    @Published var showLightControls = false
     /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
     /// state-aware execution (lock).
     @Published private(set) var liveEntity: HAEntity?
@@ -79,17 +76,6 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             showConfirmationDialog = true
         } else {
             executeItemAction()
-        }
-    }
-
-    /// What tapping the row body does. A light with adjustable capabilities opens its controls
-    /// screen (its icon stays the toggle); everything else — including a plain on/off light —
-    /// executes as before.
-    func primaryRowAction() {
-        if hasLightControls {
-            showLightControls = true
-        } else {
-            executeItem()
         }
     }
 
