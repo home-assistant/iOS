@@ -1090,6 +1090,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "reminders_sync.add.duplicate_warning" = "此些列表已經在同步中。";
 "reminders_sync.add.lists_footer" = "第一次同步會連結兩個列表中標題相同的項目。其餘項目則依照同步方向進行複製。已完成的項目不會被複製。";
 "reminders_sync.add.lists_header" = "要同步的列表";
+"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
+"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
 "reminders_sync.add.reminders_list" = "Apple 提醒事項列表";
 "reminders_sync.add.server" = "伺服器";
 "reminders_sync.add.title" = "新增列表同步";
@@ -2099,11 +2101,11 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.debug.delete_db.alert.title" = "確定要刪除手錶設定？此操作無法復原";
 "watch.debug.delete_db.reset.title" = "重置設定";
 "watch.debug.delete_db.title" = "刪除手錶設定";
-"watch.entity_details.attributes" = "Attributes";
-"watch.entity_details.last_changed" = "Changed";
-"watch.entity_details.last_updated" = "Updated";
-"watch.entity_details.loading" = "Reading current state…";
-"watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.entity_details.attributes" = "屬性";
+"watch.entity_details.last_changed" = "已變更";
+"watch.entity_details.last_updated" = "已更新";
+"watch.entity_details.loading" = "讀取目前狀態…";
+"watch.entity_details.stale" = "無法從伺服器重新整理。此數值可能已過期。";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
 "watch.home.loading.skip.title" = "跳過";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";

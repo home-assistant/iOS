@@ -1090,6 +1090,8 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "reminders_sync.add.duplicate_warning" = "Ces listes sont déjà synchronisées.";
 "reminders_sync.add.lists_footer" = "La première synchronisation associe les éléments présents dans les deux listes sous le même titre. Tout le reste est copié selon le sens de synchronisation. Les éléments terminés ne sont pas copiés.";
 "reminders_sync.add.lists_header" = "Listes à synchroniser";
+"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
+"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
 "reminders_sync.add.reminders_list" = "Liste Rappels Apple";
 "reminders_sync.add.server" = "Serveur";
 "reminders_sync.add.title" = "Nouvelle synchronisation de liste";
