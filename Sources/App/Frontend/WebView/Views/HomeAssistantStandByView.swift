@@ -42,6 +42,9 @@ struct HomeAssistantStandByView: View {
     @State private var showsServerPill = false
     @State private var showsAnimatedLogo: Bool
     @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
+    // Shared across every stand-by instance: the OHF footer continues the launch splash's copy on the
+    // first stand-by of a cold launch only, and the flag flips for good when that stand-by disappears.
+    @ObservedObject private var ohfBranding = StandByOHFBrandingState.shared
 
     private var showsEmptyState: Bool { emptyState != nil }
     private var standByContentOpacity: Double { hasAppeared ? 1.0 : 0.0 }
@@ -112,6 +115,32 @@ struct HomeAssistantStandByView: View {
         GeometryReader { proxy in
             content(safeAreaInsets: proxy.safeAreaInsets)
         }
+        .overlay(alignment: .bottom) {
+            ohfBrandingFooter
+        }
+        .onDisappear(perform: ohfBranding.markStandByDismissed)
+    }
+
+    /// Kept at full opacity from the first frame (not tied to the content fade-in) so the launch
+    /// splash's identical footer crossfades into this one with no dip; hidden via opacity whenever
+    /// bottom-anchored content (empty-state buttons, clean-cache button) needs the space.
+    @ViewBuilder
+    private var ohfBrandingFooter: some View {
+        if ohfBranding.showsBranding {
+            OHFBrandingFooter()
+                .padding(.bottom, OHFBrandingFooter.bottomPadding)
+                .opacity(showsOHFBrandingFooter ? 1 : 0)
+                .animation(DesignSystem.Animation.default, value: showsOHFBrandingFooter)
+                .allowsHitTesting(false)
+                // Decorative, matching the launch splash's copy.
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var showsOHFBrandingFooter: Bool {
+        // Mirrors the clean-cache button's render condition, so the footer only yields the bottom
+        // space when that button actually appears.
+        !showsEmptyState && !(showsCleanCacheButton && onCleanCacheAndReload != nil)
     }
 
     private func content(safeAreaInsets: EdgeInsets) -> some View {
