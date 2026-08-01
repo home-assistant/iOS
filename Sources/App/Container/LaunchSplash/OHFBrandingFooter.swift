@@ -1,3 +1,4 @@
+import Shared
 import SwiftUI
 
 /// The "A PROJECT FROM THE" caption over the Open Home Foundation wordmark, as laid out at the bottom
@@ -13,7 +14,7 @@ struct OHFBrandingFooter: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(verbatim: "A PROJECT FROM THE")
+            Text(L10n.OhfBranding.caption)
                 .font(.system(size: Self.captionFontSize, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
