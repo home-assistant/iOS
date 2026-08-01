@@ -13,12 +13,6 @@ struct LaunchSplashOverlayView: View {
         static let splashLogoSize = CGSize(width: 115, height: 115)
         /// Mirrors the storyboard's icon centerY constraint constant (logo sits above screen center).
         static let splashLogoCenterYOffset: CGFloat = -50
-        /// Mirrors the OHF logo constraints in `LaunchScreen.storyboard`.
-        static let ohfLogoSize = CGSize(width: 220, height: 25)
-        /// Mirrors the storyboard's OHF-logo-bottom-to-safe-area constraint.
-        static let ohfLogoBottomPadding: CGFloat = 32
-        /// Mirrors the "A PROJECT FROM THE" caption above the OHF logo in `LaunchScreen.storyboard`.
-        static let ohfCaptionFontSize: CGFloat = 13
         static let heroAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.85)
         /// How long the overlay holds before starting to fade out; the fade overlaps the tail of
         /// `heroAnimation`'s spring so the hand-off feels immediate.
@@ -48,17 +42,8 @@ struct LaunchSplashOverlayView: View {
                     .animation(Constants.heroAnimation, value: state.phase)
                 }
                 .ignoresSafeArea()
-                VStack(spacing: 0) {
-                    Text(verbatim: "A PROJECT FROM THE")
-                        .font(.system(size: Constants.ohfCaptionFontSize, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                    Image(.ohfInline)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: Constants.ohfLogoSize.width, height: Constants.ohfLogoSize.height)
-                }
-                .padding(.bottom, Constants.ohfLogoBottomPadding)
+                OHFBrandingFooter()
+                    .padding(.bottom, OHFBrandingFooter.bottomPadding)
             }
             .opacity(isFadingOut ? 0 : 1)
             .animation(Constants.fadeAnimation, value: isFadingOut)

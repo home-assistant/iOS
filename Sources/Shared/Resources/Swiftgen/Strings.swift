@@ -3229,6 +3229,11 @@ public enum L10n {
     }
   }
 
+  public enum OhfBranding {
+    /// A PROJECT FROM THE
+    public static var caption: String { return L10n.tr("Localizable", "ohf_branding.caption") }
+  }
+
   public enum Onboarding {
     public enum ClientCertificate {
       /// This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).

@@ -933,6 +933,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notifications_configurator.settings.footer" = "Identifier must contain only letters and underscores and be uppercase. It must be globally unique to the app.";
 "notifications_configurator.settings.footer.id_set" = "Identifier can not be changed after creation. You must delete and recreate the action to change the identifier.";
 "notifications_configurator.settings.header" = "Settings";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
 "onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
