@@ -133,6 +133,12 @@ public enum Domain: String, CaseIterable {
     ///   precision from the local registry (same as widgets); non-numeric states and entities
     ///   without a registry row pass through unchanged.
     public func contextualStateDescription(for entity: HAEntity, serverId: String? = nil) -> String {
+        // Climate reports its HVAC mode as state and its temperatures as attributes; combine them
+        // the way the frontend does ("Heat · 21.5°").
+        if self == .climate {
+            return ClimateControlState(entity: entity).stateSummary
+        }
+
         let baseState = entity.localizedState.leadingCapitalized
         // The registry lookup is only worth its synchronous database read on the paths that render
         // the state value itself — enum states (on/off, locked, …) never need it.
@@ -530,6 +536,12 @@ public enum Domain: String, CaseIterable {
         mainAction != nil || self == .lock
     }
 
+    /// Whether tapping this domain's entities opens a dedicated control screen (e.g. climate)
+    /// rather than executing a single action.
+    public var hasControlScreen: Bool {
+        Domain.controlScreenDomains.contains(self)
+    }
+
     /// Whether the entity icon changes with state/device class (e.g. cover open vs closed),
     /// so list UIs (CarPlay, watch) should render the live entity icon over a saved one.
     public var hasStateDependentIcon: Bool {
@@ -573,6 +585,7 @@ public extension Domain {
     static let carPlaySupported: [Domain] = [
         .automation,
         .button,
+        .climate,
         .cover,
         .fan,
         .humidifier,
@@ -609,10 +622,18 @@ public extension Domain {
         .binarySensor,
     ]
 
-    /// Everything the user can put on the watch home screen: the runnable domains plus the
-    /// display-only sensor ones. This is the filter every watch picker and the watch database
-    /// mirror use; `watchSupported` alone stays the list of domains the watch can execute.
-    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly
+    /// Domains whose entities are controlled through a dedicated control screen (pushed on CarPlay,
+    /// presented as a sheet on the watch) instead of a single tap action — the same options the
+    /// frontend's more-info dialog offers.
+    static let controlScreenDomains: [Domain] = [
+        .climate,
+    ]
+
+    /// Everything the user can put on the watch home screen: the runnable domains, the display-only
+    /// sensor ones, and the domains that open a control screen. This is the filter every watch
+    /// picker and the watch database mirror use; `watchSupported` alone stays the list of domains
+    /// the watch can execute with a single tap.
+    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
     static let commonlyUsedWidgetSupported: [Domain] = [
         .light,

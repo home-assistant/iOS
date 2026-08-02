@@ -42,6 +42,24 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Calls a climate domain service (e.g. `climate.set_temperature`) with the given service data.
+    static func callClimateService(
+        _ service: Service,
+        entityId: String,
+        data: [String: Any] = [:]
+    ) -> HATypedRequest<HAResponseVoid> {
+        var serviceData = data
+        serviceData["entity_id"] = entityId
+        return HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": Domain.climate.rawValue,
+                "service": service.rawValue,
+                "service_data": serviceData,
+            ]
+        ))
+    }
+
     static func toggleDomain(
         domain: Domain,
         entityId: String

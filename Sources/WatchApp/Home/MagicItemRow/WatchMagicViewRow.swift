@@ -19,7 +19,8 @@ struct WatchMagicViewRow: View {
         // list): which button triggers them depends on the row variant below.
         Group {
             if let rowDestination = viewModel.wholeRowNavigationDestination {
-                // Locks: the whole row (icon included) opens the lock screen, in both layouts.
+                // Locks and climate: the whole row (icon included) opens their screen, in both
+                // layouts.
                 Button {
                     navigate(rowDestination)
                 } label: {
@@ -102,7 +103,7 @@ struct WatchMagicViewRow: View {
             )
         }
         // Sensors run nothing when tapped: they open their own read-only details screen instead.
-        // (A capable light's controls screen is not a sheet — its row body pushes it.)
+        // (A capable light's or a climate's controls screen is not a sheet — the row pushes it.)
         .sheet(isPresented: $viewModel.showDetails) {
             WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
         }
@@ -132,7 +133,8 @@ struct WatchMagicViewRow: View {
                 textColor: textColor,
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
                 accessory: {
-                    // Rows that navigate as a whole (locks) show the same chevron as folders.
+                    // Rows that navigate as a whole (locks, climate) show the same chevron as
+                    // folders.
                     if viewModel.wholeRowNavigationDestination != nil {
                         Image(systemSymbol: .chevronRight)
                             .font(.caption2.weight(.semibold))
@@ -278,6 +280,10 @@ struct WatchMagicViewRow: View {
         WatchMagicViewRow(
             item: .init(id: "light.kitchen", serverId: "1", type: .entity),
             itemInfo: .init(id: "1", name: "Kitchen light", iconName: "mdi:lightbulb")
+        )
+        WatchMagicViewRow(
+            item: .init(id: "climate.living_room", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Living room thermostat", iconName: "mdi:thermostat")
         )
     }
     .background(Color.red)

@@ -38,6 +38,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         Domain(entityId: entity.entityId)?.hasIrrelevantState ?? false
     }
 
+    /// Whether tapping this entity opens a control screen (climate) rather than executing — such
+    /// rows carry a chevron, like folders, to signal the navigation.
+    private var entityHasControlScreen: Bool {
+        Domain(entityId: entity.entityId)?.hasControlScreen ?? false
+    }
+
     init(
         serverId: String,
         entity: HAEntity,
@@ -111,6 +117,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         template.setText(content.text)
         template.setDetailText(content.detailText)
         template.setImage(content.image)
+        template.accessoryType = entityHasControlScreen ? .disclosureIndicator : .none
     }
 
     @available(iOS 26.0, *)
@@ -121,7 +128,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
             imageShape: .circular,
             title: content.text,
             subtitle: content.detailText,
-            accessorySymbolName: accessorySymbolName
+            accessorySymbolName: accessorySymbolName ?? (entityHasControlScreen ? "chevron.forward" : nil)
         )
     }
 

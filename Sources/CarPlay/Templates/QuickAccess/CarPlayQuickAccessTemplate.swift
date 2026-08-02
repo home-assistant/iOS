@@ -54,6 +54,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var activeAssistSession: AnyObject?
     private var addItemFlow: CarPlayAddItemFlow?
     private var editItemFlow: CarPlayEditItemFlow?
+    /// Control screen pushed for domains that have one (climate); fed with the per-server state
+    /// events this template receives and cleared when the list reappears (i.e. it was popped).
+    private var climateControlTemplate: CarPlayClimateControlTemplate?
 
     /// `folder` is provided when this template renders a folder promoted to its own tab
     /// (`CarPlayQuickAccessViewModel.Source.folder`); it supplies the tab's title and icon.
@@ -196,21 +199,26 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         if template == self.template {
             /* no-op */
         }
+        climateControlTemplate?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if template == self.template {
-            // Returning to this template means any folder list pushed from it has been popped.
+            // Returning to this template means any folder list or control screen pushed from it
+            // has been popped.
             openFolderTemplates.removeAll()
             folderListItemsByKey.removeAll()
             folderFooterRows.removeAll()
+            climateControlTemplate = nil
             update()
         }
+        climateControlTemplate?.templateWillAppear(template: template)
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
         let previousEntities = entitiesPerServer[serverId]
         entitiesPerServer[serverId] = entities
+        climateControlTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
         guard !currentItems.isEmpty else { return }
         guard hasRelevantEntityChange(serverId: serverId, previous: previousEntities, current: entities) else {
             return
@@ -417,6 +425,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func configureEntityRow(_ item: CPListItem, for magicItem: MagicItem, entityToAreaMap: [String: String]) {
         let info = info(for: magicItem)
+        // Control-screen domains (climate) navigate to another screen when tapped — signal it with
+        // a chevron, like folders do.
+        item.accessoryType = hasControlScreen(magicItem) ? .disclosureIndicator : .none
         if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
             item.setText(rowDisplayItem.title)
             item.setImage(rowDisplayItem.image)
@@ -550,6 +561,21 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         template.updateSections([CPListSection(items: rows)])
     }
 
+    /// Whether tapping this item opens another screen rather than executing (control-screen
+    /// domains, e.g. climate).
+    private func hasControlScreen(_ magicItem: MagicItem) -> Bool {
+        magicItem.type == .entity && Domain(entityId: magicItem.id)?.hasControlScreen == true
+    }
+
+    /// Trailing accessory: folders and control-screen entities navigate to another screen, so they
+    /// carry a chevron.
+    private func accessorySymbol(for magicItem: MagicItem) -> String? {
+        if magicItem.type == .folder || hasControlScreen(magicItem) {
+            return "chevron.forward"
+        }
+        return nil
+    }
+
     private func refreshOpenFolderTemplates() {
         for entry in openFolderTemplates {
             guard let folder = currentItems.first(where: { $0.type == .folder && $0.id == entry.folderId }) else {
@@ -572,7 +598,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconColor: displayItem.iconColor,
                 title: displayItem.title,
                 subtitle: displayItem.subtitle,
-                accessorySymbolName: magicItem.type == .folder ? "chevron.forward" : nil,
+                accessorySymbolName: accessorySymbol(for: magicItem),
                 handler: { [weak self] completion in
                     guard let self else {
                         completion()
@@ -689,6 +715,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         executionStarted: @escaping () -> Void,
         executionFinished: @escaping () -> Void
     ) {
+        // Domains without a single tap action (climate) push their own control screen.
+        if magicItem.type == .entity, Domain(entityId: magicItem.id)?.hasControlScreen == true {
+            presentClimateControl(magicItem: magicItem)
+            return
+        }
+
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
@@ -709,6 +741,23 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             executionStarted()
             executeMagicItem(magicItem, completion: executionFinished)
         }
+    }
+
+    private func presentClimateControl(magicItem: MagicItem) {
+        guard let server = Current.servers.all.first(where: { server in
+            server.identifier.rawValue == magicItem.serverId
+        }) else {
+            Current.Log.error("Failed to get server for climate magic item id: \(magicItem.id)")
+            return
+        }
+        guard let entity = resolvedEntity(for: magicItem) else {
+            Current.Log.error("Failed to resolve entity for climate magic item id: \(magicItem.id)")
+            return
+        }
+        let provider = CarPlayClimateControlTemplate(viewModel: .init(server: server, entity: entity))
+        provider.interfaceController = interfaceController
+        climateControlTemplate = provider
+        interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
     }
 
     private func executeMagicItem(

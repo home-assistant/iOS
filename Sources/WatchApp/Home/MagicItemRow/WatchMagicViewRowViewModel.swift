@@ -81,11 +81,18 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     /// The screen the entire row (icon included) opens. Locks never toggle from the home screen —
     /// they're security-sensitive, so every tap lands on the lock screen where the action is an
-    /// explicit button press. Unlike `controlsDestination` this doesn't wait for the polled state:
-    /// the lock screen itself handles an unknown state by disabling its buttons.
+    /// explicit button press. Climate has no single tap action at all, so its rows navigate the
+    /// same way. Unlike `controlsDestination` this doesn't wait for the polled state: the pushed
+    /// screens handle an unknown state themselves.
     var wholeRowNavigationDestination: WatchHomeNavigation? {
-        guard item.type == .entity, item.domain == .lock else { return nil }
-        return .lockControls(item)
+        guard item.type == .entity, let domain = item.domain else { return nil }
+        if domain == .lock {
+            return .lockControls(item)
+        }
+        if domain.hasControlScreen {
+            return .climateControls(item)
+        }
+        return nil
     }
 
     /// The controls screen this row's body pushes, once the polled state proves the entity can do

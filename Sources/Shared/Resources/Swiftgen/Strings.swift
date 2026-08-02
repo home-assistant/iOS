@@ -1378,6 +1378,87 @@ public enum L10n {
     }
   }
 
+  public enum Climate {
+    public enum Control {
+      /// Current: %@
+      public static func currentValue(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "climate.control.current_value_%@", String(describing: p1))
+      }
+      /// Decrease
+      public static var decrease: String { return L10n.tr("Localizable", "climate.control.decrease") }
+      /// Increase
+      public static var increase: String { return L10n.tr("Localizable", "climate.control.increase") }
+      /// Target: %@
+      public static func targetValue(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "climate.control.target_value_%@", String(describing: p1))
+      }
+      public enum FanMode {
+        /// Fan mode
+        public static var title: String { return L10n.tr("Localizable", "climate.control.fan_mode.title") }
+      }
+      public enum Humidity {
+        /// Decrease humidity
+        public static var decrease: String { return L10n.tr("Localizable", "climate.control.humidity.decrease") }
+        /// Increase humidity
+        public static var increase: String { return L10n.tr("Localizable", "climate.control.humidity.increase") }
+        /// Humidity
+        public static var title: String { return L10n.tr("Localizable", "climate.control.humidity.title") }
+      }
+      public enum Mode {
+        /// Mode
+        public static var title: String { return L10n.tr("Localizable", "climate.control.mode.title") }
+      }
+      public enum Modes {
+        /// Modes
+        public static var title: String { return L10n.tr("Localizable", "climate.control.modes.title") }
+      }
+      public enum PresetMode {
+        /// Preset
+        public static var title: String { return L10n.tr("Localizable", "climate.control.preset_mode.title") }
+      }
+      public enum SwingHorizontalMode {
+        /// Horizontal swing
+        public static var title: String { return L10n.tr("Localizable", "climate.control.swing_horizontal_mode.title") }
+      }
+      public enum SwingMode {
+        /// Swing mode
+        public static var title: String { return L10n.tr("Localizable", "climate.control.swing_mode.title") }
+      }
+      public enum Temperature {
+        /// Decrease temperature
+        public static var decrease: String { return L10n.tr("Localizable", "climate.control.temperature.decrease") }
+        /// Increase temperature
+        public static var increase: String { return L10n.tr("Localizable", "climate.control.temperature.increase") }
+        /// Temperature
+        public static var title: String { return L10n.tr("Localizable", "climate.control.temperature.title") }
+      }
+      public enum TemperatureHigh {
+        /// Cool to
+        public static var title: String { return L10n.tr("Localizable", "climate.control.temperature_high.title") }
+      }
+      public enum TemperatureLow {
+        /// Heat to
+        public static var title: String { return L10n.tr("Localizable", "climate.control.temperature_low.title") }
+      }
+    }
+    public enum HvacMode {
+      /// Auto
+      public static var auto: String { return L10n.tr("Localizable", "climate.hvac_mode.auto") }
+      /// Cool
+      public static var cool: String { return L10n.tr("Localizable", "climate.hvac_mode.cool") }
+      /// Dry
+      public static var dry: String { return L10n.tr("Localizable", "climate.hvac_mode.dry") }
+      /// Fan only
+      public static var fanOnly: String { return L10n.tr("Localizable", "climate.hvac_mode.fan_only") }
+      /// Heat
+      public static var heat: String { return L10n.tr("Localizable", "climate.hvac_mode.heat") }
+      /// Heat/Cool
+      public static var heatCool: String { return L10n.tr("Localizable", "climate.hvac_mode.heat_cool") }
+      /// Off
+      public static var off: String { return L10n.tr("Localizable", "climate.hvac_mode.off") }
+    }
+  }
+
   public enum Component {
     public enum CollapsibleView {
       /// Collapse

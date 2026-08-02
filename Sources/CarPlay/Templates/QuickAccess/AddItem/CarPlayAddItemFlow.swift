@@ -221,6 +221,13 @@ final class CarPlayAddItemFlow {
     }
 
     private func presentConfirmation(server: Server, entity: HAAppEntity) {
+        // Control-screen domains (climate) never execute on tap — they open their own screen — so
+        // asking whether running should require confirmation doesn't apply. Add the item directly.
+        if Domain(rawValue: entity.domain)?.hasControlScreen == true {
+            commit(server: server, entity: entity, requiresConfirmation: false, dismissPresented: false)
+            return
+        }
+
         let requireAction = CPAlertAction(
             title: L10n.CarPlay.QuickAccess.AddItem.Confirmation.require,
             style: .default
@@ -248,12 +255,19 @@ final class CarPlayAddItemFlow {
         interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
     }
 
-    private func commit(server: Server, entity: HAAppEntity, requiresConfirmation: Bool) {
+    /// `dismissPresented` is false when no action sheet is on screen (the confirmation question
+    /// was skipped), so only the pop transition needs to settle before saving.
+    private func commit(
+        server: Server,
+        entity: HAAppEntity,
+        requiresConfirmation: Bool,
+        dismissPresented: Bool = true
+    ) {
         // Save only after the dismiss/pop transitions settle: the scene observes the config table and may
         // replace the root template on change, which blanks the CarPlay screen if a transition is in flight.
-        interfaceController?.dismissTemplate(animated: true) { [weak self] _, _ in
-            self?.interfaceController?.popToRootTemplate(animated: true) { _, _ in
-                guard let self else { return }
+        let save: () -> Void = { [weak self] in
+            guard let self else { return }
+            interfaceController?.popToRootTemplate(animated: true) { _, _ in
                 self.viewModel.addEntityToQuickAccess(
                     entityId: entity.entityId,
                     serverId: server.identifier.rawValue,
@@ -261,6 +275,13 @@ final class CarPlayAddItemFlow {
                 )
                 self.onFinish()
             }
+        }
+        if dismissPresented {
+            interfaceController?.dismissTemplate(animated: true) { _, _ in
+                save()
+            }
+        } else {
+            save()
         }
     }
 

@@ -67,6 +67,8 @@ struct WatchHomeView: View {
                         WatchFanControlsView(item: item, itemInfo: viewModel.info(for: item))
                     case let .lockControls(item):
                         WatchLockControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .climateControls(item):
+                        WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
                     }
                 }
         }
