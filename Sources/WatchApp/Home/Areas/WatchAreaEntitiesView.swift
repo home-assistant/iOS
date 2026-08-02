@@ -17,15 +17,30 @@ struct WatchAreaEntitiesView: View {
     var body: some View {
         List {
             header
-            if let entries = viewModel.entries {
-                if entries.isEmpty {
+            if let content = viewModel.content {
+                if content.isEmpty {
                     Text(verbatim: L10n.Watch.Home.Areas.empty)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .listRowBackground(Color.clear)
                 } else {
-                    ForEach(entries) { entry in
-                        WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
+                    if !content.controls.isEmpty {
+                        Section {
+                            ForEach(content.controls) { entry in
+                                WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
+                            }
+                        } header: {
+                            Text(verbatim: L10n.Watch.Home.Areas.Section.Controls.title)
+                        }
+                    }
+                    if !content.sensors.isEmpty {
+                        Section {
+                            ForEach(content.sensors) { entry in
+                                WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
+                            }
+                        } header: {
+                            Text(verbatim: L10n.Watch.Home.Areas.Section.Sensors.title)
+                        }
                     }
                 }
             } else {

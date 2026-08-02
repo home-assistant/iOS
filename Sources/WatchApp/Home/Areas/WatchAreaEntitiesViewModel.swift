@@ -10,10 +10,19 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
         var id: String { item.serverUniqueId }
     }
 
+    /// The area's entities split into the sections the screen renders: controllable entities
+    /// first, display-only sensors after.
+    struct Content {
+        let controls: [Entry]
+        let sensors: [Entry]
+
+        var isEmpty: Bool { controls.isEmpty && sensors.isEmpty }
+    }
+
     @Published private(set) var areaName: String?
     /// `nil` until the first load finishes (spinner); empty afterwards means the area has no
     /// watch-compatible entities.
-    @Published private(set) var entries: [Entry]?
+    @Published private(set) var content: Content?
 
     let areaId: String
     let serverId: String
@@ -32,14 +41,14 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
     func load() {
         // `onAppear` fires again when the user navigates back from a pushed controls screen;
         // a finished load is kept, matching the add flow.
-        guard entries == nil, !isLoading else { return }
+        guard content == nil, !isLoading else { return }
         isLoading = true
         let areaId = areaId
         let serverId = serverId
         Self.loadQueue.async { [weak self] in
             guard let area = try? AppArea.fetchArea(areaId: areaId, serverId: serverId) else {
                 DispatchQueue.main.async { [weak self] in
-                    self?.entries = []
+                    self?.content = Content(controls: [], sensors: [])
                     self?.isLoading = false
                 }
                 return
@@ -59,9 +68,14 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
                         guard let info = provider.getInfo(for: item) else { return nil }
                         return Entry(item: item, info: info)
                     }
+                // Controllable entities come first; display-only sensors get their own section.
+                let content = Content(
+                    controls: entries.filter { !$0.item.isWatchDisplayOnly },
+                    sensors: entries.filter(\.item.isWatchDisplayOnly)
+                )
                 DispatchQueue.main.async { [weak self] in
                     self?.areaName = area.name
-                    self?.entries = entries
+                    self?.content = content
                     self?.isLoading = false
                 }
             }

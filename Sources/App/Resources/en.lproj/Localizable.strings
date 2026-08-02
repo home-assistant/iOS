@@ -2143,6 +2143,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.fan_controls.power" = "Power";
 "watch.fan_controls.speed" = "Speed";
 "watch.home.areas.empty" = "There are no compatible entities in this area.";
+"watch.home.areas.section.controls.title" = "Controls";
+"watch.home.areas.section.sensors.title" = "Sensors";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.loading.skip.title" = "Skip";

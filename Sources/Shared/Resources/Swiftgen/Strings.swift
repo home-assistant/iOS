@@ -7021,6 +7021,16 @@ public enum L10n {
         public static var empty: String { return L10n.tr("Localizable", "watch.home.areas.empty") }
         /// Areas
         public static var title: String { return L10n.tr("Localizable", "watch.home.areas.title") }
+        public enum Section {
+          public enum Controls {
+            /// Controls
+            public static var title: String { return L10n.tr("Localizable", "watch.home.areas.section.controls.title") }
+          }
+          public enum Sensors {
+            /// Sensors
+            public static var title: String { return L10n.tr("Localizable", "watch.home.areas.section.sensors.title") }
+          }
+        }
       }
       public enum CancelAndUseCache {
         /// Cancel and use cache
