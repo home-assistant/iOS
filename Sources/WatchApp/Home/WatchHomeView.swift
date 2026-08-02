@@ -69,6 +69,12 @@ struct WatchHomeView: View {
                         WatchLockControlsView(item: item, itemInfo: viewModel.info(for: item))
                     case let .climateControls(item):
                         WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
+                    case .areasServerPicker:
+                        WatchAreasServerPickerView()
+                    case let .areasList(serverId):
+                        WatchAreasListView(serverId: serverId)
+                    case let .areaEntities(areaId, serverId):
+                        WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
                     }
                 }
         }
@@ -240,6 +246,9 @@ struct WatchHomeView: View {
                 onAdd: { activeSheet = .add }
             )
             listContent
+            if !isEditing {
+                areasContent
+            }
             if !isEditing, viewModel.showAssist {
                 addRow
             }
@@ -315,6 +324,48 @@ struct WatchHomeView: View {
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())
+    }
+
+    /// The automatic area rows: each area directly when there are few on a single server, or one
+    /// grouped "Areas" row that drills into the server picker / area list.
+    @ViewBuilder
+    private var areasContent: some View {
+        switch viewModel.areasMode {
+        case .hidden:
+            EmptyView()
+        case let .inline(areas):
+            ForEach(areas, id: \.id) { area in
+                WatchAreaRow(area: area)
+            }
+        case .grouped:
+            Button {
+                if let destination = viewModel.groupedAreasDestination() {
+                    navigationPath.append(destination)
+                }
+            } label: {
+                WatchHomeItemLabel(
+                    name: L10n.Watch.Home.Areas.title,
+                    textColor: .white,
+                    icon: {
+                        VStack {
+                            Image(uiImage: MaterialDesignIcons.textureBoxIcon.image(
+                                ofSize: .init(width: 24, height: 24),
+                                color: .white
+                            ))
+                            .padding()
+                        }
+                        .watchRowIconContainer(color: .white)
+                    },
+                    accessory: {
+                        Image(systemSymbol: .chevronRight)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                )
+            }
+            .frame(maxWidth: .infinity)
+            .watchHomeItemRowStyle(tint: nil)
+        }
     }
 
     private var addRow: some View {

@@ -2067,6 +2067,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.folder_name.title" = "Folder Name";
 "watch.configuration.header.subtitle" = "Customize the items, folders and layout shown on your Apple Watch.";
 "watch.configuration.header.title" = "Apple Watch";
+"watch.configuration.hide_areas.footer" = "Areas let you browse and control compatible entities on your Apple Watch without adding them as items.";
+"watch.configuration.hide_areas.title" = "Hide areas in home";
 "watch.configuration.items.title" = "Items";
 "watch.configuration.layout.footer" = "Grid layout only displays icons.";
 "watch.configuration.layout.title" = "Layout";
@@ -2140,6 +2142,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
 "watch.fan_controls.power" = "Power";
 "watch.fan_controls.speed" = "Speed";
+"watch.home.areas.empty" = "There are no compatible entities in this area.";
+"watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";

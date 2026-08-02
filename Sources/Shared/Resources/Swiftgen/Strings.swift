@@ -6750,6 +6750,12 @@ public enum L10n {
         /// Apple Watch
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.header.title") }
       }
+      public enum HideAreas {
+        /// Areas let you browse and control compatible entities on your Apple Watch without adding them as items.
+        public static var footer: String { return L10n.tr("Localizable", "watch.configuration.hide_areas.footer") }
+        /// Hide areas in home
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.hide_areas.title") }
+      }
       public enum Items {
         /// Items
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
@@ -7010,6 +7016,12 @@ public enum L10n {
       public static var speed: String { return L10n.tr("Localizable", "watch.fan_controls.speed") }
     }
     public enum Home {
+      public enum Areas {
+        /// There are no compatible entities in this area.
+        public static var empty: String { return L10n.tr("Localizable", "watch.home.areas.empty") }
+        /// Areas
+        public static var title: String { return L10n.tr("Localizable", "watch.home.areas.title") }
+      }
       public enum CancelAndUseCache {
         /// Cancel and use cache
         public static var title: String { return L10n.tr("Localizable", "watch.home.cancel_and_use_cache.title") }

@@ -44,6 +44,7 @@ struct WatchConfigurationView: View {
                 isLoaded = true
             }
             layoutSection
+            areasSection
             itemsSection
             assistSection
             resetView
@@ -116,6 +117,19 @@ struct WatchConfigurationView: View {
             }
         } footer: {
             Text(verbatim: L10n.Watch.Configuration.Layout.footer)
+        }
+    }
+
+    private var areasSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { viewModel.watchConfig.resolvedHideAreas },
+                set: { viewModel.watchConfig.hideAreas = $0 }
+            )) {
+                Text(verbatim: L10n.Watch.Configuration.HideAreas.title)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.HideAreas.footer)
         }
     }
 
@@ -289,6 +303,7 @@ extension WatchConfigurationView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Watch.Configuration.AddItem.title),
             SettingsSearchEntry(L10n.Watch.Configuration.AddFolder.title),
             SettingsSearchEntry(L10n.Watch.Configuration.ShowAssist.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.HideAreas.title),
             SettingsSearchEntry(L10n.Watch.Labels.SelectedPipeline.title),
         ]
     }

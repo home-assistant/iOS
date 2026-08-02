@@ -17,6 +17,7 @@ final class WatchConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchConfig.assist.rawValue, .jsonText).notNull()
                     t.column(DatabaseTables.WatchConfig.items.rawValue, .jsonText).notNull()
                     t.column(DatabaseTables.WatchConfig.layout.rawValue, .text)
+                    t.column(DatabaseTables.WatchConfig.hideAreas.rawValue, .boolean)
                     t.column(DatabaseTables.WatchConfig.lastModified.rawValue, .double)
                 }
             }

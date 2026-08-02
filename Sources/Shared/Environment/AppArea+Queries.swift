@@ -12,6 +12,14 @@ public extension AppArea {
         }
     }
 
+    /// Fetch all areas across every server, each server's areas in display order
+    static func fetchAllAreas() throws -> [AppArea] {
+        try Current.database().read { db in
+            try AppArea.fetchAll(db)
+        }
+        .sorted(by: sortForDisplay(_:_:))
+    }
+
     /// Fetch a specific area by ID
     static func fetchArea(id: String) throws -> AppArea? {
         try Current.database().read { db in

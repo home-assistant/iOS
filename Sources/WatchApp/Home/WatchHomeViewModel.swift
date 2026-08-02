@@ -27,6 +27,9 @@ final class WatchHomeViewModel: ObservableObject {
 
     @Published var watchConfig: WatchConfig = .init()
     @Published var magicItemsInfo: [MagicItem.Info] = []
+    /// How the home screen presents the automatic area rows; recomputed on every cache load so it
+    /// follows config edits and mirror syncs.
+    @Published private(set) var areasMode: WatchHomeAreasMode = .hidden
     /// Whether the database actually holds a config row. False until the first successful cache
     /// read of a synced config — used to auto-retry the sync when the database is truly empty,
     /// without re-syncing for a config that legitimately has no items.
@@ -619,7 +622,7 @@ final class WatchHomeViewModel: ObservableObject {
         updateConfig(config: config, magicItemsInfo: magicItemsInfo)
 
         let provider = Current.magicItemProvider()
-        provider.loadInformation { [weak self] _ in
+        provider.loadInformation { [weak self] entitiesPerServer in
             DispatchQueue.main.async {
                 guard let self else { return }
                 var infos: [MagicItem.Info] = []
@@ -632,10 +635,38 @@ final class WatchHomeViewModel: ObservableObject {
                     }
                 }
                 self.updateConfig(config: config, magicItemsInfo: infos)
+                self.updateAreasMode(config: config, entitiesPerServer: entitiesPerServer)
                 self.resetError()
                 self.finishCacheLoad()
             }
         }
+    }
+
+    /// Recompute the automatic area rows from the mirrored areas and the entities the provider just
+    /// loaded, filtered to what the home screen can actually render.
+    @MainActor
+    private func updateAreasMode(config: WatchConfig, entitiesPerServer: [String: [HAAppEntity]]) {
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+        let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
+            Set(entities
+                .filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+                .map(\.entityId))
+        }
+        areasMode = WatchHomeAreasMode.compute(
+            areas: (try? AppArea.fetchAllAreas()) ?? [],
+            watchEntityIdsByServer: watchEntityIdsByServer,
+            hideAreas: config.resolvedHideAreas
+        )
+    }
+
+    /// Where the grouped "Areas" row goes: straight to the single server's areas, or through the
+    /// server picker when several servers have them.
+    func groupedAreasDestination() -> WatchHomeNavigation? {
+        guard case let .grouped(serverIds) = areasMode else { return nil }
+        if serverIds.count == 1, let serverId = serverIds.first {
+            return .areasList(serverId: serverId)
+        }
+        return .areasServerPicker
     }
 
     /// Re-evaluates whether any server lacks a usable URL, feeding the settings gear's yellow
