@@ -648,9 +648,8 @@ final class WatchHomeViewModel: ObservableObject {
     private func updateAreasMode(config: WatchConfig, entitiesPerServer: [String: [HAAppEntity]]) {
         let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
         let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-            Set(entities
-                .filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
-                .map(\.entityId))
+            let watchEntities = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+            return Set(watchEntities.map(\.entityId))
         }
         areasMode = WatchHomeAreasMode.compute(
             areas: (try? AppArea.fetchAllAreas()) ?? [],
