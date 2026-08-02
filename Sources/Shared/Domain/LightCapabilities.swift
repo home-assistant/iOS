@@ -24,6 +24,11 @@ public struct LightCapabilities: Equatable {
         public var supportsBrightness: Bool {
             self != .onoff
         }
+
+        /// Modes that can render an arbitrary color (not just white temperature).
+        public var supportsColor: Bool {
+            [.hs, .xy, .rgb, .rgbw, .rgbww].contains(self)
+        }
     }
 
     /// Home Assistant's own defaults for lights that don't report a kelvin range
@@ -33,6 +38,8 @@ public struct LightCapabilities: Equatable {
 
     public let supportsBrightness: Bool
     public let supportsColorTemp: Bool
+    /// Whether the light can render arbitrary colors (hs/xy/rgb modes) — e.g. Hue color bulbs.
+    public let supportsColor: Bool
     /// Current brightness as 0–100, derived from the 0–255 `brightness` attribute. Nil when the
     /// light is off (Home Assistant drops the attribute) or doesn't dim.
     public let brightnessPercentage: Double?
@@ -44,7 +51,7 @@ public struct LightCapabilities: Equatable {
     /// Whether the light offers anything to control beyond toggling — the gate for showing a
     /// dedicated controls screen instead of treating a tap as a toggle.
     public var hasAdjustableControls: Bool {
-        supportsBrightness || supportsColorTemp
+        supportsBrightness || supportsColorTemp || supportsColor
     }
 
     public init(entity: HAEntity) {
@@ -56,13 +63,15 @@ public struct LightCapabilities: Equatable {
             .compactMap(ColorMode.init(rawValue:))
 
         if modes.isEmpty {
-            // Very old servers (pre-2021) don't report color modes; the presence of a brightness
-            // value is the only remaining hint that the light can dim.
+            // Very old servers (pre-2021) don't report color modes; the presence of the value
+            // attributes is the only remaining hint of what the light can do.
             self.supportsBrightness = attributes["brightness"] != nil
             self.supportsColorTemp = attributes["color_temp_kelvin"] != nil
+            self.supportsColor = attributes["hs_color"] != nil
         } else {
             self.supportsBrightness = modes.contains { $0.supportsBrightness }
             self.supportsColorTemp = modes.contains(.colorTemp)
+            self.supportsColor = modes.contains { $0.supportsColor }
         }
 
         if supportsBrightness, let brightness = Self.double(from: attributes["brightness"]) {

@@ -36,6 +36,9 @@ struct WatchLightControlsView: View {
             if viewModel.capabilities?.supportsBrightness == true {
                 brightnessSection
             }
+            if viewModel.capabilities?.supportsColor == true {
+                colorSection
+            }
             if viewModel.capabilities?.supportsColorTemp == true {
                 colorTempSection
             }
@@ -104,6 +107,40 @@ struct WatchLightControlsView: View {
             .listRowBackground(Color.clear)
         } header: {
             Text(verbatim: L10n.Watch.LightControls.brightness)
+        }
+    }
+
+    /// Vivid hues covering the color wheel — the watch-sized stand-in for the frontend's full
+    /// color wheel. Tapping a swatch sends it as `rgb_color`.
+    private static let colorPalette: [String] = [
+        "#FF0000", "#FF7F00", "#FFBF00", "#FFFF00",
+        "#7FFF00", "#00FF00", "#00FFBF", "#00FFFF",
+        "#007FFF", "#0000FF", "#7F00FF", "#FF00FF",
+    ]
+
+    private var colorSection: some View {
+        Section {
+            LazyVGrid(
+                columns: Array(
+                    repeating: GridItem(.flexible(), spacing: DesignSystem.Spaces.one),
+                    count: 4
+                ),
+                spacing: DesignSystem.Spaces.one
+            ) {
+                ForEach(Self.colorPalette, id: \.self) { hex in
+                    Button {
+                        viewModel.setColor(hex: hex)
+                    } label: {
+                        Circle()
+                            .fill(Color(uiColor: .init(hex: hex)))
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .listRowBackground(Color.clear)
+        } header: {
+            Text(verbatim: L10n.Watch.LightControls.color)
         }
     }
 

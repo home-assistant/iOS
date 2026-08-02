@@ -14,11 +14,23 @@ struct LightCapabilitiesTests {
 
         #expect(capabilities.supportsBrightness)
         #expect(capabilities.supportsColorTemp)
+        #expect(capabilities.supportsColor)
         #expect(capabilities.hasAdjustableControls)
         #expect(capabilities.brightnessPercentage == 50)
         #expect(capabilities.colorTempKelvin == 3200)
         #expect(capabilities.minColorTempKelvin == 2202)
         #expect(capabilities.maxColorTempKelvin == 6535)
+    }
+
+    @Test func colorOnlyLightHasAdjustableControls() {
+        let capabilities = LightCapabilities(attributes: [
+            "supported_color_modes": ["hs"],
+        ])
+
+        #expect(capabilities.supportsColor)
+        #expect(capabilities.supportsBrightness)
+        #expect(!capabilities.supportsColorTemp)
+        #expect(capabilities.hasAdjustableControls)
     }
 
     @Test func brightnessOnlyLightHasNoTemperature() {
@@ -29,6 +41,7 @@ struct LightCapabilitiesTests {
 
         #expect(capabilities.supportsBrightness)
         #expect(!capabilities.supportsColorTemp)
+        #expect(!capabilities.supportsColor)
         #expect(capabilities.hasAdjustableControls)
         #expect(capabilities.brightnessPercentage == 100)
     }

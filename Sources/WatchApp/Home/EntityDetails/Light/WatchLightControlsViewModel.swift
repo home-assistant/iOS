@@ -120,6 +120,21 @@ final class WatchLightControlsViewModel: ObservableObject {
         brightnessDebounce = debouncedSend(data: ["brightness_pct": Int(percentage)])
     }
 
+    /// Discrete swatch taps need no debounce. `light.turn_on` with a color also turns the light
+    /// on, like the frontend.
+    func setColor(hex: String) {
+        isOn = true
+        holdOffPolling()
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        UIColor(hex: hex).getRed(&red, &green, &blue, &alpha)
+        send(service: .turnOn, data: [
+            "rgb_color": [Int(red * 255), Int(green * 255), Int(blue * 255)],
+        ])
+    }
+
     /// Called for every slider tick; the actual service call waits until the value settles.
     /// `light.turn_on` with a color temperature also turns the light on, like the frontend.
     func setColorTemp(_ kelvin: Double) {

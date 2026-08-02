@@ -7479,6 +7479,8 @@ public enum L10n {
     public enum LightControls {
       /// Brightness
       public static var brightness: String { return L10n.tr("Localizable", "watch.light_controls.brightness") }
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "watch.light_controls.color") }
       /// Power
       public static var power: String { return L10n.tr("Localizable", "watch.light_controls.power") }
       /// Temperature
