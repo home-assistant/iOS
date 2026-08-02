@@ -27,4 +27,5 @@ public enum Service: String, CaseIterable {
     case returnToBase = "return_to_base"
     case setFanSpeed = "set_fan_speed"
     case locate = "locate"
+    case cleanArea = "clean_area"
 }

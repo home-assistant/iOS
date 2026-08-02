@@ -5,7 +5,7 @@ import Testing
 struct VacuumCapabilitiesTests {
     @Test func fullFeaturedVacuumSupportsEverything() {
         let capabilities = VacuumCapabilities(attributes: [
-            "supported_features": 8828,
+            "supported_features": 25212,
             "battery_level": 80,
             "fan_speed": "medium",
             "fan_speed_list": ["quiet", "medium", "high", "max"],
@@ -16,6 +16,7 @@ struct VacuumCapabilitiesTests {
         #expect(capabilities.supportsStop)
         #expect(capabilities.supportsReturnHome)
         #expect(capabilities.supportsLocate)
+        #expect(capabilities.supportsCleanArea)
         #expect(capabilities.supportsFanSpeed)
         #expect(capabilities.fanSpeed == "medium")
         #expect(capabilities.fanSpeedList == ["quiet", "medium", "high", "max"])
@@ -30,6 +31,7 @@ struct VacuumCapabilitiesTests {
         #expect(VacuumCapabilities.Feature.battery.rawValue == 64)
         #expect(VacuumCapabilities.Feature.locate.rawValue == 512)
         #expect(VacuumCapabilities.Feature.start.rawValue == 8192)
+        #expect(VacuumCapabilities.Feature.cleanArea.rawValue == 16384)
     }
 
     @Test func bareVacuumSupportsNothing() {
@@ -40,6 +42,7 @@ struct VacuumCapabilitiesTests {
         #expect(!capabilities.supportsStop)
         #expect(!capabilities.supportsReturnHome)
         #expect(!capabilities.supportsLocate)
+        #expect(!capabilities.supportsCleanArea)
         #expect(!capabilities.supportsFanSpeed)
         #expect(capabilities.fanSpeed == nil)
         #expect(capabilities.fanSpeedList.isEmpty)

@@ -6390,6 +6390,20 @@ public enum L10n {
       }
       /// Locate
       public static var locate: String { return L10n.tr("Localizable", "vacuum.control.locate") }
+      public enum CleanAreas {
+        /// No areas mapped. Map your vacuum's segments to areas in Home Assistant to clean by area.
+        public static var empty: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.empty") }
+        /// Clean areas
+        public static var title: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.title") }
+        /// Cleaning order: %@
+        public static func order(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "vacuum.control.clean_areas.order_%@", String(describing: p1))
+        }
+        /// Start cleaning (%@)
+        public static func start(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "vacuum.control.clean_areas.start_%@", String(describing: p1))
+        }
+      }
       /// Pause
       public static var pause: String { return L10n.tr("Localizable", "vacuum.control.pause") }
       /// Return to dock

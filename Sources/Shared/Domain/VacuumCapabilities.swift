@@ -16,6 +16,7 @@ public struct VacuumCapabilities: Equatable {
         case battery = 64
         case locate = 512
         case start = 8192
+        case cleanArea = 16384
     }
 
     public let supportsStart: Bool
@@ -23,6 +24,10 @@ public struct VacuumCapabilities: Equatable {
     public let supportsStop: Bool
     public let supportsReturnHome: Bool
     public let supportsLocate: Bool
+    /// Whether the vacuum can be told to clean specific Home Assistant areas
+    /// (`vacuum.clean_area`). The areas themselves come from the entity registry — see
+    /// `VacuumAreaMapping`.
+    public let supportsCleanArea: Bool
     public let supportsFanSpeed: Bool
     /// The active fan speed; nil when the vacuum doesn't report one.
     public let fanSpeed: String?
@@ -45,6 +50,7 @@ public struct VacuumCapabilities: Equatable {
         self.supportsStop = supports(.stop)
         self.supportsReturnHome = supports(.returnHome)
         self.supportsLocate = supports(.locate)
+        self.supportsCleanArea = supports(.cleanArea)
         let fanSpeedList = attributes["fan_speed_list"] as? [String] ?? []
         self.supportsFanSpeed = supports(.fanSpeed) && !fanSpeedList.isEmpty
         self.fanSpeedList = fanSpeedList

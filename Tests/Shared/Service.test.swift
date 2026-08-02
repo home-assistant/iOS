@@ -54,6 +54,10 @@ struct ServiceTests {
             "Service.setFanSpeed raw value should be 'set_fan_speed'"
         )
         #expect(Service.locate.rawValue == "locate", "Service.locate raw value should be 'locate'")
+        #expect(
+            Service.cleanArea.rawValue == "clean_area",
+            "Service.cleanArea raw value should be 'clean_area'"
+        )
 
         // Test initialization from raw value
         #expect(Service(rawValue: "turn_on") == .turnOn, "Service(rawValue: 'turn_on') should initialize to .turnOn")
@@ -93,8 +97,8 @@ struct ServiceTests {
 
         // Test case count
         #expect(
-            Service.allCases.count == 26,
-            "Service enum should have 26 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
+            Service.allCases.count == 27,
+            "Service enum should have 27 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
         )
     }
 }

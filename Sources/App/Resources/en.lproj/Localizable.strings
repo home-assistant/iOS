@@ -1926,6 +1926,10 @@ Importing replaces every category listed on this screen, including app settings.
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
 "url_label" = "URL";
 "vacuum.control.battery_%@" = "Battery: %@";
+"vacuum.control.clean_areas.empty" = "No areas mapped. Map your vacuum's segments to areas in Home Assistant to clean by area.";
+"vacuum.control.clean_areas.order_%@" = "Cleaning order: %@";
+"vacuum.control.clean_areas.start_%@" = "Start cleaning (%@)";
+"vacuum.control.clean_areas.title" = "Clean areas";
 "vacuum.control.fan_speed.title" = "Fan speed";
 "vacuum.control.locate" = "Locate";
 "vacuum.control.pause" = "Pause";

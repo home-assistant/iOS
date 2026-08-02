@@ -203,6 +203,15 @@ public extension HATypedRequest {
         ))
     }
 
+    /// The areas a vacuum has segments mapped to, read from its entity registry entry — the
+    /// display listing omits the per-domain `options` this lives in. WebSocket only.
+    static func vacuumAreaMapping(entityId: String) -> HATypedRequest<VacuumAreaMapping> {
+        HATypedRequest<VacuumAreaMapping>(request: .init(
+            type: .webSocket("config/entity_registry/get"),
+            data: ["entity_id": entityId]
+        ))
+    }
+
     static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
             type: .webSocket("usage_prediction/common_control")
