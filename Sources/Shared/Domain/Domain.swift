@@ -542,6 +542,12 @@ public enum Domain: String, CaseIterable {
         Domain.controlScreenDomains.contains(self)
     }
 
+    /// Whether tapping this domain's entities always presents the domain's own confirmation
+    /// (e.g. lock), so the per-item "require confirmation" setting has no effect.
+    public var hasBuiltInConfirmation: Bool {
+        Domain.builtInConfirmationDomains.contains(self)
+    }
+
     /// Whether the entity icon changes with state/device class (e.g. cover open vs closed),
     /// so list UIs (CarPlay, watch) should render the live entity icon over a saved one.
     public var hasStateDependentIcon: Bool {
@@ -627,6 +633,12 @@ public extension Domain {
     /// frontend's more-info dialog offers.
     static let controlScreenDomains: [Domain] = [
         .climate,
+    ]
+
+    /// Domains that always show their own confirmation when tapped (state-aware lock handling),
+    /// making the per-item "require confirmation" customization irrelevant.
+    static let builtInConfirmationDomains: [Domain] = [
+        .lock,
     ]
 
     /// Everything the user can put on the watch home screen: the runnable domains, the display-only

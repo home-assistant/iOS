@@ -221,9 +221,10 @@ final class CarPlayAddItemFlow {
     }
 
     private func presentConfirmation(server: Server, entity: HAAppEntity) {
-        // Control-screen domains (climate) never execute on tap — they open their own screen — so
-        // asking whether running should require confirmation doesn't apply. Add the item directly.
-        if Domain(rawValue: entity.domain)?.hasControlScreen == true {
+        // Control-screen domains (climate) never execute on tap — they open their own screen — and
+        // built-in-confirmation domains (lock) always confirm regardless of the setting, so asking
+        // whether running should require confirmation doesn't apply. Add the item directly.
+        if let domain = Domain(rawValue: entity.domain), domain.hasControlScreen || domain.hasBuiltInConfirmation {
             commit(server: server, entity: entity, requiresConfirmation: false, dismissPresented: false)
             return
         }
