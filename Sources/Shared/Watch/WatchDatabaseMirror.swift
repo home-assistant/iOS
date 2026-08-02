@@ -104,6 +104,20 @@ public struct WatchDatabaseMirror: WatchCodable {
         Set(Domain.watchAddable.map(\.rawValue))
     }
 
+    /// All `.entity` items the watch home screen renders, including those nested inside folders.
+    private static func entityItems(in items: [MagicItem]) -> [MagicItem] {
+        items.flatMap { item -> [MagicItem] in
+            switch item.type {
+            case .entity:
+                return [item]
+            case .folder:
+                return entityItems(in: item.items ?? [])
+            default:
+                return []
+            }
+        }
+    }
+
     /// Read the current reference tables from the local GRDB (called on the phone).
     public static func snapshot() throws -> WatchDatabaseMirror {
         // A read failure sends `nil` (not `[]`) so the watch retains its rows rather than being told the
@@ -118,8 +132,7 @@ public struct WatchDatabaseMirror: WatchCodable {
                 entityIdsByServer[config.serverId, default: []].insert(entityId)
             }
         }
-        let homeItems = ((try? WatchConfig.config())?.items ?? []).filter { $0.type == .entity }
-        for item in homeItems {
+        for item in entityItems(in: (try? WatchConfig.config())?.items ?? []) {
             entityIdsByServer[item.serverId, default: []].insert(item.id)
         }
         var registry: [EntityRegistryListForDisplay.Entity] = []
