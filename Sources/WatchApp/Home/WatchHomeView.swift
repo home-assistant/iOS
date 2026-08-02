@@ -10,8 +10,10 @@ struct WatchHomeView: View {
     private let autoLoad: Bool
     @State private var showAssist = false
     @State private var showSettings = false
-    @State private var openFolderId: String?
     @State private var isEditing = false
+    /// The stack's path. Rows push by appending through the `watchNavigate` environment action —
+    /// see `WatchNavigateAction` for why links aren't used.
+    @State private var navigationPath: [WatchHomeNavigation] = []
     @State private var activeSheet: HomeSheet?
     @State private var iPhoneNotReachable = false
     @State private var reachabilityToken: HAWatchConnectivity.ObservationToken?
@@ -46,19 +48,25 @@ struct WatchHomeView: View {
     }
 
     var body: some View {
-        Group {
-            if let folderId = openFolderId {
-                WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        openFolderId = nil
+        // Standard path-driven navigation: every pushable screen (folders, a light's controls) is
+        // registered once here at the root, and rows push by appending to the path through the
+        // `watchNavigate` environment action. The home and folder screens hide the navigation bar
+        // themselves, so visually nothing changes at the root; only the light controls screen
+        // shows the system bar with a back button.
+        NavigationStack(path: $navigationPath) {
+            content
+                .navigationDestination(for: WatchHomeNavigation.self) { destination in
+                    switch destination {
+                    case let .folder(folderId):
+                        WatchFolderContentView(folderId: folderId, viewModel: viewModel)
+                    case let .lightControls(item):
+                        WatchLightControlsView(item: item, itemInfo: viewModel.info(for: item))
                     }
                 }
-                .transition(.move(edge: .trailing))
-            } else {
-                content
-                    .transition(.move(edge: .leading))
-            }
         }
+        .environment(\.watchNavigate, WatchNavigateAction { destination in
+            navigationPath.append(destination)
+        })
         ._statusBarHidden(true)
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             showAssist = true
@@ -291,11 +299,7 @@ struct WatchHomeView: View {
         ) {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 if item.type == .folder {
-                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid) {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            openFolderId = item.id
-                        }
-                    }
+                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else {
                     WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 }
@@ -351,11 +355,7 @@ struct WatchHomeView: View {
             }
             .watchConfigRowBackground()
         } else if item.type == .folder {
-            WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    openFolderId = item.id
-                }
-            }
+            WatchFolderRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,

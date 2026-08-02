@@ -79,6 +79,14 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
+    /// True once the polled state proves this light can do more than toggle (dim or tune its
+    /// color temperature). False until the first snapshot arrives, so a tap before then — or on a
+    /// plain on/off light — just toggles.
+    var hasLightControls: Bool {
+        guard item.type == .entity, item.domain == .light, let liveEntity else { return false }
+        return LightCapabilities(entity: liveEntity).hasAdjustableControls
+    }
+
     // MARK: - Entity state
 
     var domainName: String {
