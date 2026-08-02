@@ -95,6 +95,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         underlyingPreferredStatusBarStyle
     }
 
+    /// SwiftUI defers status-bar appearance to this embedded controller (`preferredStatusBarStyle` above
+    /// works the same way), so `HomeAssistantView`'s `.statusBarHidden` alone has no effect.
+    override var prefersStatusBarHidden: Bool {
+        WebViewChromeState.resolveStatusBarHidden()
+    }
+
     #if targetEnvironment(macCatalyst)
     override var canBecomeFirstResponder: Bool {
         true
@@ -355,6 +361,16 @@ extension WebViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.updateFrontendKioskMode()
+            }
+            .store(in: &kioskCancellables)
+
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.hideStatusBar }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.setNeedsStatusBarAppearanceUpdate()
             }
             .store(in: &kioskCancellables)
 

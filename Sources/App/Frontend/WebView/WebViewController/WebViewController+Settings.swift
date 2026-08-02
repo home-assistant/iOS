@@ -52,6 +52,7 @@ extension WebViewController {
 
         if reason == .settingChange {
             setNeedsUpdateOfHomeIndicatorAutoHidden()
+            setNeedsStatusBarAppearanceUpdate()
             // The web view is always edge-to-edge (see `setupWebViewConstraints`); only the SwiftUI-themed
             // status-bar strip reacts to setting changes.
             updateThemedStatusBar()
