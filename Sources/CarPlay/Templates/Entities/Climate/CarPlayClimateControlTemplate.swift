@@ -28,7 +28,7 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
 
     init(viewModel: CarPlayClimateControlViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: viewModel.title, sections: [])
+        self.template = CPListTemplate(title: viewModel.entityName, sections: [])
         template.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
         viewModel.templateProvider = self
         rebuildSections()

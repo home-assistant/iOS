@@ -754,13 +754,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             Current.Log.error("Failed to resolve entity for climate magic item id: \(magicItem.id)")
             return
         }
-        // The item's configured name titles the screen — the resolved entity can be a placeholder
-        // without attributes (no friendly name) when no state has arrived yet.
-        let provider = CarPlayClimateControlTemplate(viewModel: .init(
-            server: server,
-            entity: entity,
-            displayName: magicItem.name(info: info(for: magicItem))
-        ))
+        let provider = CarPlayClimateControlTemplate(viewModel: .init(server: server, entity: entity))
         provider.interfaceController = interfaceController
         climateControlTemplate = provider
         interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
