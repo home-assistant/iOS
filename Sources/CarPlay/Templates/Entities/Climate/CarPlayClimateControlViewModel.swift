@@ -19,7 +19,11 @@ final class CarPlayClimateControlViewModel {
 
     let server: Server
     let entityId: String
-    private(set) var entityName: String
+    /// Screen title: CPListTemplate's title is fixed at init, so resolve the best name up front —
+    /// the caller-provided display name (e.g. the magic item's configured name, available even when
+    /// the entity state hasn't arrived yet), else the entity's friendly name. The raw entity id is
+    /// the last resort only.
+    let title: String
     private(set) var control: ClimateControlState
     weak var templateProvider: CarPlayClimateControlTemplate?
 
@@ -27,16 +31,15 @@ final class CarPlayClimateControlViewModel {
     private var debounceWorkItems: [PendingControl: DispatchWorkItem] = [:]
     private var pendingClearWorkItems: [PendingControl: DispatchWorkItem] = [:]
 
-    init(server: Server, entity: HAEntity) {
+    init(server: Server, entity: HAEntity, displayName: String? = nil) {
         self.server = server
         self.entityId = entity.entityId
-        self.entityName = entity.attributes.friendlyName ?? entity.entityId
+        self.title = displayName ?? entity.attributes.friendlyName ?? entity.entityId
         self.control = ClimateControlState(entity: entity)
     }
 
     func updateStates(serverId: String, entities: HACachedStates) {
         guard serverId == server.identifier.rawValue, let entity = entities[entityId] else { return }
-        entityName = entity.attributes.friendlyName ?? entity.entityId
         var updated = ClimateControlState(entity: entity)
         // Keep the values the user just changed until the server echoes them back.
         if pendingControls.contains(.targetTemperature) {

@@ -1384,6 +1384,10 @@ public enum L10n {
       public static func currentValue(_ p1: Any) -> String {
         return L10n.tr("Localizable", "climate.control.current_value_%@", String(describing: p1))
       }
+      /// Decrease
+      public static var decrease: String { return L10n.tr("Localizable", "climate.control.decrease") }
+      /// Increase
+      public static var increase: String { return L10n.tr("Localizable", "climate.control.increase") }
       /// Target: %@
       public static func targetValue(_ p1: Any) -> String {
         return L10n.tr("Localizable", "climate.control.target_value_%@", String(describing: p1))

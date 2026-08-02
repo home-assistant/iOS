@@ -28,7 +28,7 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
 
     init(viewModel: CarPlayClimateControlViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: viewModel.entityName, sections: [])
+        self.template = CPListTemplate(title: viewModel.title, sections: [])
         template.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
         viewModel.templateProvider = self
         rebuildSections()
@@ -94,52 +94,37 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
         if control.supportsTargetTemperature {
             let valueItem = CPListItem(text: nil, detailText: nil)
             temperatureValueItem = valueItem
-            sections.append(CPListSection(
-                items: [
-                    valueItem,
-                    stepItem(text: L10n.Climate.Control.Temperature.increase, icon: .plusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperature(by: 1)
-                    },
-                    stepItem(text: L10n.Climate.Control.Temperature.decrease, icon: .minusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperature(by: -1)
-                    },
-                ],
+            sections.append(contentsOf: stepperSections(
                 header: L10n.Climate.Control.Temperature.title,
-                sectionIndexTitle: nil
+                valueItem: valueItem,
+                increaseText: L10n.Climate.Control.Temperature.increase,
+                decreaseText: L10n.Climate.Control.Temperature.decrease,
+                onIncrease: { [weak self] in self?.viewModel.adjustTargetTemperature(by: 1) },
+                onDecrease: { [weak self] in self?.viewModel.adjustTargetTemperature(by: -1) }
             ))
         }
 
         if control.supportsTargetTemperatureRange {
             let lowValueItem = CPListItem(text: nil, detailText: nil)
             temperatureLowValueItem = lowValueItem
-            sections.append(CPListSection(
-                items: [
-                    lowValueItem,
-                    stepItem(text: L10n.Climate.Control.Temperature.increase, icon: .plusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperatureLow(by: 1)
-                    },
-                    stepItem(text: L10n.Climate.Control.Temperature.decrease, icon: .minusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperatureLow(by: -1)
-                    },
-                ],
+            sections.append(contentsOf: stepperSections(
                 header: L10n.Climate.Control.TemperatureLow.title,
-                sectionIndexTitle: nil
+                valueItem: lowValueItem,
+                increaseText: L10n.Climate.Control.Temperature.increase,
+                decreaseText: L10n.Climate.Control.Temperature.decrease,
+                onIncrease: { [weak self] in self?.viewModel.adjustTargetTemperatureLow(by: 1) },
+                onDecrease: { [weak self] in self?.viewModel.adjustTargetTemperatureLow(by: -1) }
             ))
 
             let highValueItem = CPListItem(text: nil, detailText: nil)
             temperatureHighValueItem = highValueItem
-            sections.append(CPListSection(
-                items: [
-                    highValueItem,
-                    stepItem(text: L10n.Climate.Control.Temperature.increase, icon: .plusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperatureHigh(by: 1)
-                    },
-                    stepItem(text: L10n.Climate.Control.Temperature.decrease, icon: .minusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetTemperatureHigh(by: -1)
-                    },
-                ],
+            sections.append(contentsOf: stepperSections(
                 header: L10n.Climate.Control.TemperatureHigh.title,
-                sectionIndexTitle: nil
+                valueItem: highValueItem,
+                increaseText: L10n.Climate.Control.Temperature.increase,
+                decreaseText: L10n.Climate.Control.Temperature.decrease,
+                onIncrease: { [weak self] in self?.viewModel.adjustTargetTemperatureHigh(by: 1) },
+                onDecrease: { [weak self] in self?.viewModel.adjustTargetTemperatureHigh(by: -1) }
             ))
         }
 
@@ -210,18 +195,13 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
         if control.supportsTargetHumidity {
             let valueItem = CPListItem(text: nil, detailText: nil)
             humidityValueItem = valueItem
-            sections.append(CPListSection(
-                items: [
-                    valueItem,
-                    stepItem(text: L10n.Climate.Control.Humidity.increase, icon: .plusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetHumidity(by: 1)
-                    },
-                    stepItem(text: L10n.Climate.Control.Humidity.decrease, icon: .minusIcon) { [weak self] in
-                        self?.viewModel.adjustTargetHumidity(by: -1)
-                    },
-                ],
+            sections.append(contentsOf: stepperSections(
                 header: L10n.Climate.Control.Humidity.title,
-                sectionIndexTitle: nil
+                valueItem: valueItem,
+                increaseText: L10n.Climate.Control.Humidity.increase,
+                decreaseText: L10n.Climate.Control.Humidity.decrease,
+                onIncrease: { [weak self] in self?.viewModel.adjustTargetHumidity(by: 1) },
+                onDecrease: { [weak self] in self?.viewModel.adjustTargetHumidity(by: -1) }
             ))
         }
 
@@ -282,6 +262,70 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
             presetModeItem.setDetailText(control.presetMode.map(ClimateControlState.displayName(forMode:)))
             presetModeItem.setImage(MaterialDesignIcons.tuneIcon.carPlayIcon())
         }
+    }
+
+    /// One stepper group: the value row under the capability's header, plus its +/- controls.
+    /// On iOS 26 the controls render as tappable tiles in their own section; earlier versions
+    /// fall back to plain list rows inside the value's section.
+    private func stepperSections(
+        header: String,
+        valueItem: CPListItem,
+        increaseText: String,
+        decreaseText: String,
+        onIncrease: @escaping () -> Void,
+        onDecrease: @escaping () -> Void
+    ) -> [CPListSection] {
+        if #available(iOS 26.0, *) {
+            return [
+                CPListSection(items: [valueItem], header: header, sectionIndexTitle: nil),
+                CPListSection(items: [stepTilesItem(onIncrease: onIncrease, onDecrease: onDecrease)]),
+            ]
+        }
+        return [CPListSection(
+            items: [
+                valueItem,
+                stepItem(text: increaseText, icon: .plusIcon, action: onIncrease),
+                stepItem(text: decreaseText, icon: .minusIcon, action: onDecrease),
+            ],
+            header: header,
+            sectionIndexTitle: nil
+        )]
+    }
+
+    @available(iOS 26.0, *)
+    private func stepTilesItem(
+        onIncrease: @escaping () -> Void,
+        onDecrease: @escaping () -> Void
+    ) -> CPListImageRowItem {
+        let item = CPListImageRowItem(
+            text: nil,
+            condensedElements: [
+                CPListImageRowItemCondensedElement(
+                    image: MaterialDesignIcons.minusIcon.carPlayCondensedElementImage(),
+                    imageShape: .circular,
+                    title: L10n.Climate.Control.decrease,
+                    subtitle: nil,
+                    accessorySymbolName: nil
+                ),
+                CPListImageRowItemCondensedElement(
+                    image: MaterialDesignIcons.plusIcon.carPlayCondensedElementImage(),
+                    imageShape: .circular,
+                    title: L10n.Climate.Control.increase,
+                    subtitle: nil,
+                    accessorySymbolName: nil
+                ),
+            ],
+            allowsMultipleLines: false
+        )
+        item.listImageRowHandler = { _, index, completion in
+            if index == 0 {
+                onDecrease()
+            } else {
+                onIncrease()
+            }
+            completion()
+        }
+        return item
     }
 
     private func stepItem(

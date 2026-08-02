@@ -367,10 +367,12 @@
 "client_events.view.clear_confirm.message" = "This cannot be undone.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
 "climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
 "climate.control.fan_mode.title" = "Fan mode";
 "climate.control.humidity.decrease" = "Decrease humidity";
 "climate.control.humidity.increase" = "Increase humidity";
 "climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
 "climate.control.mode.title" = "Mode";
 "climate.control.modes.title" = "Modes";
 "climate.control.preset_mode.title" = "Preset";

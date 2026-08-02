@@ -27,6 +27,9 @@ final class WatchClimateControlViewModel: ObservableObject {
 
     /// Nil until the first fetch succeeds — the screen shows a spinner meanwhile.
     @Published private(set) var control: ClimateControlState?
+    /// The entity's friendly name from the latest snapshot; preferred for the screen title so it
+    /// tracks the entity's actual name rather than a stale configured one (or the raw id).
+    @Published private(set) var entityName: String?
     /// True when the state couldn't be refreshed recently, so the screen can say the values may be
     /// out of date instead of presenting them as current.
     @Published private(set) var isStale = false
@@ -48,11 +51,12 @@ final class WatchClimateControlViewModel: ObservableObject {
         self.itemInfo = itemInfo
         self.poller = WatchEntityStatePoller(entityId: item.id, serverId: item.serverId)
         self.control = initialEntity.map(ClimateControlState.init(entity:))
+        self.entityName = initialEntity?.attributes.friendlyName
     }
 
-    /// The name the user configured for the item, falling back to the entity's own name.
+    /// The entity's live friendly name, falling back to the name configured for the item.
     var name: String {
-        item.name(info: itemInfo)
+        entityName ?? item.name(info: itemInfo)
     }
 
     var icon: MaterialDesignIcons {
@@ -71,6 +75,7 @@ final class WatchClimateControlViewModel: ObservableObject {
             guard let self else { return }
             isStale = snapshot.isStale
             guard let entity = snapshot.entity else { return }
+            entityName = entity.attributes.friendlyName ?? entityName
             var updated = ClimateControlState(entity: entity)
             // Keep the values the user just changed until the server echoes them back.
             if let control {
