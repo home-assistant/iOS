@@ -4,13 +4,13 @@ import Shared
 import UIKit
 import WatchKit
 
-/// Backs the control screen a climate row opens when tapped.
+/// Backs the control screen a climate row pushes when tapped.
 ///
 /// Live state comes from the same REST polling every watch screen uses (`WatchEntityStatePoller`);
-/// each snapshot is parsed into a `ClimateControlState`. Actions go out as `WatchServiceCall`s —
-/// the watch cannot hold a WebSocket, so services are called over REST. Values the user just
-/// changed are kept on screen (optimistically) until the server echoes them back, and rapid +/-
-/// taps coalesce into a single service call.
+/// each snapshot is parsed into a `ClimateControlState`. Commands go out as `climate.*` REST calls
+/// (`WatchServiceCallSender`) — the watch cannot hold a WebSocket. Values the user just changed
+/// are kept on screen (optimistically) until the server echoes them back, and rapid +/- taps
+/// coalesce into a single service call.
 final class WatchClimateControlViewModel: ObservableObject {
     /// Controls whose just-changed value should win over incoming snapshots until the server
     /// echoes the change back, so a stale poll doesn't bounce the UI.
@@ -218,28 +218,21 @@ final class WatchClimateControlViewModel: ObservableObject {
             errorMessage = L10n.Watch.Home.Run.Error.message
             return
         }
-        var serviceData = data
-        serviceData["entity_id"] = item.id
-        let call = WatchServiceCall(
-            domain: Domain.climate.rawValue,
-            service: service.rawValue,
-            data: serviceData
-        )
         WKInterfaceDevice.current().play(.click)
-        call.execute(on: server, logLabel: item.id) { [weak self] success, error in
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                if success {
-                    // Reflect the executed change quickly instead of waiting a full poll interval.
-                    poller.refresh(after: 1)
-                } else {
-                    Current.Log.error(
-                        "Climate service \(service.rawValue) failed for \(item.id): " +
-                            "\(error?.localizedDescription ?? "unknown")"
-                    )
-                    WKInterfaceDevice.current().play(.failure)
-                    errorMessage = error?.localizedDescription ?? L10n.Watch.Home.Run.Error.message
-                }
+        WatchServiceCallSender.send(
+            domain: .climate,
+            service: service,
+            entityId: item.id,
+            data: data,
+            server: server
+        ) { [weak self] success in
+            guard let self else { return }
+            if success {
+                // Reflect the executed change quickly instead of waiting a full poll interval.
+                poller.refresh(after: 1)
+            } else {
+                WKInterfaceDevice.current().play(.failure)
+                errorMessage = L10n.Watch.Home.Run.Error.message
             }
         }
     }

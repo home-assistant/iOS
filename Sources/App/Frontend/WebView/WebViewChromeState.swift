@@ -2,8 +2,9 @@ import Combine
 import Shared
 
 /// Observes the settings that drive system-chrome hiding (full-screen, kiosk hide-status-bar) so
-/// `HomeAssistantView` can hide the status bar / home indicator in SwiftUI rather than via UIKit overrides
-/// on `WebViewController`.
+/// `HomeAssistantView` can hide the status bar / home indicator in SwiftUI. `WebViewController` mirrors
+/// `resolveStatusBarHidden()` in its `prefersStatusBarHidden` override: SwiftUI defers status-bar
+/// appearance to the embedded web view controller, so the UIKit override is what actually takes effect.
 @MainActor
 final class WebViewChromeState: ObservableObject {
     @Published private(set) var statusBarHidden: Bool
@@ -31,7 +32,7 @@ final class WebViewChromeState: ObservableObject {
         homeIndicatorHidden = Current.settingsStore.fullScreen
     }
 
-    private static func resolveStatusBarHidden() -> Bool {
+    static func resolveStatusBarHidden() -> Bool {
         Current.settingsStore.fullScreen
             || (Current.kioskSettings.enabled && Current.kioskSettings.hideStatusBar)
     }

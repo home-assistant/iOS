@@ -307,17 +307,17 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         return gaugeMin != nil && gaugeMax != nil
     }
 
-    /// The resolved gauge range for this family, or nil when no gauge should be drawn.
+    /// The resolved gauge range for this family, or nil when no gauge should be drawn. Each bound
+    /// resolves independently (per-size override → base) because the editor's Minimum/Maximum fields
+    /// store only the bound the user edited — requiring both overrides would silently keep gauging
+    /// against the base range.
     public func gaugeRange(for family: Family) -> (min: Double, max: Double)? {
         guard showsGauge(for: family) else { return nil }
         let options = families?[family.rawValue]
-        if let minValue = options?.gaugeMin, let maxValue = options?.gaugeMax, maxValue > minValue {
-            return (minValue, maxValue)
-        }
-        if let minValue = gaugeMin, let maxValue = gaugeMax, maxValue > minValue {
-            return (minValue, maxValue)
-        }
-        return nil
+        guard let minValue = options?.gaugeMin ?? gaugeMin,
+              let maxValue = options?.gaugeMax ?? gaugeMax,
+              maxValue > minValue else { return nil }
+        return (minValue, maxValue)
     }
 
     public func gaugeAttribute(for family: Family) -> String? {

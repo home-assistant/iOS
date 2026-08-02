@@ -2,10 +2,13 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+/// A folder's contents, pushed by `WatchFolderRow` through the home screen's `NavigationStack`.
+/// The navigation bar stays hidden — the custom header provides the back button (via `dismiss`),
+/// keeping the same look it had before folders were real pushes.
 struct WatchFolderContentView: View {
     let folderId: String
     @ObservedObject var viewModel: WatchHomeViewModel
-    let onBack: () -> Void
+    @Environment(\.dismiss) private var dismiss
 
     @State private var isEditing = false
     @State private var activeSheet: WatchHomeView.HomeSheet?
@@ -128,7 +131,7 @@ struct WatchFolderContentView: View {
                     withAnimation { isEditing = false }
                     viewModel.saveConfig()
                 }
-                onBack()
+                dismiss()
             } label: {
                 Image(systemSymbol: .chevronLeft)
             }

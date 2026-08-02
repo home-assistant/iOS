@@ -29,23 +29,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    /// Screens the row can present. One enum drives a single `.sheet(item:)` — stacking multiple
-    /// sheet modifiers is unreliable on older watchOS (see `WatchHomeView.HomeSheet`).
-    enum RowSheet: String, Identifiable {
-        /// Read-only details for a display-only (sensor) item, which runs nothing when tapped.
-        case details
-        /// Control screen for domains without a single tap action (climate).
-        case climateControl
-
-        var id: String { rawValue }
-    }
-
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
     /// Alert shown when the tapped entity's domain has no action the watch can perform.
     @Published var showUnsupportedAlert = false
-    /// Drives the sheet the row presents instead of (or in addition to) running an action.
-    @Published var activeSheet: RowSheet?
+    /// Drives the details screen for a display-only (sensor) item, which runs nothing when tapped.
+    @Published var showDetails = false
     /// Latest entity snapshot from the poller; drives the state subtitle, the live icon, and the
     /// state-aware execution (lock).
     @Published private(set) var liveEntity: HAEntity?
@@ -76,13 +65,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     func executeItem() {
         // Sensors are on the watch to be read, not run: open their details screen instead.
         guard !isDisplayOnly else {
-            activeSheet = .details
-            return
-        }
-        // Climate has no single tap action either: open its control screen (temperature, mode,
-        // fan…) instead of running anything.
-        if item.type == .entity, item.domain?.hasControlScreen == true {
-            activeSheet = .climateControl
+            showDetails = true
             return
         }
         guard isActionable else {
@@ -94,6 +77,21 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         } else {
             executeItemAction()
         }
+    }
+
+    /// True once the polled state proves this light can do more than toggle (dim or tune its
+    /// color temperature). False until the first snapshot arrives, so a tap before then — or on a
+    /// plain on/off light — just toggles.
+    var hasLightControls: Bool {
+        guard item.type == .entity, item.domain == .light, let liveEntity else { return false }
+        return LightCapabilities(entity: liveEntity).hasAdjustableControls
+    }
+
+    /// True when tapping this row pushes a dedicated control screen (climate) instead of running
+    /// an action — climate has no single tap action, so the whole row navigates, mirroring how a
+    /// capable light's row body pushes its controls.
+    var opensControlScreen: Bool {
+        item.type == .entity && item.domain?.hasControlScreen == true
     }
 
     // MARK: - Entity state

@@ -4,6 +4,7 @@ import SwiftUI
 
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
+    @Environment(\.watchNavigate) private var navigate
     private let subtitle: String?
     private let layout: WatchLayout
 
@@ -14,10 +15,26 @@ struct WatchMagicViewRow: View {
     }
 
     var body: some View {
-        Button {
-            viewModel.executeItem()
-        } label: {
-            label
+        // The confirmation dialog and alerts hang off this per-row container (not a shared parent
+        // list): which button triggers them depends on the row variant below.
+        Group {
+            if layout == .list, viewModel.hasLightControls {
+                // Two sibling tap targets — the icon toggles, the body opens the controls
+                // screen. Not wrapped in a row `Button`: SwiftUI doesn't support nested buttons.
+                splitLightLabel
+            } else {
+                Button {
+                    if viewModel.opensControlScreen {
+                        // Climate has no single tap action: the whole row pushes its control
+                        // screen (temperature, mode, fan…) instead of running anything.
+                        navigate(.climateControls(viewModel.item))
+                    } else {
+                        viewModel.executeItem()
+                    }
+                } label: {
+                    label
+                }
+            }
         }
         .confirmationDialog(
             L10n.Watch.Home.Run.Confirmation.title(viewModel.item.name(info: viewModel.itemInfo)),
@@ -84,14 +101,9 @@ struct WatchMagicViewRow: View {
             )
         }
         // Sensors run nothing when tapped: they open their own read-only details screen instead.
-        // Climate items open their control screen the same way.
-        .sheet(item: $viewModel.activeSheet) { sheet in
-            switch sheet {
-            case .details:
-                WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
-            case .climateControl:
-                WatchClimateControlView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
-            }
+        // (A capable light's or a climate's controls screen is not a sheet — the row pushes it.)
+        .sheet(isPresented: $viewModel.showDetails) {
+            WatchEntityDetailsView(viewModel: .init(item: viewModel.item, itemInfo: viewModel.itemInfo))
         }
         // Developer "Verbose item execution": a live log of the run, dismissed explicitly so the
         // steps stay readable after the execution finishes.
@@ -112,6 +124,19 @@ struct WatchMagicViewRow: View {
         if layout == .grid {
             gridIcon
                 .animation(.bouncy, value: viewModel.state)
+        } else if viewModel.opensControlScreen {
+            WatchHomeItemLabel(
+                name: viewModel.item.name(info: viewModel.itemInfo),
+                subtitle: subtitleToDisplay,
+                textColor: textColor,
+                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
+                accessory: {
+                    // Same chevron as folder rows: tapping navigates to the control screen.
+                    Image(systemSymbol: .chevronRight)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            )
         } else {
             WatchHomeItemLabel(
                 name: viewModel.item.name(info: viewModel.itemInfo),
@@ -120,6 +145,26 @@ struct WatchMagicViewRow: View {
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
             )
         }
+    }
+
+    /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
+    /// the row body pushes the controls screen — the chevron promises a push, so it must not be
+    /// presented modally. The pushed screen resolves in `WatchHomeView`'s destination registration.
+    private var splitLightLabel: some View {
+        WatchHomeItemLabel(
+            name: viewModel.item.name(info: viewModel.itemInfo),
+            subtitle: subtitleToDisplay,
+            textColor: textColor,
+            icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
+            accessory: {
+                // Same chevron as folder rows: the row body navigates somewhere.
+                Image(systemSymbol: .chevronRight)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            },
+            onIconTap: { viewModel.executeItem() },
+            onBodyTap: { navigate(.lightControls(viewModel.item)) }
+        )
     }
 
     private var subtitleToDisplay: String? {
@@ -232,6 +277,14 @@ struct WatchMagicViewRow: View {
         WatchMagicViewRow(
             item: .init(id: "sensor.living_room_temperature", serverId: "1", type: .entity),
             itemInfo: .init(id: "1", name: "Living room temperature", iconName: "mdi:thermometer")
+        )
+        WatchMagicViewRow(
+            item: .init(id: "light.kitchen", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Kitchen light", iconName: "mdi:lightbulb")
+        )
+        WatchMagicViewRow(
+            item: .init(id: "climate.living_room", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Living room thermostat", iconName: "mdi:thermostat")
         )
     }
     .background(Color.red)
