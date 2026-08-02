@@ -3,12 +3,17 @@ import Shared
 import SwiftUI
 
 /// One server's areas, pushed by the grouped areas row (directly, or through the server picker
-/// when multiple servers have areas). The navigation bar stays hidden — the custom header provides
-/// the back button, matching `WatchFolderContentView`.
+/// when multiple servers have areas). Areas without watch-compatible entities are dropped, the
+/// same rule the home screen applies. The navigation bar stays hidden — the custom header
+/// provides the back button, matching `WatchFolderContentView`.
 struct WatchAreasListView: View {
     let serverId: String
     @Environment(\.dismiss) private var dismiss
     @State private var areas: [AppArea] = []
+
+    /// Serial queue for the area load — the fetches are synchronous database reads that would
+    /// block the main thread.
+    private static let loadQueue = DispatchQueue(label: "watch-areas-list", qos: .userInitiated)
 
     var body: some View {
         List {
@@ -28,7 +33,19 @@ struct WatchAreasListView: View {
             }
         }
         .onAppear {
-            areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+            loadAreas()
+        }
+    }
+
+    private func loadAreas() {
+        let serverId = serverId
+        Self.loadQueue.async {
+            let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+            let entityIds = (try? HAAppEntity.watchAreaEntityIds(serverId: serverId)) ?? []
+            let populatedAreas = allAreas.filter { !$0.entities.isDisjoint(with: entityIds) }
+            DispatchQueue.main.async {
+                areas = populatedAreas
+            }
         }
     }
 

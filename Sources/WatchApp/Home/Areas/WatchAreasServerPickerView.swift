@@ -2,12 +2,14 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The server chooser of the grouped areas row, shown only when more than one server has areas.
-/// Each row pushes that server's area list through the home stack's `watchNavigate` action.
+/// The server chooser of the grouped areas row, shown only when more than one server has areas
+/// with watch-compatible entities — the ids come from `WatchHomeAreasMode.grouped(serverIds:)`,
+/// so servers whose areas the home screen dropped never appear here. Each row pushes that
+/// server's area list through the home stack's `watchNavigate` action.
 struct WatchAreasServerPickerView: View {
+    let serverIds: [String]
     @Environment(\.dismiss) private var dismiss
     @Environment(\.watchNavigate) private var navigate
-    @State private var servers: [Server] = []
 
     var body: some View {
         List {
@@ -37,9 +39,10 @@ struct WatchAreasServerPickerView: View {
                 view.toolbar(.hidden, for: .navigationBar)
             }
         }
-        .onAppear {
-            loadServers()
-        }
+    }
+
+    private var servers: [Server] {
+        serverIds.compactMap { Current.servers.server(forServerIdentifier: $0) }
     }
 
     private var header: some View {
@@ -58,17 +61,11 @@ struct WatchAreasServerPickerView: View {
         .listRowBackground(Color.clear)
         .padding(.top, DesignSystem.Spaces.one)
     }
-
-    /// Only servers that actually have areas — a server without them would push an empty list.
-    private func loadServers() {
-        let serverIdsWithAreas = Set(((try? AppArea.fetchAllAreas()) ?? []).map(\.serverId))
-        servers = Current.servers.all.filter { serverIdsWithAreas.contains($0.identifier.rawValue) }
-    }
 }
 
 #Preview {
     MaterialDesignIcons.register()
     return NavigationStack {
-        WatchAreasServerPickerView()
+        WatchAreasServerPickerView(serverIds: ["1", "2"])
     }
 }

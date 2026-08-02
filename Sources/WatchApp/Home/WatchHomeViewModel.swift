@@ -642,20 +642,29 @@ final class WatchHomeViewModel: ObservableObject {
         }
     }
 
+    /// Serial queue for the areas-mode computation — the area fetch is a synchronous database read
+    /// that must stay off the main thread.
+    private static let areasModeQueue = DispatchQueue(label: "watch-areas-mode", qos: .userInitiated)
+
     /// Recompute the automatic area rows from the mirrored areas and the entities the provider just
-    /// loaded, filtered to what the home screen can actually render.
-    @MainActor
+    /// loaded, filtered to what the home screen can actually render. Runs off-main and publishes
+    /// the result back on the main queue.
     private func updateAreasMode(config: WatchConfig, entitiesPerServer: [String: [HAAppEntity]]) {
-        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
-        let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-            let watchEntities = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
-            return Set(watchEntities.map(\.entityId))
+        Self.areasModeQueue.async { [weak self] in
+            let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+            let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
+                let watchEntities = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+                return Set(watchEntities.map(\.entityId))
+            }
+            let mode = WatchHomeAreasMode.compute(
+                areas: (try? AppArea.fetchAllAreas()) ?? [],
+                watchEntityIdsByServer: watchEntityIdsByServer,
+                hideAreas: config.resolvedHideAreas
+            )
+            DispatchQueue.main.async { [weak self] in
+                self?.areasMode = mode
+            }
         }
-        areasMode = WatchHomeAreasMode.compute(
-            areas: (try? AppArea.fetchAllAreas()) ?? [],
-            watchEntityIdsByServer: watchEntityIdsByServer,
-            hideAreas: config.resolvedHideAreas
-        )
     }
 
     /// Where the grouped "Areas" row goes: straight to the single server's areas, or through the
@@ -665,7 +674,7 @@ final class WatchHomeViewModel: ObservableObject {
         if serverIds.count == 1, let serverId = serverIds.first {
             return .areasList(serverId: serverId)
         }
-        return .areasServerPicker
+        return .areasServerPicker(serverIds: serverIds)
     }
 
     /// Re-evaluates whether any server lacks a usable URL, feeding the settings gear's yellow

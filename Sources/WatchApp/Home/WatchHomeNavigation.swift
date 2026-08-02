@@ -19,8 +19,9 @@ enum WatchHomeNavigation: Hashable {
     /// The controls screen (target temperature, HVAC/fan/swing/preset modes, humidity) of a
     /// climate entity.
     case climateControls(MagicItem)
-    /// The server chooser of the grouped areas row (multiple servers with areas).
-    case areasServerPicker
+    /// The server chooser of the grouped areas row, limited to the servers whose areas contain
+    /// watch-compatible entities.
+    case areasServerPicker(serverIds: [String])
     /// One server's areas, pushed by the grouped areas row.
     case areasList(serverId: String)
     /// The watch-compatible entities of one area.

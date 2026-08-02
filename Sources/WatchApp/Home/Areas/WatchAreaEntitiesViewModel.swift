@@ -37,13 +37,19 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
         let areaId = areaId
         let serverId = serverId
         Self.loadQueue.async { [weak self] in
-            let area = (try? AppArea.fetchArea(areaId: areaId, serverId: serverId)) ?? nil
+            guard let area = try? AppArea.fetchArea(areaId: areaId, serverId: serverId) else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.entries = []
+                    self?.isLoading = false
+                }
+                return
+            }
             let provider = Current.magicItemProvider()
             provider.loadInformation { entitiesPerServer in
                 let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
                 let entries: [Entry] = (entitiesPerServer[serverId] ?? [])
                     .filter { entity in
-                        area?.entities.contains(entity.entityId) == true
+                        area.entities.contains(entity.entityId)
                             && allowedDomains.contains(entity.domain)
                             && entity.entityCategory == nil
                     }
@@ -54,7 +60,7 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
                         return Entry(item: item, info: info)
                     }
                 DispatchQueue.main.async { [weak self] in
-                    self?.areaName = area?.name
+                    self?.areaName = area.name
                     self?.entries = entries
                     self?.isLoading = false
                 }

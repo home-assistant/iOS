@@ -2,17 +2,18 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// A single area on the home screen or the per-server area list; tapping pushes the area's
-/// entities through the home stack's `watchNavigate` action. Renders as an icon-only tile in
+/// The single grouped "Areas" entry on the home screen, shown when there are too many areas (or
+/// multiple servers) to list them inline. Tapping pushes the destination the view model resolved:
+/// the server picker, or straight to the only server's area list. Renders as an icon-only tile in
 /// the grid layout, matching `WatchFolderRow`.
-struct WatchAreaRow: View {
-    let area: AppArea
+struct WatchAreasGroupRow: View {
+    let destination: WatchHomeNavigation
     var layout: WatchLayout = .list
     @Environment(\.watchNavigate) private var navigate
 
     var body: some View {
         Button {
-            navigate(.areaEntities(areaId: area.areaId, serverId: area.serverId))
+            navigate(destination)
         } label: {
             label
         }
@@ -30,20 +31,20 @@ struct WatchAreaRow: View {
     @ViewBuilder
     private var label: some View {
         if layout == .grid {
-            Image(uiImage: icon.image(
+            Image(uiImage: MaterialDesignIcons.textureBoxIcon.image(
                 ofSize: .init(width: 28, height: 28),
                 color: .white
             ))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .accessibilityLabel(Text(area.name))
+            .accessibilityLabel(Text(L10n.Watch.Home.Areas.title))
         } else {
             WatchHomeItemLabel(
-                name: area.name,
+                name: L10n.Watch.Home.Areas.title,
                 textColor: .white,
                 icon: {
                     VStack {
-                        Image(uiImage: icon.image(
+                        Image(uiImage: MaterialDesignIcons.textureBoxIcon.image(
                             ofSize: .init(width: 24, height: 24),
                             color: .white
                         ))
@@ -59,40 +60,19 @@ struct WatchAreaRow: View {
             )
         }
     }
-
-    private var icon: MaterialDesignIcons {
-        if let iconName = area.icon {
-            // The frontend's default icon for areas without a custom one.
-            return MaterialDesignIcons(serversideValueNamed: iconName, fallback: .textureBoxIcon)
-        }
-        return .textureBoxIcon
-    }
 }
 
 #Preview {
     MaterialDesignIcons.register()
     return List {
-        WatchAreaRow(area: .init(
-            id: "1-living_room",
-            serverId: "1",
-            areaId: "living_room",
-            name: "Living Room",
-            aliases: [],
-            picture: nil,
-            icon: "mdi:sofa",
-            sortOrder: nil,
-            entities: ["light.living_room"]
-        ))
-        WatchAreaRow(area: .init(
-            id: "1-kitchen",
-            serverId: "1",
-            areaId: "kitchen",
-            name: "Kitchen",
-            aliases: [],
-            picture: nil,
-            icon: nil,
-            sortOrder: nil,
-            entities: ["light.kitchen"]
-        ))
+        WatchAreasGroupRow(destination: .areasList(serverId: "1"))
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            WatchAreasGroupRow(destination: .areasList(serverId: "1"), layout: .grid)
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
     }
 }
