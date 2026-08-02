@@ -64,8 +64,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func displayClimateControl(entity: HAEntity, server: Server) {
-        let provider = CarPlayClimateControlTemplate(viewModel: .init(server: server, entity: entity))
+    func displayControlScreen(entity: HAEntity, server: Server) {
+        guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
         childTemplateProvider = provider
         interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)

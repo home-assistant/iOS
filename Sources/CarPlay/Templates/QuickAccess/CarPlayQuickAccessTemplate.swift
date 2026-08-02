@@ -54,9 +54,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var activeAssistSession: AnyObject?
     private var addItemFlow: CarPlayAddItemFlow?
     private var editItemFlow: CarPlayEditItemFlow?
-    /// Control screen pushed for domains that have one (climate); fed with the per-server state
-    /// events this template receives and cleared when the list reappears (i.e. it was popped).
-    private var climateControlTemplate: CarPlayClimateControlTemplate?
+    /// Control screen pushed for domains that have one (climate, vacuum); fed with the per-server
+    /// state events this template receives and cleared when the list reappears (i.e. it was popped).
+    private var controlScreenTemplate: (any CarPlayTemplateProvider)?
 
     /// `folder` is provided when this template renders a folder promoted to its own tab
     /// (`CarPlayQuickAccessViewModel.Source.folder`); it supplies the tab's title and icon.
@@ -199,7 +199,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         if template == self.template {
             /* no-op */
         }
-        climateControlTemplate?.templateWillDisappear(template: template)
+        controlScreenTemplate?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
@@ -209,16 +209,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             openFolderTemplates.removeAll()
             folderListItemsByKey.removeAll()
             folderFooterRows.removeAll()
-            climateControlTemplate = nil
+            controlScreenTemplate = nil
             update()
         }
-        climateControlTemplate?.templateWillAppear(template: template)
+        controlScreenTemplate?.templateWillAppear(template: template)
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
         let previousEntities = entitiesPerServer[serverId]
         entitiesPerServer[serverId] = entities
-        climateControlTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
+        controlScreenTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
         guard !currentItems.isEmpty else { return }
         guard hasRelevantEntityChange(serverId: serverId, previous: previousEntities, current: entities) else {
             return
@@ -717,7 +717,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     ) {
         // Domains without a single tap action (climate) push their own control screen.
         if magicItem.type == .entity, Domain(entityId: magicItem.id)?.hasControlScreen == true {
-            presentClimateControl(magicItem: magicItem)
+            presentControlScreen(magicItem: magicItem)
             return
         }
 
@@ -743,20 +743,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
-    private func presentClimateControl(magicItem: MagicItem) {
+    private func presentControlScreen(magicItem: MagicItem) {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for climate magic item id: \(magicItem.id)")
+            Current.Log.error("Failed to get server for control screen magic item id: \(magicItem.id)")
             return
         }
         guard let entity = resolvedEntity(for: magicItem) else {
-            Current.Log.error("Failed to resolve entity for climate magic item id: \(magicItem.id)")
+            Current.Log.error("Failed to resolve entity for control screen magic item id: \(magicItem.id)")
             return
         }
-        let provider = CarPlayClimateControlTemplate(viewModel: .init(server: server, entity: entity))
+        guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
-        climateControlTemplate = provider
+        controlScreenTemplate = provider
         interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
     }
 

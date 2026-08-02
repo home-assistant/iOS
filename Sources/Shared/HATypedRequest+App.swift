@@ -42,8 +42,10 @@ public extension HATypedRequest {
         ))
     }
 
-    /// Calls a climate domain service (e.g. `climate.set_temperature`) with the given service data.
-    static func callClimateService(
+    /// Calls a service on `domain` targeting one entity (e.g. `climate.set_temperature`,
+    /// `vacuum.start`) with the given service data.
+    static func callEntityService(
+        domain: Domain,
         _ service: Service,
         entityId: String,
         data: [String: Any] = [:]
@@ -53,7 +55,7 @@ public extension HATypedRequest {
         return HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": Domain.climate.rawValue,
+                "domain": domain.rawValue,
                 "service": service.rawValue,
                 "service_data": serviceData,
             ]

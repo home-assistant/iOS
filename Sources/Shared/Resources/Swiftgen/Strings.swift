@@ -6382,6 +6382,29 @@ public enum L10n {
     }
   }
 
+  public enum Vacuum {
+    public enum Control {
+      /// Battery: %@
+      public static func battery(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "vacuum.control.battery_%@", String(describing: p1))
+      }
+      /// Locate
+      public static var locate: String { return L10n.tr("Localizable", "vacuum.control.locate") }
+      /// Pause
+      public static var pause: String { return L10n.tr("Localizable", "vacuum.control.pause") }
+      /// Return to dock
+      public static var returnToBase: String { return L10n.tr("Localizable", "vacuum.control.return_to_base") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "vacuum.control.start") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "vacuum.control.stop") }
+      public enum FanSpeed {
+        /// Fan speed
+        public static var title: String { return L10n.tr("Localizable", "vacuum.control.fan_speed.title") }
+      }
+    }
+  }
+
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }

@@ -1925,6 +1925,13 @@ Importing replaces every category listed on this screen, including app settings.
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
 "url_label" = "URL";
+"vacuum.control.battery_%@" = "Battery: %@";
+"vacuum.control.fan_speed.title" = "Fan speed";
+"vacuum.control.locate" = "Locate";
+"vacuum.control.pause" = "Pause";
+"vacuum.control.return_to_base" = "Return to dock";
+"vacuum.control.start" = "Start";
+"vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Recording...";
 "watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";

@@ -194,7 +194,7 @@ final class CarPlayEntitiesListViewModel {
             completion()
         } else if let domain = Domain(rawValue: entity.domain), domain.hasControlScreen {
             // Domains without a single tap action (climate) push their own control screen.
-            templateProvider?.displayClimateControl(entity: entity, server: server)
+            templateProvider?.displayControlScreen(entity: entity, server: server)
             completion()
         } else {
             // For non-lock entities, use entity.onPress directly
