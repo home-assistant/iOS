@@ -1621,14 +1621,16 @@ public enum L10n {
   }
 
   public enum EntityPicker {
-    /// Add all
-    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
     }
     /// Pick entity
     public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
+    /// Remove all
+    public static var removeAll: String { return L10n.tr("Localizable", "entity_picker.remove_all") }
+    /// Select all
+    public static var selectAll: String { return L10n.tr("Localizable", "entity_picker.select_all") }
     public enum Filter {
       public enum Area {
         /// Area
