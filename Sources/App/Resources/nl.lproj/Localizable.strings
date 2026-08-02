@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Wis";
 "client_events.view.clear_confirm.message" = "Deze aanpassing kan niet ongedaan gemaakt worden";
 "client_events.view.clear_confirm.title" = "Weet je zeker dat je alle acties wilt wissen?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Sluiten";
 "component.collapsible_view.collapse" = "Inklappen";
 "component.collapsible_view.expand" = "Uitklappen";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Geen ruimte";
 "entity_picker.placeholder" = "Kies entiteit";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entiteitnaam, ID, ruimenaam, apparaatnaam...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Authenticatie met clientcertificaat vereist. \
  \
 Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannuleerd.";
@@ -933,6 +960,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "notifications_configurator.settings.footer" = "De id mag alleen letters en underscores bevatten. Het moet globaal uniek zijn voor de app.";
 "notifications_configurator.settings.footer.id_set" = "Identifier kan na het maken niet worden gewijzigd. U moet de actie verwijderen en opnieuw maken om de ID te wijzigen.";
 "notifications_configurator.settings.header" = "Instellingen";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "Deze server vereist een clientcertificaat (mTLS) voor authenticatie. Importeer uw certificaatbestand (.p12 of .pfx).";
 "onboarding.client_certificate.error.file_access" = "Kan het geselecteerde bestand niet openen";
@@ -2089,6 +2117,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ mislukte in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ mislukt in %2$@ (%3$@) — wordt nog steeds weergegeven %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li geslaagd, %2$li mislukt in %3$@";
@@ -2106,6 +2138,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
 "watch.home.loading.skip.title" = "Overslaan";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";
@@ -2288,6 +2322,13 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.labels.no_config_add" = "Met je iPhone in de buurt kun je ondersteunde apparaten toevoegen aan je Apple Watch via de onderstaande knop, of via de instellingen van de companion-app op je iPhone.";
 "watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Pijplijn";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Beschikbaar op deze Watch";

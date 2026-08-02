@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Очистить";
 "client_events.view.clear_confirm.message" = "Это не может быть отменено.";
 "client_events.view.clear_confirm.title" = "Вы уверены, что хотите удалить все события?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Закрыть";
 "component.collapsible_view.collapse" = "Свернуть";
 "component.collapsible_view.expand" = "Развернуть";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Серверы";
 "entity_picker.list.area.no_area.title" = "Нет зоны";
 "entity_picker.placeholder" = "Выбрать объект";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Имя объекта, ID, имя области, имя устройства...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Требуется аутентификация по сертификату клиента.\
 \
 Этому серверу требуется сертификат клиента (mTLS), но операция была отменена.";
@@ -933,6 +960,7 @@
 "notifications_configurator.settings.footer" = "Идентификатор должен содержать только буквы и знаки подчеркивания и быть заглавным. Он должен быть уникальным среди всего приложения.";
 "notifications_configurator.settings.footer.id_set" = "Идентификатор не может быть изменен после создания. Вы должны удалить и повторно выполнить действие, чтобы изменить идентификатор.";
 "notifications_configurator.settings.header" = "Настройки";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "ОК";
 "onboarding.client_certificate.description" = "Этот сервер требует сертификат клиента (mTLS) для аутентификации. Пожалуйста, импортируйте файл сертификата (.p12 или .pfx).";
 "onboarding.client_certificate.error.file_access" = "Не удалось получить доступ к выбранному файлу.";
@@ -2089,6 +2117,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Значок";
 "watch.configurator.sections.ring.footer" = "Кольцо, показывающее прогресс, окружающее текст.";
 "watch.configurator.sections.ring.header" = "Кольцо";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
@@ -2106,6 +2138,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Отменить и использовать кэш";
 "watch.home.loading.skip.title" = "Пропустить";
 "watch.home.run.confirmation.title" = "Вы уверены, что хотите запустить \"%@\"?";
@@ -2288,6 +2322,13 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
 "watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Заглушка";
 "watch.settings.auto" = "Авто";
 "watch.settings.client_certificate.available_on_watch" = "Available on this Watch";

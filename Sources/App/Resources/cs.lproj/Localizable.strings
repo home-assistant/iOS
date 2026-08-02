@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Vymazat";
 "client_events.view.clear_confirm.message" = "Toto nelze vrátit zpět.";
 "client_events.view.clear_confirm.title" = "Opravdu chcete vymazat všechny události?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Zavřít";
 "component.collapsible_view.collapse" = "Sbalit";
 "component.collapsible_view.expand" = "Rozbalit";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Servery";
 "entity_picker.list.area.no_area.title" = "Žádná oblast";
 "entity_picker.placeholder" = "Vyberte entitu";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Název entity, ID, název oblasti, název zařízení...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Je vyžadováno ověření klientského certifikátu.\
  \
 Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.";
@@ -933,6 +960,7 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "notifications_configurator.settings.footer" = "Identifikátor musí obsahovat jen velká písmena a podtržítka. Musí být jedinečné pro aplikaci.";
 "notifications_configurator.settings.footer.id_set" = "Identifikátor nelze po vytvoření změnit. Chcete-li změnit identifikátor, musíte akci smazat a znovu vytvořit.";
 "notifications_configurator.settings.header" = "Nastavení";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "Tento server vyžaduje pro ověření klientský certifikát (mTLS). Importujte soubor certifikátu (.p12 nebo .pfx).";
 "onboarding.client_certificate.error.file_access" = "Nelze získat přístup k vybranému souboru";
@@ -1090,8 +1118,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "reminders_sync.add.duplicate_warning" = "Tyto seznamy se již synchronizují.";
 "reminders_sync.add.lists_footer" = "První synchronizace propojí položky, které se v obou seznamech zobrazují pod stejným názvem. Vše ostatní se zkopíruje podle směru synchronizace. Dokončené položky se nekopírují.";
 "reminders_sync.add.lists_header" = "Seznamy k synchronizaci";
-"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
-"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
+"reminders_sync.add.no_todo_lists.message" = "Chcete-li synchronizovat s aplikací Připomínky, nejprve si v Home Assistantovi vytvořte seznam úkolů a poté se sem vraťte.";
+"reminders_sync.add.no_todo_lists.title" = "Žádné seznamy úkolů";
 "reminders_sync.add.reminders_list" = "Seznam Připomínek Apple";
 "reminders_sync.add.server" = "Server";
 "reminders_sync.add.title" = "Synchronizace nového seznamu";
@@ -2089,6 +2117,10 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ selhalo v %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ selhalo v %2$@ (%3$@) - stále zobrazuje %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li úspěšné, %2$li selhalo v %3$@";
@@ -2106,6 +2138,8 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.entity_details.last_updated" = "Aktualizováno";
 "watch.entity_details.loading" = "Načítání aktuálního stavu…";
 "watch.entity_details.stale" = "Nepodařilo se obnovit data ze serveru. Tato hodnota může být zastaralá.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
 "watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
@@ -2288,6 +2322,13 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.labels.no_config_add" = "S iPhonem poblíž můžete do Apple Watch přidat kompatibilní entity pomocí tlačítka níže nebo v nastavení doprovodné aplikace na iPhonu.";
 "watch.labels.no_config_add_plus" = "S iPhonem poblíž můžete do Apple Watch přidat kompatibilní entity pomocí tlačítka \"+\" nebo v nastavení doprovodné aplikace na iPhonu.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Dostupné na těchto hodinkách";

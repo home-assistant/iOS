@@ -75,7 +75,7 @@
 "component::demo::entity::sensor::thermostat_mode::state::away" = "בחוץ";
 "component::device_tracker::entity_component::_::state::home" = "בבית";
 "component::device_tracker::entity_component::_::state::not_home" = "בחוץ";
-"component::device_tracker::title" = "התקן מעקב";
+"component::device_tracker::title" = "מכשיר מעקב";
 "component::ecoforest::entity::sensor::status::state::off" = "כבוי";
 "component::ecoforest::entity::sensor::status::state::on" = "מופעל";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "בהמתנה";
@@ -114,10 +114,10 @@
 "component::image_processing::title" = "עיבוד תמונה";
 "component::improv_ble::config::abort::already_configured" = "תצורת ההתקן כבר נקבעה";
 "component::improv_ble::config::abort::cannot_connect" = "ההתחברות נכשלה";
-"component::improv_ble::config::abort::characteristic_missing" = "ההתקן כבר מחובר ל-Wi-Fi, או שאינו מסוגל יותר להתחבר ל-Wi-Fi. אם ברצונך לחבר אותו לרשת אחרת, כדאי לנסות לאפס אותו להגדרות היצרן.";
+"component::improv_ble::config::abort::characteristic_missing" = "המכשיר כבר מחובר ל-Wi-Fi, או שאינו מסוגל יותר להתחבר ל-Wi-Fi. אם ברצונך לחבר אותו לרשת אחרת, כדאי לנסות לאפס אותו להגדרות היצרן.";
 "component::improv_ble::config::abort::no_devices_found" = "לא נמצאו התקנים ברשת";
 "component::improv_ble::config::abort::provision_successful" = "ההתקן התחבר בהצלחה לרשת ה-Wi-Fi.";
-"component::improv_ble::config::abort::provision_successful_url" = "ההתקן התחבר בהצלחה לרשת ה-Wi-Fi.\
+"component::improv_ble::config::abort::provision_successful_url" = "המכשיר התחבר בהצלחה לרשת ה-Wi-Fi.\
 \
 יש לסיים את ההגדרה באמצעות ביצוע [הוראות ההתקנה]({url}).";
 "component::improv_ble::config::abort::unknown" = "שגיאה בלתי צפויה";
@@ -133,8 +133,8 @@
 "component::improv_ble::config::step::provision::data::password" = "סיסמה";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "הזנת אישורי Wi-Fi כדי לחבר את ההתקן לרשת.";
-"component::improv_ble::config::step::user::data::address" = "התקן";
-"component::improv_ble::config::step::user::description" = "בחירת התקן להגדרה";
+"component::improv_ble::config::step::user::data::address" = "מכשיר";
+"component::improv_ble::config::step::user::description" = "בחר מכשיר להגדרה";
 "component::input_boolean::entity_component::_::state::off" = "כבוי";
 "component::input_boolean::entity_component::_::state::on" = "מופעל";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "לא";
@@ -223,7 +223,7 @@
 "component::schedule::title" = "לוח זמנים";
 "component::script::entity_component::_::state::off" = "כבוי";
 "component::script::entity_component::_::state::on" = "מופעל";
-"component::script::title" = "תסריט";
+"component::script::title" = "סקריפט";
 "component::select::title" = "בחר";
 "component::sensibo::entity::climate::climate_device::state_attributes::swing_mode::state::stopped" = "כבוי";
 "component::sensibo::entity::select::horizontalswing::state::stopped" = "כבוי";

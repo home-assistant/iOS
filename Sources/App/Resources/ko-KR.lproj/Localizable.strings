@@ -366,6 +366,31 @@
 "client_events.view.clear" = "지우기";
 "client_events.view.clear_confirm.message" = "이 작업은 취소할 수 없습니다.";
 "client_events.view.clear_confirm.title" = "모든 이벤트를 지우시겠습니까?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "닫기";
 "component.collapsible_view.collapse" = "접기";
 "component.collapsible_view.expand" = "확장하기";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "서버";
 "entity_picker.list.area.no_area.title" = "영역 없음";
 "entity_picker.placeholder" = "엔티티 선택";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "엔티티 이름, ID, 영역 이름, 기기 이름...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "클라이언트 인증서 인증이 필요합니다.\
 \
 이 서버에는 클라이언트 인증서(mTLS)가 필요하지만 작업이 취소되었습니다.";
@@ -933,6 +960,7 @@
 "notifications_configurator.settings.footer" = "식별자는 문자와 밑줄만 포함해야 하며 대문자여야 합니다. 앱에 전역적으로 고유해야 합니다.";
 "notifications_configurator.settings.footer.id_set" = "식별자는 생성 후 변경할 수 없습니다. 식별자를 변경하려면 동작을 삭제하고 다시 만들어야 합니다.";
 "notifications_configurator.settings.header" = "설정";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "이 서버는 인증에 클라이언트 인증서(mTLS)가 필요합니다. 인증서 파일(.p12 또는 .pfx)을 가져오세요.";
 "onboarding.client_certificate.error.file_access" = "선택한 파일에 접근할 수 없습니다";
@@ -1090,8 +1118,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "reminders_sync.add.duplicate_warning" = "이 목록들은 이미 동기화 중입니다.";
 "reminders_sync.add.lists_footer" = "첫 동기화에서는 두 목록에 같은 제목으로 있는 항목을 연결합니다. 나머지는 동기화 방향에 따라 복사됩니다. 완료된 항목은 복사되지 않습니다.";
 "reminders_sync.add.lists_header" = "동기화할 목록";
-"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
-"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
+"reminders_sync.add.no_todo_lists.message" = "Apple 미리 알림과 동기화하려면 먼저 Home Assistant에서 할 일 목록을 만든 다음 여기로 돌아오세요.";
+"reminders_sync.add.no_todo_lists.title" = "할 일 목록 없음";
 "reminders_sync.add.reminders_list" = "Apple 미리 알림 목록";
 "reminders_sync.add.server" = "서버";
 "reminders_sync.add.title" = "새 목록 동기화";
@@ -2089,6 +2117,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.configurator.sections.icon.header" = "아이콘";
 "watch.configurator.sections.ring.footer" = "텍스트를 둘러싼 진행률을 보여 주는 링입니다.";
 "watch.configurator.sections.ring.header" = "링";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@이(가) %2$@ 안에 실패함: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@이(가) %2$@ 안에 실패함(%3$@) — 계속 %4$@ 표시 중";
 "watch.debug.complication_refresh.finished.summary" = "%1$li개 성공, %2$li개 실패, 소요 시간 %3$@";
@@ -2106,6 +2138,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.entity_details.last_updated" = "업데이트됨";
 "watch.entity_details.loading" = "현재 상태를 읽는 중…";
 "watch.entity_details.stale" = "서버에서 새로고침하지 못했습니다. 이 값은 오래되었을 수 있습니다.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "취소하고 캐시를 사용하세요";
 "watch.home.loading.skip.title" = "건너뛰기";
 "watch.home.run.confirmation.title" = "\"%@\" 실행하시겠습니까?";
@@ -2286,6 +2320,13 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.labels.no_config_add" = "iPhone을 가까이 두고 아래 버튼을 사용하여 호환되는 엔티티를 Apple Watch에 추가할 수 있습니다. 또는 iPhone의 동반 앱 설정에서 추가할 수 있습니다.";
 "watch.labels.no_config_add_plus" = "iPhone이 근처에 있으면 '+' 버튼을 사용하거나 iPhone의 동반 앱 설정에서 호환 엔티티를 Apple Watch에 추가할 수 있습니다.";
 "watch.labels.selected_pipeline.title" = "파이프라인";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "자리 표시자";
 "watch.settings.auto" = "자동";
 "watch.settings.client_certificate.available_on_watch" = "이 Watch에서 사용 가능";
