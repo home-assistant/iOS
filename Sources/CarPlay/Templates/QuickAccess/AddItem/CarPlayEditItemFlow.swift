@@ -80,10 +80,9 @@ final class CarPlayEditItemFlow {
             self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
         }
 
-        // Folders don't execute anything, so a run confirmation doesn't apply to them.
-        let actions: [CPAlertAction] = item.type == .folder
-            ? [deleteAction, cancelAction]
-            : [deleteAction, requireConfirmationAction, noConfirmationAction, cancelAction]
+        let actions: [CPAlertAction] = supportsRunConfirmation(item)
+            ? [deleteAction, requireConfirmationAction, noConfirmationAction, cancelAction]
+            : [deleteAction, cancelAction]
 
         let actionSheet = CPActionSheetTemplate(
             title: title,
@@ -91,6 +90,15 @@ final class CarPlayEditItemFlow {
             actions: actions
         )
         interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
+    }
+
+    /// Whether tapping this item runs an action that a confirmation prompt can guard. Folders
+    /// don't execute anything, and control-screen domains (climate) open their own screen instead
+    /// of executing, so the require-confirmation question doesn't apply to either.
+    private func supportsRunConfirmation(_ item: MagicItem) -> Bool {
+        if item.type == .folder { return false }
+        if item.type == .entity, item.domain?.hasControlScreen == true { return false }
+        return true
     }
 
     private func delete(item: MagicItem) {
