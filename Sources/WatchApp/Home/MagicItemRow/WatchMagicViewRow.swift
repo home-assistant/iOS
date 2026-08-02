@@ -18,7 +18,14 @@ struct WatchMagicViewRow: View {
         // The confirmation dialog and alerts hang off this per-row container (not a shared parent
         // list): which button triggers them depends on the row variant below.
         Group {
-            if layout == .list, let controlsDestination = viewModel.controlsDestination {
+            if let rowDestination = viewModel.wholeRowNavigationDestination {
+                // Locks: the whole row (icon included) opens the lock screen, in both layouts.
+                Button {
+                    navigate(rowDestination)
+                } label: {
+                    label
+                }
+            } else if layout == .list, let controlsDestination = viewModel.controlsDestination {
                 // Two sibling tap targets — the icon toggles, the body opens the controls
                 // screen. Not wrapped in a row `Button`: SwiftUI doesn't support nested buttons.
                 splitControlsLabel(destination: controlsDestination)
@@ -123,7 +130,15 @@ struct WatchMagicViewRow: View {
                 name: viewModel.item.name(info: viewModel.itemInfo),
                 subtitle: subtitleToDisplay,
                 textColor: textColor,
-                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
+                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
+                accessory: {
+                    // Rows that navigate as a whole (locks) show the same chevron as folders.
+                    if viewModel.wholeRowNavigationDestination != nil {
+                        Image(systemSymbol: .chevronRight)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
             )
         }
     }

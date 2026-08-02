@@ -24,10 +24,14 @@ struct WatchCoverControlsView: View {
             if viewModel.isStale {
                 staleWarning
             }
-            if viewModel.capabilities?.supportsSetPosition == true {
-                positionSection
+            // No controls until the first snapshot — capabilities are unknown, so the sections
+            // would render empty next to the loading header.
+            if viewModel.entity != nil {
+                if viewModel.capabilities?.supportsSetPosition == true {
+                    positionSection
+                }
+                buttonsSection
             }
-            buttonsSection
         }
         .navigationTitle(Text(verbatim: viewModel.name))
         .onAppear {

@@ -100,7 +100,8 @@ final class WatchFanControlsViewModel: ObservableObject {
         isOn = percentage > 0
         holdOffPolling()
         speedDebounce?.cancel()
-        speedDebounce = debouncedSend(service: .setPercentage, data: ["percentage": Int(percentage)])
+        // Rounded, not truncated: a 24.999 from slider float math should send 25.
+        speedDebounce = debouncedSend(service: .setPercentage, data: ["percentage": Int(percentage.rounded())])
     }
 
     // MARK: - Private

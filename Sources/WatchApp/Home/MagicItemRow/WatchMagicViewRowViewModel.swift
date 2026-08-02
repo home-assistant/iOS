@@ -79,6 +79,15 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
+    /// The screen the entire row (icon included) opens. Locks never toggle from the home screen —
+    /// they're security-sensitive, so every tap lands on the lock screen where the action is an
+    /// explicit button press. Unlike `controlsDestination` this doesn't wait for the polled state:
+    /// the lock screen itself handles an unknown state by disabling its buttons.
+    var wholeRowNavigationDestination: WatchHomeNavigation? {
+        guard item.type == .entity, item.domain == .lock else { return nil }
+        return .lockControls(item)
+    }
+
     /// The controls screen this row's body pushes, once the polled state proves the entity can do
     /// more than toggle (dim a light, position a cover, set a fan's speed…). Nil until the first
     /// snapshot arrives — or for entities without adjustable capabilities — so a tap just toggles.

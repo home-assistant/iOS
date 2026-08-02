@@ -14,4 +14,6 @@ enum WatchHomeNavigation: Hashable {
     case coverControls(MagicItem)
     /// The controls screen (power/speed) of a capable fan.
     case fanControls(MagicItem)
+    /// The lock screen (lock/unlock/open). Every lock gets one — locks never toggle directly.
+    case lockControls(MagicItem)
 }

@@ -2300,6 +2300,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.light_controls.color" = "Color";
 "watch.light_controls.power" = "Power";
 "watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Available on this Watch";

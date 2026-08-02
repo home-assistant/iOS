@@ -117,7 +117,7 @@ final class WatchLightControlsViewModel: ObservableObject {
         isOn = percentage > 0
         holdOffPolling()
         brightnessDebounce?.cancel()
-        brightnessDebounce = debouncedSend(data: ["brightness_pct": Int(percentage)])
+        brightnessDebounce = debouncedSend(data: ["brightness_pct": Int(percentage.rounded())])
     }
 
     /// Discrete swatch taps need no debounce. `light.turn_on` with a color also turns the light
@@ -142,7 +142,7 @@ final class WatchLightControlsViewModel: ObservableObject {
         isOn = true
         holdOffPolling()
         colorTempDebounce?.cancel()
-        colorTempDebounce = debouncedSend(data: ["color_temp_kelvin": Int(kelvin)])
+        colorTempDebounce = debouncedSend(data: ["color_temp_kelvin": Int(kelvin.rounded())])
     }
 
     // MARK: - Private

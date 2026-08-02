@@ -13,7 +13,8 @@ public struct FanCapabilities: Equatable {
     }
 
     public let supportsSpeedPercentage: Bool
-    /// Current speed as 0–100; nil when off or not reported.
+    /// Current speed as 0–100; nil when the attribute isn't reported (fans typically drop it
+    /// while off).
     public let speedPercentage: Double?
     /// The fan's speed granularity — e.g. 25 for a fan with four speeds. Defaults to 1.
     public let percentageStep: Double

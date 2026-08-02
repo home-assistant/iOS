@@ -108,7 +108,8 @@ final class WatchCoverControlsViewModel: ObservableObject {
         position = value
         holdOffPolling()
         positionDebounce?.cancel()
-        positionDebounce = debouncedSend(service: .setCoverPosition, data: ["position": Int(value)])
+        // Rounded, not truncated: a 59.999 from slider float math should send 60.
+        positionDebounce = debouncedSend(service: .setCoverPosition, data: ["position": Int(value.rounded())])
     }
 
     // MARK: - Private

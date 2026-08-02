@@ -7504,6 +7504,14 @@ public enum L10n {
       /// Temperature
       public static var temperature: String { return L10n.tr("Localizable", "watch.light_controls.temperature") }
     }
+    public enum LockControls {
+      /// Lock
+      public static var lock: String { return L10n.tr("Localizable", "watch.lock_controls.lock") }
+      /// Open
+      public static var open: String { return L10n.tr("Localizable", "watch.lock_controls.open") }
+      /// Unlock
+      public static var unlock: String { return L10n.tr("Localizable", "watch.lock_controls.unlock") }
+    }
     public enum Settings {
       /// Auto
       public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
