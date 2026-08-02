@@ -180,6 +180,8 @@ final class WatchConfigurationViewModel: ObservableObject {
                 }
                 try watchConfig.insert(db, onConflict: .replace)
             }
+            // Newly added home entities need their registry rows (display precision) on the watch.
+            WatchMirrorPushCoordinator.schedule(reason: .watchConfigChanged)
             return true
         } catch {
             Current.Log.error("Failed to save new Watch config, error: \(error.localizedDescription)")

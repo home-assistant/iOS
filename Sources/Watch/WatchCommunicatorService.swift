@@ -522,6 +522,8 @@ final class WatchCommunicatorService {
                 try config.insert(db, onConflict: .replace)
             }
             notifyWatchConfig(message: message, watchConfig: config)
+            // Entities added from the watch need their registry rows (display precision) mirrored back.
+            WatchMirrorPushCoordinator.schedule(reason: .watchConfigChanged)
         } catch {
             Current.Log.error("Failed to persist watch config sent from watch, error: \(error.localizedDescription)")
             watchConfig(message: message)

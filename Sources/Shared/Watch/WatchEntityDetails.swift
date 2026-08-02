@@ -43,11 +43,14 @@ public struct WatchEntityDetails: Equatable {
         "supported_features",
     ]
 
-    public init(entity: HAEntity) {
+    /// - Parameter serverId: forwarded to the state formatter so numeric states honor the entity's
+    ///   display precision when the registry row is mirrored locally.
+    public init(entity: HAEntity, serverId: String? = nil) {
         let domain = Domain(rawValue: entity.domain)
         self.entityId = entity.entityId
         self.name = entity.attributes.friendlyName ?? entity.entityId
-        self.state = domain?.contextualStateDescription(for: entity) ?? entity.state.leadingCapitalized
+        self.state = domain?.contextualStateDescription(for: entity, serverId: serverId)
+            ?? entity.state.leadingCapitalized
         // Read from the raw attribute rather than the `DeviceClass` enum, so a device class this app
         // doesn't know about is still shown instead of dropped (the key itself is hidden below).
         self.deviceClass = (entity.attributes.dictionary["device_class"] as? String)

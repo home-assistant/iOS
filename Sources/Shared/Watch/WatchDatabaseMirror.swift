@@ -37,9 +37,11 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// existing complications off the watch.
     public var complications: [WatchComplication]?
     public var complicationConfigs: [WatchComplicationConfig]?
-    /// Registry rows for the entities used by complications, so the watch can format values with the
-    /// right display precision without carrying the whole registry.
-    public var complicationEntities: [EntityRegistryListForDisplay.Entity]
+    /// Registry rows for the entities the watch renders — complication entities plus the home-screen
+    /// (magic item) entities — so the watch can format values with the right display precision
+    /// without carrying the whole registry. Encoded under the pre-rename `complicationEntities` key
+    /// so payloads stay compatible across builds.
+    public var registryEntities: [EntityRegistryListForDisplay.Entity]
     /// The phone's servers (`ServerManager.restorableState()` encoding), so every sync — the chunked
     /// pull and the proactive background push — also refreshes the watch's servers *in addition to*
     /// the on-demand `serversConfigSync` interactive exchange (which additionally carries the mTLS
@@ -53,7 +55,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         pipelines: [AssistPipelines]?,
         complications: [WatchComplication]? = nil,
         complicationConfigs: [WatchComplicationConfig]? = nil,
-        complicationEntities: [EntityRegistryListForDisplay.Entity] = [],
+        registryEntities: [EntityRegistryListForDisplay.Entity] = [],
         servers: Data? = nil
     ) {
         self.entities = entities
@@ -61,12 +63,13 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.pipelines = pipelines
         self.complications = complications
         self.complicationConfigs = complicationConfigs
-        self.complicationEntities = complicationEntities
+        self.registryEntities = registryEntities
         self.servers = servers
     }
 
     private enum CodingKeys: String, CodingKey {
-        case entities, areas, pipelines, complications, complicationConfigs, complicationEntities, servers
+        case entities, areas, pipelines, complications, complicationConfigs, servers
+        case registryEntities = "complicationEntities"
     }
 
     // Decode the complication fields defensively: they were added after the mirror shipped, so a payload
@@ -88,9 +91,9 @@ public struct WatchDatabaseMirror: WatchCodable {
             [WatchComplicationConfig].self,
             forKey: .complicationConfigs
         )).flatMap { $0 }
-        self.complicationEntities = (try? container.decodeIfPresent(
+        self.registryEntities = (try? container.decodeIfPresent(
             [EntityRegistryListForDisplay.Entity].self,
-            forKey: .complicationEntities
+            forKey: .registryEntities
         )).flatMap { $0 } ?? []
         self.servers = (try? container.decodeIfPresent(Data.self, forKey: .servers)).flatMap { $0 }
     }
@@ -101,23 +104,47 @@ public struct WatchDatabaseMirror: WatchCodable {
         Set(Domain.watchAddable.map(\.rawValue))
     }
 
+    /// All `.entity` items the watch home screen renders, including those nested inside folders.
+    private static func entityItems(in items: [MagicItem]) -> [MagicItem] {
+        items.flatMap { item -> [MagicItem] in
+            switch item.type {
+            case .entity:
+                return [item]
+            case .folder:
+                return entityItems(in: item.items ?? [])
+            default:
+                return []
+            }
+        }
+    }
+
     /// Read the current reference tables from the local GRDB (called on the phone).
     public static func snapshot() throws -> WatchDatabaseMirror {
         // A read failure sends `nil` (not `[]`) so the watch retains its rows rather than being told the
         // phone has none — only a successful read is authoritative.
         let complications = try? WatchComplication.all()
         let configs = try? WatchComplicationConfig.all()
-        // Precision lives in the entity registry; fetch just the entries the complications need.
-        let entitiesByServer = Dictionary(grouping: (configs ?? []).compactMap { config -> (String, String)? in
-            config.entityId.map { (config.serverId, $0) }
-        }, by: { $0.0 })
+        // Precision lives in the entity registry; fetch just the entries the watch renders — the
+        // complication entities plus the home-screen (magic item) entities.
+        var entityIdsByServer: [String: Set<String>] = [:]
+        for config in configs ?? [] {
+            if let entityId = config.entityId {
+                entityIdsByServer[config.serverId, default: []].insert(entityId)
+            }
+        }
+        for item in entityItems(in: (try? WatchConfig.config())?.items ?? []) {
+            entityIdsByServer[item.serverId, default: []].insert(item.id)
+        }
         var registry: [EntityRegistryListForDisplay.Entity] = []
-        for (serverId, pairs) in entitiesByServer {
+        for (serverId, entityIds) in entityIdsByServer {
             registry += (try? EntityRegistryListForDisplay.Entity.entries(
                 serverId: serverId,
-                entityIds: pairs.map(\.1)
+                entityIds: Array(entityIds)
             )) ?? []
         }
+        // Deterministic order keeps the encoded payload — and therefore the delta-sync digests —
+        // stable across snapshots of unchanged data.
+        registry.sort { ($0.serverId, $0.entityId) < ($1.serverId, $1.entityId) }
         // Resolved outside the GRDB read: servers live in their own store, not the database.
         let servers = Current.servers.restorableState()
 
@@ -133,15 +160,15 @@ public struct WatchDatabaseMirror: WatchCodable {
                 pipelines: pipelines,
                 complications: complications,
                 complicationConfigs: configs,
-                complicationEntities: registry,
+                registryEntities: registry,
                 servers: servers
             )
         }
     }
 
     /// Overwrite the local GRDB reference tables with this snapshot (called on the watch). The watch
-    /// only ever holds mirrored rows in these tables, so a full replace is correct. Complication
-    /// registry rows are upserted (not wiped) so they don't disturb other registry data.
+    /// only ever holds mirrored rows in these tables, so a full replace is correct. Registry rows
+    /// are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
             try applyReferenceTables(in: db)
@@ -191,7 +218,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
         // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
         // Replace on conflict to upsert just these rows without wiping the rest of the registry.
-        for entity in complicationEntities {
+        for entity in registryEntities {
             try entity.insert(db, onConflict: .replace)
         }
     }
@@ -218,7 +245,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         if let complications, let complicationConfigs,
            let complicationsData = try? encoder.encode(complications),
            let configsData = try? encoder.encode(complicationConfigs),
-           let entitiesData = try? encoder.encode(complicationEntities) {
+           let entitiesData = try? encoder.encode(registryEntities) {
             digests["complications"] = Self.digest(of: [complicationsData, configsData, entitiesData])
         }
         if let servers {
@@ -252,7 +279,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         if matches("complications") {
             copy.complications = nil
             copy.complicationConfigs = nil
-            copy.complicationEntities = []
+            copy.registryEntities = []
         }
         if matches("servers") { copy.servers = nil }
         return copy
