@@ -9,7 +9,7 @@ import HAKit
 /// **area** ids, so this app only needs the mapping's keys: the set of areas the vacuum can clean.
 ///
 /// Decoded from `config/entity_registry/get`, which is WebSocket-only — see
-/// `HATypedRequest.entityRegistryEntry(entityId:)`.
+/// `HATypedRequest.vacuumAreaMapping(entityId:)`.
 public struct VacuumAreaMapping: HADataDecodable, Equatable {
     /// Home Assistant area ids the vacuum has segments mapped to. Empty when the vacuum supports
     /// cleaning by area but nothing has been mapped yet, which the UI surfaces as an empty state.

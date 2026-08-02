@@ -34,6 +34,19 @@ struct VacuumCapabilitiesTests {
         #expect(VacuumCapabilities.Feature.cleanArea.rawValue == 16384)
     }
 
+    @Test func parsesFeaturesDeliveredAsNSNumber() {
+        // Both transports hand the attributes over as JSONSerialization output, where numbers are
+        // NSNumber. `as? Int` bridges those, and this pins that down: were it to stop holding, every
+        // capability would silently read as unsupported.
+        let capabilities = VacuumCapabilities(attributes: [
+            "supported_features": NSNumber(value: 25212),
+        ])
+
+        #expect(capabilities.supportsStart)
+        #expect(capabilities.supportsCleanArea)
+        #expect(capabilities.batteryLevel == nil, "no battery_level attribute was reported")
+    }
+
     @Test func bareVacuumSupportsNothing() {
         let capabilities = VacuumCapabilities(attributes: [:])
 
