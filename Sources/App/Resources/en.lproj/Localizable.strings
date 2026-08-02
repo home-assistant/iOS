@@ -435,7 +435,6 @@
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";
 "download_manager.finished.title" = "Download finished";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "All areas";
 "entity_picker.filter.area.title" = "Area";
@@ -447,7 +446,9 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Pick entity";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
 \
 This server requires a client certificate (mTLS) but the operation was cancelled.";
