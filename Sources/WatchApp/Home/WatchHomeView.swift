@@ -61,6 +61,12 @@ struct WatchHomeView: View {
                         WatchFolderContentView(folderId: folderId, viewModel: viewModel)
                     case let .lightControls(item):
                         WatchLightControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .coverControls(item):
+                        WatchCoverControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .fanControls(item):
+                        WatchFanControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .lockControls(item):
+                        WatchLockControlsView(item: item, itemInfo: viewModel.info(for: item))
                     case let .climateControls(item):
                         WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
                     }

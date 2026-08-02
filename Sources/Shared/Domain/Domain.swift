@@ -129,7 +129,10 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
-    public func contextualStateDescription(for entity: HAEntity) -> String {
+    /// - Parameter serverId: when provided, numeric states are formatted with the entity's display
+    ///   precision from the local registry (same as widgets); non-numeric states and entities
+    ///   without a registry row pass through unchanged.
+    public func contextualStateDescription(for entity: HAEntity, serverId: String? = nil) -> String {
         // Climate reports its HVAC mode as state and its temperatures as attributes; combine them
         // the way the frontend does ("Heat · 21.5°").
         if self == .climate {
@@ -137,14 +140,24 @@ public enum Domain: String, CaseIterable {
         }
 
         let baseState = entity.localizedState.leadingCapitalized
+        // The registry lookup is only worth its synchronous database read on the paths that render
+        // the state value itself — enum states (on/off, locked, …) never need it.
+        func adjustedBaseState() -> String {
+            guard let serverId else { return baseState }
+            return StatePrecision.adjustPrecision(
+                serverId: serverId,
+                entityId: entity.entityId,
+                stateValue: baseState
+            )
+        }
 
         // Add unit of measurement if available
         if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
-            return "\(baseState) \(unitOfMeasurement)"
+            return "\(adjustedBaseState()) \(unitOfMeasurement)"
         }
 
         guard let state = Domain.State(rawValue: entity.state) else {
-            return baseState
+            return adjustedBaseState()
         }
 
         return stateForDeviceClass(entity.deviceClass, state: state)

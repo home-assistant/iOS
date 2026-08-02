@@ -25,7 +25,7 @@ final class WatchEntityDetailsViewModel: ObservableObject {
         self.item = item
         self.itemInfo = itemInfo
         self.poller = WatchEntityStatePoller(entityId: item.id, serverId: item.serverId)
-        self.details = initialEntity.map(WatchEntityDetails.init(entity:))
+        self.details = initialEntity.map { WatchEntityDetails(entity: $0, serverId: item.serverId) }
     }
 
     /// The name the user configured for the item, falling back to the entity's own name.
@@ -48,7 +48,7 @@ final class WatchEntityDetailsViewModel: ObservableObject {
         poller.start { [weak self] snapshot in
             guard let self else { return }
             if let entity = snapshot.entity {
-                details = WatchEntityDetails(entity: entity)
+                details = WatchEntityDetails(entity: entity, serverId: item.serverId)
             }
             isStale = snapshot.isStale
         }

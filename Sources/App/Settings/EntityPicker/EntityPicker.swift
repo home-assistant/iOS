@@ -160,8 +160,13 @@ struct EntityPicker: View {
             Text(group.title.uppercased())
             if allowMultipleSelection {
                 Spacer()
-                Button(L10n.EntityPicker.addAll) {
-                    addAll(in: group)
+                let allSelected = allEntitiesSelected(in: group)
+                Button(allSelected ? L10n.EntityPicker.removeAll : L10n.EntityPicker.selectAll) {
+                    if allSelected {
+                        removeAll(in: group)
+                    } else {
+                        selectAll(in: group)
+                    }
                 }
                 .textCase(nil)
                 .font(DesignSystem.Font.footnote)
@@ -201,11 +206,21 @@ struct EntityPicker: View {
         }
     }
 
-    private func addAll(in group: EntityPickerGroup) {
+    private func allEntitiesSelected(in group: EntityPickerGroup) -> Bool {
+        let selectedIds = Set(selectedEntities.map(\.id))
+        return !group.entities.isEmpty && group.entities.allSatisfy { selectedIds.contains($0.id) }
+    }
+
+    private func selectAll(in group: EntityPickerGroup) {
         var existingIds = Set(selectedEntities.map(\.id))
         for entity in group.entities where existingIds.insert(entity.id).inserted {
             selectedEntities.append(entity)
         }
+    }
+
+    private func removeAll(in group: EntityPickerGroup) {
+        let groupIds = Set(group.entities.map(\.id))
+        selectedEntities.removeAll { groupIds.contains($0.id) }
     }
 
     private func confirmMultipleSelection() {

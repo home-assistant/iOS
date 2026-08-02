@@ -79,19 +79,37 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    /// True once the polled state proves this light can do more than toggle (dim or tune its
-    /// color temperature). False until the first snapshot arrives, so a tap before then — or on a
-    /// plain on/off light — just toggles.
-    var hasLightControls: Bool {
-        guard item.type == .entity, item.domain == .light, let liveEntity else { return false }
-        return LightCapabilities(entity: liveEntity).hasAdjustableControls
+    /// The screen the entire row (icon included) opens. Locks never toggle from the home screen —
+    /// they're security-sensitive, so every tap lands on the lock screen where the action is an
+    /// explicit button press. Climate has no single tap action at all, so its rows navigate the
+    /// same way. Unlike `controlsDestination` this doesn't wait for the polled state: the pushed
+    /// screens handle an unknown state themselves.
+    var wholeRowNavigationDestination: WatchHomeNavigation? {
+        guard item.type == .entity, let domain = item.domain else { return nil }
+        if domain == .lock {
+            return .lockControls(item)
+        }
+        if domain.hasControlScreen {
+            return .climateControls(item)
+        }
+        return nil
     }
 
-    /// True when tapping this row pushes a dedicated control screen (climate) instead of running
-    /// an action — climate has no single tap action, so the whole row navigates, mirroring how a
-    /// capable light's row body pushes its controls.
-    var opensControlScreen: Bool {
-        item.type == .entity && item.domain?.hasControlScreen == true
+    /// The controls screen this row's body pushes, once the polled state proves the entity can do
+    /// more than toggle (dim a light, position a cover, set a fan's speed…). Nil until the first
+    /// snapshot arrives — or for entities without adjustable capabilities — so a tap just toggles.
+    var controlsDestination: WatchHomeNavigation? {
+        guard item.type == .entity, let liveEntity, let domain = item.domain else { return nil }
+        switch domain {
+        case .light:
+            return LightCapabilities(entity: liveEntity).hasAdjustableControls ? .lightControls(item) : nil
+        case .cover:
+            return CoverCapabilities(entity: liveEntity).hasAdjustableControls ? .coverControls(item) : nil
+        case .fan:
+            return FanCapabilities(entity: liveEntity).hasAdjustableControls ? .fanControls(item) : nil
+        default:
+            return nil
+        }
     }
 
     // MARK: - Entity state
@@ -106,7 +124,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     var stateText: String? {
         guard let liveEntity, let domain = item.domain else { return nil }
-        return domain.contextualStateDescription(for: liveEntity)
+        return domain.contextualStateDescription(for: liveEntity, serverId: item.serverId)
     }
 
     /// Mirrors CarPlay: dynamic domains render the live state-driven icon and color unless the

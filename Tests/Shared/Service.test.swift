@@ -62,6 +62,18 @@ struct ServiceTests {
             Service(rawValue: "close_cover") == .closeCover,
             "Service(rawValue: 'close_cover') should initialize to .closeCover"
         )
+        #expect(
+            Service(rawValue: "stop_cover") == .stopCover,
+            "Service(rawValue: 'stop_cover') should initialize to .stopCover"
+        )
+        #expect(
+            Service(rawValue: "set_cover_position") == .setCoverPosition,
+            "Service(rawValue: 'set_cover_position') should initialize to .setCoverPosition"
+        )
+        #expect(
+            Service(rawValue: "set_percentage") == .setPercentage,
+            "Service(rawValue: 'set_percentage') should initialize to .setPercentage"
+        )
         #expect(Service(rawValue: "trigger") == .trigger, "Service(rawValue: 'trigger') should initialize to .trigger")
 
         // Test invalid raw value
@@ -69,8 +81,8 @@ struct ServiceTests {
 
         // Test case count
         #expect(
-            Service.allCases.count == 17,
-            "Service enum should have 17 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
+            Service.allCases.count == 20,
+            "Service enum should have 20 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
         )
     }
 }

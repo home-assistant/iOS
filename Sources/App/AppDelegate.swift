@@ -488,6 +488,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func migrateIfNeeded() {
         resetLocalPush()
         resetShakeGesture()
+        migrateRestoreLastURL()
+    }
+
+    /// Remember Last Page becomes opt-in (disabled by default); installs that already
+    /// have a server configured keep the previous enabled-by-default behavior.
+    private func migrateRestoreLastURL() {
+        Current.settingsStore.migrateRestoreLastURLToOptInIfNeeded(
+            hasExistingServers: !Current.servers.all.isEmpty
+        )
     }
 
     /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.

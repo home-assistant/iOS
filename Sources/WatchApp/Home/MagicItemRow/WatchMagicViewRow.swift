@@ -18,19 +18,21 @@ struct WatchMagicViewRow: View {
         // The confirmation dialog and alerts hang off this per-row container (not a shared parent
         // list): which button triggers them depends on the row variant below.
         Group {
-            if layout == .list, viewModel.hasLightControls {
+            if let rowDestination = viewModel.wholeRowNavigationDestination {
+                // Locks and climate: the whole row (icon included) opens their screen, in both
+                // layouts.
+                Button {
+                    navigate(rowDestination)
+                } label: {
+                    label
+                }
+            } else if layout == .list, let controlsDestination = viewModel.controlsDestination {
                 // Two sibling tap targets — the icon toggles, the body opens the controls
                 // screen. Not wrapped in a row `Button`: SwiftUI doesn't support nested buttons.
-                splitLightLabel
+                splitControlsLabel(destination: controlsDestination)
             } else {
                 Button {
-                    if viewModel.opensControlScreen {
-                        // Climate has no single tap action: the whole row pushes its control
-                        // screen (temperature, mode, fan…) instead of running anything.
-                        navigate(.climateControls(viewModel.item))
-                    } else {
-                        viewModel.executeItem()
-                    }
+                    viewModel.executeItem()
                 } label: {
                     label
                 }
@@ -124,33 +126,30 @@ struct WatchMagicViewRow: View {
         if layout == .grid {
             gridIcon
                 .animation(.bouncy, value: viewModel.state)
-        } else if viewModel.opensControlScreen {
+        } else {
             WatchHomeItemLabel(
                 name: viewModel.item.name(info: viewModel.itemInfo),
                 subtitle: subtitleToDisplay,
                 textColor: textColor,
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
                 accessory: {
-                    // Same chevron as folder rows: tapping navigates to the control screen.
-                    Image(systemSymbol: .chevronRight)
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                    // Rows that navigate as a whole (locks, climate) show the same chevron as
+                    // folders.
+                    if viewModel.wholeRowNavigationDestination != nil {
+                        Image(systemSymbol: .chevronRight)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
-            )
-        } else {
-            WatchHomeItemLabel(
-                name: viewModel.item.name(info: viewModel.itemInfo),
-                subtitle: subtitleToDisplay,
-                textColor: textColor,
-                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
             )
         }
     }
 
-    /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
-    /// the row body pushes the controls screen — the chevron promises a push, so it must not be
-    /// presented modally. The pushed screen resolves in `WatchHomeView`'s destination registration.
-    private var splitLightLabel: some View {
+    /// A capable entity (light, cover, fan) splits the row in two sibling tap targets: the icon
+    /// keeps toggling while the row body pushes its controls screen — the chevron promises a
+    /// push, so it must not be presented modally. The pushed screen resolves in `WatchHomeView`'s
+    /// destination registration.
+    private func splitControlsLabel(destination: WatchHomeNavigation) -> some View {
         WatchHomeItemLabel(
             name: viewModel.item.name(info: viewModel.itemInfo),
             subtitle: subtitleToDisplay,
@@ -163,7 +162,7 @@ struct WatchMagicViewRow: View {
                     .foregroundStyle(.secondary)
             },
             onIconTap: { viewModel.executeItem() },
-            onBodyTap: { navigate(.lightControls(viewModel.item)) }
+            onBodyTap: { navigate(destination) }
         )
     }
 

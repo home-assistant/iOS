@@ -460,7 +460,6 @@
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";
 "download_manager.finished.title" = "Download finished";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "All areas";
 "entity_picker.filter.area.title" = "Area";
@@ -472,7 +471,9 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Pick entity";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
 \
 This server requires a client certificate (mTLS) but the operation was cancelled.";
@@ -2115,6 +2116,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
@@ -2132,6 +2137,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
@@ -2318,6 +2325,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.light_controls.color" = "Color";
 "watch.light_controls.power" = "Power";
 "watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Available on this Watch";

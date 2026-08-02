@@ -1702,14 +1702,16 @@ public enum L10n {
   }
 
   public enum EntityPicker {
-    /// Add all
-    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
     }
     /// Pick entity
     public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
+    /// Remove all
+    public static var removeAll: String { return L10n.tr("Localizable", "entity_picker.remove_all") }
+    /// Select all
+    public static var selectAll: String { return L10n.tr("Localizable", "entity_picker.select_all") }
     public enum Filter {
       public enum Area {
         /// Area
@@ -6925,6 +6927,16 @@ public enum L10n {
         }
       }
     }
+    public enum CoverControls {
+      /// Close
+      public static var close: String { return L10n.tr("Localizable", "watch.cover_controls.close") }
+      /// Open
+      public static var open: String { return L10n.tr("Localizable", "watch.cover_controls.open") }
+      /// Position
+      public static var position: String { return L10n.tr("Localizable", "watch.cover_controls.position") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "watch.cover_controls.stop") }
+    }
     public enum Debug {
       public enum ComplicationRefresh {
         public enum Finished {
@@ -6988,6 +7000,12 @@ public enum L10n {
       public static var loading: String { return L10n.tr("Localizable", "watch.entity_details.loading") }
       /// Couldn't refresh from the server. This value may be out of date.
       public static var stale: String { return L10n.tr("Localizable", "watch.entity_details.stale") }
+    }
+    public enum FanControls {
+      /// Power
+      public static var power: String { return L10n.tr("Localizable", "watch.fan_controls.power") }
+      /// Speed
+      public static var speed: String { return L10n.tr("Localizable", "watch.fan_controls.speed") }
     }
     public enum Home {
       public enum CancelAndUseCache {
@@ -7566,6 +7584,14 @@ public enum L10n {
       public static var power: String { return L10n.tr("Localizable", "watch.light_controls.power") }
       /// Temperature
       public static var temperature: String { return L10n.tr("Localizable", "watch.light_controls.temperature") }
+    }
+    public enum LockControls {
+      /// Lock
+      public static var lock: String { return L10n.tr("Localizable", "watch.lock_controls.lock") }
+      /// Open
+      public static var open: String { return L10n.tr("Localizable", "watch.lock_controls.open") }
+      /// Unlock
+      public static var unlock: String { return L10n.tr("Localizable", "watch.lock_controls.unlock") }
     }
     public enum Settings {
       /// Auto
