@@ -129,7 +129,7 @@ final class WatchLightControlsViewModel: ObservableObject {
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        UIColor(hex: hex).getRed(&red, &green, &blue, &alpha)
+        UIColor(hex: hex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         send(service: .turnOn, data: [
             "rgb_color": [Int(red * 255), Int(green * 255), Int(blue * 255)],
         ])
