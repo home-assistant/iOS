@@ -210,16 +210,41 @@ public class SettingsStore {
         }
     }
 
+    /// Reopens the last page visited in the frontend when the app launches.
+    /// Disabled by default (opt-in); toggled in Settings > Server Switching.
+    /// Installs that predate the opt-in default keep the old behavior via
+    /// `migrateRestoreLastURLToOptInIfNeeded`. Catalyst hides the toggle (macOS
+    /// owns state restoration there), so it keeps the enabled default.
     public var restoreLastURL: Bool {
         get {
             if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {
                 return value.boolValue
             } else {
-                return true
+                return Current.isCatalyst
             }
         }
         set {
             prefs.set(newValue, forKey: "restoreLastURL")
+        }
+    }
+
+    /// Remember Last Page used to be enabled by default; existing installs keep that
+    /// behavior by persisting the old default once, unless the user had explicitly
+    /// turned it off. Fresh installs get the new disabled default.
+    public func migrateRestoreLastURLToOptInIfNeeded(hasExistingServers: Bool) {
+        guard !migratedRestoreLastURLOptIn else { return }
+        if hasExistingServers, prefs.object(forKey: "restoreLastURL") == nil {
+            restoreLastURL = true
+        }
+        migratedRestoreLastURLOptIn = true
+    }
+
+    private var migratedRestoreLastURLOptIn: Bool {
+        get {
+            prefs.bool(forKey: "migratedRestoreLastURLOptIn")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedRestoreLastURLOptIn")
         }
     }
 
