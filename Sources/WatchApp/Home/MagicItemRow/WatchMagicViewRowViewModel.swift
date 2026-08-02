@@ -79,12 +79,21 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    /// True once the polled state proves this light can do more than toggle (dim or tune its
-    /// color temperature). False until the first snapshot arrives, so a tap before then — or on a
-    /// plain on/off light — just toggles.
-    var hasLightControls: Bool {
-        guard item.type == .entity, item.domain == .light, let liveEntity else { return false }
-        return LightCapabilities(entity: liveEntity).hasAdjustableControls
+    /// The controls screen this row's body pushes, once the polled state proves the entity can do
+    /// more than toggle (dim a light, position a cover, set a fan's speed…). Nil until the first
+    /// snapshot arrives — or for entities without adjustable capabilities — so a tap just toggles.
+    var controlsDestination: WatchHomeNavigation? {
+        guard item.type == .entity, let liveEntity, let domain = item.domain else { return nil }
+        switch domain {
+        case .light:
+            return LightCapabilities(entity: liveEntity).hasAdjustableControls ? .lightControls(item) : nil
+        case .cover:
+            return CoverCapabilities(entity: liveEntity).hasAdjustableControls ? .coverControls(item) : nil
+        case .fan:
+            return FanCapabilities(entity: liveEntity).hasAdjustableControls ? .fanControls(item) : nil
+        default:
+            return nil
+        }
     }
 
     // MARK: - Entity state

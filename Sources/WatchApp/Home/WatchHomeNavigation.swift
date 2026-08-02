@@ -8,6 +8,10 @@ import Shared
 enum WatchHomeNavigation: Hashable {
     /// A folder's contents.
     case folder(String)
-    /// The controls screen (power/brightness/temperature) of a capable light.
+    /// The controls screen (power/brightness/color/temperature) of a capable light.
     case lightControls(MagicItem)
+    /// The controls screen (position/open/stop/close) of a capable cover.
+    case coverControls(MagicItem)
+    /// The controls screen (power/speed) of a capable fan.
+    case fanControls(MagicItem)
 }
