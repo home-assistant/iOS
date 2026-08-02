@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Törlés";
 "client_events.view.clear_confirm.message" = "Ezt nem lehet visszavonni.";
 "client_events.view.clear_confirm.title" = "Biztos, hogy az összes eseményt törölni szeretné?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Bezárás";
 "component.collapsible_view.collapse" = "Összecsuk";
 "component.collapsible_view.expand" = "Kibővít";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Szerverek";
 "entity_picker.list.area.no_area.title" = "Nincs terület";
 "entity_picker.placeholder" = "Válasszon entitást";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entitás neve, azonosító, terület neve, eszköz neve...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Kliens tanúsítvány hitelesítés szükséges.\
 \
 Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.";
@@ -933,6 +960,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "notifications_configurator.settings.footer" = "Az azonosító csak betűket és aláhúzásjelet tartalmazhat és nagybetűs lehet. Globálisan egyedinek kell lennie az alkalmazásban.";
 "notifications_configurator.settings.footer.id_set" = "Az azonosító a létrehozás után nem módosítható. Az azonosító megváltoztatásához törölni és újra létrehozni kell a műveletet.";
 "notifications_configurator.settings.header" = "Beállítások";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "Ez a szerver kliens tanúsítványt (mTLS) igényel a hitelesítéshez. Kérjük, importálja a tanúsítványfájlt (.p12 vagy .pfx).";
 "onboarding.client_certificate.error.file_access" = "A kiválasztott fájl nem érhető el";
@@ -2088,6 +2116,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "A szöveget körülvevő, a haladást mutató gyűrű.";
 "watch.configurator.sections.ring.header" = "Gyűrű";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
@@ -2105,6 +2137,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Mégse és gyorsítótár használata";
 "watch.home.loading.skip.title" = "Kihagyás";
 "watch.home.run.confirmation.title" = "Biztosan futtatni szeretné: \"%@\"?";
@@ -2287,6 +2321,13 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
 "watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Csatorna";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Helykitöltő";
 "watch.settings.auto" = "Automatikus";
 "watch.settings.client_certificate.available_on_watch" = "Elérhető ezen az órán";

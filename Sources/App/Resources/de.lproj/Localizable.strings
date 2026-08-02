@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Löschen";
 "client_events.view.clear_confirm.message" = "Dies kann nicht rückgängig gemacht werden.";
 "client_events.view.clear_confirm.title" = "Bist du sicher, dass du alle Ereignisse löschen willst?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Schließen";
 "component.collapsible_view.collapse" = "Reduzieren";
 "component.collapsible_view.expand" = "Erweitern";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Server";
 "entity_picker.list.area.no_area.title" = "Kein Bereich";
 "entity_picker.placeholder" = "Entität auswählen";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entitätsname, ID, Bereichsname, Gerätename …";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Clientzertifikat-Authentifizierung erforderlich.\
 \
 Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abgebrochen.";
@@ -933,6 +960,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notifications_configurator.settings.footer" = "Die ID darf nur Buchstaben und Unterstriche enthalten und muss in Großbuchstaben geschrieben sein. Sie muss global eindeutig für die App sein.";
 "notifications_configurator.settings.footer.id_set" = "Die ID kann nach der Erstellung nicht mehr geändert werden. Du musst die Aktion zum Ändern der ID löschen und neu erstellen.";
 "notifications_configurator.settings.header" = "Einstellungen";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "Dieser Server benötigt ein Clientzertifikat (mTLS) zur Authentifizierung. Bitte importiere deine Zertifikatsdatei (.p12 oder .pfx).";
 "onboarding.client_certificate.error.file_access" = "Auf die ausgewählte Datei kann nicht zugegriffen werden";
@@ -1090,8 +1118,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "reminders_sync.add.duplicate_warning" = "Diese Listen werden bereits synchronisiert.";
 "reminders_sync.add.lists_footer" = "Bei der ersten Synchronisierung werden Einträge verknüpft, die in beiden Listen unter demselben Titel erscheinen. Alles andere wird entsprechend der Synchronisierungsrichtung kopiert. Erledigte Einträge werden nicht kopiert.";
 "reminders_sync.add.lists_header" = "Zu synchronisierende Listen";
-"reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
-"reminders_sync.add.no_todo_lists.title" = "No to-do lists";
+"reminders_sync.add.no_todo_lists.message" = "Um die Synchronisation mit Apple Erinnerungen zu nutzen, erstelle zunächst eine To-do-Liste in Home Assistant und kehre dann hierher zurück.";
+"reminders_sync.add.no_todo_lists.title" = "Keine To-do-Listen";
 "reminders_sync.add.reminders_list" = "Liste von Apple Erinnerungen";
 "reminders_sync.add.server" = "Server";
 "reminders_sync.add.title" = "Neue Listensynchronisation";
@@ -2090,6 +2118,10 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ in %2$@ fehlgeschlagen: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ in %2$@ (%3$@) fehlgeschlagen – zeigt weiterhin %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li erfolgreich, %2$li in %3$@ fehlgeschlagen";
@@ -2107,6 +2139,8 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.entity_details.last_updated" = "Aktualisiert";
 "watch.entity_details.loading" = "Aktueller Zustand wird gelesen …";
 "watch.entity_details.stale" = "Aktualisierung vom Server war nicht möglich. Dieser Wert ist möglicherweise veraltet.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
 "watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
@@ -2289,6 +2323,13 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.labels.no_config_add" = "Wenn sich dein iPhone in der Nähe befindet, kannst du kompatible Entitäten über den Knopf unten oder über die Einstellungen der Companion-App auf dem iPhone zu deiner Apple Watch hinzufügen.";
 "watch.labels.no_config_add_plus" = "Wenn sich dein iPhone in der Nähe befindet, kannst du kompatible Entitäten mittels des „+“-Knopfs oder über die Einstellungen deiner Companion-App auf dem iPhone zu deiner Apple Watch hinzufügen.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Platzhalter";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Auf dieser Watch verfügbar";

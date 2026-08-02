@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Kustuta";
 "client_events.view.clear_confirm.message" = "Seda ei saa tagasi võtta.";
 "client_events.view.clear_confirm.title" = "Kas soovid kindlasti kõik sündmused kustutada?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Sulge";
 "component.collapsible_view.collapse" = "Ahenda";
 "component.collapsible_view.expand" = "Laienda";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Serverid";
 "entity_picker.list.area.no_area.title" = "Ala puudub";
 "entity_picker.placeholder" = "Vali olem";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Üksuse nimi, ID, ala nimi, seadme nimi...";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Kliendi sertifikaadi autentimine on nõutav. \
  \
  See server nõuab kliendi sertifikaati (mTLS),kuid toiming tühistati.";
@@ -933,6 +960,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "notifications_configurator.settings.footer" = "Identifikaator peab sisaldama ainult tähti ja allkriipse ning olema suurtähtedega. See peab olema rakenduse jaoks globaalselt unikaalne.";
 "notifications_configurator.settings.footer.id_set" = "Identifikaatorit ei saa pärast loomist muuta. Identifikaatori muutmiseks pead toimingu kustutama ja uuesti looma.";
 "notifications_configurator.settings.header" = "Seaded";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "Sobib";
 "onboarding.client_certificate.description" = "See server nõuab autentimiseks kliendisertifikaati (mTLS). Impordi oma sertifikaadifail (.p12 või .pfx).";
 "onboarding.client_certificate.error.file_access" = "Valitud failile pole juurdepääsu";
@@ -2089,6 +2117,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Ikoon";
 "watch.configurator.sections.ring.footer" = "Rõngas mis näitab teksti ümber edenemist.";
 "watch.configurator.sections.ring.header" = "Sõõr";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
@@ -2106,6 +2138,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Tühista ja kasuta vahemälu";
 "watch.home.loading.skip.title" = "Jäta vahele";
 "watch.home.run.confirmation.title" = "Kas oled kindel, et soovid käivitada \"%@\"?";
@@ -2288,6 +2322,13 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.labels.no_config_add" = "Kui iPhone on lähedal, saad lisada Apple Watchile ühilduvaid objekte alloleva nupu abil või iPhone’i kaasrakenduse seadete kaudu.";
 "watch.labels.no_config_add_plus" = "Kui iPhone on lähedal, saad ühilduvaid objekte oma Apple Watchile lisada kas nupu „+“ abil või iPhone’i kaasrakenduse seadetest.";
 "watch.labels.selected_pipeline.title" = "Voog";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Kohatäide";
 "watch.settings.auto" = "Automaatne";
 "watch.settings.client_certificate.available_on_watch" = "Saadaval sellel kellal";

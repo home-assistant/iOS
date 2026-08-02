@@ -366,6 +366,31 @@
 "client_events.view.clear" = "Nettoyer";
 "client_events.view.clear_confirm.message" = "Cette action est irréversible.";
 "client_events.view.clear_confirm.title" = "Voulez-vous vraiment effacer tous les événements ?";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "Fermer";
 "component.collapsible_view.collapse" = "Réduire";
 "component.collapsible_view.expand" = "Développer";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "Serveurs";
 "entity_picker.list.area.no_area.title" = "Aucune pièce";
 "entity_picker.placeholder" = "Choisir une entité";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Nom d'entité, ID, nom de pièce, nom d'appareil…";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "Authentification par certificat client requise.\
 \
 Ce serveur requiert un certificat client (mTLS), mais l'opération a été annulée.";
@@ -933,6 +960,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "notifications_configurator.settings.footer" = "L'identifiant doit contenir uniquement des lettres capitales et des tirets du bas. Il doit être unique à l'application.";
 "notifications_configurator.settings.footer.id_set" = "L'identifiant ne peut pas être changé après la création. Vous devez supprimer et recréer l'action pour changer l'identifiant.";
 "notifications_configurator.settings.header" = "Réglages";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "OK";
 "onboarding.client_certificate.description" = "Ce serveur requiert un certificat client (mTLS) pour l'authentification. Veuillez importer votre fichier de certificat (.p12 ou .pfx).";
 "onboarding.client_certificate.error.file_access" = "Impossible d'accéder au fichier sélectionné";
@@ -2089,6 +2117,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "Icône";
 "watch.configurator.sections.ring.footer" = "L'anneau montrant les progrès entourant le texte.";
 "watch.configurator.sections.ring.header" = "Anneau";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ a échoué en %2$@ : %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ a échoué en %2$@ (%3$@) — affiche toujours %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li réussies, %2$li échouées en %3$@";
@@ -2106,6 +2138,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "Annuler et utiliser le cache";
 "watch.home.loading.skip.title" = "Ignorer";
 "watch.home.run.confirmation.title" = "Êtes-vous sûr de vouloir exécuter « %@ » ?";
@@ -2288,6 +2322,13 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.labels.no_config_add" = "Avec votre iPhone à proximité, vous pouvez ajouter des entités compatibles à votre Apple Watch à l'aide du bouton ci-dessous, ou depuis les réglages de l'app compagnon sur iPhone.";
 "watch.labels.no_config_add_plus" = "Avec votre iPhone à proximité, vous pouvez ajouter des entités compatibles à votre Apple Watch à l'aide du bouton « + », ou depuis les réglages de l'app compagnon sur iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Espace réservé";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Disponible sur cette montre";

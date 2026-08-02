@@ -366,6 +366,31 @@
 "client_events.view.clear" = "清除";
 "client_events.view.clear_confirm.message" = "操作无法撤消。";
 "client_events.view.clear_confirm.title" = "您确定要清除所有事件吗 ？";
+"climate.control.current_value_%@" = "Current: %@";
+"climate.control.decrease" = "Decrease";
+"climate.control.fan_mode.title" = "Fan mode";
+"climate.control.humidity.decrease" = "Decrease humidity";
+"climate.control.humidity.increase" = "Increase humidity";
+"climate.control.humidity.title" = "Humidity";
+"climate.control.increase" = "Increase";
+"climate.control.mode.title" = "Mode";
+"climate.control.modes.title" = "Modes";
+"climate.control.preset_mode.title" = "Preset";
+"climate.control.swing_horizontal_mode.title" = "Horizontal swing";
+"climate.control.swing_mode.title" = "Swing mode";
+"climate.control.target_value_%@" = "Target: %@";
+"climate.control.temperature.decrease" = "Decrease temperature";
+"climate.control.temperature.increase" = "Increase temperature";
+"climate.control.temperature.title" = "Temperature";
+"climate.control.temperature_high.title" = "Cool to";
+"climate.control.temperature_low.title" = "Heat to";
+"climate.hvac_mode.auto" = "Auto";
+"climate.hvac_mode.cool" = "Cool";
+"climate.hvac_mode.dry" = "Dry";
+"climate.hvac_mode.fan_only" = "Fan only";
+"climate.hvac_mode.heat" = "Heat";
+"climate.hvac_mode.heat_cool" = "Heat/Cool";
+"climate.hvac_mode.off" = "Off";
 "close_label" = "关闭";
 "component.collapsible_view.collapse" = "收缩";
 "component.collapsible_view.expand" = "展开";
@@ -447,7 +472,9 @@
 "entity_picker.filter.server.title" = "服务器";
 "entity_picker.list.area.no_area.title" = "无区域";
 "entity_picker.placeholder" = "选取实体";
+"entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "实体名称、标识符、区域名称、设备名称…";
+"entity_picker.select_all" = "Select all";
 "error.client_certificate.flow_cancelled" = "需要客户端证书验证。 \
 \
 该服务器需要客户端证书 (mTLS) ，但操作被取消。";
@@ -933,6 +960,7 @@
 "notifications_configurator.settings.footer" = "标识符仅包含字母和下划线，且必须唯一。";
 "notifications_configurator.settings.footer.id_set" = "创建后不能更改标识符。如需更改，您必须删除并重新创建动作。";
 "notifications_configurator.settings.header" = "设置";
+"ohf_branding.caption" = "A PROJECT FROM THE";
 "ok_label" = "确定";
 "onboarding.client_certificate.description" = "此服务器需要客户端证书（mTLS）进行身份验证。请导入您的证书文件（.p12 或 .pfx）。";
 "onboarding.client_certificate.error.file_access" = "无法访问所选文件";
@@ -2088,6 +2116,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configurator.sections.icon.header" = "图标";
 "watch.configurator.sections.ring.footer" = "显示围绕文本的进度环。";
 "watch.configurator.sections.ring.header" = "环";
+"watch.cover_controls.close" = "Close";
+"watch.cover_controls.open" = "Open";
+"watch.cover_controls.position" = "Position";
+"watch.cover_controls.stop" = "Stop";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ failed in %2$@: %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ failed in %2$@ (%3$@) — still showing %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li succeeded, %2$li failed in %3$@";
@@ -2105,6 +2137,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.entity_details.last_updated" = "Updated";
 "watch.entity_details.loading" = "Reading current state…";
 "watch.entity_details.stale" = "Couldn't refresh from the server. This value may be out of date.";
+"watch.fan_controls.power" = "Power";
+"watch.fan_controls.speed" = "Speed";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
 "watch.home.loading.skip.title" = "跳过";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
@@ -2287,6 +2321,13 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.labels.no_config_add" = "将 iPhone 放在身边，即可使用下面的按钮或从 iPhone 上的配套应用程序设置中，将兼容实体添加到 Apple Watch。";
 "watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "管道";
+"watch.light_controls.brightness" = "Brightness";
+"watch.light_controls.color" = "Color";
+"watch.light_controls.power" = "Power";
+"watch.light_controls.temperature" = "Temperature";
+"watch.lock_controls.lock" = "Lock";
+"watch.lock_controls.open" = "Open";
+"watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "占位符";
 "watch.settings.auto" = "自动";
 "watch.settings.client_certificate.available_on_watch" = "在此款手表可用";

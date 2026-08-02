@@ -308,7 +308,7 @@ Conclua a configuração seguindo as [instruções de configuração]({url}).";
 "component::vacuum::entity_component::_::state::paused" = "Pausado";
 "component::vacuum::title" = "Aspirador";
 "component::valve::entity_component::_::state::closed" = "Fechado";
-"component::valve::entity_component::_::state::open" = "Aberta";
+"component::valve::entity_component::_::state::open" = "Aberto";
 "component::valve::title" = "Válvula";
 "component::water_heater::entity_component::_::state::off" = "Desligado";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::off" = "Desligado";

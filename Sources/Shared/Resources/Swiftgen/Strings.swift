@@ -1702,6 +1702,8 @@ public enum L10n {
   }
 
   public enum EntityPicker {
+    /// Add all
+    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
@@ -6931,7 +6933,7 @@ public enum L10n {
       /// Close
       public static var close: String { return L10n.tr("Localizable", "watch.cover_controls.close") }
       /// Open
-      public static var open: String { return L10n.tr("Localizable", "watch.cover_controls.open") }
+      public static var `open`: String { return L10n.tr("Localizable", "watch.cover_controls.open") }
       /// Position
       public static var position: String { return L10n.tr("Localizable", "watch.cover_controls.position") }
       /// Stop
@@ -7589,7 +7591,7 @@ public enum L10n {
       /// Lock
       public static var lock: String { return L10n.tr("Localizable", "watch.lock_controls.lock") }
       /// Open
-      public static var open: String { return L10n.tr("Localizable", "watch.lock_controls.open") }
+      public static var `open`: String { return L10n.tr("Localizable", "watch.lock_controls.open") }
       /// Unlock
       public static var unlock: String { return L10n.tr("Localizable", "watch.lock_controls.unlock") }
     }
