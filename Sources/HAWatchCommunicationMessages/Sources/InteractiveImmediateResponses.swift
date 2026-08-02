@@ -34,4 +34,8 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case serversConfigSyncResponse
     /// Phone → watch: acknowledgement that the client-certificate import screen will be presented.
     case clientCertImportRequestResponse
+    /// Phone → watch: reply to `vacuumCleanableAreas`, carrying `{areas}` — the id and name of each
+    /// area the vacuum has segments mapped to, already resolved against the phone's area registry.
+    /// An empty list means the vacuum supports cleaning by area but nothing has been mapped yet.
+    case vacuumCleanableAreasResponse
 }

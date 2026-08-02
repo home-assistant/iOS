@@ -15,11 +15,30 @@ final class WatchVacuumControlsViewModel: ObservableObject {
     /// True when the state couldn't be refreshed recently — the screen shows a warning instead of
     /// presenting the values as current.
     @Published private(set) var isStale = false
+    /// Areas the vacuum can be told to clean, relayed by the phone (see `loadCleanableAreas`).
+    @Published private(set) var cleanableAreas: [VacuumAreaMapping.Area] = []
+    /// True while the phone is answering, so the picker can say so rather than looking empty.
+    @Published private(set) var isLoadingAreas = false
+    /// Area ids picked for the next `clean_area` call, in tap order — the service takes an ordered
+    /// list, and the frontend surfaces the same numbering.
+    @Published private(set) var selectedAreaIds: [String] = []
+    /// Whether the iPhone is close enough to answer right now. Cleaning by area needs it: the
+    /// areas come from the entity registry, which Home Assistant serves over WebSocket only — a
+    /// transport the watch doesn't have. Without the phone the option is hidden rather than shown
+    /// broken.
+    @Published private(set) var isPhoneReachable = false
 
     let item: MagicItem
     let itemInfo: MagicItem.Info
 
     private let poller: WatchEntityStatePoller
+    private var reachabilityObservation: HAWatchConnectivity.ObservationToken?
+
+    deinit {
+        if let reachabilityObservation {
+            Communicator.shared.reachability.unobserve(reachabilityObservation)
+        }
+    }
 
     /// The view model is built inside `StateObject`'s autoclosure by its screen, so creation
     /// (and its poller) is deferred until the screen is actually pushed.
@@ -67,10 +86,74 @@ final class WatchVacuumControlsViewModel: ObservableObject {
             }
             isStale = snapshot.isStale
         }
+        observeReachability()
     }
 
     func stopStateUpdates() {
         poller.stop()
+    }
+
+    /// Track the phone's reachability while the screen is open, so the clean-by-area option
+    /// appears and disappears with it instead of being decided once on appear.
+    private func observeReachability() {
+        isPhoneReachable = Communicator.shared.currentReachability == .immediatelyReachable
+        guard reachabilityObservation == nil else { return }
+        reachabilityObservation = Communicator.shared.reachability.observe { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.isPhoneReachable = Communicator.shared.currentReachability == .immediatelyReachable
+            }
+        }
+    }
+
+    // MARK: - Clean areas
+
+    /// Ask the phone which areas this vacuum can clean. The watch can't read the entity registry
+    /// itself, so the phone makes the WebSocket call and replies with resolved `{id, name}` pairs.
+    func loadCleanableAreas() {
+        guard Communicator.shared.currentReachability == .immediatelyReachable else {
+            Current.Log.info("[Watch] Skipping vacuum area fetch, iPhone not immediately reachable")
+            isPhoneReachable = false
+            return
+        }
+        isLoadingAreas = true
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.vacuumCleanableAreas.rawValue,
+            content: ["entityId": item.id, "serverId": item.serverId],
+            reply: { [weak self] message in
+                let wireAreas = message.content["areas"] as? [[String: String]] ?? []
+                DispatchQueue.main.async {
+                    self?.cleanableAreas = wireAreas.compactMap(VacuumAreaMapping.Area.init(wireFormat:))
+                    self?.isLoadingAreas = false
+                }
+            }
+        ), errorHandler: { [weak self] error in
+            Current.Log.error("[Watch] Failed to request vacuum areas: \(error)")
+            DispatchQueue.main.async {
+                self?.isLoadingAreas = false
+            }
+        })
+    }
+
+    /// Adds or removes an area from the pending selection, preserving tap order.
+    func toggleAreaSelection(_ areaId: String) {
+        if let index = selectedAreaIds.firstIndex(of: areaId) {
+            selectedAreaIds.remove(at: index)
+        } else {
+            selectedAreaIds.append(areaId)
+        }
+    }
+
+    /// 1-based position of an area in the pending selection, or nil when it isn't selected.
+    func selectionOrder(of areaId: String) -> Int? {
+        selectedAreaIds.firstIndex(of: areaId).map { $0 + 1 }
+    }
+
+    /// The service call itself goes out over REST like every other watch command — only the area
+    /// list needed the phone.
+    func startCleaningSelectedAreas() {
+        guard !selectedAreaIds.isEmpty else { return }
+        send(service: .cleanArea, data: ["cleaning_area_id": selectedAreaIds])
+        selectedAreaIds = []
     }
 
     // MARK: - Commands

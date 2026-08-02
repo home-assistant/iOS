@@ -27,6 +27,30 @@ public struct VacuumAreaMapping: HADataDecodable, Equatable {
         self.init(attributes: entry)
     }
 
+    /// An area a vacuum can be told to clean, resolved to something displayable.
+    ///
+    /// Crosses the WatchConnectivity wire as a plain dictionary: the watch can't read the entity
+    /// registry itself (it has no WebSocket), so the phone resolves the mapping's ids against its
+    /// area registry and relays these — see `InteractiveImmediateMessages.vacuumCleanableAreas`.
+    public struct Area: Equatable {
+        public let id: String
+        public let name: String
+
+        public init(id: String, name: String) {
+            self.id = id
+            self.name = name
+        }
+
+        public init?(wireFormat: [String: String]) {
+            guard let id = wireFormat["id"], let name = wireFormat["name"] else { return nil }
+            self.init(id: id, name: name)
+        }
+
+        public var wireFormat: [String: String] {
+            ["id": id, "name": name]
+        }
+    }
+
     /// Split from the `HAData` decode so the option digging can be unit tested without HAKit.
     public init(attributes: [String: Any]) {
         let options = attributes["options"] as? [String: Any]

@@ -6393,6 +6393,8 @@ public enum L10n {
       public enum CleanAreas {
         /// No areas mapped. Map your vacuum's segments to areas in Home Assistant to clean by area.
         public static var empty: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.empty") }
+        /// Your iPhone is out of reach, so the areas can't be loaded.
+        public static var needsPhone: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.needs_phone") }
         /// Clean areas
         public static var title: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.title") }
         /// Cleaning order: %@

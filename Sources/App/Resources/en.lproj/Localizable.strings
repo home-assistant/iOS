@@ -1927,6 +1927,7 @@ Importing replaces every category listed on this screen, including app settings.
 "url_label" = "URL";
 "vacuum.control.battery_%@" = "Battery: %@";
 "vacuum.control.clean_areas.empty" = "No areas mapped. Map your vacuum's segments to areas in Home Assistant to clean by area.";
+"vacuum.control.clean_areas.needs_phone" = "Your iPhone is out of reach, so the areas can't be loaded.";
 "vacuum.control.clean_areas.order_%@" = "Cleaning order: %@";
 "vacuum.control.clean_areas.start_%@" = "Start cleaning (%@)";
 "vacuum.control.clean_areas.title" = "Clean areas";

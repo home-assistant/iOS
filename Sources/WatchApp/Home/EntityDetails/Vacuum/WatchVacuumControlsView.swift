@@ -28,6 +28,11 @@ struct WatchVacuumControlsView: View {
             // would render empty next to the loading header.
             if viewModel.entity != nil {
                 buttonsSection
+                // Cleaning by area needs the phone to read the entity registry for us, so the
+                // option only appears while it's reachable.
+                if viewModel.capabilities?.supportsCleanArea == true, viewModel.isPhoneReachable {
+                    cleanAreasSection
+                }
                 if viewModel.capabilities?.supportsFanSpeed == true {
                     fanSpeedSection
                 }
@@ -117,6 +122,20 @@ struct WatchVacuumControlsView: View {
                 }
             }
             .listRowBackground(Color.clear)
+        }
+    }
+
+    private var cleanAreasSection: some View {
+        Section {
+            NavigationLink {
+                WatchVacuumCleanAreasView(viewModel: viewModel)
+            } label: {
+                Label {
+                    Text(verbatim: L10n.Vacuum.Control.CleanAreas.title)
+                } icon: {
+                    Image(systemSymbol: .squareGrid2x2)
+                }
+            }
         }
     }
 

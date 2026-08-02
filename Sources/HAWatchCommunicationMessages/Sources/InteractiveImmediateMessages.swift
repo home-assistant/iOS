@@ -38,4 +38,10 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     /// user can supply a `.p12` + password for the given server. The phone can't foreground itself,
     /// so the screen appears the next time the user opens the iPhone app.
     case clientCertImportRequest
+    /// Watch → phone: ask which Home Assistant areas a vacuum can be told to clean, `{entityId,
+    /// serverId}`. The mapping lives in the entity registry, which Home Assistant only serves over
+    /// WebSocket — a transport the watch doesn't have — so the phone fetches it and replies with
+    /// `vacuumCleanableAreasResponse`. Only sent while the phone is immediately reachable; the
+    /// watch hides the option otherwise.
+    case vacuumCleanableAreas
 }
