@@ -129,8 +129,18 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
-    public func contextualStateDescription(for entity: HAEntity) -> String {
-        let baseState = entity.localizedState.leadingCapitalized
+    /// - Parameter serverId: when provided, numeric states are formatted with the entity's display
+    ///   precision from the local registry (same as widgets); non-numeric states and entities
+    ///   without a registry row pass through unchanged.
+    public func contextualStateDescription(for entity: HAEntity, serverId: String? = nil) -> String {
+        var baseState = entity.localizedState.leadingCapitalized
+        if let serverId {
+            baseState = StatePrecision.adjustPrecision(
+                serverId: serverId,
+                entityId: entity.entityId,
+                stateValue: baseState
+            )
+        }
 
         // Add unit of measurement if available
         if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {

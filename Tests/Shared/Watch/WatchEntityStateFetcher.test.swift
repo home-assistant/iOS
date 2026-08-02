@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 @testable import Shared
 import Testing
 
@@ -50,6 +51,35 @@ struct WatchEntityStateFetcherTests {
         ))
 
         #expect(Domain.cover.contextualStateDescription(for: entity) == "57 %")
+    }
+
+    @Test func parsedStateHonorsDisplayPrecisionWhenServerIdProvided() throws {
+        let database = try DatabaseQueue(path: ":memory:")
+        for table in DatabaseQueue.tables() {
+            try table.createIfNeeded(database: database)
+        }
+        let previousDatabase = Current.database
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        try database.write { db in
+            try EntityRegistryListForDisplay.Entity(
+                serverId: "server-1",
+                entityId: "sensor.power",
+                decimalPlaces: 0
+            ).insert(db)
+        }
+
+        let entity = try WatchEntityStateFetcher.entity(from: responseData(
+            entityId: "sensor.power",
+            state: "57.85",
+            attributes: #"{"unit_of_measurement": "W"}"#
+        ))
+
+        #expect(Domain.sensor.contextualStateDescription(for: entity, serverId: "server-1") == "58 W")
+        // Without a server id (or a registry row) the raw state passes through.
+        #expect(Domain.sensor.contextualStateDescription(for: entity) == "57.85 W")
+        #expect(Domain.sensor.contextualStateDescription(for: entity, serverId: "other-server") == "57.85 W")
     }
 
     @Test func invalidPayloadThrows() {

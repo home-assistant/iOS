@@ -91,7 +91,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     var stateText: String? {
         guard let liveEntity, let domain = item.domain else { return nil }
-        return domain.contextualStateDescription(for: liveEntity)
+        return domain.contextualStateDescription(for: liveEntity, serverId: item.serverId)
     }
 
     /// Mirrors CarPlay: dynamic domains render the live state-driven icon and color unless the

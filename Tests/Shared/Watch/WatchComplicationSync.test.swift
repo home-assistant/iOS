@@ -23,11 +23,12 @@ struct WatchComplicationSyncTests {
     @Test("Mirror push reasons expose stable raw values and descriptions")
     func reasons() {
         #expect(Set(WatchMirrorPushCoordinator.Reason.allCases.map(\.rawValue)) == [
-            "databaseUpdated", "complicationChanged", "serversChanged",
+            "databaseUpdated", "complicationChanged", "serversChanged", "watchConfigChanged",
         ])
         #expect(WatchMirrorPushCoordinator.Reason.databaseUpdated.logDescription == "database updated")
         #expect(WatchMirrorPushCoordinator.Reason.complicationChanged.logDescription == "complication changed")
         #expect(WatchMirrorPushCoordinator.Reason.serversChanged.logDescription == "servers changed")
+        #expect(WatchMirrorPushCoordinator.Reason.watchConfigChanged.logDescription == "watch config changed")
     }
     #endif
 
@@ -98,5 +99,23 @@ struct WatchComplicationSyncTests {
         let authDecoded = try WatchDatabaseMirror.decodeForWatchThrowing(authoritative.encodeForWatch())
         #expect(authDecoded.complications == [])
         #expect(authDecoded.complicationConfigs == [])
+    }
+
+    @Test("Registry entities round-trip under the legacy complicationEntities wire key")
+    func registryEntitiesWireKey() throws {
+        let mirror = WatchDatabaseMirror(
+            entities: [],
+            areas: [],
+            pipelines: [],
+            registryEntities: [.init(serverId: "s1", entityId: "sensor.power", decimalPlaces: 1)]
+        )
+        let encoded = try mirror.encodeForWatch()
+
+        let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(encoded)
+        #expect(decoded.registryEntities.map(\.entityId) == ["sensor.power"])
+        #expect(decoded.registryEntities.first?.decimalPlaces == 1)
+
+        let plist = try PropertyListSerialization.propertyList(from: encoded, format: nil) as? [String: Any]
+        #expect(plist?["complicationEntities"] != nil)
     }
 }

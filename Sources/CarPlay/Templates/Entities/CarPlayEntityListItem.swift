@@ -193,7 +193,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     /// Returns a context-aware state description based on entity domain and device class
     private func getContextualStateDescription() -> String {
         if let domain = Domain(entityId: entity.entityId) {
-            return domain.contextualStateDescription(for: entity)
+            return domain.contextualStateDescription(for: entity, serverId: serverId)
         }
 
         let baseState = entity.localizedState.leadingCapitalized
