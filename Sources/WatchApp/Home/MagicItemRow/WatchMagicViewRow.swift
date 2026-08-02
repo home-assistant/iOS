@@ -4,6 +4,7 @@ import SwiftUI
 
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
+    @Environment(\.watchNavigate) private var navigate
     private let subtitle: String?
     private let layout: WatchLayout
 
@@ -129,7 +130,7 @@ struct WatchMagicViewRow: View {
 
     /// A capable light splits the row in two sibling tap targets: the icon keeps toggling while
     /// the row body pushes the controls screen — the chevron promises a push, so it must not be
-    /// presented modally. The push value resolves in `WatchHomeView`'s destination registration.
+    /// presented modally. The pushed screen resolves in `WatchHomeView`'s destination registration.
     private var splitLightLabel: some View {
         WatchHomeItemLabel(
             name: viewModel.item.name(info: viewModel.itemInfo),
@@ -143,7 +144,7 @@ struct WatchMagicViewRow: View {
                     .foregroundStyle(.secondary)
             },
             onIconTap: { viewModel.executeItem() },
-            bodyNavigationValue: .lightControls(viewModel.item)
+            onBodyTap: { navigate(.lightControls(viewModel.item)) }
         )
     }
 

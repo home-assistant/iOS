@@ -10,9 +10,8 @@ import SwiftUI
 struct WatchLightControlsView: View {
     @StateObject private var viewModel: WatchLightControlsViewModel
 
-    /// The view model is built inside `StateObject`'s autoclosure so a `NavigationLink` can hold
-    /// this view without instantiating a poller per row render — creation is deferred until the
-    /// screen is actually pushed.
+    /// The view model is built inside `StateObject`'s autoclosure, so creation (and its poller)
+    /// is deferred until the screen is actually pushed.
     init(item: MagicItem, itemInfo: MagicItem.Info, initialEntity: HAEntity? = nil) {
         self._viewModel = .init(
             wrappedValue: WatchLightControlsViewModel(item: item, itemInfo: itemInfo, initialEntity: initialEntity)

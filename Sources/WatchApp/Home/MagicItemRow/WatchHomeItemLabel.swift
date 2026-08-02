@@ -5,11 +5,11 @@ import SwiftUI
 /// subtitle, and an optional trailing accessory (e.g. a chevron for folders). Keeps `WatchMagicViewRow`
 /// and `WatchFolderRow` visually identical.
 ///
-/// The split variant (`onIconTap` + `bodyNavigationValue`) renders the icon as its own plain
-/// button and the rest of the row as a `NavigationLink(value:)` resolved by the home stack's
-/// `navigationDestination(for: WatchHomeNavigation.self)` registration — two sibling tap targets,
-/// since SwiftUI doesn't support nesting a button inside another. A split row must not
-/// additionally be wrapped in its own `Button`, and needs the home `NavigationStack` above it.
+/// The split variant (`onIconTap` + `onBodyTap`) renders the icon and the rest of the row as two
+/// sibling plain buttons — SwiftUI doesn't support nesting a button inside another, so a split
+/// row must not additionally be wrapped in its own `Button`. The body tap typically pushes a
+/// screen through the `watchNavigate` environment action (buttons, not `NavigationLink` — see
+/// `WatchNavigateAction`).
 struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
     let name: String
     let subtitle: String?
@@ -17,7 +17,7 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
     let icon: Icon
     let accessory: Accessory
     let onIconTap: (() -> Void)?
-    let bodyNavigationValue: WatchHomeNavigation?
+    let onBodyTap: (() -> Void)?
 
     init(
         name: String,
@@ -26,7 +26,7 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
         @ViewBuilder icon: () -> Icon,
         @ViewBuilder accessory: () -> Accessory = { EmptyView() },
         onIconTap: (() -> Void)? = nil,
-        bodyNavigationValue: WatchHomeNavigation? = nil
+        onBodyTap: (() -> Void)? = nil
     ) {
         self.name = name
         self.subtitle = subtitle
@@ -34,17 +34,17 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
         self.icon = icon()
         self.accessory = accessory()
         self.onIconTap = onIconTap
-        self.bodyNavigationValue = bodyNavigationValue
+        self.onBodyTap = onBodyTap
     }
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
-            if let onIconTap, let bodyNavigationValue {
+            if let onIconTap, let onBodyTap {
                 Button(action: onIconTap) {
                     icon
                 }
                 .buttonStyle(.plain)
-                NavigationLink(value: bodyNavigationValue) {
+                Button(action: onBodyTap) {
                     bodyContent
                 }
                 .buttonStyle(.plain)

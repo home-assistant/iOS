@@ -11,6 +11,9 @@ struct WatchHomeView: View {
     @State private var showAssist = false
     @State private var showSettings = false
     @State private var isEditing = false
+    /// The stack's path. Rows push by appending through the `watchNavigate` environment action —
+    /// see `WatchNavigateAction` for why links aren't used.
+    @State private var navigationPath: [WatchHomeNavigation] = []
     @State private var activeSheet: HomeSheet?
     @State private var iPhoneNotReachable = false
     @State private var reachabilityToken: HAWatchConnectivity.ObservationToken?
@@ -45,11 +48,12 @@ struct WatchHomeView: View {
     }
 
     var body: some View {
-        // Standard value-based navigation: every pushable screen (folders, a light's controls) is
-        // registered once here at the root, and rows push with `NavigationLink(value:)`. The home
-        // and folder screens hide the navigation bar themselves, so visually nothing changes at
-        // the root; only the light controls screen shows the system bar with a back button.
-        NavigationStack {
+        // Standard path-driven navigation: every pushable screen (folders, a light's controls) is
+        // registered once here at the root, and rows push by appending to the path through the
+        // `watchNavigate` environment action. The home and folder screens hide the navigation bar
+        // themselves, so visually nothing changes at the root; only the light controls screen
+        // shows the system bar with a back button.
+        NavigationStack(path: $navigationPath) {
             content
                 .navigationDestination(for: WatchHomeNavigation.self) { destination in
                     switch destination {
@@ -60,6 +64,9 @@ struct WatchHomeView: View {
                     }
                 }
         }
+        .environment(\.watchNavigate, WatchNavigateAction { destination in
+            navigationPath.append(destination)
+        })
         ._statusBarHidden(true)
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             showAssist = true

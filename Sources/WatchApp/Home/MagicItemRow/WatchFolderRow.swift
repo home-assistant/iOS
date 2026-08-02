@@ -6,9 +6,12 @@ struct WatchFolderRow: View {
     let item: MagicItem
     let itemInfo: MagicItem.Info
     var layout: WatchLayout = .list
+    @Environment(\.watchNavigate) private var navigate
 
     var body: some View {
-        NavigationLink(value: WatchHomeNavigation.folder(item.id)) {
+        Button {
+            navigate(.folder(item.id))
+        } label: {
             label
         }
         .modify { view in
