@@ -374,6 +374,20 @@ struct DomainFeatureSupportTests {
         }
     }
 
+    @Test func builtInConfirmationMembership() {
+        let expected: Set<Domain> = [.lock]
+        #expect(
+            Set(Domain.builtInConfirmationDomains) == expected,
+            "Domain.builtInConfirmationDomains membership changed"
+        )
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasBuiltInConfirmation == expected.contains(domain),
+                "hasBuiltInConfirmation mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
     @Test func controlScreenDomainsAreNeitherRunnableNorDisplayOnly() {
         // A control-screen domain's tap opens its own screen; an action or the sensor details
         // screen competing for the same tap would be ambiguous.
