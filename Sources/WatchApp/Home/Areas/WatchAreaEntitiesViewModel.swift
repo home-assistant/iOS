@@ -68,9 +68,19 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
                         guard let info = provider.getInfo(for: item) else { return nil }
                         return Entry(item: item, info: info)
                     }
-                // Controllable entities come first; display-only sensors get their own section.
+                // Controllable entities come first, ordered by most commonly used domain (then
+                // name — `entries` is name-sorted, but Swift's sort isn't guaranteed stable);
+                // display-only sensors get their own section.
+                let controls = entries
+                    .filter { !$0.item.isWatchDisplayOnly }
+                    .sorted { lhs, rhs in
+                        let lhsIndex = Domain.watchAreaControlsSortIndex(for: lhs.item.domain)
+                        let rhsIndex = Domain.watchAreaControlsSortIndex(for: rhs.item.domain)
+                        if lhsIndex != rhsIndex { return lhsIndex < rhsIndex }
+                        return lhs.info.name.localizedCaseInsensitiveCompare(rhs.info.name) == .orderedAscending
+                    }
                 let content = Content(
-                    controls: entries.filter { !$0.item.isWatchDisplayOnly },
+                    controls: controls,
                     sensors: entries.filter(\.item.isWatchDisplayOnly)
                 )
                 DispatchQueue.main.async { [weak self] in

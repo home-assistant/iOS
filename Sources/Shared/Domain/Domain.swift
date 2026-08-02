@@ -647,6 +647,34 @@ public extension Domain {
     /// the watch can execute with a single tap.
     static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
+    /// Display order of the watch area screens' controllable entities, most commonly used domains
+    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
+    /// domain). Domains not listed sort last.
+    static let watchAreaControlsOrder: [Domain] = [
+        .light,
+        .switch,
+        .lock,
+        .cover,
+        .climate,
+        .fan,
+        .scene,
+        .script,
+        .humidifier,
+        .valve,
+        .inputBoolean,
+        .button,
+        .inputButton,
+        .automation,
+    ]
+
+    /// Sort index into `watchAreaControlsOrder`; unknown or unlisted domains go last.
+    static func watchAreaControlsSortIndex(for domain: Domain?) -> Int {
+        guard let domain, let index = watchAreaControlsOrder.firstIndex(of: domain) else {
+            return watchAreaControlsOrder.count
+        }
+        return index
+    }
+
     static let commonlyUsedWidgetSupported: [Domain] = [
         .light,
         .switch,
