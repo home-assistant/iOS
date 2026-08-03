@@ -23,8 +23,10 @@ struct WatchAreaControlsOrderTests {
         #expect(listedMaxIndex < unlistedIndex)
     }
 
-    @Test func everyRunnableWatchDomainIsListed() {
-        let runnable = Set(Domain.watchSupported + Domain.controlScreenDomains + Domain.watchStreamDomains)
-        #expect(Set(Domain.watchAreaControlsOrder) == runnable)
+    /// Every domain the area screens put in their controls section — everything watch-addable that
+    /// isn't display-only — needs a defined position, otherwise it silently sorts last.
+    @Test func everyAreaControlDomainIsListed() {
+        let areaControls = Set(Domain.watchAddable.filter { !$0.isWatchDisplayOnly })
+        #expect(Set(Domain.watchAreaControlsOrder) == areaControls)
     }
 }
