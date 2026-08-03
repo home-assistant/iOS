@@ -1,4 +1,6 @@
-import AVKit
+// AVFoundation explicitly: watchOS's AVKit is only the SwiftUI player view and doesn't re-export it,
+// so `AVPlayer` isn't in scope through `import AVKit` alone the way it is on iOS.
+import AVFoundation
 import Foundation
 import PromiseKit
 import Shared

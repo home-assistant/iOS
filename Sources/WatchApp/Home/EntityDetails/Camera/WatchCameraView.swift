@@ -1,3 +1,4 @@
+import AVFoundation
 import AVKit
 import SFSafeSymbols
 import Shared
