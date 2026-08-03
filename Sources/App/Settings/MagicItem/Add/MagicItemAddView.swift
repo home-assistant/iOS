@@ -16,6 +16,7 @@ struct MagicItemAddView: View {
         /// entities on the watch. Never offered alongside the others in the segmented picker.
         case areas
         case assistPipelines
+        case complications
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -42,6 +43,11 @@ struct MagicItemAddView: View {
             var options: [PickerOption] = [.entities]
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
+            }
+            // Offered only once the user actually has a rectangular complication to add: an empty
+            // segment in a two-option picker is noise for everyone who has never made one.
+            if context == .watch, Self.hasAddableComplications() {
+                options.append(.complications)
             }
             return options
         }()
@@ -81,6 +87,15 @@ struct MagicItemAddView: View {
                             dismiss()
                         }
                     }
+                case .complications:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        ComplicationMagicItemAddList { complication in
+                            itemToAdd(complication)
+                            dismiss()
+                        }
+                    }
                 }
             }
             .onAppear {
@@ -117,6 +132,9 @@ struct MagicItemAddView: View {
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
+                    case .complications:
+                        Text(verbatim: L10n.MagicItem.ItemType.Complication.List.title)
+                            .tag(MagicItemAddType.complications)
                     }
                 }
             }
@@ -135,7 +153,13 @@ struct MagicItemAddView: View {
             return .areas
         case .assistPipelines:
             return .assistPipelines
+        case .complications:
+            return .complications
         }
+    }
+
+    private static func hasAddableComplications() -> Bool {
+        ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
     }
 
     @ViewBuilder

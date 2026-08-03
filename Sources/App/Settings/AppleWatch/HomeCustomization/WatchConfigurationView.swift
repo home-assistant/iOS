@@ -242,6 +242,11 @@ struct WatchConfigurationView: View {
             } label: {
                 itemRow(item: item, info: info)
             }
+        } else if item.type == .complication {
+            // Nothing to customize: the row on the watch renders from the complication's own
+            // configuration, so a name or color set here would be silently ignored. Edit the
+            // complication itself under Complications instead.
+            itemRow(item: item, info: info)
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in

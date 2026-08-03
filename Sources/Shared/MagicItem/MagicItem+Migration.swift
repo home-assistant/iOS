@@ -36,6 +36,11 @@ extension MagicItemProvider {
                 // Assist items and areas are not entity-backed, so there is no entity to re-point
                 // them to — keep them as they are.
                 return item
+            case .complication:
+                // Complications are keyed by their own config id, not an entity, so there is no
+                // similar item to re-point them at. `getInfo` already dropped the ones whose config
+                // is gone; the rest are kept as-is.
+                return item
             case .unsupported:
                 return nil
             default:

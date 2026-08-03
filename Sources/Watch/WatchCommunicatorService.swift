@@ -757,6 +757,9 @@ final class WatchCommunicatorService {
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
             fail(.notExecutable, "Assist items are not supported on Watch")
+        case .complication:
+            // Complications are rendered in place on the watch; there is nothing to run.
+            fail(.notExecutable, "Complications are display-only")
         case .unsupported:
             fail(.notExecutable, "Unsupported item type")
         }

@@ -3,10 +3,10 @@ import Shared
 import SwiftUI
 
 /// Add flow for the watch configuration, presented as a navigation drill-down:
-/// chooser (Entity / Area / Folder) → server (skipped when only one) → entity or area list →
-/// name/icon editor. Everything is resolved from the locally-mirrored database, so the flow works
-/// without the phone nearby. Committing performs the mutation, persists, and dismisses the whole
-/// sheet via `finish`.
+/// chooser (Entity / Area / Complication / Folder) → server (skipped when only one) → entity or area
+/// list → name/icon editor. Everything is resolved from the locally-mirrored database, so the flow
+/// works without the phone nearby. Committing performs the mutation, persists, and dismisses the
+/// whole sheet via `finish`.
 struct WatchConfigAddView: View {
     /// Held without `@ObservedObject` on purpose: the add flow only *calls* the view model (fetch and
     /// mutate) and renders none of its published state, so observing it would rebuild this whole
@@ -18,6 +18,18 @@ struct WatchConfigAddView: View {
     let folderId: String?
 
     @Environment(\.dismiss) private var dismiss
+
+    /// Whether the watch has any rectangular complication to offer — the chooser shouldn't grow a row
+    /// that leads nowhere for the many users who have never configured one. Resolved when the sheet is
+    /// built rather than on appear, so the row is there on the first render instead of appearing under
+    /// the user's finger.
+    private let hasComplications: Bool
+
+    init(viewModel: WatchHomeViewModel, folderId: String?) {
+        self.viewModel = viewModel
+        self.folderId = folderId
+        self.hasComplications = ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
+    }
 
     var body: some View {
         NavigationView {
@@ -60,6 +72,18 @@ struct WatchConfigAddView: View {
                 )
             } label: {
                 chooserRow(icon: .textureBoxIcon, title: L10n.Watch.Config.Add.area)
+            }
+
+            if hasComplications {
+                NavigationLink {
+                    WatchConfigAddComplicationListView(
+                        viewModel: viewModel,
+                        folderId: folderId,
+                        finish: { dismiss() }
+                    )
+                } label: {
+                    chooserRow(icon: .watchIcon, title: L10n.Watch.Config.Add.complication)
+                }
             }
 
             // Folders don't nest, so creating one is only offered at the root.

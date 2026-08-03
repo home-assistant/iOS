@@ -116,6 +116,9 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case area
         case assistPipeline
         case assistPrompt
+        /// An existing watch complication, rendered inline in the watch's item list. `id` is the
+        /// `WatchComplicationConfig` id (a UUID), not an entity id.
+        case complication
         case unsupported
 
         public init(from decoder: Decoder) throws {
@@ -210,6 +213,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serversideValueNamed: info.iconName,
                     fallback: .textureBoxIcon
                 )
+            case .complication:
+                icon = MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .watchIcon)
             case .assistPipeline:
                 icon = .microphoneIcon
             case .assistPrompt:
@@ -487,8 +492,8 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder, .area, .assistPipeline, .assistPrompt, .unsupported:
-                    // Folders, areas and assist items don't execute direct actions
+                case .folder, .area, .complication, .assistPipeline, .assistPrompt, .unsupported:
+                    // Folders, areas, complications and assist items don't execute direct actions
                     return nil
                 }
             }()
@@ -732,7 +737,7 @@ public extension MagicItem {
                 guard let action = domain.mainAction else { return nil }
                 return WatchServiceCall(domain: domain.rawValue, service: action.rawValue, data: ["entity_id": id])
             }
-        case .folder, .area, .assistPipeline, .assistPrompt, .unsupported:
+        case .folder, .area, .complication, .assistPipeline, .assistPrompt, .unsupported:
             return nil
         }
     }

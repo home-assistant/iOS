@@ -311,12 +311,15 @@ struct WatchHomeView: View {
         }
     }
 
+    // A rectangular complication has nothing to show inside a 60-point square tile, so the grid holds
+    // only the tileable items and the complications follow it as full-width rows.
+    @ViewBuilder
     private var gridContent: some View {
         LazyVGrid(
             columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
             spacing: DesignSystem.Spaces.one
         ) {
-            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+            ForEach(viewModel.watchConfig.items.filter { $0.type != .complication }, id: \.serverUniqueId) { item in
                 if item.type == .folder {
                     WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else if item.type == .area {
@@ -328,6 +331,9 @@ struct WatchHomeView: View {
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())
+        ForEach(viewModel.watchConfig.items.filter { $0.type == .complication }, id: \.serverUniqueId) { item in
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        }
     }
 
     /// The automatic area rows: each area directly when there are few on a single server, or one
@@ -426,6 +432,8 @@ struct WatchHomeView: View {
                 itemInfo: viewModel.info(for: item),
                 subtitle: viewModel.serverName(for: item)
             )
+        } else if item.type == .complication {
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,

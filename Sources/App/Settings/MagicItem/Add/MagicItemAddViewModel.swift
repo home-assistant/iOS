@@ -5,6 +5,7 @@ enum MagicItemAddType {
     case entities
     case areas
     case assistPipelines
+    case complications
 }
 
 final class MagicItemAddViewModel: ObservableObject {
