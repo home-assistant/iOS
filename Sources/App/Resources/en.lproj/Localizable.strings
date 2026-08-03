@@ -2346,6 +2346,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.light_controls.temperature" = "Temperature";
 "watch.lock_controls.lock" = "Lock";
 "watch.lock_controls.open" = "Open";
+"watch.lock_controls.open_confirmation.title" = "Are you sure you want to open \"%@\"?";
 "watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";

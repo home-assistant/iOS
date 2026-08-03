@@ -138,6 +138,9 @@ final class WatchLockControlsViewModel: ObservableObject {
     /// Marks the action as pending for the whole round trip, so the screen can show the wait, and
     /// clears it once the server answers — `WatchServiceCallSender` always calls back (it fails the
     /// call on its own token and request deadlines), so the spinner can't outlive the request.
+    ///
+    /// Every action also answers on the wrist: a click when the command leaves, then success or
+    /// failure once the server replies.
     private func send(service: Service, action: Action) {
         guard pendingAction == nil else { return }
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
@@ -157,6 +160,7 @@ final class WatchLockControlsViewModel: ObservableObject {
             // Called on the main queue by the sender.
             self?.pendingAction = nil
             if success {
+                WKInterfaceDevice.current().play(.success)
                 // Reflect the executed command quickly instead of waiting a full poll interval.
                 self?.poller.refresh(after: 1)
             } else {

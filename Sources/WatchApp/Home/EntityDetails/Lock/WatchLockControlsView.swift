@@ -8,8 +8,12 @@ import SwiftUI
 /// A state-colored icon with the current state below it, a lock/unlock button pair, and — when
 /// the lock advertises the open (unlatch) feature, mirroring the frontend's `more-info-lock` —
 /// an open button. Buttons that can't act on the current state are disabled and greyed out.
+///
+/// Open (unlatch) physically releases the door rather than just changing a bolt's state, so it
+/// asks for confirmation first — a stray tap on a wrist shouldn't swing a door open.
 struct WatchLockControlsView: View {
     @StateObject private var viewModel: WatchLockControlsViewModel
+    @State private var showOpenConfirmation = false
 
     /// The view model is built inside `StateObject`'s autoclosure, so creation (and its poller)
     /// is deferred until the screen is actually pushed.
@@ -41,9 +45,25 @@ struct WatchLockControlsView: View {
             if viewModel.supportsOpen {
                 Section {
                     actionButton(symbol: .doorLeftHandOpen, label: L10n.Watch.LockControls.open, action: .open) {
-                        viewModel.open()
+                        showOpenConfirmation = true
                     }
                     .disabled(!viewModel.canOpen)
+                    // Owned by the open button itself, so no other control can present it.
+                    .confirmationDialog(
+                        L10n.Watch.LockControls.OpenConfirmation.title(viewModel.name),
+                        isPresented: $showOpenConfirmation,
+                        titleVisibility: .visible,
+                        actions: {
+                            Button(role: .destructive) {
+                                viewModel.open()
+                            } label: {
+                                Text(verbatim: L10n.Watch.LockControls.open)
+                            }
+                            Button(role: .cancel) {} label: {
+                                Text(verbatim: L10n.cancelLabel)
+                            }
+                        }
+                    )
                     .listRowBackground(Color.clear)
                 }
             }
