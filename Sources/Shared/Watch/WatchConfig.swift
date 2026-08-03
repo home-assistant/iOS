@@ -7,6 +7,9 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
     public var assist: Assist = .init(showAssist: true)
     public var items: [MagicItem] = []
     public var layout: WatchLayout?
+    /// Whether the watch home screen hides the automatic area rows. Optional so rows/payloads created
+    /// before this column existed decode as `nil` (areas shown).
+    public var hideAreas: Bool?
     /// Epoch (seconds) of the last edit, on either the iPhone or the watch. Used for last-writer /
     /// conflict resolution when the watch is configured offline. Optional so rows created before this
     /// column existed decode as `nil`.
@@ -17,17 +20,23 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
         assist: Assist = Assist(showAssist: true),
         items: [MagicItem] = [],
         layout: WatchLayout? = nil,
+        hideAreas: Bool? = nil,
         lastModified: Double? = nil
     ) {
         self.id = id
         self.assist = assist
         self.items = items
         self.layout = layout
+        self.hideAreas = hideAreas
         self.lastModified = lastModified
     }
 
     public var resolvedLayout: WatchLayout {
         layout ?? .list
+    }
+
+    public var resolvedHideAreas: Bool {
+        hideAreas ?? false
     }
 
     /// Stamp `lastModified` with the current time. Call whenever the config is edited before saving.

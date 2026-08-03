@@ -149,9 +149,17 @@ public struct WatchDatabaseMirror: WatchCodable {
         let servers = Current.servers.restorableState()
 
         return try Current.database().read { db in
+            // The watch never receives the full registry, so it can't filter hidden entities
+            // itself — exclude them here, matching the iPhone entity picker.
+            let hiddenKeys = try Set(
+                EntityRegistryListForDisplay.Entity.fetchAll(db)
+                    .filter(\.isHidden)
+                    .map { ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId) }
+            )
             let entities = try HAAppEntity
                 .filter(mirroredDomains.contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
                 .fetchAll(db)
+                .filter { !hiddenKeys.contains(ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId)) }
             let areas = try AppArea.fetchAll(db)
             let pipelines = try AssistPipelines.fetchAll(db)
             return WatchDatabaseMirror(

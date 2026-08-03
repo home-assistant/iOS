@@ -52,6 +52,19 @@ public extension HAAppEntity {
         })
     }
 
+    /// Entity ids the watch area screens can render for a server: watch-addable domains, without
+    /// config/diagnostic entities. Used to drop areas that would show an empty screen.
+    static func watchAreaEntityIds(serverId: String) throws -> Set<String> {
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+        let entities = try Current.database().read { db in
+            try HAAppEntity
+                .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        let compatible = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+        return Set(compatible.map(\.entityId))
+    }
+
     static func entity(id: String, serverId: String) -> HAAppEntity? {
         do {
             return try Current.database().read { db in

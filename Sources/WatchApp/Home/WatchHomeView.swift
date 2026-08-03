@@ -69,6 +69,12 @@ struct WatchHomeView: View {
                         WatchLockControlsView(item: item, itemInfo: viewModel.info(for: item))
                     case let .climateControls(item):
                         WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .areasServerPicker(serverIds):
+                        WatchAreasServerPickerView(serverIds: serverIds)
+                    case let .areasList(serverId):
+                        WatchAreasListView(serverId: serverId)
+                    case let .areaEntities(areaId, serverId):
+                        WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
                     }
                 }
         }
@@ -240,6 +246,9 @@ struct WatchHomeView: View {
                 onAdd: { activeSheet = .add }
             )
             listContent
+            if !isEditing {
+                areasContent
+            }
             if !isEditing, viewModel.showAssist {
                 addRow
             }
@@ -315,6 +324,49 @@ struct WatchHomeView: View {
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())
+    }
+
+    /// The automatic area rows: each area directly when there are few on a single server, or one
+    /// grouped "Areas" row that drills into the server picker / area list. In the grid layout the
+    /// areas render as icon-only tiles so the home screen stays a single visual style.
+    @ViewBuilder
+    private var areasContent: some View {
+        switch viewModel.areasMode {
+        case .hidden:
+            EmptyView()
+        case let .inline(areas):
+            if viewModel.watchConfig.resolvedLayout == .grid {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+                    spacing: DesignSystem.Spaces.one
+                ) {
+                    ForEach(areas, id: \.id) { area in
+                        WatchAreaRow(area: area, layout: .grid)
+                    }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+            } else {
+                ForEach(areas, id: \.id) { area in
+                    WatchAreaRow(area: area)
+                }
+            }
+        case .grouped:
+            if let destination = viewModel.groupedAreasDestination() {
+                if viewModel.watchConfig.resolvedLayout == .grid {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+                        spacing: DesignSystem.Spaces.one
+                    ) {
+                        WatchAreasGroupRow(destination: destination, layout: .grid)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                } else {
+                    WatchAreasGroupRow(destination: destination)
+                }
+            }
+        }
     }
 
     private var addRow: some View {
