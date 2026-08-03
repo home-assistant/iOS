@@ -11,10 +11,22 @@ import WatchKit
 /// can't lock a locked lock or unlock an unlocked one, and everything is disabled until the first
 /// state fetch answers (acting blind on a lock is worse than waiting a second).
 final class WatchLockControlsViewModel: ObservableObject {
+    /// One of the screen's three buttons, used to mark which command is currently in flight.
+    enum Action {
+        case lock
+        case unlock
+        case open
+    }
+
     @Published private(set) var entity: HAEntity?
     /// True when the state couldn't be refreshed recently — the screen shows a warning instead of
     /// presenting the state as current.
     @Published private(set) var isStale = false
+    /// The command waiting on the server, if any. The command travels over REST and can take a
+    /// while on a poor connection, so its button shows a spinner and every button stays disabled
+    /// until the server answers — both to signal the wait and to keep a second tap from queueing
+    /// another call.
+    @Published private(set) var pendingAction: Action?
 
     let item: MagicItem
     let itemInfo: MagicItem.Info
@@ -68,21 +80,21 @@ final class WatchLockControlsViewModel: ObservableObject {
     /// Locking is pointless when already locked (or on the way there), and impossible while the
     /// state is unknown.
     var canLock: Bool {
-        guard let state = knownState else { return false }
+        guard pendingAction == nil, let state = knownState else { return false }
         return ![.locked, .locking].contains(state)
     }
 
     /// Unlocking is pointless when already unlocked (or on the way there / open), and impossible
     /// while the state is unknown.
     var canUnlock: Bool {
-        guard let state = knownState else { return false }
+        guard pendingAction == nil, let state = knownState else { return false }
         return ![.unlocked, .unlocking, .open, .opening].contains(state)
     }
 
     /// Open (unlatch) works from any known state — e.g. a Nuki can unlatch a locked door —
     /// but never blind.
     var canOpen: Bool {
-        knownState != nil
+        pendingAction == nil && knownState != nil
     }
 
     func startStateUpdates() {
@@ -102,15 +114,15 @@ final class WatchLockControlsViewModel: ObservableObject {
     // MARK: - Commands
 
     func lock() {
-        send(service: .lock)
+        send(service: .lock, action: .lock)
     }
 
     func unlock() {
-        send(service: .unlock)
+        send(service: .unlock, action: .unlock)
     }
 
     func open() {
-        send(service: .open)
+        send(service: .open, action: .open)
     }
 
     // MARK: - Private
@@ -123,26 +135,34 @@ final class WatchLockControlsViewModel: ObservableObject {
         return state
     }
 
-    /// Every action answers on the wrist: a click when the command leaves, then success or failure
-    /// once the server replies. The screen's own state can take a poll interval to catch up, so
-    /// without haptics a lock command looks like it did nothing.
-    private func send(service: Service) {
+    /// Marks the action as pending for the whole round trip, so the screen can show the wait, and
+    /// clears it once the server answers — `WatchServiceCallSender` always calls back (it fails the
+    /// call on its own token and request deadlines), so the spinner can't outlive the request.
+    ///
+    /// Every action also answers on the wrist: a click when the command leaves, then success or
+    /// failure once the server replies.
+    private func send(service: Service, action: Action) {
+        guard pendingAction == nil else { return }
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
             Current.Log.error("Server \(item.serverId) not synced to the watch for lock controls")
             WKInterfaceDevice.current().play(.failure)
             return
         }
+        pendingAction = action
+        // Same tap feedback the home rows give when an execution starts.
         WKInterfaceDevice.current().play(.click)
         WatchServiceCallSender.send(
             domain: .lock,
             service: service,
             entityId: item.id,
             server: server
-        ) { [weak poller] success in
+        ) { [weak self] success in
+            // Called on the main queue by the sender.
+            self?.pendingAction = nil
             if success {
                 WKInterfaceDevice.current().play(.success)
                 // Reflect the executed command quickly instead of waiting a full poll interval.
-                poller?.refresh(after: 1)
+                self?.poller.refresh(after: 1)
             } else {
                 WKInterfaceDevice.current().play(.failure)
             }
