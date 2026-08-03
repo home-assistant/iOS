@@ -6450,6 +6450,10 @@ public enum L10n {
         }
       }
     }
+    public enum Camera {
+      /// Connecting to camera…
+      public static var connecting: String { return L10n.tr("Localizable", "watch.camera.connecting") }
+    }
     public enum Complications {
       public enum Builder {
         /// Gauge color

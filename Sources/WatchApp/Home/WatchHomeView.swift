@@ -71,6 +71,8 @@ struct WatchHomeView: View {
                         WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
                     case let .vacuumControls(item):
                         WatchVacuumControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .cameraStream(item):
+                        WatchCameraView(viewModel: .init(item: item, itemInfo: viewModel.info(for: item)))
                     case let .areasServerPicker(serverIds):
                         WatchAreasServerPickerView(serverIds: serverIds)
                     case let .areasList(serverId):

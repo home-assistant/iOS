@@ -374,6 +374,27 @@ struct DomainFeatureSupportTests {
         }
     }
 
+    @Test func watchStreamMembership() {
+        let expected: Set<Domain> = [.camera]
+        #expect(Set(Domain.watchStreamDomains) == expected, "Domain.watchStreamDomains membership changed")
+        for domain in Domain.allCases {
+            #expect(
+                domain.hasWatchStreamScreen == expected.contains(domain),
+                "hasWatchStreamScreen mismatch for Domain.\(domain)"
+            )
+        }
+    }
+
+    @Test func watchStreamDomainsAreNeitherRunnableNorDisplayOnly() {
+        // A stream domain's tap opens the camera screen; an action or the sensor details screen
+        // competing for the same tap would be ambiguous.
+        for domain in Domain.watchStreamDomains {
+            #expect(!domain.isActionable, "Domain.\(domain) opens a stream but also has an action")
+            #expect(!domain.isWatchDisplayOnly, "Domain.\(domain) opens a stream but is display-only")
+            #expect(!domain.hasControlScreen, "Domain.\(domain) opens a stream but also a control screen")
+        }
+    }
+
     @Test func builtInConfirmationMembership() {
         let expected: Set<Domain> = [.lock]
         #expect(
@@ -432,16 +453,23 @@ struct DomainFeatureSupportTests {
         }
     }
 
-    @Test func watchAddableIsRunnablePlusDisplayOnlyPlusControlScreen() {
-        #expect(Domain.watchAddable == Domain.watchSupported + Domain.watchDisplayOnly + Domain.controlScreenDomains)
-        #expect(Set(Domain.watchSupported).isDisjoint(with: Set(Domain.watchDisplayOnly)))
-        #expect(Set(Domain.watchSupported).isDisjoint(with: Set(Domain.controlScreenDomains)))
-        #expect(Set(Domain.watchDisplayOnly).isDisjoint(with: Set(Domain.controlScreenDomains)))
+    @Test func watchAddableIsRunnablePlusDisplayOnlyPlusControlScreenPlusStream() {
+        let groups = [
+            Domain.watchSupported,
+            Domain.watchDisplayOnly,
+            Domain.controlScreenDomains,
+            Domain.watchStreamDomains,
+        ]
+        #expect(Domain.watchAddable == groups.flatMap { $0 })
+        for (index, group) in groups.enumerated() {
+            for other in groups[(index + 1)...] {
+                #expect(Set(group).isDisjoint(with: Set(other)), "watch domain groups overlap")
+            }
+        }
         for domain in Domain.watchAddable {
-            #expect(
-                domain.isActionable || domain.isWatchDisplayOnly || domain.hasControlScreen,
-                "Domain.\(domain) is addable to the watch but neither runnable, display-only, nor control-screen"
-            )
+            let isSupported = domain.isActionable || domain.isWatchDisplayOnly
+                || domain.hasControlScreen || domain.hasWatchStreamScreen
+            #expect(isSupported, "Domain.\(domain) is addable to the watch but nothing handles its tap")
         }
     }
 
@@ -472,6 +500,7 @@ struct DomainFeatureSupportTests {
             ("watchDisplayOnly", Domain.watchDisplayOnly),
             ("watchAddable", Domain.watchAddable),
             ("controlScreenDomains", Domain.controlScreenDomains),
+            ("watchStreamDomains", Domain.watchStreamDomains),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
             ("appDatabaseExcluded", Domain.appDatabaseExcluded),
@@ -488,6 +517,7 @@ struct DomainFeatureSupportTests {
             ("watchSupported", Domain.watchSupported),
             ("watchAddable", Domain.watchAddable),
             ("controlScreenDomains", Domain.controlScreenDomains),
+            ("watchStreamDomains", Domain.watchStreamDomains),
             ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
         ]

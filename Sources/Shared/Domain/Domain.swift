@@ -542,6 +542,12 @@ public enum Domain: String, CaseIterable {
         Domain.controlScreenDomains.contains(self)
     }
 
+    /// Whether tapping this domain's entities on the watch opens a live stream screen (camera)
+    /// rather than executing an action.
+    public var hasWatchStreamScreen: Bool {
+        Domain.watchStreamDomains.contains(self)
+    }
+
     /// Whether tapping this domain's entities always presents the domain's own confirmation
     /// (e.g. lock), so the per-item "require confirmation" setting has no effect.
     public var hasBuiltInConfirmation: Bool {
@@ -643,15 +649,22 @@ public extension Domain {
         .lock,
     ]
 
+    /// Domains the watch renders as a live stream: tapping one opens the camera screen, which plays
+    /// the server's HLS stream and falls back to the MJPEG proxy — the same sources the watch
+    /// camera notifications use.
+    static let watchStreamDomains: [Domain] = [
+        .camera,
+    ]
+
     /// Everything the user can put on the watch home screen: the runnable domains, the display-only
-    /// sensor ones, and the domains that open a control screen. This is the filter every watch
-    /// picker and the watch database mirror use; `watchSupported` alone stays the list of domains
-    /// the watch can execute with a single tap.
-    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
+    /// sensor ones, the domains that open a control screen, and the ones that open a stream. This is
+    /// the filter every watch picker and the watch database mirror use; `watchSupported` alone stays
+    /// the list of domains the watch can execute with a single tap.
+    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains + watchStreamDomains
 
     /// Display order of the watch area screens' controllable entities, most commonly used domains
-    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
-    /// domain). Domains not listed sort last.
+    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch domain whose
+    /// row does something other than open its details). Domains not listed sort last.
     static let watchAreaControlsOrder: [Domain] = [
         .light,
         .switch,
@@ -660,6 +673,7 @@ public extension Domain {
         .climate,
         .fan,
         .vacuum,
+        .camera,
         .scene,
         .script,
         .humidifier,

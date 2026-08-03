@@ -21,6 +21,8 @@ enum WatchHomeNavigation: Hashable {
     case climateControls(MagicItem)
     /// The controls screen (start/pause/stop/return to dock, fan speed) of a vacuum.
     case vacuumControls(MagicItem)
+    /// The live stream screen of a camera entity.
+    case cameraStream(MagicItem)
     /// The server chooser of the grouped areas row, limited to the servers whose areas contain
     /// watch-compatible entities.
     case areasServerPicker(serverIds: [String])

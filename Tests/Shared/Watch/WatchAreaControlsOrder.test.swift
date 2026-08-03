@@ -24,7 +24,7 @@ struct WatchAreaControlsOrderTests {
     }
 
     @Test func everyRunnableWatchDomainIsListed() {
-        let runnable = Set(Domain.watchSupported + Domain.controlScreenDomains)
+        let runnable = Set(Domain.watchSupported + Domain.controlScreenDomains + Domain.watchStreamDomains)
         #expect(Set(Domain.watchAreaControlsOrder) == runnable)
     }
 }
