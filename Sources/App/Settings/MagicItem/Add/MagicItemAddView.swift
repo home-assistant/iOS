@@ -44,11 +44,6 @@ struct MagicItemAddView: View {
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
-            // Offered only once the user actually has a rectangular complication to add: an empty
-            // segment in a two-option picker is noise for everyone who has never made one.
-            if context == .watch, Self.hasAddableComplications() {
-                options.append(.complications)
-            }
             return options
         }()
         self.visiblePickerOptions = resolvedPickerOptions
@@ -156,10 +151,6 @@ struct MagicItemAddView: View {
         case .complications:
             return .complications
         }
-    }
-
-    private static func hasAddableComplications() -> Bool {
-        ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
     }
 
     @ViewBuilder
