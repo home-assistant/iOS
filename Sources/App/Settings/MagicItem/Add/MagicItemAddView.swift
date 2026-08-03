@@ -12,7 +12,8 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
-        /// Areas, offered on the watch only: an area entry opens the area's entities on the watch.
+        /// Areas, reached from the watch configuration's add menu: an area entry opens the area's
+        /// entities on the watch. Never offered alongside the others in the segmented picker.
         case areas
         case assistPipelines
     }
@@ -39,9 +40,6 @@ struct MagicItemAddView: View {
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
             var options: [PickerOption] = [.entities]
-            if context == .watch {
-                options.append(.areas)
-            }
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }

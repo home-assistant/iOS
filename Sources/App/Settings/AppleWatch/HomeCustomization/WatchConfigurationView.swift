@@ -10,6 +10,7 @@ struct WatchConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var addItemDestination: WatchAddItemDestination?
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
@@ -68,8 +69,13 @@ struct WatchConfigurationView: View {
                 })
             }
         })
-        .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
+        .sheet(item: $addItemDestination, content: { destination in
+            MagicItemAddView(
+                context: .watch,
+                initialItemType: destination.magicItemType,
+                visiblePickerOptions: [destination.pickerOption],
+                allowMultipleSelection: true
+            ) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
@@ -144,18 +150,19 @@ struct WatchConfigurationView: View {
             .onDelete { indexSet in
                 viewModel.deleteItem(at: indexSet)
             }
-            Button {
-                viewModel.showAddItem = true
-            } label: {
-                Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-            }
-            Button {
+            addItemMenu
+        }
+    }
+
+    private var addItemMenu: some View {
+        WatchAddItemMenu(
+            showAddFolder: true,
+            onSelectDestination: { addItemDestination = $0 },
+            onAddFolder: {
                 newFolderName = ""
                 showAddFolderSheet = true
-            } label: {
-                Label(L10n.Watch.Configuration.AddFolder.title, systemSymbol: .folder)
             }
-        }
+        )
     }
 
     @ViewBuilder
