@@ -7,7 +7,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
     static let assistID = "default-assist"
 
     /// Per-widget-family rendering values, keyed by `WatchComplicationConfig.Family.rawValue`
-    /// ("circular"/"rectangular"/"inline"/"corner"). Absent for built-in/legacy complications.
+    /// ("circular"/"rectangular"/"inline"/"corner"). Absent only for the built-in placeholder and
+    /// Assist complications; legacy complications are adapted into this shape too.
     struct PerFamily: Codable {
         var fraction: Double?
         let tint: String?
