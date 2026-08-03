@@ -659,6 +659,7 @@ public extension Domain {
         .cover,
         .climate,
         .fan,
+        .vacuum,
         .scene,
         .script,
         .humidifier,
