@@ -182,6 +182,7 @@
 		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
 		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
 		42D14C7B301BBAF50058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C7A301BBAF50058088E /* HAWatchComplications */; };
+		42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C90301BAF950058088E /* HAWatchComplications */; };
 		42D14C99301BC37A0058088E /* CircularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */; };
 		42D14C9B301BC3840058088E /* InlineComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */; };
 		42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */; };
@@ -1324,6 +1325,7 @@
 				MagicItem/Add/AreaMagicItemAddList.swift,
 				MagicItem/Add/AssistPipelineAddList.swift,
 				MagicItem/Add/AssistPromptMagicItemView.swift,
+				MagicItem/Add/ComplicationMagicItemAddList.swift,
 				MagicItem/Add/MagicItemAddView.swift,
 				MagicItem/Add/MagicItemAddViewModel.swift,
 				MagicItem/AssistPipelinePicker.swift,
@@ -1483,6 +1485,7 @@
 				MagicItem/Add/AreaMagicItemAddList.swift,
 				MagicItem/Add/AssistPipelineAddList.swift,
 				MagicItem/Add/AssistPromptMagicItemView.swift,
+				MagicItem/Add/ComplicationMagicItemAddList.swift,
 				MagicItem/Add/MagicItemAddView.swift,
 				MagicItem/Add/MagicItemAddViewModel.swift,
 				MagicItem/AssistPipelinePicker.swift,
@@ -2116,6 +2119,7 @@
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
+				42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5997,6 +6001,11 @@
 			productName = HAWatchComplications;
 		};
 		42D14C7A301BBAF50058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14C90301BAF950058088E /* HAWatchComplications */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
 			productName = HAWatchComplications;

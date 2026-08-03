@@ -6,6 +6,7 @@ import Foundation
 enum WatchAddItemDestination: String, Identifiable {
     case entity
     case area
+    case complication
 
     var id: String { rawValue }
 
@@ -15,6 +16,8 @@ enum WatchAddItemDestination: String, Identifiable {
             return .entities
         case .area:
             return .areas
+        case .complication:
+            return .complications
         }
     }
 
@@ -24,6 +27,8 @@ enum WatchAddItemDestination: String, Identifiable {
             return .entities
         case .area:
             return .areas
+        case .complication:
+            return .complications
         }
     }
 }

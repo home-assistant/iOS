@@ -98,7 +98,7 @@ final class CarPlayEditItemFlow {
     /// require-confirmation question doesn't apply to any of them.
     private func supportsRunConfirmation(_ item: MagicItem) -> Bool {
         switch item.type {
-        case .folder, .area, .assistPipeline, .assistPrompt:
+        case .folder, .area, .assistPipeline, .assistPrompt, .complication:
             return false
         case .entity:
             guard let domain = item.domain else { return true }

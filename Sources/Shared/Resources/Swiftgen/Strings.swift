@@ -2943,6 +2943,14 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.assist_prompt.unsupported.title") }
         }
       }
+      public enum Complication {
+        public enum List {
+          /// No rectangular complications yet. Create one in Settings > Apple Watch > Complications first.
+          public static var empty: String { return L10n.tr("Localizable", "magic_item.item_type.complication.list.empty") }
+          /// Complication
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.complication.list.title") }
+        }
+      }
       public enum Entity {
         public enum List {
           /// Entity
@@ -6654,6 +6662,10 @@ public enum L10n {
       public enum Add {
         /// Area
         public static var area: String { return L10n.tr("Localizable", "watch.config.add.area") }
+        /// Complication
+        public static var complication: String { return L10n.tr("Localizable", "watch.config.add.complication") }
+        /// No rectangular complications yet. Create one on your iPhone first.
+        public static var complicationsEmpty: String { return L10n.tr("Localizable", "watch.config.add.complications_empty") }
         /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.
         public static var empty: String { return L10n.tr("Localizable", "watch.config.add.empty") }
         /// Entity

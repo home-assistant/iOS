@@ -9,6 +9,10 @@ struct WatchAddItemMenu: View {
     let onSelectDestination: (WatchAddItemDestination) -> Void
     let onAddFolder: () -> Void
 
+    /// Resolved when the menu is built rather than on appear, so the Complication entry is there the
+    /// first time the menu opens instead of appearing under the user's finger.
+    private let hasComplications = ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
+
     var body: some View {
         Menu {
             Button {
@@ -31,6 +35,20 @@ struct WatchAddItemMenu: View {
                         ofSize: .init(width: 18, height: 18),
                         color: .label
                     ))
+                }
+            }
+
+            // Only offered once a rectangular complication exists — this screen adds an existing one,
+            // it never creates one, so with none configured the entry would lead to an empty list.
+            if hasComplications {
+                Button {
+                    onSelectDestination(.complication)
+                } label: {
+                    Label {
+                        Text(L10n.MagicItem.ItemType.Complication.List.title)
+                    } icon: {
+                        Image(systemSymbol: .applewatch)
+                    }
                 }
             }
 

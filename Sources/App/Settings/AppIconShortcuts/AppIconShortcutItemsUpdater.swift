@@ -103,6 +103,8 @@ enum AppIconShortcutItemsUpdater {
             return .init(systemSymbol: .squareGrid2x2Fill)
         case .assistPipeline, .assistPrompt:
             return .init(systemSymbol: .micFill)
+        case .complication:
+            return .init(systemSymbol: .applewatch)
         case .unsupported:
             return nil
         }

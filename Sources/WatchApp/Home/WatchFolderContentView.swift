@@ -21,7 +21,11 @@ struct WatchFolderContentView: View {
         List {
             header
             itemsContent
-            if !isEditing {
+            if isEditing {
+                // The header's Done scrolls off once the list is long enough to reorder in, so
+                // finishing is reachable from the bottom too — matching the home screen's footer.
+                doneFooterRow
+            } else {
                 addRow
             }
         }
@@ -84,12 +88,15 @@ struct WatchFolderContentView: View {
         .onDelete(perform: isEditing ? deleteItems : nil)
     }
 
+    // Complications follow the grid as full-width rows: a rectangular layout has nothing to show
+    // inside a 60-point square tile.
+    @ViewBuilder
     private var gridContent: some View {
         LazyVGrid(
             columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
             spacing: DesignSystem.Spaces.one
         ) {
-            ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
+            ForEach((folder?.items ?? []).filter { $0.type != .complication }, id: \.serverUniqueId) { item in
                 if item.type == .area {
                     WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else {
@@ -99,6 +106,9 @@ struct WatchFolderContentView: View {
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())
+        ForEach((folder?.items ?? []).filter { $0.type == .complication }, id: \.serverUniqueId) { item in
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        }
     }
 
     @ViewBuilder
@@ -125,6 +135,8 @@ struct WatchFolderContentView: View {
                 itemInfo: viewModel.info(for: item),
                 subtitle: viewModel.serverName(for: item)
             )
+        } else if item.type == .complication {
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,
@@ -179,6 +191,16 @@ struct WatchFolderContentView: View {
                 .contentShape(Rectangle())
         }
         .watchItemRowStyle()
+    }
+
+    private var doneFooterRow: some View {
+        HStack {
+            Spacer()
+            doneButton
+            Spacer()
+        }
+        .padding(DesignSystem.Spaces.one)
+        .listRowBackground(Color.clear)
     }
 
     private var doneButton: some View {

@@ -855,6 +855,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.area.list.title" = "Area";
 "magic_item.item_type.assist_prompt.title" = "Assist prompt";
 "magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
+"magic_item.item_type.complication.list.empty" = "No rectangular complications yet. Create one in Settings > Apple Watch > Complications first.";
+"magic_item.item_type.complication.list.title" = "Complication";
 "magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
@@ -2035,6 +2037,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.slot.title" = "Title";
 "watch.complications.slot.value" = "Value";
 "watch.config.add.area" = "Area";
+"watch.config.add.complication" = "Complication";
+"watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
 "watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";

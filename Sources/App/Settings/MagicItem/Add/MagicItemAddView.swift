@@ -16,6 +16,7 @@ struct MagicItemAddView: View {
         /// entities on the watch. Never offered alongside the others in the segmented picker.
         case areas
         case assistPipelines
+        case complications
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -81,6 +82,15 @@ struct MagicItemAddView: View {
                             dismiss()
                         }
                     }
+                case .complications:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        ComplicationMagicItemAddList { complication in
+                            itemToAdd(complication)
+                            dismiss()
+                        }
+                    }
                 }
             }
             .onAppear {
@@ -117,6 +127,9 @@ struct MagicItemAddView: View {
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
+                    case .complications:
+                        Text(verbatim: L10n.MagicItem.ItemType.Complication.List.title)
+                            .tag(MagicItemAddType.complications)
                     }
                 }
             }
@@ -135,6 +148,8 @@ struct MagicItemAddView: View {
             return .areas
         case .assistPipelines:
             return .assistPipelines
+        case .complications:
+            return .complications
         }
     }
 
