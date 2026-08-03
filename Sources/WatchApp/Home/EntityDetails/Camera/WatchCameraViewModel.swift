@@ -11,7 +11,8 @@ import UIKit
 /// It resolves the stream the same way the watch's camera notifications do: it asks the server for
 /// the entity's stream paths (`stream_camera`) and plays the HLS stream when there is one, falling
 /// back to the always-available MJPEG proxy (`/api/camera_proxy_stream`) when the server offers no
-/// HLS path, when the request fails, or when the player never gets the stream playing.
+/// HLS path, when the player can't reach the server (see `canPlayHLS(on:)`), when the request
+/// fails, or when the player never gets the stream playing.
 final class WatchCameraViewModel: ObservableObject {
     /// What the screen shows right now: an `AVPlayer` fed by HLS, or the latest MJPEG frame.
     enum Stream {
@@ -36,7 +37,6 @@ final class WatchCameraViewModel: ObservableObject {
     private var streamer: MJPEGStreamer?
     private var player: AVPlayer?
     private var statusObservation: NSKeyValueObservation?
-    private var hlsResourceLoader: WatchCameraHLSResourceLoader?
     private var hlsTimeout: DispatchWorkItem?
     /// Kept from the HLS attempt so a later MJPEG failure can report both stages.
     private var hlsFailureReason: String?
@@ -93,12 +93,17 @@ final class WatchCameraViewModel: ObservableObject {
 
         api.StreamCamera(entityId: item.id).done { [weak self] response in
             guard let self, isActive else { return }
-            if let hlsPath = response.hlsPath {
-                startHLS(url: baseURL.appendingPathComponent(hlsPath), api: api)
-            } else {
+            guard let hlsPath = response.hlsPath else {
                 recordHLSFailure(L10n.CameraPlayer.Errors.noStreamAvailable)
                 startMJPEG()
+                return
             }
+            guard canPlayHLS(on: server) else {
+                recordHLSFailure(L10n.Watch.Camera.Error.hlsCertificates)
+                startMJPEG()
+                return
+            }
+            startHLS(url: baseURL.appendingPathComponent(hlsPath))
         }.catch { [weak self] error in
             guard let self, isActive else { return }
             recordHLSFailure(error.localizedDescription)
@@ -126,25 +131,21 @@ final class WatchCameraViewModel: ObservableObject {
 
     // MARK: - Private
 
-    private func startHLS(url: URL, api: HomeAssistantAPI) {
-        let connection = api.server.info.connection
-        // A server behind mTLS, or one with a self-signed certificate the user trusted, is
-        // unreachable by AVFoundation itself — those assets load through the app's networking
-        // instead (see `WatchCameraHLSResourceLoader`).
-        let asset: AVURLAsset
-        if connection.clientCertificate != nil || connection.securityExceptions.hasExceptions {
-            asset = AVURLAsset(url: url, options: [
-                "AVURLAssetUseClientURLLoadingExclusively": true,
-                "AVURLAssetRequiresCustomURLLoadingKey": true,
-            ])
-            let resourceLoader = WatchCameraHLSResourceLoader(api: api)
-            hlsResourceLoader = resourceLoader
-            asset.resourceLoader.setDelegate(resourceLoader, queue: .main)
-        } else {
-            asset = AVURLAsset(url: url)
-        }
+    /// Whether the player can reach this server at all.
+    ///
+    /// AVFoundation fetches the playlist and segments itself: it never asks the app to answer the
+    /// client certificate challenge, and it doesn't know about the self-signed certificates the
+    /// user trusted here. iOS works around that by loading the asset through the app's own session
+    /// (`CameraStreamHLSViewController`), which watchOS can't do — `AVAssetResourceLoader` doesn't
+    /// exist there. So those servers go straight to the MJPEG proxy, which does present the
+    /// certificate, instead of waiting out a player that can't connect.
+    private func canPlayHLS(on server: Server) -> Bool {
+        let connection = server.info.connection
+        return connection.clientCertificate == nil && !connection.securityExceptions.hasExceptions
+    }
 
-        let playerItem = AVPlayerItem(asset: asset)
+    private func startHLS(url: URL) {
+        let playerItem = AVPlayerItem(url: url)
         let player = AVPlayer(playerItem: playerItem)
         // Muted on purpose: watchOS plays audio through a picked output, and prompting for one just
         // to glance at a camera would get in the way of the stream.
@@ -224,7 +225,6 @@ final class WatchCameraViewModel: ObservableObject {
         statusObservation = nil
         player?.pause()
         player = nil
-        hlsResourceLoader = nil
         stream = nil
     }
 
