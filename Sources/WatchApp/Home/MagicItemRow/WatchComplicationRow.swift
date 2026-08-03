@@ -56,6 +56,9 @@ struct WatchComplicationRow: View {
         .watchHomeItemRowStyle(tint: nil)
         .onAppear {
             guard previewRenderModel == nil else { return }
+            // watchOS 9 renders the name and nothing else, so polling there would spend network and
+            // battery on values the row can never show — and raise a stale badge over them.
+            guard #available(watchOS 10.0, *) else { return }
             viewModel.startUpdates()
         }
         .onDisappear {

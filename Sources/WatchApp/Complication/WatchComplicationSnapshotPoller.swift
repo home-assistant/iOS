@@ -88,17 +88,23 @@ final class WatchComplicationSnapshotPoller {
     private func fetch() {
         guard !isFetching, let config else { return }
         isFetching = true
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
+            // Built off the main actor on purpose: `make` performs the REST round trip and rasterizes
+            // the complication's icon. Only the state it produces belongs on the main thread, so the
+            // hop happens after the work, not around it.
             let result = await WatchWidgetComplicationSnapshot.make(config: config)
-            guard let self else { return }
-            isFetching = false
-            // `onChange` is nil once stopped, which also drops answers that arrive too late. A build
-            // that couldn't reach the server keeps the previous values rather than blanking the row.
-            guard onChange != nil, result.isLive else { return }
-            snapshot = result.snapshot
-            lastUpdate = Current.date()
-            isStale = false
-            notify()
+            await MainActor.run {
+                guard let self else { return }
+                isFetching = false
+                // `onChange` is nil once stopped, which also drops answers that arrive too late. A
+                // build that couldn't reach the server keeps the previous values rather than blanking
+                // the row.
+                guard onChange != nil, result.isLive else { return }
+                snapshot = result.snapshot
+                lastUpdate = Current.date()
+                isStale = false
+                notify()
+            }
         }
     }
 
