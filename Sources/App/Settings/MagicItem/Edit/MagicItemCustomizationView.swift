@@ -234,8 +234,10 @@ struct MagicItemCustomizationView: View {
             }
         }
         // A watch sensor is only displayed — tapping it opens its details screen and runs nothing,
-        // so there is no action to confirm.
+        // so there is no action to confirm. Neither does an area entry, which opens the area's
+        // entities.
         if !(context == .carPlay && viewModel.item.type == .assistPipeline),
+           viewModel.item.type != .area,
            !(context == .watch && viewModel.item.isWatchDisplayOnly) {
             Section {
                 Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {

@@ -3,6 +3,7 @@ import Foundation
 
 enum MagicItemAddType {
     case entities
+    case areas
     case assistPipelines
 }
 

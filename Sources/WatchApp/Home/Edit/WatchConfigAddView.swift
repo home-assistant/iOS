@@ -3,9 +3,10 @@ import Shared
 import SwiftUI
 
 /// Add flow for the watch configuration, presented as a navigation drill-down:
-/// chooser (Entity / Folder) → server (skipped when only one) → entity list → name/icon editor.
-/// The phone owns the entity database, so the entity list is fetched from it. Committing performs the
-/// mutation, persists, and dismisses the whole sheet via `finish`.
+/// chooser (Entity / Area / Folder) → server (skipped when only one) → entity or area list →
+/// name/icon editor. Everything is resolved from the locally-mirrored database, so the flow works
+/// without the phone nearby. Committing performs the mutation, persists, and dismisses the whole
+/// sheet via `finish`.
 struct WatchConfigAddView: View {
     /// Held without `@ObservedObject` on purpose: the add flow only *calls* the view model (fetch and
     /// mutate) and renders none of its published state, so observing it would rebuild this whole
@@ -36,17 +37,7 @@ struct WatchConfigAddView: View {
 
     @ViewBuilder
     private var content: some View {
-        // Inside a folder the only thing to add is an entity (folders don't nest), so skip the
-        // Entity/Folder chooser and go straight to the entity flow.
-        if folderId != nil {
-            WatchConfigAddEntitySourceView(
-                viewModel: viewModel,
-                folderId: folderId,
-                finish: { dismiss() }
-            )
-        } else {
-            chooser
-        }
+        chooser
     }
 
     private var chooser: some View {
@@ -62,24 +53,37 @@ struct WatchConfigAddView: View {
             }
 
             NavigationLink {
-                WatchConfigItemEditView(
-                    mode: .add,
-                    placeholderName: L10n.Watch.Config.Edit.namePlaceholder,
-                    item: MagicItem(
-                        id: UUID().uuidString,
-                        serverId: "",
-                        type: .folder,
-                        displayText: "",
-                        items: []
-                    ),
-                    info: nil
-                ) { edited in
-                    viewModel.addFolder(named: edited.displayText ?? "", iconName: edited.customization?.icon)
-                    viewModel.saveConfig()
-                    dismiss()
-                }
+                WatchConfigAddAreaSourceView(
+                    viewModel: viewModel,
+                    folderId: folderId,
+                    finish: { dismiss() }
+                )
             } label: {
-                chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
+                chooserRow(icon: .textureBoxIcon, title: L10n.Watch.Config.Add.area)
+            }
+
+            // Folders don't nest, so creating one is only offered at the root.
+            if folderId == nil {
+                NavigationLink {
+                    WatchConfigItemEditView(
+                        mode: .add,
+                        placeholderName: L10n.Watch.Config.Edit.namePlaceholder,
+                        item: MagicItem(
+                            id: UUID().uuidString,
+                            serverId: "",
+                            type: .folder,
+                            displayText: "",
+                            items: []
+                        ),
+                        info: nil
+                    ) { edited in
+                        viewModel.addFolder(named: edited.displayText ?? "", iconName: edited.customization?.icon)
+                        viewModel.saveConfig()
+                        dismiss()
+                    }
+                } label: {
+                    chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
+                }
             }
         }
     }

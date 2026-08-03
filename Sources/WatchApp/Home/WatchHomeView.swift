@@ -317,6 +317,8 @@ struct WatchHomeView: View {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 if item.type == .folder {
                     WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else if item.type == .area {
+                    WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else {
                     WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 }
@@ -416,6 +418,12 @@ struct WatchHomeView: View {
             .watchConfigRowBackground()
         } else if item.type == .folder {
             WatchFolderRow(item: item, itemInfo: viewModel.info(for: item))
+        } else if item.type == .area {
+            WatchAreaItemRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item)
+            )
         } else {
             WatchMagicViewRow(
                 item: item,

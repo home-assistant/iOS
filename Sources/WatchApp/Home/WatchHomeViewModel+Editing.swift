@@ -277,6 +277,25 @@ extension WatchHomeViewModel {
         }
     }
 
+    // MARK: Available areas
+
+    /// Serial queue the add flow's area build runs on — `fetchWatchPopulatedAreas` is synchronous
+    /// database work, same reasoning as `availableItemsQueue`.
+    private static let availableAreasQueue = DispatchQueue(label: "watch-available-areas", qos: .userInitiated)
+
+    /// Build the list of addable areas per server from the locally-mirrored database. Servers whose
+    /// areas hold no watch-compatible entity are omitted entirely, so the flow never offers a dead
+    /// entry. `completion` is always delivered on the main queue.
+    func fetchAvailableAreas(completion: @escaping ([WatchAddableAreaGroup]) -> Void) {
+        let servers = Current.servers.all
+        Self.availableAreasQueue.async {
+            let groups = WatchAddableAreaGroup.make(servers: servers)
+            DispatchQueue.main.async {
+                completion(groups)
+            }
+        }
+    }
+
     private func seedInfo(_ info: MagicItem.Info?) {
         guard let info else { return }
         if let index = magicItemsInfo.firstIndex(where: { $0.id == info.id }) {

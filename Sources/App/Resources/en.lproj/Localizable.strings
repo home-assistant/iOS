@@ -851,6 +851,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.";
 "magic_item.item_type.app.list.title" = "App";
+"magic_item.item_type.area.list.empty" = "No areas with entities your Apple Watch can show yet.";
+"magic_item.item_type.area.list.title" = "Area";
 "magic_item.item_type.assist_prompt.title" = "Assist prompt";
 "magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
 "magic_item.item_type.entity.list.title" = "Entity";
@@ -2020,11 +2022,13 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.slot.subtitle" = "Subtitle";
 "watch.complications.slot.title" = "Title";
 "watch.complications.slot.value" = "Value";
+"watch.config.add.area" = "Area";
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
 "watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";
 "watch.config.add.filter.all" = "All";
 "watch.config.add.folder" = "Folder";
+"watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Search";
 "watch.config.add.title" = "Add";
 "watch.config.assist.error.fetch_failed" = "Couldn't load Assist pipelines from your iPhone.";

@@ -98,6 +98,9 @@ enum AppIconShortcutItemsUpdater {
             return .init(systemSymbol: .rectangleAndPaperclip)
         case .folder:
             return .init(systemSymbol: .folderFill)
+        case .area:
+            // Areas can only be added to the watch, so this is never reached in practice.
+            return .init(systemSymbol: .squareGrid2x2Fill)
         case .assistPipeline, .assistPrompt:
             return .init(systemSymbol: .micFill)
         case .unsupported:
