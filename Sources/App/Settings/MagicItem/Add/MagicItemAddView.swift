@@ -12,6 +12,9 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
+        /// Areas, reached from the watch configuration's add menu: an area entry opens the area's
+        /// entities on the watch. Never offered alongside the others in the segmented picker.
+        case areas
         case assistPipelines
     }
 
@@ -60,6 +63,15 @@ struct MagicItemAddView: View {
                         // The watch only offers what it can display and run; other contexts show everything.
                         entitiesPerServerList(domainFilter: context == .watch ? Domain.watchAddable : nil)
                     }
+                case .areas:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        AreaMagicItemAddList { area in
+                            itemToAdd(area)
+                            dismiss()
+                        }
+                    }
                 case .assistPipelines:
                     VStack {
                         pickerView
@@ -99,6 +111,9 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
+                    case .areas:
+                        Text(verbatim: L10n.MagicItem.ItemType.Area.List.title)
+                            .tag(MagicItemAddType.areas)
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
@@ -116,6 +131,8 @@ struct MagicItemAddView: View {
         switch visiblePickerOptions.first {
         case .entities, .none:
             return .entities
+        case .areas:
+            return .areas
         case .assistPipelines:
             return .assistPipelines
         }

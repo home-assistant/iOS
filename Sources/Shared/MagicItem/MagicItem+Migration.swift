@@ -32,8 +32,9 @@ extension MagicItemProvider {
 
         let replacementItems = missingItems.compactMap { item -> MagicItem? in
             switch item.type {
-            case .assistPipeline, .assistPrompt:
-                // Assist items do not require entity-based migration
+            case .assistPipeline, .assistPrompt, .area:
+                // Assist items and areas are not entity-backed, so there is no entity to re-point
+                // them to — keep them as they are.
                 return item
             case .unsupported:
                 return nil

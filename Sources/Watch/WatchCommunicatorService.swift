@@ -751,6 +751,9 @@ final class WatchCommunicatorService {
         case .folder:
             // Already handled above, before server resolution
             break
+        case .area:
+            // Area entries open the area's entities on the watch, they never run anything
+            fail(.notExecutable, "Areas don't execute actions")
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
             fail(.notExecutable, "Assist items are not supported on Watch")

@@ -6,7 +6,7 @@ struct FolderDetailView: View {
     let folderId: String
     @ObservedObject var viewModel: WatchConfigurationViewModel
 
-    @State private var showAddItem = false
+    @State private var addItemDestination: WatchAddItemDestination?
     @State private var showEditFolder = false
 
     private var folder: MagicItem? {
@@ -25,11 +25,12 @@ struct FolderDetailView: View {
                 .onDelete { indexSet in
                     viewModel.deleteItemInFolder(folderId: folderId, at: indexSet)
                 }
-                Button {
-                    showAddItem = true
-                } label: {
-                    Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-                }
+                // Folders don't nest, so adding one is only offered at the root.
+                WatchAddItemMenu(
+                    showAddFolder: false,
+                    onSelectDestination: { addItemDestination = $0 },
+                    onAddFolder: {}
+                )
             }
         }
         .preferredColorScheme(.dark)
@@ -44,8 +45,13 @@ struct FolderDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showAddItem) {
-            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
+        .sheet(item: $addItemDestination) { destination in
+            MagicItemAddView(
+                context: .watch,
+                initialItemType: destination.magicItemType,
+                visiblePickerOptions: [destination.pickerOption],
+                allowMultipleSelection: true
+            ) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
             }

@@ -21,6 +21,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     /// Per-server entity→area and entity→device lookups, built once when entities are loaded so
     /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
     private var areasPerServer: [String: [String: AppArea]] = [:]
+    /// Per-server `areaId → AppArea` lookup, used to resolve `.area` items (which reference an area,
+    /// not an entity). Built on demand and cached, so a config full of area entries costs one areas
+    /// fetch per server rather than one per item.
+    private var areasByIdPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
     private var floorNamesPerServer: [String: [String: String]] = [:]
 
@@ -184,6 +188,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
         let servers = Current.servers.all
+        // Dropped (not refreshed) here: it's only needed when an `.area` item is actually resolved,
+        // and a reload means whatever it holds may be stale after a sync.
+        areasByIdPerServer = [:]
         guard !servers.isEmpty else {
             completion()
             return
@@ -276,6 +283,22 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
             )
+        case .area:
+            guard let area = area(serverId: item.serverId, areaId: item.id) else {
+                Current.Log
+                    .error(
+                        "Failed to get magic item area info for item id: \(item.id)"
+                    )
+                return nil
+            }
+
+            return .init(
+                id: item.serverUniqueId,
+                name: area.name,
+                iconName: area.icon ?? MaterialDesignIcons.textureBoxIcon.name,
+                customization: item.customization,
+                contextSubtitle: areaContextSubtitle(for: item)
+            )
         case .assistPipeline, .assistPrompt:
             let pipelineId = item.assistPipelineId ?? item.id
             let pipelineName: String = {
@@ -310,6 +333,27 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
 
         return nil
+    }
+
+    /// The area an `.area` item points at, from the per-server `areaId → AppArea` cache. Built on
+    /// the first lookup for that server and reset whenever entities are (re)loaded, so it follows
+    /// database syncs without a fetch per item.
+    private func area(serverId: String, areaId: String) -> AppArea? {
+        if let areas = areasByIdPerServer[serverId] {
+            return areas[areaId]
+        }
+        let areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+        // First wins, matching the `first(where:)` semantics of the other lookups.
+        let areasById = Dictionary(areas.map { ($0.areaId, $0) }, uniquingKeysWith: { first, _ in first })
+        areasByIdPerServer[serverId] = areasById
+        return areasById[areaId]
+    }
+
+    /// The context line for an `.area` item: only the server it belongs to, and only when more than
+    /// one server is configured — an area has no floor/device context of its own.
+    private func areaContextSubtitle(for item: MagicItem) -> String? {
+        guard Current.servers.all.count > 1 else { return nil }
+        return Current.servers.server(for: .init(rawValue: item.serverId))?.info.name
     }
 
     /// The entity→area map for a server, reusing the one built by `loadAppEntities`. Built (and

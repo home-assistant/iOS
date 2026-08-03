@@ -2927,6 +2927,14 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.app.list.title") }
         }
       }
+      public enum Area {
+        public enum List {
+          /// No areas with entities your Apple Watch can show yet.
+          public static var empty: String { return L10n.tr("Localizable", "magic_item.item_type.area.list.empty") }
+          /// Area
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.area.list.title") }
+        }
+      }
       public enum AssistPrompt {
         /// Assist prompt
         public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.assist_prompt.title") }
@@ -6644,12 +6652,16 @@ public enum L10n {
     }
     public enum Config {
       public enum Add {
+        /// Area
+        public static var area: String { return L10n.tr("Localizable", "watch.config.add.area") }
         /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.
         public static var empty: String { return L10n.tr("Localizable", "watch.config.add.empty") }
         /// Entity
         public static var entity: String { return L10n.tr("Localizable", "watch.config.add.entity") }
         /// Folder
         public static var folder: String { return L10n.tr("Localizable", "watch.config.add.folder") }
+        /// No areas with entities your Apple Watch can show yet.
+        public static var noAreas: String { return L10n.tr("Localizable", "watch.config.add.no_areas") }
         /// Search
         public static var searchPlaceholder: String { return L10n.tr("Localizable", "watch.config.add.search_placeholder") }
         /// Add

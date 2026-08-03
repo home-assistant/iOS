@@ -90,7 +90,11 @@ struct WatchFolderContentView: View {
             spacing: DesignSystem.Spaces.one
         ) {
             ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
-                WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                if item.type == .area {
+                    WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else {
+                    WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                }
             }
         }
         .listRowBackground(Color.clear)
@@ -115,6 +119,12 @@ struct WatchFolderContentView: View {
                 )
             }
             .watchConfigRowBackground()
+        } else if item.type == .area {
+            WatchAreaItemRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item)
+            )
         } else {
             WatchMagicViewRow(
                 item: item,

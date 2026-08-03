@@ -5,7 +5,6 @@ import Shared
 
 final class WatchConfigurationViewModel: ObservableObject {
     @Published var watchConfig = WatchConfig()
-    @Published var showAddItem = false
     @Published var showError = false
     @Published private(set) var errorMessage: String?
 
