@@ -49,6 +49,12 @@ struct WatchCameraView: View {
                         Text(verbatim: errorMessage)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
+                        if let errorDetail = viewModel.errorDetail {
+                            Text(verbatim: errorDetail)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
                         Button {
                             viewModel.retry()
                         } label: {
@@ -93,7 +99,8 @@ struct WatchCameraView: View {
     NavigationStack {
         WatchCameraView(viewModel: .preview(
             name: "Front door",
-            errorMessage: L10n.CameraPlayer.Errors.unableToConnectToServer
+            errorMessage: L10n.CameraPlayer.Errors.unableToConnectToServer,
+            errorDetail: L10n.Watch.Camera.Error.hls(L10n.CameraPlayer.Errors.noStreamAvailable)
         ))
     }
 }

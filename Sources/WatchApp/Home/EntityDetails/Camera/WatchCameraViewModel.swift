@@ -23,6 +23,10 @@ final class WatchCameraViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     /// Set when no stream could be started at all — the screen shows it with a retry button.
     @Published private(set) var errorMessage: String?
+    /// Why HLS didn't play, shown under the failure above: a camera that only streams (many
+    /// doorbells) has no MJPEG proxy to fall back to, so its screen would otherwise blame the
+    /// fallback for a problem that happened a step earlier.
+    @Published private(set) var errorDetail: String?
 
     let item: MagicItem
     let itemInfo: MagicItem.Info
@@ -32,7 +36,10 @@ final class WatchCameraViewModel: ObservableObject {
     private var streamer: MJPEGStreamer?
     private var player: AVPlayer?
     private var statusObservation: NSKeyValueObservation?
+    private var hlsResourceLoader: WatchCameraHLSResourceLoader?
     private var hlsTimeout: DispatchWorkItem?
+    /// Kept from the HLS attempt so a later MJPEG failure can report both stages.
+    private var hlsFailureReason: String?
     /// False while no screen is watching, so an answer that arrives after the user left doesn't
     /// start a stream nobody sees.
     private var isActive = false
@@ -81,17 +88,20 @@ final class WatchCameraViewModel: ObservableObject {
         isActive = true
         isLoading = true
         errorMessage = nil
+        errorDetail = nil
+        hlsFailureReason = nil
 
         api.StreamCamera(entityId: item.id).done { [weak self] response in
             guard let self, isActive else { return }
             if let hlsPath = response.hlsPath {
-                startHLS(url: baseURL.appendingPathComponent(hlsPath))
+                startHLS(url: baseURL.appendingPathComponent(hlsPath), api: api)
             } else {
+                recordHLSFailure(L10n.CameraPlayer.Errors.noStreamAvailable)
                 startMJPEG()
             }
         }.catch { [weak self] error in
             guard let self, isActive else { return }
-            Current.Log.info("No HLS stream for \(item.id), using MJPEG: \(error)")
+            recordHLSFailure(error.localizedDescription)
             startMJPEG()
         }
     }
@@ -106,6 +116,7 @@ final class WatchCameraViewModel: ObservableObject {
         stream = nil
         isLoading = false
         errorMessage = nil
+        errorDetail = nil
     }
 
     func retry() {
@@ -115,8 +126,25 @@ final class WatchCameraViewModel: ObservableObject {
 
     // MARK: - Private
 
-    private func startHLS(url: URL) {
-        let playerItem = AVPlayerItem(url: url)
+    private func startHLS(url: URL, api: HomeAssistantAPI) {
+        let connection = api.server.info.connection
+        // A server behind mTLS, or one with a self-signed certificate the user trusted, is
+        // unreachable by AVFoundation itself — those assets load through the app's networking
+        // instead (see `WatchCameraHLSResourceLoader`).
+        let asset: AVURLAsset
+        if connection.clientCertificate != nil || connection.securityExceptions.hasExceptions {
+            asset = AVURLAsset(url: url, options: [
+                "AVURLAssetUseClientURLLoadingExclusively": true,
+                "AVURLAssetRequiresCustomURLLoadingKey": true,
+            ])
+            let resourceLoader = WatchCameraHLSResourceLoader(api: api)
+            hlsResourceLoader = resourceLoader
+            asset.resourceLoader.setDelegate(resourceLoader, queue: .main)
+        } else {
+            asset = AVURLAsset(url: url)
+        }
+
+        let playerItem = AVPlayerItem(asset: asset)
         let player = AVPlayer(playerItem: playerItem)
         // Muted on purpose: watchOS plays audio through a picked output, and prompting for one just
         // to glance at a camera would get in the way of the stream.
@@ -133,8 +161,7 @@ final class WatchCameraViewModel: ObservableObject {
                     isLoading = false
                     player.play()
                 case .failed:
-                    let reason = playerItem.error?.localizedDescription ?? "unknown"
-                    Current.Log.error("HLS stream failed for \(item.id), using MJPEG: \(reason)")
+                    recordHLSFailure(playerItem.error?.localizedDescription ?? "unknown")
                     fallBackToMJPEG()
                 case .unknown:
                     break
@@ -150,7 +177,7 @@ final class WatchCameraViewModel: ObservableObject {
 
         let timeout = DispatchWorkItem { [weak self] in
             guard let self, isActive, isLoading else { return }
-            Current.Log.info("HLS stream for \(item.id) didn't start in time, using MJPEG")
+            recordHLSFailure("didn't start playing within \(Int(Self.hlsStartTimeout))s")
             fallBackToMJPEG()
         }
         hlsTimeout = timeout
@@ -177,9 +204,9 @@ final class WatchCameraViewModel: ObservableObject {
                 errorMessage = nil
                 stream = .mjpeg(image)
             } else if let error {
-                Current.Log.error("MJPEG stream failed for \(item.id): \(error)")
                 streamer?.cancel()
                 streamer = nil
+                report(stage: "MJPEG", reason: error.localizedDescription)
                 show(message: error.localizedDescription)
             }
         }
@@ -197,13 +224,34 @@ final class WatchCameraViewModel: ObservableObject {
         statusObservation = nil
         player?.pause()
         player = nil
+        hlsResourceLoader = nil
         stream = nil
+    }
+
+    /// Remembers why HLS didn't play so the screen can name that step too — the MJPEG proxy is only
+    /// the fallback, and a camera that streams but has no still image fails there for its own,
+    /// unrelated reason.
+    private func recordHLSFailure(_ reason: String) {
+        hlsFailureReason = reason
+        report(stage: "HLS", reason: reason)
+    }
+
+    /// Both stages land in the watch's client events (Settings → Troubleshooting), so a stream that
+    /// fails on device can be diagnosed without a debugger attached.
+    private func report(stage: String, reason: String) {
+        Current.Log.error("\(stage) camera stream failed for \(item.id): \(reason)")
+        Current.clientEventStore.addEvent(.init(
+            text: "Watch camera \(item.id) failed to stream over \(stage): \(reason)",
+            type: .networkRequest,
+            payload: ["camera": item.id, "server": item.serverId, "stage": stage, "reason": reason]
+        ))
     }
 
     private func show(message: String) {
         stream = nil
         isLoading = false
         errorMessage = message
+        errorDetail = hlsFailureReason.map { L10n.Watch.Camera.Error.hls($0) }
     }
 }
 
@@ -215,7 +263,8 @@ extension WatchCameraViewModel {
         name: String,
         stream: Stream? = nil,
         isLoading: Bool = false,
-        errorMessage: String? = nil
+        errorMessage: String? = nil,
+        errorDetail: String? = nil
     ) -> WatchCameraViewModel {
         let viewModel = WatchCameraViewModel(
             item: .init(id: "camera.front_door", serverId: "1", type: .entity),
@@ -224,6 +273,7 @@ extension WatchCameraViewModel {
         viewModel.stream = stream
         viewModel.isLoading = isLoading
         viewModel.errorMessage = errorMessage
+        viewModel.errorDetail = errorDetail
         return viewModel
     }
 }

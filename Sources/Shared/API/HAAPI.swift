@@ -259,13 +259,11 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        #if !os(watchOS)
+        // Every platform, watchOS included: a stream from an mTLS server is rejected (403 at the
+        // proxy) unless the session can answer the client certificate challenge.
         let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
             ? MJPEGCertificateSessionDelegate(server: server)
             : MJPEGStreamerSessionDelegate()
-        #else
-        let delegate = MJPEGStreamerSessionDelegate()
-        #endif
         return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: delegate,
             interceptor: newInterceptor(),

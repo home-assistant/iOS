@@ -6453,6 +6453,12 @@ public enum L10n {
     public enum Camera {
       /// Connecting to camera…
       public static var connecting: String { return L10n.tr("Localizable", "watch.camera.connecting") }
+      public enum Error {
+        /// HLS: %1$@
+        public static func hls(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.camera.error.hls", String(describing: p1))
+        }
+      }
     }
     public enum Complications {
       public enum Builder {

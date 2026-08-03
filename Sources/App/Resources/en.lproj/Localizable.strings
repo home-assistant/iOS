@@ -1943,6 +1943,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.camera.connecting" = "Connecting to camera…";
+"watch.camera.error.hls" = "HLS: %1$@";
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "Color from template";
 "watch.complications.builder.colors" = "Colors";

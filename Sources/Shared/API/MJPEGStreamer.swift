@@ -23,7 +23,6 @@ class MJPEGStreamerSessionDelegate: SessionDelegate, @unchecked Sendable {
     }
 }
 
-#if !os(watchOS)
 /// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
 final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate, @unchecked Sendable {
     override func urlSession(
@@ -41,7 +40,6 @@ final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate, @
         completionHandler(.allow)
     }
 }
-#endif
 
 enum MJPEGEvent: CustomStringConvertible {
     case data(Data)
