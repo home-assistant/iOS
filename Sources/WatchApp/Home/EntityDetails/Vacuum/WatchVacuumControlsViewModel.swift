@@ -49,11 +49,8 @@ final class WatchVacuumControlsViewModel: ObservableObject {
         self.entity = initialEntity
     }
 
-    /// The entity's friendly name, preferred over the configured item name because this screen is
-    /// also reached from the area screens, where the entity isn't a configured home item and the
-    /// info lookup falls back to the raw entity id.
     var name: String {
-        entity?.attributes.friendlyName ?? item.name(info: itemInfo)
+        item.name(info: itemInfo)
     }
 
     var capabilities: VacuumCapabilities? {

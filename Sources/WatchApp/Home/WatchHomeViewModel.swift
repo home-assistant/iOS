@@ -27,6 +27,10 @@ final class WatchHomeViewModel: ObservableObject {
 
     @Published var watchConfig: WatchConfig = .init()
     @Published var magicItemsInfo: [MagicItem.Info] = []
+    /// Retained across cache loads so `info(for:)` can resolve entities that aren't configured home
+    /// items — the ones the area screens push. `Current.magicItemProvider()` hands back an empty
+    /// instance every call, so the loaded one has to be kept rather than rebuilt per lookup.
+    private let magicItemProvider = Current.magicItemProvider()
     /// How the home screen presents the automatic area rows; recomputed on every cache load so it
     /// follows config edits and mirror syncs.
     @Published private(set) var areasMode: WatchHomeAreasMode = .hidden
@@ -234,13 +238,16 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
-        magicItemsInfo.first(where: {
-            $0.id == magicItem.serverUniqueId
-        }) ?? .init(
-            id: magicItem.id,
-            name: magicItem.id,
-            iconName: ""
-        )
+        if let configured = magicItemsInfo.first(where: { $0.id == magicItem.serverUniqueId }) {
+            return configured
+        }
+        // Not a configured home item — the area screens push entities the user never added, and
+        // their info lives in the mirrored entity database instead. Resolving it here keeps every
+        // pushed control screen titled with the entity's name rather than its id.
+        if let resolved = magicItemProvider.getInfo(for: magicItem) {
+            return resolved
+        }
+        return .init(id: magicItem.id, name: magicItem.id, iconName: "")
     }
 
     // MARK: - Offline-aware config reconciliation
@@ -621,7 +628,7 @@ final class WatchHomeViewModel: ObservableObject {
         // but the user should not see the empty state while cached rows already exist.
         updateConfig(config: config, magicItemsInfo: magicItemsInfo)
 
-        let provider = Current.magicItemProvider()
+        let provider = magicItemProvider
         provider.loadInformation { [weak self] entitiesPerServer in
             DispatchQueue.main.async {
                 guard let self else { return }
