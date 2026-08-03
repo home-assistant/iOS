@@ -749,7 +749,13 @@ enum WatchWidgetComplicationSnapshotStore {
     /// The last snapshot written for a complication. Used by the in-app complication row to render
     /// the known values immediately, before its own first live fetch answers.
     static func storedSnapshot(id: String) -> WatchWidgetComplicationSnapshot? {
-        readSnapshots(UserDefaults(suiteName: AppConstants.AppGroupID))[id]
+        storedSnapshots()[id]
+    }
+
+    /// Every stored snapshot, keyed by complication id. The add flow's picker previews a whole list
+    /// at once, so it reads the set once instead of decoding the payload per row.
+    static func storedSnapshots() -> [String: WatchWidgetComplicationSnapshot] {
+        readSnapshots(UserDefaults(suiteName: AppConstants.AppGroupID))
     }
 
     private static func persistRecords(
