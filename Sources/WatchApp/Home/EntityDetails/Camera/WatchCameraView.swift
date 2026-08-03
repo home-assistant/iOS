@@ -74,7 +74,7 @@ struct WatchCameraView: View {
     UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 180), true, 1)
     UIColor.darkGray.setFill()
     UIRectFill(CGRect(x: 0, y: 0, width: 320, height: 180))
-    UIColor.systemTeal.setFill()
+    UIColor.cyan.setFill()
     UIRectFill(CGRect(x: 120, y: 50, width: 80, height: 80))
     let frame = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
     UIGraphicsEndImageContext()
