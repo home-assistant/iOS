@@ -5,8 +5,8 @@ import Shared
 import SwiftUI
 
 /// The screen a camera row opens: the entity's live stream, loaded the same way the watch's camera
-/// notifications load theirs — the server's HLS stream when there is one, the MJPEG proxy
-/// otherwise (see `WatchCameraViewModel`).
+/// notifications load theirs — the MJPEG proxy, with the server's HLS stream as a last resort for
+/// cameras that serve no image (see `WatchCameraViewModel`).
 struct WatchCameraView: View {
     @StateObject private var viewModel: WatchCameraViewModel
 
@@ -19,14 +19,14 @@ struct WatchCameraView: View {
             Color.black
                 .ignoresSafeArea()
             switch viewModel.stream {
-            case let .hls(player):
-                VideoPlayer(player: player)
-                    .ignoresSafeArea(edges: .bottom)
             case let .mjpeg(image):
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
+            case let .hls(player):
+                VideoPlayer(player: player)
+                    .ignoresSafeArea(edges: .bottom)
             case nil:
                 EmptyView()
             }
