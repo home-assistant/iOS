@@ -1278,32 +1278,54 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         return (snapshot, isLive, failureReason)
     }
 
+    /// Adapts a legacy (ClockKit-era) complication into the modern snapshot shape.
+    ///
+    /// Legacy complications used to ship with no `perFamily` payload, which every on-face view reads
+    /// as "this is a built-in" and renders as the Home Assistant logo alone (circular and corner) or a
+    /// single unstyled line (rectangular) — silently dropping the user's text areas, gauge and ring.
+    /// Filling `perFamily` in routes them through the same content views the modern configs use, so
+    /// they render their own content again.
     init(complication: WatchComplication) {
-        let textAreas = Self.textAreas(from: complication.Data)
-        let renderedTextAreas = Self.renderedTextAreas(from: complication.Data)
-        let preferredText = Self.firstText(
-            from: renderedTextAreas,
-            textAreas,
-            keys: ["Center", "InsideRing", "Line1", "Header", "Body1", "Row1Column1"]
+        let render = LegacyComplicationRender(complication: complication)
+        let iconData = Self.iconData(name: render.iconName, colorHex: render.iconColor)
+
+        let options = PerFamily(
+            fraction: render.fraction,
+            tint: render.tint,
+            showValue: !render.value.isEmpty,
+            showName: !render.title.isEmpty,
+            showIcon: iconData != nil,
+            gaugeStyle: render.gaugeStyle,
+            textColor: render.textColor,
+            bottomTextColor: render.bottomTextColor,
+            title: render.title,
+            value: render.value,
+            bottomText: render.bottomText,
+            showBottomText: !render.bottomText.isEmpty
         )
-        let secondaryText = Self.firstText(
-            from: renderedTextAreas,
-            textAreas,
-            keys: ["Line2", "Body2", "Row1Column2", "Row2Column1", "Row2Column2"]
-        )
-        let resolvedTitle = preferredText ?? complication.displayName
-        let resolvedFraction = Self.fraction(from: complication.Data)
+        // Inline is a single system-tinted line with no icon or gauge, and resolves that whole line
+        // from the title slot — so it gets every area joined together rather than just one of them.
+        var inlineOptions = options
+        inlineOptions.title = render.inlineText
+        inlineOptions.showName = !render.inlineText.isEmpty
 
         self.init(
             id: complication.identifier,
             family: complication.Family.rawValue,
-            title: resolvedTitle,
-            subtitle: secondaryText ?? complication.Template.style,
-            inlineText: [resolvedTitle, secondaryText].compactMap { $0 }.joined(separator: " "),
-            fraction: resolvedFraction,
-            tint: Self.tint(from: complication.Data),
-            iconData: Self.iconData(from: complication.Data),
-            perFamily: nil,
+            title: render.value.isEmpty ? complication.displayName : render.value,
+            subtitle: render.title.isEmpty ? complication.Template.style : render.title,
+            inlineText: render.inlineText,
+            fraction: render.fraction,
+            tint: render.tint,
+            iconData: iconData,
+            // Spelled out rather than aliased to `Family`: `WatchComplication.Family` is the legacy
+            // ClockKit family, and the two reading alike in one initializer invites a mix-up.
+            perFamily: [
+                WatchComplicationConfig.Family.circular.rawValue: options,
+                WatchComplicationConfig.Family.rectangular.rawValue: options,
+                WatchComplicationConfig.Family.corner.rawValue: options,
+                WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
+            ],
             menuName: complication.displayName
         )
     }
@@ -1336,82 +1358,11 @@ private struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         )
     }
 
-    private static func textAreas(from data: [String: Any]) -> [String: String] {
-        guard let textAreas = data["textAreas"] as? [String: [String: Any]] else { return [:] }
+    /// Rasterizes a legacy complication's Material Design icon for the snapshot payload.
+    private static func iconData(name: String?, colorHex: String?) -> Data? {
+        guard let name else { return nil }
 
-        return textAreas.compactMapValues { $0["text"] as? String }
-    }
-
-    private static func renderedTextAreas(from data: [String: Any]) -> [String: String] {
-        guard let rendered = data["rendered"] as? [String: Any] else { return [:] }
-
-        return rendered.reduce(into: [String: String]()) { result, item in
-            guard item.key.hasPrefix("textArea,") else { return }
-
-            let key = String(item.key.dropFirst("textArea,".count))
-            result[key] = String(describing: item.value)
-        }
-    }
-
-    private static func firstText(
-        from renderedTextAreas: [String: String],
-        _ textAreas: [String: String],
-        keys: [String]
-    ) -> String? {
-        for key in keys {
-            if let rendered = renderedTextAreas[key], rendered.isEmpty == false {
-                return rendered
-            } else if let configured = textAreas[key], configured.isEmpty == false {
-                return configured
-            }
-        }
-
-        return nil
-    }
-
-    private static func fraction(from data: [String: Any]) -> Double? {
-        if let rendered = data["rendered"] as? [String: Any] {
-            if let ringValue = rendered["ring"].flatMap(percentileNumber(from:)) {
-                return ringValue
-            } else if let gaugeValue = rendered["gauge"].flatMap(percentileNumber(from:)) {
-                return gaugeValue
-            }
-        }
-
-        if let ring = data["ring"] as? [String: String],
-           let value = ring["ring_value"].flatMap(percentileNumber(from:)) {
-            return value
-        }
-
-        if let gauge = data["gauge"] as? [String: String], let value = gauge["gauge"].flatMap(percentileNumber(from:)) {
-            return value
-        }
-
-        return nil
-    }
-
-    private static func percentileNumber(from value: Any) -> Double? {
-        WatchComplication.percentileNumber(from: value).map(Double.init)
-    }
-
-    private static func tint(from data: [String: Any]) -> String? {
-        if let ring = data["ring"] as? [String: String], let color = ring["ring_color"] {
-            return color
-        }
-
-        if let gauge = data["gauge"] as? [String: String], let color = gauge["gauge_color"] {
-            return color
-        }
-
-        return nil
-    }
-
-    private static func iconData(from data: [String: Any]) -> Data? {
-        guard let icon = data["icon"] as? [String: String], let name = icon["icon"] else {
-            return nil
-        }
-
-        let color = icon["icon_color"].map { UIColor($0) } ?? AppConstants.tintColor
+        let color = colorHex.map { UIColor($0) } ?? AppConstants.tintColor
         // The stored name may be a server-side value (e.g. "mdi:music"); normalize before lookup so
         // image-based legacy complications (e.g. "Ring Image") actually resolve an icon.
         return MaterialDesignIcons(serversideValueNamed: name)

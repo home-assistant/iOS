@@ -1536,6 +1536,12 @@ public enum ComplicationTextAreas: String, CaseIterable {
         }
     }
 
+    /// Whether this area is a row's second column, so a renderer can fold it onto the first column's
+    /// line the way ClockKit's columns and table templates laid the two out side by side.
+    public var isSecondColumn: Bool {
+        [.Row1Column2, .Row2Column2, .Row3Column2].contains(self)
+    }
+
     public var slug: String {
         var cleanLocation = rawValue
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
