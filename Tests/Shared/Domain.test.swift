@@ -358,13 +358,13 @@ struct DomainFeatureSupportTests {
     @Test func carPlaySupportedMembership() {
         let expected: Set<Domain> = [
             .automation, .button, .climate, .cover, .fan, .humidifier, .inputBoolean, .inputButton,
-            .light, .lock, .scene, .script, .switch, .valve,
+            .light, .lock, .scene, .script, .switch, .vacuum, .valve,
         ]
         #expect(Set(Domain.carPlaySupported) == expected, "Domain.carPlaySupported membership changed")
     }
 
     @Test func controlScreenMembership() {
-        let expected: Set<Domain> = [.climate]
+        let expected: Set<Domain> = [.climate, .vacuum]
         #expect(Set(Domain.controlScreenDomains) == expected, "Domain.controlScreenDomains membership changed")
         for domain in Domain.allCases {
             #expect(

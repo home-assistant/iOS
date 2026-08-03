@@ -2,10 +2,10 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Single-choice list the climate control screen navigates to for a mode attribute
-/// (HVAC/fan/swing/preset): the current value carries a checkmark, and selecting an option
-/// reports it back and pops.
-struct WatchClimateModeSelectionView: View {
+/// Single-choice list a control screen navigates to for a mode attribute (climate's
+/// HVAC/fan/swing/preset modes, a vacuum's fan speed): the current value carries a checkmark, and
+/// selecting an option reports it back and pops.
+struct WatchModeSelectionView: View {
     let title: String
     let options: [String]
     let selected: String?
@@ -38,7 +38,7 @@ struct WatchClimateModeSelectionView: View {
 
 #Preview {
     NavigationView {
-        WatchClimateModeSelectionView(
+        WatchModeSelectionView(
             title: "Mode",
             options: ["off", "heat", "cool", "heat_cool"],
             selected: "heat",

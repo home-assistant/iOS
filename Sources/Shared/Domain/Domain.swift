@@ -602,6 +602,7 @@ public extension Domain {
         .scene,
         .script,
         .switch,
+        .vacuum,
         .valve,
     ]
 
@@ -633,6 +634,7 @@ public extension Domain {
     /// frontend's more-info dialog offers.
     static let controlScreenDomains: [Domain] = [
         .climate,
+        .vacuum,
     ]
 
     /// Domains that always show their own confirmation when tapped (state-aware lock handling),
@@ -657,6 +659,7 @@ public extension Domain {
         .cover,
         .climate,
         .fan,
+        .vacuum,
         .scene,
         .script,
         .humidifier,

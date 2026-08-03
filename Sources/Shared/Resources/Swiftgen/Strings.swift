@@ -6382,6 +6382,45 @@ public enum L10n {
     }
   }
 
+  public enum Vacuum {
+    public enum Control {
+      /// Battery: %@
+      public static func battery(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "vacuum.control.battery_%@", String(describing: p1))
+      }
+      /// Locate
+      public static var locate: String { return L10n.tr("Localizable", "vacuum.control.locate") }
+      public enum CleanAreas {
+        /// No areas mapped. Map your vacuum's segments to areas in Home Assistant to clean by area.
+        public static var empty: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.empty") }
+        /// Your iPhone is out of reach, so the areas can't be loaded.
+        public static var needsPhone: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.needs_phone") }
+        /// Clean areas
+        public static var title: String { return L10n.tr("Localizable", "vacuum.control.clean_areas.title") }
+        /// Cleaning order: %@
+        public static func order(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "vacuum.control.clean_areas.order_%@", String(describing: p1))
+        }
+        /// Start cleaning (%@)
+        public static func start(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "vacuum.control.clean_areas.start_%@", String(describing: p1))
+        }
+      }
+      /// Pause
+      public static var pause: String { return L10n.tr("Localizable", "vacuum.control.pause") }
+      /// Return to dock
+      public static var returnToBase: String { return L10n.tr("Localizable", "vacuum.control.return_to_base") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "vacuum.control.start") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "vacuum.control.stop") }
+      public enum FanSpeed {
+        /// Fan speed
+        public static var title: String { return L10n.tr("Localizable", "vacuum.control.fan_speed.title") }
+      }
+    }
+  }
+
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }

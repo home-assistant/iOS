@@ -177,7 +177,7 @@ final class CarPlayClimateControlViewModel {
             Current.Log.error("No API available for CarPlay climate service call on \(entityId)")
             return
         }
-        connection.send(.callClimateService(service, entityId: entityId, data: data)).promise
+        connection.send(.callEntityService(domain: .climate, service, entityId: entityId, data: data)).promise
             .done { _ in
                 Current.Log.verbose("CarPlay climate \(service.rawValue) succeeded for \(self.entityId)")
             }

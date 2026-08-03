@@ -42,8 +42,10 @@ public extension HATypedRequest {
         ))
     }
 
-    /// Calls a climate domain service (e.g. `climate.set_temperature`) with the given service data.
-    static func callClimateService(
+    /// Calls a service on `domain` targeting one entity (e.g. `climate.set_temperature`,
+    /// `vacuum.start`) with the given service data.
+    static func callEntityService(
+        domain: Domain,
         _ service: Service,
         entityId: String,
         data: [String: Any] = [:]
@@ -53,7 +55,7 @@ public extension HATypedRequest {
         return HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": Domain.climate.rawValue,
+                "domain": domain.rawValue,
                 "service": service.rawValue,
                 "service_data": serviceData,
             ]
@@ -198,6 +200,15 @@ public extension HATypedRequest {
     static func configEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
         HATypedRequest<EntityRegistryListForDisplay>(request: .init(
             type: .webSocket("config/entity_registry/list_for_display")
+        ))
+    }
+
+    /// The areas a vacuum has segments mapped to, read from its entity registry entry — the
+    /// display listing omits the per-domain `options` this lives in. WebSocket only.
+    static func vacuumAreaMapping(entityId: String) -> HATypedRequest<VacuumAreaMapping> {
+        HATypedRequest<VacuumAreaMapping>(request: .init(
+            type: .webSocket("config/entity_registry/get"),
+            data: ["entity_id": entityId]
         ))
     }
 

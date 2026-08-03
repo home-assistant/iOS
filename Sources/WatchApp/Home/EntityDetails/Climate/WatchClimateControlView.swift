@@ -158,7 +158,7 @@ struct WatchClimateControlView: View {
                     Section {
                         if control.supportsHvacModes {
                             NavigationLink {
-                                WatchClimateModeSelectionView(
+                                WatchModeSelectionView(
                                     title: L10n.Climate.Control.Mode.title,
                                     options: control.hvacModes,
                                     selected: control.hvacMode,
@@ -177,7 +177,7 @@ struct WatchClimateControlView: View {
                         }
                         if control.supportsFanMode {
                             NavigationLink {
-                                WatchClimateModeSelectionView(
+                                WatchModeSelectionView(
                                     title: L10n.Climate.Control.FanMode.title,
                                     options: control.fanModes,
                                     selected: control.fanMode,
@@ -199,7 +199,7 @@ struct WatchClimateControlView: View {
                         }
                         if control.supportsSwingMode {
                             NavigationLink {
-                                WatchClimateModeSelectionView(
+                                WatchModeSelectionView(
                                     title: L10n.Climate.Control.SwingMode.title,
                                     options: control.swingModes,
                                     selected: control.swingMode,
@@ -221,7 +221,7 @@ struct WatchClimateControlView: View {
                         }
                         if control.supportsSwingHorizontalMode {
                             NavigationLink {
-                                WatchClimateModeSelectionView(
+                                WatchModeSelectionView(
                                     title: L10n.Climate.Control.SwingHorizontalMode.title,
                                     options: control.swingHorizontalModes,
                                     selected: control.swingHorizontalMode,
@@ -243,7 +243,7 @@ struct WatchClimateControlView: View {
                         }
                         if control.supportsPresetMode {
                             NavigationLink {
-                                WatchClimateModeSelectionView(
+                                WatchModeSelectionView(
                                     title: L10n.Climate.Control.PresetMode.title,
                                     options: control.presetModes,
                                     selected: control.presetMode,

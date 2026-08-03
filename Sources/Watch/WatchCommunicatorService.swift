@@ -176,6 +176,8 @@ final class WatchCommunicatorService {
                     handleServersConfigSync(message: message)
                 case .clientCertImportRequest:
                     handleClientCertImportRequest(message: message)
+                case .vacuumCleanableAreas:
+                    handleVacuumCleanableAreas(message: message)
                 }
             }
     }
@@ -226,6 +228,43 @@ final class WatchCommunicatorService {
             identifier: InteractiveImmediateResponses.serversConfigSyncResponse.rawValue,
             content: content
         ))
+    }
+
+    /// Fetch a vacuum's cleanable areas on the watch's behalf. The mapping lives in the entity
+    /// registry (WebSocket only), so the watch — which reaches Home Assistant over REST — has to
+    /// ask the phone. The reply carries the areas already resolved to `{id, name}` pairs so the
+    /// watch renders them without needing the registry itself.
+    private func handleVacuumCleanableAreas(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let reply: ([VacuumAreaMapping.Area]) -> Void = { areas in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.vacuumCleanableAreasResponse.rawValue,
+                content: ["areas": areas.map(\.wireFormat)]
+            ))
+        }
+
+        guard let entityId = message.content["entityId"] as? String,
+              let serverId = message.content["serverId"] as? String,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("Watch asked for vacuum areas with no usable server/entity")
+            reply([])
+            return
+        }
+
+        connection.send(.vacuumAreaMapping(entityId: entityId)).promise
+            .done { mapping in
+                let areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+                let areasById = Dictionary(areas.map { ($0.areaId, $0) }, uniquingKeysWith: { first, _ in first })
+                // Drop ids the phone no longer knows (a mapping outlives a deleted area) and keep
+                // the mapping's order.
+                reply(mapping.areaIds.compactMap { areaId in
+                    areasById[areaId].map { VacuumAreaMapping.Area(id: $0.areaId, name: $0.name) }
+                })
+            }
+            .catch { error in
+                Current.Log.error("Failed to fetch vacuum area mapping for the watch: \(error)")
+                reply([])
+            }
     }
 
     // MARK: - mTLS client certificate transfer (phone → watch)

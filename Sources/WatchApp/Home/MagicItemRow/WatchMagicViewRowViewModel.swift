@@ -86,13 +86,16 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     /// screens handle an unknown state themselves.
     var wholeRowNavigationDestination: WatchHomeNavigation? {
         guard item.type == .entity, let domain = item.domain else { return nil }
-        if domain == .lock {
+        switch domain {
+        case .lock:
             return .lockControls(item)
-        }
-        if domain.hasControlScreen {
+        case .climate:
             return .climateControls(item)
+        case .vacuum:
+            return .vacuumControls(item)
+        default:
+            return nil
         }
-        return nil
     }
 
     /// The controls screen this row's body pushes, once the polled state proves the entity can do

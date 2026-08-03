@@ -19,7 +19,7 @@ struct WatchMagicViewRow: View {
         // list): which button triggers them depends on the row variant below.
         Group {
             if let rowDestination = viewModel.wholeRowNavigationDestination {
-                // Locks and climate: the whole row (icon included) opens their screen, in both
+                // Locks, climate and vacuums: the whole row (icon included) opens their screen, in both
                 // layouts.
                 Button {
                     navigate(rowDestination)
@@ -133,7 +133,7 @@ struct WatchMagicViewRow: View {
                 textColor: textColor,
                 icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) },
                 accessory: {
-                    // Rows that navigate as a whole (locks, climate) show the same chevron as
+                    // Rows that navigate as a whole (locks, climate, vacuums) show the same chevron as
                     // folders.
                     if viewModel.wholeRowNavigationDestination != nil {
                         Image(systemSymbol: .chevronRight)
