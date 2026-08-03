@@ -18,17 +18,29 @@ struct WatchCameraView: View {
         ZStack {
             Color.black
                 .ignoresSafeArea()
-            switch viewModel.stream {
-            case let .mjpeg(image):
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity)
-            case let .hls(player):
-                VideoPlayer(player: player)
-                    .ignoresSafeArea(edges: .bottom)
-            case nil:
-                EmptyView()
+            VStack(spacing: DesignSystem.Spaces.half) {
+                switch viewModel.stream {
+                case let .mjpeg(image):
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
+                case let .hls(player):
+                    VideoPlayer(player: player)
+                case nil:
+                    EmptyView()
+                }
+                // Only when the camera really offers both — one working stream needs no choice.
+                if viewModel.stream != nil, viewModel.availableModes.count > 1 {
+                    WatchCameraModePicker(
+                        modes: viewModel.availableModes,
+                        selection: Binding(
+                            get: { viewModel.mode },
+                            set: { viewModel.select(mode: $0) }
+                        )
+                    )
+                    .padding(.horizontal, DesignSystem.Spaces.one)
+                }
             }
             if viewModel.isLoading {
                 VStack(spacing: DesignSystem.Spaces.half) {
@@ -86,6 +98,24 @@ struct WatchCameraView: View {
     UIGraphicsEndImageContext()
     return NavigationStack {
         WatchCameraView(viewModel: .preview(name: "Front door", stream: .mjpeg(frame)))
+    }
+}
+
+#Preview("Streaming with both modes") {
+    UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 180), true, 1)
+    UIColor.darkGray.setFill()
+    UIRectFill(CGRect(x: 0, y: 0, width: 320, height: 180))
+    UIColor.cyan.setFill()
+    UIRectFill(CGRect(x: 120, y: 50, width: 80, height: 80))
+    let frame = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+    UIGraphicsEndImageContext()
+    return NavigationStack {
+        WatchCameraView(viewModel: .preview(
+            name: "Front door",
+            stream: .mjpeg(frame),
+            isMJPEGAvailable: true,
+            isHLSAvailable: true
+        ))
     }
 }
 

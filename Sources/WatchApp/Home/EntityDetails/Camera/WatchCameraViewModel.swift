@@ -20,6 +20,19 @@ final class WatchCameraViewModel: ObservableObject {
         case hls(AVPlayer)
     }
 
+    /// How the camera is being watched. Protocol names on purpose — they're what the picker shows,
+    /// and what a user comparing the two would look for.
+    enum Mode: String, Identifiable, CaseIterable {
+        case mjpeg
+        case hls
+
+        var id: String { rawValue }
+
+        var title: String {
+            rawValue.uppercased()
+        }
+    }
+
     @Published private(set) var stream: Stream?
     @Published private(set) var isLoading = false
     /// Set when no stream could be started at all — the screen shows it with a retry button.
@@ -27,9 +40,27 @@ final class WatchCameraViewModel: ObservableObject {
     /// Why the HLS last resort didn't play either, shown under the failure above so the screen
     /// reports both stages instead of only the one that happened to fail last.
     @Published private(set) var errorDetail: String?
+    /// Which stream is playing. MJPEG until the camera proves it can't, or until the user picks
+    /// otherwise from the mode picker.
+    @Published private(set) var mode: Mode = .mjpeg
+    /// True once the proxy has actually delivered a frame — only then is MJPEG a mode the user can
+    /// come back to.
+    @Published private(set) var isMJPEGAvailable = false
+    /// True once the server has answered with an HLS path this watch could play.
+    @Published private(set) var isHLSAvailable = false
 
     let item: MagicItem
     let itemInfo: MagicItem.Info
+
+    /// The modes the user can choose between; the picker only appears when there's more than one.
+    var availableModes: [Mode] {
+        Mode.allCases.filter { mode in
+            switch mode {
+            case .mjpeg: return isMJPEGAvailable
+            case .hls: return isHLSAvailable
+            }
+        }
+    }
 
     private var server: Server?
     private var api: HomeAssistantAPI?
@@ -38,6 +69,9 @@ final class WatchCameraViewModel: ObservableObject {
     private var player: AVPlayer?
     private var statusObservation: NSKeyValueObservation?
     private var hlsTimeout: DispatchWorkItem?
+    /// The path the server last reported for this camera's HLS stream, so switching modes doesn't
+    /// ask again.
+    private var hlsPath: String?
     /// Kept so the failure screen can name both stages, whichever one ends the attempt.
     private var mjpegFailureReason: String?
     private var hlsFailureReason: String?
@@ -94,6 +128,9 @@ final class WatchCameraViewModel: ObservableObject {
         errorDetail = nil
 
         startMJPEG()
+        // Asked for alongside the stream, not before it: the answer only decides whether the mode
+        // picker appears, so waiting for it would delay the first frame for nothing.
+        probeHLSAvailability()
     }
 
     /// Ends the stream and resets the screen, so leaving it doesn't keep the camera (and the
@@ -107,11 +144,35 @@ final class WatchCameraViewModel: ObservableObject {
         isLoading = false
         errorMessage = nil
         errorDetail = nil
+        mode = .mjpeg
+        isMJPEGAvailable = false
+        isHLSAvailable = false
+        hlsPath = nil
     }
 
     func retry() {
         stop()
         start()
+    }
+
+    /// Switches which stream the screen plays. Only reachable from the picker, so both modes are
+    /// known to work — the one being left is torn down before the other starts.
+    func select(mode newMode: Mode) {
+        guard newMode != mode, isActive else { return }
+        mode = newMode
+        errorMessage = nil
+        errorDetail = nil
+
+        switch newMode {
+        case .mjpeg:
+            tearDownHLS()
+            startMJPEG()
+        case .hls:
+            streamer?.cancel()
+            streamer = nil
+            stream = nil
+            startHLSFromKnownPath()
+        }
     }
 
     // MARK: - MJPEG
@@ -134,6 +195,7 @@ final class WatchCameraViewModel: ObservableObject {
                 isLoading = false
                 errorMessage = nil
                 errorDetail = nil
+                isMJPEGAvailable = true
                 stream = .mjpeg(image)
             } else if let error {
                 streamer?.cancel()
@@ -161,27 +223,56 @@ final class WatchCameraViewModel: ObservableObject {
         return connection.clientCertificate == nil && !connection.securityExceptions.hasExceptions
     }
 
+    /// Asks the server what it can stream, without touching the screen: a camera whose MJPEG works
+    /// keeps playing, and the answer only turns the mode picker on.
+    private func probeHLSAvailability() {
+        guard let server, canPlayHLS(on: server), let api else { return }
+        api.StreamCamera(entityId: item.id).done { [weak self] response in
+            guard let self, isActive, let path = response.hlsPath else { return }
+            hlsPath = path
+            isHLSAvailable = true
+        }.catch { [weak self] error in
+            Current.Log.info("No HLS stream for \(self?.item.id ?? ""): \(error.localizedDescription)")
+        }
+    }
+
     private func fallBackToHLS() {
         stream = nil
-        guard let api, let baseURL, let server, canPlayHLS(on: server) else {
+        mode = .hls
+        guard let server, canPlayHLS(on: server) else {
             recordHLSFailure(L10n.Watch.Camera.Error.hlsCertificates)
             showFailure()
             return
         }
+        startHLSFromKnownPath()
+    }
+
+    /// Plays the HLS stream, asking the server for its path first when the availability probe
+    /// hasn't answered yet.
+    private func startHLSFromKnownPath() {
+        guard let api, let baseURL else {
+            showFailure(message: L10n.CameraPlayer.Errors.unableToConnectToServer)
+            return
+        }
         isLoading = true
+
+        if let hlsPath {
+            startHLS(url: baseURL.appendingPathComponent(hlsPath))
+            return
+        }
 
         api.StreamCamera(entityId: item.id).done { [weak self] response in
             guard let self, isActive else { return }
-            guard let hlsPath = response.hlsPath else {
-                recordHLSFailure(L10n.CameraPlayer.Errors.noStreamAvailable)
-                showFailure()
+            guard let path = response.hlsPath else {
+                handleHLSFailure(L10n.CameraPlayer.Errors.noStreamAvailable)
                 return
             }
-            startHLS(url: baseURL.appendingPathComponent(hlsPath))
+            hlsPath = path
+            isHLSAvailable = true
+            startHLS(url: baseURL.appendingPathComponent(path))
         }.catch { [weak self] error in
             guard let self, isActive else { return }
-            recordHLSFailure(error.localizedDescription)
-            showFailure()
+            handleHLSFailure(error.localizedDescription)
         }
     }
 
@@ -205,9 +296,7 @@ final class WatchCameraViewModel: ObservableObject {
                     errorDetail = nil
                     player.play()
                 case .failed:
-                    recordHLSFailure(playerItem.error?.localizedDescription ?? "unknown")
-                    tearDownHLS()
-                    showFailure()
+                    handleHLSFailure(playerItem.error?.localizedDescription ?? "unknown")
                 case .unknown:
                     break
                 @unknown default:
@@ -222,9 +311,7 @@ final class WatchCameraViewModel: ObservableObject {
 
         let timeout = DispatchWorkItem { [weak self] in
             guard let self, isActive, isLoading else { return }
-            recordHLSFailure("didn't start playing within \(Int(Self.hlsStartTimeout))s")
-            tearDownHLS()
-            showFailure()
+            handleHLSFailure("didn't start playing within \(Int(Self.hlsStartTimeout))s")
         }
         hlsTimeout = timeout
         DispatchQueue.main.asyncAfter(deadline: .now() + Self.hlsStartTimeout, execute: timeout)
@@ -241,6 +328,22 @@ final class WatchCameraViewModel: ObservableObject {
     }
 
     // MARK: - Failure reporting
+
+    /// HLS giving up returns the screen to MJPEG when the proxy has already proven it works — the
+    /// user picked a mode from the picker, not a dead end. Only a camera with no working MJPEG at
+    /// all (the case that sent us to HLS in the first place) ends on the failure screen.
+    private func handleHLSFailure(_ reason: String) {
+        recordHLSFailure(reason)
+        tearDownHLS()
+        // Don't keep offering a mode that just failed.
+        isHLSAvailable = false
+        guard isMJPEGAvailable else {
+            showFailure()
+            return
+        }
+        mode = .mjpeg
+        startMJPEG()
+    }
 
     private func recordHLSFailure(_ reason: String) {
         hlsFailureReason = reason
@@ -277,7 +380,9 @@ extension WatchCameraViewModel {
         stream: Stream? = nil,
         isLoading: Bool = false,
         errorMessage: String? = nil,
-        errorDetail: String? = nil
+        errorDetail: String? = nil,
+        isMJPEGAvailable: Bool = false,
+        isHLSAvailable: Bool = false
     ) -> WatchCameraViewModel {
         let viewModel = WatchCameraViewModel(
             item: .init(id: "camera.front_door", serverId: "1", type: .entity),
@@ -287,6 +392,8 @@ extension WatchCameraViewModel {
         viewModel.isLoading = isLoading
         viewModel.errorMessage = errorMessage
         viewModel.errorDetail = errorDetail
+        viewModel.isMJPEGAvailable = isMJPEGAvailable
+        viewModel.isHLSAvailable = isHLSAvailable
         return viewModel
     }
 }
