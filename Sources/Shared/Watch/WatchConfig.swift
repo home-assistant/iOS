@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
+public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord, Equatable {
     public static var watchConfigId: String { "watch-config" }
     public var id = WatchConfig.watchConfigId
     public var assist: Assist = .init(showAssist: true)

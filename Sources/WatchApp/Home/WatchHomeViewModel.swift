@@ -698,9 +698,17 @@ final class WatchHomeViewModel: ObservableObject {
 
     @MainActor
     private func updateConfig(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) {
+        // `configVersion` drives an `.id()` on the home list, which discards every row — including a
+        // row that is currently showing its run-confirmation dialog. Cache loads run on every sync
+        // (twice each: once for the cached config, once when the item info resolves), so re-issuing the
+        // id unconditionally would dismiss the dialog under the user's finger while a sync completes.
+        // Only unchanged data may keep the current id.
+        let contentChanged = config != watchConfig || magicItemsInfo != self.magicItemsInfo
         watchConfig = config
         self.magicItemsInfo = magicItemsInfo
-        configVersion = UUID()
+        if contentChanged {
+            configVersion = UUID()
+        }
 
         if config.assist.showAssist,
            config.assist.serverId != nil,
