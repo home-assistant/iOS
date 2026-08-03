@@ -201,6 +201,10 @@ struct WatchVacuumControlsView: View {
             }
             .frame(maxWidth: .infinity)
         }
+        // Explicit style, like the climate and cover controls: with the automatic one a `List` row
+        // holding several buttons becomes a single tap target, so start/pause would also stop the
+        // vacuum and send it back to its dock.
+        .buttonStyle(.bordered)
         .accessibilityLabel(Text(verbatim: accessibilityLabel ?? label ?? ""))
     }
 }
