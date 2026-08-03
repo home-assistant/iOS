@@ -93,12 +93,12 @@ final class CarPlayEditItemFlow {
     }
 
     /// Whether the per-item "require confirmation" setting has any effect when tapping this item.
-    /// Folders and assist items don't execute a guarded action, control-screen domains (climate)
+    /// Folders, areas and assist items don't execute a guarded action, control-screen domains (climate)
     /// open their own screen, and built-in-confirmation domains (lock) always confirm — so the
     /// require-confirmation question doesn't apply to any of them.
     private func supportsRunConfirmation(_ item: MagicItem) -> Bool {
         switch item.type {
-        case .folder, .assistPipeline, .assistPrompt:
+        case .folder, .area, .assistPipeline, .assistPrompt:
             return false
         case .entity:
             guard let domain = item.domain else { return true }

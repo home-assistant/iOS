@@ -63,6 +63,8 @@ struct WatchConfigItemEditView: View {
     }
 
     private var isFolder: Bool { originalItem.type == .folder }
+    /// Area entries open the area's entities instead of running anything, like folders.
+    private var isArea: Bool { originalItem.type == .area }
 
     var body: some View {
         List {
@@ -80,8 +82,8 @@ struct WatchConfigItemEditView: View {
                     WatchColorPicker(title: L10n.MagicItem.TextColor.title, colorHex: $textColorHex)
                 }
             }
-            // Folders and sensors never run anything, so there is nothing to confirm.
-            if !isFolder, !originalItem.isWatchDisplayOnly {
+            // Folders, areas and sensors never run anything, so there is nothing to confirm.
+            if !isFolder, !isArea, !originalItem.isWatchDisplayOnly {
                 Section {
                     Toggle(isOn: $requiresConfirmation) {
                         Text(verbatim: L10n.Watch.Config.Edit.requireConfirmation)

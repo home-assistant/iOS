@@ -12,6 +12,8 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
+        /// Areas, offered on the watch only: an area entry opens the area's entities on the watch.
+        case areas
         case assistPipelines
     }
 
@@ -37,6 +39,9 @@ struct MagicItemAddView: View {
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
             var options: [PickerOption] = [.entities]
+            if context == .watch {
+                options.append(.areas)
+            }
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
@@ -59,6 +64,15 @@ struct MagicItemAddView: View {
                             .padding(.horizontal)
                         // The watch only offers what it can display and run; other contexts show everything.
                         entitiesPerServerList(domainFilter: context == .watch ? Domain.watchAddable : nil)
+                    }
+                case .areas:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        AreaMagicItemAddList { area in
+                            itemToAdd(area)
+                            dismiss()
+                        }
                     }
                 case .assistPipelines:
                     VStack {
@@ -99,6 +113,9 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
+                    case .areas:
+                        Text(verbatim: L10n.MagicItem.ItemType.Area.List.title)
+                            .tag(MagicItemAddType.areas)
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
@@ -116,6 +133,8 @@ struct MagicItemAddView: View {
         switch visiblePickerOptions.first {
         case .entities, .none:
             return .entities
+        case .areas:
+            return .areas
         case .assistPipelines:
             return .assistPipelines
         }

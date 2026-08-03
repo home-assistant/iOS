@@ -12,6 +12,14 @@ public extension AppArea {
         }
     }
 
+    /// The areas of a server that contain at least one entity the watch can render. Areas without
+    /// one are dropped everywhere on the watch — browsing them would only ever show an empty screen,
+    /// and adding one as an item would create a dead entry.
+    static func fetchWatchPopulatedAreas(for serverId: String) throws -> [AppArea] {
+        let entityIds = try HAAppEntity.watchAreaEntityIds(serverId: serverId)
+        return try fetchAreas(for: serverId).filter { !$0.entities.isDisjoint(with: entityIds) }
+    }
+
     /// Fetch all areas across every server, each server's areas in display order
     static func fetchAllAreas() throws -> [AppArea] {
         try Current.database().read { db in

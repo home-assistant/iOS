@@ -110,6 +110,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case scene
         case entity
         case folder
+        /// An entry that opens one area's entities. `id` is the area id and `serverId` the server it
+        /// belongs to, so `serverUniqueId` matches `AppArea.id`. It holds no children — the area's
+        /// entities are resolved live when the screen opens.
+        case area
         case assistPipeline
         case assistPrompt
         case unsupported
@@ -201,6 +205,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 )
             case .folder:
                 icon = .folderIcon
+            case .area:
+                icon = MaterialDesignIcons(
+                    serversideValueNamed: info.iconName,
+                    fallback: .textureBoxIcon
+                )
             case .assistPipeline:
                 icon = .microphoneIcon
             case .assistPrompt:
@@ -478,8 +487,8 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder, .assistPipeline, .assistPrompt, .unsupported:
-                    // Folders and assist items don't execute direct actions
+                case .folder, .area, .assistPipeline, .assistPrompt, .unsupported:
+                    // Folders, areas and assist items don't execute direct actions
                     return nil
                 }
             }()
@@ -723,7 +732,7 @@ public extension MagicItem {
                 guard let action = domain.mainAction else { return nil }
                 return WatchServiceCall(domain: domain.rawValue, service: action.rawValue, data: ["entity_id": id])
             }
-        case .folder, .assistPipeline, .assistPrompt, .unsupported:
+        case .folder, .area, .assistPipeline, .assistPrompt, .unsupported:
             return nil
         }
     }

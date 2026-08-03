@@ -40,9 +40,7 @@ struct WatchAreasListView: View {
     private func loadAreas() {
         let serverId = serverId
         Self.loadQueue.async {
-            let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
-            let entityIds = (try? HAAppEntity.watchAreaEntityIds(serverId: serverId)) ?? []
-            let populatedAreas = allAreas.filter { !$0.entities.isDisjoint(with: entityIds) }
+            let populatedAreas = (try? AppArea.fetchWatchPopulatedAreas(for: serverId)) ?? []
             DispatchQueue.main.async {
                 areas = populatedAreas
             }
