@@ -45,13 +45,7 @@ struct FolderDetailView: View {
             }
         }
         .sheet(isPresented: $showAddItem) {
-            // Entities only. A complication is a glanceable summary — the point is seeing it without
-            // navigating — so it belongs at the top level of the list, not behind a folder tap.
-            MagicItemAddView(
-                context: .watch,
-                visiblePickerOptions: [.entities],
-                allowMultipleSelection: true
-            ) { itemToAdd in
+            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
             }
@@ -82,20 +76,30 @@ struct FolderDetailView: View {
             customization: nil
         )
 
-        NavigationLink {
-            MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
-                viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+        if item.type == .complication {
+            // Nothing to customize: a complication renders from its own configuration, so a name or
+            // color set here would be silently ignored. Swipe removes it, as for any other row.
+            itemLabel(item: item, itemInfo: itemInfo)
+        } else {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
+                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemLabel(item: item, itemInfo: itemInfo)
             }
-            .environment(\.colorScheme, .dark)
-        } label: {
-            HStack {
-                Image(uiImage: image(for: item, itemInfo: itemInfo))
-                    .renderingMode(.original)
-                Text(item.name(info: itemInfo))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemSymbol: .line3Horizontal)
-                    .foregroundStyle(.gray)
-            }
+        }
+    }
+
+    private func itemLabel(item: MagicItem, itemInfo: MagicItem.Info) -> some View {
+        HStack {
+            Image(uiImage: image(for: item, itemInfo: itemInfo))
+                .renderingMode(.original)
+            Text(item.name(info: itemInfo))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemSymbol: .line3Horizontal)
+                .foregroundStyle(.gray)
         }
     }
 

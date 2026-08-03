@@ -300,28 +300,26 @@ struct WatchHomeView: View {
         }
     }
 
+    // A rectangular complication has nothing to show inside a 60-point square tile, so the grid holds
+    // only the tileable items and the complications follow it as full-width rows.
     @ViewBuilder
     private var gridContent: some View {
-        ForEach(WatchGridSection.sections(for: viewModel.watchConfig.items)) { section in
-            switch section {
-            case let .tiles(items):
-                LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
-                    spacing: DesignSystem.Spaces.one
-                ) {
-                    ForEach(items, id: \.serverUniqueId) { item in
-                        if item.type == .folder {
-                            WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
-                        } else {
-                            WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
-                        }
-                    }
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            ForEach(viewModel.watchConfig.items.filter { $0.type != .complication }, id: \.serverUniqueId) { item in
+                if item.type == .folder {
+                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else {
+                    WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
-            case let .complication(item):
-                WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
             }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+        ForEach(viewModel.watchConfig.items.filter { $0.type == .complication }, id: \.serverUniqueId) { item in
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
         }
     }
 
@@ -356,19 +354,12 @@ struct WatchHomeView: View {
     private func rowContent(for item: MagicItem, at index: Int) -> some View {
         if isEditing {
             VStack(spacing: DesignSystem.Spaces.half) {
-                // A complication has nothing to rename or recolor here — it renders from its own
-                // configuration — so it gets the row without the editor button. Reordering and
-                // swipe-to-delete still apply.
-                if item.type == .complication {
+                Button {
+                    activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+                } label: {
                     WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
-                } else {
-                    Button {
-                        activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
-                    } label: {
-                        WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
-                    }
-                    .buttonStyle(.plain)
                 }
+                .buttonStyle(.plain)
                 WatchReorderControls(
                     upDisabled: index == 0,
                     downDisabled: index == viewModel.watchConfig.items.count - 1,

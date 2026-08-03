@@ -64,24 +64,31 @@ struct WatchConfigItemEditView: View {
 
     private var isFolder: Bool { originalItem.type == .folder }
 
+    /// A complication draws itself from its own configuration (made on the iPhone), so the name,
+    /// icon, colors and confirmation here would all be silently ignored. Its row is in this editor
+    /// only so it can be removed from the list, which is what the screen shows for it.
+    private var isComplication: Bool { originalItem.type == .complication }
+
     var body: some View {
         List {
-            Section {
-                TextField(placeholderName, text: $name)
-                WatchIconPicker(iconName: $iconName, defaultIcon: defaultIcon)
-            }
-            Section {
-                WatchColorPicker(title: L10n.MagicItem.IconColor.title, colorHex: $iconColorHex)
-                Toggle(isOn: $useCustomColors) {
-                    Text(verbatim: L10n.MagicItem.UseCustomColors.title)
+            if !isComplication {
+                Section {
+                    TextField(placeholderName, text: $name)
+                    WatchIconPicker(iconName: $iconName, defaultIcon: defaultIcon)
                 }
-                if useCustomColors {
-                    WatchColorPicker(title: L10n.MagicItem.BackgroundColor.title, colorHex: $backgroundColorHex)
-                    WatchColorPicker(title: L10n.MagicItem.TextColor.title, colorHex: $textColorHex)
+                Section {
+                    WatchColorPicker(title: L10n.MagicItem.IconColor.title, colorHex: $iconColorHex)
+                    Toggle(isOn: $useCustomColors) {
+                        Text(verbatim: L10n.MagicItem.UseCustomColors.title)
+                    }
+                    if useCustomColors {
+                        WatchColorPicker(title: L10n.MagicItem.BackgroundColor.title, colorHex: $backgroundColorHex)
+                        WatchColorPicker(title: L10n.MagicItem.TextColor.title, colorHex: $textColorHex)
+                    }
                 }
             }
-            // Folders and sensors never run anything, so there is nothing to confirm.
-            if !isFolder, !originalItem.isWatchDisplayOnly {
+            // Folders, sensors and complications never run anything, so there is nothing to confirm.
+            if !isFolder, !isComplication, !originalItem.isWatchDisplayOnly {
                 Section {
                     Toggle(isOn: $requiresConfirmation) {
                         Text(verbatim: L10n.Watch.Config.Edit.requireConfirmation)
@@ -119,7 +126,14 @@ struct WatchConfigItemEditView: View {
         // A conditional inside `.toolbar { }` needs `ToolbarContentBuilder.buildIf`, which is
         // watchOS 9+. Pick the toolbar variant outside the builder instead (each is static).
         .modify { view in
-            if mode == .edit {
+            if isComplication {
+                // Nothing to commit — the only action is Delete — so there is no confirm button.
+                view.toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        cancelButton
+                    }
+                }
+            } else if mode == .edit {
                 view.toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         cancelButton

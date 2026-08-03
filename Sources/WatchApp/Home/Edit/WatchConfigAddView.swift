@@ -3,9 +3,9 @@ import Shared
 import SwiftUI
 
 /// Add flow for the watch configuration, presented as a navigation drill-down:
-/// chooser (Entity / Folder) → server (skipped when only one) → entity list → name/icon editor.
-/// The phone owns the entity database, so the entity list is fetched from it. Committing performs the
-/// mutation, persists, and dismisses the whole sheet via `finish`.
+/// chooser (Entity / Complication / Folder) → server (skipped when only one) → entity list →
+/// name/icon editor. The phone owns the entity database, so the entity list is fetched from it.
+/// Committing performs the mutation, persists, and dismisses the whole sheet via `finish`.
 struct WatchConfigAddView: View {
     /// Held without `@ObservedObject` on purpose: the add flow only *calls* the view model (fetch and
     /// mutate) and renders none of its published state, so observing it would rebuild this whole
@@ -18,9 +18,17 @@ struct WatchConfigAddView: View {
 
     @Environment(\.dismiss) private var dismiss
 
-    /// Whether the watch has any rectangular complication to offer. Loaded on appear so the chooser
-    /// doesn't gain a row that leads nowhere for the many users who have never configured one.
-    @State private var hasComplications = false
+    /// Whether the watch has any rectangular complication to offer — the chooser shouldn't grow a row
+    /// that leads nowhere for the many users who have never configured one. Resolved when the sheet is
+    /// built rather than on appear, because it decides the *shape* of the first screen (see `content`);
+    /// loading it late would swap that screen out under the user.
+    private let hasComplications: Bool
+
+    init(viewModel: WatchHomeViewModel, folderId: String?) {
+        self.viewModel = viewModel
+        self.folderId = folderId
+        self.hasComplications = ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
+    }
 
     var body: some View {
         NavigationView {
@@ -40,9 +48,9 @@ struct WatchConfigAddView: View {
 
     @ViewBuilder
     private var content: some View {
-        // Inside a folder the only thing to add is an entity (folders don't nest), so skip the
-        // Entity/Folder chooser and go straight to the entity flow.
-        if folderId != nil {
+        // Inside a folder there is no Folder option (folders don't nest), so with no complications to
+        // offer either the chooser would be a single row — skip it and go straight to the entity flow.
+        if folderId != nil, !hasComplications {
             WatchConfigAddEntitySourceView(
                 viewModel: viewModel,
                 folderId: folderId,
@@ -65,37 +73,41 @@ struct WatchConfigAddView: View {
                 chooserRow(icon: Domain.automation.icon(), title: L10n.Watch.Config.Add.entity)
             }
 
-            NavigationLink {
-                WatchConfigItemEditView(
-                    mode: .add,
-                    placeholderName: L10n.Watch.Config.Edit.namePlaceholder,
-                    item: MagicItem(
-                        id: UUID().uuidString,
-                        serverId: "",
-                        type: .folder,
-                        displayText: "",
-                        items: []
-                    ),
-                    info: nil
-                ) { edited in
-                    viewModel.addFolder(named: edited.displayText ?? "", iconName: edited.customization?.icon)
-                    viewModel.saveConfig()
-                    dismiss()
-                }
-            } label: {
-                chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
-            }
-
             if hasComplications {
                 NavigationLink {
-                    WatchConfigAddComplicationListView(viewModel: viewModel, finish: { dismiss() })
+                    WatchConfigAddComplicationListView(
+                        viewModel: viewModel,
+                        folderId: folderId,
+                        finish: { dismiss() }
+                    )
                 } label: {
                     chooserRow(icon: .watchIcon, title: L10n.Watch.Config.Add.complication)
                 }
             }
-        }
-        .onAppear {
-            hasComplications = ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
+
+            // Folders don't nest, so creating one is only offered at the root.
+            if folderId == nil {
+                NavigationLink {
+                    WatchConfigItemEditView(
+                        mode: .add,
+                        placeholderName: L10n.Watch.Config.Edit.namePlaceholder,
+                        item: MagicItem(
+                            id: UUID().uuidString,
+                            serverId: "",
+                            type: .folder,
+                            displayText: "",
+                            items: []
+                        ),
+                        info: nil
+                    ) { edited in
+                        viewModel.addFolder(named: edited.displayText ?? "", iconName: edited.customization?.icon)
+                        viewModel.saveConfig()
+                        dismiss()
+                    }
+                } label: {
+                    chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
+                }
+            }
         }
     }
 

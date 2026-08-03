@@ -84,24 +84,22 @@ struct WatchFolderContentView: View {
         .onDelete(perform: isEditing ? deleteItems : nil)
     }
 
+    // Complications follow the grid as full-width rows: a rectangular layout has nothing to show
+    // inside a 60-point square tile.
     @ViewBuilder
     private var gridContent: some View {
-        ForEach(WatchGridSection.sections(for: folder?.items ?? [])) { section in
-            switch section {
-            case let .tiles(items):
-                LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
-                    spacing: DesignSystem.Spaces.one
-                ) {
-                    ForEach(items, id: \.serverUniqueId) { item in
-                        WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
-                    }
-                }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
-            case let .complication(item):
-                WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            ForEach((folder?.items ?? []).filter { $0.type != .complication }, id: \.serverUniqueId) { item in
+                WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
             }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+        ForEach((folder?.items ?? []).filter { $0.type == .complication }, id: \.serverUniqueId) { item in
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
         }
     }
 

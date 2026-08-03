@@ -8,6 +8,8 @@ import SwiftUI
 /// complication already carries its own configuration, made on the iPhone.
 struct WatchConfigAddComplicationListView: View {
     let viewModel: WatchHomeViewModel
+    /// When set, the complication goes into this folder instead of the root.
+    let folderId: String?
     let finish: () -> Void
 
     /// `nil` until the first load finishes, which is what puts the spinner on screen.
@@ -69,7 +71,12 @@ struct WatchConfigAddComplicationListView: View {
 
     private func add(_ config: WatchComplicationConfig) {
         let item = MagicItem(complication: config)
-        viewModel.addItem(item, info: Current.magicItemProvider().getInfo(for: item))
+        let info = Current.magicItemProvider().getInfo(for: item)
+        if let folderId {
+            viewModel.addItemToFolder(folderId: folderId, item: item, info: info)
+        } else {
+            viewModel.addItem(item, info: info)
+        }
         viewModel.saveConfig()
         finish()
     }
@@ -77,6 +84,6 @@ struct WatchConfigAddComplicationListView: View {
 
 #Preview {
     NavigationView {
-        WatchConfigAddComplicationListView(viewModel: WatchHomeViewModel(), finish: {})
+        WatchConfigAddComplicationListView(viewModel: WatchHomeViewModel(), folderId: nil, finish: {})
     }
 }
