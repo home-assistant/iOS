@@ -123,12 +123,16 @@ final class WatchLockControlsViewModel: ObservableObject {
         return state
     }
 
+    /// Every action answers on the wrist: a click when the command leaves, then success or failure
+    /// once the server replies. The screen's own state can take a poll interval to catch up, so
+    /// without haptics a lock command looks like it did nothing.
     private func send(service: Service) {
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
             Current.Log.error("Server \(item.serverId) not synced to the watch for lock controls")
             WKInterfaceDevice.current().play(.failure)
             return
         }
+        WKInterfaceDevice.current().play(.click)
         WatchServiceCallSender.send(
             domain: .lock,
             service: service,
@@ -136,6 +140,7 @@ final class WatchLockControlsViewModel: ObservableObject {
             server: server
         ) { [weak poller] success in
             if success {
+                WKInterfaceDevice.current().play(.success)
                 // Reflect the executed command quickly instead of waiting a full poll interval.
                 poller?.refresh(after: 1)
             } else {

@@ -7616,6 +7616,12 @@ public enum L10n {
       public static var `open`: String { return L10n.tr("Localizable", "watch.lock_controls.open") }
       /// Unlock
       public static var unlock: String { return L10n.tr("Localizable", "watch.lock_controls.unlock") }
+      public enum OpenConfirmation {
+        /// Are you sure you want to open "%@"?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.lock_controls.open_confirmation.title", String(describing: p1))
+        }
+      }
     }
     public enum Settings {
       /// Auto
