@@ -27,11 +27,11 @@ struct WatchLockControlsView: View {
             }
             Section {
                 HStack(spacing: DesignSystem.Spaces.one) {
-                    actionButton(symbol: .lockFill, label: L10n.Watch.LockControls.lock) {
+                    actionButton(symbol: .lockFill, label: L10n.Watch.LockControls.lock, action: .lock) {
                         viewModel.lock()
                     }
                     .disabled(!viewModel.canLock)
-                    actionButton(symbol: .lockOpenFill, label: L10n.Watch.LockControls.unlock) {
+                    actionButton(symbol: .lockOpenFill, label: L10n.Watch.LockControls.unlock, action: .unlock) {
                         viewModel.unlock()
                     }
                     .disabled(!viewModel.canUnlock)
@@ -40,7 +40,7 @@ struct WatchLockControlsView: View {
             }
             if viewModel.supportsOpen {
                 Section {
-                    actionButton(symbol: .doorLeftHandOpen, label: L10n.Watch.LockControls.open) {
+                    actionButton(symbol: .doorLeftHandOpen, label: L10n.Watch.LockControls.open, action: .open) {
                         viewModel.open()
                     }
                     .disabled(!viewModel.canOpen)
@@ -95,11 +95,27 @@ struct WatchLockControlsView: View {
         }
     }
 
-    private func actionButton(symbol: SFSymbol, label: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+    private func actionButton(
+        symbol: SFSymbol,
+        label: String,
+        action: WatchLockControlsViewModel.Action,
+        onTap: @escaping () -> Void
+    ) -> some View {
+        Button(action: onTap) {
             VStack(spacing: DesignSystem.Spaces.half) {
-                Image(systemSymbol: symbol)
-                    .font(.body.weight(.semibold))
+                // A lock command can take seconds to reach the server, so the tapped button turns
+                // into a spinner until it answers. Fixed height so swapping the two doesn't
+                // resize the button.
+                Group {
+                    if viewModel.pendingAction == action {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Image(systemSymbol: symbol)
+                            .font(.body.weight(.semibold))
+                    }
+                }
+                .frame(height: DesignSystem.Spaces.three)
                 Text(verbatim: label)
                     .font(.caption2)
                     .lineLimit(1)
