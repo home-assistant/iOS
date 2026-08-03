@@ -23,6 +23,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     private var areasPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
     private var floorNamesPerServer: [String: [String: String]] = [:]
+    /// Watch complication configs keyed by `"serverId-configId"` (a `MagicItem.serverUniqueId`).
+    /// `nil` until loaded; refreshed by `loadAppEntities` so an edited or deleted complication is
+    /// picked up on the next `loadInformation`.
+    private var complicationConfigIndex: [String: WatchComplicationConfig]?
 
     private func rebuildEntityIndex() {
         entityIndexPerServer = entitiesPerServer.mapValues { entities in
@@ -184,6 +188,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
         let servers = Current.servers.all
+        // Rebuilt on every load so complication renames and deletions surface without a relaunch.
+        complicationConfigIndex = Self.loadComplicationConfigIndex()
         guard !servers.isEmpty else {
             completion()
             return
@@ -276,6 +282,21 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
             )
+        case .complication:
+            // The complication renders itself from its own config, so the only thing resolved here is
+            // the label the configuration screens show. A deleted complication yields nil, which drops
+            // the item from the list the same way a deleted entity does.
+            guard let config = complicationConfig(id: item.id, serverId: item.serverId) else {
+                Current.Log.error("Failed to get magic item complication info for item id: \(item.id)")
+                return nil
+            }
+            return .init(
+                id: item.serverUniqueId,
+                name: config.displayName,
+                iconName: config.iconName ?? MaterialDesignIcons.watchIcon.name,
+                customization: item.customization,
+                contextSubtitle: config.entityDisplayName ?? config.entityId
+            )
         case .assistPipeline, .assistPrompt:
             let pipelineId = item.assistPipelineId ?? item.id
             let pipelineName: String = {
@@ -301,6 +322,23 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         case .unsupported:
             return nil
         }
+    }
+
+    /// The complication config behind a `.complication` item, from the index built when entities were
+    /// loaded. Built on demand for callers that resolve info without going through `loadInformation`.
+    private func complicationConfig(id: String, serverId: String) -> WatchComplicationConfig? {
+        if complicationConfigIndex == nil {
+            complicationConfigIndex = Self.loadComplicationConfigIndex()
+        }
+        return complicationConfigIndex?["\(serverId)-\(id)"]
+    }
+
+    private static func loadComplicationConfigIndex() -> [String: WatchComplicationConfig] {
+        let configs = (try? WatchComplicationConfig.all()) ?? []
+        return Dictionary(
+            configs.map { ("\($0.serverId)-\($0.id)", $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 
     func getAreaName(for item: MagicItem) -> String? {

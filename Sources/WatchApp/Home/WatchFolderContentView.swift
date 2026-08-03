@@ -84,17 +84,25 @@ struct WatchFolderContentView: View {
         .onDelete(perform: isEditing ? deleteItems : nil)
     }
 
+    @ViewBuilder
     private var gridContent: some View {
-        LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
-            spacing: DesignSystem.Spaces.one
-        ) {
-            ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
-                WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+        ForEach(WatchGridSection.sections(for: folder?.items ?? [])) { section in
+            switch section {
+            case let .tiles(items):
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+                    spacing: DesignSystem.Spaces.one
+                ) {
+                    ForEach(items, id: \.serverUniqueId) { item in
+                        WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                    }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+            case let .complication(item):
+                WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
             }
         }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets())
     }
 
     @ViewBuilder
@@ -115,6 +123,8 @@ struct WatchFolderContentView: View {
                 )
             }
             .watchConfigRowBackground()
+        } else if item.type == .complication {
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,

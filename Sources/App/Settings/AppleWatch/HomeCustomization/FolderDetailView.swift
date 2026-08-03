@@ -45,7 +45,13 @@ struct FolderDetailView: View {
             }
         }
         .sheet(isPresented: $showAddItem) {
-            MagicItemAddView(context: .watch, allowMultipleSelection: true) { itemToAdd in
+            // Entities only. A complication is a glanceable summary — the point is seeing it without
+            // navigating — so it belongs at the top level of the list, not behind a folder tap.
+            MagicItemAddView(
+                context: .watch,
+                visiblePickerOptions: [.entities],
+                allowMultipleSelection: true
+            ) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
             }

@@ -18,6 +18,10 @@ struct WatchConfigAddView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    /// Whether the watch has any rectangular complication to offer. Loaded on appear so the chooser
+    /// doesn't gain a row that leads nowhere for the many users who have never configured one.
+    @State private var hasComplications = false
+
     var body: some View {
         NavigationView {
             content
@@ -81,6 +85,17 @@ struct WatchConfigAddView: View {
             } label: {
                 chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
             }
+
+            if hasComplications {
+                NavigationLink {
+                    WatchConfigAddComplicationListView(viewModel: viewModel, finish: { dismiss() })
+                } label: {
+                    chooserRow(icon: .watchIcon, title: L10n.Watch.Config.Add.complication)
+                }
+            }
+        }
+        .onAppear {
+            hasComplications = ((try? WatchComplicationConfig.watchListAddable()) ?? []).isEmpty == false
         }
     }
 

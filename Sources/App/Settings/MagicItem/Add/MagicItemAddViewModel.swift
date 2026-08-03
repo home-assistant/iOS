@@ -4,6 +4,7 @@ import Foundation
 enum MagicItemAddType {
     case entities
     case assistPipelines
+    case complications
 }
 
 final class MagicItemAddViewModel: ObservableObject {

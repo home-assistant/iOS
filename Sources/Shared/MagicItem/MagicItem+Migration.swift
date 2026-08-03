@@ -35,6 +35,11 @@ extension MagicItemProvider {
             case .assistPipeline, .assistPrompt:
                 // Assist items do not require entity-based migration
                 return item
+            case .complication:
+                // Complications are keyed by their own config id, not an entity, so there is no
+                // similar item to re-point them at. `getInfo` already dropped the ones whose config
+                // is gone; the rest are kept as-is.
+                return item
             case .unsupported:
                 return nil
             default:
