@@ -1536,6 +1536,19 @@ public enum ComplicationTextAreas: String, CaseIterable {
         }
     }
 
+    /// For a row's second column, the first column of that same row — so a renderer can fold the two
+    /// onto one line the way ClockKit's columns and table templates laid them out side by side. nil
+    /// for every other area. Naming the counterpart rather than answering "am I a second column?"
+    /// lets the renderer check that the pair really is adjacent before merging them.
+    public var firstColumnOfSameRow: ComplicationTextAreas? {
+        switch self {
+        case .Row1Column2: return .Row1Column1
+        case .Row2Column2: return .Row2Column1
+        case .Row3Column2: return .Row3Column1
+        default: return nil
+        }
+    }
+
     public var slug: String {
         var cleanLocation = rawValue
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")

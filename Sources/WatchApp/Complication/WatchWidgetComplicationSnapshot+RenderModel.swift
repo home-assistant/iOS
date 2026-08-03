@@ -10,8 +10,9 @@ extension WatchWidgetComplicationSnapshot {
     /// `RectangularComplicationView.renderModel(_:)` — if the two drift, the in-app row stops being a
     /// faithful preview of the complication.
     ///
-    /// `nil` for legacy (server-rendered) complications, which carry no `perFamily` payload and have
-    /// no rectangular layout to reproduce.
+    /// `nil` for the built-in placeholder and Assist snapshots, which carry no `perFamily` payload and
+    /// have no rectangular layout to reproduce. Legacy (server-rendered) complications do carry one —
+    /// see `init(complication:)` — so they draw here through the same layout as everything else.
     var rectangularRenderModel: RectangularComplicationRenderModel? {
         guard let options = perFamily?[WatchComplicationConfig.Family.rectangular.rawValue] else {
             return nil

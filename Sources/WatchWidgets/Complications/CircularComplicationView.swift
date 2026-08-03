@@ -4,7 +4,7 @@ import WidgetKit
 
 /// Circular complication: a gauge around the center content (icon / value / name) when a value exists
 /// — an open arc (optionally with min/max labels) or a full capacity ring — otherwise just the center
-/// content. Legacy/built-ins show the icon alone.
+/// content. Built-ins (Home Assistant / Assist) show the icon alone.
 ///
 /// The modern layout is rendered by the shared `CircularComplicationContentView` (in the
 /// HAWatchComplications package) so the in-app editor preview renders from the exact same code.
@@ -17,7 +17,7 @@ struct CircularComplicationView: View {
         if let complication, complication.perFamily != nil {
             CircularComplicationContentView(model: renderModel(complication))
         } else {
-            // Legacy/built-ins (Home Assistant / Assist): the icon alone fills the disc.
+            // Built-ins (Home Assistant / Assist): the icon alone fills the disc.
             ComplicationIconView(complication: complication)
                 .padding(WatchWidgetConstants.Layout.logoPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
