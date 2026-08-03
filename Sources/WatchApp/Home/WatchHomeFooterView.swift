@@ -2,19 +2,24 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The watch home screen's footer: app version and the edit + settings buttons.
+/// The watch home screen's footer: app version and the edit/done + settings buttons.
 /// Rendered as the last row of the home list.
 struct WatchHomeFooterView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
     let isEditing: Bool
     let onEdit: () -> Void
+    let onDone: () -> Void
     let onSettings: () -> Void
 
     var body: some View {
         VStack(spacing: .zero) {
             appVersion
             HStack(spacing: DesignSystem.Spaces.one) {
-                if !isEditing, !viewModel.watchConfig.items.isEmpty {
+                if isEditing {
+                    // The header's Done is off screen once the list is scrolled to the bottom, which
+                    // is exactly where reordering leaves you — so finishing is reachable from here too.
+                    doneFooterButton
+                } else if !viewModel.watchConfig.items.isEmpty {
                     editFooterButton
                 }
                 settingsButton
@@ -22,6 +27,16 @@ struct WatchHomeFooterView: View {
             .padding(DesignSystem.Spaces.one)
         }
         .listRowBackground(Color.clear)
+    }
+
+    private var doneFooterButton: some View {
+        Button {
+            onDone()
+        } label: {
+            Image(systemSymbol: .checkmark)
+        }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground(tint: .haPrimary)
     }
 
     private var editFooterButton: some View {
@@ -75,6 +90,19 @@ struct WatchHomeFooterView: View {
             viewModel: .init(),
             isEditing: false,
             onEdit: {},
+            onDone: {},
+            onSettings: {}
+        )
+    }
+}
+
+#Preview("Editing") {
+    List {
+        WatchHomeFooterView(
+            viewModel: .init(),
+            isEditing: true,
+            onEdit: {},
+            onDone: {},
             onSettings: {}
         )
     }

@@ -21,7 +21,11 @@ struct WatchFolderContentView: View {
         List {
             header
             itemsContent
-            if !isEditing {
+            if isEditing {
+                // The header's Done scrolls off once the list is long enough to reorder in, so
+                // finishing is reachable from the bottom too — matching the home screen's footer.
+                doneFooterRow
+            } else {
                 addRow
             }
         }
@@ -187,6 +191,16 @@ struct WatchFolderContentView: View {
                 .contentShape(Rectangle())
         }
         .watchItemRowStyle()
+    }
+
+    private var doneFooterRow: some View {
+        HStack {
+            Spacer()
+            doneButton
+            Spacer()
+        }
+        .padding(DesignSystem.Spaces.one)
+        .listRowBackground(Color.clear)
     }
 
     private var doneButton: some View {

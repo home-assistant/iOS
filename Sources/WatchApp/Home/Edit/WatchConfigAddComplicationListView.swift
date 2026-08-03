@@ -29,12 +29,14 @@ struct WatchConfigAddComplicationListView: View {
             } else {
                 List {
                     ForEach(complications ?? [], id: \.id) { config in
+                        // Plain rows, like the add flow's server picker: the home screen's row style
+                        // is full-bleed (zero horizontal insets) and would push the text under the
+                        // screen's edge here.
                         Button {
                             add(config)
                         } label: {
                             row(for: config)
                         }
-                        .watchHomeItemRowStyle(tint: nil)
                     }
                 }
             }
@@ -44,9 +46,8 @@ struct WatchConfigAddComplicationListView: View {
     }
 
     private func row(for config: WatchComplicationConfig) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+        VStack(alignment: .leading, spacing: .zero) {
             Text(verbatim: config.displayName)
-                .frame(maxWidth: .infinity, alignment: .leading)
             if let subtitle = config.entityDisplayName ?? config.entityId {
                 Text(verbatim: subtitle)
                     .font(.caption2)

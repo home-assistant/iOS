@@ -258,6 +258,7 @@ struct WatchHomeView: View {
                 viewModel: viewModel,
                 isEditing: isEditing,
                 onEdit: { enterEditMode() },
+                onDone: { finishEditing() },
                 onSettings: { showSettings = true }
             )
         }
@@ -450,6 +451,12 @@ struct WatchHomeView: View {
 
     private func enterEditMode() {
         withAnimation { isEditing = true }
+    }
+
+    /// Same as the header's Done: leave edit mode and persist the reordering.
+    private func finishEditing() {
+        withAnimation { isEditing = false }
+        viewModel.saveConfig()
     }
 
     private func moveItems(from source: IndexSet, to destination: Int) {
