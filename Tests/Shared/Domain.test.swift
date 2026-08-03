@@ -1,3 +1,5 @@
+import Foundation
+import HAKit
 @testable import Shared
 import Testing
 
@@ -496,5 +498,110 @@ struct DomainFeatureSupportTests {
                 #expect(!excluded.contains(domain), "\(name) domain \(domain) must not be in appDatabaseExcluded")
             }
         }
+    }
+}
+
+struct DomainTimestampStateTests {
+    /// 2026-08-03 18:15:00 UTC — the dishwasher finish time from the report, and the instant every
+    /// test below measures against so the relative wording is deterministic.
+    private static let referenceDate = Date(timeIntervalSince1970: 1_785_780_900)
+
+    private func makeEntity(
+        entityId: String,
+        state: String,
+        attributes: [String: Any] = [:]
+    ) throws -> HAEntity {
+        try HAEntity(
+            entityId: entityId,
+            state: state,
+            lastChanged: Self.referenceDate,
+            lastUpdated: Self.referenceDate,
+            attributes: attributes,
+            context: .init(id: "context", userId: nil, parentId: nil)
+        )
+    }
+
+    /// Runs `body` with "now" frozen an hour before the reference timestamp, so a sensor reporting
+    /// that timestamp is always exactly one hour in the future.
+    private func withFrozenClock<T>(_ body: () throws -> T) rethrows -> T {
+        let previousDate = Current.date
+        Current.date = { Self.referenceDate.addingTimeInterval(-3600) }
+        defer { Current.date = previousDate }
+        return try body()
+    }
+
+    @Test func timestampSensorRendersRelativeTimeInsteadOfRawISOString() throws {
+        let entity = try makeEntity(
+            entityId: "sensor.dishwasher_programme_finish_time",
+            state: "2026-08-03T18:15:00+00:00",
+            attributes: ["device_class": "timestamp"]
+        )
+
+        let formatter = RelativeDateTimeFormatter()
+        let now = Self.referenceDate.addingTimeInterval(-3600)
+        let expected = formatter.localizedString(for: Self.referenceDate, relativeTo: now).leadingCapitalized
+
+        let description = withFrozenClock {
+            Domain.sensor.contextualStateDescription(for: entity)
+        }
+
+        // The raw UTC string is what the watch used to show; anything relative is an improvement,
+        // but pin the wording so a formatter regression is caught.
+        #expect(description != "2026-08-03T18:15:00+00:00")
+        #expect(description == expected)
+    }
+
+    /// The old parser required fractional seconds, so every sensor reporting plain seconds fell
+    /// through to the raw string. Both spellings must resolve to the same instant.
+    @Test func timestampParsingAcceptsBothISOSpellings() {
+        #expect(EntityTimestampFormatter.date(from: "2026-08-03T18:15:00+00:00") == Self.referenceDate)
+        #expect(EntityTimestampFormatter.date(from: "2026-08-03T18:15:00.000000+00:00") == Self.referenceDate)
+        #expect(EntityTimestampFormatter.date(from: "2026-08-03T20:15:00+02:00") == Self.referenceDate)
+    }
+
+    @Test func unavailableTimestampSensorKeepsItsLocalizedWording() throws {
+        let entity = try makeEntity(
+            entityId: "sensor.dishwasher_programme_finish_time",
+            state: Domain.State.unavailable.rawValue,
+            attributes: ["device_class": "timestamp"]
+        )
+
+        let description = Domain.sensor.contextualStateDescription(for: entity)
+        #expect(description == entity.localizedState.leadingCapitalized)
+        #expect(description != Domain.State.unavailable.rawValue)
+    }
+
+    @Test func dateSensorRendersLocalizedDateWithoutShiftingTheDay() throws {
+        let entity = try makeEntity(
+            entityId: "sensor.next_bin_collection",
+            state: "2026-08-03",
+            attributes: ["device_class": "date"]
+        )
+
+        let formatter = with(DateFormatter()) {
+            $0.dateStyle = .medium
+            $0.timeStyle = .none
+            $0.timeZone = TimeZone(secondsFromGMT: 0)
+        }
+
+        let description = Domain.sensor.contextualStateDescription(for: entity)
+        #expect(description != "2026-08-03")
+        #expect(description == formatter.string(from: Self.referenceDate))
+    }
+
+    @Test func nonTimestampSensorsAreUnaffected() throws {
+        let entity = try makeEntity(
+            entityId: "sensor.power_consumed",
+            state: "0.203",
+            attributes: ["device_class": "power", "unit_of_measurement": "kW"]
+        )
+
+        #expect(Domain.sensor.contextualStateDescription(for: entity) == "0.203 kW")
+    }
+
+    @Test func timestampFormatterRejectsNonTimestampStates() {
+        #expect(EntityTimestampFormatter.date(from: "unavailable") == nil)
+        #expect(EntityTimestampFormatter.relativeDescription(for: "on") == nil)
+        #expect(EntityTimestampFormatter.dateDescription(for: "not a date") == nil)
     }
 }
