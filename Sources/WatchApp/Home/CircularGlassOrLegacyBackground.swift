@@ -32,32 +32,41 @@ extension View {
     /// Full-width glass row style for the watch home items on watchOS 26: a rounded rectangle (not a
     /// capsule) spanning the row with no horizontal margin. Falls back to a rounded, optionally-tinted
     /// row background on older versions. Apply to the item's `Button`.
+    ///
+    /// The plain button style is applied on every version (like `watchHomeItemGridStyle` does): the row
+    /// draws its own background, and the plain style keeps the tap handled by SwiftUI's own press
+    /// gesture rather than the platform's default list-button treatment.
     @ViewBuilder
     func watchHomeItemRowStyle(tint: Color?) -> some View {
-        modify { view in
-            if #available(watchOS 26.0, *) {
-                view
-                    .buttonStyle(.plain)
-                    .glassEffect(
-                        .regular.tint(tint).interactive(),
-                        in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
-                    )
-                    .contentShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous))
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(
-                        top: DesignSystem.Spaces.micro,
-                        leading: .zero,
-                        bottom: DesignSystem.Spaces.micro,
-                        trailing: .zero
-                    ))
-            } else {
-                view
-                    .listRowBackground(
-                        (tint ?? Color.gray.opacity(0.3))
-                            .cornerRadius(DesignSystem.CornerRadius.two)
-                    )
+        buttonStyle(.plain)
+            .modify { view in
+                if #available(watchOS 26.0, *) {
+                    view
+                        .glassEffect(
+                            .regular.tint(tint).interactive(),
+                            in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+                        )
+                        .contentShape(
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(
+                            top: DesignSystem.Spaces.micro,
+                            leading: .zero,
+                            bottom: DesignSystem.Spaces.micro,
+                            trailing: .zero
+                        ))
+                } else {
+                    view
+                        .contentShape(
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+                        )
+                        .listRowBackground(
+                            (tint ?? Color.gray.opacity(0.3))
+                                .cornerRadius(DesignSystem.CornerRadius.two)
+                        )
+                }
             }
-        }
     }
 
     @ViewBuilder

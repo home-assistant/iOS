@@ -74,15 +74,11 @@ struct WatchFolderContentView: View {
     }
 
     private var listItems: some View {
+        // No long-press-to-edit here: a gesture on the row swallows the tap of the `Button` it is built
+        // from on watchOS before 26, which left every item unresponsive. Edit mode is entered from the
+        // header's pencil button instead.
         ForEach(Array((folder?.items ?? []).enumerated()), id: \.element.serverUniqueId) { index, item in
             rowContent(for: item, at: index)
-                .modify { view in
-                    if isEditing {
-                        view
-                    } else {
-                        view.onLongPressGesture { enterEditMode() }
-                    }
-                }
         }
         .onMove(perform: isEditing ? moveItems : nil)
         .onDelete(perform: isEditing ? deleteItems : nil)

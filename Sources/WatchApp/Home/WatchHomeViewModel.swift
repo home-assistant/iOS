@@ -698,9 +698,12 @@ final class WatchHomeViewModel: ObservableObject {
 
     @MainActor
     private func updateConfig(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) {
+        let contentChanged = rendersDifferentContent(config: config, magicItemsInfo: magicItemsInfo)
         watchConfig = config
         self.magicItemsInfo = magicItemsInfo
-        configVersion = UUID()
+        if contentChanged {
+            configVersion = UUID()
+        }
 
         if config.assist.showAssist,
            config.assist.serverId != nil,
@@ -709,6 +712,27 @@ final class WatchHomeViewModel: ObservableObject {
         } else {
             showAssist = false
         }
+    }
+
+    /// Whether a freshly loaded config renders anything different from what's on screen.
+    ///
+    /// `configVersion` drives an `.id()` on the home list, which discards every row — including a row
+    /// currently showing its run-confirmation dialog. Cache loads run on every sync (twice each: once
+    /// for the cached config, once when the item info resolves), so re-issuing the id unconditionally
+    /// dismissed that dialog under the user's finger while a sync completed. Only identical content may
+    /// keep the current id.
+    ///
+    /// Items are compared through `contentHash`, not `==`: `MagicItem`'s equality is identity-based
+    /// (id/server/type), so a renamed item, a recolored one or an edited folder child would otherwise
+    /// read as unchanged — and the rows, whose view models capture the item when they're created,
+    /// would keep rendering the old values.
+    @MainActor
+    private func rendersDifferentContent(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) -> Bool {
+        config.items.map(\.contentHash) != watchConfig.items.map(\.contentHash)
+            || config.assist != watchConfig.assist
+            || config.resolvedLayout != watchConfig.resolvedLayout
+            || config.resolvedHideAreas != watchConfig.resolvedHideAreas
+            || magicItemsInfo != self.magicItemsInfo
     }
 
     @MainActor
