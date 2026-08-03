@@ -100,6 +100,10 @@ struct WatchHomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
             viewModel.loadCache()
         }
+        // A tapped camera notification opens that camera directly (see `WatchCameraNotificationLaunch`).
+        .onReceive(NotificationCenter.default.publisher(for: WatchCameraNotificationLaunch.launchNotification)) { _ in
+            openPendingCameraNotification()
+        }
         .fullScreenCover(isPresented: $showAssist, content: {
             if let serverId = viewModel.watchConfig.assist.serverId,
                let pipelineId = viewModel.watchConfig.assist.pipelineId {
@@ -184,6 +188,8 @@ struct WatchHomeView: View {
                 AssistDefaultComplication.pendingLaunch = false
                 showAssist = true
             }
+            // Same for a camera notification tapped before this view existed (cold launch).
+            openPendingCameraNotification()
             updateIPhoneReachability(Communicator.shared.currentReachability)
             startReachabilityObservation()
             Communicator.shared.refreshConnectivityState()
@@ -435,6 +441,13 @@ struct WatchHomeView: View {
                 subtitle: viewModel.serverName(for: item)
             )
         }
+    }
+
+    /// Opens the camera a tapped notification asked for, replacing whatever the stack was showing —
+    /// the tap asked for that camera, not for wherever the app was left.
+    private func openPendingCameraNotification() {
+        guard let item = WatchCameraNotificationLaunch.consumePending() else { return }
+        navigationPath = [.cameraStream(item)]
     }
 
     private func isAssistDeepLink(_ url: URL?) -> Bool {

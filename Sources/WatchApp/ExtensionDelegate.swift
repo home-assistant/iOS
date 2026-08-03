@@ -441,8 +441,20 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             return
         }
 
+        // Tapping a camera notification launches the app: land on that camera's stream screen, which
+        // is what the long-look was already showing, instead of the home screen.
+        let content = response.notification.request.content
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+           let entityId = content.userInfo["entity_id"] as? String,
+           Domain(entityId: entityId) == .camera,
+           let server = Current.servers.server(for: content) {
+            WatchCameraNotificationLaunch.request(entityId: entityId, serverId: server.identifier.rawValue)
+            completionHandler()
+            return
+        }
+
         guard let info = HomeAssistantAPI.PushActionInfo(response: response),
-              let server = Current.servers.server(for: response.notification.request.content) else {
+              let server = Current.servers.server(for: content) else {
             completionHandler()
             return
         }
