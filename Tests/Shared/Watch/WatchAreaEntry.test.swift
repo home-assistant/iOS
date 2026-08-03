@@ -12,21 +12,25 @@ struct WatchAreaEntryTests {
             try database.write { db in
                 // A light: a domain the watch can both add and render.
                 try Self.entity(entityId: "light.living_room", domain: "light").insert(db)
-                // A camera: the watch renders no screen for it, so its area must not be offered.
+                // A camera: the watch streams it on its own screen, so its area counts too.
                 try Self.entity(entityId: "camera.garage", domain: "camera").insert(db)
+                // A media player: the watch renders no screen for it, so its area must not be offered.
+                try Self.entity(entityId: "media_player.tv", domain: "media_player").insert(db)
                 // A diagnostic entity is filtered out even though its domain is addable.
                 try Self.entity(entityId: "sensor.uptime", domain: "sensor", entityCategory: 1).insert(db)
 
                 try Self.area(areaId: "living_room", entities: ["light.living_room"]).insert(db)
                 try Self.area(areaId: "garage", entities: ["camera.garage"]).insert(db)
+                try Self.area(areaId: "media_room", entities: ["media_player.tv"]).insert(db)
                 try Self.area(areaId: "attic", entities: ["sensor.uptime"]).insert(db)
                 try Self.area(areaId: "empty", entities: []).insert(db)
                 // Same entity id on another server: scoping must keep that area out of server 1's list.
                 try Self.area(areaId: "office", serverId: "2", entities: ["light.living_room"]).insert(db)
             }
 
+            // Ordered by name: "Garage" before "Living Room".
             let addableAreas = try AppArea.fetchWatchPopulatedAreas(for: "1")
-            #expect(addableAreas.map(\.areaId) == ["living_room"])
+            #expect(addableAreas.map(\.areaId) == ["garage", "living_room"])
         }
     }
 
