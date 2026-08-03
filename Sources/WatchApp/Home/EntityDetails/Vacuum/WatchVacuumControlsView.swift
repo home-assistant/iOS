@@ -116,7 +116,9 @@ struct WatchVacuumControlsView: View {
                     }
                 }
                 if capabilities?.supportsReturnHome == true {
-                    vacuumButton(symbol: .houseFill, label: L10n.Vacuum.Control.returnToBase) {
+                    // Icon only: "Return to dock" is far too long to sit under a third-width
+                    // button, and the house reads clearly on its own.
+                    vacuumButton(symbol: .houseFill, label: nil, accessibilityLabel: L10n.Vacuum.Control.returnToBase) {
                         viewModel.returnToBase()
                     }
                 }
@@ -178,18 +180,28 @@ struct WatchVacuumControlsView: View {
         }
     }
 
-    private func vacuumButton(symbol: SFSymbol, label: String, action: @escaping () -> Void) -> some View {
+    /// A `nil` label renders the icon alone — for commands whose name is too long to sit under a
+    /// third-width button; `accessibilityLabel` then carries the name for VoiceOver.
+    private func vacuumButton(
+        symbol: SFSymbol,
+        label: String?,
+        accessibilityLabel: String? = nil,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             VStack(spacing: DesignSystem.Spaces.half) {
                 Image(systemSymbol: symbol)
                     .font(.body.weight(.semibold))
-                Text(verbatim: label)
-                    .font(.caption2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                if let label {
+                    Text(verbatim: label)
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                }
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityLabel(Text(verbatim: accessibilityLabel ?? label ?? ""))
     }
 }
 
