@@ -123,6 +123,9 @@ struct WatchLockControlsView: View {
             }
             .frame(maxWidth: .infinity)
         }
+        // Explicit style, like the climate controls: with the automatic one a `List` row holding
+        // several buttons becomes a single tap target, so tapping lock would also unlock.
+        .buttonStyle(.bordered)
     }
 }
 
