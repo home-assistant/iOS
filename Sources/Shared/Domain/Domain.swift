@@ -139,6 +139,12 @@ public enum Domain: String, CaseIterable {
             return ClimateControlState(entity: entity).stateSummary
         }
 
+        // Datetime-backed entities report a raw UTC ISO 8601 string as their state; render it the
+        // way the frontend's automatic time format does rather than showing the machine format.
+        if let timestampDescription = timestampStateDescription(for: entity) {
+            return timestampDescription
+        }
+
         let baseState = entity.localizedState.leadingCapitalized
         // The registry lookup is only worth its synchronous database read on the paths that render
         // the state value itself — enum states (on/off, locked, …) never need it.
@@ -161,6 +167,21 @@ public enum Domain: String, CaseIterable {
         }
 
         return stateForDeviceClass(entity.deviceClass, state: state)
+    }
+
+    /// Renders the datetime device classes the way the frontend's automatic format does: timestamps
+    /// relative ("In 56 minutes"), dates absolute and localized. Nil for every other entity, and for
+    /// a datetime entity whose state isn't currently a date (`unavailable`, `unknown`) so those keep
+    /// their usual localized wording.
+    private func timestampStateDescription(for entity: HAEntity) -> String? {
+        switch entity.deviceClass {
+        case .timestamp:
+            return EntityTimestampFormatter.relativeDescription(for: entity.state)?.leadingCapitalized
+        case .date:
+            return EntityTimestampFormatter.dateDescription(for: entity.state)
+        default:
+            return nil
+        }
     }
 
     public func stateForDeviceClass(_ deviceClass: DeviceClass, state: Domain.State) -> String {
@@ -563,7 +584,7 @@ public enum Domain: String, CaseIterable {
     public func localizedState(for state: String) -> String {
         switch self {
         case .button, .inputButton, .scene:
-            if let relativeDate = isoDateToRelativeTimeString(state) {
+            if let relativeDate = EntityTimestampFormatter.relativeDescription(for: state) {
                 return relativeDate
             }
         default:
@@ -571,17 +592,6 @@ public enum Domain: String, CaseIterable {
         }
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
-    }
-
-    private func isoDateToRelativeTimeString(_ isoDateString: String) -> String? {
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        guard let date = dateFormatter.date(from: isoDateString) else {
-            return nil
-        }
-
-        let relativeFormatter = RelativeDateTimeFormatter()
-        return relativeFormatter.localizedString(for: date, relativeTo: Date())
     }
 }
 
