@@ -312,10 +312,11 @@ struct MagicItemCustomizationView: View {
         }
     }
 
-    /// An Assist pipeline in CarPlay or on the watch starts a voice session instead of running a
-    /// service, so asking for confirmation first has nothing to confirm.
+    /// An Assist item in CarPlay or on the watch starts an Assist session instead of running a
+    /// service, so asking for confirmation first has nothing to confirm — and `MagicItemProvider`
+    /// clears the flag on both Assist types anyway.
     private static func skipsConfirmation(context: MagicItemAddView.Context, item: MagicItem) -> Bool {
-        [.carPlay, .watch].contains(context) && item.type == .assistPipeline
+        [.carPlay, .watch].contains(context) && item.isAssist
     }
 
     private func preventNilCustomization() {

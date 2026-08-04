@@ -10,10 +10,12 @@ enum WatchAssistPresentation: Identifiable {
     /// complication), so there is no pipeline to run yet.
     case unconfigured
 
+    /// The prompt is reduced to a fingerprint rather than embedded: the id only has to tell two
+    /// sessions apart, and it must not carry what the user wrote into logs or diagnostics.
     var id: String {
         switch self {
         case let .session(serverId, pipelineId, prompt):
-            return "\(serverId)|\(pipelineId)|\(prompt ?? "")"
+            return "\(serverId)|\(pipelineId)|\(prompt.map { String($0.hashValue) } ?? "")"
         case .unconfigured:
             return "__unconfigured__"
         }
