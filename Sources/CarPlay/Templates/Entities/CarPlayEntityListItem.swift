@@ -149,8 +149,9 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
 
     private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
+        let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
         var iconColor = entity.carPlayIconColor()
-        var image = entity.getMDI().carPlayIcon(color: iconColor)
+        var image = entity.getMDI(componentIcons: componentIcons).carPlayIcon(color: iconColor)
 
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
@@ -172,7 +173,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                 // Dynamic entity icons should reflect the live server-provided color,
                 // matching the main entities/controls views instead of saved quick-access tint.
                 iconColor = entity.carPlayIconColor()
-                image = entity.getMDI().carPlayIcon(color: iconColor)
+                image = entity.getMDI(componentIcons: componentIcons).carPlayIcon(color: iconColor)
             }
         }
 
