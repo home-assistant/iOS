@@ -189,7 +189,7 @@ Por favor, completa la configuración siguiendo las [instrucciones de configurac
 "component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Fuera";
 "component::overkiz::entity::select::open_closed_partial::state::closed" = "Cerrado";
 "component::overkiz::entity::select::open_closed_partial::state::open" = "Abierto";
-"component::overkiz::entity::select::open_closed_pedestrian::state::closed" = "Cerrada";
+"component::overkiz::entity::select::open_closed_pedestrian::state::closed" = "Cerrado";
 "component::overkiz::entity::select::open_closed_pedestrian::state::open" = "Abierto";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::closed" = "Cerrado";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::open" = "Abierto";
