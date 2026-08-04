@@ -14,12 +14,17 @@ public protocol EntityComponentIconsProviderProtocol {
 final class EntityComponentIconsService: EntityComponentIconsProviderProtocol {
     static var shared: EntityComponentIconsProviderProtocol = EntityComponentIconsService()
 
-    private var request: HACancellable?
+    /// Guards `maps` and `requests`, both of which are read/written from concurrent per-server tasks.
+    private let lock = NSLock()
     /// [ServerId: EntityComponentIconsMap]
     private var maps: [String: EntityComponentIconsMap] = [:]
+    /// In-flight request per server, so a fetch for one server never cancels another's.
+    private var requests: [String: HACancellable] = [:]
 
     func iconsMap(for serverId: String) -> EntityComponentIconsMap? {
-        maps[serverId]
+        lock.lock()
+        defer { lock.unlock() }
+        return maps[serverId]
     }
 
     @discardableResult
@@ -32,9 +37,13 @@ final class EntityComponentIconsService: EntityComponentIconsProviderProtocol {
             return nil
         }
 
-        request?.cancel()
+        let serverId = server.identifier.rawValue
+        lock.lock()
+        requests[serverId]?.cancel()
+        lock.unlock()
+
         let map: EntityComponentIconsMap = await withCheckedContinuation { continuation in
-            request = connection.send(
+            let request = connection.send(
                 HATypedRequest<EntityComponentIconsResponse>.frontendGetIcons(category: "entity_component"),
                 completion: { result in
                     switch result {
@@ -48,10 +57,17 @@ final class EntityComponentIconsService: EntityComponentIconsProviderProtocol {
                     }
                 }
             )
+            lock.lock()
+            requests[serverId] = request
+            lock.unlock()
         }
+
+        lock.lock()
+        requests[serverId] = nil
         if !map.isEmpty {
-            maps[server.identifier.rawValue] = map
+            maps[serverId] = map
         }
+        lock.unlock()
         return map
     }
 }

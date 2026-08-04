@@ -101,7 +101,7 @@ public extension HAEntity {
         case .sensor:
             return .eyeIcon
         case .binarySensor:
-            return .eyeIcon
+            return .radioboxBlankIcon
         case .zone:
             return .mapIcon
         case .person:
