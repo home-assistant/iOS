@@ -315,7 +315,7 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private var delayedSettingsButton: some View {
-        if !showsEmptyState, showsDelayedSettingsButton {
+        if !showsEmptyState, showsDelayedSettingsButton, !Current.isCatalyst {
             ModalReusableButton(
                 icon: .sfSymbol(.gearshape),
                 action: openSettings
