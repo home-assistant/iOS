@@ -158,6 +158,21 @@ public enum AppConstants {
         )?.withWidgetAuthenticity()
     }
 
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/?\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        )
+    }
+
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String, serverName: String) -> URL? {
+        guard let base = openEntityMoreInfoDeeplinkURL(entityId: entityId),
+              var components = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "server", value: serverName)]
+        return components.url
+    }
+
     public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"

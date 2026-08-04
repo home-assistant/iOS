@@ -60,6 +60,11 @@ final class EntityAddToHandler {
                     actions.append(MacToolbarItemAction())
                 }
 
+                // Deep links are available on all platforms for any entity
+                if domain != nil {
+                    actions.append(DeeplinkAction())
+                }
+
                 seal.fulfill(actions)
             }
         }
@@ -107,6 +112,10 @@ final class EntityAddToHandler {
 
                 case .macToolbarItem:
                     addToMacToolbar(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .deeplink:
+                    openDeeplink(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
 
                 case .none:
@@ -188,6 +197,28 @@ final class EntityAddToHandler {
         } catch {
             Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
         }
+    }
+
+    private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Opening deeplink for entity \(entityId)")
+
+        let hostingController = DeeplinkView(
+            viewModel: DeeplinkViewModel(
+                entityId: entityId,
+                serverName: webViewController.server.info.name
+            ),
+            onClose: { [weak webViewController] in
+                webViewController?.dismissOverlayController(animated: true, completion: nil)
+            }
+        ).embeddedInHostingController()
+
+        if !Current.isCatalyst, let sheet = hostingController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+
+        webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
 
     private func openWidgetBuilder(
