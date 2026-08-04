@@ -2,7 +2,10 @@ import AppIntents
 import HAKit
 import Shared
 
-struct RenderTemplateAppIntent: AppIntent {
+struct RenderTemplateAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit RenderTemplateIntent
+    static let intentClassName = "RenderTemplateIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.render_template.title",
         defaultValue: "Render template"
