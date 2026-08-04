@@ -65,17 +65,17 @@ struct DeeplinkView: View {
                             }
                     }
                 }
-
-                Section {
-                    Button {
-                        viewModel.copyToClipboard()
-                    } label: {
-                        Text(L10n.Deeplink.copyToClipboard)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.primaryButton)
-                    .listRowBackground(Color.clear)
+            }
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    viewModel.copyToClipboard()
+                } label: {
+                    Text(L10n.Deeplink.copyToClipboard)
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.primaryButton)
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.two)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

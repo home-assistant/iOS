@@ -37,7 +37,7 @@ final class DeeplinkViewModel: ObservableObject {
             withAnimation { self?.didCopy = false }
         }
         resetWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: workItem)
     }
 
     func includeServerChanged() {
