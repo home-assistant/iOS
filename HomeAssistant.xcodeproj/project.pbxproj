@@ -1575,6 +1575,7 @@
 				DeviceRegistryEntry.swift,
 				DeviceWrapper.swift,
 				DeviceWrapperBatteryObserver.swift,
+				EntityComponentIconsService.swift,
 				EntityFuzzySearch/BitapSearcher.swift,
 				EntityFuzzySearch/EntityFuzzySearchIndex.swift,
 				EntityFuzzySearch/FuzzyDocument.swift,
