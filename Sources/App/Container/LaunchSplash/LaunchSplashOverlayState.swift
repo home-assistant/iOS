@@ -20,10 +20,21 @@ final class LaunchSplashOverlayState: ObservableObject {
 
     static let shared = LaunchSplashOverlayState()
 
-    @Published private(set) var phase: Phase = .waiting
+    @Published private(set) var phase: Phase
 
     /// Last frame reported by a destination logo, kept so previews can replay the transition.
     private(set) var latestDestinationLogoFrame: CGRect?
+
+    init() {
+        // macOS has no system launch screen to bridge from, so the fake splash is disabled on Catalyst
+        // by starting already `.finished`: the overlay renders nothing and every phase consumer
+        // (server-pill fade-in, logo anchors) behaves as if the launch hand-off already completed.
+        #if targetEnvironment(macCatalyst)
+        self.phase = .finished
+        #else
+        self.phase = .waiting
+        #endif
+    }
 
     /// Called by `launchSplashLogoAnchor()` whenever a destination logo lays out. The first report starts
     /// the hero transition; re-layout while the hero runs retargets it; anything later is a no-op.
