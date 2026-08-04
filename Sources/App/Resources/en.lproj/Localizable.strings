@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
 "database_updater.toast.title" = "Updating %@";
 "debug.reset.entities_database.title" = "Reset app entities database";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Delete";
 "device_name.primary_button.title" = "Save";
 "device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
@@ -2443,6 +2449,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.sync.starting" = "Starting sync…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";

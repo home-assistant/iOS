@@ -1669,6 +1669,25 @@ public enum L10n {
     }
   }
 
+  public enum Deeplink {
+    /// Copied to clipboard
+    public static var copied: String { return L10n.tr("Localizable", "deeplink.copied") }
+    /// Copy to clipboard
+    public static var copyToClipboard: String { return L10n.tr("Localizable", "deeplink.copy_to_clipboard") }
+    /// Copy a link that opens this entity in the app.
+    public static var description: String { return L10n.tr("Localizable", "deeplink.description") }
+    /// Deeplink
+    public static var title: String { return L10n.tr("Localizable", "deeplink.title") }
+    public enum IncludeServer {
+      /// In case you have multiple servers configured in the app, this deeplink will be specifically to %@.
+      public static func subtitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "deeplink.include_server.subtitle", String(describing: p1))
+      }
+      /// Include server
+      public static var title: String { return L10n.tr("Localizable", "deeplink.include_server.title") }
+    }
+  }
+
   public enum DeviceName {
     /// This is used to identify your device in your Home Assistant.
     public static var subtitle: String { return L10n.tr("Localizable", "device_name.subtitle") }
@@ -7934,6 +7953,10 @@ public enum L10n {
         public enum CarPlay {
           /// CarPlay
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.CarPlay.title") }
+        }
+        public enum Deeplink {
+          /// Deeplink
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.Deeplink.title") }
         }
         public enum MacToolbar {
           /// Mac Toolbar

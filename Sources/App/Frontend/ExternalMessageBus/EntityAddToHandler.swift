@@ -60,6 +60,10 @@ final class EntityAddToHandler {
                     actions.append(MacToolbarItemAction())
                 }
 
+                if domain != nil {
+                    actions.append(DeeplinkAction())
+                }
+
                 seal.fulfill(actions)
             }
         }
@@ -107,6 +111,10 @@ final class EntityAddToHandler {
 
                 case .macToolbarItem:
                     addToMacToolbar(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .deeplink:
+                    openDeeplink(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
 
                 case .none:
@@ -188,6 +196,34 @@ final class EntityAddToHandler {
         } catch {
             Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
         }
+    }
+
+    private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Opening deeplink for entity \(entityId)")
+
+        let hostingController = DeeplinkView(
+            viewModel: DeeplinkViewModel(
+                entityId: entityId,
+                serverName: webViewController.server.info.name
+            ),
+            onClose: { [weak webViewController] in
+                webViewController?.overlayedController?.dismiss(animated: true, completion: nil)
+            }
+        ).embeddedInHostingController()
+
+        if Current.isCatalyst {
+            hostingController.modalPresentationStyle = .formSheet
+        } else if let sheet = hostingController.sheetPresentationController {
+            let detent = UISheetPresentationController.Detent.custom(identifier: .init("deeplink")) { context in
+                context.maximumDetentValue * 0.7
+            }
+            sheet.detents = [detent, .large()]
+            sheet.selectedDetentIdentifier = detent.identifier
+            sheet.prefersGrabberVisible = true
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+
+        webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
 
     private func openWidgetBuilder(
