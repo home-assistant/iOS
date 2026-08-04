@@ -20,6 +20,7 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
+            forceQuitSection
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -119,6 +120,21 @@ struct NotificationSettingsView: View {
         }
     }
 
+    /// Quitting is an ordinary action on the Mac, so the warning — and its setting — are iOS only.
+    @ViewBuilder
+    private var forceQuitSection: some View {
+        if !Current.isCatalyst {
+            Section {
+                SwiftUI.Toggle(
+                    L10n.SettingsDetails.Notifications.ForceQuit.title,
+                    isOn: $viewModel.notifyOnForceQuit
+                )
+            } footer: {
+                Text(L10n.SettingsDetails.Notifications.ForceQuit.description)
+            }
+        }
+    }
+
     // MARK: - Actions
 
     private func handlePermissionTap() {
@@ -144,6 +160,12 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
+        }
+    }
+
+    @Published var notifyOnForceQuit: Bool = Current.settingsStore.notifyOnForceQuit {
+        didSet {
+            Current.settingsStore.notifyOnForceQuit = notifyOnForceQuit
         }
     }
 
@@ -188,6 +210,13 @@ extension NotificationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.Sounds.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.ForceQuit.title),
         ]
+    }
+}
+
+#Preview {
+    NavigationView {
+        NotificationSettingsView()
     }
 }

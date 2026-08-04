@@ -510,6 +510,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
 "flight_greetings.empty_state.title" = "Have a nice flight";
 "flight_greetings.greeting" = "Have a nice flight!";
+"force_quit.notification.body" = "Background updates such as location tracking and sensors stopped. Open Home Assistant again to resume them.";
+"force_quit.notification.title" = "Home Assistant is no longer running";
 "gestures.1_finger.title" = "Using one finger";
 "gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
@@ -1713,6 +1715,8 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";
 "settings_details.notifications.categories_synced.header" = "Synced Categories";
 "settings_details.notifications.documentation" = "Documentation";
+"settings_details.notifications.force_quit.description" = "Sends a notification when Home Assistant is closed from the app switcher, as a reminder that background updates such as location tracking stop until the app is opened again.";
+"settings_details.notifications.force_quit.title" = "Warn when app is closed";
 "settings_details.notifications.history.clear" = "Clear";
 "settings_details.notifications.history.clear_confirm.message" = "This cannot be undone.";
 "settings_details.notifications.history.clear_confirm.title" = "Are you sure you want to clear the notification history?";

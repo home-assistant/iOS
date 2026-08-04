@@ -528,6 +528,11 @@ public class SettingsStore {
         public var significantLocationChange: Bool
         public var pushNotifications: Bool
 
+        /// Whether the app still has any reason to ask for a location in the background.
+        public var isAnyEnabled: Bool {
+            zone || backgroundFetch || significantLocationChange || pushNotifications
+        }
+
         static func key(for keyPath: KeyPath<LocationSource, Bool>) -> String {
             switch keyPath {
             case \.zone: return "locationUpdateOnZone"
@@ -577,6 +582,21 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "clearBadgeAutomatically")
+        }
+    }
+
+    /// Whether to warn, with a local notification, that force quitting the app stops background
+    /// features such as location tracking from working until it is opened again.
+    public var notifyOnForceQuit: Bool {
+        get {
+            if let value = prefs.object(forKey: "notifyOnForceQuit") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "notifyOnForceQuit")
         }
     }
 

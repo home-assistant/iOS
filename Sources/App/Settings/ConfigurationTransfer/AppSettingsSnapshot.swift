@@ -41,6 +41,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
     var clearBadgeAutomatically: Bool?
     var macNativeFeaturesOnly: Bool?
     var receiveDebugNotifications: Bool?
+    var notifyOnForceQuit: Bool?
     /// Seconds between periodic sensor updates. A negative value means "disabled", matching how
     /// `SettingsStore.periodicUpdateInterval` stores a nil interval.
     var periodicUpdateIntervalSeconds: Double?
@@ -82,6 +83,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
             clearBadgeAutomatically: store.clearBadgeAutomatically,
             macNativeFeaturesOnly: store.macNativeFeaturesOnly,
             receiveDebugNotifications: store.receiveDebugNotifications,
+            notifyOnForceQuit: store.notifyOnForceQuit,
             periodicUpdateIntervalSeconds: store.periodicUpdateInterval ?? -1,
             locationVisibility: store.locationVisibility.rawValue,
             menuItemTemplate: menuItemTemplateText,
@@ -148,6 +150,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let clearBadgeAutomatically { store.clearBadgeAutomatically = clearBadgeAutomatically }
         if let macNativeFeaturesOnly { store.macNativeFeaturesOnly = macNativeFeaturesOnly }
         if let receiveDebugNotifications { store.receiveDebugNotifications = receiveDebugNotifications }
+        if let notifyOnForceQuit { store.notifyOnForceQuit = notifyOnForceQuit }
         if let gestures { store.gestures = gestures }
         if let carPlayAssistDebugSettings { store.carPlayAssistDebugSettings = carPlayAssistDebugSettings }
     }

@@ -59,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let debugSwift = DebugSwift()
     #endif
     private var zoneManager: ZoneManager?
+    private var forceQuitNotifier: ForceQuitNotifier?
     #if targetEnvironment(macCatalyst)
     private let statusItemManager = StatusItemManager()
     #endif
@@ -125,6 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.clientEventStore.addEvent(event)
 
         zoneManager = ZoneManager()
+        forceQuitNotifier = ForceQuitNotifier()
 
         BackgroundRefreshManager.register()
         BackgroundRefreshManager.scheduleAppRefresh()

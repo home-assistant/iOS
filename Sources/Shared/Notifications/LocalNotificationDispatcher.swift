@@ -2,8 +2,17 @@ import Foundation
 import UserNotifications
 
 public protocol LocalNotificationDispatcherProtocol {
-    func send(_ notification: LocalNotificationDispatcher.Notification)
+    /// - Parameter completion: Called once the notification center accepted (or rejected) the request.
+    ///   Callers that need the request to land before they go away — e.g. during app termination — can
+    ///   wait on it; everyone else uses the `send(_:)` convenience below.
+    func send(_ notification: LocalNotificationDispatcher.Notification, completion: (() -> Void)?)
     func reschedule(_ content: UNNotificationContent, after delay: TimeInterval)
+}
+
+public extension LocalNotificationDispatcherProtocol {
+    func send(_ notification: LocalNotificationDispatcher.Notification) {
+        send(notification, completion: nil)
+    }
 }
 
 /// Sends local notifications
@@ -29,9 +38,10 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
 
     public init() {}
 
-    public func send(_ notification: Notification) {
+    public func send(_ notification: Notification, completion: (() -> Void)?) {
         if notification.id == .debug, !Current.settingsStore.receiveDebugNotifications {
             // Do not send debug notifications if the setting is disabled
+            completion?()
             return
         }
 
@@ -51,6 +61,7 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
                 Current.Log
                     .info("Error scheduling notification, id: \(notification.id) error: \(error.localizedDescription)")
             }
+            completion?()
         }
     }
 

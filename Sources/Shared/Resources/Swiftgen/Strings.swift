@@ -1877,6 +1877,15 @@ public enum L10n {
     }
   }
 
+  public enum ForceQuit {
+    public enum Notification {
+      /// Background updates such as location tracking and sensors stopped. Open Home Assistant again to resume them.
+      public static var body: String { return L10n.tr("Localizable", "force_quit.notification.body") }
+      /// Home Assistant is no longer running
+      public static var title: String { return L10n.tr("Localizable", "force_quit.notification.title") }
+    }
+  }
+
   public enum Gestures {
     public enum _1Finger {
       /// Using one finger
@@ -5689,6 +5698,12 @@ public enum L10n {
         public static var footerNoCategories: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.footer_no_categories") }
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
+      }
+      public enum ForceQuit {
+        /// Sends a notification when Home Assistant is closed from the app switcher, as a reminder that background updates such as location tracking stop until the app is opened again.
+        public static var description: String { return L10n.tr("Localizable", "settings_details.notifications.force_quit.description") }
+        /// Warn when app is closed
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.force_quit.title") }
       }
       public enum History {
         /// Clear
