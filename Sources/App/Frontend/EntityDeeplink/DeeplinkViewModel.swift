@@ -17,6 +17,10 @@ final class DeeplinkViewModel: ObservableObject {
         self.serverName = serverName
     }
 
+    var hasMultipleServers: Bool {
+        Current.servers.all.count > 1
+    }
+
     var deeplink: String {
         let url = includeServer
             ? AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId, serverName: serverName)
@@ -37,11 +41,7 @@ final class DeeplinkViewModel: ObservableObject {
     }
 
     func includeServerChanged() {
-        if includeServer {
-            resetWorkItem?.cancel()
-            withAnimation { didCopy = false }
-        } else {
-            copyToClipboard()
-        }
+        resetWorkItem?.cancel()
+        withAnimation { didCopy = false }
     }
 }

@@ -57,24 +57,24 @@ struct DeeplinkView: View {
                     }
                 }
 
-                Section(footer: Text(L10n.Deeplink.IncludeServer.subtitle(viewModel.serverName))) {
-                    Toggle(L10n.Deeplink.IncludeServer.title, isOn: $viewModel.includeServer.animation())
-                        .onChange(of: viewModel.includeServer) { _ in
-                            viewModel.includeServerChanged()
-                        }
+                if viewModel.hasMultipleServers {
+                    Section(footer: Text(L10n.Deeplink.IncludeServer.subtitle(viewModel.serverName))) {
+                        Toggle(L10n.Deeplink.IncludeServer.title, isOn: $viewModel.includeServer.animation())
+                            .onChange(of: viewModel.includeServer) { _ in
+                                viewModel.includeServerChanged()
+                            }
+                    }
                 }
 
-                if viewModel.includeServer {
-                    Section {
-                        Button {
-                            viewModel.copyToClipboard()
-                        } label: {
-                            Text(L10n.Deeplink.copyToClipboard)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.primaryButton)
-                        .listRowBackground(Color.clear)
+                Section {
+                    Button {
+                        viewModel.copyToClipboard()
+                    } label: {
+                        Text(L10n.Deeplink.copyToClipboard)
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.primaryButton)
+                    .listRowBackground(Color.clear)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
