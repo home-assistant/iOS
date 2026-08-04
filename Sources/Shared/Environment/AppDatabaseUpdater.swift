@@ -386,6 +386,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
         if isUpdateCancelled() { return }
 
+        // Step 2.5: Entity component icons (`frontend/get_icons`). Populates the in-memory map that
+        // Step 3 uses to resolve each entity's frontend-matching default icon. Sequential to respect
+        // the WebSocket id ordering noted above.
+        do {
+            let timer = ProfilingTimer("Step 2.5 (Entity component icons)")
+            await Current.entityComponentIcons().fetch(for: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
         // Step 3: Persist entities. Deferred until here (after Step 2) on purpose so `AppEntitiesModel`
         // resolves each entity's display name from the just-saved registry and bakes it into
         // `HAAppEntity.name`. HAKit completions fire on the main queue; the Set construction and DB

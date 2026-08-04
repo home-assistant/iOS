@@ -30,11 +30,17 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     /// to the live `friendly_name`, then the `entityId`. Readers should use this directly — it is already
     /// the name to show, so no per-read registry lookup is needed.
     public let name: String
+    /// The entity's own icon override: the entity-registry icon when the user set one, otherwise the
+    /// live `attributes.icon`. Populated by `AppEntitiesModel`, matching the frontend's precedence.
     public let icon: String?
     public let rawDeviceClass: String?
     /// The registry entity category index (config / diagnostic), copied from
     /// `EntityRegistryListForDisplay.Entity.entityCategory` at write time; `nil` for ordinary entities.
     public let entityCategory: Int?
+    /// The frontend's default icon for this entity's domain + device class, resolved from the backend
+    /// `entity_component` map at write time (stateless). Used when there is no `icon` override so
+    /// pickers render the same glyph the frontend does. `nil` when the map was unavailable.
+    public let resolvedIcon: String?
 
     public init(
         id: String,
@@ -45,6 +51,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         icon: String?,
         rawDeviceClass: String?,
         entityCategory: Int? = nil,
+        resolvedIcon: String? = nil,
     ) {
         self.id = id
         self.entityId = entityId
@@ -54,6 +61,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.icon = icon
         self.rawDeviceClass = rawDeviceClass
         self.entityCategory = entityCategory
+        self.resolvedIcon = resolvedIcon
     }
 
     public enum ConfigInclude {

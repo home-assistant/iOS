@@ -218,6 +218,13 @@ public extension HATypedRequest {
         ))
     }
 
+    static func frontendGetIcons(category: String) -> HATypedRequest<EntityComponentIconsResponse> {
+        HATypedRequest<EntityComponentIconsResponse>(request: .init(
+            type: .webSocket("frontend/get_icons"),
+            data: ["category": category]
+        ))
+    }
+
     static func getItemFromTodoList(listId: String) -> HATypedRequest<TodoListRawResponse> {
         HATypedRequest<TodoListRawResponse>(
             request:
