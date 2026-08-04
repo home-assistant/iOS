@@ -16,7 +16,7 @@ struct GeneralSettingsView: View {
             AppleLikeListTopRowHeader(
                 image: .cogIcon,
                 title: L10n.SettingsDetails.General.title,
-                subtitle: L10n.SettingsDetails.General.body
+                subtitle: Current.isCatalyst ? L10n.SettingsDetails.General.bodyMac : L10n.SettingsDetails.General.body
             )
             appIconSelection
 

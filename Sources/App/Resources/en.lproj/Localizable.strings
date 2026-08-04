@@ -1604,6 +1604,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.edge_to_edge.enabled.title" = "Enable";
 "settings_details.general.edge_to_edge.footer" = "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.";

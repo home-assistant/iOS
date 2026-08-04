@@ -5263,6 +5263,8 @@ public enum L10n {
     public enum General {
       /// Basic App configuration, App Icon and web page settings.
       public static var body: String { return L10n.tr("Localizable", "settings_details.general.body") }
+      /// Basic App configuration and web page settings.
+      public static var bodyMac: String { return L10n.tr("Localizable", "settings_details.general.body_mac") }
       /// General
       public static var title: String { return L10n.tr("Localizable", "settings_details.general.title") }
       public enum AppIcon {
