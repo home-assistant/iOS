@@ -92,8 +92,8 @@ struct EntityPicker: View {
         #endif
         .navigationViewStyle(.stack)
         #if !targetEnvironment(macCatalyst)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         #endif
     }
 
@@ -146,15 +146,15 @@ struct EntityPicker: View {
         }
         .animation(.easeInOut(duration: 0.35), value: viewModel.isRefreshing)
         #if targetEnvironment(macCatalyst)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                reloadToolbarButton
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    reloadToolbarButton
+                }
             }
-        }
         #else
-        .refreshable {
-            await viewModel.refresh()
-        }
+            .refreshable {
+                await viewModel.refresh()
+            }
         #endif
     }
 

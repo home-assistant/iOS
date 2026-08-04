@@ -108,10 +108,10 @@ struct MagicItemAddView: View {
         }
         .navigationViewStyle(.stack)
         #if targetEnvironment(macCatalyst)
-        .frame(minWidth: 540, minHeight: 720)
+            .frame(minWidth: 540, minHeight: 720)
         #else
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         #endif
     }
 
