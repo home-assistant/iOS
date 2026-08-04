@@ -39,11 +39,13 @@ struct WatchConfigAddAssistPromptView: View {
                     .foregroundStyle(.secondary)
             } else {
                 Section {
-                    Picker(L10n.Watch.Config.Assist.pipeline, selection: $selectedOptionId) {
-                        ForEach(options) { option in
-                            Text(verbatim: pickerLabel(for: option))
-                                .tag(Optional(option.id))
-                        }
+                    NavigationLink {
+                        WatchAssistPipelineSelectionView(
+                            options: options,
+                            selectedOptionId: $selectedOptionId
+                        )
+                    } label: {
+                        pipelineLabel
                     }
                 }
 
@@ -72,12 +74,27 @@ struct WatchConfigAddAssistPromptView: View {
         .onAppear(perform: load)
     }
 
-    /// Several servers can each offer a "Preferred" entry, so the server name is part of the label
-    /// when there is more than one.
-    private func pickerLabel(for option: WatchAssistPipelineOption) -> String {
-        let serverIds = Set(options.map(\.serverId))
-        guard serverIds.count > 1 else { return option.name }
-        return "\(option.serverName) • \(option.name)"
+    /// The chooser's summary row. Several servers can each offer a "Preferred" entry, so which
+    /// server the choice belongs to is shown underneath — once, rather than on every option.
+    private var pipelineLabel: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            Text(verbatim: L10n.Watch.Config.Assist.pipeline)
+            if let selectedOption {
+                Text(verbatim: selectedOption.name)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                if hasMultipleServers {
+                    Text(verbatim: selectedOption.serverName)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var hasMultipleServers: Bool {
+        Set(options.map(\.serverId)).count > 1
     }
 
     private func load() {
