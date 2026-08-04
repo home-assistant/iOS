@@ -170,6 +170,8 @@ final class WatchCommunicatorService {
                     assistPipelinesFetch(message: message)
                 case .assistAudioDataChunked:
                     handleAssistAudioChunkedMessage(message)
+                case .assistTextInput:
+                    handleAssistTextInputMessage(message)
                 case .magicItemPressed:
                     magicItemPressed(message: message)
                 case .serversConfigSync:
@@ -901,6 +903,44 @@ extension WatchCommunicatorService {
             audioSampleRate: payload.sampleRate,
             tts: true
         ))
+    }
+
+    /// Run an Assist pipeline with the prompt written on the watch. There is no audio to upload, so
+    /// unlike the recording flow this starts the pipeline as soon as the message arrives; the
+    /// response travels back through the same delegate messages.
+    private func handleAssistTextInputMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        // Every path acknowledges: the watch treats a missing reply as a delivery failure and would
+        // report that on top of the failure reported here.
+        let acknowledge: () -> Void = {
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistTextInputAck.rawValue))
+        }
+        // Failures are also pushed as `assistError`, which the watch routes to the chat UI, so the
+        // user sees a reason rather than an endless spinner.
+        let reportFailure: (String, String) -> Void = { [weak self] code, description in
+            self?.sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(code: code, message: description).content
+            ))
+            acknowledge()
+        }
+
+        guard let payload = AssistTextInputPayload(content: message.content) else {
+            Current.Log.error("Invalid assist text input message data")
+            reportFailure("invalid_payload", "The iPhone could not read the prompt")
+            return
+        }
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist prompt targets unknown server \(payload.serverId)")
+            reportFailure("unknown_server", "Server not found on iPhone")
+            return
+        }
+
+        initAssistServiceIfNeeded(server: server).assist(source: .text(
+            input: payload.text,
+            pipelineId: payload.pipelineId,
+            expectTTS: true
+        ))
+        acknowledge()
     }
 
     private func initAssistServiceIfNeeded(server: Server) -> AssistServiceProtocol {

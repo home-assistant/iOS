@@ -43,6 +43,35 @@ final class WatchAssistService: ObservableObject {
         }
     }
 
+    /// Run the pipeline with a written prompt instead of a recording. The phone owns the WebSocket
+    /// connection, so — exactly like the audio flow — it runs the pipeline and streams the response
+    /// back through the immediate-message observers.
+    func assist(text: String, completion: @escaping (Error?) -> Void) {
+        guard Communicator.shared.currentReachability == .immediatelyReachable else {
+            completion(WatchSendError.notImmediate)
+            return
+        }
+
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.assistTextInput.rawValue,
+            content: AssistTextInputPayload(
+                text: text,
+                pipelineId: pipelineId,
+                serverId: serverId
+            ).content,
+            reply: { _ in
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
+        ), priority: .userAction, errorHandler: { error in
+            Current.Log.error("Assist prompt failed to reach the iPhone: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                completion(error)
+            }
+        })
+    }
+
     func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
         cancellable?.cancel()
         guard Communicator.shared.currentReachability == .immediatelyReachable else {

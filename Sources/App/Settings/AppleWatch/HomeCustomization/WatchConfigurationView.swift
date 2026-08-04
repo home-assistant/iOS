@@ -70,16 +70,29 @@ struct WatchConfigurationView: View {
             }
         })
         .sheet(item: $addItemDestination, content: { destination in
-            MagicItemAddView(
-                context: .watch,
-                initialItemType: destination.magicItemType,
-                visiblePickerOptions: [destination.pickerOption],
-                allowMultipleSelection: true
-            ) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItem(itemToAdd)
+            switch destination {
+            case .entity, .area, .complication, .assist:
+                if let magicItemType = destination.magicItemType, let pickerOption = destination.pickerOption {
+                    MagicItemAddView(
+                        context: .watch,
+                        initialItemType: magicItemType,
+                        visiblePickerOptions: [pickerOption],
+                        allowMultipleSelection: true
+                    ) { itemToAdd in
+                        guard let itemToAdd else { return }
+                        viewModel.addItem(itemToAdd)
+                    }
+                    .preferredColorScheme(.dark)
+                }
+            case .assistPrompt:
+                NavigationView {
+                    AssistPromptMagicItemView(mode: .add) { itemToAdd in
+                        viewModel.addItem(itemToAdd)
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .preferredColorScheme(.dark)
             }
-            .preferredColorScheme(.dark)
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
@@ -203,7 +216,7 @@ struct WatchConfigurationView: View {
     }
 
     private var assistSection: some View {
-        Section("Assist") {
+        Section {
             Toggle(isOn: $viewModel.watchConfig.assist.showAssist, label: {
                 Text(verbatim: L10n.Watch.Configuration.ShowAssist.title)
             })
@@ -217,6 +230,10 @@ struct WatchConfigurationView: View {
                     )
                 }
             }
+        } header: {
+            Text(verbatim: L10n.Widgets.Action.Name.assist)
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.ShowAssist.footer)
         }
     }
 
@@ -247,6 +264,15 @@ struct WatchConfigurationView: View {
             // configuration, so a name or color set here would be silently ignored. Edit the
             // complication itself under Complications instead.
             itemRow(item: item, info: info)
+        } else if item.type == .assistPrompt {
+            NavigationLink {
+                AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemRow(item: item, info: info)
+            }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
@@ -264,7 +290,9 @@ struct WatchConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
+                // Assist-prompt items show the prompt that will be sent; everything else shows the
+                // Server • Area • Device context line.
+                if let contextSubtitle = promptSubtitle(for: item) ?? info.contextSubtitle {
                     Text(contextSubtitle)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -275,6 +303,16 @@ struct WatchConfigurationView: View {
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }
+    }
+
+    private func promptSubtitle(for item: MagicItem) -> String? {
+        guard item.type == .assistPrompt,
+              let assistPrompt = item.assistPrompt?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !assistPrompt.isEmpty else {
+            return nil
+        }
+
+        return assistPrompt
     }
 
     private func image(
@@ -315,6 +353,7 @@ extension WatchConfigurationView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Watch.Configuration.AddItem.title),
             SettingsSearchEntry(L10n.Watch.Configuration.AddFolder.title),
             SettingsSearchEntry(L10n.Watch.Configuration.ShowAssist.title),
+            SettingsSearchEntry(L10n.MagicItem.ItemType.AssistPrompt.title),
             SettingsSearchEntry(L10n.Watch.Configuration.HideAreas.title),
             SettingsSearchEntry(L10n.Watch.Labels.SelectedPipeline.title),
         ]

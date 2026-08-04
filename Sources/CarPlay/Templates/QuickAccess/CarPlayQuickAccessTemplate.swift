@@ -907,7 +907,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func isAssistItem(_ magicItem: MagicItem) -> Bool {
-        magicItem.type == .assistPipeline || magicItem.type == .assistPrompt
+        magicItem.isAssist
     }
 
     private func assistTitle(for magicItem: MagicItem, info: MagicItem.Info) -> String {

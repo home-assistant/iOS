@@ -8,7 +8,9 @@ struct WatchHomeView: View {
     /// When false, the view skips the network/database refresh on appear. Used by previews to render
     /// injected sample data.
     private let autoLoad: Bool
-    @State private var showAssist = false
+    /// The Assist session on screen, if any: the toolbar button and the complication run the
+    /// configured pipeline, while Assist items run their own (see `WatchAssistItemRow`).
+    @State private var assistPresentation: WatchAssistPresentation?
     @State private var showSettings = false
     @State private var isEditing = false
     /// The stack's path. Rows push by appending through the `watchNavigate` environment action —
@@ -83,29 +85,33 @@ struct WatchHomeView: View {
         .environment(\.watchNavigate, WatchNavigateAction { destination in
             navigationPath.append(destination)
         })
+        .environment(\.watchPresentAssist, WatchPresentAssistAction { presentation in
+            assistPresentation = presentation
+        })
         ._statusBarHidden(true)
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
-            showAssist = true
+            presentConfiguredAssist()
         }
         // The Assist complication opens the app via a `homeassistant://assist` widget URL. Depending on
         // launch state watchOS delivers this either as an opened URL or as a browsing-web user activity.
         .onOpenURL { url in
-            if isAssistDeepLink(url) { showAssist = true }
+            if isAssistDeepLink(url) { presentConfiguredAssist() }
         }
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
-            if isAssistDeepLink(activity.webpageURL) { showAssist = true }
+            if isAssistDeepLink(activity.webpageURL) { presentConfiguredAssist() }
         }
         .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
             viewModel.loadCache()
         }
-        .fullScreenCover(isPresented: $showAssist, content: {
-            if let serverId = viewModel.watchConfig.assist.serverId,
-               let pipelineId = viewModel.watchConfig.assist.pipelineId {
+        .fullScreenCover(item: $assistPresentation, content: { presentation in
+            switch presentation {
+            case let .session(serverId, pipelineId, prompt):
                 WatchAssistView.build(
                     serverId: serverId,
-                    pipelineId: pipelineId
+                    pipelineId: pipelineId,
+                    prompt: prompt
                 )
-            } else {
+            case .unconfigured:
                 // Assist isn't configured yet (e.g. cold launch before the config synced). Surface a
                 // message instead of crashing; the user can retry once configuration is available.
                 Text(verbatim: L10n.Watch.Assist.LackConfig.Error.title)
@@ -180,7 +186,7 @@ struct WatchHomeView: View {
             // Consume a launch requested from the complication before this view existed (cold launch).
             if AssistDefaultComplication.pendingLaunch {
                 AssistDefaultComplication.pendingLaunch = false
-                showAssist = true
+                presentConfiguredAssist()
             }
             updateIPhoneReachability(Communicator.shared.currentReachability)
             startReachabilityObservation()
@@ -244,7 +250,7 @@ struct WatchHomeView: View {
                 viewModel: viewModel,
                 isEditing: $isEditing,
                 iPhoneNotReachable: $iPhoneNotReachable,
-                onAssist: { showAssist = true },
+                onAssist: { presentConfiguredAssist() },
                 onAdd: { activeSheet = .add }
             )
             listContent
@@ -325,6 +331,8 @@ struct WatchHomeView: View {
                     WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else if item.type == .area {
                     WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else if item.isAssist {
+                    WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else {
                     WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 }
@@ -431,12 +439,25 @@ struct WatchHomeView: View {
             )
         } else if item.type == .complication {
             WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        } else if item.isAssist {
+            WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,
                 itemInfo: viewModel.info(for: item),
                 subtitle: viewModel.serverName(for: item)
             )
+        }
+    }
+
+    /// Open Assist with the pipeline chosen in the watch configuration — the toolbar button, the
+    /// complication and the `homeassistant://assist` deep link all land here.
+    private func presentConfiguredAssist() {
+        if let serverId = viewModel.watchConfig.assist.serverId,
+           let pipelineId = viewModel.watchConfig.assist.pipelineId {
+            assistPresentation = .session(serverId: serverId, pipelineId: pipelineId, prompt: nil)
+        } else {
+            assistPresentation = .unconfigured
         }
     }
 

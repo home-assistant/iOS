@@ -35,6 +35,8 @@ struct WatchConfigItemEditView: View {
     @State private var backgroundColorHex: String?
     @State private var textColorHex: String?
     @State private var useCustomColors: Bool
+    /// Only used by an Assist prompt item — the text it sends when run.
+    @State private var assistPrompt: String
 
     init(
         mode: Mode,
@@ -60,6 +62,7 @@ struct WatchConfigItemEditView: View {
         _useCustomColors = State(
             initialValue: item.customization?.backgroundColor != nil || item.customization?.textColor != nil
         )
+        _assistPrompt = State(initialValue: item.assistPrompt ?? "")
     }
 
     private var isFolder: Bool { originalItem.type == .folder }
@@ -70,6 +73,9 @@ struct WatchConfigItemEditView: View {
     /// icon, colors and confirmation here would all be silently ignored. Its row is in this editor
     /// only so it can be removed from the list, which is what the screen shows for it.
     private var isComplication: Bool { originalItem.type == .complication }
+
+    /// An Assist prompt carries the text it sends, which is editable here alongside its name.
+    private var isAssistPrompt: Bool { originalItem.type == .assistPrompt }
 
     var body: some View {
         List {
@@ -89,8 +95,16 @@ struct WatchConfigItemEditView: View {
                     }
                 }
             }
-            // Folders, areas, complications and sensors never run anything, so nothing to confirm.
-            if !isFolder, !isArea, !isComplication, !originalItem.isWatchDisplayOnly {
+            if isAssistPrompt {
+                Section {
+                    TextField(L10n.MagicItem.AssistPrompt.Prompt.title, text: $assistPrompt)
+                } header: {
+                    Text(verbatim: L10n.MagicItem.AssistPrompt.Prompt.title)
+                }
+            }
+            // Folders, areas, complications, sensors and Assist items never run a service, so there
+            // is nothing to confirm.
+            if !isFolder, !isArea, !isComplication, !originalItem.isAssist, !originalItem.isWatchDisplayOnly {
                 Section {
                     Toggle(isOn: $requiresConfirmation) {
                         Text(verbatim: L10n.Watch.Config.Edit.requireConfirmation)
@@ -192,6 +206,12 @@ struct WatchConfigItemEditView: View {
             customization.textColor = nil
         }
         item.customization = customization
+        if isAssistPrompt {
+            let trimmedPrompt = assistPrompt.trimmingCharacters(in: .whitespacesAndNewlines)
+            // Keep the original prompt rather than saving an empty one, which would leave the item
+            // with nothing to send.
+            item.assistPrompt = trimmedPrompt.isEmpty ? originalItem.assistPrompt : trimmedPrompt
+        }
         return item
     }
 

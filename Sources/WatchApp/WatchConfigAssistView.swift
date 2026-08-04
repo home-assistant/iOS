@@ -17,6 +17,10 @@ struct WatchConfigAssistView: View {
                 Toggle(isOn: $viewModel.showAssist) {
                     Text(verbatim: L10n.Watch.Config.Assist.show)
                 }
+            } footer: {
+                Text(verbatim: L10n.Watch.Configuration.ShowAssist.footer)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             if viewModel.showAssist {

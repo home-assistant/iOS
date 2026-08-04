@@ -74,6 +74,29 @@ struct WatchConfigAddView: View {
                 chooserRow(icon: .textureBoxIcon, title: L10n.Watch.Config.Add.area)
             }
 
+            NavigationLink {
+                WatchConfigAddAssistListView(
+                    viewModel: viewModel,
+                    folderId: folderId,
+                    finish: { dismiss() }
+                )
+            } label: {
+                chooserRow(icon: .microphoneIcon, title: L10n.Widgets.Action.Name.assist)
+            }
+
+            NavigationLink {
+                WatchConfigAddAssistPromptView(
+                    viewModel: viewModel,
+                    folderId: folderId,
+                    finish: { dismiss() }
+                )
+            } label: {
+                chooserRow(
+                    icon: .messageProcessingOutlineIcon,
+                    title: L10n.MagicItem.ItemType.AssistPrompt.title
+                )
+            }
+
             if hasComplications {
                 NavigationLink {
                     WatchConfigAddComplicationListView(

@@ -2,7 +2,8 @@ import Foundation
 import Shared
 
 extension WatchAssistView {
-    static func build(serverId: String, pipelineId: String) -> WatchAssistView {
+    /// `prompt` is set by an Assist prompt item: the session sends that text instead of recording.
+    static func build(serverId: String, pipelineId: String, prompt: String? = nil) -> WatchAssistView {
         // The whole view-model expression is passed as an autoclosure so it only runs when SwiftUI
         // first creates the view's @StateObject storage. This builder is called from a
         // `fullScreenCover` content closure, which re-evaluates on every parent re-render (config
@@ -13,7 +14,8 @@ extension WatchAssistView {
             assistService: WatchAssistService(serverId: serverId, pipelineId: pipelineId),
             audioRecorder: WatchAudioRecorder(),
             audioPlayer: AudioPlayer(),
-            immediateCommunicatorService: .shared
+            immediateCommunicatorService: .shared,
+            prompt: prompt
         ))
     }
 }
