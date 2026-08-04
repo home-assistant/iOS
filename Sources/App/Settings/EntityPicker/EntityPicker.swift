@@ -101,7 +101,10 @@ struct EntityPicker: View {
         VStack(spacing: 0) {
             searchField
                 .padding(.horizontal, DesignSystem.Spaces.two)
-                .padding(.vertical, DesignSystem.Spaces.one)
+                // Top inset matches the horizontal one so the capsule sits concentric inside the sheet's
+                // rounded corners, and it keeps the field clear of the presentation drag indicator.
+                .padding(.top, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.one)
             list
         }
         .onAppear {
