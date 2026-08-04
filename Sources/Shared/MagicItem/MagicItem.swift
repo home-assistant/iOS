@@ -74,6 +74,12 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type == .entity && domain?.isWatchDisplayOnly == true
     }
 
+    /// True for the item types that start an Assist session (a pipeline, or a written prompt) rather
+    /// than calling a service.
+    public var isAssist: Bool {
+        type == .assistPipeline || type == .assistPrompt
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {

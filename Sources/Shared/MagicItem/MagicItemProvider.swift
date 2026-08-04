@@ -95,9 +95,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             return
         }
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
-        carPlayConfig.quickAccessItems = normalizeCarPlayItems(carPlayConfig.quickAccessItems)
+        carPlayConfig.quickAccessItems = normalizeAssistItems(carPlayConfig.quickAccessItems)
         if let tabFolders = carPlayConfig.tabFolders {
-            carPlayConfig.tabFolders = normalizeCarPlayItems(migrateItemsIfNeeded(items: tabFolders))
+            carPlayConfig.tabFolders = normalizeAssistItems(migrateItemsIfNeeded(items: tabFolders))
         }
 
         do {
@@ -120,7 +120,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             completion()
             return
         }
-        watchConfig.items = migrateItemsIfNeeded(items: watchConfig.items)
+        watchConfig.items = normalizeAssistItems(migrateItemsIfNeeded(items: watchConfig.items))
 
         do {
             try Current.database().write { db in
@@ -428,15 +428,17 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         )
     }
 
-    private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {
+    /// Assist items always render with the Assist icon color and never ask for confirmation —
+    /// running one opens a voice session rather than calling a service.
+    private func normalizeAssistItems(_ items: [MagicItem]) -> [MagicItem] {
         items.map { item in
             if item.type == .folder {
                 var item = item
-                item.items = normalizeCarPlayItems(item.items ?? [])
+                item.items = normalizeAssistItems(item.items ?? [])
                 return item
             }
 
-            guard item.type == .assistPipeline || item.type == .assistPrompt else { return item }
+            guard item.isAssist else { return item }
 
             var item = item
             var customization = item.customization ?? .init()

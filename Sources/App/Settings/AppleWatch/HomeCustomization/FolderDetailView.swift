@@ -46,16 +46,29 @@ struct FolderDetailView: View {
             }
         }
         .sheet(item: $addItemDestination) { destination in
-            MagicItemAddView(
-                context: .watch,
-                initialItemType: destination.magicItemType,
-                visiblePickerOptions: [destination.pickerOption],
-                allowMultipleSelection: true
-            ) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+            switch destination {
+            case .entity, .area, .complication, .assist:
+                if let magicItemType = destination.magicItemType, let pickerOption = destination.pickerOption {
+                    MagicItemAddView(
+                        context: .watch,
+                        initialItemType: magicItemType,
+                        visiblePickerOptions: [pickerOption],
+                        allowMultipleSelection: true
+                    ) { itemToAdd in
+                        guard let itemToAdd else { return }
+                        viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+                    }
+                    .preferredColorScheme(.dark)
+                }
+            case .assistPrompt:
+                NavigationView {
+                    AssistPromptMagicItemView(mode: .add) { itemToAdd in
+                        viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .preferredColorScheme(.dark)
             }
-            .preferredColorScheme(.dark)
         }
         .sheet(isPresented: $showEditFolder) {
             if let folder {
@@ -86,6 +99,15 @@ struct FolderDetailView: View {
             // Nothing to customize: a complication renders from its own configuration, so a name or
             // color set here would be silently ignored. Swipe removes it, as for any other row.
             itemLabel(item: item, itemInfo: itemInfo)
+        } else if item.type == .assistPrompt {
+            NavigationLink {
+                AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemLabel(item: item, itemInfo: itemInfo)
+            }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in

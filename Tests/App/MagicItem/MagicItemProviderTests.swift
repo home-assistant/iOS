@@ -147,6 +147,36 @@ struct MagicItemProviderTests {
         #expect(sut.getInfo(for: .init(id: "light.one", serverId: "1", type: .scene)) == nil)
     }
 
+    @Test mutating func migrateWatchAssistItemsNormalizesUnsupportedCustomization() async throws {
+        var watchConfig = WatchConfig()
+        watchConfig.items = [
+            .init(
+                id: "pipeline.one",
+                serverId: "1",
+                type: .assistPipeline,
+                customization: .init(requiresConfirmation: true)
+            ),
+        ]
+
+        try await Current.database().write { [watchConfig] db in
+            try WatchConfig.deleteAll(db)
+            try watchConfig.insert(db)
+        }
+
+        await withCheckedContinuation { continuation in
+            sut.migrateWatchConfig {
+                continuation.resume()
+            }
+        }
+
+        // Assist opens a voice session instead of calling a service, so it never confirms and always
+        // carries the Assist icon color.
+        let item = try WatchConfig.config()?.items.first
+        #expect(item?.type == .assistPipeline)
+        #expect(item?.customization?.requiresConfirmation == false)
+        #expect(item?.customization?.iconColor == MagicItem.defaultAssistIconColorHex)
+    }
+
     @Test mutating func migrateCarPlayAssistItemsNormalizesUnsupportedCustomization() async throws {
         var carPlayConfig = CarPlayConfig()
         carPlayConfig.quickAccessItems = [

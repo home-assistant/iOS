@@ -95,6 +95,8 @@ struct WatchFolderContentView: View {
             ForEach((folder?.items ?? []).filter { $0.type != .complication }, id: \.serverUniqueId) { item in
                 if item.type == .area {
                     WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else if item.isAssist {
+                    WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 } else {
                     WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
                 }
@@ -133,6 +135,8 @@ struct WatchFolderContentView: View {
             )
         } else if item.type == .complication {
             WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        } else if item.isAssist {
+            WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item))
         } else {
             WatchMagicViewRow(
                 item: item,

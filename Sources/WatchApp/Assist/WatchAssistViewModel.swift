@@ -23,6 +23,9 @@ final class WatchAssistViewModel: ObservableObject {
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
     private let immediateCommunicatorService: ImmediateCommunicatorService
+    /// Written prompt of an Assist prompt item: the session sends it instead of listening. `nil`
+    /// for a regular voice session.
+    private let prompt: String?
 
     @Published var assistService: WatchAssistService
 
@@ -30,12 +33,14 @@ final class WatchAssistViewModel: ObservableObject {
         assistService: WatchAssistService,
         audioRecorder: any WatchAudioRecorderProtocol,
         audioPlayer: any AudioPlayerProtocol,
-        immediateCommunicatorService: ImmediateCommunicatorService
+        immediateCommunicatorService: ImmediateCommunicatorService,
+        prompt: String? = nil
     ) {
         self.audioRecorder = audioRecorder
         self.immediateCommunicatorService = immediateCommunicatorService
         self.assistService = assistService
         self.audioPlayer = audioPlayer
+        self.prompt = prompt
         audioRecorder.delegate = self
         immediateCommunicatorService.addObserver(.init(delegate: self))
     }
@@ -45,7 +50,30 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func initialRoutine() {
-        assist()
+        if let prompt = prompt?.trimmingCharacters(in: .whitespacesAndNewlines), !prompt.isEmpty {
+            sendPrompt(prompt)
+        } else {
+            assist()
+        }
+    }
+
+    /// Send an Assist prompt item's text through the pipeline. The prompt itself is echoed into the
+    /// chat straight away — a text run produces no speech-to-text event, so nothing else would show
+    /// what was asked.
+    private func sendPrompt(_ prompt: String) {
+        guard assistService.deviceReachable else {
+            state = .idle
+            showUnreacheableMessage()
+            return
+        }
+        appendChatItem(.init(content: prompt, itemType: .input))
+        state = .waitingForPipelineResponse
+        assistService.assist(text: prompt) { [weak self] error in
+            guard let error else { return }
+            Current.Log.error("Failed to send Assist prompt from watch: \(error.localizedDescription)")
+            self?.appendChatItem(.init(content: L10n.Assist.Watch.NotReachable.title, itemType: .error))
+            self?.updateState(state: .idle)
+        }
     }
 
     /// (Re)subscribe to phone responses. Called on every appearance: `endRoutine()` unsubscribes

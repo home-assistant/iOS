@@ -8,6 +8,11 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case pushAction = "PushAction"
     case assistPipelinesFetch
     case assistAudioDataChunked
+    /// Watch → phone: run an Assist pipeline with a written prompt instead of a recording,
+    /// `{text, pipelineId, serverId}`. The phone runs the pipeline and streams the result back
+    /// through the same `assistIntentEndResponse`/`assistTTSResponse`/`assistError` messages the
+    /// audio flow uses.
+    case assistTextInput
     case watchConfig
     /// Watch → phone: ask the phone for the list of items the user can add to the watch
     /// configuration (scripts/scenes/automations across all servers). The phone owns the entity

@@ -74,7 +74,7 @@ struct MagicItemCustomizationView: View {
     }
 
     private func save() {
-        if context == .carPlay, viewModel.item.type == .assistPipeline {
+        if Self.skipsConfirmation(context: context, item: viewModel.item) {
             viewModel.item.customization?.requiresConfirmation = false
         }
 
@@ -236,7 +236,7 @@ struct MagicItemCustomizationView: View {
         // A watch sensor is only displayed — tapping it opens its details screen and runs nothing,
         // so there is no action to confirm. Neither does an area entry, which opens the area's
         // entities.
-        if !(context == .carPlay && viewModel.item.type == .assistPipeline),
+        if !Self.skipsConfirmation(context: context, item: viewModel.item),
            viewModel.item.type != .area,
            !(context == .watch && viewModel.item.isWatchDisplayOnly) {
             Section {
@@ -310,6 +310,13 @@ struct MagicItemCustomizationView: View {
                     viewModel.item.action = .runScript(newValue.serverId, newValue.entityId)
                 }
         }
+    }
+
+    /// An Assist item in CarPlay or on the watch starts an Assist session instead of running a
+    /// service, so asking for confirmation first has nothing to confirm — and `MagicItemProvider`
+    /// clears the flag on both Assist types anyway.
+    private static func skipsConfirmation(context: MagicItemAddView.Context, item: MagicItem) -> Bool {
+        [.carPlay, .watch].contains(context) && item.isAssist
     }
 
     private func preventNilCustomization() {
