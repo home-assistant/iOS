@@ -140,7 +140,11 @@ struct HomeAssistantStandByView: View {
     private var showsOHFBrandingFooter: Bool {
         // Mirrors the clean-cache button's render condition, so the footer only yields the bottom
         // space when that button actually appears.
-        !showsEmptyState && !(showsCleanCacheButton && onCleanCacheAndReload != nil)
+        !showsEmptyState && !showsCleanCacheAndReloadButton
+    }
+
+    private var showsCleanCacheAndReloadButton: Bool {
+        showsCleanCacheButton && onCleanCacheAndReload != nil && !Current.isCatalyst
     }
 
     private func content(safeAreaInsets: EdgeInsets) -> some View {
@@ -196,7 +200,7 @@ struct HomeAssistantStandByView: View {
             if let emptyState {
                 actionButtons(for: emptyState)
                     .opacity(contentOpacity)
-            } else if showsCleanCacheButton, onCleanCacheAndReload != nil {
+            } else if showsCleanCacheAndReloadButton {
                 cleanCacheButton
                     .transition(.opacity)
             }
