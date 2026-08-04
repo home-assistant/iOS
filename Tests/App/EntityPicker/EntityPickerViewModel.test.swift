@@ -117,4 +117,49 @@ struct EntityPickerViewModelTests {
         vm.resetFilters()
         #expect(vm.hasActiveFilters == false)
     }
+
+    @Test("Hidden entities stay out of the browse list but surface when the user searches")
+    func hiddenEntitiesOnlyAppearWhileSearching() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        try AppDeviceRegistryTable().createIfNeeded(database: database)
+        try AppAreaTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "A"
+        let visible = HAAppEntity.make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: serverId)
+        let hidden = HAAppEntity.make("light.hidden_lamp", name: "Hidden Lamp", domain: "light", serverId: serverId)
+
+        try await database.write { db in
+            try visible.insert(db)
+            try hidden.insert(db)
+            let registry = EntityRegistryListForDisplay.Entity(
+                serverId: serverId,
+                entityId: hidden.entityId,
+                hidden: true
+            )
+            try registry.insert(db)
+        }
+
+        let vm = EntityPickerViewModel(domainFilter: nil, selectedServerId: serverId)
+        vm.fetchEntities()
+
+        func entityIds() -> Set<String> {
+            Set(vm.filteredGroups.flatMap(\.entities).map(\.entityId))
+        }
+
+        // Browsing (no search term) keeps the hidden entity out.
+        vm.searchTerm = ""
+        await vm._test_awaitFiltering()
+        #expect(entityIds().contains("light.kitchen"))
+        #expect(!entityIds().contains("light.hidden_lamp"))
+
+        // Searching surfaces the hidden entity.
+        vm.searchTerm = "Hidden"
+        await vm._test_awaitFiltering()
+        #expect(entityIds().contains("light.hidden_lamp"))
+    }
 }

@@ -472,6 +472,8 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Pick entity";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
 "entity_picker.select_all" = "Select all";
