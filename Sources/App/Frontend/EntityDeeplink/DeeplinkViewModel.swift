@@ -3,7 +3,6 @@ import Shared
 import SwiftUI
 import UIKit
 
-@MainActor
 final class DeeplinkViewModel: ObservableObject {
     let entityId: String
     let serverName: String
