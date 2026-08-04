@@ -60,7 +60,6 @@ final class EntityAddToHandler {
                     actions.append(MacToolbarItemAction())
                 }
 
-                // Deep links are available on all platforms for any entity
                 if domain != nil {
                     actions.append(DeeplinkAction())
                 }
