@@ -60,6 +60,7 @@ struct EntityFilterPickerView: View {
         } label: {
             compactLabel
         }
+        .buttonStyle(.plain)
         .frame(maxWidth: .infinity, alignment: .leading)
         .font(DesignSystem.Font.callout)
         .foregroundStyle(.secondary)
@@ -71,7 +72,9 @@ struct EntityFilterPickerView: View {
                     .glassEffect(.regular.interactive(), in: .capsule)
                     .contentShape(Capsule())
             } else {
-                view.clipShape(.capsule)
+                view
+                    .background(.tileBackground)
+                    .clipShape(.capsule)
             }
         }
     }
@@ -130,7 +133,9 @@ struct EntityFilterPickerView: View {
                     .glassEffect(.regular.interactive(), in: .capsule)
                     .contentShape(Capsule())
             } else {
-                view.clipShape(.capsule)
+                view
+                    .background(.tileBackground)
+                    .clipShape(.capsule)
             }
         }
     }

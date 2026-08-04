@@ -1710,6 +1710,8 @@ public enum L10n {
     }
     /// Pick entity
     public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
+    /// Reload
+    public static var reload: String { return L10n.tr("Localizable", "entity_picker.reload") }
     /// Remove all
     public static var removeAll: String { return L10n.tr("Localizable", "entity_picker.remove_all") }
     /// Select all
@@ -1751,6 +1753,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
         }
       }
+    }
+    public enum Refresh {
+      /// Updating…
+      public static var updating: String { return L10n.tr("Localizable", "entity_picker.refresh.updating") }
     }
     public enum Search {
       /// Entity name, ID, area name, device name...

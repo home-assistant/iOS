@@ -18,6 +18,12 @@ public protocol AppDatabaseUpdaterProtocol {
 
 public extension Notification.Name {
     static let appDatabaseUpdaterDidFinishRoutine = Notification.Name("appDatabaseUpdaterDidFinishRoutine")
+    static let appDatabaseUpdaterDidChangePhase = Notification.Name("appDatabaseUpdaterDidChangePhase")
+}
+
+public enum AppDatabaseUpdaterUserInfo {
+    /// Localized description of the current update phase, carried by `.appDatabaseUpdaterDidChangePhase`.
+    public static let phaseDescriptionKey = "phaseDescription"
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -431,6 +437,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     @MainActor
     private func presentProgressToast(_ phase: DatabaseUpdatePhase, server: Server, showProgress: Bool) {
+        // Broadcast the phase regardless of `showProgress` so screens like the entity picker can show
+        // inline progress without the toast.
+        NotificationCenter.default.post(
+            name: .appDatabaseUpdaterDidChangePhase,
+            object: server,
+            userInfo: [AppDatabaseUpdaterUserInfo.phaseDescriptionKey: phase.localizedDescription]
+        )
+
         guard showProgress, #available(iOS 18, *) else { return }
         ToastPresenter.shared.show(
             id: Self.progressToastID(serverId: server.identifier.rawValue),
