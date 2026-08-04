@@ -2,7 +2,8 @@ import Foundation
 import UserNotifications
 
 public protocol LocalNotificationDispatcherProtocol {
-    /// - Parameter completion: Called once the notification center accepted (or rejected) the request.
+    /// - Parameter completion: Called once the send attempt finished, whether the notification center
+    ///   accepted the request, rejected it, or the notification was skipped without ever being sent.
     ///   Callers that need the request to land before they go away — e.g. during app termination — can
     ///   wait on it; everyone else uses the `send(_:)` convenience below.
     func send(_ notification: LocalNotificationDispatcher.Notification, completion: (() -> Void)?)

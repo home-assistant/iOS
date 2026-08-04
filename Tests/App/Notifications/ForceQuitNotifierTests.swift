@@ -85,11 +85,13 @@ final class ForceQuitNotifierTests: XCTestCase {
         let notificationCenter = NotificationCenter()
         let notifier = makeNotifier(notificationCenter: notificationCenter)
 
-        notificationCenter.post(name: UIApplication.willTerminateNotification, object: nil)
+        // The notification center holds its observer unretained, so the notifier has to stay alive
+        // for the whole post-and-assert.
+        withExtendedLifetime(notifier) {
+            notificationCenter.post(name: UIApplication.willTerminateNotification, object: nil)
 
-        XCTAssertEqual(dispatcher.sentNotifications.map(\.id), [.forceQuit])
-        // Keep the notifier alive until after the notification is posted.
-        withExtendedLifetime(notifier) {}
+            XCTAssertEqual(dispatcher.sentNotifications.map(\.id), [.forceQuit])
+        }
     }
 
     private func makeNotifier(

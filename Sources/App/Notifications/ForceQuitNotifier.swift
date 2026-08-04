@@ -39,15 +39,19 @@ final class ForceQuitNotifier {
 
         Current.Log.info("App is terminating, warning the user about background features stopping")
 
+        // Sending off the caller's thread keeps the completion — and so the signal we are waiting on —
+        // from ever landing on the thread that is blocked here.
         let semaphore = DispatchSemaphore(value: 0)
-        Current.notificationDispatcher.send(
-            .init(
-                id: .forceQuit,
-                title: L10n.ForceQuit.Notification.title,
-                body: L10n.ForceQuit.Notification.body
-            ),
-            completion: { semaphore.signal() }
-        )
+        DispatchQueue.global(qos: .userInitiated).async {
+            Current.notificationDispatcher.send(
+                .init(
+                    id: .forceQuit,
+                    title: L10n.ForceQuit.Notification.title,
+                    body: L10n.ForceQuit.Notification.body
+                ),
+                completion: { semaphore.signal() }
+            )
+        }
         _ = semaphore.wait(timeout: .now() + Self.deliveryTimeout)
     }
 
