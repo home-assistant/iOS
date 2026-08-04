@@ -212,7 +212,11 @@ final class EntityAddToHandler {
         ).embeddedInHostingController()
 
         if !Current.isCatalyst, let sheet = hostingController.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+            let tallDetent = UISheetPresentationController.Detent.custom(identifier: .init("deeplinkTall")) { context in
+                context.maximumDetentValue * 0.85
+            }
+            sheet.detents = [tallDetent, .large()]
+            sheet.selectedDetentIdentifier = tallDetent.identifier
             sheet.prefersGrabberVisible = true
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
         }

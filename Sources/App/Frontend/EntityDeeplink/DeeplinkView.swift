@@ -3,6 +3,7 @@ import SwiftUI
 
 struct DeeplinkView: View {
     @StateObject private var viewModel: DeeplinkViewModel
+    @State private var isDeeplinkExpanded = false
     private let onClose: (() -> Void)?
 
     init(viewModel: DeeplinkViewModel, onClose: (() -> Void)? = nil) {
@@ -23,10 +24,27 @@ struct DeeplinkView: View {
                 }
 
                 Section {
-                    Text(viewModel.deeplink)
-                        .font(.system(.footnote, design: .monospaced))
-                        .foregroundStyle(Color(uiColor: .secondaryLabel))
-                        .textSelection(.enabled)
+                    HStack(alignment: .firstTextBaseline, spacing: DesignSystem.Spaces.one) {
+                        Text(viewModel.deeplink)
+                            .font(.system(.footnote, design: .monospaced))
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                            .lineLimit(isDeeplinkExpanded ? nil : 1)
+                            .truncationMode(.middle)
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button {
+                            withAnimation { isDeeplinkExpanded.toggle() }
+                        } label: {
+                            Image(systemSymbol: isDeeplinkExpanded ? .chevronUp : .chevronDown)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.borderless)
+                        .accessibilityLabel(
+                            isDeeplinkExpanded
+                                ? L10n.Component.CollapsibleView.collapse
+                                : L10n.Component.CollapsibleView.expand
+                        )
+                    }
                     if viewModel.didCopy {
                         Label {
                             Text(L10n.Deeplink.copied)

@@ -86,8 +86,8 @@ struct AppConstantsTests {
             "URL should contain more-info-entity-id query parameter"
         )
         assert(
-            result?.contains("isComingFromAppIntent=true") == true,
-            "URL should contain isComingFromAppIntent=true"
+            result?.contains("isComingFromAppIntent") == false,
+            "Minimal URL should not contain isComingFromAppIntent"
         )
         assert(result?.contains("server=") == false, "Minimal URL should not contain a server query parameter")
         assert(
@@ -110,8 +110,8 @@ struct AppConstantsTests {
             "URL should contain more-info-entity-id query parameter"
         )
         assert(
-            result?.contains("isComingFromAppIntent=true") == true,
-            "URL should contain isComingFromAppIntent=true"
+            result?.contains("isComingFromAppIntent") == false,
+            "URL should not contain isComingFromAppIntent"
         )
         assert(result?.contains("server=My%20Home") == true, "URL should contain the URL-encoded server name")
     }

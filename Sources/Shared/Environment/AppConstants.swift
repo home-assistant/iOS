@@ -162,7 +162,6 @@ public enum AppConstants {
         var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/")
         components?.queryItems = [
             URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
-            URLQueryItem(name: AppConstants.QueryItems.isComingFromAppIntent.rawValue, value: "true"),
         ]
         return components?.url
     }
