@@ -207,12 +207,18 @@ final class EntityAddToHandler {
                 serverName: webViewController.server.info.name
             ),
             onClose: { [weak webViewController] in
-                webViewController?.dismissOverlayController(animated: true, completion: nil)
+                webViewController?.overlayedController?.dismiss(animated: true, completion: nil)
             }
         ).embeddedInHostingController()
 
-        if !Current.isCatalyst, let sheet = hostingController.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+        if Current.isCatalyst {
+            hostingController.modalPresentationStyle = .formSheet
+        } else if let sheet = hostingController.sheetPresentationController {
+            let detent = UISheetPresentationController.Detent.custom(identifier: .init("deeplink")) { context in
+                context.maximumDetentValue * 0.7
+            }
+            sheet.detents = [detent, .large()]
+            sheet.selectedDetentIdentifier = detent.identifier
             sheet.prefersGrabberVisible = true
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
         }
