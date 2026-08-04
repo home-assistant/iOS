@@ -129,6 +129,25 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         XCTAssertEqual(connection.state, .ready(version: "1.0-mock"))
     }
 
+    func testConnectionDelegateMarksAccessTokenRejectedWhenWebSocketIsRejected() {
+        let priorDelays = HomeAssistantAPI.rejectedReconnectDelays
+        HomeAssistantAPI.rejectedReconnectDelays = [0, 0, 0]
+        defer { HomeAssistantAPI.rejectedReconnectDelays = priorDelays }
+
+        // The token still looks valid to us (expires in an hour), so nothing would ever refresh it and
+        // every reconnect would re-send the token the server just rejected.
+        let server = Server.fake()
+        let api = HomeAssistantAPI(server: server)
+        let connection = RejectingMockConnection()
+        connection.delegate = api
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .rejected))
+        drainMainQueue(cycles: 20)
+
+        XCTAssertEqual(server.info.token.expiration, .distantPast)
+    }
+
     func testConnectionDelegateGivesUpAfterExhaustingRejectedReconnectBudget() {
         let priorDelays = HomeAssistantAPI.rejectedReconnectDelays
         HomeAssistantAPI.rejectedReconnectDelays = [0, 0, 0]
