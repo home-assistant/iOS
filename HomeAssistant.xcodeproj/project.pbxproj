@@ -72,9 +72,6 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
-		42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */; };
-		42C11A0531AC500011AABB05 /* VacuumCapabilities.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */; };
-		42C11A0731AC500011AABB07 /* VacuumAreaMapping.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -164,6 +161,7 @@
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
+		42AB77022FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
@@ -171,7 +169,9 @@
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */; };
 		42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */; };
-		42AB77022FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */; };
+		42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */; };
+		42C11A0531AC500011AABB05 /* VacuumCapabilities.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */; };
+		42C11A0731AC500011AABB07 /* VacuumAreaMapping.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */; };
 		42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CAF2FFD4BD5002457D9 /* ObjectMapper */; };
 		42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CB12FFD4BE5002457D9 /* ObjectMapper */; };
 		42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
@@ -645,12 +645,15 @@
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
+		42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStoreRestoreLastURL.test.swift; sourceTree = "<group>"; };
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
-		42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStoreRestoreLastURL.test.swift; sourceTree = "<group>"; };
+		42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateControlState.test.swift; sourceTree = "<group>"; };
+		42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumCapabilities.test.swift; sourceTree = "<group>"; };
+		42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumAreaMapping.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -717,9 +720,6 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
-		42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateControlState.test.swift; sourceTree = "<group>"; };
-		42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumCapabilities.test.swift; sourceTree = "<group>"; };
-		42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumAreaMapping.test.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4976,6 +4976,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = accentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_OTHER_FLAGS = "$(inherited) --enable-icon-stack-fallback-generation=disabled";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
@@ -5012,6 +5013,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = accentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_OTHER_FLAGS = "$(inherited) --enable-icon-stack-fallback-generation=disabled";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
