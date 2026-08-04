@@ -134,7 +134,7 @@ Veuillez terminer la configuration en suivant les [instructions de configuration
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "Saisissez les informations d'identification Wi-Fi pour connecter l'appareil à votre réseau.";
 "component::improv_ble::config::step::user::data::address" = "Appareil";
-"component::improv_ble::config::step::user::description" = "Sélectionnez un appareil à configurer";
+"component::improv_ble::config::step::user::description" = "Sélectionnez l'appareil à configurer";
 "component::input_boolean::entity_component::_::state::off" = "Désactivé";
 "component::input_boolean::entity_component::_::state::on" = "Activé";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Non";

@@ -1,7 +1,7 @@
 "common::state::active" = "啟用";
 "common::state::closed" = "關閉";
 "common::state::connected" = "已連線";
-"common::state::disabled" = "已關閉";
+"common::state::disabled" = "已停用";
 "common::state::disconnected" = "已斷線";
 "common::state::enabled" = "已啟用";
 "common::state::home" = "在家";
@@ -49,7 +49,7 @@
 "component::calendar::entity_component::_::state_attributes::all_day::state::true" = "是";
 "component::calendar::title" = "行事曆";
 "component::camera::entity_component::_::state::idle" = "待命";
-"component::camera::entity_component::_::state_attributes::motion_detection::state::false" = "已關閉";
+"component::camera::entity_component::_::state_attributes::motion_detection::state::false" = "已停用";
 "component::camera::entity_component::_::state_attributes::motion_detection::state::true" = "已啟用";
 "component::camera::title" = "攝影機";
 "component::climate::entity_component::_::state::off" = "關閉";
@@ -101,7 +101,7 @@
 "component::hdmi_cec::services::standby::name" = "待命";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "離家";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "在家";
-"component::homekit_controller::entity::sensor::thread_status::state::disabled" = "已關閉";
+"component::homekit_controller::entity::sensor::thread_status::state::disabled" = "已停用";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "已連線";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "已斷線";
 "component::humidifier::entity_component::_::state::off" = "關閉";
@@ -253,7 +253,7 @@
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "待命";
 "component::shelly::entity::sensor::valve_status::state::closed" = "關閉";
 "component::shelly::selector::ble_scanner_mode::options::active" = "主動（耗用較多裝置電量，更新速度最快）";
-"component::shelly::selector::ble_scanner_mode::options::disabled" = "已關閉";
+"component::shelly::selector::ble_scanner_mode::options::disabled" = "已停用";
 "component::siren::entity_component::_::state::off" = "關閉";
 "component::siren::entity_component::_::state::on" = "開啟";
 "component::siren::title" = "警報";
@@ -280,7 +280,7 @@
 "component::timer::title" = "計時器";
 "component::todo::title" = "待辦事項列表";
 "component::transmission::entity::sensor::transmission_status::state::idle" = "待命";
-"component::tuya::entity::select::basic_anti_flicker::state:::0" = "已關閉";
+"component::tuya::entity::select::basic_anti_flicker::state:::0" = "已停用";
 "component::tuya::entity::select::basic_nightvision::state:::1" = "關閉";
 "component::tuya::entity::select::basic_nightvision::state:::2" = "開啟";
 "component::tuya::entity::select::light_mode::state::none" = "關閉";
@@ -328,5 +328,5 @@
 "component::yamaha_musiccast::entity::select::zone_sleep::state::off" = "關閉";
 "component::yeelight::selector::action::options::off" = "關閉";
 "component::yolink::entity::sensor::power_failure_alarm::state::off" = "關閉";
-"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "已關閉";
+"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "已停用";
 "component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "已啟用";

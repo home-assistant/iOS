@@ -2,8 +2,8 @@
 "NSCameraUsageDescription" = "Ta bilder och skicka dem till din Home Assistant-server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Det är möjligt att tillåta kors-spårning av webbplatser om dina inställningar tillåter det.";
 "NSFocusStatusUsageDescription" = "Rapportera din fokusstatus som en sensor.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Läs utvalda Apple Health-mätvärden så att de kan delas med Home Assistant som sensorer.";
+"NSHealthUpdateUsageDescription" = "Home Assistant skriver ingen data till Apple Health.";
 "NSLocalNetworkUsageDescription" = "Hitta och kommunicera med din Home Assistant-installation.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi behöver också platsåtkomst \"Alltid\" så att appen kan utföra bakgrundsoperationer. \n\n ⚠️ Utan detta kan appen inte bestämma vilken anslutning (lokal eller fjärr) som ska användas i bakgrunden och kommer alltid att använda fjärr.";
 "NSLocationAlwaysUsageDescription" = "Vi behöver alltid till gång till din plats för funktioner som iBeacons, geofences, platsuppdateringar i bakgrunden och korrekt rapportering.";
