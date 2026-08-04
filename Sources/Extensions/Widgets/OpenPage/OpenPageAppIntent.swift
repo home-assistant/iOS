@@ -5,7 +5,10 @@ import SwiftUI
 
 // AppIntent that open app needs to have it's target the widget extension AND app target!
 @available(iOS 18, *)
-struct OpenPageAppIntent: AppIntent {
+struct OpenPageAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit OpenPageIntent
+    static let intentClassName = "OpenPageIntent"
+
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_page.configuration.title",
         defaultValue: "Open Page"

@@ -2,7 +2,10 @@ import AppIntents
 import Foundation
 import Shared
 
-struct AssistPromptAppIntent: AppIntent {
+struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit AssistIntent
+    static let intentClassName = "AssistIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.assist_prompt.title",
         defaultValue: "Assist prompt"

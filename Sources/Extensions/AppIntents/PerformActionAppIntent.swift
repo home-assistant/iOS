@@ -3,7 +3,10 @@ import Foundation
 import Shared
 
 @available(iOS 17.0, *)
-struct PerformActionAppIntent: AppIntent {
+struct PerformActionAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit CallServiceIntent
+    static let intentClassName = "CallServiceIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.perform_action.title",
         defaultValue: "Perform action"
