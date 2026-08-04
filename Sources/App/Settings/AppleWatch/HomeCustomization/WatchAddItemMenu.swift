@@ -35,6 +35,7 @@ struct WatchAddItemMenu: View {
                         ofSize: .init(width: 18, height: 18),
                         color: .label
                     ))
+                    .renderingMode(.template)
                 }
             }
 
@@ -48,6 +49,7 @@ struct WatchAddItemMenu: View {
                         ofSize: .init(width: 18, height: 18),
                         color: .label
                     ))
+                    .renderingMode(.template)
                 }
             }
 
@@ -61,6 +63,7 @@ struct WatchAddItemMenu: View {
                         ofSize: .init(width: 18, height: 18),
                         color: .label
                     ))
+                    .renderingMode(.template)
                 }
             }
 
