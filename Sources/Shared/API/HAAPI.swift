@@ -1657,6 +1657,7 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .ready:
             resetRejectedReconnectRecovery()
         case .disconnected(reason: .rejected):
+            invalidateRejectedAccessToken()
             scheduleRejectedReconnectRecoveryIfNeeded()
         case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)):
             guard let tokenFetchFailure = error as? TokenFetchFailure,
@@ -1668,6 +1669,17 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .connecting, .authenticating, .disconnected(reason: .disconnected):
             break
         }
+    }
+
+    /// A rejected websocket means the server refused the access token we just authenticated with, even
+    /// though its client-side expiration still said it was valid — typically because the server was
+    /// rebuilt or the refresh token was revoked. The stored token is the one the socket authenticated
+    /// with (HAKit fetches it for every connect), so marking it rejected sends the next reconnect
+    /// through a real token refresh instead of re-sending the same rejected token until we give up.
+    /// The refresh either mints a working token or fails with 400...403, which is what surfaces the
+    /// re-authentication screen.
+    private func invalidateRejectedAccessToken() {
+        tokenManager.handleAccessTokenRejected(server.info.token.accessToken)
     }
 
     /// Recovers from a rejected websocket (`auth: invalid`): HAKit won't auto-reconnect a rejected
