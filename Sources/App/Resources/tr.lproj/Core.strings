@@ -16,6 +16,7 @@
 "common::state::standby" = "Bekleme modu";
 "common::state::unlocked" = "Kilitli değil";
 "common::state::yes" = "Evet";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Kapalı";
 "component::alarm_control_panel::title" = "Alarm Kontrol Paneli";
 "component::alert::entity_component::_::state::idle" = "Boşta";

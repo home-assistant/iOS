@@ -16,6 +16,7 @@
 "common::state::standby" = "Em espera";
 "common::state::unlocked" = "Destrancado";
 "common::state::yes" = "Sim";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Desligado";
 "component::alarm_control_panel::title" = "Painel de controle do alarme";
 "component::alert::entity_component::_::state::idle" = "Ocioso";

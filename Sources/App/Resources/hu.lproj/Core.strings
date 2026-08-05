@@ -16,6 +16,7 @@
 "common::state::standby" = "Készenlétben";
 "common::state::unlocked" = "Feloldva";
 "common::state::yes" = "Igen";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Ki";
 "component::alarm_control_panel::title" = "Riasztó központ";
 "component::alert::entity_component::_::state::idle" = "Tétlen";

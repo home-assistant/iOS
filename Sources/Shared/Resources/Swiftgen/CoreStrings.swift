@@ -46,6 +46,8 @@ public enum CoreStrings {
   public static var commonStateUnlocked: String { return CoreStrings.tr("Core", "common::state::unlocked") }
   /// Yes
   public static var commonStateYes: String { return CoreStrings.tr("Core", "common::state::yes") }
+  /// AI task
+  public static var componentAiTaskTitle: String { return CoreStrings.tr("Core", "component::ai_task::title") }
   /// Off
   public static var componentAirzoneEntitySelectSleepTimesStateOff: String { return CoreStrings.tr("Core", "component::airzone::entity::select::sleep_times::state::off") }
   /// Alarm control panel

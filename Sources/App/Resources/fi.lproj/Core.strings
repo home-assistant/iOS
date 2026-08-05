@@ -16,6 +16,7 @@
 "common::state::standby" = "Lepotilassa";
 "common::state::unlocked" = "Auki";
 "common::state::yes" = "Kyllä";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Pois";
 "component::alarm_control_panel::title" = "Hälytysasetukset";
 "component::alert::entity_component::_::state::idle" = "Toimeton";

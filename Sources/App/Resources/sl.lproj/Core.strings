@@ -16,6 +16,7 @@
 "common::state::standby" = "V pripravljenosti";
 "common::state::unlocked" = "Odklenjeno";
 "common::state::yes" = "Da";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Izklopljeno";
 "component::alarm_control_panel::title" = "Nadzorna plošča alarma";
 "component::alert::entity_component::_::state::idle" = "Nedejaven";

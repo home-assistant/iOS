@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "서버 데이터 동기화 중... (%li/%li)";
 "database_updater.toast.title" = "%@ 업데이트 중";
 "debug.reset.entities_database.title" = "앱 엔티티 데이터베이스 재설정";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "삭제";
 "device_name.primary_button.title" = "저장";
 "device_name.subtitle" = "이 이름은 Home Assistant에서 기기를 식별하는 데 사용됩니다.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "서버";
 "entity_picker.list.area.no_area.title" = "영역 없음";
 "entity_picker.placeholder" = "엔티티 선택";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "모두 제거";
 "entity_picker.search.placeholder" = "엔티티 이름, ID, 영역 이름, 기기 이름...";
 "entity_picker.select_all" = "모두 선택";
@@ -1604,6 +1612,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_details.general.app_icon.explanation.title" = "각 아이콘에는 기본, 어둡게, 색조 등 3가지 변형(iOS 18 이상)이 있으며, 선택한 iOS 홈 화면 스타일에 따라 반응합니다. 일부 아이콘은 어두운 모드에서 동일하거나 iOS에서 자동으로 처리됩니다.";
 "settings_details.general.app_icon.title" = "앱 아이콘";
 "settings_details.general.body" = "기본 앱 구성, 앱 아이콘 및 웹 페이지 설정";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "기기 이름";
 "settings_details.general.edge_to_edge.enabled.title" = "활성화";
 "settings_details.general.edge_to_edge.footer" = "지원하는 기기에서 Home Assistant UI를 화면 가장자리까지 표시합니다. 이 기능은 실험 기능이며 언제든지 제거될 수 있고 레이아웃 문제가 발생할 수도 있습니다.";
@@ -2094,6 +2103,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.configuration.layout.title" = "레이아웃";
 "watch.configuration.new_folder.title" = "새 폴더";
 "watch.configuration.save.title" = "저장하기";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Assist 표시";
 "watch.configurator.delete.button" = "컴플리케이션 삭제";
 "watch.configurator.delete.message" = "이 컴플리케이션을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.";
@@ -2437,6 +2447,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.sync.starting" = "동기화 시작 중…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac 도구 모음";
 "web_view.add_to.option.Widget.title" = "위젯";
 "web_view.empty_state.body" = "연결 상태를 확인하거나 나중에 다시 시도해 주세요. Home Assistant가 다시 시작되는 경우, 온라인 상태가 되면 다시 연결됩니다.";

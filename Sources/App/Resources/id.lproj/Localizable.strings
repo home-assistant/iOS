@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Menyinkronkan data server… (%li/%li)";
 "database_updater.toast.title" = "Memperbarui %@";
 "debug.reset.entities_database.title" = "Setel ulang database entitas aplikasi";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Hapus";
 "device_name.primary_button.title" = "Simpan";
 "device_name.subtitle" = "Ini akan digunakan untuk mengidentifikasi perangkat Anda di Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Server";
 "entity_picker.list.area.no_area.title" = "Tidak ada area";
 "entity_picker.placeholder" = "Pilih entitas";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Nama entitas, ID, nama area, nama perangkat…";
 "entity_picker.select_all" = "Select all";
@@ -1603,6 +1611,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Setiap ikon memiliki 3 varian (iOS 18+) yaitu default, gelap dan berwarna untuk bereaksi sesuai dengan gaya layar beranda iOS yang dipilih. Beberapa ikon memiliki ikon yang sama untuk mode gelap atau ditangani secara otomatis oleh iOS.";
 "settings_details.general.app_icon.title" = "Ikon Aplikasi";
 "settings_details.general.body" = "Konfigurasi Aplikasi Dasar, Ikon Aplikasi dan pengaturan halaman web.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Nama Perangkat";
 "settings_details.general.edge_to_edge.enabled.title" = "Enable";
 "settings_details.general.edge_to_edge.footer" = "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.";
@@ -2093,6 +2102,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Folder Baru";
 "watch.configuration.save.title" = "Simpan";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Tampilkan Assist";
 "watch.configurator.delete.button" = "Hapus Komplikasi";
 "watch.configurator.delete.message" = "Yakin ingin menghapus Komplikasi ini? Proses ini tidak dapat diurungkan.";
@@ -2438,6 +2448,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.sync.starting" = "Starting sync…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Periksa koneksi Anda atau coba lagi nanti. Jika dimulai ulang, Home Assistant akan tersambung kembali setelah online.";

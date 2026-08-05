@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Synchronisation des données du serveur… (%li/%li)";
 "database_updater.toast.title" = "Mise à jour de %@";
 "debug.reset.entities_database.title" = "Réinitialiser la base d'entités";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Supprimer";
 "device_name.primary_button.title" = "Enregistrer";
 "device_name.subtitle" = "Cela permet d'identifier votre appareil dans votre Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Serveurs";
 "entity_picker.list.area.no_area.title" = "Aucune pièce";
 "entity_picker.placeholder" = "Choisir une entité";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Nom d'entité, ID, nom de pièce, nom d'appareil…";
 "entity_picker.select_all" = "Select all";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Chaque icône possède 3 variantes (iOS 18+) : par défaut, sombre et teintée, pour s'adapter au style d'écran d'accueil iOS sélectionné. Certaines icônes sont identiques en mode sombre ou gérées automatiquement par iOS.";
 "settings_details.general.app_icon.title" = "Icône de l'application";
 "settings_details.general.body" = "Configuration de base de l'app, icône de l'app et paramètres de la page web.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
 "settings_details.general.edge_to_edge.enabled.title" = "Activer";
 "settings_details.general.edge_to_edge.footer" = "Afficher l'interface de Home Assistant bord à bord sur les appareils compatibles. Fonctionnalité expérimentale, qui peut être retirée à tout moment et peut aussi causer des problèmes de mise en page.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Disposition";
 "watch.configuration.new_folder.title" = "Nouveau dossier";
 "watch.configuration.save.title" = "Enregistrer";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Afficher Assist";
 "watch.configurator.delete.button" = "Supprimer la complication";
 "watch.configurator.delete.message" = "Êtes-vous sûr de vouloir supprimer cette complication ? Ça ne peut pas être annulé.";
@@ -2439,6 +2449,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.sync.starting" = "Démarrage de la synchronisation…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Barre d'outils Mac";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Veuillez vérifier votre connexion ou réessayer plus tard. Si Home Assistant est en cours de redémarrage, la reconnexion s'effectuera une fois qu'il sera de nouveau en ligne.";

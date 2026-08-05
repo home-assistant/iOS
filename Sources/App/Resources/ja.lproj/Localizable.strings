@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "サーバーデータを同期中... (%li/%li）";
 "database_updater.toast.title" = "更新中 %@";
 "debug.reset.entities_database.title" = "アプリエンティティデータベースをリセット";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "削除";
 "device_name.primary_button.title" = "保存";
 "device_name.subtitle" = "これは、Home Assistant でデバイスを識別するために使用されます。";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "サーバー";
 "entity_picker.list.area.no_area.title" = "エリアなし";
 "entity_picker.placeholder" = "エンティティを選択";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "エンティティ名、ID、エリア名、デバイス名...";
 "entity_picker.select_all" = "Select all";
@@ -1603,6 +1611,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "各アイコンには、デフォルト、ダーク、色付きの 3 つのバリエーション (iOS 18 以降) があり、選択した iOS ホーム画面のスタイルに応じて反応します。一部のアイコンはダーク モードでも同じか、iOS によって自動的に処理されます。";
 "settings_details.general.app_icon.title" = "アプリアイコン";
 "settings_details.general.body" = "アプリの基本設定、アプリのアイコンとウェブページの設定。";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "デバイス名";
 "settings_details.general.edge_to_edge.enabled.title" = "有効";
 "settings_details.general.edge_to_edge.footer" = "対応しているデバイスでは、Home AssistantのUIを画面の端から端まで表示します。これは実験的な機能であり、いつでも削除される可能性があり、またレイアウト上の問題を引き起こす可能性があります。";
@@ -2093,6 +2102,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "新しいフォルダ";
 "watch.configuration.save.title" = "保存";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "アシスト表示";
 "watch.configurator.delete.button" = "コンプリケーションを削除";
 "watch.configurator.delete.message" = "このコンプリケーションを削除してもよろしいですか？元に戻すことはできません。";
@@ -2438,6 +2448,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.sync.starting" = "Starting sync…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Macツールバー";
 "web_view.add_to.option.Widget.title" = "ウィジェット";
 "web_view.empty_state.body" = "接続を確認するか、しばらくしてからもう一度お試しください。Home Assistantが再起動している場合は、オンラインに戻った後に再接続されます。";
