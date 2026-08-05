@@ -2624,6 +2624,8 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"widgets.todo_list.add_item_prompt" = "What do you want to add?";
+"widgets.todo_list.add_item_title" = "Add To-do Item";
 "widgets.todo_list.all_done" = "All done! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
@@ -2636,8 +2638,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.todo_list.parameter.list_id" = "List ID";
 "widgets.todo_list.parameter.server" = "Server";
 "widgets.todo_list.parameter.server_id" = "Server ID";
+"widgets.todo_list.parameter.summary" = "Item";
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
+"widgets.todo_list.snippet.add_another" = "Add another";
+"widgets.todo_list.snippet.more_items" = "%li more";
+"widgets.todo_list.snippet.open_list" = "Open list";
 "widgets.todo_list.title" = "To-do List";
 "yaml_preview.share" = "Share Contents";
 "yes_label" = "Yes";

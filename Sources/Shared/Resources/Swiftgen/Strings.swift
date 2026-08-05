@@ -8524,6 +8524,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "widgets.sensors.title") }
     }
     public enum TodoList {
+      /// What do you want to add?
+      public static var addItemPrompt: String { return L10n.tr("Localizable", "widgets.todo_list.add_item_prompt") }
+      /// Add To-do Item
+      public static var addItemTitle: String { return L10n.tr("Localizable", "widgets.todo_list.add_item_title") }
       /// All done! 🎉
       public static var allDone: String { return L10n.tr("Localizable", "widgets.todo_list.all_done") }
       /// Complete To-do Item
@@ -8561,6 +8565,18 @@ public enum L10n {
         public static var server: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server") }
         /// Server ID
         public static var serverId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server_id") }
+        /// Item
+        public static var summary: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.summary") }
+      }
+      public enum Snippet {
+        /// Add another
+        public static var addAnother: String { return L10n.tr("Localizable", "widgets.todo_list.snippet.add_another") }
+        /// %li more
+        public static func moreItems(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "widgets.todo_list.snippet.more_items", p1)
+        }
+        /// Open list
+        public static var openList: String { return L10n.tr("Localizable", "widgets.todo_list.snippet.open_list") }
       }
     }
   }

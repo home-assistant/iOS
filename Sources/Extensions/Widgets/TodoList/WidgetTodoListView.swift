@@ -96,7 +96,20 @@ struct WidgetTodoListView: View {
                         .font(DesignSystem.Font.title)
                 }
                 .buttonStyle(.plain)
-                if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
+                if #available(iOS 26, *), !serverId.isEmpty, !listId.isEmpty {
+                    // Adds the item through an interactive snippet, keeping the person on the
+                    // Home Screen instead of opening the list in the app.
+                    Button(intent: TodoListAddItemAppIntent(
+                        serverId: serverId,
+                        listId: listId,
+                        listTitle: title
+                    )) {
+                        Image(systemSymbol: .plusCircleFill)
+                            .foregroundStyle(.haPrimary)
+                            .font(DesignSystem.Font.title)
+                    }
+                    .buttonStyle(.plain)
+                } else if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
                     Link(destination: addItemURL.withWidgetAuthenticity()) {
                         Image(systemSymbol: .plusCircleFill)
                             .foregroundStyle(.haPrimary)
