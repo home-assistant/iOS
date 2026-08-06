@@ -36,7 +36,7 @@ public struct EnergyStatisticBucket: Codable, Equatable {
 
     init(raw: [String: Any]) {
         self.start = Self.date(from: raw["start"]) ?? Date(timeIntervalSince1970: 0)
-        self.change = raw["change"] as? Double
+        self.change = (raw["change"] as? NSNumber)?.doubleValue
     }
 
     public init(start: Date, change: Double?) {
@@ -47,9 +47,10 @@ public struct EnergyStatisticBucket: Codable, Equatable {
     /// Statistics timestamps may arrive as ISO strings or as numeric epochs (seconds or milliseconds
     /// depending on the core version), so normalise defensively.
     private static func date(from value: Any?) -> Date? {
-        if let number = value as? Double {
-            // Heuristic: values past ~year 2286 in seconds are actually milliseconds.
-            return Date(timeIntervalSince1970: number > 1e12 ? number / 1000 : number)
+        if let number = value as? NSNumber {
+            let seconds = number.doubleValue
+            // A seconds epoch stays below 1e12 until roughly the year 33000, so a larger value is milliseconds.
+            return Date(timeIntervalSince1970: seconds > 1e12 ? seconds / 1000 : seconds)
         }
         if let string = value as? String {
             return ISO8601DateFormatter().date(from: string)

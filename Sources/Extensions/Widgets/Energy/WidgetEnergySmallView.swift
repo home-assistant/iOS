@@ -19,6 +19,7 @@ struct WidgetEnergySmallView: View {
     }
 
     var body: some View {
+        let metrics = metrics
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             HStack {
                 Text(entry.period.displayTitle)

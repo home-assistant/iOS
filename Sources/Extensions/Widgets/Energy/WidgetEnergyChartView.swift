@@ -1,8 +1,8 @@
 import Charts
 import SwiftUI
 
-/// Hourly energy bar chart mirroring the Home Assistant frontend energy graph: grid consumption is
-/// drawn as bars above the zero axis (blue) and solar generation as bars below it (orange). The
+/// Hourly energy bar chart mirroring the Home Assistant frontend energy graph: grid consumption
+/// (blue) and solar generation (orange) stack as positive bars above the zero axis. The
 /// x-axis spans the full day; the y-axis (kWh) sits on the trailing edge.
 @available(iOS 17, *)
 struct WidgetEnergyChartView: View {

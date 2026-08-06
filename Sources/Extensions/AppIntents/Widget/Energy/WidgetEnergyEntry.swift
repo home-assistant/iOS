@@ -28,8 +28,8 @@ struct WidgetEnergyEntry: TimelineEntry {
     var livePowerGrid: Double?
     var livePowerSolar: Double?
 
-    /// Per-bucket energy for the chart: grid consumption (drawn above the axis) and solar generation
-    /// (drawn below the axis), both in kWh.
+    /// Per-bucket energy for the chart: grid consumption and solar generation, stacked as positive
+    /// bars above the axis, both in kWh.
     var chartPoints: [ChartPoint] = []
 
     struct ChartPoint: Identifiable, Equatable {
