@@ -110,6 +110,86 @@ struct WidgetsSnapshotTests {
         )
     }
 
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetSystemSmallSnapshot() {
+        assertEnergySnapshot(source: .auto, family: .systemSmall)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetSystemMediumSnapshot() {
+        assertEnergySnapshot(source: .auto, family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetSystemMediumSolarOnlySnapshot() {
+        assertEnergySnapshot(source: .solar, withCost: false, family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetSystemMediumConsumptionOnlySnapshot() {
+        assertEnergySnapshot(source: .consumption, family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetSystemLargeSnapshot() {
+        assertEnergySnapshot(source: .auto, family: .systemLarge)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNotConfiguredSnapshot() {
+        let size = snapshotSize(for: .systemMedium)
+        assertLightDarkSnapshots(
+            of: WidgetEnergyView(entry: WidgetEnergyEntry(period: .today, isConfigured: false))
+                .environment(\.widgetFamily, .systemMedium),
+            layout: .fixed(width: size.width, height: size.height)
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor private func assertEnergySnapshot(
+        source: WidgetEnergySource,
+        withCost: Bool = true,
+        family: WidgetFamily,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: family)
+        let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+        let points = (0 ..< 24).map { hour -> WidgetEnergyEntry.ChartPoint in
+            let h = Double(hour)
+            return WidgetEnergyEntry.ChartPoint(
+                date: dayStart.addingTimeInterval(h * 3600),
+                grid: 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6),
+                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
+            )
+        }
+        let entry = WidgetEnergyEntry(
+            date: dayStart.addingTimeInterval(13 * 3600),
+            period: .today,
+            source: source,
+            serverName: "Home",
+            isConfigured: true,
+            gridConsumed: 6.2,
+            gridReturned: 10.5,
+            solarGenerated: 12.4,
+            cost: withCost ? -0.49 : nil,
+            currencyCode: withCost ? "EUR" : nil,
+            chartPoints: points
+        )
+        assertLightDarkSnapshots(
+            of: WidgetEnergyView(entry: entry).environment(\.widgetFamily, family),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
+        )
+    }
+
     private func snapshotSize(for family: WidgetFamily) -> CGSize {
         switch family {
         case .systemSmall:

@@ -34,6 +34,7 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
+        WidgetEnergy()
     }
 }
 
@@ -71,5 +72,6 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
+        WidgetEnergy()
     }
 }
