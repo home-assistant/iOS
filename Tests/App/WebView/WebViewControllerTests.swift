@@ -1,3 +1,4 @@
+import Alamofire
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -72,6 +73,79 @@ final class WebViewControllerTests: XCTestCase {
         sut.hideEmptyState()
 
         XCTAssertNil(overlayState.emptyState)
+    }
+
+    func testExternalAuthFailureMarksDisconnectedAndArmsEmptyStateTimer() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.handleExternalAuthFailure(error: URLError(.notConnectedToInternet))
+
+        XCTAssertEqual(sut.connectionState, .disconnected)
+        XCTAssertEqual(overlayState.connectionState, .disconnected)
+        XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .notConnectedToInternet)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    func testExternalAuthFailureUnwrapsSessionTaskErrorForTheDetailsScreen() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.handleExternalAuthFailure(
+            error: AFError.sessionTaskFailed(error: URLError(.notConnectedToInternet))
+        )
+
+        XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .notConnectedToInternet)
+    }
+
+    func testExternalAuthFailureIsIgnoredWhileFrontendIsDisplayed() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .loaded
+
+        sut.handleExternalAuthFailure(error: URLError(.notConnectedToInternet))
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertNil(sut.latestLoadError)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testExternalAuthFailureKeepsAuthInvalid() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .authInvalid
+
+        sut.handleExternalAuthFailure(error: URLError(.notConnectedToInternet))
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+    }
+
+    func testRepeatedExternalAuthFailuresDoNotPushBackTheEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.handleExternalAuthFailure(error: URLError(.notConnectedToInternet))
+        let armedTimer = sut.emptyStateTimer
+
+        sut.handleExternalAuthFailure(error: URLError(.timedOut))
+
+        XCTAssertTrue(armedTimer === sut.emptyStateTimer)
+        XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .timedOut)
+    }
+
+    func testExternalAuthFailureDoesNotReArmWhileEmptyStateIsShown() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertNotNil(overlayState.emptyState)
+
+        sut.handleExternalAuthFailure(error: URLError(.notConnectedToInternet))
+
+        XCTAssertNil(sut.emptyStateTimer)
     }
 
     func testUpdateFrontendConnectionStateClearsLatestLoadError() {
