@@ -16,7 +16,7 @@
 "common::state::standby" = "待命";
 "common::state::unlocked" = "已解鎖";
 "common::state::yes" = "是";
-"component::ai_task::title" = "AI task";
+"component::ai_task::title" = "AI 任務";
 "component::airzone::entity::select::sleep_times::state::off" = "關閉";
 "component::alarm_control_panel::title" = "警戒控制面板";
 "component::alert::entity_component::_::state::idle" = "待命";
