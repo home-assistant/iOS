@@ -602,22 +602,48 @@ enum WatchWidgetComplicationSnapshotStore {
         guard !configs.isEmpty else { return [] }
         ComplicationRefreshDebugNotifier.notifyStarted(names: configs.map(\.displayName))
         let refreshStarted = Date()
+        // Fetch every complication concurrently. One after another, a single slow or unreachable
+        // server blocks the rest until its timeout expires, and the background-refresh task
+        // force-completes at ~10s — so one stalled fetch would suspend the app before any fresh value
+        // was written, freezing every complication at its previous value.
+        typealias Build = (
+            index: Int,
+            snapshot: WatchWidgetComplicationSnapshot,
+            isLive: Bool,
+            failureReason: String?,
+            duration: TimeInterval
+        )
+        let builds: [Build] = await withTaskGroup(of: Build.self) { group in
+            for (index, config) in configs.enumerated() {
+                group.addTask {
+                    let started = Date()
+                    let result = await WatchWidgetComplicationSnapshot.make(config: config)
+                    let duration = Date().timeIntervalSince(started)
+                    return (index, result.snapshot, result.isLive, result.failureReason, duration)
+                }
+            }
+            var collected: [Build] = []
+            for await build in group {
+                collected.append(build)
+            }
+            return collected.sorted { $0.index < $1.index }
+        }
+
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
         var outcomes: [ComplicationRefreshOutcome] = []
-        for config in configs {
+        for build in builds {
+            let config = configs[build.index]
             let name = config.displayName
-            let fetchStarted = Date()
-            let result = await WatchWidgetComplicationSnapshot.make(config: config)
-            let duration = Date().timeIntervalSince(fetchStarted)
-            if result.isLive {
-                configSnapshots.append(result.snapshot)
+            let duration = build.duration
+            if build.isLive {
+                configSnapshots.append(build.snapshot)
                 outcomes.append(.init(
                     id: config.id,
                     name: name,
                     status: .live,
                     reason: nil,
                     entityId: config.entityId,
-                    value: result.snapshot.title,
+                    value: build.snapshot.title,
                     duration: duration
                 ))
             } else if let cached = previous[config.id] {
@@ -627,34 +653,34 @@ enum WatchWidgetComplicationSnapshotStore {
                     id: config.id,
                     name: name,
                     status: .cached,
-                    reason: result.failureReason,
+                    reason: build.failureReason,
                     entityId: config.entityId,
                     value: cached.title,
                     duration: duration
                 ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” is showing a cached "
-                        + "value; live refresh failed (\(result.failureReason ?? "unknown"))",
+                        + "value; live refresh failed (\(build.failureReason ?? "unknown"))",
                     type: .backgroundOperation,
-                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                    payload: ["complication": config.id, "reason": build.failureReason ?? "unknown"]
                 ))
             } else {
                 // Nothing cached (e.g. just added) — show the name-only snapshot and record the error.
-                configSnapshots.append(result.snapshot)
+                configSnapshots.append(build.snapshot)
                 outcomes.append(.init(
                     id: config.id,
                     name: name,
                     status: .failed,
-                    reason: result.failureReason,
+                    reason: build.failureReason,
                     entityId: config.entityId,
                     value: nil,
                     duration: duration
                 ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” "
-                        + "could not load live data (\(result.failureReason ?? "unknown"))",
+                        + "could not load live data (\(build.failureReason ?? "unknown"))",
                     type: .networkRequest,
-                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                    payload: ["complication": config.id, "reason": build.failureReason ?? "unknown"]
                 ))
             }
         }
