@@ -451,12 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "正在同步伺服器資料... (%li/%li)";
 "database_updater.toast.title" = "正在更新 %@";
 "debug.reset.entities_database.title" = "重置應用程式實體資料庫";
-"deeplink.copied" = "Copied to clipboard";
-"deeplink.copy_to_clipboard" = "Copy to clipboard";
-"deeplink.description" = "Copy a link that opens this entity in the app.";
-"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
-"deeplink.include_server.title" = "Include server";
-"deeplink.title" = "Deeplink";
+"deeplink.copied" = "複製至剪貼簿";
+"deeplink.copy_to_clipboard" = "複製至剪貼簿";
+"deeplink.description" = "複製可在應用程式中開啟此實體的連結。";
+"deeplink.include_server.subtitle" = "假如您在應用程式中設定了多個伺服器，此深層連結將專門指向 %@。";
+"deeplink.include_server.title" = "包含伺服器";
+"deeplink.title" = "深度連結";
 "delete" = "刪除";
 "device_name.primary_button.title" = "儲存";
 "device_name.subtitle" = "用以於 Home Assistant 中識別裝置。";
@@ -478,8 +478,8 @@
 "entity_picker.filter.server.title" = "伺服器";
 "entity_picker.list.area.no_area.title" = "無分區";
 "entity_picker.placeholder" = "選擇實體";
-"entity_picker.refresh.updating" = "Updating…";
-"entity_picker.reload" = "Reload";
+"entity_picker.refresh.updating" = "正在更新…";
+"entity_picker.reload" = "重新載入";
 "entity_picker.remove_all" = "全部移除";
 "entity_picker.search.placeholder" = "實體名稱、ID、區域名稱、裝置名稱...";
 "entity_picker.select_all" = "全選";
@@ -1612,7 +1612,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.general.app_icon.explanation.title" = "每個圖示都有 3 種變體 (iOS 18+)、預設、深色和不同色調，以根據所選的 iOS 主畫面風格做出反應。某些圖示在深色模式下是相同的或由 iOS 自動進行處理。";
 "settings_details.general.app_icon.title" = "App 圖示";
 "settings_details.general.body" = "基本 App 設定、App 圖示與網頁設定。";
-"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
+"settings_details.general.body_mac" = "應用程式基本設定與網頁設定。";
 "settings_details.general.device_name.title" = "裝置名稱";
 "settings_details.general.edge_to_edge.enabled.title" = "啟用";
 "settings_details.general.edge_to_edge.footer" = "在支援的裝置上將 Home Assistant 介面延伸至螢幕邊緣。這是一項實驗性功能，可能隨時移除，並可能導致版面配置問題。";
@@ -2103,7 +2103,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.configuration.layout.title" = "版面";
 "watch.configuration.new_folder.title" = "新資料夾";
 "watch.configuration.save.title" = "儲存";
-"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
+"watch.configuration.show_assist.footer" = "將助理顯示為 Apple Watch 主畫面頂端工具列中的按鈕。若要從項目清單執行特定的助理設定或提示，請改為將其新增為項目。";
 "watch.configuration.show_assist.title" = "顯示助理";
 "watch.configurator.delete.button" = "刪除複雜功能";
 "watch.configurator.delete.message" = "確定要刪除複雜功能？無法還原。";
@@ -2449,7 +2449,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.sync.starting" = "正在開始同步…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
-"web_view.add_to.option.Deeplink.title" = "Deeplink";
+"web_view.add_to.option.Deeplink.title" = "深度連結";
 "web_view.add_to.option.MacToolbar.title" = "Mac 工具列";
 "web_view.add_to.option.Widget.title" = "小工具";
 "web_view.empty_state.body" = "請檢查連線或稍後再試。如果 Home Assistant 正在重新啟動，恢復線上後將重新連線。";

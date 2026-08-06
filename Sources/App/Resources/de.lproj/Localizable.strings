@@ -451,11 +451,11 @@
 "database_updater.toast.syncing_with_progress" = "Serverdaten werden synchronisiert … (%li/%li)";
 "database_updater.toast.title" = "%@ wird aktualisiert";
 "debug.reset.entities_database.title" = "Datenbank für App-Entitäten zurücksetzen";
-"deeplink.copied" = "Copied to clipboard";
-"deeplink.copy_to_clipboard" = "Copy to clipboard";
-"deeplink.description" = "Copy a link that opens this entity in the app.";
-"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
-"deeplink.include_server.title" = "Include server";
+"deeplink.copied" = "In Zwischenablage kopiert";
+"deeplink.copy_to_clipboard" = "In Zwischenablage kopieren";
+"deeplink.description" = "Kopiere einen Link, der diese Entität in der App öffnet.";
+"deeplink.include_server.subtitle" = "Falls du in der App mehrere Server konfiguriert hst, führt dieser Deeplink speziell zu %@.";
+"deeplink.include_server.title" = "Server einbinden";
 "deeplink.title" = "Deeplink";
 "delete" = "Löschen";
 "device_name.primary_button.title" = "Speichern";
@@ -478,8 +478,8 @@
 "entity_picker.filter.server.title" = "Server";
 "entity_picker.list.area.no_area.title" = "Kein Bereich";
 "entity_picker.placeholder" = "Entität auswählen";
-"entity_picker.refresh.updating" = "Updating…";
-"entity_picker.reload" = "Reload";
+"entity_picker.refresh.updating" = "Wird aktualisiert …";
+"entity_picker.reload" = "Neu laden";
 "entity_picker.remove_all" = "Alle entfernen";
 "entity_picker.search.placeholder" = "Entitätsname, ID, Bereichsname, Gerätename …";
 "entity_picker.select_all" = "Alle auswählen";
@@ -1612,7 +1612,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings_details.general.app_icon.explanation.title" = "Jedes Symbol hat 3 Varianten (iOS 18+), Standard, dunkel und getönt, um entsprechend dem ausgewählten Stil des iOS-Home-Bildschirms zu reagieren. Einige Symbole sind im dunklen Modus identisch oder werden automatisch von iOS erstellt.";
 "settings_details.general.app_icon.title" = "App-Symbol";
 "settings_details.general.body" = "Grundlegende App-Konfiguration, App-Symbol und Webseiteneinstellungen.";
-"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
+"settings_details.general.body_mac" = "Grundlegende App-Konfiguration und Webseiteneinstellungen.";
 "settings_details.general.device_name.title" = "Gerätename";
 "settings_details.general.edge_to_edge.enabled.title" = "Aktivieren";
 "settings_details.general.edge_to_edge.footer" = "Die Benutzeroberfläche von Home Assistant auf unterstützten Geräten randlos anzeigen. Dies ist eine experimentelle Funktion, die jederzeit entfernt werden kann und unter Umständen Layoutprobleme verursacht.";
@@ -2104,7 +2104,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Neuer Ordner";
 "watch.configuration.save.title" = "Speichern";
-"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
+"watch.configuration.show_assist.footer" = "Zeigt Assist als Knopf in der Symbolleiste oben auf dem Startbildschirm der Apple Watch an. Um eine bestimmte Pipeline oder einen bestimmten Befehl aus der Elementliste auszuführen, füge ihn stattdessen als Element hinzu.";
 "watch.configuration.show_assist.title" = "Assist anzeigen";
 "watch.configurator.delete.button" = "Komplikation löschen";
 "watch.configurator.delete.message" = "Bist du sicher, dass du diese Komplikation löschen willst? Das kann nicht rückgängig gemacht werden.";
