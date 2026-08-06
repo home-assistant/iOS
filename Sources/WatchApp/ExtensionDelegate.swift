@@ -602,61 +602,103 @@ enum WatchWidgetComplicationSnapshotStore {
         guard !configs.isEmpty else { return [] }
         ComplicationRefreshDebugNotifier.notifyStarted(names: configs.map(\.displayName))
         let refreshStarted = Date()
+        // Fetch every complication concurrently, and bound the whole gather. Serially, one slow or
+        // unreachable server blocks the rest until its timeout; concurrently, a single slow build (a
+        // custom-template complication chains several sequential template renders) could still hold
+        // the write past the background task's ~10s deadline. Whatever hasn't answered by the deadline
+        // falls back to its cached value, exactly like a failed fetch, so the complications that did
+        // finish still refresh instead of the whole face freezing on one straggler.
+        typealias Build = (
+            index: Int,
+            snapshot: WatchWidgetComplicationSnapshot,
+            isLive: Bool,
+            failureReason: String?,
+            duration: TimeInterval
+        )
+        let gatherDeadline: TimeInterval = 8
+        let builds: [Int: Build] = await withTaskGroup(of: Build?.self) { group in
+            for (index, config) in configs.enumerated() {
+                group.addTask {
+                    let started = Date()
+                    let result = await WatchWidgetComplicationSnapshot.make(config: config)
+                    let duration = Date().timeIntervalSince(started)
+                    return (index, result.snapshot, result.isLive, result.failureReason, duration)
+                }
+            }
+            // Sentinel that returns nil once the budget is spent, so a stalled build can't hold the
+            // gather open; cancelling the group then drops the stragglers' in-flight requests.
+            group.addTask {
+                try? await Task.sleep(nanoseconds: UInt64(gatherDeadline * 1_000_000_000))
+                return nil
+            }
+            var collected: [Int: Build] = [:]
+            for await build in group {
+                guard let build else { break }
+                collected[build.index] = build
+                if collected.count == configs.count {
+                    break
+                }
+            }
+            group.cancelAll()
+            return collected
+        }
+
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
         var outcomes: [ComplicationRefreshOutcome] = []
-        for config in configs {
+        for (index, config) in configs.enumerated() {
             let name = config.displayName
-            let fetchStarted = Date()
-            let result = await WatchWidgetComplicationSnapshot.make(config: config)
-            let duration = Date().timeIntervalSince(fetchStarted)
-            if result.isLive {
-                configSnapshots.append(result.snapshot)
+            let build = builds[index]
+            if let build, build.isLive {
+                configSnapshots.append(build.snapshot)
                 outcomes.append(.init(
                     id: config.id,
                     name: name,
                     status: .live,
                     reason: nil,
                     entityId: config.entityId,
-                    value: result.snapshot.title,
-                    duration: duration
+                    value: build.snapshot.title,
+                    duration: build.duration
                 ))
             } else if let cached = previous[config.id] {
-                // Live fetch failed but we have a previous value — keep it rather than overwrite.
+                // Live fetch failed or didn't finish in time, but we have a previous value — keep it.
+                let reason = build?.failureReason ?? "refresh did not finish in time"
                 configSnapshots.append(cached)
                 outcomes.append(.init(
                     id: config.id,
                     name: name,
                     status: .cached,
-                    reason: result.failureReason,
+                    reason: reason,
                     entityId: config.entityId,
                     value: cached.title,
-                    duration: duration
+                    duration: build?.duration ?? 0
                 ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” is showing a cached "
-                        + "value; live refresh failed (\(result.failureReason ?? "unknown"))",
+                        + "value; live refresh failed (\(reason))",
                     type: .backgroundOperation,
-                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                    payload: ["complication": config.id, "reason": reason]
                 ))
-            } else {
+            } else if let build {
                 // Nothing cached (e.g. just added) — show the name-only snapshot and record the error.
-                configSnapshots.append(result.snapshot)
+                configSnapshots.append(build.snapshot)
                 outcomes.append(.init(
                     id: config.id,
                     name: name,
                     status: .failed,
-                    reason: result.failureReason,
+                    reason: build.failureReason,
                     entityId: config.entityId,
                     value: nil,
-                    duration: duration
+                    duration: build.duration
                 ))
                 Current.clientEventStore.addEvent(ClientEvent(
                     text: "Watch complication “\(name)” "
-                        + "could not load live data (\(result.failureReason ?? "unknown"))",
+                        + "could not load live data (\(build.failureReason ?? "unknown"))",
                     type: .networkRequest,
-                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                    payload: ["complication": config.id, "reason": build.failureReason ?? "unknown"]
                 ))
             }
+            // Otherwise the build didn't finish in time and there's nothing cached (a just-added
+            // complication) — leave it out this pass; the next refresh retries it.
         }
         write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
         persistRecords(outcomes, keepingIds: configs.map(\.id), defaults: defaults)

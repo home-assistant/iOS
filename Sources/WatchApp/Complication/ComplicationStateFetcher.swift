@@ -32,12 +32,29 @@ enum ComplicationStateFetcher {
     /// `token` is the bearer already applied to `request`: when the server answers 401, that exact
     /// token is reported rejected so the next fetch refreshes instead of re-sending it — otherwise
     /// every refresh cycle logs invalid auth server-side until the watch's IP gets banned.
+    /// Bounded so a slow or unreachable server can't hold a fetch open for `URLSession`'s 60s
+    /// default: the watch's background-refresh task force-completes at ~10s, so an over-budget fetch
+    /// would suspend the app before the fresh values were written, freezing the complication at its
+    /// previous value. Mirrors the widget self-fetch's own bound.
+    private static let fetchTimeout: TimeInterval = 8
+
+    private static func boundedSessionConfiguration() -> URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = fetchTimeout
+        configuration.timeoutIntervalForResource = fetchTimeout
+        configuration.waitsForConnectivity = false
+        return configuration
+    }
+
     private static func data(
         for request: URLRequest,
         server: Server,
         token: String
     ) async -> (data: Data?, failure: String?) {
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(
+            server: server,
+            configuration: boundedSessionConfiguration()
+        )
         defer { session.finishTasksAndInvalidate() }
         do {
             let (data, response) = try await session.data(for: request)
