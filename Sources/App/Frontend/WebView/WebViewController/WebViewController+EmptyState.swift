@@ -1,3 +1,4 @@
+import Alamofire
 import Shared
 import SwiftUI
 import UIKit
@@ -55,6 +56,44 @@ extension WebViewController {
 
     var shouldShowErrorDetailsButton: Bool {
         connectionState == .disconnected && latestLoadError != nil
+    }
+
+    /// Arms the grace timer that shows the empty state unless a `connected`/`loaded` frontend state
+    /// arrives first. The timer clears itself as it fires so a later failure can arm a fresh one.
+    func scheduleEmptyStateAfterGracePeriod() {
+        emptyStateTimer?.invalidate()
+        let timeout = TimeInterval(Current.settingsStore.webViewEmptyStateTimeout)
+        emptyStateTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
+            self?.emptyStateTimer = nil
+            self?.showEmptyState()
+        }
+    }
+
+    /// The frontend asks the app for an access token before it can connect to the server, and keeps
+    /// retrying while that fails. A failure there produces neither a navigation error nor a frontend
+    /// connection state — the page itself loaded fine, it just can't authenticate — so nothing would
+    /// ever take the stand-by loader down and the app appears to load forever. Treat it like a failed
+    /// load instead: keep the error for the details screen and fall back to the empty state.
+    func handleExternalAuthFailure(error: Error) {
+        guard !connectionState.isReadyForDisplay else { return }
+        latestLoadError = Self.presentableExternalAuthError(for: error)
+
+        // The frontend retries in a tight loop, so only the first failure arms the grace period; an
+        // empty state that is already up must not be pushed back by the retries behind it.
+        guard emptyStateTimer == nil, overlayState?.emptyState == nil else { return }
+
+        Current.Log.error("Frontend could not be authenticated, showing empty state: \(error)")
+        let resolvedState: FrontEndConnectionState = connectionState == .authInvalid ? .authInvalid : .disconnected
+        connectionState = resolvedState
+        overlayState?.connectionState = resolvedState
+        scheduleEmptyStateAfterGracePeriod()
+    }
+
+    /// Unwraps Alamofire's session-task wrapper so the error details screen shows the `URLError` the
+    /// user can act on (offline, local network blocked, TLS) rather than the transport wrapper, which
+    /// carries no failing URL and no actionable domain/code.
+    static func presentableExternalAuthError(for error: Error) -> Error {
+        (error.asAFError?.underlyingError as? URLError) ?? error
     }
 
     func presentLatestLoadErrorDetails() {

@@ -108,6 +108,9 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             }
         }.catch { [weak self] error in
             self?.sendGetExternalAuthFailure(callbackName: callbackName)
+            // The frontend swallows the rejection and retries, so without this the failure would stay
+            // invisible and the stand-by loader would spin forever.
+            self?.webView?.handleExternalAuthFailure(error: error)
             Current.Log.error("Failed to authenticate webview: \(error)")
         }
     }
