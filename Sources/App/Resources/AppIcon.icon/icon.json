@@ -1,39 +1,64 @@
 {
   "fill" : {
-    "linear-gradient" : [
-      "srgb:0.31765,0.80000,0.96078,1.00000",
-      "srgb:0.09412,0.73725,0.94902,1.00000"
-    ]
+    "automatic-gradient" : "srgb:0.09412,0.73725,0.94902,1.00000"
   },
   "groups" : [
     {
-      "hidden" : false,
       "layers" : [
         {
-          "image-name" : "ha-house.png",
-          "name" : "House",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
+          "blend-mode-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : "normal"
+            }
+          ],
+          "fill" : "automatic",
+          "image-name" : "home-assistant-logomark-monochrome-on-dark.svg",
+          "name" : "home-assistant-logomark-monochrome-on-dark",
+          "position-specializations" : [
+            {
+              "value" : {
+                "scale" : 2.56,
+                "translation-in-points" : [
+                  0,
+                  -250
+                ]
+              }
+            },
+            {
+              "idiom" : "watchOS",
+              "value" : {
+                "scale" : 2.68,
+                "translation-in-points" : [
+                  0,
+                  -280
+                ]
+              }
+            }
+          ]
         }
       ],
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          1.5078125,
+          230.7578125
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
       },
       "translucency" : {
         "enabled" : true,
-        "value" : 0
+        "value" : 0.5
       }
     }
   ],
   "supported-platforms" : {
-    "squares" : [
-      "macOS"
-    ]
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
   }
 }
