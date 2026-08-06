@@ -33,14 +33,17 @@ public struct ExternalLinkButton: View {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
-                    .tint(tint)
+                    .foregroundStyle(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                    .tint(Color(uiColor: .label))
+                    .foregroundStyle(Color(uiColor: .label))
                     .font(.body.bold())
             }
         }
+        // The row draws its own background below; without this Mac Catalyst adds the bordered
+        // button style's background on top of it, so every row shows two stacked backgrounds.
+        .buttonStyle(.plain)
         .frame(maxWidth: 600)
         .padding()
         .background(background)
@@ -69,14 +72,17 @@ public struct ActionLinkButton: View {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
-                    .tint(tint)
+                    .foregroundStyle(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                    .tint(Color(uiColor: .label))
+                    .foregroundStyle(Color(uiColor: .label))
                     .font(.body.bold())
             }
         })
+        // The row draws its own background below; without this Mac Catalyst adds the bordered
+        // button style's background on top of it, so every row shows two stacked backgrounds.
+        .buttonStyle(.plain)
         .frame(maxWidth: 600)
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))

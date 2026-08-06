@@ -34,6 +34,9 @@ final class MockWebViewController: WebViewControllerProtocol {
     var presentAlertControllerCalled = false
     var shownBannerRequests = [BannerRequest]()
     var hiddenBannerIDs = [String]()
+    var handleExternalAuthFailureCalled = false
+    var lastExternalAuthFailure: Error?
+    var handleExternalAuthFailureExpectation: XCTestExpectation?
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -89,6 +92,12 @@ final class MockWebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
+    }
+
+    func handleExternalAuthFailure(error: Error) {
+        handleExternalAuthFailureCalled = true
+        lastExternalAuthFailure = error
+        handleExternalAuthFailureExpectation?.fulfill()
     }
 
     func updateImprovEntryView(show: Bool) {
