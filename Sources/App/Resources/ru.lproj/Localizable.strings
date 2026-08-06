@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Синхронизация данных сервера... (%li/%li)";
 "database_updater.toast.title" = "Обновление %@";
 "debug.reset.entities_database.title" = "Сбросить базу данных объектов приложения";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Удалить";
 "device_name.primary_button.title" = "Сохранить";
 "device_name.subtitle" = "Это используется для идентификации вашего устройства в Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Серверы";
 "entity_picker.list.area.no_area.title" = "Нет зоны";
 "entity_picker.placeholder" = "Выбрать объект";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Имя объекта, ID, имя области, имя устройства...";
 "entity_picker.select_all" = "Select all";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Для каждого значка есть 3 варианта (iOS 18+): стандартный, темный и тонированный, чтобы он реагировал в соответствии с выбранным стилем главного экрана iOS. Некоторые значки остаются неизменными в темном режиме или автоматически обрабатываются iOS.";
 "settings_details.general.app_icon.title" = "Значок приложения";
 "settings_details.general.body" = "Базовая настройка приложения, значок приложения и параметры веб-страницы.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Название устройства";
 "settings_details.general.edge_to_edge.enabled.title" = "Включение";
 "settings_details.general.edge_to_edge.footer" = "Отображение пользовательского интерфейса Home Assistant от края до края на устройствах, которые его поддерживают. Это экспериментальная функция, которая может быть удалена в любое время, а также может вызвать проблемы с версткой.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Новая папка";
 "watch.configuration.save.title" = "Сохранить";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Показывать Assist";
 "watch.configurator.delete.button" = "Удалить расширение";
 "watch.configurator.delete.message" = "Вы уверены, что хотите удалить это расширение? Это не может быть отменено.";
@@ -2439,6 +2449,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.sync.starting" = "Starting sync…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
 "web_view.add_to.option.Widget.title" = "Виджет";
 "web_view.empty_state.body" = "Пожалуйста, проверьте ваше соединение или повторите попытку позже. Если Home Assistant перезагружается, соединение восстановится после его возвращения в сеть.";

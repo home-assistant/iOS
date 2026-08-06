@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Servergegevens synchroniseren... (%li/%li)";
 "database_updater.toast.title" = "%@ bijwerken";
 "debug.reset.entities_database.title" = "App-entiteitendatabase resetten";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Verwijder";
 "device_name.primary_button.title" = "Opslaan";
 "device_name.subtitle" = "Dit wordt gebruikt om je apparaat te identificeren binnen Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Geen ruimte";
 "entity_picker.placeholder" = "Kies entiteit";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Entiteitnaam, ID, ruimenaam, apparaatnaam...";
 "entity_picker.select_all" = "Select all";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Elk icoon heeft 3 varianten (iOS 18+), standaard, donker en getint om zich aan te passen op basis van de geselecteerde iOS-startschermstijl. Sommige iconen zijn hetzelfde in de donkere modus of worden automatisch door iOS aangepast.";
 "settings_details.general.app_icon.title" = "App icoon";
 "settings_details.general.body" = "Basisconfiguratie van de app, app-pictogram en webpagina-instellingen.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Apparaatnaam";
 "settings_details.general.edge_to_edge.enabled.title" = "Inschakelen";
 "settings_details.general.edge_to_edge.footer" = "De gebruikersinterface van Home Assistant wordt van rand tot rand weergegeven op apparaten die dit ondersteunen. Dit is een experimentele functie die op elk moment kan worden verwijderd en mogelijk ook lay-outproblemen kan veroorzaken.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Indeling";
 "watch.configuration.new_folder.title" = "Nieuwe map";
 "watch.configuration.save.title" = "Opslaan";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Assist weergeven";
 "watch.configurator.delete.button" = "Complicatie verwijderen";
 "watch.configurator.delete.message" = "Weet u zeker dat u deze complicatie wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden.";
@@ -2439,6 +2449,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.sync.starting" = "Synchronisatie starten…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-werkbalk";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opgestart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";

@@ -848,7 +848,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.action.script.title" = "Script";
 "magic_item.add" = "Add";
 "magic_item.assist_prompt.navigation_title" = "Assist prompt";
-"magic_item.assist_prompt.prompt.footer" = "When executed, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
+"magic_item.assist_prompt.prompt.footer" = "When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
 "magic_item.assist_prompt.prompt.title" = "Prompt";
 "magic_item.assist_prompt.title.title" = "Title";
 "magic_item.background_color.title" = "Background color";

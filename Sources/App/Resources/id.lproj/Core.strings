@@ -16,6 +16,7 @@
 "common::state::standby" = "Siaga";
 "common::state::unlocked" = "Terbuka";
 "common::state::yes" = "Ya";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Mati";
 "component::alarm_control_panel::title" = "Kontrol panel alarm";
 "component::alert::entity_component::_::state::idle" = "Siaga";

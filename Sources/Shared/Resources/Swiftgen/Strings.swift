@@ -2909,7 +2909,7 @@ public enum L10n {
       /// Assist prompt
       public static var navigationTitle: String { return L10n.tr("Localizable", "magic_item.assist_prompt.navigation_title") }
       public enum Prompt {
-        /// When executed, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.
+        /// When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.
         public static var footer: String { return L10n.tr("Localizable", "magic_item.assist_prompt.prompt.footer") }
         /// Prompt
         public static var title: String { return L10n.tr("Localizable", "magic_item.assist_prompt.prompt.title") }

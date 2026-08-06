@@ -16,6 +16,7 @@
 "common::state::standby" = "Standby";
 "common::state::unlocked" = "Ulåst";
 "common::state::yes" = "Ja";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Fra";
 "component::alarm_control_panel::title" = "Alarmkontrolpanel";
 "component::alert::entity_component::_::state::idle" = "Inaktiv";

@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Synkroniserer serverdata... (%li/%li)";
 "database_updater.toast.title" = "Opdaterer %@";
 "debug.reset.entities_database.title" = "Nulstil appens entitetsdatabase";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Slet";
 "device_name.primary_button.title" = "Gem";
 "device_name.subtitle" = "Dette bruges til at identificere din enhed i din Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Servere";
 "entity_picker.list.area.no_area.title" = "Intet område";
 "entity_picker.placeholder" = "Vælg entitet";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Fjern alle";
 "entity_picker.search.placeholder" = "Entitetsnavn, ID, områdenavn, enhedsnavn...";
 "entity_picker.select_all" = "Vælg alle";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Hvert ikon har 3 varianter (iOS 18+), standard, mørk og tonet. Dette er for at reagere til den valgte iOS home screen stil. Nogle ikoner er ens i mørk tilstand eller hånderet automatisk af iOS.";
 "settings_details.general.app_icon.title" = "App-ikon";
 "settings_details.general.body" = "Grundlæggende app-konfiguration, app-ikon og websideindstillinger.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Enhedsnavn";
 "settings_details.general.edge_to_edge.enabled.title" = "Aktivér";
 "settings_details.general.edge_to_edge.footer" = "Vis Home Assistant-brugerfladen fra kant til kant på enheder, der understøtter denne funktion. Dette er en eksperimentel funktion, som kan fjernes når som helst og som desuden kan medføre problemer med layoutet.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Ny mappe";
 "watch.configuration.save.title" = "Gem";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Vis Assist";
 "watch.configurator.delete.button" = "Slet Komplikation?";
 "watch.configurator.delete.message" = "Er du sikker på, at du vil slette denne Komplikation? Dette kan ikke fortrydes.";
@@ -2439,6 +2449,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.sync.starting" = "Starter synkronisering…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-værktøjslinje";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genopretter den forbindelsen, når den er online igen.";

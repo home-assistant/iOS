@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Συγχρονισμός δεδομένων server... (%li/%li)";
 "database_updater.toast.title" = "Ενημέρωση %@";
 "debug.reset.entities_database.title" = "Επαναφορά βάσης δεδομένων οντοτήτων εφαρμογής";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Διαγραφή";
 "device_name.primary_button.title" = "Αποθήκευση";
 "device_name.subtitle" = "Αυτό χρησιμοποιείται για την αναγνώριση της συσκευής σας στο Home Assistant.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Καμία περιοχή";
 "entity_picker.placeholder" = "Επιλογή οντότητας";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Ονομα οντότητας, ID, όνομα περιοχής, όνομα συσκευής...";
 "entity_picker.select_all" = "Select all";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Κάθε εικονίδιο έχει 3 παραλλαγές (iOS 18+), προεπιλογή, σκούρο και χρωματισμένο για να αντιδρά σύμφωνα με το επιλεγμένο στυλ αρχικής οθόνης iOS. Ορισμένα εικονίδια είναι τα ίδια στη σκοτεινή λειτουργία ή αντιμετωπίζονται αυτόματα από το iOS.";
 "settings_details.general.app_icon.title" = "Εικονίδιο εφαρμογής";
 "settings_details.general.body" = "Βασικές ρυθμίσεις της εφαρμογής, εικονίδιο της εφαρμογής και ρυθμίσεις ιστοσελίδας.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Όνομα συσκευής";
 "settings_details.general.edge_to_edge.enabled.title" = "Ενεργοποίηση";
 "settings_details.general.edge_to_edge.footer" = "Εμφάνιση της διεπαφής χρήστη του Home Assistant από άκρη σε άκρη σε συσκευές που το υποστηρίζουν. Πρόκειται για μια πειραματική λειτουργία, η οποία μπορεί να καταργηθεί ανά πάσα στιγμή και ενδέχεται επίσης να προκαλέσει προβλήματα στη διάταξη.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Νέος φάκελος";
 "watch.configuration.save.title" = "Αποθήκευση";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Εμφάνιση Βοηθού";
 "watch.configurator.delete.button" = "Διαγραφή σύνθετης πληροφορίας";
 "watch.configurator.delete.message" = "Θέλετε σίγουρα να διαγράψετε αυτή τη σύνθετη πληροφορία; Αυτό δεν μπορεί να αναιρεθεί.";
@@ -2439,6 +2449,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.sync.starting" = "Starting sync…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Γραμμή εργαλείων Mac";
 "web_view.add_to.option.Widget.title" = "Γραφικό στοιχείο";
 "web_view.empty_state.body" = "Ελέγξτε τη σύνδεσή σας ή προσπαθήστε ξανά αργότερα. Εάν το Home Assistant κάνει επανεκκίνηση, θα επανασυνδεθεί αφού επανέλθει σε λειτουργία.";

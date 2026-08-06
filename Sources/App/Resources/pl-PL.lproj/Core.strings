@@ -16,6 +16,7 @@
 "common::state::standby" = "tryb czuwania";
 "common::state::unlocked" = "odblokowano";
 "common::state::yes" = "tak";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "wyłączono";
 "component::alarm_control_panel::title" = "Panel kontrolny alarmu";
 "component::alert::entity_component::_::state::idle" = "brak aktywności";

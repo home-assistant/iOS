@@ -451,6 +451,12 @@
 "database_updater.toast.syncing_with_progress" = "Serveri andmete sünkroonimine... (%li/%li)";
 "database_updater.toast.title" = "Värskendamine %@";
 "debug.reset.entities_database.title" = "Rakenduse olemite andmebaasi lähtestamine";
+"deeplink.copied" = "Copied to clipboard";
+"deeplink.copy_to_clipboard" = "Copy to clipboard";
+"deeplink.description" = "Copy a link that opens this entity in the app.";
+"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
+"deeplink.include_server.title" = "Include server";
+"deeplink.title" = "Deeplink";
 "delete" = "Kustuta";
 "device_name.primary_button.title" = "Salvesta";
 "device_name.subtitle" = "Seda kasutatakse seadme tuvastamiseks Home Assistantis.";
@@ -472,6 +478,8 @@
 "entity_picker.filter.server.title" = "Serverid";
 "entity_picker.list.area.no_area.title" = "Ala puudub";
 "entity_picker.placeholder" = "Vali olem";
+"entity_picker.refresh.updating" = "Updating…";
+"entity_picker.reload" = "Reload";
 "entity_picker.remove_all" = "Remove all";
 "entity_picker.search.placeholder" = "Üksuse nimi, ID, ala nimi, seadme nimi...";
 "entity_picker.select_all" = "Select all";
@@ -1604,6 +1612,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.app_icon.explanation.title" = "Igal ikoonil on 3 varianti (iOS 18+), vaikimisi, tume ja toonitud, et reageerida vastavalt iOS-i avakuva valitud stiilile. Mõned ikoonid on tumedas režiimis samad või iOS neid käsitleb automaatselt.";
 "settings_details.general.app_icon.title" = "Rakenduse ikoon";
 "settings_details.general.body" = "Rakenduse põhikonfiguratsioon, ikoon ja veebilehe seaded.";
+"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
 "settings_details.general.device_name.title" = "Seadme nimi";
 "settings_details.general.edge_to_edge.enabled.title" = "Luba";
 "settings_details.general.edge_to_edge.footer" = "Kuva Home Assistant kasutajaliidest servast servani seadmetes, mis seda toetavad. See on eksperimentaalne funktsioon, mille saab igal ajal eemaldada ja mis võib põhjustada ka paigutusprobleeme.";
@@ -2094,6 +2103,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.configuration.layout.title" = "Paigutus";
 "watch.configuration.new_folder.title" = "Uus kaust";
 "watch.configuration.save.title" = "Salvesta";
+"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
 "watch.configuration.show_assist.title" = "Kiuva Assisti";
 "watch.configurator.delete.button" = "Kustuta element";
 "watch.configurator.delete.message" = "Kas oled kindel, et soovid selle elemendi kustutada? Seda ei saa tühistada.";
@@ -2439,6 +2449,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.sync.starting" = "Sünkroonimise alustamine…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Maci tööriistariba";
 "web_view.add_to.option.Widget.title" = "Vidin";
 "web_view.empty_state.body" = "Kontrolli ühendust või proovi hiljem uuesti. Kui Home Assistant taaskäivitub, loob see pärast võrguühenduse taastamist uuesti ühenduse.";
