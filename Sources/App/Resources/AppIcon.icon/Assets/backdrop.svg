@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="512px" height="500px" viewBox="0 0 512 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 57 (83077) - https://sketch.com -->
     <title>home-assistant</title>
-    <desc>Created with Sketch.</desc>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="home-assistant" fill="#F2F4F9" fill-rule="nonzero">
             <path d="M512,467.3 C512,484.9 497.6,499.3 480,499.3 L32,499.3 C14.4,499.3 0,484.9 0,467.3 L0,275.3 C0,257.7 10.2,233.1 22.6,220.7 L233.4,10 C245.8,-2.4 266.2,-2.4 278.6,10 L489.4,220.8 C501.8,233.2 512,257.8 512,275.4 L512,467.3 Z" id="Path"></path>
