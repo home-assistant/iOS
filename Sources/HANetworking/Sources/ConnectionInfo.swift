@@ -334,6 +334,21 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    /// URL types that can be used to authenticate against this server, ordered by preference:
+    /// remote UI > external > internal.
+    ///
+    /// Remote UI is dropped when the user opted out of Home Assistant Cloud (`useCloud`): a server can
+    /// keep a remote UI URL around while the user connects through their own external URL, and
+    /// authenticating against the cloud URL in that case would ignore that choice. This generally
+    /// follows how `evaluateActiveURL()` picks a URL, with one deliberate exception — when remote UI is
+    /// the only configured URL it is returned regardless of `useCloud`, since an empty list would leave
+    /// no way to authenticate at all.
+    public var availableAuthenticationURLTypes: [URLType] {
+        let configured: [URLType] = [.remoteUI, .external, .internal].filter { address(for: $0) != nil }
+        let respectingCloudPreference = configured.filter { $0 != .remoteUI || useCloud }
+        return respectingCloudPreference.isEmpty ? configured : respectingCloudPreference
+    }
+
     /// Returns a URL for troubleshooting purposes, such as displaying in error messages or running connectivity checks.
     /// This method provides read-only access to connection URLs that are otherwise private.
     /// - Parameter type: The type of URL to retrieve for troubleshooting

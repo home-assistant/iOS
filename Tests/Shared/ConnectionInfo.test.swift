@@ -800,6 +800,70 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.invitationURL(), internalURL)
     }
 
+    func testAvailableAuthenticationURLTypesSkipsRemoteUIWhenCloudDisabled() {
+        var info = makeConnectionInfo(
+            externalURL: URL(string: "https://external.com:8123"),
+            internalURL: URL(string: "http://internal.com:8123"),
+            remoteUIURL: URL(string: "https://cloud.com:8123")
+        )
+
+        info.useCloud = false
+        XCTAssertEqual(info.availableAuthenticationURLTypes, [.external, .internal])
+    }
+
+    func testAvailableAuthenticationURLTypesIncludesRemoteUIWhenCloudEnabled() {
+        var info = makeConnectionInfo(
+            externalURL: URL(string: "https://external.com:8123"),
+            internalURL: URL(string: "http://internal.com:8123"),
+            remoteUIURL: URL(string: "https://cloud.com:8123")
+        )
+
+        info.useCloud = true
+        XCTAssertEqual(info.availableAuthenticationURLTypes, [.remoteUI, .external, .internal])
+    }
+
+    func testAvailableAuthenticationURLTypesOmitsUnconfiguredURLs() {
+        var info = makeConnectionInfo(
+            externalURL: URL(string: "https://external.com:8123"),
+            internalURL: nil,
+            remoteUIURL: nil
+        )
+
+        info.useCloud = true
+        XCTAssertEqual(info.availableAuthenticationURLTypes, [.external])
+    }
+
+    func testAvailableAuthenticationURLTypesFallsBackToRemoteUIWhenItIsTheOnlyURL() {
+        var info = makeConnectionInfo(
+            externalURL: nil,
+            internalURL: nil,
+            remoteUIURL: URL(string: "https://cloud.com:8123")
+        )
+
+        info.useCloud = false
+        XCTAssertEqual(info.availableAuthenticationURLTypes, [.remoteUI])
+    }
+
+    private func makeConnectionInfo(
+        externalURL: URL?,
+        internalURL: URL?,
+        remoteUIURL: URL?
+    ) -> ConnectionInfo {
+        ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: remoteUIURL,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+    }
+
     func testFallbackToInternalURLWhenItIsHTTPS() async {
         let internalURL = URL(string: "https://internal.com:8123")
         var info = ConnectionInfo(
