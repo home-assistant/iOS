@@ -57,6 +57,9 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: WidgetSensorsAppIntent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [Self.previewSample(in: context)], policy: .never)
+        }
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(

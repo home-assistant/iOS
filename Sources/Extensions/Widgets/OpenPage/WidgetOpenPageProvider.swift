@@ -6,6 +6,9 @@ import WidgetKit
 struct WidgetOpenPageEntry: TimelineEntry {
     var date = Date()
     var pages: [PageAppEntity] = []
+    /// True for the gallery sample, whose pages belong to no real server — the view uses this to
+    /// skip the server-name subtitle rather than resolving one that doesn't apply.
+    var isPreview = false
 }
 
 @available(iOS 17.0, *)
@@ -84,7 +87,7 @@ struct WidgetOpenPageProvider: AppIntentTimelineProvider {
                     serverId: WidgetPreviewSample.serverId
                 )
             }
-        return .init(pages: pages)
+        return .init(pages: pages, isPreview: true)
     }
 
     func snapshot(for configuration: Intent, in context: Context) async -> Entry {
@@ -100,6 +103,9 @@ struct WidgetOpenPageProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [previewEntry(in: context)], policy: .never)
+        }
         let pages = panels(for: context, updating: configuration.pages ?? [])
         return Timeline(
             entries: [.init(pages: pages)],

@@ -89,6 +89,9 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [Self.previewSample(for: configuration, in: context)], policy: .never)
+        }
         let entry: Entry = await {
             if let configurationScripts = configuration.scripts?
                 .prefix(WidgetFamilySizes.size(for: context.family)) {

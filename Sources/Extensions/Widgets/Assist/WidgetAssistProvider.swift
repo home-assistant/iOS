@@ -56,7 +56,10 @@ struct WidgetAssistProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        Timeline(entries: [
+        if context.isPreview {
+            return Timeline(entries: [previewEntry], policy: .never)
+        }
+        return Timeline(entries: [
             WidgetAssistEntry(
                 pipeline: configuration.pipeline ?? defaultEntry.pipeline,
                 withVoice: configuration.withVoice

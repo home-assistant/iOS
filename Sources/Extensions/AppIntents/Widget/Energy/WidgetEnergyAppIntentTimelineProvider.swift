@@ -34,6 +34,9 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: WidgetEnergyAppIntent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [placeholder(in: context)], policy: .never)
+        }
         let entry: WidgetEnergyEntry
         do {
             entry = try await self.entry(for: configuration, in: context)

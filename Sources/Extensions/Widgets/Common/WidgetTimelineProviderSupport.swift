@@ -46,6 +46,9 @@ extension WidgetSingleEntryTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [makePreviewEntry(in: context)], policy: .never)
+        }
         let entry = await makeTimelineEntry(for: configuration, in: context)
         return .init(
             entries: [entry],

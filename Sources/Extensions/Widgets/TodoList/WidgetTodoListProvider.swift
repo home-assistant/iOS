@@ -83,6 +83,9 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return Timeline(entries: [placeholder(in: context)], policy: .never)
+        }
         guard let selectedList = selectedList(for: configuration) else {
             return Timeline(
                 entries: [.init(
