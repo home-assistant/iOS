@@ -55,7 +55,7 @@ public struct ComplicationRenderContext {
     public var gaugeStyle: WatchComplicationConfig.GaugeStyle { config.gaugeStyle(for: family) }
 
     /// Gauge/ring tint; defaults to the accent color.
-    public var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor($0)) } ?? .accentColor }
+    public var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor(hex: $0)) } ?? .accentColor }
     /// The configured value/text color, or nil when the complication sets none — so a surface that
     /// isn't drawing on the black watch face can fall back to its own primary color.
     public var configuredTextColor: Color? {
@@ -125,7 +125,9 @@ public extension ComplicationRenderContext {
         let precision = config.valuePrecision ?? config.entityId.flatMap {
             EntityRegistryListForDisplay.Entity.displayPrecision(serverId: config.serverId, entityId: $0)
         }
-        let value = state.isEmpty ? "" : formatValue(raw, unit: unit, precision: precision)
+        // Gated on the resolved value, not the state: an entity whose state is empty can still have a
+        // value attribute selected, and blanking that would drop a value the face does have.
+        let value = raw.isEmpty ? "" : formatValue(raw, unit: unit, precision: precision)
 
         // Fraction depends on the family's gauge range.
         var fraction: Double?

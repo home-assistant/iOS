@@ -67,9 +67,9 @@ enum WidgetComplicationResolver {
         )
     }
 
-    /// Template complications render their text, gauge and color templates server-side. A template
-    /// that fails to render keeps the statically configured value rather than blanking the face, which
-    /// is what the watch does too.
+    /// Template complications render their text, gauge and color templates server-side, the way the
+    /// watch does. A color template that fails to render keeps the statically configured color; a text
+    /// or gauge template that fails leaves that slot empty, since it has no static value to fall back on.
     private static func templateContext(
         config: WatchComplicationConfig,
         family: WatchComplicationConfig.Family,
