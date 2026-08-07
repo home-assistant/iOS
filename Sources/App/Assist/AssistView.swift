@@ -140,6 +140,8 @@ struct AssistView: View {
         } label: {
             HStack(spacing: DesignSystem.Spaces.half) {
                 Text(selectedPipelineName)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                 Image(systemSymbol: .chevronUpChevronDown)
             }
         }
