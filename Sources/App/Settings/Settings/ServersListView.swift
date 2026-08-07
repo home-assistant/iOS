@@ -52,10 +52,7 @@ struct ServersListView: View {
         }
 
         NavigationLink(destination: ServerSwitchingSettingsView()) {
-            HStack {
-                Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
-                LabsLabel()
-            }
+            Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
         }
 
         Button {
