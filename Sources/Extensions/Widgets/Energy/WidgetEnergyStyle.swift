@@ -1,4 +1,5 @@
 import Foundation
+import SFSafeSymbols
 import SwiftUI
 import UIKit
 
@@ -19,10 +20,10 @@ enum WidgetEnergyStyle {
     enum Direction {
         case up, down, none
 
-        var symbolName: String? {
+        var symbol: SFSymbol? {
             switch self {
-            case .up: "arrow.up"
-            case .down: "arrow.down"
+            case .up: .arrowUp
+            case .down: .arrowDown
             case .none: nil
             }
         }

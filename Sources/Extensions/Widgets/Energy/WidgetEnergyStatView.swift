@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -14,8 +15,8 @@ struct WidgetEnergyStatView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                if let symbol = direction.symbolName {
-                    Image(systemName: symbol)
+                if let symbol = direction.symbol {
+                    Image(systemSymbol: symbol)
                         .font(valueFont)
                         .foregroundStyle(color)
                 }
