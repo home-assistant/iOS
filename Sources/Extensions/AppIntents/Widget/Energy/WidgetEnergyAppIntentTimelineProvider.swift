@@ -55,7 +55,6 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
             Current.Log.error("Energy widget: no API for server (selected id: \(configuration.server.id))")
             return WidgetEnergyEntry(period: configuration.period, isConfigured: false)
         }
-        Current.Log.info("Energy widget using server '\(server.info.name)' (selected id: \(configuration.server.id))")
 
         // Tapping the widget opens the server's energy dashboard.
         let widgetURL = AppConstants.openPageDeeplinkURL(
@@ -108,10 +107,6 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
             entry.solarGenerated = sumTotals(ids: solarIds, in: stats)
             entry.cost = sumTotals(ids: costIds, in: stats)
             entry.chartPoints = chartPoints(importIds: gridImportIds, solarIds: solarIds, in: stats)
-            Current.Log.info(
-                "Energy widget stats: statIds=\(statIds.count) chartPoints=\(entry.chartPoints.count) "
-                    + "grid=\(entry.gridConsumed ?? -1)/\(entry.gridReturned ?? -1) solar=\(entry.solarGenerated ?? -1)"
-            )
         }
 
         entry.currencyCode = entry.cost == nil ? nil : await fetchCurrency(on: connection)
@@ -146,8 +141,8 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         return present.reduce(0) { $0 + (stats.totalChange(for: $1) ?? 0) }
     }
 
-    /// Builds the chart series: grid consumption (drawn above the axis) and solar generation
-    /// (drawn below the axis), keyed per statistics bucket.
+    /// Builds the chart series: grid consumption and solar generation, both clamped to ≥ 0 and
+    /// stacked as positive bars, keyed per statistics bucket.
     private func chartPoints(
         importIds: [String],
         solarIds: [String],

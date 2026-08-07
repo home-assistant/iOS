@@ -1,13 +1,14 @@
 import Charts
 import SwiftUI
 
-/// Hourly energy bar chart mirroring the Home Assistant frontend energy graph: grid consumption
-/// (blue) and solar generation (orange) stack as positive bars above the zero axis. The
-/// x-axis spans the full day; the y-axis (kWh) sits on the trailing edge.
+/// Energy bar chart mirroring the Home Assistant frontend energy graph: grid consumption (blue)
+/// and solar generation (orange) stack as positive bars above the zero axis. Buckets are hourly for
+/// single-day periods and daily for week/month; the y-axis (kWh) sits on the trailing edge.
 @available(iOS 17, *)
 struct WidgetEnergyChartView: View {
     let points: [WidgetEnergyEntry.ChartPoint]
     var source: WidgetEnergySource = .auto
+    var period: WidgetEnergyPeriod = .today
 
     private static let gridFlow = "grid"
     private static let solarFlow = "solar"
@@ -34,7 +35,22 @@ struct WidgetEnergyChartView: View {
         }
     }
 
-    /// Force the x-axis to represent the whole day even when the period only has data up to "now".
+    /// Daily buckets (week/month) render one bar per day; single-day periods render hourly bars.
+    private var isDaily: Bool {
+        switch period {
+        case .today, .yesterday: false
+        case .thisWeek, .thisMonth: true
+        }
+    }
+
+    private var dayStride: Int {
+        switch period {
+        case .thisMonth: 7
+        default: 1
+        }
+    }
+
+    /// Force the x-axis to represent the whole period even when data only reaches "now".
     private var xDomain: ClosedRange<Date> {
         let calendar = Calendar.current
         guard let first = points.first?.date, let last = points.last?.date else {
@@ -50,7 +66,7 @@ struct WidgetEnergyChartView: View {
         Chart {
             ForEach(flowPoints) { point in
                 BarMark(
-                    x: .value("Time", point.date, unit: .hour),
+                    x: .value("Time", point.date, unit: isDaily ? .day : .hour),
                     y: .value("Energy", point.value)
                 )
                 .foregroundStyle(by: .value("Flow", point.flow))
@@ -64,11 +80,20 @@ struct WidgetEnergyChartView: View {
         .chartLegend(.hidden)
         .chartXScale(domain: xDomain)
         .chartXAxis {
-            AxisMarks(values: .stride(by: .hour, count: 6)) { _ in
-                AxisGridLine().foregroundStyle(WidgetEnergyStyle.secondaryText.opacity(0.12))
-                AxisValueLabel(format: .dateTime.hour(.twoDigits(amPM: .omitted)))
-                    .font(.system(size: 9))
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
+            if isDaily {
+                AxisMarks(values: .stride(by: .day, count: dayStride)) { _ in
+                    AxisGridLine().foregroundStyle(WidgetEnergyStyle.secondaryText.opacity(0.12))
+                    AxisValueLabel(format: .dateTime.day())
+                        .font(.system(size: 9))
+                        .foregroundStyle(WidgetEnergyStyle.secondaryText)
+                }
+            } else {
+                AxisMarks(values: .stride(by: .hour, count: 6)) { _ in
+                    AxisGridLine().foregroundStyle(WidgetEnergyStyle.secondaryText.opacity(0.12))
+                    AxisValueLabel(format: .dateTime.hour(.twoDigits(amPM: .omitted)))
+                        .font(.system(size: 9))
+                        .foregroundStyle(WidgetEnergyStyle.secondaryText)
+                }
             }
         }
         .chartYAxis {

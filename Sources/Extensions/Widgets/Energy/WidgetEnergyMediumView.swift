@@ -38,7 +38,7 @@ struct WidgetEnergyMediumView: View {
             }
 
             if !entry.chartPoints.isEmpty {
-                WidgetEnergyChartView(points: entry.chartPoints, source: entry.source)
+                WidgetEnergyChartView(points: entry.chartPoints, source: entry.source, period: entry.period)
                     .frame(maxHeight: .infinity)
             } else {
                 Spacer(minLength: 0)
