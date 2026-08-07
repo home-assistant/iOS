@@ -135,7 +135,7 @@ extension WebViewController {
             style: style ?? emptyStateStyle(for: connectionState),
             server: server,
             showsErrorDetailsButton: shouldShowErrorDetailsButton,
-            availableReauthURLTypes: availableReauthURLTypes(for: server),
+            availableReauthURLTypes: server.info.connection.availableAuthenticationURLTypes,
             retryAction: { [weak self] in
                 self?.retryClearingFrontendCache()
             },
@@ -144,10 +144,5 @@ extension WebViewController {
             reauthAction: { [weak self] urlType in self?.performReauthentication(using: urlType) },
             dismissAction: { [weak self] in self?.hideEmptyState() }
         )
-    }
-
-    /// Available URL types for re-authentication, ordered by preference: remote UI > external > internal.
-    private func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
-        [.remoteUI, .external, .internal].filter { server.info.connection.address(for: $0) != nil }
     }
 }
