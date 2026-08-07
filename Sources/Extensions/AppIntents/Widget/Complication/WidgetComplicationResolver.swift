@@ -105,9 +105,8 @@ enum WidgetComplicationResolver {
         if let mainTemplate = config.customTextTemplate {
             renderedTemplates[mainTemplate] = value
         }
-        let slotTemplates = Set((familyConfig.families ?? [:]).values
-            .flatMap { ($0.slots ?? [:]).values }
-            .flatMap { $0.formula?.templates ?? [] })
+        let slotConfigs = (familyConfig.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
+        let slotTemplates = Set(slotConfigs.flatMap { $0.formula?.templates ?? [] })
             .subtracting(renderedTemplates.keys)
         for template in slotTemplates {
             if let rendered = await render(template, server: server) {

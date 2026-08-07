@@ -40,7 +40,8 @@ struct WidgetCircularComplicationAppEntityQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<WidgetCircularComplicationAppEntity> {
-        .init(items: WidgetComplicationResolver.configs(family: .circular)
-            .map(WidgetCircularComplicationAppEntity.init(config:)))
+        let items = WidgetComplicationResolver.configs(family: .circular)
+            .map(WidgetCircularComplicationAppEntity.init(config:))
+        return .init(items: items)
     }
 }

@@ -40,7 +40,8 @@ struct WidgetRectangularComplicationAppEntityQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<WidgetRectangularComplicationAppEntity> {
-        .init(items: WidgetComplicationResolver.configs(family: .rectangular)
-            .map(WidgetRectangularComplicationAppEntity.init(config:)))
+        let items = WidgetComplicationResolver.configs(family: .rectangular)
+            .map(WidgetRectangularComplicationAppEntity.init(config:))
+        return .init(items: items)
     }
 }
