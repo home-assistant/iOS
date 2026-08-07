@@ -13,7 +13,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
         )
     )
 
-    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .template)
+    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .entity)
     var source: WidgetContentSourceAppEnum
 
     @Parameter(title: .init("widgets.gauge.parameters.gauge_type", defaultValue: "Gauge Type"), default: .normal)
@@ -30,6 +30,12 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     /// Optional attribute of `entity` to read instead of its state (nil = state), like the watch builder.
     @Parameter(title: .init("widgets.parameters.attribute", defaultValue: "Attribute"))
     var attribute: WidgetGaugeAttributeAppEntity?
+
+    /// Circular watch complication mirrored when `source` is `.complication`, rendered through the very
+    /// same content view the watch and the complication editor use. The complication carries its own
+    /// gauge style, so `gaugeType` does not apply to it.
+    @Parameter(title: .init("widgets.parameters.complication", defaultValue: "Complication"))
+    var complication: WidgetCircularComplicationAppEntity?
 
     /// Numeric value mapped to an empty gauge (fill 0) when using the entity source.
     @Parameter(title: .init("widgets.gauge.parameters.min_value", defaultValue: "Minimum Value"), default: 0)
@@ -160,6 +166,25 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$minValue
                         \.$maxValue
+
+                        \.$runScript
+                    }
+                }
+            }
+            Case(.complication) {
+                When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
+                    Summary {
+                        \.$source
+                        \.$complication
+
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$complication
 
                         \.$runScript
                     }

@@ -4,10 +4,10 @@ import SwiftUI
 
 /// iPhone preview of the rectangular complication. Renders through the shared
 /// `RectangularComplicationContentView` (the exact same view the watch uses), mapping the editor's
-/// `ComplicationPreviewContext` into the shared render model — so the preview can't drift from the
+/// `ComplicationRenderContext` into the shared render model — so the preview can't drift from the
 /// on-watch rendering.
 struct RectangularComplicationPreview: View {
-    let context: ComplicationPreviewContext
+    let context: ComplicationRenderContext
 
     var body: some View {
         RectangularComplicationContentView(model: renderModel)
@@ -40,7 +40,7 @@ struct RectangularComplicationPreview: View {
 #if DEBUG
 import SFSafeSymbols
 
-private extension ComplicationPreviewContext {
+private extension ComplicationRenderContext {
     /// Rectangular sample with independently toggleable text slots + gauge, so the previews can show
     /// off the full layout: title / subtitle / value (gauge or text) / bottom text. The subtitle and
     /// bottom-text slots the watch hides by default are made visible here with sample text.
@@ -53,7 +53,7 @@ private extension ComplicationPreviewContext {
         gauge: Bool = true,
         icon: Bool = true,
         textColor: String? = nil
-    ) -> ComplicationPreviewContext {
+    ) -> ComplicationRenderContext {
         var config = WatchComplicationConfig(
             serverId: "preview",
             widgetFamily: .rectangular,
@@ -83,7 +83,7 @@ private extension ComplicationPreviewContext {
                 for: .rectangular
             )
         }
-        return ComplicationPreviewContext(
+        return ComplicationRenderContext(
             config: config,
             value: value,
             fraction: gauge ? 0.68 : nil,
@@ -106,7 +106,7 @@ private func whiteSymbol(_ symbol: SFSymbol, size: CGFloat = 22) -> UIImage {
 
 /// Renders the preview on a dark rounded "watch face" so the complication's default white text is
 /// legible — on the watch the face is black, so a light preview canvas would hide every text slot.
-private func rectangularFace(_ context: ComplicationPreviewContext) -> some View {
+private func rectangularFace(_ context: ComplicationRenderContext) -> some View {
     RectangularComplicationPreview(context: context)
         .background(.black, in: .rect(cornerRadius: 14))
 }

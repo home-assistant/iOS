@@ -117,6 +117,39 @@ public final class ControlEntityProvider {
         return state["attributes"] as? [String: Any]
     }
 
+    /// Fetches an entity's raw state string and attributes in one REST `/states` call, with no
+    /// precision or capitalization applied. Callers that do their own formatting (the complication
+    /// render pipeline, which owns precision + unit) need the untouched value.
+    public func rawState(server: Server, entityId: String) async -> (state: String, attributes: [String: Any])? {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch raw state data")
+            return nil
+        }
+
+        let result = await withCheckedContinuation { continuation in
+            connection.send(.init(
+                type: .rest(.get, "states/\(entityId)"),
+                shouldRetry: true
+            )) { result in
+                continuation.resume(returning: result)
+            }
+        }
+
+        guard let data = try? result.get() else {
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to get raw state: \(error)")
+            }
+            return nil
+        }
+
+        guard case let .dictionary(json) = data, let state = json["state"] as? String else {
+            Current.Log.error("Failed to get raw state: bad response data")
+            return nil
+        }
+
+        return (state, json["attributes"] as? [String: Any] ?? [:])
+    }
+
     public func state(server: Server, entityId: String) async -> State? {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch state data")

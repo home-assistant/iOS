@@ -1,3 +1,4 @@
+import HAWatchComplications
 import Shared
 import SwiftUI
 import WidgetKit
@@ -11,11 +12,33 @@ struct WidgetGaugeView: View {
     private static let systemSmallPadding: CGFloat = 10
 
     var body: some View {
-        switch family {
-        case .systemSmall:
-            homeScreen
-        default:
-            nativeGauge
+        // A mirrored complication renders through the very same content view the watch and the
+        // complication editor use, so it carries its own gauge style, colors and slots.
+        if let model = entry.complicationModel {
+            complication(model)
+        } else {
+            switch family {
+            case .systemSmall:
+                homeScreen
+            default:
+                nativeGauge
+            }
+        }
+    }
+
+    /// The complication content view. The lock screen renders it bare, the way the watch face does.
+    /// The Home Screen is full-color, so the complication gets the black face it was designed for —
+    /// its white text and icon would otherwise be invisible on a light tile.
+    @ViewBuilder private func complication(_ model: CircularComplicationRenderModel) -> some View {
+        if family == .systemSmall {
+            CircularComplicationContentView(model: model)
+                .padding(Self.systemSmallPadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black, in: .circle)
+                .environment(\.colorScheme, .dark)
+                .padding(Self.systemSmallPadding)
+        } else {
+            CircularComplicationContentView(model: model)
         }
     }
 

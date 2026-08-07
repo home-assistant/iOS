@@ -1,3 +1,4 @@
+import HAWatchComplications
 import Intents
 import Shared
 import SwiftUI
@@ -88,6 +89,32 @@ enum WidgetGaugeSupportedFamilies {
         label: nil,
         min: "0",
         max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+// A mirrored watch complication: the entry carries the render model and the widget draws it through
+// the shared circular complication content view.
+@available(iOS 17, *)
+#Preview(as: .accessoryCircular, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .normal,
+        value: 0.67,
+        valueLabel: "67%",
+        complicationModel: CircularComplicationRenderModel(
+            valueText: "67%",
+            showsValue: true,
+            title: "Battery",
+            showsName: true,
+            fraction: 0.67,
+            minLabel: "0",
+            maxLabel: "100",
+            tint: .green
+        ),
         runScript: false,
         script: nil,
         showConfirmationNotification: true
