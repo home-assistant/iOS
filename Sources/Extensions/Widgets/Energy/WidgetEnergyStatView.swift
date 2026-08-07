@@ -33,9 +33,11 @@ struct WidgetEnergyStatView: View {
             .minimumScaleFactor(0.6)
 
             HStack(spacing: 4) {
-                Image(uiImage: icon.image(ofSize: .init(width: 12, height: 12), color: .white)
-                    .withRenderingMode(.alwaysTemplate))
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
+                Image(
+                    uiImage: icon.image(ofSize: .init(width: 12, height: 12), color: .white)
+                        .withRenderingMode(.alwaysTemplate)
+                )
+                .foregroundStyle(WidgetEnergyStyle.secondaryText)
                 Text(verbatim: label)
                     .font(.system(size: 11))
                     .foregroundStyle(WidgetEnergyStyle.secondaryText)

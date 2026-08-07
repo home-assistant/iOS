@@ -57,10 +57,12 @@ struct WidgetEnergyMediumView: View {
                 Text(verbatim: WidgetEnergyStyle.cost(cost, code: entry.currencyCode))
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(WidgetEnergyStyle.primaryText)
-                Image(uiImage: MaterialDesignIcons.transmissionTowerIcon
-                    .image(ofSize: .init(width: 16, height: 16), color: .white)
-                    .withRenderingMode(.alwaysTemplate))
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
+                Image(
+                    uiImage: MaterialDesignIcons.transmissionTowerIcon
+                        .image(ofSize: .init(width: 16, height: 16), color: .white)
+                        .withRenderingMode(.alwaysTemplate)
+                )
+                .foregroundStyle(WidgetEnergyStyle.secondaryText)
             }
         } else {
             Image(.logo)

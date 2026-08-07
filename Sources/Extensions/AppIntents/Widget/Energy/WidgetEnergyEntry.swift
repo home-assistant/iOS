@@ -15,6 +15,9 @@ struct WidgetEnergyEntry: TimelineEntry {
     /// False when the selected server has no energy dashboard configured.
     var isConfigured = false
 
+    /// True when the empty state is due to a failed load rather than a missing energy dashboard.
+    var loadFailed = false
+
     // Energy totals over the selected period, in kWh. Nil when the source isn't configured.
     var gridConsumed: Double?
     var gridReturned: Double?

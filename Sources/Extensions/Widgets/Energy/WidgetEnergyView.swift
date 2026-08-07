@@ -23,7 +23,7 @@ struct WidgetEnergyView: View {
     }
 
     private var emptyView: some View {
-        Text(L10n.Widgets.Energy.notConfigured)
+        Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
             .font(.footnote)
             .multilineTextAlignment(.center)
             .foregroundStyle(WidgetEnergyStyle.secondaryText)

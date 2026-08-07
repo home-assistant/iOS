@@ -30,7 +30,7 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         if context.isPreview {
             return placeholder(in: context)
         }
-        return (try? await entry(for: configuration, in: context)) ?? placeholder(in: context)
+        return await (try? entry(for: configuration, in: context)) ?? placeholder(in: context)
     }
 
     func timeline(for configuration: WidgetEnergyAppIntent, in context: Context) async -> Timeline<Entry> {
@@ -39,7 +39,7 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
             entry = try await self.entry(for: configuration, in: context)
         } catch {
             Current.Log.error("Failed to build energy widget timeline: \(error)")
-            entry = WidgetEnergyEntry(period: configuration.period, isConfigured: false)
+            entry = WidgetEnergyEntry(period: configuration.period, isConfigured: false, loadFailed: true)
         }
         return .init(
             entries: [entry],
@@ -53,7 +53,7 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Energy widget: no API for server (selected id: \(configuration.server.id))")
-            return WidgetEnergyEntry(period: configuration.period, isConfigured: false)
+            return WidgetEnergyEntry(period: configuration.period, isConfigured: false, loadFailed: true)
         }
 
         // Tapping the widget opens the server's energy dashboard.
@@ -62,8 +62,17 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
             serverId: server.identifier.rawValue
         ) ?? AppConstants.deeplinkURL
 
-        guard let prefs: EnergyPreferences = await send(.energyGetPrefs(), on: connection),
-              !prefs.energySources.isEmpty else {
+        guard let prefs: EnergyPreferences = await send(.energyGetPrefs(), on: connection) else {
+            return WidgetEnergyEntry(
+                period: configuration.period,
+                source: configuration.source,
+                serverName: server.info.name,
+                widgetURL: widgetURL,
+                isConfigured: false,
+                loadFailed: true
+            )
+        }
+        guard !prefs.energySources.isEmpty else {
             return WidgetEnergyEntry(
                 period: configuration.period,
                 source: configuration.source,
@@ -208,7 +217,10 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     /// Reads an entity's state as watts, normalising kW/MW to W.
     private func powerState(entityId: String, server: Server) async -> Double? {
         guard let connection = Current.api(for: server)?.connection else { return nil }
-        let result = await withCheckedContinuation { (continuation: CheckedContinuation<Result<HAData, HAError>, Never>) in
+        let result = await withCheckedContinuation { (continuation: CheckedContinuation<
+            Result<HAData, HAError>,
+            Never
+        >) in
             connection.send(.init(type: .rest(.get, "states/\(entityId)"), shouldRetry: true)) { result in
                 continuation.resume(returning: result)
             }
@@ -230,7 +242,10 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     // MARK: - Config
 
     private func fetchCurrency(on connection: HAConnection) async -> String? {
-        let result = await withCheckedContinuation { (continuation: CheckedContinuation<Result<HAData, HAError>, Never>) in
+        let result = await withCheckedContinuation { (continuation: CheckedContinuation<
+            Result<HAData, HAError>,
+            Never
+        >) in
             connection.send(.init(type: .rest(.get, "config"), shouldRetry: true)) { result in
                 continuation.resume(returning: result)
             }
