@@ -79,10 +79,7 @@ extension WebViewController: WebViewControllerProtocol {
             showEmptyState()
         case .disconnected, .unknown:
             // Start a timer. If not interrupted by a 'connected' state, show the empty state.
-            let timeout = TimeInterval(Current.settingsStore.webViewEmptyStateTimeout)
-            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
-                self?.showEmptyState()
-            }
+            scheduleEmptyStateAfterGracePeriod()
         }
     }
 
