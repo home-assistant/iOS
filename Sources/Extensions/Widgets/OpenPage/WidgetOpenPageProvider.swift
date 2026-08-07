@@ -6,6 +6,9 @@ import WidgetKit
 struct WidgetOpenPageEntry: TimelineEntry {
     var date = Date()
     var pages: [PageAppEntity] = []
+    /// True for the gallery sample, whose pages belong to no real server — the view uses this to
+    /// skip the server-name subtitle rather than resolving one that doesn't apply.
+    var isPreview = false
 }
 
 @available(iOS 17.0, *)
@@ -66,7 +69,31 @@ struct WidgetOpenPageProvider: AppIntentTimelineProvider {
         return Array(pagesToDisplay.prefix(WidgetFamilySizes.size(for: context.family)))
     }
 
+    /// Mocked pages for the widget gallery — see `WidgetPreviewSample`. Building the real list
+    /// reads every server's panels out of the database, which the picker has no use for.
+    private func previewEntry(in context: Context) -> Entry {
+        let pages = WidgetPreviewSample.panels
+            .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map { panel in
+                PageAppEntity(
+                    id: "\(WidgetPreviewSample.serverId)-\(panel.path)",
+                    panel: .init(
+                        icon: panel.icon.name,
+                        title: panel.title,
+                        path: panel.path,
+                        component: panel.component,
+                        showInSidebar: true
+                    ),
+                    serverId: WidgetPreviewSample.serverId
+                )
+            }
+        return .init(pages: pages, isPreview: true)
+    }
+
     func snapshot(for configuration: Intent, in context: Context) async -> Entry {
+        if context.isPreview {
+            return previewEntry(in: context)
+        }
         let pages = panels(for: context, updating: configuration.pages ?? [])
         return Entry(pages: Array(pages.prefix(WidgetFamilySizes.sizeForPreview(for: context.family))))
     }
@@ -76,6 +103,9 @@ struct WidgetOpenPageProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [previewEntry(in: context)], policy: .never)
+        }
         let pages = panels(for: context, updating: configuration.pages ?? [])
         return Timeline(
             entries: [.init(pages: pages)],

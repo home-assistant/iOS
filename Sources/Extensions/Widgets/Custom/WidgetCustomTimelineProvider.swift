@@ -32,6 +32,24 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
         )
     }
 
+    func makePreviewEntry(in context: Context) -> WidgetCustomEntry {
+        let items = WidgetPreviewSample.entities
+            .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map(\.magicItem)
+        return .init(
+            date: .now,
+            widget: .init(
+                id: WidgetPreviewSample.serverId,
+                name: L10n.Widgets.Preview.Custom.title,
+                items: items
+            ),
+            magicItemInfoProvider: WidgetPreviewMagicItemProvider(),
+            entitiesState: WidgetPreviewSample.entitiesState(for: items),
+            showLastUpdateTime: false,
+            showStates: true
+        )
+    }
+
     func makeSnapshotEntry(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
         let widget = widget(configuration: configuration, context: context)
         return await .init(

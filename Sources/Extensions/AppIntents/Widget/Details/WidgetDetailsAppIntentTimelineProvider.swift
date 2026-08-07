@@ -9,6 +9,12 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetDetailsAppIntent
 
     func snapshot(for configuration: WidgetDetailsAppIntent, in context: Context) async -> WidgetDetailsEntry {
+        // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
+        // default (unconfigured) configuration. Serve a representative sample there so browsing the
+        // picker costs no template render or state fetch; live widgets are unaffected.
+        if context.isPreview {
+            return Self.previewSample(for: configuration)
+        }
         do {
             return try await entry(for: configuration, in: context)
         } catch {
@@ -17,7 +23,21 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    static func previewSample(for configuration: WidgetDetailsAppIntent) -> WidgetDetailsEntry {
+        .init(
+            upperText: L10n.Climate.Control.Temperature.title,
+            lowerText: WidgetPreviewSample.temperatureValue,
+            detailsText: nil,
+            runScript: false,
+            script: nil,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
     func timeline(for configuration: WidgetDetailsAppIntent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [Self.previewSample(for: configuration)], policy: .never)
+        }
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(
