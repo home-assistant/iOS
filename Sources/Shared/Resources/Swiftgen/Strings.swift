@@ -1721,8 +1721,6 @@ public enum L10n {
   }
 
   public enum EntityPicker {
-    /// Add all
-    public static var addAll: String { return L10n.tr("Localizable", "entity_picker.add_all") }
     /// Add %lld
     public static func addSelected(_ p1: Int) -> String {
       return L10n.tr("Localizable", "entity_picker.add_selected", p1)
@@ -6491,8 +6489,6 @@ public enum L10n {
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
         /// Color from template
         public static var colorFromTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.color_from_template") }
-        /// Colors
-        public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Complication name
         public static var complicationName: String { return L10n.tr("Localizable", "watch.complications.builder.complication_name") }
         /// Content
@@ -6501,8 +6497,6 @@ public enum L10n {
         public static var contentCustom: String { return L10n.tr("Localizable", "watch.complications.builder.content_custom") }
         /// Default
         public static var contentDefault: String { return L10n.tr("Localizable", "watch.complications.builder.content_default") }
-        /// Custom colors
-        public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
         /// Customize
         public static var customize: String { return L10n.tr("Localizable", "watch.complications.builder.customize") }
         /// Display name
@@ -6705,10 +6699,6 @@ public enum L10n {
         public static var searchPlaceholder: String { return L10n.tr("Localizable", "watch.config.add.search_placeholder") }
         /// Add
         public static var title: String { return L10n.tr("Localizable", "watch.config.add.title") }
-        public enum Error {
-          /// Couldn't load items from your iPhone. Please try again.
-          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.add.error.fetch_failed") }
-        }
         public enum Filter {
           /// All
           public static var all: String { return L10n.tr("Localizable", "watch.config.add.filter.all") }
@@ -6733,10 +6723,6 @@ public enum L10n {
         public static var show: String { return L10n.tr("Localizable", "watch.config.assist.show") }
         /// Assist
         public static var title: String { return L10n.tr("Localizable", "watch.config.assist.title") }
-        public enum Error {
-          /// Couldn't load Assist pipelines from your iPhone.
-          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.assist.error.fetch_failed") }
-        }
       }
       public enum Cache {
         public enum Error {

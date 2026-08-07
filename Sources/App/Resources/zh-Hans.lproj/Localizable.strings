@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "正在下载";
 "download_manager.failed.title" = "下载文件失败，错误：%@";
 "download_manager.finished.title" = "下载已完成";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "全部区域";
 "entity_picker.filter.area.title" = "区域";
@@ -1954,12 +1953,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "请配置语音助手使用 iOS companion 应用";
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "模板中的颜色";
-"watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
 "watch.complications.builder.display_name" = "显示名称";
 "watch.complications.builder.edit_title" = "Edit complication";
@@ -2049,13 +2046,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "暂无内容。请先在 iPhone 上添加脚本、场景或自动化操作。";
 "watch.config.add.entity" = "实体";
-"watch.config.add.error.fetch_failed" = "无法从您的 iPhone 加载项目。请重试。";
 "watch.config.add.filter.all" = "全部";
 "watch.config.add.folder" = "文件夹";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "搜索";
 "watch.config.add.title" = "添加";
-"watch.config.assist.error.fetch_failed" = "无法从您的 iPhone 加载语音助手管道。";
 "watch.config.assist.no_pipelines" = "尚未缓存任何语音助手管道。请将 iPhone 放在附近，然后点击“重新加载”。";
 "watch.config.assist.pipeline" = "管道";
 "watch.config.assist.preferred" = "首选";

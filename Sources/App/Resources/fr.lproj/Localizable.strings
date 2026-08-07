@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Téléchargement";
 "download_manager.failed.title" = "Échec de téléchargement du fichier, erreur : %@";
 "download_manager.finished.title" = "Téléchargement terminé";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Toutes les pièces";
 "entity_picker.filter.area.title" = "Pièce";
@@ -1955,12 +1954,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Veuillez configurer Assist à l'aide de l'app Companion iOS";
 "watch.complications.builder.color" = "Couleur de la jauge";
 "watch.complications.builder.color_from_template" = "Couleur depuis le modèle";
-"watch.complications.builder.colors" = "Couleurs";
 "watch.complications.builder.complication_name" = "Nom de la complication";
 "watch.complications.builder.content" = "Contenu";
 "watch.complications.builder.content_custom" = "Personnalisé";
 "watch.complications.builder.content_default" = "Par défaut";
-"watch.complications.builder.custom_colors" = "Couleurs personnalisées";
 "watch.complications.builder.customize" = "Personnaliser";
 "watch.complications.builder.display_name" = "Nom d'affichage";
 "watch.complications.builder.edit_title" = "Modifier la complication";
@@ -2050,13 +2047,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Rien à ajouter pour l'instant. Ajoutez d'abord des scripts, des scènes ou des automatisations sur votre iPhone.";
 "watch.config.add.entity" = "Entité";
-"watch.config.add.error.fetch_failed" = "Impossible de charger les éléments depuis votre iPhone. Veuillez réessayer.";
 "watch.config.add.filter.all" = "Tout";
 "watch.config.add.folder" = "Dossier";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Rechercher";
 "watch.config.add.title" = "Ajouter";
-"watch.config.assist.error.fetch_failed" = "Impossible de charger les pipelines Assist depuis votre iPhone.";
 "watch.config.assist.no_pipelines" = "Aucun pipeline Assist mis en cache pour l'instant. Gardez votre iPhone à proximité et appuyez sur Recharger.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Préféré";

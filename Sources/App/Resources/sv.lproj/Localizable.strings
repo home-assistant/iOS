@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Laddar ner";
 "download_manager.failed.title" = "Det gick inte att ladda ner filen, fel: %@";
 "download_manager.finished.title" = "Nedladdning klar";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Alla områden";
 "entity_picker.filter.area.title" = "Område";
@@ -1950,12 +1949,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Vänligen konfigurera Assistenten med hjälp av iOS Companion App";
 "watch.complications.builder.color" = "Mätarens färg";
 "watch.complications.builder.color_from_template" = "Color from template";
-"watch.complications.builder.colors" = "Färger";
 "watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Anpassade färger";
 "watch.complications.builder.customize" = "Anpassa";
 "watch.complications.builder.display_name" = "Visningsnamn";
 "watch.complications.builder.edit_title" = "Redigera komplikation";
@@ -2045,13 +2042,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Inget att lägga till än. Lägg först till skript, scener eller automatiseringar på din iPhone.";
 "watch.config.add.entity" = "Entitet";
-"watch.config.add.error.fetch_failed" = "Det gick inte att ladda objekt från din iPhone. Försök igen.";
 "watch.config.add.filter.all" = "Alla";
 "watch.config.add.folder" = "Mapp";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Sök";
 "watch.config.add.title" = "Lägg till";
-"watch.config.assist.error.fetch_failed" = "Det gick inte att ladda Assist-pipelines från din iPhone.";
 "watch.config.assist.no_pipelines" = "Inga Assist-pipelines har lagrats i cache än. Håll din iPhone i närheten och tryck på ”Uppdatera”.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Föredragen";

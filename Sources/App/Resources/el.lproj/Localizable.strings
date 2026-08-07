@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Λήψη";
 "download_manager.failed.title" = "Η λήψη του αρχείου απέτυχε, σφάλμα: %@";
 "download_manager.finished.title" = "Η λήψη ολοκληρώθηκε";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Ολες οι περιοχές";
 "entity_picker.filter.area.title" = "Περιοχή";
@@ -1955,12 +1954,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Παρακαλώ ρυθμίστε το Assist χρησιμοποιώντας την εφαρμογή iOS companion";
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "Color from template";
-"watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
@@ -2050,13 +2047,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Δεν υπάρχει τίποτα προς προσθήκη ακόμα. Προσθέστε πρώτα σενάρια, σκηνές ή αυτοματισμούς στο iPhone σας.";
 "watch.config.add.entity" = "Οντότητα";
-"watch.config.add.error.fetch_failed" = "Δεν ήταν δυνατή η φόρτωση των στοιχείων από το iPhone σας. Παρακαλώ δοκιμάστε ξανά.";
 "watch.config.add.filter.all" = "Ολα";
 "watch.config.add.folder" = "Φάκελος";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Αναζήτηση";
 "watch.config.add.title" = "Προσθήκη";
-"watch.config.assist.error.fetch_failed" = "Δεν ήταν δυνατή η φόρτωση των pipelines του Assist από το iPhone σας.";
 "watch.config.assist.no_pipelines" = "Δεν έχουν αποθηκευτεί ακόμη Assist pipelines. Κρατήστε το iPhone σας κοντά και πατήστε \"Ανανέωση\".";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Προτιμώμενο";

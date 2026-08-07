@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";
 "download_manager.finished.title" = "Download finished";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Wszystkie obszary";
 "entity_picker.filter.area.title" = "Obszar";
@@ -1953,12 +1952,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "Color from template";
-"watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Complication name";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Customize";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
@@ -2048,13 +2045,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
-"watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";
 "watch.config.add.filter.all" = "All";
 "watch.config.add.folder" = "Folder";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Search";
 "watch.config.add.title" = "Add";
-"watch.config.assist.error.fetch_failed" = "Couldn't load Assist pipelines from your iPhone.";
 "watch.config.assist.no_pipelines" = "No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Preferred";
