@@ -67,14 +67,19 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: WidgetTodoListAppIntent, in context: Context) async -> WidgetTodoListEntry {
-        .init(
-            date: Date(),
-            serverId: "",
-            listId: "",
-            listTitle: "",
-            items: [],
-            family: context.family
-        )
+        // `context.isPreview` is WidgetKit's hook for the gallery. The mocked list below shows what
+        // the widget looks like in use, without asking a server for anyone's real to-dos.
+        guard context.isPreview else {
+            return .init(
+                date: Date(),
+                serverId: "",
+                listId: "",
+                listTitle: "",
+                items: [],
+                family: context.family
+            )
+        }
+        return placeholder(in: context)
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
@@ -156,9 +161,9 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> Entry {
         .init(
             date: Date(),
-            serverId: "",
-            listId: "",
-            listTitle: "Shopping List",
+            serverId: WidgetPreviewSample.serverId,
+            listId: "todo.preview",
+            listTitle: FrontendStrings.panelShoppingList,
             items: [
                 TodoListItem(summary: "Milk", uid: "1", status: "needs_action", description: ""),
                 TodoListItem(summary: "Bread", uid: "2", status: "needs_action", description: ""),

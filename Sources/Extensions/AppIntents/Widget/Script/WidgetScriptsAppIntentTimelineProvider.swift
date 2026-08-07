@@ -29,7 +29,34 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         .init(value: 24, unit: .hours)
     }
 
+    /// Mocked scripts for the widget gallery — see `WidgetPreviewSample`. The suggestion pass below
+    /// reads every server's scripts out of the database, which the picker has no use for.
+    static func previewSample(for configuration: WidgetScriptsAppIntent, in context: Context) -> Entry {
+        let scripts = (0 ..< WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map { index in
+                WidgetScriptsEntry.ScriptServer(
+                    id: String(index),
+                    entityId: "script.preview_\(index)",
+                    serverId: WidgetPreviewSample.serverId,
+                    serverName: "",
+                    name: WidgetPreviewSample.numberedScriptName(index: index),
+                    icon: Domain.script.icon().name
+                )
+            }
+        return .init(
+            date: Date(),
+            scripts: scripts,
+            showServerName: false,
+            showConfirmationDialog: configuration.showConfirmationDialog
+        )
+    }
+
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {
+        // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
+        // default (unconfigured) configuration.
+        if context.isPreview {
+            return Self.previewSample(for: configuration, in: context)
+        }
         let suggestions = await suggestions()
         let placeholder: [WidgetScriptsEntry.ScriptServer] = Array(suggestions.flatMap { serverCollection in
             serverCollection.value.map { script in
