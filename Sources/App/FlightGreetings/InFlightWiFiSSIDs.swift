@@ -75,6 +75,7 @@ enum InFlightWiFiSSIDs {
         "iberia",
         "jal",
         "klm",
+        "latam",
         "sas",
         "southwest",
         "tap",
