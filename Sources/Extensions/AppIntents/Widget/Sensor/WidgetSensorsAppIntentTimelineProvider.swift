@@ -14,6 +14,12 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         for configuration: WidgetSensorsAppIntent,
         in context: Context
     ) async -> WidgetSensorsEntry {
+        // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
+        // default (unconfigured) configuration. The suggestion pass below reads the entity database
+        // and then fetches a state per sensor — none of which the picker needs, so mock it.
+        if context.isPreview {
+            return Self.previewSample(in: context)
+        }
         do {
             let suggestions = await suggestions()
             configuration.sensors = Array(suggestions.flatMap { key, value in
@@ -32,6 +38,22 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             Current.Log.error("Using placeholder for sensor widget snapshot")
             return placeholder(in: context)
         }
+    }
+
+    static func previewSample(in context: Context) -> WidgetSensorsEntry {
+        let readings = WidgetPreviewSample.sensorReadings
+        let sensors = (0 ..< WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map { index -> WidgetSensorsEntry.SensorData in
+                let reading = readings[index % readings.count]
+                return .init(
+                    id: String(index),
+                    key: reading.name,
+                    value: reading.value,
+                    unitOfMeasurement: reading.unit,
+                    icon: reading.icon.name
+                )
+            }
+        return WidgetSensorsEntry(sensorData: sensors)
     }
 
     func timeline(for configuration: WidgetSensorsAppIntent, in context: Context) async -> Timeline<Entry> {

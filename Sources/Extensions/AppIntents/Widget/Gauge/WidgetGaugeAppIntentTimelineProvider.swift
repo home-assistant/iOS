@@ -10,9 +10,9 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: WidgetGaugeAppIntent, in context: Context) async -> WidgetGaugeEntry {
         // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
-        // default (unconfigured) configuration. Unlike the other widgets (whose templates default
-        // to "?"), the gauge's value template defaults to 0.0 — a numeric fill that renders as an
-        // empty arc. Return a representative sample for the gallery; live widgets are unaffected.
+        // default (unconfigured) configuration. Return a representative sample there so the picker
+        // never renders an empty arc, and never renders a template or fetches a state to do it;
+        // live widgets are unaffected. See `WidgetPreviewSample` for the wider rationale.
         if context.isPreview {
             return Self.previewSample(for: configuration)
         }
