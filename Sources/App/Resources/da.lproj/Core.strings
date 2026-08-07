@@ -314,7 +314,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::water_heater::entity_component::_::state::off" = "Fra";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::off" = "Fra";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::on" = "Til";
-"component::water_heater::title" = "Water heater";
+"component::water_heater::title" = "Vandvarmer";
 "component::weather::title" = "Vejr";
 "component::whirlpool::entity::sensor::whirlpool_machine::state::pause" = "På pause";
 "component::whirlpool::entity::sensor::whirlpool_machine::state::standby" = "Standby";
