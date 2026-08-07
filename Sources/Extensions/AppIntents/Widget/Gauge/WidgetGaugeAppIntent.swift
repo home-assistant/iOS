@@ -8,8 +8,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.gauge.title", defaultValue: "Actions")
     static let description = IntentDescription(
         .init(
-            "widgets.gauge.description_with_warning",
-            defaultValue: "Display numeric states from Home Assistant in a gauge, ATTENTION: User needs to be admin to use this feature"
+            "widgets.gauge.gallery_description",
+            defaultValue: "Display an entity, a watch complication, or a template from Home Assistant in a gauge"
         )
     )
 

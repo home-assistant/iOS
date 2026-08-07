@@ -2573,7 +2573,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
 "widgets.details.description" = "Display states using from Home Assistant in text";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
@@ -2600,7 +2600,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Entity state";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Action";
 "widgets.gauge.parameters.gauge_type" = "Gauge Type";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacity";

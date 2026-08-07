@@ -8,8 +8,8 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.details.title", defaultValue: "Details")
     static let description = IntentDescription(
         .init(
-            "widgets.details.description_with_warning",
-            defaultValue: "Display states using from Home Assistant in text. ATTENTION: User needs to be admin to use this feature"
+            "widgets.details.gallery_description",
+            defaultValue: "Display an entity, a watch complication, or a template from Home Assistant as text"
         )
     )
 
