@@ -8391,6 +8391,44 @@ public enum L10n {
         public static var upperTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.upper_template") }
       }
     }
+    public enum Energy {
+      /// Show your energy dashboard at a glance.
+      public static var description: String { return L10n.tr("Localizable", "widgets.energy.description") }
+      /// Electricity total
+      public static var electricityTotal: String { return L10n.tr("Localizable", "widgets.energy.electricity_total") }
+      /// Grid
+      public static var grid: String { return L10n.tr("Localizable", "widgets.energy.grid") }
+      /// No energy data
+      public static var noData: String { return L10n.tr("Localizable", "widgets.energy.no_data") }
+      /// No energy dashboard configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.energy.not_configured") }
+      /// Solar
+      public static var solar: String { return L10n.tr("Localizable", "widgets.energy.solar") }
+      /// Energy
+      public static var title: String { return L10n.tr("Localizable", "widgets.energy.title") }
+      public enum Period {
+        /// This month
+        public static var thisMonth: String { return L10n.tr("Localizable", "widgets.energy.period.this_month") }
+        /// This week
+        public static var thisWeek: String { return L10n.tr("Localizable", "widgets.energy.period.this_week") }
+        /// Period
+        public static var title: String { return L10n.tr("Localizable", "widgets.energy.period.title") }
+        /// Today
+        public static var today: String { return L10n.tr("Localizable", "widgets.energy.period.today") }
+        /// Yesterday
+        public static var yesterday: String { return L10n.tr("Localizable", "widgets.energy.period.yesterday") }
+      }
+      public enum Source {
+        /// Auto
+        public static var auto: String { return L10n.tr("Localizable", "widgets.energy.source.auto") }
+        /// Consumption
+        public static var consumption: String { return L10n.tr("Localizable", "widgets.energy.source.consumption") }
+        /// Solar
+        public static var solar: String { return L10n.tr("Localizable", "widgets.energy.source.solar") }
+        /// Source
+        public static var title: String { return L10n.tr("Localizable", "widgets.energy.source.title") }
+      }
+    }
     public enum EntityState {
       /// Entity state
       public static var placeholder: String { return L10n.tr("Localizable", "widgets.entity_state.placeholder") }
