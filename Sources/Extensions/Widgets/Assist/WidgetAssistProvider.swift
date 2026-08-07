@@ -35,7 +35,20 @@ struct WidgetAssistProvider: AppIntentTimelineProvider {
         .init()
     }
 
+    /// Mocked entry for the widget gallery — see `WidgetPreviewSample`.
+    private var previewEntry: WidgetAssistEntry {
+        WidgetAssistEntry(
+            pipeline: .preferred(serverId: WidgetPreviewSample.serverId),
+            withVoice: true
+        )
+    }
+
     func snapshot(for configuration: Intent, in context: Context) async -> Entry {
+        // `context.isPreview` is WidgetKit's hook for the gallery, which renders with an
+        // unconfigured intent. Serve the mock there so the picker reads nothing.
+        if context.isPreview {
+            return previewEntry
+        }
         guard let pipeline = configuration.pipeline else {
             return defaultEntry
         }
@@ -43,7 +56,10 @@ struct WidgetAssistProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        Timeline(entries: [
+        if context.isPreview {
+            return Timeline(entries: [previewEntry], policy: .never)
+        }
+        return Timeline(entries: [
             WidgetAssistEntry(
                 pipeline: configuration.pipeline ?? defaultEntry.pipeline,
                 withVoice: configuration.withVoice

@@ -37,6 +37,21 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         )
     }
 
+    func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
+        let items = WidgetPreviewSample.entities
+            .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map(\.magicItem)
+        return .init(
+            date: .now,
+            items: items,
+            magicItemInfoProvider: WidgetPreviewMagicItemProvider(),
+            entitiesState: WidgetPreviewSample.entitiesState(for: items),
+            showLastUpdateTime: false,
+            showStates: true,
+            serverName: nil
+        )
+    }
+
     func makeSnapshotEntry(
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context

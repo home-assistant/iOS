@@ -22,6 +22,9 @@ struct WidgetEntitiesStateCache: Codable {
 protocol WidgetSingleEntryTimelineProvider: AppIntentTimelineProvider {
     var expiration: Measurement<UnitDuration> { get }
     func makePlaceholder(in context: Context) -> Entry
+    /// Mocked entry for the widget gallery. See `WidgetPreviewSample` for why previews never read
+    /// real data.
+    func makePreviewEntry(in context: Context) -> Entry
     func makeSnapshotEntry(for configuration: Intent, in context: Context) async -> Entry
     func makeTimelineEntry(for configuration: Intent, in context: Context) async -> Entry
 }
@@ -33,10 +36,19 @@ extension WidgetSingleEntryTimelineProvider {
     }
 
     func snapshot(for configuration: Intent, in context: Context) async -> Entry {
-        await makeSnapshotEntry(for: configuration, in: context)
+        // `context.isPreview` is WidgetKit's hook for the gallery, which renders every family with
+        // an unconfigured intent. Serve the mock there so browsing the picker costs no database
+        // read, cache write or server round trip.
+        if context.isPreview {
+            return makePreviewEntry(in: context)
+        }
+        return await makeSnapshotEntry(for: configuration, in: context)
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [makePreviewEntry(in: context)], policy: .never)
+        }
         let entry = await makeTimelineEntry(for: configuration, in: context)
         return .init(
             entries: [entry],

@@ -16,7 +16,7 @@ struct WidgetOpenPage: Widget {
                         AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
                     contents: {
-                        let showSubtitle = Current.servers.all.count > 1
+                        let showSubtitle = !entry.isPreview && Current.servers.all.count > 1
 
                         return entry.pages.map { page in
                             WidgetBasicViewModel(
