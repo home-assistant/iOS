@@ -2,6 +2,7 @@ import Foundation
 import SFSafeSymbols
 import SwiftUI
 import UIKit
+import WidgetKit
 
 /// Colours and value formatting shared across the Energy widget views. Colours adapt to light/dark.
 enum WidgetEnergyStyle {
@@ -27,6 +28,23 @@ enum WidgetEnergyStyle {
             case .none: nil
             }
         }
+
+        /// Text-only arrow, for the inline accessory where the system allows a single leading symbol
+        /// and the direction has to travel inside the text itself.
+        var arrowCharacter: String {
+            switch self {
+            case .up: "\u{2191}"
+            case .down: "\u{2193}"
+            case .none: ""
+            }
+        }
+    }
+
+    /// Lock screen accessories render vibrant or accented, where the system flattens saturated
+    /// colours to luminance — solar orange and grid blue would end up as two indistinguishable
+    /// greys. Only use the series colour when the widget renders in full colour (StandBy, previews).
+    static func accessoryColor(_ color: Color, mode: WidgetRenderingMode) -> Color {
+        mode == .fullColor ? color : .primary
     }
 
     /// Formats an energy value in kWh (locale-aware, at most one fraction digit).

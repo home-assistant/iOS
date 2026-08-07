@@ -28,5 +28,19 @@ enum WidgetEnergySupportedFamilies {
         .systemSmall,
         .systemMedium,
         .systemLarge,
+        .accessoryCircular,
+        .accessoryRectangular,
+        .accessoryInline,
+    ]
+
+    /// Families that lead with a single headline figure, where the instantaneous power reads better
+    /// than the period total. Resolving it costs one REST call per power sensor, so the families
+    /// that show the chart and totals instead skip it.
+    @available(iOS 17.0, *)
+    static let livePowerFamilies: [WidgetFamily] = [
+        .systemSmall,
+        .accessoryCircular,
+        .accessoryRectangular,
+        .accessoryInline,
     ]
 }
