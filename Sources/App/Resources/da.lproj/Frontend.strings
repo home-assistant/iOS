@@ -9,6 +9,6 @@
 "panel::media_browser" = "Medier";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Indkøbsliste";
-"panel::states" = "Oversigt";
+"panel::states" = "Overblik";
 "state::default::unavailable" = "Utilgængelig";
 "state::default::unknown" = "Ukendt";
