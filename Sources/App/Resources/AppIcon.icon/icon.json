@@ -6,7 +6,16 @@
     {
       "layers" : [
         {
-          "glass" : true,
+          "glass-specializations" : [
+            {
+              "value" : false
+            },
+            {
+              "appearance" : "dark",
+              "value" : true
+            }
+          ],
+          "hidden" : false,
           "image-name" : "logo-1.svg",
           "name" : "logo-1",
           "opacity-specializations" : [
@@ -42,7 +51,15 @@
           "fill" : {
             "solid" : "display-p3:1.00000,1.00000,1.00000,1.00000"
           },
-          "glass" : false,
+          "glass-specializations" : [
+            {
+              "value" : true
+            },
+            {
+              "appearance" : "dark",
+              "value" : false
+            }
+          ],
           "image-name" : "logo-frame.png",
           "name" : "logo-frame",
           "opacity-specializations" : [
