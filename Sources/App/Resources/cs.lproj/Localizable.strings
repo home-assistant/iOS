@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Stahování";
 "download_manager.failed.title" = "Stažení souboru se nezdařilo, chyba: %@";
 "download_manager.finished.title" = "Stahování dokončeno";
-"entity_picker.add_all" = "Přidat vše";
 "entity_picker.add_selected" = "Přidat %lld";
 "entity_picker.filter.area.all.title" = "Všechny oblasti";
 "entity_picker.filter.area.title" = "Oblast";
@@ -1955,12 +1954,10 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
 "watch.complications.builder.color" = "Barva ukazatele";
 "watch.complications.builder.color_from_template" = "Barva z šablony";
-"watch.complications.builder.colors" = "Barvy";
 "watch.complications.builder.complication_name" = "Název komplikace";
 "watch.complications.builder.content" = "Obsah";
 "watch.complications.builder.content_custom" = "Vlastní";
 "watch.complications.builder.content_default" = "Výchozí";
-"watch.complications.builder.custom_colors" = "Vlastní barvy";
 "watch.complications.builder.customize" = "Přizpůsobit";
 "watch.complications.builder.display_name" = "Zobrazovaný název";
 "watch.complications.builder.edit_title" = "Upravit komplikaci";
@@ -2050,13 +2047,11 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.config.add.complications_empty" = "Zatím žádné obdélníkové komplikace. Nejprve si jednu vytvořte na svém iPhonu.";
 "watch.config.add.empty" = "Zatím není co přidat. Nejprve přidejte skripty, scény nebo automatizace na svém iPhonu.";
 "watch.config.add.entity" = "Entita";
-"watch.config.add.error.fetch_failed" = "Nepodařilo se načíst položky z vašeho iPhonu. Zkuste to znovu.";
 "watch.config.add.filter.all" = "Vše";
 "watch.config.add.folder" = "Složka";
 "watch.config.add.no_areas" = "Zatím neexistují žádné oblasti s entitami, které by vaše Apple Watch mohly zobrazit.";
 "watch.config.add.search_placeholder" = "Hledat";
 "watch.config.add.title" = "Přidat";
-"watch.config.assist.error.fetch_failed" = "Nepodařilo se načíst pipelines Assist z vašeho iPhonu.";
 "watch.config.assist.no_pipelines" = "Zatím nejsou uložené žádné pipelines Assist. Mějte iPhone po ruce a klepněte na Obnovit.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Preferováno";

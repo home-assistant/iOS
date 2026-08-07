@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Wird heruntergeladen";
 "download_manager.failed.title" = "Herunterladen der Datei fehlgeschlagen, Fehler: %@";
 "download_manager.finished.title" = "Download abgeschlossen";
-"entity_picker.add_all" = "Alle hinzufügen";
 "entity_picker.add_selected" = "%lld hinzufügen";
 "entity_picker.filter.area.all.title" = "Alle Bereiche";
 "entity_picker.filter.area.title" = "Bereich";
@@ -1956,12 +1955,10 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.assist.lack_config.error.title" = "Bitte konfiguriere Assist mit der iOS-Companion-App";
 "watch.complications.builder.color" = "Skalen-Farbe";
 "watch.complications.builder.color_from_template" = "Farbe aus Template";
-"watch.complications.builder.colors" = "Farben";
 "watch.complications.builder.complication_name" = "Name der Komplikation";
 "watch.complications.builder.content" = "Inhalt";
 "watch.complications.builder.content_custom" = "Benutzerdefiniert";
 "watch.complications.builder.content_default" = "Standard";
-"watch.complications.builder.custom_colors" = "Eigene Farben";
 "watch.complications.builder.customize" = "Anpassen";
 "watch.complications.builder.display_name" = "Anzeigename";
 "watch.complications.builder.edit_title" = "Komplikation bearbeiten";
@@ -2051,13 +2048,11 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.config.add.complications_empty" = "Es gibt noch keine rechteckigen Komplikationen. Erstelle zunächst eine auf deinem iPhone.";
 "watch.config.add.empty" = "Noch nichts hinzuzufügen. Füge zuerst Skripte, Szenen oder Automationen auf deinem iPhone hinzu.";
 "watch.config.add.entity" = "Entität";
-"watch.config.add.error.fetch_failed" = "Elemente von deinem iPhone konnten nicht geladen werden. Bitte versuche es erneut.";
 "watch.config.add.filter.all" = "Alle";
 "watch.config.add.folder" = "Ordner";
 "watch.config.add.no_areas" = "Es gibt noch keine Bereiche mit Entitäten, die deine Apple Watch anzeigen kann.";
 "watch.config.add.search_placeholder" = "Suchen";
 "watch.config.add.title" = "Hinzufügen";
-"watch.config.assist.error.fetch_failed" = "Assist-Pipelines konnten nicht von deinem iPhone geladen werden.";
 "watch.config.assist.no_pipelines" = "Es wurden noch keine Assist-Pipelines zwischengespeichert. Halte dein iPhone in der Nähe und tippe auf „Neu laden“.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Bevorzugt";

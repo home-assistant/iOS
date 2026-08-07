@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Henter";
 "download_manager.failed.title" = "Kunne ikke hente fil, fejl: %@";
 "download_manager.finished.title" = "Download færdig";
-"entity_picker.add_all" = "Tilføj alle";
 "entity_picker.add_selected" = "Tilføj %lld";
 "entity_picker.filter.area.all.title" = "Alle områder";
 "entity_picker.filter.area.title" = "Område";
@@ -1955,12 +1954,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Konfigurér Assist ved hjælp af iOS-appen";
 "watch.complications.builder.color" = "Gauge color";
 "watch.complications.builder.color_from_template" = "Color from template";
-"watch.complications.builder.colors" = "Colors";
 "watch.complications.builder.complication_name" = "Komplikationsnavn";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Custom colors";
 "watch.complications.builder.customize" = "Tilpas";
 "watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Redigér Komplikation";
@@ -2050,13 +2047,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Intet at tilføje endnu. Tilføj først scripts, scener eller automatiseringer på din iPhone.";
 "watch.config.add.entity" = "Entitet";
-"watch.config.add.error.fetch_failed" = "Kunne ikke indlæse elementer fra din iPhone. Prøv igen.";
 "watch.config.add.filter.all" = "Alle";
 "watch.config.add.folder" = "Mappe";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Søg";
 "watch.config.add.title" = "Tilføj";
-"watch.config.assist.error.fetch_failed" = "Kunne ikke indlæse Assist-pipelines fra din iPhone.";
 "watch.config.assist.no_pipelines" = "Ingen Assist-pipelines er cachelagret endnu. Hold din iPhone i nærheden, og tryk på Genindlæs.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Foretrukken";

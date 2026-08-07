@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Downloaden";
 "download_manager.failed.title" = "Downloaden van bestand mislukt, fout: %@";
 "download_manager.finished.title" = "Download voltooid";
-"entity_picker.add_all" = "Alles toevoegen";
 "entity_picker.add_selected" = "%lld toevoegen";
 "entity_picker.filter.area.all.title" = "Alle ruimtes";
 "entity_picker.filter.area.title" = "Ruimte";
@@ -1955,12 +1954,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Configureer Assist met behulp van de iOS-companion app";
 "watch.complications.builder.color" = "Kleur van de meter";
 "watch.complications.builder.color_from_template" = "Color from template";
-"watch.complications.builder.colors" = "Kleuren";
 "watch.complications.builder.complication_name" = "Naam van de complicatie";
 "watch.complications.builder.content" = "Inhoud";
 "watch.complications.builder.content_custom" = "Aangepast";
 "watch.complications.builder.content_default" = "Standaard";
-"watch.complications.builder.custom_colors" = "Aangepaste kleuren";
 "watch.complications.builder.customize" = "Aanpassen";
 "watch.complications.builder.display_name" = "Weergavenaam";
 "watch.complications.builder.edit_title" = "Complicatie bewerken";
@@ -2050,13 +2047,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
-"watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";
 "watch.config.add.filter.all" = "All";
 "watch.config.add.folder" = "Map";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Zoeken";
 "watch.config.add.title" = "Toevoegen";
-"watch.config.assist.error.fetch_failed" = "Couldn't load Assist pipelines from your iPhone.";
 "watch.config.assist.no_pipelines" = "No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.";
 "watch.config.assist.pipeline" = "Pijplijn";
 "watch.config.assist.preferred" = "Voorkeur";

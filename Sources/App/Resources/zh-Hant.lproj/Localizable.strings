@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "下載中";
 "download_manager.failed.title" = "下載檔案失敗、錯誤：%@";
 "download_manager.finished.title" = "下載完成";
-"entity_picker.add_all" = "全部新增";
 "entity_picker.add_selected" = "新增 %lld";
 "entity_picker.filter.area.all.title" = "所有分區";
 "entity_picker.filter.area.title" = "分區";
@@ -1955,12 +1954,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.assist.lack_config.error.title" = "請設定使用 iOS companion App 設定助理";
 "watch.complications.builder.color" = "測量顏色";
 "watch.complications.builder.color_from_template" = "模板顏色";
-"watch.complications.builder.colors" = "顏色";
 "watch.complications.builder.complication_name" = "複雜功能名稱";
 "watch.complications.builder.content" = "內容";
 "watch.complications.builder.content_custom" = "自訂";
 "watch.complications.builder.content_default" = "預設";
-"watch.complications.builder.custom_colors" = "自訂顏色";
 "watch.complications.builder.customize" = "自訂";
 "watch.complications.builder.display_name" = "顯示名稱";
 "watch.complications.builder.edit_title" = "編輯複雜功能";
@@ -2050,13 +2047,11 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.config.add.complications_empty" = "尚無矩形複雜功能。請先在 iPhone 上建立一個。";
 "watch.config.add.empty" = "目前沒有任何內容。請先在 iPhone 上新增腳本、場景或自動化。";
 "watch.config.add.entity" = "實體";
-"watch.config.add.error.fetch_failed" = "無法從 iPhone 載入項目。請再試一次。";
 "watch.config.add.filter.all" = "全部";
 "watch.config.add.folder" = "資料夾";
 "watch.config.add.no_areas" = "目前沒有 Apple Watch 可顯示實體的分區。";
 "watch.config.add.search_placeholder" = "搜尋";
 "watch.config.add.title" = "新增";
-"watch.config.assist.error.fetch_failed" = "無法從 iPhone 載入助理設定。";
 "watch.config.assist.no_pipelines" = "尚未暫存任何助理設定。請將 iPhone 放置於附近，然後點選重新載入。";
 "watch.config.assist.pipeline" = "助理設定";
 "watch.config.assist.preferred" = "首選";

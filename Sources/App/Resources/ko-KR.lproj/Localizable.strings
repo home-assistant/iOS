@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "다운로드 중";
 "download_manager.failed.title" = "파일을 다운로드하지 못했습니다. 오류: %@";
 "download_manager.finished.title" = "다운로드 완료";
-"entity_picker.add_all" = "모두 추가";
 "entity_picker.add_selected" = "%lld개 추가";
 "entity_picker.filter.area.all.title" = "모든 영역";
 "entity_picker.filter.area.title" = "영역";
@@ -1955,12 +1954,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.assist.lack_config.error.title" = "iOS 컴패니언 앱을 사용하여 Assist를 구성하세요.";
 "watch.complications.builder.color" = "게이지 색상";
 "watch.complications.builder.color_from_template" = "템플릿의 색상";
-"watch.complications.builder.colors" = "색상";
 "watch.complications.builder.complication_name" = "컴플리케이션 이름";
 "watch.complications.builder.content" = "콘텐츠";
 "watch.complications.builder.content_custom" = "사용자 지정";
 "watch.complications.builder.content_default" = "기본값";
-"watch.complications.builder.custom_colors" = "사용자 지정 색상";
 "watch.complications.builder.customize" = "사용자 지정";
 "watch.complications.builder.display_name" = "표시 이름";
 "watch.complications.builder.edit_title" = "컴플리케이션 편집";
@@ -2050,13 +2047,11 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "아직 추가할 항목이 없습니다. 먼저 iPhone에서 스크립트, 장면 또는 자동화를 추가하세요.";
 "watch.config.add.entity" = "엔티티";
-"watch.config.add.error.fetch_failed" = "iPhone에서 항목을 로드할 수 없습니다. 다시 시도하세요.";
 "watch.config.add.filter.all" = "전체";
 "watch.config.add.folder" = "폴더";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "검색";
 "watch.config.add.title" = "추가";
-"watch.config.assist.error.fetch_failed" = "iPhone에서 Assist 파이프라인을 로드할 수 없습니다.";
 "watch.config.assist.no_pipelines" = "아직 캐시된 Assist 파이프라인이 없습니다. iPhone을 가까이 두고 다시 로드를 탭하세요.";
 "watch.config.assist.pipeline" = "파이프라인";
 "watch.config.assist.preferred" = "선호";

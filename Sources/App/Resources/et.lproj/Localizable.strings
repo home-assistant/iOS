@@ -466,7 +466,6 @@
 "download_manager.downloading.title" = "Allalaadimine";
 "download_manager.failed.title" = "Faili allalaadimine nurjus, tõrge: %@";
 "download_manager.finished.title" = "Allalaadimine on lõpetatud";
-"entity_picker.add_all" = "Add all";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Kõik alad";
 "entity_picker.filter.area.title" = "Ala";
@@ -1955,12 +1954,10 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.assist.lack_config.error.title" = "Seadista Assist iOS-i kaasrakenduse abil";
 "watch.complications.builder.color" = "Mõõdiku värv";
 "watch.complications.builder.color_from_template" = "Värv mallist";
-"watch.complications.builder.colors" = "Värvid";
 "watch.complications.builder.complication_name" = "Vidina nimi";
 "watch.complications.builder.content" = "Content";
 "watch.complications.builder.content_custom" = "Custom";
 "watch.complications.builder.content_default" = "Default";
-"watch.complications.builder.custom_colors" = "Kohandatud värvid";
 "watch.complications.builder.customize" = "Kohanda";
 "watch.complications.builder.display_name" = "Kuvatav nimi";
 "watch.complications.builder.edit_title" = "Muuda komplikatsiooni";
@@ -2050,13 +2047,11 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
 "watch.config.add.empty" = "Hetkel pole midagi lisada. Lisa skriptid, stseenid või automaatsed toimingud kõigepealt oma iPhone’is.";
 "watch.config.add.entity" = "Olem";
-"watch.config.add.error.fetch_failed" = "iPhone'ist ei õnnestunud üksusi laadida. Proovi uuesti.";
 "watch.config.add.filter.all" = "Kõik";
 "watch.config.add.folder" = "Kaust";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Otsi";
 "watch.config.add.title" = "Lisa";
-"watch.config.assist.error.fetch_failed" = "Assisti vooge ei õnnestunud sinu iPhone’ist laadida.";
 "watch.config.assist.no_pipelines" = "Assisti vooge pole veel vahemällu salvestatud. Hoia oma iPhone'i lähedal ja puuduta nuppu „Reload“.";
 "watch.config.assist.pipeline" = "Voog";
 "watch.config.assist.preferred" = "Eelistatud";
