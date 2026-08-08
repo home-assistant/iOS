@@ -11,15 +11,7 @@ struct WidgetEnergySmallView: View {
     var body: some View {
         let metrics = WidgetEnergyMetric.metrics(for: entry)
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack {
-                Text(entry.period.displayTitle)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
-                Spacer()
-                Text(entry.date, style: .time)
-                    .font(.system(size: 11))
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            }
+            WidgetEnergyHeaderView(period: entry.period, date: entry.date)
 
             Spacer(minLength: 0)
 

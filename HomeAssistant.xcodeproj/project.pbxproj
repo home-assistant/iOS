@@ -834,6 +834,7 @@
 				Widgets/Energy/WidgetEnergyAccessoryInlineView.swift,
 				Widgets/Energy/WidgetEnergyAccessoryRectangularView.swift,
 				Widgets/Energy/WidgetEnergyChartView.swift,
+				Widgets/Energy/WidgetEnergyHeaderView.swift,
 				Widgets/Energy/WidgetEnergyMediumView.swift,
 				Widgets/Energy/WidgetEnergyMetric.swift,
 				Widgets/Energy/WidgetEnergyRefreshAppIntent.swift,

@@ -9,6 +9,8 @@ struct WidgetEnergyMediumView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+            WidgetEnergyHeaderView(period: entry.period, date: entry.date)
+
             HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
                 if entry.source.showsSolar, let solar = entry.solarGenerated {
                     WidgetEnergyStatView(
