@@ -61,10 +61,7 @@ jobs:
 
       - name: Dump recorded references
         run: |
-          for file in "$SNAPSHOT_DIR"/energyWidgetSystemMediumSnapshot.*.png \
-                      "$SNAPSHOT_DIR"/energyWidgetSystemMediumSolarOnlySnapshot.*.png \
-                      "$SNAPSHOT_DIR"/energyWidgetSystemMediumConsumptionOnlySnapshot.*.png \
-                      "$SNAPSHOT_DIR"/energyWidgetSystemLargeSnapshot.*.png; do
+          for file in "$SNAPSHOT_DIR"/energyWidgetSystemMediumSnapshot.dark.png; do
             if [ -f "$file" ]; then
               echo "SNAPBEGIN $(basename "$file")"
               base64 < "$file" | tr -d '\n' | fold -w 100
