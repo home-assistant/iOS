@@ -44,6 +44,14 @@ struct WidgetEnergyEntry: TimelineEntry {
         let solar: Double
     }
 
+    /// True when the entry carries at least one value a layout can render. Live power is only
+    /// fetched for the small family, so it counts as data alongside the period totals.
+    var hasData: Bool {
+        let hasSolar = source.showsSolar && (livePowerSolar != nil || solarGenerated != nil)
+        let hasGrid = source.showsGrid && (livePowerGrid != nil || gridNet != nil)
+        return hasSolar || hasGrid || !chartPoints.isEmpty
+    }
+
     /// Net grid energy over the period (returned − consumed). Positive means net export.
     var gridNet: Double? {
         guard gridConsumed != nil || gridReturned != nil else { return nil }

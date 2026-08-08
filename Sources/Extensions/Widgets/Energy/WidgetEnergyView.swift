@@ -10,7 +10,7 @@ struct WidgetEnergyView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
-        if !entry.isConfigured {
+        if !entry.isConfigured || !entry.hasData {
             emptyView
         } else {
             switch family {
@@ -22,15 +22,18 @@ struct WidgetEnergyView: View {
         }
     }
 
+    /// Shared by every family so medium and large don't fall through to an empty card.
     private var emptyView: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
+        // `isConfigured` is false only when the server has no energy dashboard. Every other way of
+        // ending up without values — an unreachable server, or a period with no statistics — is a
+        // "no data" state a reload can plausibly fix.
+        let hasNoDashboard = !entry.isConfigured && !entry.loadFailed
+        return VStack(spacing: DesignSystem.Spaces.one) {
+            Text(hasNoDashboard ? L10n.Widgets.Energy.notConfigured : L10n.Widgets.Energy.noData)
                 .font(.footnote)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            // The load can fail because the server is unreachable, so offer a way to try again
-            // without waiting for the next timeline refresh.
-            if entry.loadFailed {
+            if !hasNoDashboard {
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
                     Image(systemSymbol: .arrowClockwiseCircle)
                         .foregroundStyle(.secondary)
@@ -52,4 +55,13 @@ struct WidgetEnergyView: View {
 } timeline: {
     WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
+    WidgetEnergyEntry(period: .today, isConfigured: true)
+}
+
+@available(iOS 17, *)
+#Preview("Empty medium", as: .systemMedium) {
+    WidgetEnergy()
+} timeline: {
+    WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
+    WidgetEnergyEntry(period: .today, isConfigured: true)
 }
