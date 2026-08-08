@@ -2488,6 +2488,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Vis dine hyppigt anvendte entiteter baseret på dine brugsmønstre.";
 "widgets.commonly_used_entities.empty.description" = "Ingen hyppigt anvendte entiteter fundet. Brug Home Assistant til at opbygge din brugshistorik.";
 "widgets.commonly_used_entities.title" = "Hyppige kontrolelementer";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entitet";
 "widgets.content_source.template" = "Skabelon";
 "widgets.content_source.title" = "Kilde";
@@ -2573,6 +2574,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "Brugerdefinerede widgets";
 "widgets.details.description" = "Vis tilstande fra Home Assistant i tekstform";
 "widgets.details.description_with_warning" = "Vis tilstande, der bruges fra Home Assistant, i tekst. OBS: Brugeren skal være administrator for at få adgang til skabeloner";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Handling";
 "widgets.details.parameters.details_template" = "Detaljer tekstskabelon (kun i rektangulær familie)";
 "widgets.details.parameters.lower_template" = "Nedre tekstskabelon";
@@ -2591,6 +2593,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "Entitettilstand";
 "widgets.gauge.description" = "Vis numeriske tilstande fra Home Assistant i en måler";
 "widgets.gauge.description_with_warning" = "Vis numeriske tilstande fra Home Assistant i en måler. OBS: Brugeren skal være administrator for at få adgang til skabelonerne";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Handling";
 "widgets.gauge.parameters.gauge_type" = "Målertype";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacitet";
@@ -2621,6 +2625,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "Åbn side";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Egenskab";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entitet";
 "widgets.preview.custom.description" = "Opret din egen widget i appen, og vis den her.";
 "widgets.preview.custom.title" = "Brugerdefineret widget";

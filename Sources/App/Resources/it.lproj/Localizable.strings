@@ -2488,6 +2488,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Visualizza le entità che utilizzi più spesso in base alle tue abitudini di utilizzo.";
 "widgets.commonly_used_entities.empty.description" = "Non sono state trovate entità comunemente utilizzate. Utilizza Home Assistant per creare la cronologia dei tuoi utilizzi.";
 "widgets.commonly_used_entities.title" = "Controlli comuni";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2573,6 +2574,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "Widget personalizzati";
 "widgets.details.description" = "Visualizza gli stati utilizzando Home Assistant nel testo";
 "widgets.details.description_with_warning" = "Visualizza gli stati tramite Home Assistant in formato testo. ATTENZIONE: l'utente deve essere amministratore per poter accedere ai modelli";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Azione";
 "widgets.details.parameters.details_template" = "Dettagli Template di testo (solo nella famiglia rettangolare)";
 "widgets.details.parameters.lower_template" = "Template testo inferiore";
@@ -2591,6 +2593,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "Stato dell'entità";
 "widgets.gauge.description" = "Visualizza stati numerici da Home Assistant in un indicatore";
 "widgets.gauge.description_with_warning" = "Visualizza gli stati numerici di Home Assistant in un indicatore. ATTENZIONE: per poter accedere ai modelli, l'utente deve essere amministratore";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Azione";
 "widgets.gauge.parameters.gauge_type" = "Tipo d'indicatore";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacità";
@@ -2621,6 +2625,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "Aprire la pagina";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Crea il tuo widget all'interno dell'app e poi visualizzalo qui.";
 "widgets.preview.custom.title" = "Widget personalizzato";

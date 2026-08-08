@@ -399,7 +399,7 @@
 "connection.active_url_type.toast.none" = "Nenhuma URL ativa está disponível no momento para este servidor.";
 "connection.active_url_type.toast.remote_ui" = "Usando a URL de interface remota da nuvem.";
 "connection.active_url_type.toast.title" = "Tipo de conexão";
-"connection.error.details.button.clipboard" = "Copiar para área de transferência";
+"connection.error.details.button.clipboard" = "Copiar para a área de transferência";
 "connection.error.details.button.discord" = "Pergunte no Discord";
 "connection.error.details.button.doc" = "Leia a documentação";
 "connection.error.details.button.github" = "Relatar problema no GitHub";
@@ -451,11 +451,11 @@
 "database_updater.toast.syncing_with_progress" = "Sincronizando dados do servidor... (%li/%li)";
 "database_updater.toast.title" = "Atualizando %@";
 "debug.reset.entities_database.title" = "Redefinir o banco de dados de entidades do aplicativo";
-"deeplink.copied" = "Copied to clipboard";
-"deeplink.copy_to_clipboard" = "Copy to clipboard";
-"deeplink.description" = "Copy a link that opens this entity in the app.";
-"deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
-"deeplink.include_server.title" = "Include server";
+"deeplink.copied" = "Copiado para a área de transferência";
+"deeplink.copy_to_clipboard" = "Copiar para a área de transferência";
+"deeplink.description" = "Copie um link que abre esta entidade no aplicativo.";
+"deeplink.include_server.subtitle" = "Caso você tenha vários servidores configurados no aplicativo, este deeplink será especificamente para %@.";
+"deeplink.include_server.title" = "Incluir servidor";
 "deeplink.title" = "Deeplink";
 "delete" = "Excluir";
 "device_name.primary_button.title" = "Salvar";
@@ -477,8 +477,8 @@
 "entity_picker.filter.server.title" = "Servidores";
 "entity_picker.list.area.no_area.title" = "Sem área";
 "entity_picker.placeholder" = "Escolher entidade";
-"entity_picker.refresh.updating" = "Updating…";
-"entity_picker.reload" = "Reload";
+"entity_picker.refresh.updating" = "Atualizando…";
+"entity_picker.reload" = "Recarregar";
 "entity_picker.remove_all" = "Remover todos";
 "entity_picker.search.placeholder" = "Nome da entidade, ID, nome da área, nome do dispositivo...";
 "entity_picker.select_all" = "Selecionar todos";
@@ -1611,7 +1611,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "settings_details.general.app_icon.explanation.title" = "Cada ícone tem 3 variantes (iOS 18+), padrão, escuro e colorido para reagir de acordo com o estilo de tela inicial do iOS selecionado. Alguns ícones são os mesmos no modo escuro ou manipulados automaticamente pelo iOS.";
 "settings_details.general.app_icon.title" = "Ícone do aplicativo";
 "settings_details.general.body" = "Configuração básica do aplicativo, ícone do aplicativo e configurações da página da web.";
-"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
+"settings_details.general.body_mac" = "Configuração básica do aplicativo e ajustes da página web.";
 "settings_details.general.device_name.title" = "Nome do dispositivo";
 "settings_details.general.edge_to_edge.enabled.title" = "Habilitar";
 "settings_details.general.edge_to_edge.footer" = "Exibir a interface do Home Assistant de borda a borda em dispositivos compatíveis. Este é um recurso experimental que pode ser removido a qualquer momento e também pode causar problemas de layout.";
@@ -2098,7 +2098,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "Nova pasta";
 "watch.configuration.save.title" = "Salvar";
-"watch.configuration.show_assist.footer" = "Displays Assist as a button in the toolbar at the top of the Apple Watch home screen. To run a specific pipeline or prompt from the items list, add it as an item instead.";
+"watch.configuration.show_assist.footer" = "Exibe o Assist como um botão na barra de ferramentas na parte superior da tela inicial do Apple Watch. Para executar um pipeline ou prompt específico a partir da lista de itens, adicione-o como um item.";
 "watch.configuration.show_assist.title" = "Mostrar Assist";
 "watch.configurator.delete.button" = "Excluir complicação";
 "watch.configurator.delete.message" = "Tem certeza de que deseja excluir esta complicação? Isto não pode ser desfeito.";
@@ -2488,6 +2488,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.commonly_used_entities.description" = "Exiba suas entidades usadas com frequência com base nos seus padrões de uso.";
 "widgets.commonly_used_entities.empty.description" = "Nenhuma entidade de uso frequente encontrada. Use o Home Assistant para criar seu histórico de uso.";
 "widgets.commonly_used_entities.title" = "Controles comuns";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entidade";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Fonte";
@@ -2573,6 +2574,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.custom.title" = "Widgets personalizados";
 "widgets.details.description" = "Exibir estados usando o Home Assistant em texto";
 "widgets.details.description_with_warning" = "Exibir estados usando o Home Assistant em texto. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos templates";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Ação";
 "widgets.details.parameters.details_template" = "Template de texto de detalhes (somente na família retangular)";
 "widgets.details.parameters.lower_template" = "Template de texto inferior";
@@ -2591,6 +2593,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.entity_state.placeholder" = "Estado da entidade";
 "widgets.gauge.description" = "Exibir estados numéricos do Home Assistant em um medidor";
 "widgets.gauge.description_with_warning" = "Exibir estados numéricos do Home Assistant em um medidor. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos templates";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Ação";
 "widgets.gauge.parameters.gauge_type" = "Tipo de medidor";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacidade";
@@ -2621,6 +2625,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.open_page.title" = "Abrir página";
 "widgets.param.server.title" = "Servidor";
 "widgets.parameters.attribute" = "Atributo";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entidade";
 "widgets.preview.custom.description" = "Crie seu próprio widget dentro do aplicativo e exiba-o aqui.";
 "widgets.preview.custom.title" = "Widget personalizado";

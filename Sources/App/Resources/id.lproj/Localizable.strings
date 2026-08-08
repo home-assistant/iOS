@@ -2487,6 +2487,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Tampilkan entitas yang sering digunakan berdasarkan pola penggunaan Anda.";
 "widgets.commonly_used_entities.empty.description" = "Tidak ditemukan entitas yang umum digunakan. Gunakan Home Assistant untuk membangun riwayat penggunaan Anda.";
 "widgets.commonly_used_entities.title" = "Kontrol Umum";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2572,6 +2573,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "Widget khusus";
 "widgets.details.description" = "Menampilkan status dari Home Assistant dalam bentuk teks";
 "widgets.details.description_with_warning" = "Menampilkan status dari Home Assistant dalam bentuk teks. CATATAN: Pengguna harus memiliki peran admin untuk akses templat";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Aksi";
 "widgets.details.parameters.details_template" = "Templat Teks Detail (hanya dalam format persegi panjang)";
 "widgets.details.parameters.lower_template" = "Templat Teks Bawah";
@@ -2590,6 +2592,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2599,6 +2602,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "Status entitas";
 "widgets.gauge.description" = "Menampilkan status numerik dari Home Assistant bentuk gauge";
 "widgets.gauge.description_with_warning" = "Menampilkan status numerik dari Home Assistant bentuk gauge. CATATAN: Pengguna harus memiliki peran admin untuk akses templat";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Aksi";
 "widgets.gauge.parameters.gauge_type" = "Jenis Gauge";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapasitas";
@@ -2620,6 +2624,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "Buka Halaman";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Buat widget Anda sendiri di dalam aplikasi dan tampilkan di sini.";
 "widgets.preview.custom.title" = "Widget khusus";

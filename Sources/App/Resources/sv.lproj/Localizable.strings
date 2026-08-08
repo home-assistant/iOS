@@ -2483,6 +2483,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Visa dina vanligaste entiteter baserat på dina användningsmönster.";
 "widgets.commonly_used_entities.empty.description" = "Inga vanligt använda enheter hittades. Använd Home Assistant för att bygga upp din användningshistorik.";
 "widgets.commonly_used_entities.title" = "Vanliga kontroller";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2568,6 +2569,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "Anpassade widgets";
 "widgets.details.description" = "Visa tillstånd med hjälp av Home Assistant i text";
 "widgets.details.description_with_warning" = "Visa tillstånd från Home Assistant i text. OBS: Användaren måste vara administratör för att få tillgång till mallar";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Åtgärd";
 "widgets.details.parameters.details_template" = "Detaljer Textmall (endast i rektangulär familj)";
 "widgets.details.parameters.lower_template" = "Mall för nedre text";
@@ -2586,6 +2588,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2595,6 +2598,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "Entitetstillstånd";
 "widgets.gauge.description" = "Visa numeriska tillstånd från Home Assistant i en mätare";
 "widgets.gauge.description_with_warning" = "Visa numeriska tillstånd från Home Assistant i en mätare. OBS: Användaren måste vara administratör för att få tillgång till mallar";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Åtgärd";
 "widgets.gauge.parameters.gauge_type" = "Typ av mätare";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacitet";
@@ -2616,6 +2620,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "Öppna sida";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Skapa din egen widget i appen och visa den sedan här.";
 "widgets.preview.custom.title" = "Anpassad widget";

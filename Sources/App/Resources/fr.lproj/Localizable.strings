@@ -2488,6 +2488,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "widgets.commonly_used_entities.description" = "Affichez vos entités fréquemment utilisées en fonction de vos habitudes d'utilisation.";
 "widgets.commonly_used_entities.empty.description" = "Aucune entité fréquemment utilisée trouvée. Utilisez Home Assistant pour constituer votre historique d'utilisation.";
 "widgets.commonly_used_entities.title" = "Commandes courantes";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entité";
 "widgets.content_source.template" = "Modèle";
 "widgets.content_source.title" = "Source";
@@ -2573,6 +2574,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "widgets.custom.title" = "Widgets personnalisés";
 "widgets.details.description" = "Afficher les états à l'aide de Home Assistant dans le texte";
 "widgets.details.description_with_warning" = "Afficher les états de Home Assistant sous forme de texte. ATTENTION : l'utilisateur doit être administrateur pour l'accès aux modèles";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Modèle de texte de détails (uniquement dans la famille rectangulaire)";
 "widgets.details.parameters.lower_template" = "Modèle de texte inférieur";
@@ -2591,6 +2593,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "widgets.entity_state.placeholder" = "État de l'entité";
 "widgets.gauge.description" = "Afficher les états numériques de Home Assistant dans une jauge";
 "widgets.gauge.description_with_warning" = "Afficher les états numériques de Home Assistant dans une jauge. ATTENTION : l'utilisateur doit être administrateur pour l'accès aux modèles";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Action";
 "widgets.gauge.parameters.gauge_type" = "Type de jauge";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacité";
@@ -2621,6 +2625,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "widgets.open_page.title" = "Ouvrir la page";
 "widgets.param.server.title" = "Serveur";
 "widgets.parameters.attribute" = "Attribut";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entité";
 "widgets.preview.custom.description" = "Créez votre propre widget dans l'app, puis affichez-le ici.";
 "widgets.preview.custom.title" = "Widget personnalisé";

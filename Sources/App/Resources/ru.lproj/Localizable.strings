@@ -2488,6 +2488,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.commonly_used_entities.description" = "Отображайте часто используемые объекты на основе частоты использования.";
 "widgets.commonly_used_entities.empty.description" = "Часто используемые объекты не найдены. Используйте Home Assistant для формирования истории использования.";
 "widgets.commonly_used_entities.title" = "Стандартные элементы управления";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2573,6 +2574,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.custom.title" = "Пользовательские виджеты";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
 "widgets.details.description_with_warning" = "Отображение состояний из Home Assistant в виде текста. ВНИМАНИЕ: Пользователь должен быть администратором для доступа к шаблонам";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Действие";
 "widgets.details.parameters.details_template" = "Шаблон текста с деталями (только для прямоугольных моделей)";
 "widgets.details.parameters.lower_template" = "Нижний текстовый шаблон";
@@ -2591,6 +2593,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.entity_state.placeholder" = "Состояние объекта";
 "widgets.gauge.description" = "Отображение числовых состояний из Home Assistant в виде датчика";
 "widgets.gauge.description_with_warning" = "Отображение числовых состояний из Home Assistant в виде шкалы. ВНИМАНИЕ: Пользователь должен быть администратором для доступа к шаблонам";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Действие";
 "widgets.gauge.parameters.gauge_type" = "Тип датчика";
 "widgets.gauge.parameters.gauge_type.capacity" = "Емкость";
@@ -2621,6 +2625,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.open_page.title" = "Открыть страницу";
 "widgets.param.server.title" = "Сервер";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Создайте свой собственный виджет внутри приложения, а затем отобразите его здесь.";
 "widgets.preview.custom.title" = "Пользовательский виджет";
