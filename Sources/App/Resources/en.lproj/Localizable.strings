@@ -1227,7 +1227,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.cloudhook.check_reachability.result" = "Result";
 "settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
 "settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
-"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
 "settings.connection_section.cloudhook.status.not_configured" = "Not configured";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Connected via";
@@ -1285,6 +1284,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
 "settings.connection_section.validate_error.title" = "Error Saving URL";
 "settings.connection_section.validate_error.use_anyway" = "Use Anyway";
+"settings.connection_section.webhook.active.title" = "Currently used";
+"settings.connection_section.webhook.active.unavailable" = "No URL available";
+"settings.connection_section.webhook.endpoints.footer" = "Treat these URLs as sensitive. Anyone with them can send requests to this mobile app webhook.";
+"settings.connection_section.webhook.footer" = "The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.in_use" = "In use";
+"settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Authenticating";
 "settings.connection_section.websocket.status.connected" = "Connected";
 "settings.connection_section.websocket.status.connecting" = "Connecting";

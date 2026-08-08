@@ -4137,8 +4137,6 @@ public enum L10n {
         }
       }
       public enum Cloudhook {
-        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
-        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
         /// Cloudhook
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
         public enum CheckReachability {
@@ -4303,6 +4301,24 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.title") }
         /// Use Anyway
         public static var useAnyway: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.use_anyway") }
+      }
+      public enum Webhook {
+        /// The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.webhook.footer") }
+        /// In use
+        public static var inUse: String { return L10n.tr("Localizable", "settings.connection_section.webhook.in_use") }
+        /// Webhook
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.webhook.title") }
+        public enum Active {
+          /// Currently used
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.webhook.active.title") }
+          /// No URL available
+          public static var unavailable: String { return L10n.tr("Localizable", "settings.connection_section.webhook.active.unavailable") }
+        }
+        public enum Endpoints {
+          /// Treat these URLs as sensitive. Anyone with them can send requests to this mobile app webhook.
+          public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.webhook.endpoints.footer") }
+        }
       }
       public enum Websocket {
         /// WebSocket
