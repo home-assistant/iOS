@@ -827,6 +827,7 @@
 				Widgets/Energy/WidgetEnergy.swift,
 				Widgets/Energy/WidgetEnergyChartView.swift,
 				Widgets/Energy/WidgetEnergyMediumView.swift,
+				Widgets/Energy/WidgetEnergyRefreshAppIntent.swift,
 				Widgets/Energy/WidgetEnergySmallView.swift,
 				Widgets/Energy/WidgetEnergyStatView.swift,
 				Widgets/Energy/WidgetEnergyStyle.swift,

@@ -23,13 +23,25 @@ struct WidgetEnergyView: View {
     }
 
     private var emptyView: some View {
-        Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
-            .font(.footnote)
-            .multilineTextAlignment(.center)
-            .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .widgetBackground(WidgetEnergyStyle.background)
+        VStack(spacing: DesignSystem.Spaces.one) {
+            Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
+                .font(.footnote)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(WidgetEnergyStyle.secondaryText)
+            // The load can fail because the server is unreachable, so offer a way to try again
+            // without waiting for the next timeline refresh.
+            if entry.loadFailed {
+                Button(intent: WidgetEnergyRefreshAppIntent()) {
+                    Image(systemSymbol: .arrowClockwiseCircle)
+                        .foregroundStyle(.secondary)
+                        .font(DesignSystem.Font.title)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .widgetBackground(WidgetEnergyStyle.background)
     }
 }
 
@@ -38,4 +50,5 @@ struct WidgetEnergyView: View {
     WidgetEnergy()
 } timeline: {
     WidgetEnergyEntry(period: .today, isConfigured: false)
+    WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
 }
