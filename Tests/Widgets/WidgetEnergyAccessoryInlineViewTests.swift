@@ -3,8 +3,8 @@
 import Shared
 import Testing
 
-@available(iOS 17, *)
 struct WidgetEnergyAccessoryInlineViewTests {
+    @available(iOS 17, *)
     @Test func sharedUnitIsHoistedToTheEndOfTheLine() {
         let metrics: [WidgetEnergyMetric] = [
             .init(kind: .solar, value: "12.4", unit: "kWh", direction: .up),
@@ -13,6 +13,7 @@ struct WidgetEnergyAccessoryInlineViewTests {
         #expect(WidgetEnergyAccessoryInlineView.text(for: metrics) == "\u{2191}12.4 \u{2193}6.2 kWh")
     }
 
+    @available(iOS 17, *)
     @Test func differingUnitsStayOnTheirOwnValue() {
         let metrics: [WidgetEnergyMetric] = [
             .init(kind: .solar, value: "1.4", unit: "kW", direction: .up),
@@ -21,6 +22,7 @@ struct WidgetEnergyAccessoryInlineViewTests {
         #expect(WidgetEnergyAccessoryInlineView.text(for: metrics) == "\u{2191}1.4 kW \u{2193}250 W")
     }
 
+    @available(iOS 17, *)
     @Test func noMetricsJoinsToNothingSoTheViewCanPickTheEmptyState() {
         #expect(WidgetEnergyAccessoryInlineView.text(for: []).isEmpty)
     }

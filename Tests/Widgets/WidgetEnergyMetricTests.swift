@@ -3,8 +3,8 @@
 import Foundation
 import Testing
 
-@available(iOS 17, *)
 struct WidgetEnergyMetricTests {
+    @available(iOS 17, *)
     @Test func autoSourceUsesPeriodTotalsWhenNoLivePowerIsAvailable() {
         let entry = WidgetEnergyEntry(
             isConfigured: true,
@@ -20,6 +20,7 @@ struct WidgetEnergyMetricTests {
         #expect(metrics.map(\.direction) == [.up, .up])
     }
 
+    @available(iOS 17, *)
     @Test func livePowerIsPreferredOverPeriodTotals() {
         let entry = WidgetEnergyEntry(
             isConfigured: true,
@@ -37,6 +38,7 @@ struct WidgetEnergyMetricTests {
         #expect(metrics[1].direction == .down)
     }
 
+    @available(iOS 17, *)
     @Test func sourcePreferenceFiltersTheSeries() {
         let entry = WidgetEnergyEntry(
             source: .solar,
@@ -51,6 +53,7 @@ struct WidgetEnergyMetricTests {
         #expect(WidgetEnergyMetric.metrics(for: consumptionEntry).map(\.kind) == [.grid])
     }
 
+    @available(iOS 17, *)
     @Test func seriesTheServerDoesNotReportAreDropped() {
         let solarOnly = WidgetEnergyEntry(isConfigured: true, solarGenerated: 12.4)
         #expect(WidgetEnergyMetric.metrics(for: solarOnly).map(\.kind) == [.solar])
