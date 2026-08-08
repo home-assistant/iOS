@@ -123,8 +123,8 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
 
         entry.currencyCode = entry.cost == nil ? nil : await fetchCurrency(on: connection)
 
-        // Live power only matters for the compact card; skip the extra REST calls otherwise.
-        if context.family == .systemSmall {
+        // Live power only matters for the compact layouts; skip the extra REST calls otherwise.
+        if WidgetEnergySupportedFamilies.livePowerFamilies.contains(context.family) {
             entry.livePowerSolar = await solarLivePower(sources: solarSources, server: server)
             entry.livePowerGrid = await gridLivePower(sources: gridSources, server: server)
         }

@@ -10,20 +10,28 @@ struct WidgetEnergyView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
-        if !entry.isConfigured {
-            emptyView
-        } else {
-            switch family {
-            case .systemSmall:
+        // The accessory families own their empty state: they render on the lock screen, where the
+        // home screen card's background and prose don't fit.
+        switch family {
+        case .accessoryCircular:
+            WidgetEnergyAccessoryCircularView(entry: entry)
+        case .accessoryRectangular:
+            WidgetEnergyAccessoryRectangularView(entry: entry)
+        case .accessoryInline:
+            WidgetEnergyAccessoryInlineView(entry: entry)
+        default:
+            if !entry.isConfigured {
+                emptyView
+            } else if family == .systemSmall {
                 WidgetEnergySmallView(entry: entry)
-            default:
+            } else {
                 WidgetEnergyMediumView(entry: entry)
             }
         }
     }
 
     private var emptyView: some View {
-        Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
+        Text(WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed))
             .font(.footnote)
             .multilineTextAlignment(.center)
             .foregroundStyle(WidgetEnergyStyle.secondaryText)
