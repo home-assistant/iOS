@@ -1,4 +1,4 @@
-import Shared
+import Foundation
 import SwiftUI
 
 /// Header shared by the home screen Energy layouts: the summarised period on the leading edge and
