@@ -8370,8 +8370,8 @@ public enum L10n {
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
-      /// Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access
-      public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.details.description_with_warning") }
+      /// Display an entity, a watch complication, or a template from Home Assistant as text
+      public static var galleryDescription: String { return L10n.tr("Localizable", "widgets.details.gallery_description") }
       /// Details
       public static var title: String { return L10n.tr("Localizable", "widgets.details.title") }
       public enum Parameters {
@@ -8438,8 +8438,8 @@ public enum L10n {
     public enum Gauge {
       /// Display numeric states from Home Assistant in a gauge
       public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
-      /// Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access
-      public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.gauge.description_with_warning") }
+      /// Display an entity, a watch complication, or a template from Home Assistant in a gauge
+      public static var galleryDescription: String { return L10n.tr("Localizable", "widgets.gauge.gallery_description") }
       /// Gauge
       public static var title: String { return L10n.tr("Localizable", "widgets.gauge.title") }
       public enum Parameters {

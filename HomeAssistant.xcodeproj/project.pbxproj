@@ -178,6 +178,7 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42D14C49301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C48301BAF950058088E /* HAWatchComplications */; };
+		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
 		42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4A301BAFA10058088E /* HAWatchComplications */; };
 		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
 		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
@@ -765,6 +766,10 @@
 				AppIntents/ShortcutAppIntentSupport.swift,
 				AppIntents/UpdateLocationAppIntent.swift,
 				AppIntents/UpdateSensorsAppIntent.swift,
+				"AppIntents/Widget/Complication/ComplicationRenderContext+WidgetRenderModels.swift",
+				AppIntents/Widget/Complication/WidgetCircularComplicationAppEntity.swift,
+				AppIntents/Widget/Complication/WidgetComplicationResolver.swift,
+				AppIntents/Widget/Complication/WidgetRectangularComplicationAppEntity.swift,
 				AppIntents/Widget/Details/WidgetDetailsAppIntent.swift,
 				AppIntents/Widget/Details/WidgetDetailsAttributeAppEntity.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntent.swift,
@@ -825,9 +830,13 @@
 				Widgets/Custom/WidgetCustom.swift,
 				Widgets/Custom/WidgetCustomTimelineProvider.swift,
 				Widgets/Energy/WidgetEnergy.swift,
+				Widgets/Energy/WidgetEnergyAccessoryCircularView.swift,
+				Widgets/Energy/WidgetEnergyAccessoryInlineView.swift,
+				Widgets/Energy/WidgetEnergyAccessoryRectangularView.swift,
 				Widgets/Energy/WidgetEnergyChartView.swift,
 				Widgets/Energy/WidgetEnergyMediumView.swift,
 				Widgets/Energy/WidgetEnergyRefreshAppIntent.swift,
+				Widgets/Energy/WidgetEnergyMetric.swift,
 				Widgets/Energy/WidgetEnergySmallView.swift,
 				Widgets/Energy/WidgetEnergyStatView.swift,
 				Widgets/Energy/WidgetEnergyStyle.swift,
@@ -2052,6 +2061,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */,
 				E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */,
 				42886D422FFE8853004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D3E2FFE884E004EB33B /* HAKit in Frameworks */,
@@ -2760,6 +2770,7 @@
 			);
 			name = "Extensions-Widgets";
 			packageProductDependencies = (
+				42D14CA0301BAF950058088E /* HAWatchComplications */,
 				C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */,
 				42886D3D2FFE884E004EB33B /* HAKit */,
 				42886D412FFE8853004EB33B /* PromiseKitDynamic */,
@@ -6005,6 +6016,11 @@
 			productName = ObjectMapper;
 		};
 		42D14C48301BAF950058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14CA0301BAF950058088E /* HAWatchComplications */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
 			productName = HAWatchComplications;

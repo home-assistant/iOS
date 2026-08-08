@@ -4,10 +4,10 @@ import SwiftUI
 
 /// iPhone preview of the circular complication. Renders through the shared
 /// `CircularComplicationContentView` (the exact same view the watch uses), mapping the editor's
-/// `ComplicationPreviewContext` into the shared render model — so the preview can't drift from the
+/// `ComplicationRenderContext` into the shared render model — so the preview can't drift from the
 /// on-watch rendering.
 struct CircularComplicationPreview: View {
-    let context: ComplicationPreviewContext
+    let context: ComplicationRenderContext
 
     var body: some View {
         CircularComplicationContentView(model: renderModel)

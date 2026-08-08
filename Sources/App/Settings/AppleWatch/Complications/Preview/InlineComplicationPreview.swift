@@ -6,7 +6,7 @@ import SwiftUI
 /// Inline has no icon or custom colors (watchOS renders it in the face tint). Renders through the
 /// shared `InlineComplicationContentView`, so it can't drift from the on-watch rendering.
 struct InlineComplicationPreview: View {
-    let context: ComplicationPreviewContext
+    let context: ComplicationRenderContext
 
     var body: some View {
         // The whole line is the title slot's formula ("{name} - {value}" by default), matching the

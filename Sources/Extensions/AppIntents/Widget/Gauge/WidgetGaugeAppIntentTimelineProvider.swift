@@ -1,5 +1,6 @@
 import AppIntents
 import HAKit
+import HAWatchComplications
 import Shared
 import WidgetKit
 
@@ -76,9 +77,35 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         switch configuration.source {
         case .entity:
             return try await entityEntry(for: configuration)
+        case .complication:
+            return try await complicationEntry(for: configuration)
         case .template:
             return try await templateEntry(for: configuration)
         }
+    }
+
+    /// Mirrors one of the user's circular watch complications: the entry carries the resolved render
+    /// model and the view draws it through the shared complication content view, so the complication's
+    /// own gauge style, colors and slots decide how it looks — not the widget's `gaugeType`.
+    private func complicationEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
+        guard let complication = configuration.complication else {
+            Current.Log.error("Failed to fetch data for gauge widget: No complication selected")
+            throw WidgetGaugeDataError.noComplication
+        }
+        let context = try await WidgetComplicationResolver.context(id: complication.id, family: .circular)
+
+        return .init(
+            gaugeType: configuration.gaugeType,
+
+            value: context.showsGauge ? (context.fraction ?? 0) : 0,
+
+            valueLabel: context.valueText,
+            complicationModel: context.circularRenderModel,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
     }
 
     /// Builds the gauge from a single picked entity's live state, fetched over the REST `/states`
@@ -224,6 +251,9 @@ struct WidgetGaugeEntry: TimelineEntry {
     var label: String?
     var min: String?
     var max: String?
+    /// Set only by the complication source: every family renders this through the shared circular
+    /// watch complication content view instead of the widget's own gauge.
+    var complicationModel: CircularComplicationRenderModel?
 
     var runScript: Bool
     var script: IntentScriptEntity?
@@ -233,6 +263,7 @@ struct WidgetGaugeEntry: TimelineEntry {
 enum WidgetGaugeDataError: Error {
     case noServers
     case noEntity
+    case noComplication
     case apiError
     case badResponse
 }

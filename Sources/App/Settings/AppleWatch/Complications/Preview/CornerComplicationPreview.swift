@@ -10,7 +10,7 @@ import SwiftUI
 /// `CornerComplicationContentView` approximation. Both sides resolve their text / gauge through
 /// `CornerComplicationRenderModel`.
 struct CornerComplicationPreview: View {
-    let context: ComplicationPreviewContext
+    let context: ComplicationRenderContext
 
     var body: some View {
         CornerComplicationContentView(model: renderModel)
@@ -34,7 +34,7 @@ struct CornerComplicationPreview: View {
 #if DEBUG
 /// Renders every corner permutation side by side so the layout can be checked at a glance.
 private struct CornerVariantsPreview: View {
-    let variants: [(String, ComplicationPreviewContext)] = [
+    let variants: [(String, ComplicationRenderContext)] = [
         ("Icon + name + value + gauge", .previewCorner()),
         ("Value + name + gauge", .previewCorner(showIcon: false)),
         ("Value + name", .previewCorner(showIcon: false, gauge: false)),

@@ -10,30 +10,43 @@ struct WidgetEnergyView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
-        if !entry.isConfigured || !entry.hasData {
-            emptyView
-        } else {
-            switch family {
-            case .systemSmall:
+        // The accessory families own their empty state: they render on the lock screen, where the
+        // home screen card's background and prose don't fit.
+        switch family {
+        case .accessoryCircular:
+            WidgetEnergyAccessoryCircularView(entry: entry)
+        case .accessoryRectangular:
+            WidgetEnergyAccessoryRectangularView(entry: entry)
+        case .accessoryInline:
+            WidgetEnergyAccessoryInlineView(entry: entry)
+        default:
+            if !entry.isConfigured || !hasData {
+                emptyView
+            } else if family == .systemSmall {
                 WidgetEnergySmallView(entry: entry)
-            default:
+            } else {
                 WidgetEnergyMediumView(entry: entry)
             }
         }
     }
 
-    /// Shared by every family so medium and large don't fall through to an empty card.
+    /// Whether any home screen layout has something to draw. Without this the medium and large
+    /// families fall through to a card holding nothing but the logo, where the small family at
+    /// least says "no data".
+    private var hasData: Bool {
+        !WidgetEnergyMetric.metrics(for: entry).isEmpty || !entry.chartPoints.isEmpty
+    }
+
     private var emptyView: some View {
-        // `isConfigured` is false only when the server has no energy dashboard. Every other way of
-        // ending up without values — an unreachable server, or a period with no statistics — is a
-        // "no data" state a reload can plausibly fix.
-        let hasNoDashboard = !entry.isConfigured && !entry.loadFailed
+        // Mirrors `emptyStateText`: a missing energy dashboard is the one empty state a reload
+        // can't fix, so it's also the one that doesn't offer the button.
+        let canRetry = entry.isConfigured || entry.loadFailed
         return VStack(spacing: DesignSystem.Spaces.one) {
-            Text(hasNoDashboard ? L10n.Widgets.Energy.notConfigured : L10n.Widgets.Energy.noData)
+            Text(WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed))
                 .font(.footnote)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            if !hasNoDashboard {
+            if canRetry {
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
                     Image(systemSymbol: .arrowClockwiseCircle)
                         .foregroundStyle(.secondary)

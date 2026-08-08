@@ -1,5 +1,6 @@
 import AppIntents
 import HAKit
+import HAWatchComplications
 import Shared
 import WidgetKit
 
@@ -70,9 +71,36 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         switch configuration.source {
         case .entity:
             return try await entityEntry(for: configuration)
+        case .complication:
+            return try await complicationEntry(for: configuration)
         case .template:
             return try await templateEntry(for: configuration)
         }
+    }
+
+    /// Mirrors one of the user's rectangular watch complications. The rectangular family draws the
+    /// resolved render model through the shared complication content view; the inline family, which has
+    /// no complication layout of its own, falls back to the resolved title and value on one line.
+    private func complicationEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
+        guard let complication = configuration.complication else {
+            Current.Log.error("Failed to fetch data for details widget: No complication selected")
+            throw WidgetDetailsDataError.noComplication
+        }
+        let context = try await WidgetComplicationResolver.context(id: complication.id, family: .rectangular)
+        let inlineText = [context.titleText, context.valueText]
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+
+        return .init(
+            upperText: inlineText.isEmpty ? nil : inlineText,
+            lowerText: nil,
+            detailsText: nil,
+            complicationModel: context.rectangularRenderModel,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
     }
 
     /// Builds the widget from a single picked entity's live state, fetched over the REST `/states`
@@ -188,6 +216,9 @@ struct WidgetDetailsEntry: TimelineEntry {
     var upperText: String?
     var lowerText: String?
     var detailsText: String?
+    /// Set only by the complication source: the rectangular family renders this through the shared
+    /// watch complication content view instead of the three text lines.
+    var complicationModel: RectangularComplicationRenderModel?
 
     var runScript: Bool
     var script: IntentScriptEntity?
@@ -197,6 +228,7 @@ struct WidgetDetailsEntry: TimelineEntry {
 enum WidgetDetailsDataError: Error {
     case noServers
     case noEntity
+    case noComplication
     case apiError
     case badResponse
 }

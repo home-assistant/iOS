@@ -2,9 +2,10 @@ import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the circular complication.
 ///
-/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the in-app
-/// editor's `ComplicationPreviewContext` map their own data into this one struct, so a single
-/// `CircularComplicationContentView` renders identically in the real complication and the preview.
+/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the shared
+/// `ComplicationRenderContext` (the in-app editor preview and the iPhone lock-screen widgets) map their
+/// own data into this one struct, so a single `CircularComplicationContentView` renders identically
+/// everywhere the complication appears.
 public struct CircularComplicationRenderModel {
     public var iconImage: Image?
     public var showsIcon: Bool

@@ -130,17 +130,27 @@ struct AssistView: View {
     }
 
     private var macPicker: some View {
-        VStack {
+        Menu {
             Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
                 ForEach(viewModel.pipelines, id: \.id) { pipeline in
                     Text(pipeline.name)
-                        .font(.footnote)
                         .tag(pipeline.id)
                 }
             }
-            .pickerStyle(.menu)
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.half) {
+                Text(selectedPipelineName)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Image(systemSymbol: .chevronUpChevronDown)
+            }
         }
         .frame(maxWidth: 200, alignment: .trailing)
+    }
+
+    private var selectedPipelineName: String {
+        viewModel.pipelines.first { $0.id == viewModel.preferredPipelineId }?.name
+            ?? L10n.Assist.PipelinesPicker.title
     }
 
     private func makeChatBubble(item: AssistChatItem) -> some View {
