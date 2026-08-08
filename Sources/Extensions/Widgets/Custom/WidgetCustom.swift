@@ -56,6 +56,7 @@ struct WidgetCustom: Widget {
         return widget.items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
             let state: WidgetEntityState? = states[magicItem]
+            let stateColorRules = magicItem.customization?.stateColorRules ?? []
 
             var backgroundColor: Color? = nil
             var textColor: Color? = nil
@@ -67,6 +68,9 @@ struct WidgetCustom: Widget {
             if let textColorHex = magicItem.customization?.textColor {
                 textColor = Color(hex: textColorHex)
             }
+
+            let dynamicStateColor = dynamicColor(for: .state, state: state, rules: stateColorRules)
+            backgroundColor = dynamicColor(for: .background, state: state, rules: stateColorRules) ?? backgroundColor
 
             let icon: MaterialDesignIcons = {
                 if let info {
@@ -97,6 +101,7 @@ struct WidgetCustom: Widget {
                     return magicItemIconColor
                 }
             }()
+            let dynamicIconColor = dynamicColor(for: .icon, state: state, rules: stateColorRules)
 
             let title: String = {
                 if let info {
@@ -143,12 +148,13 @@ struct WidgetCustom: Widget {
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
-                subtitle: state?.value,
+                subtitle: showStates ? state?.value : nil,
                 interactionType: interactionType,
                 icon: icon,
                 showIconBackground: showIconBackground,
                 textColor: textColor ?? Color(uiColor: .label),
-                iconColor: iconColor,
+                subtitleColor: dynamicStateColor,
+                iconColor: dynamicIconColor ?? iconColor,
                 backgroundColor: backgroundColor ?? Color.tileBackground,
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
@@ -157,6 +163,18 @@ struct WidgetCustom: Widget {
                 disabled: !widget.itemsStates.isEmpty
             )
         }
+    }
+
+    private func dynamicColor(
+        for target: WidgetStateColorRule.Target,
+        state: WidgetEntityState?,
+        rules: [WidgetStateColorRule]
+    ) -> Color? {
+        guard let numericValue = state?.numericValue,
+              let rule = WidgetStateColorRule.matchingRule(in: rules, target: target, value: numericValue) else {
+            return nil
+        }
+        return Color(hex: rule.color)
     }
 }
 

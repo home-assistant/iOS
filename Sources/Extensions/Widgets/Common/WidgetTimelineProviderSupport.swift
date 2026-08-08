@@ -6,6 +6,19 @@ struct WidgetEntityState: Codable {
     let value: String
     let domainState: Domain.State?
     let hexColor: String?
+    let numericValue: Double?
+
+    init(
+        value: String,
+        domainState: Domain.State?,
+        hexColor: String?,
+        numericValue: Double? = nil
+    ) {
+        self.value = value
+        self.domainState = domainState
+        self.hexColor = hexColor
+        self.numericValue = numericValue
+    }
 
     var color: Color? {
         guard let hexColor else { return nil }
@@ -114,7 +127,8 @@ struct WidgetEntityStateProvider {
                 states[item] = .init(
                     value: value,
                     domainState: state.domainState,
-                    hexColor: state.color?.hex()
+                    hexColor: state.color?.hex(),
+                    numericValue: state.numericValue
                 )
             } else {
                 Current.Log.error(

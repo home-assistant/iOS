@@ -11,6 +11,8 @@ struct MagicItemCustomizationView: View {
     @StateObject private var viewModel: MagicItemCustomizationViewModel
 
     @State private var useCustomColors = false
+    @State private var showingStateColorRuleEditor = false
+    @State private var editingStateColorRuleIndex: Int?
 
     // Toggle to wait until actions are prefilled in case of editing magic item, then it can show the action items
     @State private var actionsLoaded = false
@@ -70,6 +72,20 @@ struct MagicItemCustomizationView: View {
             preventNilCustomization()
             loadActionData()
             viewModel.loadMagicInfo()
+        }
+        .sheet(isPresented: $showingStateColorRuleEditor) {
+            NavigationStack {
+                WidgetStateColorRuleEditor(
+                    rule: editingStateColorRuleIndex.flatMap { stateColorRules[safe: $0] }
+                ) { rule in
+                    if let editingStateColorRuleIndex,
+                       stateColorRules.indices.contains(editingStateColorRuleIndex) {
+                        viewModel.item.customization?.stateColorRules?[editingStateColorRuleIndex] = rule
+                    } else {
+                        viewModel.item.customization?.stateColorRules = stateColorRules + [rule]
+                    }
+                }
+            }
         }
     }
 
@@ -193,6 +209,75 @@ struct MagicItemCustomizationView: View {
                     }), supportsOpacity: false)
                 }
             }
+        }
+
+        if context == .widget {
+            Section {
+                ForEach(Array(stateColorRules.enumerated()), id: \.offset) { index, rule in
+                    Button {
+                        editingStateColorRuleIndex = index
+                        showingStateColorRuleEditor = true
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                                Text(stateColorRuleDescription(rule))
+                                    .foregroundStyle(.primary)
+                                Text(stateColorRuleTargetDescription(rule))
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Circle()
+                                .fill(Color(hex: rule.color))
+                                .frame(width: 24, height: 24)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            viewModel.item.customization?.stateColorRules?.remove(at: index)
+                        } label: {
+                            Label(L10n.delete, systemSymbol: .trash)
+                        }
+                    }
+                }
+
+                Button {
+                    editingStateColorRuleIndex = nil
+                    showingStateColorRuleEditor = true
+                } label: {
+                    Label(L10n.MagicItem.StateColors.Add.title, systemSymbol: .plus)
+                }
+            } header: {
+                Text(L10n.MagicItem.StateColors.title)
+            } footer: {
+                Text(L10n.MagicItem.StateColors.footer)
+            }
+        }
+    }
+
+    private var stateColorRules: [WidgetStateColorRule] {
+        viewModel.item.customization?.stateColorRules ?? []
+    }
+
+    private func stateColorRuleDescription(_ rule: WidgetStateColorRule) -> String {
+        let comparison: String = switch rule.comparison {
+        case .lessThan:
+            L10n.MagicItem.StateColors.Comparison.lessThan
+        case .greaterThan:
+            L10n.MagicItem.StateColors.Comparison.greaterThan
+        }
+        return "\(comparison) \(rule.threshold.formatted())"
+    }
+
+    private func stateColorRuleTargetDescription(_ rule: WidgetStateColorRule) -> String {
+        switch rule.target {
+        case .state:
+            L10n.MagicItem.StateColors.Target.State.title
+        case .icon:
+            L10n.MagicItem.StateColors.Target.Icon.title
+        case .background:
+            L10n.MagicItem.StateColors.Target.Background.title
         }
     }
 

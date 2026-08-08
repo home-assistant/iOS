@@ -136,7 +136,13 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
             }
         )
 
-        return await stateProvider.states(showStates: configuration.showStates, items: widget.items)
+        let hasStateColorRules = widget.items.contains {
+            !($0.customization?.stateColorRules ?? []).isEmpty
+        }
+        return await stateProvider.states(
+            showStates: configuration.showStates || hasStateColorRules,
+            items: widget.items
+        )
     }
 }
 

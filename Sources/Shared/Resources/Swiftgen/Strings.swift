@@ -3021,6 +3021,58 @@ public enum L10n {
       /// Require confirmation
       public static var title: String { return L10n.tr("Localizable", "magic_item.require_confirmation.title") }
     }
+    public enum StateColors {
+      /// Add rules for different number ranges. Colors apply only to numeric states.
+      public static var footer: String { return L10n.tr("Localizable", "magic_item.state_colors.footer") }
+      /// Dynamic colors
+      public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.title") }
+      public enum Add {
+        /// Add rule
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.add.title") }
+      }
+      public enum Color {
+        /// Color
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.color.title") }
+      }
+      public enum Comparison {
+        /// Above
+        public static var greaterThan: String { return L10n.tr("Localizable", "magic_item.state_colors.comparison.greater_than") }
+        /// Below
+        public static var lessThan: String { return L10n.tr("Localizable", "magic_item.state_colors.comparison.less_than") }
+        /// State is
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.comparison.title") }
+      }
+      public enum Condition {
+        /// Rules only apply when the entity state is a number.
+        public static var footer: String { return L10n.tr("Localizable", "magic_item.state_colors.condition.footer") }
+        /// Condition
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.condition.title") }
+      }
+      public enum Edit {
+        /// State color
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.edit.title") }
+      }
+      public enum Target {
+        /// Apply to
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.target.title") }
+        public enum Background {
+          /// Background
+          public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.target.background.title") }
+        }
+        public enum Icon {
+          /// Icon
+          public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.target.icon.title") }
+        }
+        public enum State {
+          /// State
+          public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.target.state.title") }
+        }
+      }
+      public enum Threshold {
+        /// Threshold
+        public static var title: String { return L10n.tr("Localizable", "magic_item.state_colors.threshold.title") }
+      }
+    }
     public enum TextColor {
       /// Text color
       public static var title: String { return L10n.tr("Localizable", "magic_item.text_color.title") }

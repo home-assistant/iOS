@@ -18,12 +18,20 @@ public final class ControlEntityProvider {
         public let unitOfMeasurement: String?
         public let domainState: Domain.State?
         public let color: Color?
+        public let numericValue: Double?
 
-        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?, color: Color? = nil) {
+        public init(
+            value: String,
+            unitOfMeasurement: String?,
+            domainState: Domain.State?,
+            color: Color? = nil,
+            numericValue: Double? = nil
+        ) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
             self.domainState = domainState
             self.color = color
+            self.numericValue = numericValue
         }
     }
 
@@ -177,7 +185,8 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        var stateValue = (state["state"] as? String) ?? "N/A"
+        let rawStateValue = (state["state"] as? String) ?? "N/A"
+        var stateValue = rawStateValue
         stateValue = StatePrecision.adjustPrecision(
             serverId: server.identifier.rawValue,
             entityId: entityId,
@@ -194,7 +203,8 @@ public final class ControlEntityProvider {
             stateValue: stateValue,
             attributes: attributes,
             colorAttributes: colorAttributes,
-            unitOfMeasurement: unitOfMeasurement
+            unitOfMeasurement: unitOfMeasurement,
+            numericValue: Double(rawStateValue)
         )
     }
 
@@ -211,7 +221,8 @@ public final class ControlEntityProvider {
         stateValue: String,
         attributes: [String: Any]?,
         colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?),
-        unitOfMeasurement: String?
+        unitOfMeasurement: String?,
+        numericValue: Double?
     ) -> State {
         let domain = Domain(entityId: entityId)
         let domainState = Domain.State(rawValue: stateValue.lowercased())
@@ -229,7 +240,8 @@ public final class ControlEntityProvider {
                 value: stateForDeviceClass,
                 unitOfMeasurement: nil,
                 domainState: domainState,
-                color: computedColor
+                color: computedColor,
+                numericValue: numericValue
             )
         } else {
             let computedColor = computeIconColor(
@@ -241,7 +253,8 @@ public final class ControlEntityProvider {
                 value: stateValue,
                 unitOfMeasurement: unitOfMeasurement,
                 domainState: domainState,
-                color: computedColor
+                color: computedColor,
+                numericValue: numericValue
             )
         }
     }

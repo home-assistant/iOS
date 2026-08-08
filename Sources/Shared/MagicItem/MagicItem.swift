@@ -143,6 +143,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var iconColor: String?
         public var textColor: String?
         public var backgroundColor: String?
+        /// Colors to apply to widget items when their numeric state crosses a threshold.
+        public var stateColorRules: [WidgetStateColorRule]?
         /// If true, execution will request confirmation before running
         public var requiresConfirmation: Bool
         /// Override icon, MaterialDesignIcons name
@@ -158,6 +160,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             iconColor: String? = nil,
             textColor: String? = nil,
             backgroundColor: String? = nil,
+            stateColorRules: [WidgetStateColorRule]? = nil,
             requiresConfirmation: Bool = false,
             icon: String? = nil,
             iconIsCustomized: Bool = false
@@ -165,6 +168,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.iconColor = iconColor
             self.textColor = textColor
             self.backgroundColor = backgroundColor
+            self.stateColorRules = stateColorRules
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
             self.iconIsCustomized = iconIsCustomized
