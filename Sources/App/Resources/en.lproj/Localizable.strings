@@ -2592,6 +2592,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";

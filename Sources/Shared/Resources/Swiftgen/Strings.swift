@@ -8402,6 +8402,8 @@ public enum L10n {
       public static var noData: String { return L10n.tr("Localizable", "widgets.energy.no_data") }
       /// No energy dashboard configured
       public static var notConfigured: String { return L10n.tr("Localizable", "widgets.energy.not_configured") }
+      /// Refresh Energy
+      public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.energy.refresh_title") }
       /// Solar
       public static var solar: String { return L10n.tr("Localizable", "widgets.energy.solar") }
       /// Energy
