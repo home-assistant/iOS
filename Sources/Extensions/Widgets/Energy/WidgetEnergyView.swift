@@ -37,6 +37,7 @@ struct WidgetEnergyView: View {
                         .font(DesignSystem.Font.title)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(L10n.Widgets.Energy.refreshTitle)
             }
         }
         .padding()
