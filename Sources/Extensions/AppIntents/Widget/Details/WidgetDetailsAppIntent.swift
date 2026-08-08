@@ -8,12 +8,12 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.details.title", defaultValue: "Details")
     static let description = IntentDescription(
         .init(
-            "widgets.details.description_with_warning",
-            defaultValue: "Display states using from Home Assistant in text. ATTENTION: User needs to be admin to use this feature"
+            "widgets.details.gallery_description",
+            defaultValue: "Display an entity, a watch complication, or a template from Home Assistant as text"
         )
     )
 
-    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .template)
+    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .entity)
     var source: WidgetContentSourceAppEnum
 
     @Parameter(title: .init("widgets.details.parameters.server", defaultValue: "Server"), default: nil)
@@ -27,6 +27,11 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     /// Optional attribute of `entity` to read instead of its state (nil = state), like the watch builder.
     @Parameter(title: .init("widgets.parameters.attribute", defaultValue: "Attribute"))
     var attribute: WidgetDetailsAttributeAppEntity?
+
+    /// Rectangular watch complication mirrored when `source` is `.complication`, rendered through the
+    /// very same content view the watch and the complication editor use.
+    @Parameter(title: .init("widgets.parameters.complication", defaultValue: "Complication"))
+    var complication: WidgetRectangularComplicationAppEntity?
 
     @Parameter(
         title: .init("widgets.details.parameters.upper_template", defaultValue: "Upper Text Template"),
@@ -113,6 +118,25 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
                         \.$source
                         \.$entity
                         \.$attribute
+
+                        \.$runScript
+                    }
+                }
+            }
+            Case(.complication) {
+                When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
+                    Summary {
+                        \.$source
+                        \.$complication
+
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$complication
 
                         \.$runScript
                     }

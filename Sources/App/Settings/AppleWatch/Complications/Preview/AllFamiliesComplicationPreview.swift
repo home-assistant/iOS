@@ -223,7 +223,7 @@ struct AllFamiliesComplicationPreview: View {
         }
     }
 
-    private func context(for family: WatchComplicationConfig.Family) -> ComplicationPreviewContext {
+    private func context(for family: WatchComplicationConfig.Family) -> ComplicationRenderContext {
         if isUnconfigured {
             return .mock(config: config, family: family)
         }
@@ -255,7 +255,7 @@ struct AllFamiliesComplicationPreview: View {
                         .image(ofSize: CGSize(width: 64, height: 64), color: color)
                 )
             }
-            return ComplicationPreviewContext(
+            return ComplicationRenderContext(
                 config: familyConfig, value: value, fraction: fraction, iconImage: iconImage
             )
         }
