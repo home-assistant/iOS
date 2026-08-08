@@ -2486,6 +2486,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "根据您的使用习惯显示常用实体。";
 "widgets.commonly_used_entities.empty.description" = "未找到常用实体。使用 Home Assistant 可构建您的使用历史记录。";
 "widgets.commonly_used_entities.title" = "通用控制";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "实体";
 "widgets.content_source.template" = "模板";
 "widgets.content_source.title" = "来源";
@@ -2571,6 +2572,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "自定义小部件";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
 "widgets.details.description_with_warning" = "Home Assistant 中以文本形式显示状态。注意：管理员用户才有制作模板的权限";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";
 "widgets.details.parameters.lower_template" = "下部文本模板";
@@ -2589,6 +2591,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2598,6 +2601,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "实体状态";
 "widgets.gauge.description" = "以仪表方式显示 Home Assistant 中的数字状态";
 "widgets.gauge.description_with_warning" = "Home Assistant 中以仪表形式显示数字状态。注意：管理员用户才有制作模板的权限";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "动作";
 "widgets.gauge.parameters.gauge_type" = "仪表类型";
 "widgets.gauge.parameters.gauge_type.capacity" = "容量";
@@ -2619,6 +2623,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "打开页面";
 "widgets.param.server.title" = "服务器";
 "widgets.parameters.attribute" = "属性";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "实体";
 "widgets.preview.custom.description" = "在应用程序内部创建您自己的小部件，然后在此处显示它。";
 "widgets.preview.custom.title" = "自定义小部件";

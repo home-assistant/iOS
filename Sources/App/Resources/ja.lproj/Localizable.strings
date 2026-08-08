@@ -2487,6 +2487,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "使用パターンに基づいて、よく使用するエンティティを表示します。";
 "widgets.commonly_used_entities.empty.description" = "よく使用されるエンティティが見つかりませんでした。使用履歴を作成するには、Home Assistantを使用してください。";
 "widgets.commonly_used_entities.title" = "一般的なコントロール";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2572,6 +2573,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "カスタムウィジェット";
 "widgets.details.description" = "Home Assistantからテキストを使用して状態を表示する";
 "widgets.details.description_with_warning" = "Home Assistant からの状態をテキストで表示します。注意: テンプレートにアクセスするには、ユーザーは管理者である必要があります。";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "アクション";
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";
 "widgets.details.parameters.lower_template" = "下部テキストテンプレート";
@@ -2590,6 +2592,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2599,6 +2602,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "エンティティの状態";
 "widgets.gauge.description" = "ホームアシスタントからの数値をゲージに表示";
 "widgets.gauge.description_with_warning" = "Home Assistant からの数値状態をゲージに表示します。注意: テンプレートにアクセスするには、ユーザーは管理者である必要があります。";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "アクション";
 "widgets.gauge.parameters.gauge_type" = "ゲージタイプ";
 "widgets.gauge.parameters.gauge_type.capacity" = "容量";
@@ -2620,6 +2624,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "ページを開く";
 "widgets.param.server.title" = "サーバー";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "アプリ内に独自のウィジェットを作成し、ここに表示します。";
 "widgets.preview.custom.title" = "カスタムウィジェット";

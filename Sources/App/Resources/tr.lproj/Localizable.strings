@@ -2488,6 +2488,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Kullanım kalıplarınıza göre sık kullandığınız varlıkları görüntüleyin.";
 "widgets.commonly_used_entities.empty.description" = "Sık kullanılan hiçbir varlık bulunamadı. Kullanım geçmişinizi oluşturmak için Home Assistant'ı kullanın.";
 "widgets.commonly_used_entities.title" = "Ortak Kontroller";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Source";
@@ -2573,6 +2574,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.title" = "Kişiselleştirilmiş widget'lar";
 "widgets.details.description" = "Metinde Home Asistanı'nın kullanıldığı durumları görüntüleme";
 "widgets.details.description_with_warning" = "Home Assistant'tan metinde durumları görüntüle. DİKKAT: Şablon erişimi için kullanıcının yönetici olması gerekir";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Eylem";
 "widgets.details.parameters.details_template" = "Ayrıntılar Metin Şablonu (yalnızca dikdörtgen ailede)";
 "widgets.details.parameters.lower_template" = "Alt Metin Şablonu";
@@ -2591,6 +2593,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.entity_state.placeholder" = "Varlık durumu";
 "widgets.gauge.description" = "Home Assistant'taki sayısal durumları bir göstergede görüntüleyin";
 "widgets.gauge.description_with_warning" = "Home Assistant'tan sayısal durumları bir göstergede görüntüleyin. DİKKAT: Şablon erişimi için kullanıcının yönetici olması gerekir";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Eylem";
 "widgets.gauge.parameters.gauge_type" = "Gösterge Tipi";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapasite";
@@ -2621,6 +2625,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.open_page.title" = "Sayfayı Aç";
 "widgets.param.server.title" = "Sunucu";
 "widgets.parameters.attribute" = "Attribute";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Uygulama içerisinde kendi widget'ınızı yaratın ve burada görüntüleyin.";
 "widgets.preview.custom.title" = "Kişiselleştirilmiş widget";

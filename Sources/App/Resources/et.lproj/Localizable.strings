@@ -2488,6 +2488,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.commonly_used_entities.description" = "Kuva sagedamini kasutatavaid üksusi vastavalt kasutusmustritele.";
 "widgets.commonly_used_entities.empty.description" = "Ühtegi sageli kasutatavat üksust ei leitud. Kasuta oma kasutusajaloo loomiseks Home Assistantit.";
 "widgets.commonly_used_entities.title" = "Tüüpilised juhtseaded";
+"widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Olem";
 "widgets.content_source.template" = "Mall";
 "widgets.content_source.title" = "Allikas";
@@ -2573,6 +2574,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.custom.title" = "Kohandatud vidinad";
 "widgets.details.description" = "Kuva olekud kasutades Home Assistanti teksti";
 "widgets.details.description_with_warning" = "Home Assistanti olekute kuvamine tekstina. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
+"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Toiming";
 "widgets.details.parameters.details_template" = "Üksikasjade tekstimall (ainult ristkülikus)";
 "widgets.details.parameters.lower_template" = "Väiksema teksti mall";
@@ -2591,6 +2593,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.period.title" = "Period";
 "widgets.energy.period.today" = "Today";
 "widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Consumption";
@@ -2600,6 +2603,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.entity_state.placeholder" = "Üksuse olek";
 "widgets.gauge.description" = "Kuva Home Assistanti numbrilised olekud mõõturis";
 "widgets.gauge.description_with_warning" = "Home Assistanti numbriliste olekute kuvamine näidikul. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
+"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Toiming";
 "widgets.gauge.parameters.gauge_type" = "Mõõturi tüüp";
 "widgets.gauge.parameters.gauge_type.capacity" = "Mahutavus";
@@ -2621,6 +2625,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.open_page.title" = "Ava lehekülg";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Atribuut";
+"widgets.parameters.complication" = "Complication";
 "widgets.parameters.entity" = "Olem";
 "widgets.preview.custom.description" = "Loo rakenduses oma vidin ja kuva see siis siin.";
 "widgets.preview.custom.title" = "Kohandatud vidin";
