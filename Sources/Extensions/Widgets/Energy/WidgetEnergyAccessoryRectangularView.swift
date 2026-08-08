@@ -12,18 +12,19 @@ struct WidgetEnergyAccessoryRectangularView: View {
     var body: some View {
         let metrics = entry.isConfigured ? WidgetEnergyMetric.metrics(for: entry) : []
         VStack(alignment: .leading, spacing: 1) {
-            Text(entry.period.displayTitle)
-                .font(.system(size: 11))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-
             if metrics.isEmpty {
-                Text(L10n.Widgets.Energy.noData)
+                // No period header here: there is no figure for it to caption.
+                Text(WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed))
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .minimumScaleFactor(0.7)
             } else {
+                Text(entry.period.displayTitle)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
                 ForEach(metrics) { metric in
                     row(for: metric)
                 }
@@ -68,4 +69,5 @@ struct WidgetEnergyAccessoryRectangularView: View {
         livePowerGrid: -180,
         livePowerSolar: 250
     )
+    WidgetEnergyEntry(period: .today, isConfigured: false)
 }

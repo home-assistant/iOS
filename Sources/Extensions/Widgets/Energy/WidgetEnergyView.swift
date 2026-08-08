@@ -31,7 +31,7 @@ struct WidgetEnergyView: View {
     }
 
     private var emptyView: some View {
-        Text(entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured)
+        Text(WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed))
             .font(.footnote)
             .multilineTextAlignment(.center)
             .foregroundStyle(WidgetEnergyStyle.secondaryText)

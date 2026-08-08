@@ -1,5 +1,6 @@
 import Foundation
 import SFSafeSymbols
+import Shared
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -38,6 +39,13 @@ enum WidgetEnergyStyle {
             case .none: ""
             }
         }
+    }
+
+    /// Empty-state copy shared by every layout, so the accessories draw the same distinction the
+    /// home screen card does: an entry that was never set up says so, while one that is configured
+    /// but came back without usable data — or failed to load — reports missing data instead.
+    static func emptyStateText(isConfigured: Bool, loadFailed: Bool) -> String {
+        isConfigured || loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured
     }
 
     /// Lock screen accessories render vibrant or accented, where the system flattens saturated
