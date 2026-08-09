@@ -6,6 +6,7 @@ extension AssistView {
         server: Server,
         preferredPipelineId: String = "",
         autoStartRecording: Bool = false,
+        focusInputOnAppear: Bool = false,
         showCloseButton: Bool = true
     ) -> AssistView {
         let viewModel = AssistViewModel(
@@ -14,7 +15,8 @@ extension AssistView {
             audioRecorder: AudioRecorder(),
             audioPlayer: AudioPlayer(),
             assistService: AssistService(server: server),
-            autoStartRecording: autoStartRecording
+            autoStartRecording: autoStartRecording,
+            focusInputOnAppear: focusInputOnAppear
         )
         return .init(viewModel: viewModel, showCloseButton: showCloseButton)
     }
