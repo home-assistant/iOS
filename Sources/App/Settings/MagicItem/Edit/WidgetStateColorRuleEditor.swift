@@ -4,10 +4,10 @@ import SwiftUI
 struct WidgetStateColorRuleEditor: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var comparison: WidgetStateColorRule.Comparison
+    @State private var comparison: WidgetStateColorRuleComparison
     @State private var threshold: String
     @State private var color: Color
-    @State private var target: WidgetStateColorRule.Target
+    @State private var target: WidgetStateColorRuleTarget
 
     let onSave: (WidgetStateColorRule) -> Void
 
@@ -38,9 +38,9 @@ struct WidgetStateColorRuleEditor: View {
             Section {
                 Picker(L10n.MagicItem.StateColors.Comparison.title, selection: $comparison) {
                     Text(L10n.MagicItem.StateColors.Comparison.lessThan)
-                        .tag(WidgetStateColorRule.Comparison.lessThan)
+                        .tag(WidgetStateColorRuleComparison.lessThan)
                     Text(L10n.MagicItem.StateColors.Comparison.greaterThan)
-                        .tag(WidgetStateColorRule.Comparison.greaterThan)
+                        .tag(WidgetStateColorRuleComparison.greaterThan)
                 }
 
                 HStack {
@@ -60,11 +60,11 @@ struct WidgetStateColorRuleEditor: View {
             Section {
                 Picker(L10n.MagicItem.StateColors.Target.title, selection: $target) {
                     Text(L10n.MagicItem.StateColors.Target.State.title)
-                        .tag(WidgetStateColorRule.Target.state)
+                        .tag(WidgetStateColorRuleTarget.state)
                     Text(L10n.MagicItem.StateColors.Target.Icon.title)
-                        .tag(WidgetStateColorRule.Target.icon)
+                        .tag(WidgetStateColorRuleTarget.icon)
                     Text(L10n.MagicItem.StateColors.Target.Background.title)
-                        .tag(WidgetStateColorRule.Target.background)
+                        .tag(WidgetStateColorRuleTarget.background)
                 }
 
                 ColorPicker(L10n.MagicItem.StateColors.Color.title, selection: $color, supportsOpacity: false)

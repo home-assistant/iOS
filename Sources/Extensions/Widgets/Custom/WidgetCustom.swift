@@ -166,7 +166,7 @@ struct WidgetCustom: Widget {
     }
 
     private func dynamicColor(
-        for target: WidgetStateColorRule.Target,
+        for target: WidgetStateColorRuleTarget,
         state: WidgetEntityState?,
         rules: [WidgetStateColorRule]
     ) -> Color? {
