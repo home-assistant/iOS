@@ -145,10 +145,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .assistShow:
                 let startListening = incomingMessage.Payload?["start_listening"] as? Bool
                 let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                // The user can override what the frontend asks for, this only applies to Assist
+                // opened from the dashboard.
+                let startMode = AssistConfiguration.config.startMode
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startListening ?? false
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false)
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
