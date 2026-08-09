@@ -11,6 +11,14 @@ struct WidgetStateColorRuleEditor: View {
 
     let onSave: (WidgetStateColorRule) -> Void
 
+    private var parsedThreshold: Double? {
+        let trimmedThreshold = threshold.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let decimalThreshold = Decimal(string: trimmedThreshold, locale: .current) else {
+            return nil
+        }
+        return NSDecimalNumber(decimal: decimalThreshold).doubleValue
+    }
+
     init(rule: WidgetStateColorRule?, onSave: @escaping (WidgetStateColorRule) -> Void) {
         let rule = rule ?? .init(
             comparison: .lessThan,
@@ -71,7 +79,7 @@ struct WidgetStateColorRuleEditor: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(L10n.saveLabel) {
-                    guard let threshold = Double(threshold.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+                    guard let threshold = parsedThreshold else {
                         return
                     }
                     onSave(.init(
@@ -82,7 +90,7 @@ struct WidgetStateColorRuleEditor: View {
                     ))
                     dismiss()
                 }
-                .disabled(Double(threshold.trimmingCharacters(in: .whitespacesAndNewlines)) == nil)
+                .disabled(parsedThreshold == nil)
             }
         }
     }
