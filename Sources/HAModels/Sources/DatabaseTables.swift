@@ -197,6 +197,7 @@ public enum DatabaseTables {
         case muteTTS
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
+        case startMode
     }
 
     public enum AllowedTag: String, CaseIterable {

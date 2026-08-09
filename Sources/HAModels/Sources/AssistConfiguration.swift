@@ -13,6 +13,8 @@ public struct AssistConfiguration: Codable, Identifiable, Equatable, Persistable
     public var muteTTS: Bool = false
     public var enableOnDeviceTTS: Bool = false
     public var onDeviceTTSVoiceIdentifier: String? = nil
+    /// How Assist opens when triggered from the frontend dashboard.
+    public var startMode: AssistStartMode = .auto
 
     /// Custom row initializer to handle NULL values from migrated columns.
     public init(row: Row) throws {
@@ -22,6 +24,7 @@ public struct AssistConfiguration: Codable, Identifiable, Equatable, Persistable
         self.muteTTS = row[DatabaseTables.AssistConfiguration.muteTTS.rawValue] ?? false
         self.enableOnDeviceTTS = row[DatabaseTables.AssistConfiguration.enableOnDeviceTTS.rawValue] ?? false
         self.onDeviceTTSVoiceIdentifier = row[DatabaseTables.AssistConfiguration.onDeviceTTSVoiceIdentifier.rawValue]
+        self.startMode = row[DatabaseTables.AssistConfiguration.startMode.rawValue] ?? .auto
     }
 
     public init(
@@ -30,7 +33,8 @@ public struct AssistConfiguration: Codable, Identifiable, Equatable, Persistable
         onDeviceSTTLocaleIdentifier: String? = nil,
         muteTTS: Bool = false,
         enableOnDeviceTTS: Bool = false,
-        onDeviceTTSVoiceIdentifier: String? = nil
+        onDeviceTTSVoiceIdentifier: String? = nil,
+        startMode: AssistStartMode = .auto
     ) {
         self.id = id
         self.enableOnDeviceSTT = enableOnDeviceSTT
@@ -38,5 +42,6 @@ public struct AssistConfiguration: Codable, Identifiable, Equatable, Persistable
         self.muteTTS = muteTTS
         self.enableOnDeviceTTS = enableOnDeviceTTS
         self.onDeviceTTSVoiceIdentifier = onDeviceTTSVoiceIdentifier
+        self.startMode = startMode
     }
 }

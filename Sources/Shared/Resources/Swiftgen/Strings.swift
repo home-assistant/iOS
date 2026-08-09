@@ -755,6 +755,18 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "assist.settings.section.labs.title") }
         }
       }
+      public enum StartMode {
+        /// Auto
+        public static var auto: String { return L10n.tr("Localizable", "assist.settings.start_mode.auto") }
+        /// Controls how Assist starts when you trigger it from a Home Assistant dashboard. "Auto" follows what the dashboard asks for, while "Voice" and "Text" always override it. This does not apply to widgets, shortcuts or other app features.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.start_mode.footer") }
+        /// Text
+        public static var text: String { return L10n.tr("Localizable", "assist.settings.start_mode.text") }
+        /// Assist start mode
+        public static var title: String { return L10n.tr("Localizable", "assist.settings.start_mode.title") }
+        /// Voice
+        public static var voice: String { return L10n.tr("Localizable", "assist.settings.start_mode.voice") }
+      }
       public enum TtsMute {
         /// When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.
         public static var footer: String { return L10n.tr("Localizable", "assist.settings.tts_mute.footer") }
