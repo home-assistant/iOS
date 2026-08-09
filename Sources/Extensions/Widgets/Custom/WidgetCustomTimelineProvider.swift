@@ -133,7 +133,8 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
             },
             stateValueFormatter: { state, serverId, entityId in
                 "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")"
-            }
+            },
+            shouldCacheStates: configuration.showStates
         )
 
         let itemsToFetch = if configuration.showStates {

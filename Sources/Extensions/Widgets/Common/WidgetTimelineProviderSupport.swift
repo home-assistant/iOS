@@ -90,6 +90,7 @@ struct WidgetEntityStateProvider {
     let skipFetchLogMessage: String?
     let itemFilter: (MagicItem) -> Bool
     let stateValueFormatter: (ControlEntityProvider.State, String, String) -> String
+    let shouldCacheStates: Bool
 
     func states(showStates: Bool, items: [MagicItem]) async -> [MagicItem: WidgetEntityState] {
         guard showStates else {
@@ -104,7 +105,9 @@ struct WidgetEntityStateProvider {
             return [:]
         }
 
-        if let cache = readCache(), cache.cacheCreatedDate.timeIntervalSinceNow > -cacheValiditySeconds {
+        if shouldCacheStates,
+           let cache = readCache(),
+           cache.cacheCreatedDate.timeIntervalSinceNow > -cacheValiditySeconds {
             Current.Log.verbose("\(logPrefix) widget states cache is still valid, returning cached states")
             return cache.states
         }
@@ -137,7 +140,9 @@ struct WidgetEntityStateProvider {
             }
         }
 
-        writeCache(states)
+        if shouldCacheStates {
+            writeCache(states)
+        }
         return states
     }
 

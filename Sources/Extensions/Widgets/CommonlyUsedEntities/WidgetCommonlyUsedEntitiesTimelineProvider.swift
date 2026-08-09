@@ -143,7 +143,8 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
                     stateValue: state.value
                 )
                 return state.unitOfMeasurement.map { "\(adjustedValue) \($0)" } ?? adjustedValue
-            }
+            },
+            shouldCacheStates: true
         )
 
         return await stateProvider.states(showStates: configuration.showStates, items: items)

@@ -4,6 +4,15 @@ import SwiftUI
 struct WidgetStateColorRuleEditor: View {
     @Environment(\.dismiss) private var dismiss
 
+    private static let thresholdFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.locale = .current
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.usesGroupingSeparator = true
+        return formatter
+    }()
+
     @State private var comparison: WidgetStateColorRuleComparison
     @State private var threshold: String
     @State private var color: Color
@@ -13,10 +22,7 @@ struct WidgetStateColorRuleEditor: View {
 
     private var parsedThreshold: Double? {
         let trimmedThreshold = threshold.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let decimalThreshold = Decimal(string: trimmedThreshold, locale: .current) else {
-            return nil
-        }
-        return NSDecimalNumber(decimal: decimalThreshold).doubleValue
+        return Self.thresholdFormatter.number(from: trimmedThreshold)?.doubleValue
     }
 
     init(rule: WidgetStateColorRule?, onSave: @escaping (WidgetStateColorRule) -> Void) {
@@ -27,7 +33,10 @@ struct WidgetStateColorRuleEditor: View {
             target: .state
         )
         self._comparison = .init(initialValue: rule.comparison)
-        self._threshold = .init(initialValue: rule.threshold.formatted())
+        self._threshold = .init(
+            initialValue: Self.thresholdFormatter.string(from: NSNumber(value: rule.threshold)) ?? rule.threshold
+                .description
+        )
         self._color = .init(initialValue: Color(hex: rule.color))
         self._target = .init(initialValue: rule.target)
         self.onSave = onSave
