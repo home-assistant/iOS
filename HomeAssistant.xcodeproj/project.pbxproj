@@ -1162,6 +1162,7 @@
 				AssistSession.swift,
 				AssistSettingsView.swift,
 				AssistSettingsViewModel.swift,
+				"AssistStartMode+App.swift",
 				AssistView.swift,
 				"AssistView+Build.swift",
 				AssistViewModel.swift,
