@@ -299,11 +299,13 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 showBottomText: config.isSlotVisible(.bottomText, for: family)
             )
         }
-        // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
+        // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup. A config
+        // without an icon of its own still gets the shared placeholder glyph, so turning "Show icon"
+        // on renders something before the user picks one.
         let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
-        let iconData = config.iconName
-            .map { MaterialDesignIcons(serversideValueNamed: $0).image(ofSize: iconRenderSize, color: color) }?
-            .pngData()
+        let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
+            ?? ComplicationRenderContext.placeholderIcon
+        let iconData = icon.image(ofSize: iconRenderSize, color: color).pngData()
 
         let snapshot = WatchWidgetComplicationSnapshot(
             id: config.id,

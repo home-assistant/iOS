@@ -15,7 +15,7 @@ public struct ComplicationRenderContext {
     public let value: String
     /// The gauge fraction (0...1), or nil when there's no gauge value.
     public let fraction: Double?
-    /// The icon image, already gated by the "show icon" toggle (nil when hidden or none).
+    /// The icon image, already gated by the "show icon" toggle (nil when hidden).
     public let iconImage: Image?
     /// Raw entity attributes (entity kind), so slot formulas referencing `{attr:…}` resolve
     /// exactly like on the watch.
@@ -172,21 +172,28 @@ public extension ComplicationRenderContext {
             config: familyConfig,
             value: "72%",
             fraction: 0.72,
-            iconImage: icon(for: familyConfig, family: family, fallback: .gaugeIcon)
+            iconImage: icon(for: familyConfig, family: family),
+            // The template kind's slots resolve through the text template, so the sample value has to
+            // be keyed under it (or the empty source, pre-template) for the mock face to show it.
+            renderedTemplates: familyConfig.kind == .customTemplate
+                ? [familyConfig.customTextTemplate ?? "": "72%"]
+                : [:]
         )
     }
 
+    /// The stand-in glyph rendered when the icon slot is visible but no icon has been chosen yet —
+    /// the same neutral gauge glyph the complications list uses for icon-less configs.
+    static let placeholderIcon: MaterialDesignIcons = .gaugeIcon
+
     /// The complication's icon, gated by the icon slot's visibility (the same resolution the watch
-    /// uses). `fallback` stands in when the config has no icon of its own.
+    /// uses). `placeholderIcon` stands in when the config has no icon of its own, so turning "Show
+    /// icon" on always renders a glyph.
     static func icon(
         for config: WatchComplicationConfig,
-        family: WatchComplicationConfig.Family,
-        fallback: MaterialDesignIcons? = nil
+        family: WatchComplicationConfig.Family
     ) -> Image? {
         guard config.isSlotVisible(.icon, for: family) else { return nil }
-        guard let icon = config.iconName.map({ MaterialDesignIcons(serversideValueNamed: $0) }) ?? fallback else {
-            return nil
-        }
+        let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? placeholderIcon
         let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
         return Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
     }

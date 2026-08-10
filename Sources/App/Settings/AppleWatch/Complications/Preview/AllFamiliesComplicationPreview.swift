@@ -248,15 +248,22 @@ struct AllFamiliesComplicationPreview: View {
                 return min(max(Double(raw), 0), 1)
             }()
             var iconImage: Image?
-            if familyConfig.isSlotVisible(.icon, for: family), let iconName = config.iconName {
+            if familyConfig.isSlotVisible(.icon, for: family) {
+                // No icon chosen yet still renders the shared placeholder, like on the watch.
+                let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
+                    ?? ComplicationRenderContext.placeholderIcon
                 let color = (evaluatedHex(iconColorRenderer) ?? config.iconColor).map { UIColor(hex: $0) } ?? .white
-                iconImage = Image(
-                    uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
-                        .image(ofSize: CGSize(width: 64, height: 64), color: color)
-                )
+                iconImage = Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
             }
             return ComplicationRenderContext(
-                config: familyConfig, value: value, fraction: fraction, iconImage: iconImage
+                config: familyConfig,
+                value: value,
+                fraction: fraction,
+                iconImage: iconImage,
+                // The slot formulas resolve the display-name template through this lookup; without it
+                // the value slot renders empty and the face falls back to showing just the
+                // complication name.
+                renderedTemplates: config.customTextTemplate.map { [$0: value] } ?? [:]
             )
         }
     }
