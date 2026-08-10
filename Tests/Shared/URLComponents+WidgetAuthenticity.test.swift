@@ -44,6 +44,26 @@ class URLComponentsWidgetAuthenticityTests: XCTestCase {
         }
     }
 
+    func testInsertTwiceAddsSingleAuthenticityItem() throws {
+        for urlString in [
+            "homeassistant://navigate/good",
+            "homeassistant://assist?serverId=1&pipelineId=2&startListening=true",
+        ] {
+            var components = try XCTUnwrap(URLComponents(string: urlString))
+            components.insertWidgetAuthenticity()
+            components.insertWidgetAuthenticity()
+            XCTAssertTrue(components.popWidgetAuthenticity())
+            XCTAssertEqual(components.string, urlString)
+
+            let url = try XCTUnwrap(URL(string: urlString))
+                .withWidgetAuthenticity()
+                .withWidgetAuthenticity()
+            var urlComponents = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: true))
+            XCTAssertTrue(urlComponents.popWidgetAuthenticity())
+            XCTAssertEqual(urlComponents.string, urlString)
+        }
+    }
+
     func testInsertServer() throws {
         let servers = FakeServerManager(initial: 1)
         let server = servers.all[0]

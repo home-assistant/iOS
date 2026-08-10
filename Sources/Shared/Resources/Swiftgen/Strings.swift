@@ -268,6 +268,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.default.title") }
         }
       }
+      public enum Pipelines {
+        /// Pipelines
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipelines.title") }
+      }
       public enum PreferredPipeline {
         /// Preferred
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
@@ -8082,6 +8086,8 @@ public enum L10n {
       public static var actionTitle: String { return L10n.tr("Localizable", "widgets.assist.action_title") }
       /// Open Assist in the app
       public static var description: String { return L10n.tr("Localizable", "widgets.assist.description") }
+      /// No Pipelines Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.assist.not_configured") }
       /// Assist
       public static var title: String { return L10n.tr("Localizable", "widgets.assist.title") }
       /// Configure

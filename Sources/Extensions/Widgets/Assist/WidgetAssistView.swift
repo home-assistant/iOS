@@ -8,7 +8,7 @@ struct WidgetAssistView: View {
     private let tinted: Bool
 
     private var subtitle: String {
-        guard let pipeline = entry.pipeline else {
+        guard let pipeline = entry.pipelines.first else {
             return L10n.Widgets.Assist.unknownConfiguration
         }
 
@@ -29,13 +29,50 @@ struct WidgetAssistView: View {
         switch widgetFamily {
         case .accessoryCircular:
             accessoryCircular
-        default:
+                .widgetBackground(Color.clear)
+                .widgetURL(entry.widgetURL)
+        case .systemSmall:
             singleHomeScreenItem
+                .widgetBackground(Color.clear)
+                .widgetURL(entry.widgetURL)
+        default:
+            pipelinesGrid
         }
     }
 
     private var accessoryCircular: some View {
         WidgetCircularView(icon: MaterialDesignIcons.messageProcessingOutlineIcon)
+    }
+
+    /// One tile per configured pipeline, each deep linking straight into its own Assist
+    /// conversation. Backgrounds and tinting are handled by `WidgetBasicContainerView`.
+    private var pipelinesGrid: some View {
+        WidgetBasicContainerView(
+            emptyViewGenerator: {
+                AnyView(WidgetEmptyView(message: L10n.Widgets.Assist.notConfigured))
+            },
+            contents: {
+                let showSubtitle = !entry.isPreview && Current.servers.all.count > 1
+                return entry.pipelines.map { pipeline in
+                    WidgetBasicViewModel(
+                        id: pipeline.id,
+                        title: pipeline.name,
+                        subtitle: showSubtitle ? serverName(for: pipeline) : nil,
+                        interactionType: .widgetURL(
+                            WidgetAssistEntry.widgetURL(for: pipeline, withVoice: entry.withVoice)
+                        ),
+                        icon: .messageProcessingOutlineIcon
+                    )
+                }
+            }(),
+            type: .button
+        )
+    }
+
+    private func serverName(for pipeline: AssistPipelineEntity) -> String? {
+        let server = Current.servers.all.first { $0.identifier.rawValue == pipeline.serverId }
+            ?? Current.servers.all.first
+        return server?.info.name
     }
 
     private var singleHomeScreenItem: some View {
@@ -75,4 +112,16 @@ struct WidgetAssistView: View {
         .padding(DesignSystem.Spaces.two)
         .background(tinted ? Color.clear : Color(uiColor: .systemBackground))
     }
+}
+
+#Preview {
+    WidgetAssistView(
+        entry: .init(
+            pipelines: [
+                .init(id: "preview-pipeline", serverId: "preview-server", name: "Home Assistant"),
+            ],
+            isPreview: true
+        ),
+        tinted: false
+    )
 }

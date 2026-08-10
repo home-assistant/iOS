@@ -53,6 +53,7 @@
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.assist.pipelines.title" = "Pipelines";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.assist_prompt.description" = "Send a text prompt to Assist";
@@ -2490,6 +2491,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.actions.title" = "Actions";
 "widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.not_configured" = "No Pipelines Configured";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
 "widgets.automation.trigger.title" = "Trigger automation";
