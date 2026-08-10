@@ -30,7 +30,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
         case .stayInformed: return [.notifications, .liveActivities]
         case .shareFromDevice: return [.location, .sensors, .remindersSync]
         case .quickAccess: return [.widgets, .appIconShortcuts, .nfc]
-        case .otherDevices: return [.watch, .complications, .carPlay]
+        case .otherDevices: return [.watch, .complications, .carPlay, .icloudSync]
         case .privacySecurity: return [.permissions, .privacy]
         case .helpSupport: return [.help, .debugging]
         }

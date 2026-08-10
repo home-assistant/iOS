@@ -5057,6 +5057,8 @@ public enum L10n {
       public static var greetings: String { return L10n.tr("Localizable", "settings.search_keywords.greetings") }
       /// documentation, support, guide, companion
       public static var help: String { return L10n.tr("Localizable", "settings.search_keywords.help") }
+      /// icloud, cloud, sync, devices, transfer, backup, cloudkit
+      public static var icloudSync: String { return L10n.tr("Localizable", "settings.search_keywords.icloud_sync") }
       /// wall mount, tablet, screen, always on, auto lock
       public static var kiosk: String { return L10n.tr("Localizable", "settings.search_keywords.kiosk") }
       /// dynamic island, lock screen, timers
@@ -5308,6 +5310,52 @@ public enum L10n {
         public enum Available {
           /// Show in Watch
           public static var title: String { return L10n.tr("Localizable", "settings_details.actions.watch.available.title") }
+        }
+      }
+    }
+    public enum CloudSync {
+      /// Remove Data From iCloud
+      public static var deleteCloudData: String { return L10n.tr("Localizable", "settings_details.cloud_sync.delete_cloud_data") }
+      /// App configuration such as dashboards, widgets, Watch, CarPlay and NFC data is synced through your private iCloud database. Access tokens are never synced: each device authenticates with Home Assistant on its own, so a device receiving synced servers will ask you to sign in again.
+      public static var footer: String { return L10n.tr("Localizable", "settings_details.cloud_sync.footer") }
+      /// Last synced %@
+      public static func lastSynced(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings_details.cloud_sync.last_synced_%@", String(describing: p1))
+      }
+      /// Not synced yet
+      public static var neverSynced: String { return L10n.tr("Localizable", "settings_details.cloud_sync.never_synced") }
+      /// Keep this app's configuration in sync across the devices signed in to your iCloud account.
+      public static var subtitle: String { return L10n.tr("Localizable", "settings_details.cloud_sync.subtitle") }
+      /// Syncing…
+      public static var syncing: String { return L10n.tr("Localizable", "settings_details.cloud_sync.syncing") }
+      /// Sync Now
+      public static var syncNow: String { return L10n.tr("Localizable", "settings_details.cloud_sync.sync_now") }
+      /// iCloud Sync
+      public static var title: String { return L10n.tr("Localizable", "settings_details.cloud_sync.title") }
+      /// Sync with iCloud
+      public static var toggle: String { return L10n.tr("Localizable", "settings_details.cloud_sync.toggle") }
+      public enum DeleteConfirmation {
+        /// Remove
+        public static var confirm: String { return L10n.tr("Localizable", "settings_details.cloud_sync.delete_confirmation.confirm") }
+        /// iCloud sync will be turned off on this device and the synced copy of the app data will be deleted from your iCloud account. Data already on your devices is kept.
+        public static var message: String { return L10n.tr("Localizable", "settings_details.cloud_sync.delete_confirmation.message") }
+        /// Remove synced data from iCloud?
+        public static var title: String { return L10n.tr("Localizable", "settings_details.cloud_sync.delete_confirmation.title") }
+      }
+      public enum EnableWarning {
+        /// Enable Sync
+        public static var confirm: String { return L10n.tr("Localizable", "settings_details.cloud_sync.enable_warning.confirm") }
+        /// This will sync the Home Assistant app information on this device with your other devices signed in to the same iCloud account. If another device already uploaded its data, that data will replace this device's app configuration. Access tokens are never synced: every device signs in to Home Assistant on its own.
+        public static var message: String { return L10n.tr("Localizable", "settings_details.cloud_sync.enable_warning.message") }
+        /// Enable iCloud sync?
+        public static var title: String { return L10n.tr("Localizable", "settings_details.cloud_sync.enable_warning.title") }
+      }
+      public enum Error {
+        /// iCloud is not available. Sign in to iCloud in the system settings and try again.
+        public static var icloudUnavailable: String { return L10n.tr("Localizable", "settings_details.cloud_sync.error.icloud_unavailable") }
+        /// The data in iCloud was created by a newer version of the app (format %li). Update the app on this device to sync.
+        public static func incompatibleSnapshot(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.cloud_sync.error.incompatible_snapshot", p1)
         }
       }
     }

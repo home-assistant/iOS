@@ -135,6 +135,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        CloudSyncManager.shared.start()
 
         return true
     }

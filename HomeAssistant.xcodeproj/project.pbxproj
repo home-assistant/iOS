@@ -161,6 +161,7 @@
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
+		42C10AD5000000020051FC9B /* Database/CloudSyncSnapshotSerializer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C10AD5000000010051FC9B /* Database/CloudSyncSnapshotSerializer.test.swift */; };
 		42AB77022FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */; };
@@ -646,6 +647,7 @@
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
+		42C10AD5000000010051FC9B /* Database/CloudSyncSnapshotSerializer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/CloudSyncSnapshotSerializer.test.swift; sourceTree = "<group>"; };
 		42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStoreRestoreLastURL.test.swift; sourceTree = "<group>"; };
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
@@ -2650,6 +2652,7 @@
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 				11883CC624C131EE0036A6C6 /* AppZone.test.swift */,
 				42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */,
+				42C10AD5000000010051FC9B /* Database/CloudSyncSnapshotSerializer.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
 				5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */,
@@ -4124,6 +4127,7 @@
 				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
+				42C10AD5000000020051FC9B /* Database/CloudSyncSnapshotSerializer.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
 				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
 				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,

@@ -19,6 +19,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case watch
     case carPlay
     case complications
+    case icloudSync
     case help
     case permissions
     case privacy
@@ -44,6 +45,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
+        case .icloudSync: return L10n.SettingsDetails.CloudSync.title
         case .help: return L10n.helpLabel
         case .permissions: return L10n.SettingsSensors.Permissions.header
         case .privacy: return L10n.SettingsDetails.Privacy.title
@@ -91,6 +93,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .carBackIcon, size: Self.iconSize)
             case .complications:
                 MaterialDesignIconsImage(icon: .chartDonutIcon, size: Self.iconSize)
+            case .icloudSync:
+                MaterialDesignIconsImage(icon: .cloudSyncIcon, size: Self.iconSize)
             case .help:
                 MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: Self.iconSize)
             case .permissions:
@@ -158,6 +162,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CarPlayConfigurationView(needsNavigationController: false)
         case .complications:
             SettingsComplicationsView()
+        case .icloudSync:
+            CloudSyncSettingsView()
         case .help:
             EmptyView()
         case .permissions:
@@ -241,6 +247,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return L10n.Settings.SearchKeywords.watch
         case .carPlay: return L10n.Settings.SearchKeywords.carPlay
         case .complications: return L10n.Settings.SearchKeywords.complications
+        case .icloudSync: return L10n.Settings.SearchKeywords.icloudSync
         case .help: return L10n.Settings.SearchKeywords.help
         case .permissions: return L10n.Settings.SearchKeywords.permissions
         case .privacy: return L10n.Settings.SearchKeywords.privacy
@@ -278,6 +285,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return WatchConfigurationView.settingsSearchEntries
         case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
         case .complications: return ComplicationsRootView.settingsSearchEntries
+        case .icloudSync: return CloudSyncSettingsView.settingsSearchEntries
         case .permissions: return SensorPermissionsView.settingsSearchEntries
         case .privacy: return PrivacyView.settingsSearchEntries
         case .debugging: return DebugView.settingsSearchEntries

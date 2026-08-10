@@ -248,6 +248,38 @@ public class SettingsStore {
         }
     }
 
+    /// Syncs the app's GRDB database (configuration, no credentials) across the user's
+    /// devices through their private iCloud database. Off by default (opt-in with an
+    /// explicit warning); toggled in Settings > iCloud Sync.
+    public var iCloudSyncEnabled: Bool {
+        get {
+            prefs.bool(forKey: "iCloudSyncEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "iCloudSyncEnabled")
+        }
+    }
+
+    /// Content hash of the last snapshot this device uploaded to or applied from
+    /// iCloud, used to tell which side changed since the previous sync.
+    public var iCloudSyncLastSyncedHash: String? {
+        get {
+            prefs.string(forKey: "iCloudSyncLastSyncedHash")
+        }
+        set {
+            prefs.set(newValue, forKey: "iCloudSyncLastSyncedHash")
+        }
+    }
+
+    public var iCloudSyncLastSyncDate: Date? {
+        get {
+            prefs.object(forKey: "iCloudSyncLastSyncDate") as? Date
+        }
+        set {
+            prefs.set(newValue, forKey: "iCloudSyncLastSyncDate")
+        }
+    }
+
     /// Switches the active server to the one whose zone the user is in when the app is opened
     /// (e.g. arriving at a second home). Off by default; toggled in Settings > Servers.
     public var locationBasedServerSwitching: Bool {

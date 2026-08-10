@@ -217,6 +217,12 @@ public enum AppConstants {
         "group." + BundleID.lowercased()
     }
 
+    /// The CloudKit container used for the opt-in iCloud sync of the app database.
+    /// Mirrors the app group naming so each bundle-ID variant gets its own container.
+    public static var iCloudContainerID: String {
+        "iCloud." + BundleID.lowercased()
+    }
+
     public static var AppGroupContainer: URL {
         let fileManager = FileManager.default
 
