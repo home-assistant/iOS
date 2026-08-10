@@ -986,6 +986,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.client_certificate.password_prompt.title" = "Certificate Password";
 "onboarding.client_certificate.select_file_button" = "Select Certificate File";
 "onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.cloud_sync.button" = "Sync from iCloud";
+"onboarding.cloud_sync.error.title" = "Could not sync from iCloud";
+"onboarding.cloud_sync.no_data.message" = "No Home Assistant app data was found in your iCloud account. Enable iCloud Sync in the app settings on a device that is already set up, then try again here.";
+"onboarding.cloud_sync.no_data.title" = "No synced data found";
+"onboarding.cloud_sync.warning.confirm" = "Download & Sync";
+"onboarding.cloud_sync.warning.message" = "This device will download the Home Assistant app configuration synced by your other devices signed in to the same iCloud account, and will keep syncing with them from now on. Access tokens are never synced: you will be asked to sign in to your Home Assistant servers on this device.";
+"onboarding.cloud_sync.warning.title" = "Sync from iCloud?";
 "onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
 "onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Connecting to %@";

@@ -112,6 +112,26 @@ final class CloudSyncManager: ObservableObject {
         }
     }
 
+    /// Onboarding entry point ("Sync from iCloud"): adopts the cloud snapshot if one
+    /// exists and only then turns syncing on for this device. Returns `false` — with
+    /// sync left off — when the user's iCloud has no synced data yet, so onboarding can
+    /// say so instead of silently seeding the cloud with an empty database.
+    func restoreFromCloud() async throws -> Bool {
+        guard !isSyncing else { return false }
+        isSyncing = true
+        defer { isSyncing = false }
+
+        let status = try await container.accountStatus()
+        guard status == .available else { throw SyncError.iCloudUnavailable }
+
+        guard let remote = try await fetchRemote() else { return false }
+        try applyRemote(remote)
+
+        Current.settingsStore.iCloudSyncEnabled = true
+        start()
+        return true
+    }
+
     /// Opts out: stops observing and syncing. The snapshot already in iCloud is kept
     /// (other devices may still use it); `deleteCloudData()` removes it explicitly.
     func disable() {

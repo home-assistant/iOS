@@ -3393,6 +3393,28 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.client_certificate.password_prompt.title") }
       }
     }
+    public enum CloudSync {
+      /// Sync from iCloud
+      public static var button: String { return L10n.tr("Localizable", "onboarding.cloud_sync.button") }
+      public enum Error {
+        /// Could not sync from iCloud
+        public static var title: String { return L10n.tr("Localizable", "onboarding.cloud_sync.error.title") }
+      }
+      public enum NoData {
+        /// No Home Assistant app data was found in your iCloud account. Enable iCloud Sync in the app settings on a device that is already set up, then try again here.
+        public static var message: String { return L10n.tr("Localizable", "onboarding.cloud_sync.no_data.message") }
+        /// No synced data found
+        public static var title: String { return L10n.tr("Localizable", "onboarding.cloud_sync.no_data.title") }
+      }
+      public enum Warning {
+        /// Download & Sync
+        public static var confirm: String { return L10n.tr("Localizable", "onboarding.cloud_sync.warning.confirm") }
+        /// This device will download the Home Assistant app configuration synced by your other devices signed in to the same iCloud account, and will keep syncing with them from now on. Access tokens are never synced: you will be asked to sign in to your Home Assistant servers on this device.
+        public static var message: String { return L10n.tr("Localizable", "onboarding.cloud_sync.warning.message") }
+        /// Sync from iCloud?
+        public static var title: String { return L10n.tr("Localizable", "onboarding.cloud_sync.warning.title") }
+      }
+    }
     public enum Connect {
       /// Connecting to %@
       public static func title(_ p1: Any) -> String {
