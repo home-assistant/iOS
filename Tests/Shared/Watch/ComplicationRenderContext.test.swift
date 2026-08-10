@@ -43,9 +43,9 @@ struct ComplicationRenderContextTests {
     }
 
     @Test func mockTemplateKindShowsSampleValueForTypedTemplate() {
-        // The rectangular mock rasterizes the placeholder icon, which needs the icon font loaded.
-        MaterialDesignIcons.register()
-        let context = ComplicationRenderContext.mock(config: templateConfig(), family: .rectangular)
+        // Circular: its icon slot defaults to hidden, so the mock never rasterizes an icon — this
+        // target has no app host, and the icon font isn't available to load.
+        let context = ComplicationRenderContext.mock(config: templateConfig(), family: .circular)
         #expect(context.valueText == "72%")
     }
 
@@ -81,13 +81,9 @@ struct ComplicationRenderContextTests {
 
     // MARK: - Icon placeholder
 
-    @Test func visibleIconSlotWithoutIconRendersPlaceholder() {
-        // Rasterizing the placeholder glyph needs the icon font loaded in the test process.
-        MaterialDesignIcons.register()
-        var config = templateConfig()
-        config.setSlotConfig(ComplicationSlotConfig(isVisible: true), slot: .icon, for: .circular)
-        #expect(ComplicationRenderContext.icon(for: config, family: .circular) != nil)
-    }
+    // The placeholder-icon rendering test lives in the app-hosted Tests-App target
+    // (`ComplicationPlaceholderIcon.test.swift`): rasterizing the glyph needs the Material Design
+    // icon font, which this hostless target cannot load.
 
     @Test func hiddenIconSlotRendersNoIcon() {
         // Circular hides the icon by default; no placeholder may leak in while the slot is off.
