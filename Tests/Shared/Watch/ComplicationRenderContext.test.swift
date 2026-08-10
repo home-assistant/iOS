@@ -43,6 +43,8 @@ struct ComplicationRenderContextTests {
     }
 
     @Test func mockTemplateKindShowsSampleValueForTypedTemplate() {
+        // The rectangular mock rasterizes the placeholder icon, which needs the icon font loaded.
+        MaterialDesignIcons.register()
         let context = ComplicationRenderContext.mock(config: templateConfig(), family: .rectangular)
         #expect(context.valueText == "72%")
     }
@@ -80,6 +82,8 @@ struct ComplicationRenderContextTests {
     // MARK: - Icon placeholder
 
     @Test func visibleIconSlotWithoutIconRendersPlaceholder() {
+        // Rasterizing the placeholder glyph needs the icon font loaded in the test process.
+        MaterialDesignIcons.register()
         var config = templateConfig()
         config.setSlotConfig(ComplicationSlotConfig(isVisible: true), slot: .icon, for: .circular)
         #expect(ComplicationRenderContext.icon(for: config, family: .circular) != nil)
