@@ -13,6 +13,11 @@ public extension URLComponents {
     private static let serverName = "server"
 
     mutating func insertWidgetAuthenticity() {
+        // Idempotent: deep link builders and widget views may each add authenticity,
+        // and a duplicated token would survive the single pop on the receiving side.
+        guard queryItems?.contains(where: {
+            $0.name == Self.authenticityName && $0.value == Current.settingsStore.widgetAuthenticityToken
+        }) != true else { return }
         queryItems = (queryItems ?? []) + [
             URLQueryItem(name: Self.authenticityName, value: Current.settingsStore.widgetAuthenticityToken),
         ]
