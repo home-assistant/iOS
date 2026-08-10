@@ -301,11 +301,15 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         }
         // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup. A config
         // without an icon of its own still gets the shared placeholder glyph, so turning "Show icon"
-        // on renders something before the user picks one.
-        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
-        let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
-            ?? ComplicationRenderContext.placeholderIcon
-        let iconData = icon.image(ofSize: iconRenderSize, color: color).pngData()
+        // on renders something before the user picks one. Skipped entirely when no size shows the
+        // icon — no point rasterizing a payload nothing renders.
+        let iconData: Data? = {
+            guard Family.allCases.contains(where: { config.isSlotVisible(.icon, for: $0) }) else { return nil }
+            let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
+            let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
+                ?? ComplicationRenderContext.placeholderIcon
+            return icon.image(ofSize: iconRenderSize, color: color).pngData()
+        }()
 
         let snapshot = WatchWidgetComplicationSnapshot(
             id: config.id,

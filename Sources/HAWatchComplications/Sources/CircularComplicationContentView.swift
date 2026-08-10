@@ -15,6 +15,9 @@ public struct CircularComplicationContentView: View {
     /// name still clear the open gauge's min/max labels — the center stack has to fit above them.
     private enum Layout {
         static let iconSize: CGFloat = 10
+        /// Enlarged icon when no gauge is drawn: without a ring or min/max labels the center owns the
+        /// whole disc, so the content can breathe.
+        static let iconSizeNoGauge: CGFloat = 16
         /// Slightly negative to counteract the value font's tall line box, which otherwise leaves too
         /// large a gap above the name.
         static let centerSpacing: CGFloat = -2
@@ -30,8 +33,11 @@ public struct CircularComplicationContentView: View {
         /// Value size when it shares the center with an icon and/or name, kept small so the stack
         /// clears the gauge's min/max labels.
         static let valueSize: CGFloat = 12
+        /// Value size without a gauge — no ring or labels to clear, so the text scales up with the icon.
+        static let valueSizeNoGauge: CGFloat = 16
         static let valueMinScale: CGFloat = 0.2
         static let nameSize: CGFloat = 8
+        static let nameSizeNoGauge: CGFloat = 10
         static let nameMinScale: CGFloat = 0.4
     }
 
@@ -78,32 +84,39 @@ public struct CircularComplicationContentView: View {
         }
     }
 
+    /// Whether a gauge surrounds the center. Without one, the center owns the whole disc and the
+    /// icon / value / name render larger.
+    private var hasGauge: Bool { model.fraction != nil }
+
+    private var valueFontSize: CGFloat {
+        if model.isValueOnly { return FontMetrics.valueOnlySize }
+        return hasGauge ? FontMetrics.valueSize : FontMetrics.valueSizeNoGauge
+    }
+
     /// Center of the complication: icon / value / name per the toggles. `padded` insets it off the
     /// surrounding open-gauge ring.
     @ViewBuilder
     private func center(padded: Bool) -> some View {
         let textColor = model.textColor ?? .primary
+        let iconSize = hasGauge ? Layout.iconSize : Layout.iconSizeNoGauge
         VStack(spacing: Layout.centerSpacing) {
             if model.showsIcon, let iconImage = model.iconImage {
                 iconImage
                     .resizable()
                     .scaledToFit()
-                    .frame(width: Layout.iconSize, height: Layout.iconSize)
+                    .frame(width: iconSize, height: iconSize)
                     .widgetAccentable()
             }
             if model.showsValue, !model.valueText.isEmpty {
                 Text(model.valueText)
-                    .font(.system(
-                        size: model.isValueOnly ? FontMetrics.valueOnlySize : FontMetrics.valueSize,
-                        weight: .semibold
-                    ))
+                    .font(.system(size: valueFontSize, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(FontMetrics.valueMinScale)
                     .foregroundStyle(textColor)
             }
             if model.showsName, !model.title.isEmpty {
                 Text(model.title)
-                    .font(.system(size: FontMetrics.nameSize))
+                    .font(.system(size: hasGauge ? FontMetrics.nameSize : FontMetrics.nameSizeNoGauge))
                     .minimumScaleFactor(FontMetrics.nameMinScale)
                     .lineLimit(1)
                     .foregroundStyle(textColor)

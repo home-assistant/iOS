@@ -445,12 +445,14 @@ struct WatchComplicationBuilderEditView: View {
                 Section {
                     JinjaTemplateButton(
                         server: server,
-                        title: L10n.Watch.Complications.Builder.gaugeTemplate,
+                        title: L10n.Watch.Complications.Builder.valueTemplate,
                         text: templateBinding(\.customGaugeTemplate),
                         placeholder: "{{ … }} → 0–1"
                     )
                 } header: {
-                    Text(L10n.Watch.Complications.Builder.gaugeTemplate)
+                    Text(L10n.Watch.Complications.Builder.valueTemplate)
+                } footer: {
+                    Text(L10n.Watch.Complications.Builder.valueTemplateFooter)
                 }
             }
 
