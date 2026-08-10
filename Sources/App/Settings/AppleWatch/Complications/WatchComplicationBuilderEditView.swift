@@ -290,9 +290,9 @@ struct WatchComplicationBuilderEditView: View {
 
             // The complication's name sits above everything else: it labels the complication in the
             // iOS list and the watch gallery regardless of the source — it never renders on the face
-            // (the `{name}` token resolves to the entity name; see `WatchComplicationConfig.faceName`).
-            // A blank name falls back to the entity name (shown as the placeholder); template
-            // complications auto-generate one on save.
+            // (the `{name}` token resolves to the entity name or the rendered display-name template;
+            // see `WatchComplicationConfig.faceName`). A blank name falls back to the entity name
+            // (shown as the placeholder); template complications auto-generate one on save.
             Section {
                 TextField(text: stringBinding(\.name)) {
                     Text(verbatim: viewModel.namePlaceholder)

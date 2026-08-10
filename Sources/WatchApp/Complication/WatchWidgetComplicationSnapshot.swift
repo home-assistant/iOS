@@ -252,9 +252,10 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             String(Int(value.rounded()))
         }
 
-        // The name rendered on the face — the entity's name for the entity kind. The complication's
-        // own `name` only labels it in the gallery menu (`menuName` below uses `displayName`).
-        let name = config.faceName
+        // The name rendered on the face — the entity's name, or the rendered display-name template
+        // for the template kind. The complication's own `name` never renders: it only labels the
+        // complication in the gallery menu (`menuName` below uses `displayName`).
+        let name = config.kind == .customTemplate ? valueText : config.faceName
 
         // Slot resolution. Entity formulas resolve fully on-device from the fetched state (template
         // rendering is an admin-only server operation); template-kind formulas may reference extra
@@ -301,12 +302,15 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         }
         let iconData = Self.iconData(config: config, iconColorHex: iconColorHex)
 
+        // Template kind resolves name and value to the same rendered text; joining both would
+        // render it twice on the legacy inline line.
+        let inlineParts = name == valueText ? [valueText] : [name, valueText]
         let snapshot = WatchWidgetComplicationSnapshot(
             id: config.id,
             family: "",
             title: valueText.isEmpty ? name : valueText,
             subtitle: name,
-            inlineText: [name, valueText].filter { !$0.isEmpty }.joined(separator: " "),
+            inlineText: inlineParts.filter { !$0.isEmpty }.joined(separator: " "),
             fraction: fraction(for: config.widgetFamily),
             tint: config.tint(for: config.widgetFamily),
             iconData: iconData,

@@ -47,6 +47,36 @@ struct ComplicationRenderContextTests {
         #expect(context.valueText == "72%")
     }
 
+    @Test func templateKindTitleRendersNothingByDefault() {
+        // The complication name only labels the config in lists — the face's title slot defaults to
+        // empty for template complications instead of rendering it.
+        let context = ComplicationRenderContext(
+            config: templateConfig(),
+            value: "42 W",
+            fraction: nil,
+            iconImage: nil,
+            renderedTemplates: ["{{ tpl }}": "42 W"]
+        )
+        #expect(context.titleText.isEmpty)
+    }
+
+    @Test func nameTokenResolvesRenderedDisplayNameForTemplateKind() {
+        var config = templateConfig()
+        config.setSlotConfig(
+            ComplicationSlotConfig(isVisible: true, formula: ComplicationFormula(parts: [.entityName])),
+            slot: .title,
+            for: .circular
+        )
+        let context = ComplicationRenderContext(
+            config: config,
+            value: "42 W",
+            fraction: nil,
+            iconImage: nil,
+            renderedTemplates: ["{{ tpl }}": "42 W"]
+        )
+        #expect(context.titleText == "42 W")
+    }
+
     // MARK: - Icon placeholder
 
     @Test func visibleIconSlotWithoutIconRendersPlaceholder() {

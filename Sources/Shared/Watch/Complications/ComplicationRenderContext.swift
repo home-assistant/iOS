@@ -42,7 +42,10 @@ public struct ComplicationRenderContext {
 
     private var family: WatchComplicationConfig.Family { config.widgetFamily }
 
-    public var name: String { config.faceName }
+    /// The `{name}` token's value: the entity's name, or — template kind — the rendered
+    /// display-name template (`value` carries its render). The complication's own name is
+    /// list-only and never renders on the face.
+    public var name: String { config.kind == .customTemplate ? value : config.faceName }
     public var showsValue: Bool { config.isSlotVisible(.value, for: family) }
     public var showsName: Bool { config.isSlotVisible(.title, for: family) }
     public var showsSubtitle: Bool { config.isSlotVisible(.subtitle, for: family) }
