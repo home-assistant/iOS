@@ -67,9 +67,13 @@ public final class KioskModeManager: ObservableObject {
 
     private let screensaverCommandSubject = PassthroughSubject<KioskScreensaverCommand, Never>()
     private var observation: AnyDatabaseCancellable?
+    /// The kiosk `enabled` flag the sensor sync last saw, used to detect actual transitions.
+    private var lastSyncedKioskEnabled: Bool
 
     public init() {
-        self.settings = (try? KioskSettings.current()) ?? KioskSettings()
+        let settings = (try? KioskSettings.current()) ?? KioskSettings()
+        self.settings = settings
+        self.lastSyncedKioskEnabled = settings.enabled
         observe()
     }
 
@@ -90,10 +94,15 @@ public final class KioskModeManager: ObservableObject {
         )
     }
 
-    /// The kiosk brightness and volume sensors only make sense on a device acting as a kiosk, so we
-    /// keep them enabled only while kiosk mode is enabled. This runs for the observation's initial
-    /// value and every subsequent change, and is idempotent so it won't fire spurious updates.
+    /// Turns the kiosk brightness and volume sensors on or off alongside kiosk mode, but only when
+    /// kiosk mode actually transitions. The observation also fires with its initial value on every
+    /// manager creation (each app launch, and once per process that touches `Current.kiosk`);
+    /// syncing on those deliveries would silently revert a user's explicit choice in
+    /// Settings → Sensors, which is how sensors kept deactivating without user input (#5261, #5306).
     private func syncKioskSensorsEnabled(with settings: KioskSettings) {
+        guard settings.enabled != lastSyncedKioskEnabled else { return }
+        lastSyncedKioskEnabled = settings.enabled
+
         for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume] {
             guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
             Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)

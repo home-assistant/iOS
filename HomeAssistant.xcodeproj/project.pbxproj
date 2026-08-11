@@ -1278,6 +1278,7 @@
 		7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		8411EA28D9F5FEF26D01A39E /* CameraZoomGestureOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */; };
 		84C3F46E5A5854A3E3A71DF6 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447F72016096B5B3FC87F055 /* KioskSettings.test.swift */; };
+		84C3F46E5A5854A3E3A71DF7 /* KioskModeManagerSensorSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447F72016096B5B3FC87F056 /* KioskModeManagerSensorSyncTests.swift */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		857D6560D8A33C20A009A615 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D38AFF8103605A5E02F62 /* KioskSettingsTable.swift */; };
 		864FFB19D2954B698B31E350 /* WebViewController+ReAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */; };
@@ -3123,6 +3124,7 @@
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
 		442182FC55CEB695729D80CA /* Pods-watchOS-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		447F72016096B5B3FC87F055 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
+		447F72016096B5B3FC87F056 /* KioskModeManagerSensorSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManagerSensorSyncTests.swift; sourceTree = "<group>"; };
 		45FD2BAEEAE31310280CB33D /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -6732,6 +6734,7 @@
 		B45BC7B1F36F7DAA48E961CA /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
+				447F72016096B5B3FC87F056 /* KioskModeManagerSensorSyncTests.swift */,
 				447F72016096B5B3FC87F055 /* KioskSettings.test.swift */,
 			);
 			path = Kiosk;
@@ -9905,6 +9908,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84C3F46E5A5854A3E3A71DF6 /* KioskSettings.test.swift in Sources */,
+				84C3F46E5A5854A3E3A71DF7 /* KioskModeManagerSensorSyncTests.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
