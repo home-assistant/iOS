@@ -518,44 +518,62 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishDatabaseSync() {
         let chunks = syncChunks
-        var data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
         let responseDigests = syncResponseDigests
         let isCompressed = syncResponseCompressed
         resetSyncState()
-        if isCompressed {
+        // Assembling, decompressing and decoding the payload — and the apply's full table rewrite —
+        // are real work with the full-reference mirror, so they run off the main actor; only state
+        // updates and the follow-up config pull hop back.
+        Task.detached(priority: .userInitiated) { [weak self] in
+            var data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
+            if isCompressed {
+                do {
+                    data = try WatchDatabaseMirror.decompress(data)
+                } catch {
+                    await self?.failSync(
+                        L10n.Watch.Sync.Error.data,
+                        detail: "decompress failed (\(data.count) bytes): \(error)"
+                    )
+                    return
+                }
+            }
+            let mirror: WatchDatabaseMirror
             do {
-                data = try WatchDatabaseMirror.decompress(data)
+                mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
             } catch {
-                failSync(L10n.Watch.Sync.Error.data, detail: "decompress failed (\(data.count) bytes): \(error)")
+                await self?.failSync(
+                    L10n.Watch.Sync.Error.data,
+                    detail: "decode failed (\(data.count) bytes): \(error)"
+                )
                 return
             }
+            do {
+                try mirror.apply()
+                // Only a successfully applied mirror advances the delta-sync baseline.
+                WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
+                Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Apple Watch database sync applied (\(data.count) bytes)",
+                    type: .database
+                ))
+            } catch {
+                await self?.failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
+                return
+            }
+            await self?.finishAppliedDatabaseSync(mirror: mirror)
         }
-        let mirror: WatchDatabaseMirror
-        do {
-            mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
-        } catch {
-            failSync(L10n.Watch.Sync.Error.data, detail: "decode failed (\(data.count) bytes): \(error)")
-            return
-        }
-        do {
-            try mirror.apply()
-            // Only a successfully applied mirror advances the delta-sync baseline.
-            WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
-            Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Apple Watch database sync applied (\(data.count) bytes)",
-                type: .database
-            ))
-            // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
-            // serversConfigSync exchange kicked off at the start of the reload).
-            WatchServerSync.applyMirroredServers(mirror.servers)
-            // The mirror carries complications too — rebuild widget snapshots now so a reload is another
-            // chance to obtain them if the background context push hasn't delivered them yet.
-            WatchWidgetComplicationSnapshotStore.update()
-        } catch {
-            failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
-            return
-        }
+    }
+
+    /// Main-actor tail of a successfully applied mirror: server refresh, widget snapshots and the
+    /// follow-up config pull, all expected on the main thread (matching the pushed-mirror path).
+    @MainActor
+    private func finishAppliedDatabaseSync(mirror: WatchDatabaseMirror) {
+        // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
+        // serversConfigSync exchange kicked off at the start of the reload).
+        WatchServerSync.applyMirroredServers(mirror.servers)
+        // The mirror carries complications too — rebuild widget snapshots now so a reload is another
+        // chance to obtain them if the background context push hasn't delivered them yet.
+        WatchWidgetComplicationSnapshotStore.update()
         // Reference tables are fresh — now pull the watch config and render everything from the DB.
         setLoadingStatus(L10n.Watch.Home.Sync.syncing)
         pullWatchConfig()
