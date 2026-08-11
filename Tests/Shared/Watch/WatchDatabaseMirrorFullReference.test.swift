@@ -57,7 +57,7 @@ struct WatchDatabaseMirrorFullReferenceTests {
         let payload = Data(repeating: 7, count: 200_000)
         let compressed = try WatchDatabaseMirror.compress(payload)
         #expect(compressed.count < payload.count)
-        #expect(try WatchDatabaseMirror.decompress(compressed) == payload)
+        try #expect(WatchDatabaseMirror.decompress(compressed) == payload)
         #expect(throws: (any Error).self) {
             _ = try WatchDatabaseMirror.decompress(Data([0x00, 0x01, 0x02]))
         }

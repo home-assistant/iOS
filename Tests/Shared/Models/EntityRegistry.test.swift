@@ -148,9 +148,9 @@ struct AppEntitiesModelNameResolutionTests {
         func row(_ entityId: String) throws -> HAAppEntity {
             try #require(rows.first { $0.entityId == entityId })
         }
-        #expect(try row("light.hidden").isHidden == true)
+        try #expect(row("light.hidden").isHidden == true)
         // Not-hidden and unregistered entities stay `nil`, mirroring how `entityCategory` is baked.
-        #expect(try row("light.visible").isHidden == nil)
-        #expect(try row("light.unregistered").isHidden == nil)
+        try #expect(row("light.visible").isHidden == nil)
+        try #expect(row("light.unregistered").isHidden == nil)
     }
 }
