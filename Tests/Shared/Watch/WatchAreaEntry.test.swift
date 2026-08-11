@@ -16,10 +16,13 @@ struct WatchAreaEntryTests {
                 try Self.entity(entityId: "camera.garage", domain: "camera").insert(db)
                 // A diagnostic entity is filtered out even though its domain is addable.
                 try Self.entity(entityId: "sensor.uptime", domain: "sensor", entityCategory: 1).insert(db)
+                // A hidden entity is filtered out even though its domain is addable.
+                try Self.entity(entityId: "light.hidden", domain: "light", isHidden: true).insert(db)
 
                 try Self.area(areaId: "living_room", entities: ["light.living_room"]).insert(db)
                 try Self.area(areaId: "garage", entities: ["camera.garage"]).insert(db)
                 try Self.area(areaId: "attic", entities: ["sensor.uptime"]).insert(db)
+                try Self.area(areaId: "basement", entities: ["light.hidden"]).insert(db)
                 try Self.area(areaId: "empty", entities: []).insert(db)
                 // Same entity id on another server: scoping must keep that area out of server 1's list.
                 try Self.area(areaId: "office", serverId: "2", entities: ["light.living_room"]).insert(db)
@@ -59,7 +62,8 @@ struct WatchAreaEntryTests {
         entityId: String,
         domain: String,
         serverId: String = "1",
-        entityCategory: Int? = nil
+        entityCategory: Int? = nil,
+        isHidden: Bool? = nil
     ) -> HAAppEntity {
         .init(
             id: "\(serverId)-\(entityId)",
@@ -69,7 +73,8 @@ struct WatchAreaEntryTests {
             name: entityId,
             icon: nil,
             rawDeviceClass: nil,
-            entityCategory: entityCategory
+            entityCategory: entityCategory,
+            isHidden: isHidden
         )
     }
 
