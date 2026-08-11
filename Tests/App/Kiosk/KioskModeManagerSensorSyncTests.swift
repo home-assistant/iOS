@@ -4,6 +4,10 @@ import XCTest
 
 /// Covers the kiosk sensor enablement sync in `KioskModeManager`, in particular that it never
 /// deactivates sensors without an actual kiosk mode transition (issues #5261 / #5306).
+///
+/// `@MainActor` because the manager delivers its GRDB observation on the main queue and the wait
+/// helpers spin the main run loop.
+@MainActor
 final class KioskModeManagerSensorSyncTests: XCTestCase {
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
