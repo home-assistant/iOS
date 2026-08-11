@@ -1,0 +1,201 @@
+import Foundation
+import GRDB
+@testable import Shared
+import Testing
+
+/// Tests for the full-reference (v2) watch database mirror: the version/compression wire constants,
+/// snapshot fidelity per advertised version, the registry/device table retain-vs-replace semantics,
+/// and payload compression.
+@Suite(.serialized)
+struct WatchDatabaseMirrorFullReferenceTests {
+    @Test("Version and payload keys are stable wire constants")
+    func constants() {
+        #expect(WatchDatabaseMirror.versionKey == "mirrorVersion")
+        #expect(WatchDatabaseMirror.compressedKey == "compressed")
+        #expect(WatchDatabaseMirror.legacyVersion == 1)
+        #expect(WatchDatabaseMirror.fullReferenceVersion == 2)
+    }
+
+    @Test("Registry and devices round-trip: nil retains, empty is authoritative")
+    func retainSemantics() throws {
+        let retain = WatchDatabaseMirror(entities: [], areas: [], pipelines: [])
+        let retainDecoded = try WatchDatabaseMirror.decodeForWatchThrowing(retain.encodeForWatch())
+        #expect(retainDecoded.registry == nil)
+        #expect(retainDecoded.devices == nil)
+
+        let authoritative = WatchDatabaseMirror(entities: [], areas: [], pipelines: [], registry: [], devices: [])
+        let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(authoritative.encodeForWatch())
+        #expect(decoded.registry == [])
+        #expect(decoded.devices == [])
+    }
+
+    @Test("Digests cover registry and devices, and matching digests omit them")
+    func digestsAndOmission() {
+        let mirror = WatchDatabaseMirror(
+            entities: [],
+            areas: [],
+            pipelines: [],
+            registry: [.init(serverId: "s1", entityId: "light.a", hidden: true)],
+            devices: [Self.device(deviceId: "d1")]
+        )
+        let digests = mirror.tableDigests()
+        #expect(digests["registry"] != nil)
+        #expect(digests["devices"] != nil)
+
+        let omitted = mirror.omittingTables(matching: digests, currentDigests: digests)
+        #expect(omitted.registry == nil)
+        #expect(omitted.devices == nil)
+
+        // Digests that don't match keep the tables carried.
+        let carried = mirror.omittingTables(matching: [:], currentDigests: digests)
+        #expect(carried.registry != nil)
+        #expect(carried.devices != nil)
+    }
+
+    @Test("Compression round-trips and rejects garbage")
+    func compression() throws {
+        let payload = Data(repeating: 7, count: 200_000)
+        let compressed = try WatchDatabaseMirror.compress(payload)
+        #expect(compressed.count < payload.count)
+        #expect(try WatchDatabaseMirror.decompress(compressed) == payload)
+        #expect(throws: (any Error).self) {
+            _ = try WatchDatabaseMirror.decompress(Data([0x00, 0x01, 0x02]))
+        }
+    }
+
+    @Test("Legacy snapshot serves the filtered slice; full-reference carries every table row")
+    func snapshotFidelity() throws {
+        try withDatabase { database in
+            try database.write { db in
+                try Self.entity(entityId: "light.visible", domain: "light").insert(db)
+                try Self.entity(entityId: "light.hidden", domain: "light", isHidden: true).insert(db)
+                // A domain the legacy mirror never carries.
+                try Self.entity(entityId: "camera.garage", domain: "camera").insert(db)
+                try EntityRegistryListForDisplay.Entity(serverId: "1", entityId: "light.hidden", hidden: true)
+                    .insert(db)
+                try EntityRegistryListForDisplay.Entity(serverId: "1", entityId: "light.visible").insert(db)
+                try Self.device(deviceId: "d1").insert(db)
+            }
+
+            let legacy = try WatchDatabaseMirror.snapshot()
+            #expect(legacy.entities?.map(\.entityId) == ["light.visible"])
+            #expect(legacy.registry == nil)
+            #expect(legacy.devices == nil)
+            #expect(legacy.tableDigests()["registry"] == nil)
+            #expect(legacy.tableDigests()["devices"] == nil)
+
+            let full = try WatchDatabaseMirror.snapshot(version: WatchDatabaseMirror.fullReferenceVersion)
+            #expect(full.entities?.map(\.entityId).sorted() == ["camera.garage", "light.hidden", "light.visible"])
+            #expect(full.registry?.map(\.entityId).sorted() == ["light.hidden", "light.visible"])
+            #expect(full.devices?.map(\.deviceId) == ["d1"])
+        }
+    }
+
+    @Test("Applying a mirror replaces the registry and device tables; nil retains them")
+    func applySemantics() throws {
+        try withDatabase { database in
+            try database.write { db in
+                try EntityRegistryListForDisplay.Entity(serverId: "1", entityId: "light.old").insert(db)
+                try Self.device(deviceId: "old").insert(db)
+            }
+
+            let mirror = WatchDatabaseMirror(
+                entities: nil,
+                areas: nil,
+                pipelines: nil,
+                registry: [.init(serverId: "1", entityId: "light.new")],
+                devices: [Self.device(deviceId: "new")]
+            )
+            try mirror.apply()
+            let (registryRows, deviceRows) = try database.read { db in
+                try (
+                    EntityRegistryListForDisplay.Entity.fetchAll(db).map(\.entityId),
+                    AppDeviceRegistry.fetchAll(db).map(\.deviceId)
+                )
+            }
+            #expect(registryRows == ["light.new"])
+            #expect(deviceRows == ["new"])
+
+            // A mirror without the tables (delta sync) retains the local rows.
+            try WatchDatabaseMirror(entities: nil, areas: nil, pipelines: nil).apply()
+            let retained = try database.read { db in
+                try AppDeviceRegistry.fetchAll(db).map(\.deviceId)
+            }
+            #expect(retained == ["new"])
+        }
+    }
+
+    // MARK: - Fixtures
+
+    private static func entity(
+        entityId: String,
+        domain: String,
+        serverId: String = "1",
+        isHidden: Bool? = nil
+    ) -> HAAppEntity {
+        .init(
+            id: "\(serverId)-\(entityId)",
+            entityId: entityId,
+            serverId: serverId,
+            domain: domain,
+            name: entityId,
+            icon: nil,
+            rawDeviceClass: nil,
+            isHidden: isHidden
+        )
+    }
+
+    private static func device(deviceId: String, serverId: String = "1") -> AppDeviceRegistry {
+        .init(
+            serverId: serverId,
+            deviceId: deviceId,
+            areaId: nil,
+            configurationURL: nil,
+            configEntries: nil,
+            configEntriesSubentries: nil,
+            connections: nil,
+            createdAt: nil,
+            disabledBy: nil,
+            entryType: nil,
+            hwVersion: nil,
+            identifiers: nil,
+            labels: nil,
+            manufacturer: nil,
+            model: nil,
+            modelID: nil,
+            modifiedAt: nil,
+            nameByUser: nil,
+            name: nil,
+            primaryConfigEntry: nil,
+            serialNumber: nil,
+            swVersion: nil,
+            viaDeviceID: nil
+        )
+    }
+
+    /// In-memory database with every table `snapshot()`/`apply()` touches, plus a fake server
+    /// manager (`snapshot()` reads `Current.servers.restorableState()`).
+    private func withDatabase(perform work: (DatabaseQueue) throws -> Void) throws {
+        let previousDatabase = Current.database
+        let previousServers = Current.servers
+        let database = try DatabaseQueue(path: ":memory:")
+        let tables: [DatabaseTableProtocol] = [
+            HAppEntityTable(),
+            DisplayEntityRegistryTable(),
+            AppDeviceRegistryTable(),
+            AppAreaTable(),
+            AssistPipelinesTable(),
+        ]
+        for table in tables {
+            try table.createIfNeeded(database: database)
+        }
+        Current.database = { database }
+        Current.servers = FakeServerManager()
+        defer {
+            Current.database = previousDatabase
+            Current.servers = previousServers
+        }
+
+        try work(database)
+    }
+}

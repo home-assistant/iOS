@@ -516,7 +516,7 @@ final class WatchCommunicatorService {
                 // `getInfo` adds to the context line when multiple servers are configured.
                 let serverPrefix = "\(server.info.name) • "
                 let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
-                    .filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+                    .filter { $0.isWatchCompatible(allowedDomains: allowedDomains) }
                     .compactMap { entity in
                         let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
                         guard let info = magicItemProvider.getInfo(for: item) else { return nil }
@@ -584,10 +584,16 @@ final class WatchCommunicatorService {
             Current.Log.info("Dropping \(databaseSyncChunks.count) abandoned watch DB sync buffer(s)")
             databaseSyncChunks.removeAll()
         }
+        // The watch advertises the highest mirror version it understands; absent means a legacy
+        // build. Recorded so proactive pushes serve the same fidelity across launches — including
+        // dropping back to legacy when an older watch (no version key) is paired.
+        let version = message.content[WatchDatabaseMirror.versionKey] as? Int ?? WatchDatabaseMirror.legacyVersion
+        WatchMirrorPushCoordinator.peerMirrorVersion = version
+        let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
         let data: Data
         let digests: [String: String]
         do {
-            var mirror = try WatchDatabaseMirror.snapshot()
+            var mirror = try WatchDatabaseMirror.snapshot(version: version)
             digests = mirror.tableDigests()
             // Delta sync: a watch that echoes previously-issued digests receives only the tables
             // that changed since (nil = retain). Watches that send no digests — older builds or a
@@ -596,7 +602,8 @@ final class WatchCommunicatorService {
                !stored.isEmpty {
                 mirror = mirror.omittingTables(matching: stored, currentDigests: digests)
             }
-            data = try mirror.encodeForWatch()
+            let encoded = try mirror.encodeForWatch()
+            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
         } catch {
             Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
             message.reply(.init(identifier: responseId, content: ["error": true]))
@@ -623,13 +630,19 @@ final class WatchCommunicatorService {
             Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
         }
         Current.Log.info("Watch DB sync start: \(chunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
-        message.reply(.init(identifier: responseId, content: [
+        var replyContent: [String: Any] = [
             "transferId": transferId,
             "totalChunks": chunks.count,
             "totalBytes": data.count,
             // The watch stores these after a successful apply and echoes them on the next sync.
             WatchDatabaseMirror.digestsKey: digests,
-        ]))
+        ]
+        // Explicit flag rather than inferred from the requested version: a watch that asked for v2
+        // but is answered by an older phone build gets no flag and decodes the plain payload.
+        if compressed {
+            replyContent[WatchDatabaseMirror.compressedKey] = true
+        }
+        message.reply(.init(identifier: responseId, content: replyContent))
     }
 
     /// Serve one chunk of an in-progress database sync. The buffer is freed once every chunk has

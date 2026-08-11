@@ -379,6 +379,9 @@ final class WatchHomeViewModel: ObservableObject {
     /// Digests issued with the sync-start reply; stored as the new baseline only after the mirror
     /// actually applies, so a failed sync keeps requesting the same tables.
     private var syncResponseDigests: [String: String]?
+    /// Whether the sync-start reply flagged the payload as compressed. Trusted over the requested
+    /// version: an older phone ignores the version and serves a plain (uncompressed) payload.
+    private var syncResponseCompressed = false
     /// How many chunk requests may be outstanding at once. Overlapping requests hide the
     /// per-message round-trip latency that made the sync strictly serial (one full round trip per
     /// 30 KB chunk).
@@ -393,8 +396,12 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         resetSyncState()
+        // Advertise the highest mirror version this build understands; the phone answers with the
+        // matching snapshot fidelity (an older phone ignores the key and serves the legacy slice).
+        var content: [String: Any] = [
+            WatchDatabaseMirror.versionKey: WatchDatabaseMirror.fullReferenceVersion,
+        ]
         // Echo the digests from the last applied mirror so the phone can omit unchanged tables.
-        var content: [String: Any] = [:]
         if let digests = WatchUserDefaults.shared.databaseMirrorDigests {
             content[WatchDatabaseMirror.digestsKey] = digests
         }
@@ -441,6 +448,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncChunks = [:]
         syncNextIndexToRequest = 0
         syncResponseDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
+        syncResponseCompressed = message.content[WatchDatabaseMirror.compressedKey] as? Bool ?? false
         Current.clientEventStore.addEvent(.init(
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
             type: .database
@@ -510,9 +518,18 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishDatabaseSync() {
         let chunks = syncChunks
-        let data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
+        var data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
         let responseDigests = syncResponseDigests
+        let isCompressed = syncResponseCompressed
         resetSyncState()
+        if isCompressed {
+            do {
+                data = try WatchDatabaseMirror.decompress(data)
+            } catch {
+                failSync(L10n.Watch.Sync.Error.data, detail: "decompress failed (\(data.count) bytes): \(error)")
+                return
+            }
+        }
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
@@ -574,6 +591,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncChunks = [:]
         syncNextIndexToRequest = 0
         syncResponseDigests = nil
+        syncResponseCompressed = false
         syncProgress = nil
     }
 
@@ -660,7 +678,7 @@ final class WatchHomeViewModel: ObservableObject {
         Self.areasModeQueue.async { [weak self] in
             let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
             let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-                let watchEntities = entities.filter { $0.isWatchAreaCompatible(allowedDomains: allowedDomains) }
+                let watchEntities = entities.filter { $0.isWatchCompatible(allowedDomains: allowedDomains) }
                 return Set(watchEntities.map(\.entityId))
             }
             let mode = WatchHomeAreasMode.compute(
