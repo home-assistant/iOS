@@ -1032,10 +1032,12 @@ public class HomeAssistantAPI {
         case appOpened
         case programmatic
 
+        /// Only explicitly user-initiated updates may show the temporary full-accuracy prompt;
+        /// app-open updates run on every foreground, where a recurring system prompt would be intrusive.
         var allowsTemporaryAccess: Bool {
             switch self {
-            case .userRequested, .appOpened: return true
-            case .programmatic: return false
+            case .userRequested: return true
+            case .appOpened, .programmatic: return false
             }
         }
 
