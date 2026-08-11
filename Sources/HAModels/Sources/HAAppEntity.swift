@@ -8,8 +8,9 @@ import GRDB
 /// - `HAAppEntity` is every entity that currently has a state — including ones with no registry entry
 ///   (YAML/template/command-line entities, etc.) — and carries `domain` + `rawDeviceClass`, which the
 ///   registry does not. It's what pickers/widgets enumerate as "all selectable entities". It also
-///   copies the registry's `entityCategory` and hidden flag at write time so consumers that never
-///   receive the full registry (the watch) can still exclude config/diagnostic and hidden entities.
+///   copies the registry's `entityCategory` and hidden flag at write time so consumers can exclude
+///   config/diagnostic and hidden entities without a per-read registry join — including watches
+///   still on the legacy database mirror, which omits the registry entirely.
 /// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
 ///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
 ///

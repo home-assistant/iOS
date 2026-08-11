@@ -290,6 +290,22 @@ public enum WatchMirrorPushCoordinator {
     private static var pendingWork: DispatchWorkItem?
     private static var lastPushedData: Data?
 
+    private static let peerMirrorVersionKey = "watchMirrorPeerVersion"
+
+    /// The mirror version the paired watch advertised on its most recent sync request, persisted so
+    /// proactive pushes keep serving the right fidelity across launches. Defaults to legacy until a
+    /// versioned request arrives, and is overwritten by *every* request — including version-less
+    /// ones — so pairing an older watch drops back to the legacy payload it can decode.
+    public static var peerMirrorVersion: Int {
+        get {
+            let stored = UserDefaults.standard.integer(forKey: peerMirrorVersionKey)
+            return stored == 0 ? WatchDatabaseMirror.legacyVersion : stored
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: peerMirrorVersionKey)
+        }
+    }
+
     /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
     public static func schedule(reason: Reason) {
         queue.async {
@@ -311,11 +327,17 @@ public enum WatchMirrorPushCoordinator {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
             return
         }
+        // Serve the fidelity the paired watch advertised on its last sync request; a full-reference
+        // payload always travels compressed (and a legacy watch is never sent one — it couldn't
+        // decode the compressed bytes, let alone want the unfiltered tables).
+        let version = peerMirrorVersion
+        let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
         let data: Data
         let digests: [String: String]
         do {
-            let snapshot = try WatchDatabaseMirror.snapshot()
-            data = try snapshot.encodeForWatch()
+            let snapshot = try WatchDatabaseMirror.snapshot(version: version)
+            let encoded = try snapshot.encodeForWatch()
+            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
             digests = snapshot.tableDigests()
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
@@ -332,10 +354,14 @@ public enum WatchMirrorPushCoordinator {
         lastPushedData = data
         // The digests travel in the file-transfer metadata so the watch can store them after
         // applying this full mirror — keeping its next delta sync request accurate.
+        var metadata: [String: Any] = [WatchDatabaseMirror.digestsKey: digests]
+        if compressed {
+            metadata[WatchDatabaseMirror.compressedKey] = true
+        }
         Communicator.shared.transfer(HAWatchConnectivity.Blob(
             identifier: WatchDatabaseMirror.blobIdentifier,
             content: data,
-            metadata: [WatchDatabaseMirror.digestsKey: digests]
+            metadata: metadata
         )) { result in
             if case let .failure(error) = result {
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")

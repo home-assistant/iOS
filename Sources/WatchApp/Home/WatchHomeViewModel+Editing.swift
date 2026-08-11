@@ -257,7 +257,7 @@ extension WatchHomeViewModel {
                 let serverId = server.identifier.rawValue
                 let serverPrefix = "\(server.info.name) • "
                 let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
-                    .filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+                    .filter { $0.isWatchCompatible(allowedDomains: allowedDomains) }
                     .compactMap { entity in
                         let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
                         guard let info = magicItemProvider.getInfo(for: item) else { return nil }

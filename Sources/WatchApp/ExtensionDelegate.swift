@@ -341,6 +341,20 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        var data = data
+        // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
+        if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
+            do {
+                data = try WatchDatabaseMirror.decompress(data)
+            } catch {
+                Current.Log.error("Failed to decompress pushed watch database mirror: \(error)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Failed to decompress pushed watch database mirror (\(data.count) bytes): \(error)",
+                    type: .database
+                ))
+                return
+            }
+        }
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
