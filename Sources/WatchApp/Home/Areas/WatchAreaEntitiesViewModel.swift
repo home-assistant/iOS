@@ -59,8 +59,7 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
                 let entries: [Entry] = (entitiesPerServer[serverId] ?? [])
                     .filter { entity in
                         area.entities.contains(entity.entityId)
-                            && allowedDomains.contains(entity.domain)
-                            && entity.entityCategory == nil
+                            && entity.isWatchAreaCompatible(allowedDomains: allowedDomains)
                     }
                     .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                     .compactMap { entity in

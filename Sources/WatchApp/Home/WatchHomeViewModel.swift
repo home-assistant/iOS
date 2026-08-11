@@ -660,7 +660,7 @@ final class WatchHomeViewModel: ObservableObject {
         Self.areasModeQueue.async { [weak self] in
             let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
             let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-                let watchEntities = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+                let watchEntities = entities.filter { $0.isWatchAreaCompatible(allowedDomains: allowedDomains) }
                 return Set(watchEntities.map(\.entityId))
             }
             let mode = WatchHomeAreasMode.compute(

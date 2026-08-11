@@ -107,4 +107,50 @@ struct AppEntitiesModelNameResolutionTests {
         let namesAfterSecondPass = try await storedNames()
         #expect(namesAfterSecondPass == names)
     }
+
+    /// The registry hidden flag is baked into `HAAppEntity.isHidden` at write time, so consumers
+    /// that never receive the full registry (the watch) can exclude hidden entities locally.
+    @Test("isHidden is copied from the registry at write time")
+    func persistsRegistryHiddenFlag() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "hidden-flag-test"
+        let server = Server.fake(identifier: .init(rawValue: serverId))
+
+        // "light.hidden" is hidden in the registry; "light.visible" has a registry row without the
+        // flag; "light.unregistered" has no registry row at all.
+        try await database.write { db in
+            try EntityRegistryListForDisplay.Entity(serverId: serverId, entityId: "light.hidden", hidden: true)
+                .insert(db)
+            try EntityRegistryListForDisplay.Entity(serverId: serverId, entityId: "light.visible")
+                .insert(db)
+        }
+
+        let entities: Set<HAEntity> = try [
+            makeEntity("light.hidden", friendlyName: "Hidden Light"),
+            makeEntity("light.visible", friendlyName: "Visible Light"),
+            makeEntity("light.unregistered", friendlyName: "Unregistered Light"),
+        ]
+
+        await AppEntitiesModel().updateModel(entities, server: server)
+
+        let rows = try await database.read { db in
+            try HAAppEntity
+                .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        #expect(rows.count == 3)
+        func row(_ entityId: String) throws -> HAAppEntity {
+            try #require(rows.first { $0.entityId == entityId })
+        }
+        #expect(try row("light.hidden").isHidden == true)
+        // Not-hidden and unregistered entities stay `nil`, mirroring how `entityCategory` is baked.
+        #expect(try row("light.visible").isHidden == nil)
+        #expect(try row("light.unregistered").isHidden == nil)
+    }
 }

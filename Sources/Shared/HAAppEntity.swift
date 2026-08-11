@@ -52,8 +52,17 @@ public extension HAAppEntity {
         })
     }
 
+    /// Whether the watch area screens can render this entity, given the precomputed set of
+    /// watch-addable domain raw values: a watch-addable domain, no config/diagnostic category, and
+    /// not hidden in the entity registry (both baked into the row at write time; see
+    /// `AppEntitiesModel`). Every watch area path must use this same predicate so browsing, the
+    /// home-screen mode and the empty-area checks all agree.
+    func isWatchAreaCompatible(allowedDomains: Set<String>) -> Bool {
+        allowedDomains.contains(domain) && entityCategory == nil && isHidden != true
+    }
+
     /// Entity ids the watch area screens can render for a server: watch-addable domains, without
-    /// config/diagnostic entities. Used to drop areas that would show an empty screen.
+    /// config/diagnostic or hidden entities. Used to drop areas that would show an empty screen.
     static func watchAreaEntityIds(serverId: String) throws -> Set<String> {
         let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
         let entities = try Current.database().read { db in
@@ -61,7 +70,7 @@ public extension HAAppEntity {
                 .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                 .fetchAll(db)
         }
-        let compatible = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
+        let compatible = entities.filter { $0.isWatchAreaCompatible(allowedDomains: allowedDomains) }
         return Set(compatible.map(\.entityId))
     }
 
