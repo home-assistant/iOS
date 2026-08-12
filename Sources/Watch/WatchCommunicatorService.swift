@@ -639,12 +639,12 @@ final class WatchCommunicatorService {
                     return
                 }
                 let transferId = UUID().uuidString
-                databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: builtChunks)
+                self.databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: builtChunks)
                 // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
                 // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails
                 // the whole sync on the watch), so a buffer still around after this long is abandoned.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
-                    guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
+                    guard let self, self.databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
                     Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
                 }
                 Current.Log
