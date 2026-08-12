@@ -309,6 +309,28 @@ public struct WatchDatabaseMirror: WatchCodable {
             try applyReferenceTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
         }
+        logApplyOutcome()
+    }
+
+    /// Record which tables a payload actually carried and what the database holds afterwards.
+    ///
+    /// A byte count alone can't distinguish "carried every table" from "carried one table and
+    /// retained the rest", and an apply that logs success can still leave a table empty — which is
+    /// exactly the shape of the sync problems seen on device. Logging both ends of the operation
+    /// makes a watch log enough on its own to tell which side lost the data.
+    private func logApplyOutcome() {
+        let carried = carriedDigestKeys.sorted().joined(separator: "+")
+        let counts = (try? Current.database().read { db in
+            [
+                "entities": try HAAppEntity.fetchCount(db),
+                "areas": try AppArea.fetchCount(db),
+                "registry": try EntityRegistryListForDisplay.Entity.fetchCount(db),
+                "devices": try AppDeviceRegistry.fetchCount(db),
+                "pipelines": try AssistPipelines.fetchCount(db),
+            ]
+        }) ?? [:]
+        let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
+        Current.Log.info("Applied mirror carrying [\(carried.isEmpty ? "nothing" : carried)]; rows now \(rows)")
     }
 
     private func applyReferenceTables(in db: Database) throws {

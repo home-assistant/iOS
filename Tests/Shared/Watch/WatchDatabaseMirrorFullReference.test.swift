@@ -129,8 +129,8 @@ struct WatchDatabaseMirrorFullReferenceTests {
     func emptyLocalTablesInvalidateTheirDigests() throws {
         try withDatabase { database in
             // Nothing stored yet: every mirrored table is empty, so no digest may be trusted.
-            #expect(WatchDatabaseMirror.digestKeysForEmptyLocalTables() ==
-                ["entities", "areas", "pipelines", "registry", "devices"])
+            let everyTable: Set<String> = ["entities", "areas", "pipelines", "registry", "devices"]
+            #expect(WatchDatabaseMirror.digestKeysForEmptyLocalTables() == everyTable)
 
             try database.write { db in
                 try Self.entity(entityId: "light.kitchen", domain: "light").insert(db)
