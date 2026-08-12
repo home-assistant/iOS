@@ -16,6 +16,11 @@ struct OpenAppSettingsAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        #if os(watchOS)
+        // The watch has no scene manager: settings are a sheet owned by the home screen, so the
+        // request is handed to it (and latched, for when this runs before that view exists).
+        WatchSettingsLaunch.request()
+        #else
         if Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
@@ -23,6 +28,7 @@ struct OpenAppSettingsAppIntent: AppIntent {
                 coordinator.showSettings()
             }
         }
+        #endif
         return .result()
     }
 }

@@ -69,8 +69,11 @@
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
 "app_intents.error.failed_servers" = "Failed servers: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "No server provided";
 "app_intents.error.timed_out" = "Timed out after %li seconds";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Icon for off state";
 "app_intents.fan.on_state_icon.title" = "Icon for on state";
 "app_intents.fan.title" = "Fan";

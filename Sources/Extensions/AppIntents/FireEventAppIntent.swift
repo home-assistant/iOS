@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, watchOS 10.0, *)
 struct FireEventAppIntent: AppIntent, CustomIntentMigratedAppIntent {
     // Carries over shortcuts built with the deprecated SiriKit FireEventIntent
     static let intentClassName = "FireEventIntent"
