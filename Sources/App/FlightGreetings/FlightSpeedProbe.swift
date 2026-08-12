@@ -37,10 +37,12 @@ final class FlightSpeedProbe: NSObject, CLLocationManagerDelegate {
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
 
-            // GCD rather than `Task.sleep`: the timeout has to fire even when the Swift concurrency
-            // thread pool is starved, which is the situation it exists to bound.
+            // GCD holds the deadline rather than `Task.sleep`: the timeout has to fire even when the
+            // Swift concurrency thread pool is starved, which is one of the things it exists to bound.
             let work = DispatchWorkItem { [weak self] in
-                self?.finish(with: nil)
+                Task { @MainActor in
+                    self?.finish(with: nil)
+                }
             }
             timeoutWork = work
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: work)
