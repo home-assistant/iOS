@@ -137,7 +137,9 @@ struct AppIntentServerAPIRESTTests {
         }
         """)
 
-        #expect(try AppIntentServerAPI.assistAnswer(from: payload) == "Turned on the kitchen light")
+        let answer = try AppIntentServerAPI.assistAnswer(from: payload)
+
+        #expect(answer == "Turned on the kitchen light")
     }
 
     @Test func assistAnswerSurfacesAgentErrorsAsUserFacingText() throws {
