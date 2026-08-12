@@ -9,7 +9,7 @@ struct WidgetEnergyMediumView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+            HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
                 if entry.source.showsSolar, let solar = entry.solarGenerated {
                     WidgetEnergyStatView(
                         icon: .solarPowerIcon,
@@ -67,7 +67,7 @@ struct WidgetEnergyMediumView: View {
                 }
 
                 // The cost already claims a line, so period and time share the next one.
-                periodText + Text(verbatim: " · ").font(.system(size: 12)) + timeText
+                periodText + Text(verbatim: " · ").font(.system(size: 11)) + timeText
             } else {
                 periodText
                 timeText
@@ -79,7 +79,7 @@ struct WidgetEnergyMediumView: View {
 
     private var periodText: Text {
         Text(entry.period.displayTitle)
-            .font(.system(size: 12, weight: .semibold))
+            .font(.system(size: 11, weight: .semibold))
     }
 
     private var timeText: Text {
