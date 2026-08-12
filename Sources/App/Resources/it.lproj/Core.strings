@@ -16,7 +16,7 @@
 "common::state::standby" = "In attesa";
 "common::state::unlocked" = "Sbloccato/a";
 "common::state::yes" = "Sì";
-"component::ai_task::title" = "AI task";
+"component::ai_task::title" = "Attività di IA";
 "component::airzone::entity::select::sleep_times::state::off" = "Spento";
 "component::alarm_control_panel::title" = "Pannello di controllo degli allarmi";
 "component::alert::entity_component::_::state::idle" = "Inattivo";

@@ -53,6 +53,7 @@
 "announcement.drop_support.title" = "중요 업데이트";
 "app_intents.assist.pipeline.default.title" = "기본값";
 "app_intents.assist.pipeline.title" = "파이프라인";
+"app_intents.assist.pipelines.title" = "파이프라인";
 "app_intents.assist.preferred_pipeline.title" = "선호됨";
 "app_intents.assist.refresh_warning.title" = "Assist 파이프라인을 찾을 수 없나요? 앱에서 Assist를 열어 파이프라인 목록을 새로 고칩니다.";
 "app_intents.assist_prompt.description" = "Assist에 텍스트 프롬프트 보내기";
@@ -183,6 +184,11 @@
 "assist.settings.on_device_tts.voice" = "목소리";
 "assist.settings.section.experimental.title" = "실험 기능";
 "assist.settings.section.labs.title" = "더 보기";
+"assist.settings.start_mode.auto" = "자동";
+"assist.settings.start_mode.footer" = "Home Assistant 대시보드에서 Assist를 실행할 때 시작되는 방식을 설정합니다. \"자동\"은 대시보드의 요청을 따르고, \"음성\"과 \"텍스트\"는 항상 해당 모드로 실행합니다. 이 설정은 위젯, 단축어 또는 기타 앱 기능에는 적용되지 않습니다.";
+"assist.settings.start_mode.text" = "텍스트";
+"assist.settings.start_mode.title" = "Assist 시작 모드";
+"assist.settings.start_mode.voice" = "음성";
 "assist.settings.title" = "Assist 설정";
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
@@ -1285,6 +1291,12 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.validate_error.edit_url" = "URL 편집";
 "settings.connection_section.validate_error.title" = "URL 저장 오류";
 "settings.connection_section.validate_error.use_anyway" = "어쨌든 사용";
+"settings.connection_section.webhook.active.title" = "현재 사용 중";
+"settings.connection_section.webhook.active.unavailable" = "사용 가능한 URL 없음";
+"settings.connection_section.webhook.endpoints.footer" = "이 URL은 민감한 정보로 취급하세요. URL을 아는 사람은 누구나 이 모바일 앱의 웹훅으로 요청을 보낼 수 있습니다.";
+"settings.connection_section.webhook.footer" = "앱은 센서, 위치 및 기타 업데이트를 이 웹훅으로 보냅니다. Home Assistant Cloud는 집 밖에 있을 때 사용하는 클라우드훅을 제공합니다. 클라우드훅이 없으면 앱에서 이 서버의 내부, 원격 또는 외부 URL을 이용해 웹훅 URL을 생성합니다.";
+"settings.connection_section.webhook.in_use" = "사용 중";
+"settings.connection_section.webhook.title" = "웹훅";
 "settings.connection_section.websocket.status.authenticating" = "인증하는 중";
 "settings.connection_section.websocket.status.connected" = "연결됨";
 "settings.connection_section.websocket.status.connecting" = "연결하는 중";
@@ -2478,6 +2490,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.actions.title" = "동작";
 "widgets.assist.action_title" = "Assist에게 묻기";
 "widgets.assist.description" = "앱에서 Assist를 열기";
+"widgets.assist.not_configured" = "구성된 파이프라인 없음";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "설정";
 "widgets.automation.trigger.title" = "트리거 자동화";
@@ -2486,7 +2499,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.commonly_used_entities.description" = "사용 패턴을 기반으로 자주 사용하는 엔티티를 표시합니다.";
 "widgets.commonly_used_entities.empty.description" = "자주 사용하는 엔티티를 찾을 수 없습니다. Home Assistant를 사용하여 사용 기록을 쌓으세요.";
 "widgets.commonly_used_entities.title" = "공통 컨트롤";
-"widgets.content_source.complication" = "Complication";
+"widgets.content_source.complication" = "컴플리케이션";
 "widgets.content_source.entity" = "엔티티";
 "widgets.content_source.template" = "템플릿";
 "widgets.content_source.title" = "소스";
@@ -2572,7 +2585,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.custom.title" = "사용자 정의 위젯";
 "widgets.details.description" = "Home Assistant의 상태를 텍스트로 표시합니다";
 "widgets.details.description_with_warning" = "Home Assistant에서 텍스트로 상태를 표시합니다. 주의: 사용자는 템플릿 액세스를 위해 관리자여야 합니다.";
-"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
+"widgets.details.gallery_description" = "Home Assistant의 엔티티, 시계 컴플리케이션 또는 템플릿을 텍스트로 표시합니다";
 "widgets.details.parameters.action" = "동작";
 "widgets.details.parameters.details_template" = "세부정보 텍스트 템플릿(직사각형군에만 해당)";
 "widgets.details.parameters.lower_template" = "하단 텍스트 템플릿";
@@ -2591,7 +2604,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.period.title" = "기간";
 "widgets.energy.period.today" = "오늘";
 "widgets.energy.period.yesterday" = "어제";
-"widgets.energy.refresh_title" = "Refresh Energy";
+"widgets.energy.refresh_title" = "에너지 새로 고침";
 "widgets.energy.solar" = "태양광";
 "widgets.energy.source.auto" = "자동";
 "widgets.energy.source.consumption" = "소비";
@@ -2601,7 +2614,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.entity_state.placeholder" = "엔티티 상태";
 "widgets.gauge.description" = "Home Assistant의 숫자 상태를 게이지에 표시";
 "widgets.gauge.description_with_warning" = "Home Assistant에서 게이지에 숫자 상태를 표시합니다. 주의: 사용자는 템플릿 액세스를 위해 관리자여야 합니다.";
-"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
+"widgets.gauge.gallery_description" = "Home Assistant의 엔티티, 시계 컴플리케이션 또는 템플릿을 게이지로 표시합니다";
 "widgets.gauge.parameters.action" = "동작";
 "widgets.gauge.parameters.gauge_type" = "게이지 유형";
 "widgets.gauge.parameters.gauge_type.capacity" = "용량";
@@ -2623,7 +2636,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.open_page.title" = "페이지 열기";
 "widgets.param.server.title" = "서버";
 "widgets.parameters.attribute" = "속성";
-"widgets.parameters.complication" = "Complication";
+"widgets.parameters.complication" = "컴플리케이션";
 "widgets.parameters.entity" = "엔티티";
 "widgets.preview.custom.description" = "앱 내에서 나만의 위젯을 만든 다음 여기에 표시하세요.";
 "widgets.preview.custom.title" = "사용자 정의 위젯";
