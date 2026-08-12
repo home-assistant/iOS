@@ -1915,7 +1915,53 @@
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
 		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.capacity-ring.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.full-fraction.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-and-value-no-name.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-no-gauge.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-value-name-open.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.long-value.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.no-gauge.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.no-min-max.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-and-name-no-icon.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-only.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.zero-fraction.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.full-fraction.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-name-value-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.name-only-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-no-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.zero-fraction.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.long-line.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.name-and-value.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.name-only.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.value-only.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.all-slots-no-min-max.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.all-slots.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.custom-text-color.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.full-fraction.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.icon-name-gauge.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.long-text.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-icon.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-name.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.text-only.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.value-as-text.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.zero-fraction.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.accented.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.fullColor.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.vibrant.png",
+			);
+			target = B657A8FB1CA646EB00121384 /* Tests-App */;
+		};
+	/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		11AF1EC52528FB2300AAE364 /* Entitlements */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Entitlements; sourceTree = "<group>"; };
@@ -1939,7 +1985,7 @@
 		42DF4F00302CACC600589E49 /* Templating */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Templating; sourceTree = "<group>"; };
 		42DF4F03302CACD000589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
 		42DF4F06302CACD400589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
-		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
+		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
 		42EDB6453002FB9A0051FC9B /* CarPlay */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CarPlay; sourceTree = "<group>"; };
