@@ -9,9 +9,7 @@ struct WidgetEnergyMediumView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            WidgetEnergyHeaderView(period: entry.period, date: entry.date)
-
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+            HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
                 if entry.source.showsSolar, let solar = entry.solarGenerated {
                     WidgetEnergyStatView(
                         icon: .solarPowerIcon,
@@ -51,27 +49,42 @@ struct WidgetEnergyMediumView: View {
         .widgetBackground(WidgetEnergyStyle.background)
     }
 
-    /// Shows the period cost when available; otherwise falls back to the Home Assistant logo.
-    @ViewBuilder
+    /// The period cost when available, followed by the summarised period and the time the entry was
+    /// refreshed. Replaces the shared header on these families, which have room for it on the
+    /// trailing edge of the stats row.
     private var topTrailingAccessory: some View {
-        if entry.source.showsGrid, let cost = entry.cost {
-            HStack(spacing: 4) {
-                Text(verbatim: WidgetEnergyStyle.cost(cost, code: entry.currencyCode))
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(WidgetEnergyStyle.primaryText)
-                Image(
-                    uiImage: MaterialDesignIcons.transmissionTowerIcon
-                        .image(ofSize: .init(width: 16, height: 16), color: .white)
-                        .withRenderingMode(.alwaysTemplate)
-                )
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
+        VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+            if entry.source.showsGrid, let cost = entry.cost {
+                HStack(spacing: DesignSystem.Spaces.half) {
+                    Text(verbatim: WidgetEnergyStyle.cost(cost, code: entry.currencyCode))
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(WidgetEnergyStyle.primaryText)
+                    Image(
+                        uiImage: MaterialDesignIcons.transmissionTowerIcon
+                            .image(ofSize: .init(width: 16, height: 16), color: .white)
+                            .withRenderingMode(.alwaysTemplate)
+                    )
+                }
+
+                // The cost already claims a line, so period and time share the next one.
+                periodText + Text(verbatim: " · ").font(.system(size: 11)) + timeText
+            } else {
+                periodText
+                timeText
             }
-        } else {
-            Image(.logo)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
         }
+        .lineLimit(1)
+        .foregroundStyle(WidgetEnergyStyle.secondaryText)
+    }
+
+    private var periodText: Text {
+        Text(entry.period.displayTitle)
+            .font(.system(size: 11, weight: .semibold))
+    }
+
+    private var timeText: Text {
+        Text(entry.date, style: .time)
+            .font(.system(size: 11))
     }
 }
 

@@ -180,7 +180,10 @@ struct WidgetsSnapshotTests {
             chartPoints: points
         )
         assertLightDarkSnapshots(
-            of: WidgetEnergyView(entry: entry).environment(\.widgetFamily, family),
+            // Pinned so the refresh time doesn't render 12- or 24-hour depending on the machine.
+            of: WidgetEnergyView(entry: entry)
+                .environment(\.widgetFamily, family)
+                .environment(\.locale, Locale(identifier: "en_US")),
             layout: .fixed(width: size.width, height: size.height),
             fileID: fileID,
             file: filePath,
