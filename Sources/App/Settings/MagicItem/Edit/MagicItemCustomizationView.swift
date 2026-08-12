@@ -74,18 +74,7 @@ struct MagicItemCustomizationView: View {
             viewModel.loadMagicInfo()
         }
         .sheet(isPresented: $showingStateColorRuleEditor) {
-            NavigationStack {
-                WidgetStateColorRuleEditor(
-                    rule: editingStateColorRuleIndex.flatMap { stateColorRules[safe: $0] }
-                ) { rule in
-                    if let editingStateColorRuleIndex,
-                       stateColorRules.indices.contains(editingStateColorRuleIndex) {
-                        viewModel.item.customization?.stateColorRules?[editingStateColorRuleIndex] = rule
-                    } else {
-                        viewModel.item.customization?.stateColorRules = stateColorRules + [rule]
-                    }
-                }
-            }
+            widgetStateColorRuleEditor
         }
     }
 
@@ -212,46 +201,65 @@ struct MagicItemCustomizationView: View {
         }
 
         if context == .widget {
-            Section {
-                ForEach(Array(stateColorRules.enumerated()), id: \.offset) { index, rule in
-                    Button {
-                        editingStateColorRuleIndex = index
-                        showingStateColorRuleEditor = true
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                                Text(stateColorRuleDescription(rule))
-                                    .foregroundStyle(.primary)
-                                Text(stateColorRuleTargetDescription(rule))
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Circle()
-                                .fill(Color(hex: rule.color))
-                                .frame(width: 24, height: 24)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            viewModel.item.customization?.stateColorRules?.remove(at: index)
-                        } label: {
-                            Label(L10n.delete, systemSymbol: .trash)
-                        }
-                    }
-                }
+            widgetStateColorsSection
+        }
+    }
 
+    private var widgetStateColorsSection: some View {
+        Section {
+            ForEach(Array(stateColorRules.enumerated()), id: \.offset) { index, rule in
                 Button {
-                    editingStateColorRuleIndex = nil
+                    editingStateColorRuleIndex = index
                     showingStateColorRuleEditor = true
                 } label: {
-                    Label(L10n.MagicItem.StateColors.Add.title, systemSymbol: .plus)
+                    HStack {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(stateColorRuleDescription(rule))
+                                .foregroundStyle(.primary)
+                            Text(stateColorRuleTargetDescription(rule))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Circle()
+                            .fill(Color(hex: rule.color))
+                            .frame(width: 24, height: 24)
+                    }
                 }
-            } header: {
-                Text(L10n.MagicItem.StateColors.title)
-            } footer: {
-                Text(L10n.MagicItem.StateColors.footer)
+                .buttonStyle(.plain)
+                .swipeActions {
+                    Button(role: .destructive) {
+                        viewModel.item.customization?.stateColorRules?.remove(at: index)
+                    } label: {
+                        Label(L10n.delete, systemSymbol: .trash)
+                    }
+                }
+            }
+
+            Button {
+                editingStateColorRuleIndex = nil
+                showingStateColorRuleEditor = true
+            } label: {
+                Label(L10n.MagicItem.StateColors.Add.title, systemSymbol: .plus)
+            }
+        } header: {
+            Text(L10n.MagicItem.StateColors.title)
+        } footer: {
+            Text(L10n.MagicItem.StateColors.footer)
+        }
+    }
+
+    private var widgetStateColorRuleEditor: some View {
+        NavigationStack {
+            WidgetStateColorRuleEditor(
+                rule: editingStateColorRuleIndex.flatMap { stateColorRules[safe: $0] }
+            ) { rule in
+                if let editingStateColorRuleIndex,
+                   stateColorRules.indices.contains(editingStateColorRuleIndex) {
+                    viewModel.item.customization?.stateColorRules?[editingStateColorRuleIndex] = rule
+                } else {
+                    viewModel.item.customization?.stateColorRules = stateColorRules + [rule]
+                }
             }
         }
     }

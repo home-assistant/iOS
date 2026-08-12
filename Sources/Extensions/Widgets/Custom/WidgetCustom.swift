@@ -45,7 +45,7 @@ struct WidgetCustom: Widget {
         }
     }
 
-    private func modelsForWidget(
+    func modelsForWidget(
         _ widget: CustomWidget?,
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetEntityState],

@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 
+import Shared
 import SharedTesting
 
 import SwiftUI
@@ -44,6 +45,54 @@ struct WidgetsSnapshotTests {
                     height: size.height
                 )
             )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func customWidgetStateColorSnapshot() {
+        let size = snapshotSize(for: .systemSmall)
+        let rules = [
+            WidgetStateColorRule(
+                comparison: .lessThan,
+                threshold: 0,
+                color: "#FF3B30",
+                target: .state
+            ),
+        ]
+        let item = MagicItem(
+            id: "sensor.preview",
+            serverId: WidgetPreviewSample.serverId,
+            type: .entity,
+            customization: .init(stateColorRules: rules),
+            displayText: "Budget remaining"
+        )
+        let models = WidgetCustom().modelsForWidget(
+            .init(id: "budget", name: "Budget", items: [item]),
+            infoProvider: WidgetPreviewMagicItemProvider(),
+            states: [
+                item: .init(
+                    value: "-18.39 $",
+                    domainState: nil,
+                    hexColor: nil,
+                    numericValue: -18.39
+                ),
+            ],
+            showStates: true
+        )
+        guard let model = models.first else {
+            Issue.record("Expected the custom widget model to be created")
+            return
+        }
+
+        assertLightDarkSnapshots(
+            of: WidgetBasicContainerWrapperView(
+                emptyViewGenerator: { AnyView(EmptyView()) },
+                contents: [model],
+                type: .custom,
+                family: .systemSmall
+            ),
+            layout: .fixed(width: size.width, height: size.height),
+            named: "customWidgetStateColor"
+        )
     }
 
     @available(iOS 18, *)

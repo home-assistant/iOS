@@ -1774,6 +1774,8 @@
 		42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				__Snapshots__/WidgetsSnapshot.test/customWidgetStateColorSnapshot.customWidgetStateColor-dark.png,
+				__Snapshots__/WidgetsSnapshot.test/customWidgetStateColorSnapshot.customWidgetStateColor-light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSingleLabelSnapshot.dark.png,
