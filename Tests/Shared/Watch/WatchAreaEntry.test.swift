@@ -16,10 +16,30 @@ struct WatchAreaEntryTests {
                 try Self.entity(entityId: "camera.garage", domain: "camera").insert(db)
                 // A diagnostic entity is filtered out even though its domain is addable.
                 try Self.entity(entityId: "sensor.uptime", domain: "sensor", entityCategory: 1).insert(db)
+                // A hidden entity is filtered out even though its domain is addable.
+                try Self.entity(entityId: "light.hidden", domain: "light", isHidden: true).insert(db)
+                // Rows written before the hidden/category columns shipped carry neither flag. The
+                // registry still knows, and is what the filter has to believe — otherwise a server
+                // whose entities haven't been rewritten keeps offering entities the user hid.
+                try Self.entity(entityId: "light.stale_hidden", domain: "light").insert(db)
+                try Self.entity(entityId: "sensor.stale_diagnostic", domain: "sensor").insert(db)
+                try EntityRegistryListForDisplay.Entity(
+                    serverId: "1",
+                    entityId: "light.stale_hidden",
+                    hidden: true
+                ).insert(db)
+                try EntityRegistryListForDisplay.Entity(
+                    serverId: "1",
+                    entityId: "sensor.stale_diagnostic",
+                    entityCategory: 1
+                ).insert(db)
 
                 try Self.area(areaId: "living_room", entities: ["light.living_room"]).insert(db)
                 try Self.area(areaId: "garage", entities: ["camera.garage"]).insert(db)
                 try Self.area(areaId: "attic", entities: ["sensor.uptime"]).insert(db)
+                try Self.area(areaId: "basement", entities: ["light.hidden"]).insert(db)
+                try Self.area(areaId: "cellar", entities: ["light.stale_hidden"]).insert(db)
+                try Self.area(areaId: "loft", entities: ["sensor.stale_diagnostic"]).insert(db)
                 try Self.area(areaId: "empty", entities: []).insert(db)
                 // Same entity id on another server: scoping must keep that area out of server 1's list.
                 try Self.area(areaId: "office", serverId: "2", entities: ["light.living_room"]).insert(db)
@@ -59,7 +79,8 @@ struct WatchAreaEntryTests {
         entityId: String,
         domain: String,
         serverId: String = "1",
-        entityCategory: Int? = nil
+        entityCategory: Int? = nil,
+        isHidden: Bool? = nil
     ) -> HAAppEntity {
         .init(
             id: "\(serverId)-\(entityId)",
@@ -69,7 +90,8 @@ struct WatchAreaEntryTests {
             name: entityId,
             icon: nil,
             rawDeviceClass: nil,
-            entityCategory: entityCategory
+            entityCategory: entityCategory,
+            isHidden: isHidden
         )
     }
 
@@ -97,6 +119,7 @@ struct WatchAreaEntryTests {
         let database = try DatabaseQueue(path: ":memory:")
         try AppAreaTable().createIfNeeded(database: database)
         try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
         Current.database = { database }
         defer { Current.database = previousDatabase }
 

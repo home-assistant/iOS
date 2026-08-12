@@ -52,6 +52,7 @@ public enum DatabaseTables {
         case icon
         case rawDeviceClass
         case entityCategory
+        case isHidden
         case resolvedIcon
     }
 

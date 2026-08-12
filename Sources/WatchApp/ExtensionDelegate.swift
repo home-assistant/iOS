@@ -341,6 +341,20 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        var data = data
+        // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
+        if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
+            do {
+                data = try WatchDatabaseMirror.decompress(data)
+            } catch {
+                Current.Log.error("Failed to decompress pushed watch database mirror: \(error)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Failed to decompress pushed watch database mirror (\(data.count) bytes): \(error)",
+                    type: .database
+                ))
+                return
+            }
+        }
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
@@ -356,11 +370,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
             do {
                 try mirror.apply()
-                // The push carries the phone's digests in the transfer metadata; storing them keeps
-                // the next interactive delta sync accurate instead of re-fetching everything.
-                if let digests = metadata?[WatchDatabaseMirror.digestsKey] as? [String: String] {
-                    WatchUserDefaults.shared.databaseMirrorDigests = digests
-                }
+                // The push carries the phone's digests in the transfer metadata; storing them for
+                // the tables this push actually carried keeps the next interactive delta sync
+                // accurate instead of re-fetching everything (or wrongly assuming it has data a
+                // delta push omitted).
+                WatchUserDefaults.shared.mergeDatabaseMirrorDigests(
+                    metadata?[WatchDatabaseMirror.digestsKey] as? [String: String],
+                    carrying: mirror.carriedDigestKeys
+                )
                 Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",

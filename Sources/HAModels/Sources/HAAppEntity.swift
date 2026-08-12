@@ -8,8 +8,9 @@ import GRDB
 /// - `HAAppEntity` is every entity that currently has a state — including ones with no registry entry
 ///   (YAML/template/command-line entities, etc.) — and carries `domain` + `rawDeviceClass`, which the
 ///   registry does not. It's what pickers/widgets enumerate as "all selectable entities". It also
-///   copies the registry's `entityCategory` at write time so consumers that never receive the full
-///   registry (the watch) can still exclude config/diagnostic entities.
+///   copies the registry's `entityCategory` and hidden flag at write time so consumers can exclude
+///   config/diagnostic and hidden entities without a per-read registry join — including watches
+///   still on the legacy database mirror, which omits the registry entirely.
 /// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
 ///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
 ///
@@ -37,6 +38,11 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     /// The registry entity category index (config / diagnostic), copied from
     /// `EntityRegistryListForDisplay.Entity.entityCategory` at write time; `nil` for ordinary entities.
     public let entityCategory: Int?
+    /// Whether the user hid this entity in the entity registry, copied from
+    /// `EntityRegistryListForDisplay.Entity.hidden` at write time; `nil` for entities that aren't
+    /// hidden (or have no registry row). Baked in for the same reason as `entityCategory`: consumers
+    /// that never receive the full registry (the watch) can still exclude hidden entities.
+    public let isHidden: Bool?
     /// The frontend's default icon for this entity's domain + device class, resolved from the backend
     /// `entity_component` map at write time (stateless). Used when there is no `icon` override so
     /// pickers render the same glyph the frontend does. `nil` when the map was unavailable.
@@ -51,6 +57,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         icon: String?,
         rawDeviceClass: String?,
         entityCategory: Int? = nil,
+        isHidden: Bool? = nil,
         resolvedIcon: String? = nil,
     ) {
         self.id = id
@@ -61,6 +68,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.icon = icon
         self.rawDeviceClass = rawDeviceClass
         self.entityCategory = entityCategory
+        self.isHidden = isHidden
         self.resolvedIcon = resolvedIcon
     }
 

@@ -56,11 +56,14 @@ final class WatchAreaEntitiesViewModel: ObservableObject {
             let provider = Current.magicItemProvider()
             provider.loadInformation { entitiesPerServer in
                 let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+                let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
                 let entries: [Entry] = (entitiesPerServer[serverId] ?? [])
                     .filter { entity in
                         area.entities.contains(entity.entityId)
-                            && allowedDomains.contains(entity.domain)
-                            && entity.entityCategory == nil
+                            && entity.isWatchCompatible(
+                                allowedDomains: allowedDomains,
+                                excludedEntityIds: excluded
+                            )
                     }
                     .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                     .compactMap { entity in

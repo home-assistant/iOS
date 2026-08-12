@@ -9,10 +9,19 @@ import GRDB
 /// Assistant directly. Reference tables, complications, configs, and servers all travel on this
 /// mirror.
 ///
-/// Only what the add flow needs is included: entities of watch-supported domains, areas
-/// (for the context line), and Assist pipelines. Device / entity-registry tables are intentionally
-/// omitted — they're large and the context line works without them. Even so, this snapshot
-/// can exceed WatchConnectivity's per-message limit, so it is streamed as chunked guaranteed messages.
+/// The snapshot's fidelity depends on the mirror version the watch advertises on its sync request
+/// (`versionKey`):
+/// - **Legacy (v1)**: only what the add flow needs — entities of watch-supported domains minus the
+///   registry-hidden ones, areas (for the context line), and Assist pipelines. Device /
+///   entity-registry tables are omitted. Served to watches that don't advertise a version.
+/// - **Full reference (v2, `fullReferenceVersion`)**: every row of the server-reference tables the
+///   iPhone maintains — entities (all domains, hidden included), the full entity registry, the full
+///   device registry, areas and pipelines — so watch features can query the same data the same way
+///   iPhone features do, and new registry-derived behavior needs no per-field mirroring work.
+///   v2 payloads travel LZFSE-compressed (flagged via `compressedKey`) to offset the extra rows.
+///
+/// Either way the snapshot can exceed WatchConnectivity's per-message limit, so it is streamed as
+/// chunked guaranteed messages (or pushed whole over `transferFile`).
 public struct WatchDatabaseMirror: WatchCodable {
     /// Blob identifier used when the phone proactively *pushes* the mirror to the watch over
     /// `transferFile` (background-capable), in addition to the watch-initiated chunked pull.
@@ -20,6 +29,17 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// Key under which sync requests, sync-start replies and push metadata carry the per-table
     /// digest map used for delta syncs (see `tableDigests()`).
     public static let digestsKey = "digests"
+    /// Key under which the watch's sync request advertises the highest mirror version it
+    /// understands. Absent means a legacy build → the phone serves the v1 snapshot.
+    public static let versionKey = "mirrorVersion"
+    /// Key flagging an LZFSE-compressed payload: set in the sync-start reply (the assembled chunks
+    /// are compressed) and in push transfer metadata (the blob content is compressed). Absent means
+    /// plain property-list bytes, so a legacy phone's reply is decoded unchanged.
+    public static let compressedKey = "compressed"
+    /// The mirror served to watches that don't advertise a version (see the type doc).
+    public static let legacyVersion = 1
+    /// The full-reference mirror (see the type doc).
+    public static let fullReferenceVersion = 2
 
     /// The reference tables. All optional with the same retain semantics as the complication
     /// fields below: `nil` means "this sync did not carry the table" — either a delta sync where
@@ -27,6 +47,12 @@ public struct WatchDatabaseMirror: WatchCodable {
     public var entities: [HAAppEntity]?
     public var areas: [AppArea]?
     public var pipelines: [AssistPipelines]?
+    /// The full entity registry (`list_for_display`), carried from `fullReferenceVersion` onwards so
+    /// the watch holds the same registry the iPhone does. Same retain semantics as `entities`.
+    /// Distinct from `registryEntities` below, the per-entity precision slice kept for legacy builds.
+    public var registry: [EntityRegistryListForDisplay.Entity]?
+    /// The full device registry, carried from `fullReferenceVersion` onwards. Same retain semantics.
+    public var devices: [AppDeviceRegistry]?
     /// Legacy complications + modern configs so the watch reload routine is another chance to receive
     /// them (in addition to the background WatchConnectivity context push).
     ///
@@ -53,6 +79,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         entities: [HAAppEntity]?,
         areas: [AppArea]?,
         pipelines: [AssistPipelines]?,
+        registry: [EntityRegistryListForDisplay.Entity]? = nil,
+        devices: [AppDeviceRegistry]? = nil,
         complications: [WatchComplication]? = nil,
         complicationConfigs: [WatchComplicationConfig]? = nil,
         registryEntities: [EntityRegistryListForDisplay.Entity] = [],
@@ -61,6 +89,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.entities = entities
         self.areas = areas
         self.pipelines = pipelines
+        self.registry = registry
+        self.devices = devices
         self.complications = complications
         self.complicationConfigs = complicationConfigs
         self.registryEntities = registryEntities
@@ -68,7 +98,7 @@ public struct WatchDatabaseMirror: WatchCodable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case entities, areas, pipelines, complications, complicationConfigs, servers
+        case entities, areas, pipelines, registry, devices, complications, complicationConfigs, servers
         case registryEntities = "complicationEntities"
     }
 
@@ -85,6 +115,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.entities = try container.decodeIfPresent([HAAppEntity].self, forKey: .entities)
         self.areas = try container.decodeIfPresent([AppArea].self, forKey: .areas)
         self.pipelines = try container.decodeIfPresent([AssistPipelines].self, forKey: .pipelines)
+        self.registry = try container.decodeIfPresent([EntityRegistryListForDisplay.Entity].self, forKey: .registry)
+        self.devices = try container.decodeIfPresent([AppDeviceRegistry].self, forKey: .devices)
         self.complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
             .flatMap { $0 }
         self.complicationConfigs = (try? container.decodeIfPresent(
@@ -98,10 +130,67 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.servers = (try? container.decodeIfPresent(Data.self, forKey: .servers)).flatMap { $0 }
     }
 
-    /// Domains the watch can add (mirrors the iPhone watch picker), including the display-only
-    /// sensor domains — the watch resolves their names and icons from these rows too.
+    /// Domains the legacy (v1) mirror carries (mirrors the iPhone watch picker), including the
+    /// display-only sensor domains — the watch resolves their names and icons from these rows too.
+    /// The full-reference (v2) mirror carries every domain instead.
     private static var mirroredDomains: Set<String> {
         Set(Domain.watchAddable.map(\.rawValue))
+    }
+
+    /// A reference table that reads back empty is carried as `nil` (retain) rather than as an
+    /// authoritative empty array.
+    ///
+    /// The phone's tables are emptied and rewritten by `AppDatabaseUpdater`, and a read that lands
+    /// on a transiently empty table (a refresh that fetched nothing, a reset, a wipe-and-rebuild in
+    /// progress) would otherwise tell the watch "the phone genuinely has no entities" and delete
+    /// every mirrored row — leaving the watch with a home screen that resolves nothing until the
+    /// next successful sync. A server that legitimately has zero entities/areas is not a state
+    /// worth propagating at the cost of that failure mode; the complication fields already follow
+    /// the same "only a successful read is authoritative" rule.
+    private static func retainingIfEmpty<T>(_ rows: [T]) -> [T]? {
+        rows.isEmpty ? nil : rows
+    }
+
+    /// Digest keys for the tables this payload actually carries.
+    ///
+    /// The watch merges only these into its stored digest map, so a table the phone omitted — as a
+    /// delta push, or because it read back empty — keeps its previous digest instead of adopting
+    /// the phone's. That is what makes omission self-healing: if the phone's belief about what the
+    /// watch holds is ever wrong, the watch still echoes its true digests on the next pull and the
+    /// missing table is carried then.
+    public var carriedDigestKeys: Set<String> {
+        var keys: Set<String> = []
+        if entities != nil { keys.insert("entities") }
+        if areas != nil { keys.insert("areas") }
+        if pipelines != nil { keys.insert("pipelines") }
+        if registry != nil { keys.insert("registry") }
+        if devices != nil { keys.insert("devices") }
+        if complications != nil, complicationConfigs != nil { keys.insert("complications") }
+        if servers != nil { keys.insert("servers") }
+        return keys
+    }
+
+    /// Digest keys whose mirrored table holds no rows in the local database (called on the watch).
+    ///
+    /// A stored digest asserts "this table is already here, at this version", and the phone uses that
+    /// assertion to omit the table from the next sync. If the table is actually empty — wiped by an
+    /// older build that accepted an authoritative empty payload, a failed apply, a "delete local
+    /// data" — the assertion is false and the omission repeats on every sync, so the table never
+    /// comes back. The visible symptom is a home screen that resolves no names and falls back to
+    /// showing entity ids, alongside syncs that transfer almost nothing.
+    ///
+    /// Dropping these keys before echoing the digests makes the phone send those tables again, so a
+    /// watch already stuck in that state repairs itself on its next sync.
+    public static func digestKeysForEmptyLocalTables() -> Set<String> {
+        (try? Current.database().read { db in
+            var keys: Set<String> = []
+            if try HAAppEntity.fetchCount(db) == 0 { keys.insert("entities") }
+            if try AppArea.fetchCount(db) == 0 { keys.insert("areas") }
+            if try AssistPipelines.fetchCount(db) == 0 { keys.insert("pipelines") }
+            if try EntityRegistryListForDisplay.Entity.fetchCount(db) == 0 { keys.insert("registry") }
+            if try AppDeviceRegistry.fetchCount(db) == 0 { keys.insert("devices") }
+            return keys
+        }) ?? []
     }
 
     /// All `.entity` items the watch home screen renders, including those nested inside folders.
@@ -118,8 +207,9 @@ public struct WatchDatabaseMirror: WatchCodable {
         }
     }
 
-    /// Read the current reference tables from the local GRDB (called on the phone).
-    public static func snapshot() throws -> WatchDatabaseMirror {
+    /// Read the current reference tables from the local GRDB (called on the phone). Pass the mirror
+    /// version the receiving watch advertised; the default serves the legacy slice (see the type doc).
+    public static func snapshot(version: Int = legacyVersion) throws -> WatchDatabaseMirror {
         // A read failure sends `nil` (not `[]`) so the watch retains its rows rather than being told the
         // phone has none — only a successful read is authoritative.
         let complications = try? WatchComplication.all()
@@ -149,23 +239,44 @@ public struct WatchDatabaseMirror: WatchCodable {
         let servers = Current.servers.restorableState()
 
         return try Current.database().read { db in
-            // The watch never receives the full registry, so it can't filter hidden entities
-            // itself — exclude them here, matching the iPhone entity picker.
-            let hiddenKeys = try Set(
-                EntityRegistryListForDisplay.Entity.fetchAll(db)
-                    .filter(\.isHidden)
-                    .map { ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId) }
-            )
-            let entities = try HAAppEntity
-                .filter(mirroredDomains.contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
-                .fetchAll(db)
-                .filter { !hiddenKeys.contains(ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId)) }
+            let entities: [HAAppEntity]
+            var fullRegistry: [EntityRegistryListForDisplay.Entity] = []
+            var devices: [AppDeviceRegistry] = []
+            if version >= fullReferenceVersion {
+                // Full parity with the iPhone's reference tables: every row travels, including
+                // hidden and config/diagnostic entities — the watch filters at read time exactly
+                // like the iPhone does. Sorted so the encoded payload (and therefore the delta-sync
+                // digests) stays stable across snapshots of unchanged data.
+                entities = try HAAppEntity.fetchAll(db).sorted { $0.id < $1.id }
+                fullRegistry = try EntityRegistryListForDisplay.Entity.fetchAll(db)
+                    .sorted { ($0.serverId, $0.entityId) < ($1.serverId, $1.entityId) }
+                devices = try AppDeviceRegistry.fetchAll(db).sorted { $0.id < $1.id }
+            } else {
+                // Legacy watches never receive the registry and their read paths predate the baked
+                // `isHidden` flag, so they can't filter hidden entities themselves — exclude them
+                // here, matching the iPhone entity picker.
+                let hiddenKeys = try Set(
+                    EntityRegistryListForDisplay.Entity.fetchAll(db)
+                        .filter(\.isHidden)
+                        .map { ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId) }
+                )
+                entities = try HAAppEntity
+                    .filter(mirroredDomains.contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
+                    .fetchAll(db)
+                    .filter {
+                        !hiddenKeys.contains(ServerEntity.uniqueId(serverId: $0.serverId, entityId: $0.entityId))
+                    }
+            }
             let areas = try AppArea.fetchAll(db)
             let pipelines = try AssistPipelines.fetchAll(db)
+            // Every reference table goes through `retainingIfEmpty`: an empty read is never sent as
+            // an authoritative wipe (see its documentation).
             return WatchDatabaseMirror(
-                entities: entities,
-                areas: areas,
-                pipelines: pipelines,
+                entities: retainingIfEmpty(entities),
+                areas: retainingIfEmpty(areas),
+                pipelines: retainingIfEmpty(pipelines),
+                registry: retainingIfEmpty(fullRegistry),
+                devices: retainingIfEmpty(devices),
                 complications: complications,
                 complicationConfigs: configs,
                 registryEntities: registry,
@@ -174,14 +285,52 @@ public struct WatchDatabaseMirror: WatchCodable {
         }
     }
 
+    // MARK: - Payload compression
+
+    /// Compress an encoded mirror for transfer. Full-reference (v2) payloads always travel
+    /// compressed — they carry every reference row — and the receiver knows via `compressedKey`,
+    /// never by guessing.
+    public static func compress(_ data: Data) throws -> Data {
+        try (data as NSData).compressed(using: .lzfse) as Data
+    }
+
+    /// Inverse of `compress(_:)`, called by the watch before decoding a payload whose sync reply or
+    /// push metadata carried the `compressedKey` flag.
+    public static func decompress(_ data: Data) throws -> Data {
+        try (data as NSData).decompressed(using: .lzfse) as Data
+    }
+
     /// Overwrite the local GRDB reference tables with this snapshot (called on the watch). The watch
-    /// only ever holds mirrored rows in these tables, so a full replace is correct. Registry rows
-    /// are upserted (not wiped) so they don't disturb other registry data.
+    /// only ever holds mirrored rows in these tables, so a full replace is correct. The legacy
+    /// `registryEntities` precision slice is upserted (not wiped) so a v1 payload doesn't disturb
+    /// registry rows a v2 sync delivered; a carried full `registry` replaces the table outright.
     public func apply() throws {
         try Current.database().write { db in
             try applyReferenceTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
         }
+        logApplyOutcome()
+    }
+
+    /// Record which tables a payload actually carried and what the database holds afterwards.
+    ///
+    /// A byte count alone can't distinguish "carried every table" from "carried one table and
+    /// retained the rest", and an apply that logs success can still leave a table empty — which is
+    /// exactly the shape of the sync problems seen on device. Logging both ends of the operation
+    /// makes a watch log enough on its own to tell which side lost the data.
+    private func logApplyOutcome() {
+        let carried = carriedDigestKeys.sorted().joined(separator: "+")
+        let counts = (try? Current.database().read { db in
+            try [
+                "entities": HAAppEntity.fetchCount(db),
+                "areas": AppArea.fetchCount(db),
+                "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
+                "devices": AppDeviceRegistry.fetchCount(db),
+                "pipelines": AssistPipelines.fetchCount(db),
+            ]
+        }) ?? [:]
+        let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
+        Current.Log.info("Applied mirror carrying [\(carried.isEmpty ? "nothing" : carried)]; rows now \(rows)")
     }
 
     private func applyReferenceTables(in db: Database) throws {
@@ -203,6 +352,21 @@ public struct WatchDatabaseMirror: WatchCodable {
             try AssistPipelines.deleteAll(db)
             for pipeline in pipelines {
                 try pipeline.insert(db)
+            }
+        }
+        // Full-reference tables (v2). The registry replace runs before the legacy
+        // `registryEntities` upsert in `applyComplicationTables` — those rows come from the same
+        // phone table, so re-upserting a subset afterwards is a no-op, not a conflict.
+        if let registry {
+            try EntityRegistryListForDisplay.Entity.deleteAll(db)
+            for entry in registry {
+                try entry.insert(db)
+            }
+        }
+        if let devices {
+            try AppDeviceRegistry.deleteAll(db)
+            for device in devices {
+                try device.insert(db)
             }
         }
     }
@@ -249,6 +413,12 @@ public struct WatchDatabaseMirror: WatchCodable {
         if let pipelines, let data = try? encoder.encode(pipelines) {
             digests["pipelines"] = Self.digest(of: [data])
         }
+        if let registry, let data = try? encoder.encode(registry) {
+            digests["registry"] = Self.digest(of: [data])
+        }
+        if let devices, let data = try? encoder.encode(devices) {
+            digests["devices"] = Self.digest(of: [data])
+        }
         // The complication tables travel and change together; one digest covers all three.
         if let complications, let complicationConfigs,
            let complicationsData = try? encoder.encode(complications),
@@ -284,6 +454,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         if matches("entities") { copy.entities = nil }
         if matches("areas") { copy.areas = nil }
         if matches("pipelines") { copy.pipelines = nil }
+        if matches("registry") { copy.registry = nil }
+        if matches("devices") { copy.devices = nil }
         if matches("complications") {
             copy.complications = nil
             copy.complicationConfigs = nil
