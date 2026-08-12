@@ -21,7 +21,7 @@ struct WidgetSensors: Widget {
                         id: sensor.id,
                         title: appendUnitOfMeasurementToValue(sensor: sensor),
                         subtitle: sensor.key,
-                        interactionType: .appIntent(.refresh),
+                        interactionType: interactionType(for: sensor),
                         icon: MaterialDesignIcons(
                             serversideValueNamed: sensor.icon ?? "",
                             fallback: .dotsGridIcon
@@ -41,6 +41,17 @@ struct WidgetSensors: Widget {
 
     private func appendUnitOfMeasurementToValue(sensor: WidgetSensorsEntry.SensorData) -> String {
         "\(sensor.value) \(sensor.unitOfMeasurement ?? "")"
+    }
+
+    /// Tapping a sensor opens the app on that entity's more info dialog, matching the behavior of the
+    /// other entity based widgets. Placeholder and gallery entries have no entity to open, so they keep
+    /// the refresh interaction.
+    private func interactionType(for sensor: WidgetSensorsEntry.SensorData) -> WidgetInteractionType {
+        guard let entityId = sensor.entityId, let serverId = sensor.serverId,
+              let url = AppConstants.openEntityDeeplinkURL(entityId: entityId, serverId: serverId) else {
+            return .appIntent(.refresh)
+        }
+        return .widgetURL(url)
     }
 }
 
