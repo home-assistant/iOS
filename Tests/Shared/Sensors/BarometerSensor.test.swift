@@ -34,6 +34,10 @@ class BarometerSensorTests: XCTestCase {
         Current.barometer.isAvailable = { false }
         Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, nil) }
         Current.barometer.stopUpdates = {}
+
+        // The observer owns the one altimeter session process-wide, so a fresh one per test keeps
+        // subscribers (and therefore the started/stopped state) from leaking between them.
+        Current.barometerObserver = BarometerObserver()
     }
 
     override func tearDown() {
