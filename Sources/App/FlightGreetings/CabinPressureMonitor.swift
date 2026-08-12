@@ -180,8 +180,14 @@ final class CabinPressureMonitor {
         for index in 0 ..< bucketCount {
             let start = now.addingTimeInterval(-trendWindow + Double(index) * trendBucket)
             let end = start.addingTimeInterval(trendBucket)
+            // Both ends are inclusive on purpose, so consecutive buckets share the reading on their
+            // boundary: each one then spans a whole minute instead of stopping at the last reading
+            // before it, which would make every bucket read low by one sampling interval.
             let bucket = samples.filter { $0.date >= start && $0.date <= end }
-            guard let first = bucket.first, let last = bucket.last else { continue }
+            // `CMAltimeter` reports on change rather than at a fixed rate, so a minute can arrive
+            // with a single reading. That measures nothing, and recording it as a zero change would
+            // pass it off as a flat minute.
+            guard bucket.count >= 2, let first = bucket.first, let last = bucket.last else { continue }
             changes.append(last.pressureKpa - first.pressureKpa)
         }
 

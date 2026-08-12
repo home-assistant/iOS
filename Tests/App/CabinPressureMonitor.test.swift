@@ -12,15 +12,18 @@ final class CabinPressureMonitorTests: XCTestCase {
         // Pressurization takes the cabin down about 1.2 kPa every minute, minute after minute.
         let samples = makeSamples(startPressureKpa: 101.3, kpaPerMinute: -1.2)
 
+        // The tolerance is tight on purpose: consecutive buckets share the reading on their boundary
+        // so each spans a whole minute, and the reported rate is the real one. Stopping a bucket at
+        // the last reading before its boundary instead would report about -1.1 here.
         let rate = try XCTUnwrap(CabinPressureMonitor.sustainedChangeKpaPerMinute(in: samples, now: now))
-        XCTAssertEqual(rate, -1.2, accuracy: 0.2)
+        XCTAssertEqual(rate, -1.2, accuracy: 0.01)
     }
 
     func testCabinDescentIsASustainedChange() throws {
         let samples = makeSamples(startPressureKpa: 78.0, kpaPerMinute: 0.9)
 
         let rate = try XCTUnwrap(CabinPressureMonitor.sustainedChangeKpaPerMinute(in: samples, now: now))
-        XCTAssertEqual(rate, 0.9, accuracy: 0.2)
+        XCTAssertEqual(rate, 0.9, accuracy: 0.01)
     }
 
     func testElevatorRideIsNotASustainedChange() {

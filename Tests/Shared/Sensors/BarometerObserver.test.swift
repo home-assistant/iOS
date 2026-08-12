@@ -5,9 +5,16 @@ import XCTest
 
 class BarometerObserverTests: XCTestCase {
     private var observer: BarometerObserver!
+    private var originalBarometer: AppEnvironment.Barometer!
+    private var originalObserver: BarometerObserver!
 
     override func setUp() {
         super.setUp()
+
+        // `Current` is global, so the stubs below have to be undone or they leak into every test that
+        // runs after this class and make failures depend on ordering.
+        originalBarometer = Current.barometer
+        originalObserver = Current.barometerObserver
 
         Current.barometer.isAuthorized = { true }
         Current.barometer.isAvailable = { true }
@@ -19,6 +26,10 @@ class BarometerObserverTests: XCTestCase {
 
     override func tearDown() {
         observer = nil
+        Current.barometer = originalBarometer
+        Current.barometerObserver = originalObserver
+        originalBarometer = nil
+        originalObserver = nil
         super.tearDown()
     }
 
