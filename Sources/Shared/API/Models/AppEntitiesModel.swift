@@ -77,6 +77,13 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             registryRows.compactMap { row in row.entityCategory.map { (row.entityId, $0) } },
             uniquingKeysWith: { first, _ in first }
         )
+        // The registry hidden flag is baked in the same way, so consumers can exclude hidden
+        // entities without a registry join — including watches on the legacy database mirror,
+        // which never receive the registry.
+        let registryHiddenFlags: [String: Bool] = Dictionary(
+            registryRows.compactMap { row in row.isHidden ? (row.entityId, true) : nil },
+            uniquingKeysWith: { first, _ in first }
+        )
         // The user's entity-registry icon override wins over the live `attributes.icon`, matching the
         // frontend's precedence (see `ha-state-icon.ts`).
         let registryIcons: [String: String] = Dictionary(
@@ -103,6 +110,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                 icon: registryIcons[entity.entityId] ?? entity.attributes.icon,
                 rawDeviceClass: deviceClass,
                 entityCategory: registryEntityCategories[entity.entityId],
+                isHidden: registryHiddenFlags[entity.entityId],
                 resolvedIcon: resolvedIcon
             )
         }.sorted(by: { $0.id < $1.id })

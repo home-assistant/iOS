@@ -17,7 +17,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
     func stopImprovScanIfNeeded()
-    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool)
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, focusInputOnAppear: Bool)
 }
 
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
@@ -145,10 +145,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .assistShow:
                 let startListening = incomingMessage.Payload?["start_listening"] as? Bool
                 let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                // The user can override what the frontend asks for, this only applies to Assist
+                // opened from the dashboard.
+                let startMode = AssistConfiguration.config.startMode
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startListening ?? false
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false),
+                    // Asking for text explicitly means the user wants to type, so save them a tap.
+                    focusInputOnAppear: startMode == .text
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
@@ -491,12 +496,18 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         ))
     }
 
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
+    func showAssist(
+        server: Server,
+        pipeline: String = "",
+        autoStartRecording: Bool = false,
+        focusInputOnAppear: Bool = false
+    ) {
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
                 pipelineId: pipeline,
-                autoStartRecording: autoStartRecording
+                autoStartRecording: autoStartRecording,
+                focusInputOnAppear: focusInputOnAppear
             ))
             return
         }
@@ -507,7 +518,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             AssistWindowModel.shared.configure(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording
+                autoStartRecording: autoStartRecording,
+                focusInputOnAppear: focusInputOnAppear
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
@@ -515,7 +527,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording
+                autoStartRecording: autoStartRecording,
+                focusInputOnAppear: focusInputOnAppear
             ))
             assistView.modalPresentationStyle = .fullScreen
             assistView.modalTransitionStyle = .crossDissolve

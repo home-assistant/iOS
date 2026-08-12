@@ -53,6 +53,7 @@
 "announcement.drop_support.title" = "Viktig uppdatering";
 "app_intents.assist.pipeline.default.title" = "Standard";
 "app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.assist.pipelines.title" = "Pipelines";
 "app_intents.assist.preferred_pipeline.title" = "Föredragen";
 "app_intents.assist.refresh_warning.title" = "Hittar du inte din Assist-pipeline? Öppna Assist i appen för att uppdatera listan över pipelines.";
 "app_intents.assist_prompt.description" = "Skicka en textprompt till Assist";
@@ -183,6 +184,11 @@
 "assist.settings.on_device_tts.voice" = "Röst";
 "assist.settings.section.experimental.title" = "Experimentell";
 "assist.settings.section.labs.title" = "Mer";
+"assist.settings.start_mode.auto" = "Auto";
+"assist.settings.start_mode.footer" = "Controls how Assist starts when you trigger it from a Home Assistant dashboard. \"Auto\" follows what the dashboard asks for, while \"Voice\" and \"Text\" always override it. This does not apply to widgets, shortcuts or other app features.";
+"assist.settings.start_mode.text" = "Text";
+"assist.settings.start_mode.title" = "Assist start mode";
+"assist.settings.start_mode.voice" = "Voice";
 "assist.settings.title" = "Assist-inställningar";
 "assist.settings.tts_mute.footer" = "När funktionen är aktiverad kommer Assist inte att spela upp ljudsvar, även om text-till-tal-funktionen är konfigurerad i pipelinen. Du kommer fortfarande att se textsvaren.";
 "assist.settings.tts_mute.toggle" = "Stäng av röstsvar";
@@ -1280,6 +1286,12 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.validate_error.edit_url" = "Redigera URL";
 "settings.connection_section.validate_error.title" = "Fel vid sparande av URL";
 "settings.connection_section.validate_error.use_anyway" = "Använd ändå";
+"settings.connection_section.webhook.active.title" = "Currently used";
+"settings.connection_section.webhook.active.unavailable" = "No URL available";
+"settings.connection_section.webhook.endpoints.footer" = "Treat these URLs as sensitive. Anyone with them can send requests to this mobile app webhook.";
+"settings.connection_section.webhook.footer" = "The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.in_use" = "In use";
+"settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Autentiserar";
 "settings.connection_section.websocket.status.connected" = "Ansluten";
 "settings.connection_section.websocket.status.connecting" = "Ansluter";
@@ -2475,6 +2487,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.actions.title" = "Åtgärder";
 "widgets.assist.action_title" = "Fråga Assist";
 "widgets.assist.description" = "Öppna Assist i appen";
+"widgets.assist.not_configured" = "No Pipelines Configured";
 "widgets.assist.title" = "Assistent";
 "widgets.assist.unknown_configuration" = "Konfigurera";
 "widgets.automation.trigger.title" = "Utlös automatisering";

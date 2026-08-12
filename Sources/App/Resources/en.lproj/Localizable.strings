@@ -53,6 +53,7 @@
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.assist.pipelines.title" = "Pipelines";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.assist_prompt.description" = "Send a text prompt to Assist";
@@ -183,6 +184,11 @@
 "assist.settings.on_device_tts.voice" = "Voice";
 "assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.section.labs.title" = "More";
+"assist.settings.start_mode.auto" = "Auto";
+"assist.settings.start_mode.footer" = "Controls how Assist starts when you trigger it from a Home Assistant dashboard. \"Auto\" follows what the dashboard asks for, while \"Voice\" and \"Text\" always override it. This does not apply to widgets, shortcuts or other app features.";
+"assist.settings.start_mode.text" = "Text";
+"assist.settings.start_mode.title" = "Assist start mode";
+"assist.settings.start_mode.voice" = "Voice";
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
@@ -1242,6 +1248,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.cloudhook.check_reachability.result" = "Result";
 "settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
 "settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
 "settings.connection_section.cloudhook.status.not_configured" = "Not configured";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Connected via";
@@ -1985,7 +1992,6 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.entity" = "Entity";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
-"watch.complications.builder.gauge_template" = "Gauge template";
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.icon_color" = "Icon color";
 "watch.complications.builder.insert_token" = "Insert";
@@ -2033,6 +2039,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.unit_automatic" = "Automatic";
 "watch.complications.builder.value_source" = "Value";
 "watch.complications.builder.value_source_state" = "State";
+"watch.complications.builder.value_template" = "Value template";
+"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";
@@ -2500,6 +2508,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.actions.title" = "Actions";
 "widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.not_configured" = "No Pipelines Configured";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
 "widgets.automation.trigger.title" = "Trigger automation";

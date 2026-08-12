@@ -46,6 +46,7 @@ struct AssistSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
+                startMode
                 muteToggle
                 labs
             }
@@ -66,6 +67,21 @@ struct AssistSettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var startMode: some View {
+        Section {
+            Picker(selection: $viewModel.configuration.startMode) {
+                ForEach(AssistStartMode.allCases) { mode in
+                    Text(mode.localizedTitle)
+                        .tag(mode)
+                }
+            } label: {
+                toggleLabel(symbol: .textBubble, text: L10n.Assist.Settings.StartMode.title)
+            }
+        } footer: {
+            Text(L10n.Assist.Settings.StartMode.footer)
         }
     }
 

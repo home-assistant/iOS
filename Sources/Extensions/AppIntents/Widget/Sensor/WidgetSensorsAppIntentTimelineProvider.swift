@@ -120,7 +120,9 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
-            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon().name
+            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon().name,
+            entityId: sensor.entityId,
+            serverId: sensor.serverId
         )
     }
 
@@ -151,6 +153,10 @@ struct WidgetSensorsEntry: TimelineEntry {
         var value: String
         var unitOfMeasurement: String?
         var icon: String?
+        /// Placeholder and gallery samples have no real entity behind them, so they carry no
+        /// identifiers and the tile falls back to a non-navigating interaction.
+        var entityId: String?
+        var serverId: String?
     }
 }
 

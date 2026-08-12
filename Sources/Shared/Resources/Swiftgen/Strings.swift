@@ -268,6 +268,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.default.title") }
         }
       }
+      public enum Pipelines {
+        /// Pipelines
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipelines.title") }
+      }
       public enum PreferredPipeline {
         /// Preferred
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
@@ -754,6 +758,18 @@ public enum L10n {
           /// More
           public static var title: String { return L10n.tr("Localizable", "assist.settings.section.labs.title") }
         }
+      }
+      public enum StartMode {
+        /// Auto
+        public static var auto: String { return L10n.tr("Localizable", "assist.settings.start_mode.auto") }
+        /// Controls how Assist starts when you trigger it from a Home Assistant dashboard. "Auto" follows what the dashboard asks for, while "Voice" and "Text" always override it. This does not apply to widgets, shortcuts or other app features.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.start_mode.footer") }
+        /// Text
+        public static var text: String { return L10n.tr("Localizable", "assist.settings.start_mode.text") }
+        /// Assist start mode
+        public static var title: String { return L10n.tr("Localizable", "assist.settings.start_mode.title") }
+        /// Voice
+        public static var voice: String { return L10n.tr("Localizable", "assist.settings.start_mode.voice") }
       }
       public enum TtsMute {
         /// When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.
@@ -4189,6 +4205,8 @@ public enum L10n {
         }
       }
       public enum Cloudhook {
+        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
         /// Cloudhook
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
         public enum CheckReachability {
@@ -6579,8 +6597,6 @@ public enum L10n {
         public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
         /// Gauge range (optional)
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
-        /// Gauge template
-        public static var gaugeTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_template") }
         /// Icon
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
@@ -6677,6 +6693,10 @@ public enum L10n {
         public static var valueSource: String { return L10n.tr("Localizable", "watch.complications.builder.value_source") }
         /// State
         public static var valueSourceState: String { return L10n.tr("Localizable", "watch.complications.builder.value_source_state") }
+        /// Value template
+        public static var valueTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.value_template") }
+        /// When the progress bar or gauge is visible, the template result should be a number between 0 and 1.
+        public static var valueTemplateFooter: String { return L10n.tr("Localizable", "watch.complications.builder.value_template_footer") }
       }
       public enum Family {
         /// Circular
@@ -8122,6 +8142,8 @@ public enum L10n {
       public static var actionTitle: String { return L10n.tr("Localizable", "widgets.assist.action_title") }
       /// Open Assist in the app
       public static var description: String { return L10n.tr("Localizable", "widgets.assist.description") }
+      /// No Pipelines Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.assist.not_configured") }
       /// Assist
       public static var title: String { return L10n.tr("Localizable", "widgets.assist.title") }
       /// Configure

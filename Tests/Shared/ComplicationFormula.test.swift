@@ -84,14 +84,12 @@ struct ComplicationFormulaTests {
         #expect(entityConfig.faceName == "sensor.sala")
     }
 
-    @Test func templateKindFaceNameUsesComplicationName() {
+    @Test func templateKindFaceNameIsNeverTheComplicationName() {
+        // The complication name only labels the config in lists; the template kind's on-face text
+        // comes from the rendered display-name template, substituted by the render surfaces.
         let config = WatchComplicationConfig(serverId: "server", kind: .customTemplate, name: "Solar")
-        #expect(config.faceName == "Solar")
-    }
-
-    @Test func templateKindFaceNameFallsBackWhenUnnamed() {
-        let config = WatchComplicationConfig(serverId: "server", kind: .customTemplate)
-        #expect(config.faceName == "Complication")
+        #expect(config.faceName.isEmpty)
+        #expect(config.displayName == "Solar")
     }
 
     @Test func defaultVisibilityMatchesLegacyFlags() {
@@ -144,6 +142,22 @@ struct ComplicationFormulaTests {
         var config = WatchComplicationConfig(serverId: "server", kind: .customTemplate)
         config.customTextTemplate = "{{ tpl }}"
         #expect(config.formula(for: .value, family: .circular).parts == [.template("{{ tpl }}")])
+    }
+
+    @Test func templateKindTitleAndSubtitleDefaultEmpty() {
+        // The one text a template complication renders is the display-name template in the value
+        // slot; the title/subtitle default to nothing rather than duplicating it (or worse,
+        // rendering the list-only complication name).
+        var config = WatchComplicationConfig(serverId: "server", kind: .customTemplate, name: "Solar")
+        config.customTextTemplate = "{{ tpl }}"
+        #expect(config.formula(for: .title, family: .rectangular).parts.isEmpty)
+        #expect(config.formula(for: .subtitle, family: .rectangular).parts.isEmpty)
+    }
+
+    @Test func templateKindInlineDefaultIsJustTheTemplate() {
+        var config = WatchComplicationConfig(serverId: "server", kind: .customTemplate, name: "Solar")
+        config.customTextTemplate = "{{ tpl }}"
+        #expect(config.formula(for: .title, family: .inline).parts == [.template("{{ tpl }}")])
     }
 
     @Test func customFormulaSurvivesCodableRoundTrip() throws {

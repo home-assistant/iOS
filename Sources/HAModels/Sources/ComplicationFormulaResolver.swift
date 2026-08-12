@@ -6,8 +6,8 @@ import Foundation
 /// complications only); entity-kind formulas resolve entirely from the other fields, on-device.
 public struct ComplicationFormulaContext {
     /// The name the `{name}` token renders on the face: the entity's name for entity kind, the
-    /// complication's own name for template kind (see `WatchComplicationConfig.faceName`). Never
-    /// the entity kind's complication name — that one only labels the config in lists.
+    /// rendered display-name template for template kind. Never the complication's own name — that
+    /// one only labels the config in lists (see `WatchComplicationConfig.faceName`).
     public var entityName: String
     /// The formatted value — entity state / value attribute with precision and unit applied — the
     /// same string the value slot traditionally shows.

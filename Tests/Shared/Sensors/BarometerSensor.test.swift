@@ -11,6 +11,8 @@ class BarometerSensorTests: XCTestCase {
 
     private var request: SensorProviderRequest!
     private var originalSensors: SensorContainer!
+    private var originalBarometer: AppEnvironment.Barometer!
+    private var originalObserver: BarometerObserver!
 
     override func setUp() {
         super.setUp()
@@ -29,16 +31,29 @@ class BarometerSensorTests: XCTestCase {
             serverVersion: Version()
         )
 
+        // `Current` is global, so the stubs below have to be undone in tearDown or they leak into
+        // every test that runs after this class and make failures depend on ordering.
+        originalBarometer = Current.barometer
+        originalObserver = Current.barometerObserver
+
         // start by assuming nothing is enabled/available
         Current.barometer.isAuthorized = { false }
         Current.barometer.isAvailable = { false }
         Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, nil) }
         Current.barometer.stopUpdates = {}
+
+        // The observer owns the one altimeter session process-wide, so a fresh one per test keeps
+        // subscribers (and therefore the started/stopped state) from leaking between them.
+        Current.barometerObserver = BarometerObserver()
     }
 
     override func tearDown() {
         Current.sensors = originalSensors
+        Current.barometer = originalBarometer
+        Current.barometerObserver = originalObserver
         originalSensors = nil
+        originalBarometer = nil
+        originalObserver = nil
         super.tearDown()
     }
 

@@ -52,6 +52,7 @@ public enum DatabaseTables {
         case icon
         case rawDeviceClass
         case entityCategory
+        case isHidden
         case resolvedIcon
     }
 
@@ -197,6 +198,7 @@ public enum DatabaseTables {
         case muteTTS
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
+        case startMode
     }
 
     public enum AllowedTag: String, CaseIterable {
