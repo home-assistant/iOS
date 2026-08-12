@@ -53,6 +53,7 @@
 "announcement.drop_support.title" = "Wichtiges Update";
 "app_intents.assist.pipeline.default.title" = "Standard";
 "app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.assist.pipelines.title" = "Pipelines";
 "app_intents.assist.preferred_pipeline.title" = "Bevorzugt";
 "app_intents.assist.refresh_warning.title" = "Du kannst deine Assist-Pipeline nicht finden? Öffne Assist in der App, um die Liste der Pipelines zu aktualisieren.";
 "app_intents.assist_prompt.description" = "Sende einen Text-Prompt an Assist";
@@ -183,6 +184,11 @@
 "assist.settings.on_device_tts.voice" = "Stimme";
 "assist.settings.section.experimental.title" = "Experimentell";
 "assist.settings.section.labs.title" = "Weitere";
+"assist.settings.start_mode.auto" = "Auto";
+"assist.settings.start_mode.footer" = "Legt fest, wie Assist gestartet wird, wenn du es über ein Home Assistant-Dashboard auslöst. Bei der Einstellung „Auto“ werden die Vorgaben des Dashboards befolgt, während die Einstellungen „Sprache“ und „Text“ diese Vorgaben stets überschreiben. Dies gilt nicht für Widgets, Shortcuts oder andere App-Funktionen.";
+"assist.settings.start_mode.text" = "Text";
+"assist.settings.start_mode.title" = "Assist-Startmodus";
+"assist.settings.start_mode.voice" = "Sprache";
 "assist.settings.title" = "Assist-Einstellungen";
 "assist.settings.tts_mute.footer" = "Wenn diese Option aktiviert ist, werden keine Audioantworten wiedergegeben, selbst wenn die Pipeline über eine Text-zu-Sprache-Funktion verfügt. Textantworten werden weiterhin angezeigt.";
 "assist.settings.tts_mute.toggle" = "Sprachantworten stummschalten";
@@ -1285,6 +1291,12 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.validate_error.edit_url" = "URL bearbeiten";
 "settings.connection_section.validate_error.title" = "Fehler beim Speichern der URL";
 "settings.connection_section.validate_error.use_anyway" = "Trotzdem verwenden";
+"settings.connection_section.webhook.active.title" = "Aktuell verwendet";
+"settings.connection_section.webhook.active.unavailable" = "Keine URL verfügbar";
+"settings.connection_section.webhook.endpoints.footer" = "Behandele diese URLs als vertraulich. Jeder, der im Besitz dieser URLs ist, kann Anfragen an diesen Webhook der Mobile-App senden.";
+"settings.connection_section.webhook.footer" = "Die App sendet Sensor-, Standort- und andere Aktualisierungen an diesen Webhook. Home Assistant Cloud stellt einen Cloudhook zur Verfügung, der immer dann verwendet wird, wenn du nicht zuhause bist. Ohne diesen erstellt die App die Webhook-URL stattdessen aus der internen, Remote- oder externen URL dieses Servers.";
+"settings.connection_section.webhook.in_use" = "In Gebrauch";
+"settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Authentifizierung";
 "settings.connection_section.websocket.status.connected" = "Verbunden";
 "settings.connection_section.websocket.status.connecting" = "Verbinden";
@@ -1671,7 +1683,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings_details.location.notifications.exit.title" = "GPS: Zone verlassen";
 "settings_details.location.notifications.header" = "Standortbenachrichtigungen";
 "settings_details.location.notifications.location_change.title" = "Erhebliche Standortänderung";
-"settings_details.location.notifications.push_notification.title" = "Anfrage via Push";
+"settings_details.location.notifications.push_notification.title" = "Push-Benachrichtigungen für Standortanfragen";
 "settings_details.location.notifications.url_scheme.title" = "URL-Schema Standortaktualisierung";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Standortbenachrichtigungen";
 "settings_details.location.title" = "Standort";
@@ -2281,7 +2293,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.labels.complication_template.modular_small_ring_image.description" = "Ein Template zum Anzeigen eines Bildes, das von einem konfigurierbaren Fortschrittsring umgeben ist";
 "watch.labels.complication_template.modular_small_ring_text.description" = "Ein Template zum Anzeigen von Text, der von einem konfigurierbaren Fortschrittsring umgeben ist";
 "watch.labels.complication_template.modular_small_simple_image.description" = "Ein Template zum Anzeigen eines Bildes.";
-"watch.labels.complication_template.modular_small_simple_text.description" = "Ein Template zum Anzeigen einer kleinen Textmenge";
+"watch.labels.complication_template.modular_small_simple_text.description" = "Ein Template zum Anzeigen einer kleinen Textmenge.";
 "watch.labels.complication_template.modular_small_stack_image.description" = "Ein Template zum Anzeigen eines einzelnen Bildes mit einer kurzen Textzeile darunter.";
 "watch.labels.complication_template.modular_small_stack_text.description" = "Ein Template zum Anzeigen von zwei übereinander gestapelten Zeichenfolgen.";
 "watch.labels.complication_template.style.circular_image" = "Kreisförmiges Bild";
@@ -2481,6 +2493,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.actions.title" = "Aktionen";
 "widgets.assist.action_title" = "Assist fragen";
 "widgets.assist.description" = "Assist in der App öffnen";
+"widgets.assist.not_configured" = "Keine Pipelines konfiguriert";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Konfigurieren";
 "widgets.automation.trigger.title" = "Automation auslösen";
@@ -2489,7 +2502,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.commonly_used_entities.description" = "Deine häufig verwendeten Entitäten basierend auf deinem Nutzungsverhalten anzeigen.";
 "widgets.commonly_used_entities.empty.description" = "Keine häufig verwendeten Entitäten gefunden. Verwende Home Assistant, um deinen Nutzungsverlauf aufzubauen.";
 "widgets.commonly_used_entities.title" = "Häufig genutzte Steuerelemente";
-"widgets.content_source.complication" = "Complication";
+"widgets.content_source.complication" = "Komplikation";
 "widgets.content_source.entity" = "Entität";
 "widgets.content_source.template" = "Template";
 "widgets.content_source.title" = "Quelle";
@@ -2575,7 +2588,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
 "widgets.details.description_with_warning" = "Anzeige von Zuständen aus Home Assistant in Textform. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
-"widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
+"widgets.details.gallery_description" = "Eine Entität, eine Watch-Komplikation oder ein Template aus Home Assistant als Text anzeigen";
 "widgets.details.parameters.action" = "Aktion";
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";
 "widgets.details.parameters.lower_template" = "Template oberer Text";
@@ -2594,7 +2607,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.period.title" = "Zeitraum";
 "widgets.energy.period.today" = "Heute";
 "widgets.energy.period.yesterday" = "Gestern";
-"widgets.energy.refresh_title" = "Refresh Energy";
+"widgets.energy.refresh_title" = "Energie aktualisieren";
 "widgets.energy.solar" = "PV";
 "widgets.energy.source.auto" = "Auto";
 "widgets.energy.source.consumption" = "Verbrauch";
@@ -2604,7 +2617,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.entity_state.placeholder" = "Entitätszustand";
 "widgets.gauge.description" = "Numerische Zustände von Home Assistant in einer Analoganzeige darstellen";
 "widgets.gauge.description_with_warning" = "Anzeige von numerischen Zuständen aus Home Assistant in einer Analoganzeige. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
-"widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
+"widgets.gauge.gallery_description" = "Eine Entität, eine Watch-Komplikation oder ein Template aus Home Assistant als Analoganzeige anzeigen";
 "widgets.gauge.parameters.action" = "Aktion";
 "widgets.gauge.parameters.gauge_type" = "Analoganzeigentyp";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapazität";
@@ -2626,7 +2639,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.open_page.title" = "Seite öffnen";
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribut";
-"widgets.parameters.complication" = "Complication";
+"widgets.parameters.complication" = "Komplikation";
 "widgets.parameters.entity" = "Entität";
 "widgets.preview.custom.description" = "Erstelle dein eigenes Widget innerhalb der App und lasse es dann hier anzeigen.";
 "widgets.preview.custom.title" = "Benutzerdefiniertes Widget";

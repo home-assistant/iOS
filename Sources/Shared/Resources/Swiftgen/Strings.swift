@@ -4153,6 +4153,8 @@ public enum L10n {
         }
       }
       public enum Cloudhook {
+        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
         /// Cloudhook
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
         public enum CheckReachability {

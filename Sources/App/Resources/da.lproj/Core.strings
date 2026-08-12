@@ -16,7 +16,7 @@
 "common::state::standby" = "Standby";
 "common::state::unlocked" = "Ulåst";
 "common::state::yes" = "Ja";
-"component::ai_task::title" = "AI task";
+"component::ai_task::title" = "AI-opgave";
 "component::airzone::entity::select::sleep_times::state::off" = "Fra";
 "component::alarm_control_panel::title" = "Alarmkontrolpanel";
 "component::alert::entity_component::_::state::idle" = "Inaktiv";
@@ -159,7 +159,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::ipp::entity::sensor::printer::state::idle" = "Inaktiv";
 "component::lawn_mower::entity_component::_::state::paused" = "På pause";
 "component::lawn_mower::title" = "Plæneklipper";
-"component::light::entity_component::_::state::off" = "Slukket";
+"component::light::entity_component::_::state::off" = "Fra";
 "component::light::entity_component::_::state::on" = "Tændt";
 "component::light::title" = "Lys";
 "component::litterrobot::entity::sensor::status_code::state::off" = "Fra";
