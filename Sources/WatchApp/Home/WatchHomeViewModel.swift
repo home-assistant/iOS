@@ -549,8 +549,12 @@ final class WatchHomeViewModel: ObservableObject {
             }
             do {
                 try mirror.apply()
-                // Only a successfully applied mirror advances the delta-sync baseline.
-                WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
+                // Only a successfully applied mirror advances the delta-sync baseline, and only for
+                // the tables it actually carried — see `mergeDatabaseMirrorDigests`.
+                WatchUserDefaults.shared.mergeDatabaseMirrorDigests(
+                    responseDigests,
+                    carrying: mirror.carriedDigestKeys
+                )
                 Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Apple Watch database sync applied (\(data.count) bytes)",

@@ -137,6 +137,39 @@ public struct WatchDatabaseMirror: WatchCodable {
         Set(Domain.watchAddable.map(\.rawValue))
     }
 
+    /// A reference table that reads back empty is carried as `nil` (retain) rather than as an
+    /// authoritative empty array.
+    ///
+    /// The phone's tables are emptied and rewritten by `AppDatabaseUpdater`, and a read that lands
+    /// on a transiently empty table (a refresh that fetched nothing, a reset, a wipe-and-rebuild in
+    /// progress) would otherwise tell the watch "the phone genuinely has no entities" and delete
+    /// every mirrored row — leaving the watch with a home screen that resolves nothing until the
+    /// next successful sync. A server that legitimately has zero entities/areas is not a state
+    /// worth propagating at the cost of that failure mode; the complication fields already follow
+    /// the same "only a successful read is authoritative" rule.
+    private static func retainingIfEmpty<T>(_ rows: [T]) -> [T]? {
+        rows.isEmpty ? nil : rows
+    }
+
+    /// Digest keys for the tables this payload actually carries.
+    ///
+    /// The watch merges only these into its stored digest map, so a table the phone omitted — as a
+    /// delta push, or because it read back empty — keeps its previous digest instead of adopting
+    /// the phone's. That is what makes omission self-healing: if the phone's belief about what the
+    /// watch holds is ever wrong, the watch still echoes its true digests on the next pull and the
+    /// missing table is carried then.
+    public var carriedDigestKeys: Set<String> {
+        var keys: Set<String> = []
+        if entities != nil { keys.insert("entities") }
+        if areas != nil { keys.insert("areas") }
+        if pipelines != nil { keys.insert("pipelines") }
+        if registry != nil { keys.insert("registry") }
+        if devices != nil { keys.insert("devices") }
+        if complications != nil, complicationConfigs != nil { keys.insert("complications") }
+        if servers != nil { keys.insert("servers") }
+        return keys
+    }
+
     /// All `.entity` items the watch home screen renders, including those nested inside folders.
     private static func entityItems(in items: [MagicItem]) -> [MagicItem] {
         items.flatMap { item -> [MagicItem] in
@@ -184,8 +217,8 @@ public struct WatchDatabaseMirror: WatchCodable {
 
         return try Current.database().read { db in
             let entities: [HAAppEntity]
-            var fullRegistry: [EntityRegistryListForDisplay.Entity]?
-            var devices: [AppDeviceRegistry]?
+            var fullRegistry: [EntityRegistryListForDisplay.Entity] = []
+            var devices: [AppDeviceRegistry] = []
             if version >= fullReferenceVersion {
                 // Full parity with the iPhone's reference tables: every row travels, including
                 // hidden and config/diagnostic entities — the watch filters at read time exactly
@@ -213,12 +246,14 @@ public struct WatchDatabaseMirror: WatchCodable {
             }
             let areas = try AppArea.fetchAll(db)
             let pipelines = try AssistPipelines.fetchAll(db)
+            // Every reference table goes through `retainingIfEmpty`: an empty read is never sent as
+            // an authoritative wipe (see its documentation).
             return WatchDatabaseMirror(
-                entities: entities,
-                areas: areas,
-                pipelines: pipelines,
-                registry: fullRegistry,
-                devices: devices,
+                entities: retainingIfEmpty(entities),
+                areas: retainingIfEmpty(areas),
+                pipelines: retainingIfEmpty(pipelines),
+                registry: retainingIfEmpty(fullRegistry),
+                devices: retainingIfEmpty(devices),
                 complications: complications,
                 complicationConfigs: configs,
                 registryEntities: registry,

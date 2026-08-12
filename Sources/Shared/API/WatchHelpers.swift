@@ -316,10 +316,24 @@ public enum WatchMirrorPushCoordinator {
         }
     }
 
-    /// Clear the de-dup cache so the next `schedule` pushes even if the snapshot is unchanged. Used
-    /// after a failed transfer and by tests.
+    /// Digests of the tables the watch is believed to hold, from the last transfer this coordinator
+    /// handed off. Used to omit unchanged tables from the next push: a full-reference snapshot is
+    /// megabytes, and pushing all of it on every trigger saturates the WatchConnectivity link —
+    /// starving the interactive chunked pull, whose sends then fail as "not immediately reachable".
+    /// Cleared whenever a transfer fails, so the next push is complete again.
+    ///
+    /// Safe to be wrong: the watch adopts digests only for tables a payload actually carried, so a
+    /// push it never applied leaves its stored digests untouched and its next pull asks for the
+    /// tables it is really missing.
+    private static var lastPushedDigests: [String: String] = [:]
+
+    /// Clear the de-dup caches so the next `schedule` pushes a complete snapshot even if unchanged.
+    /// Used after a failed transfer and by tests.
     public static func reset() {
-        queue.async { lastPushedData = nil }
+        queue.async {
+            lastPushedData = nil
+            lastPushedDigests = [:]
+        }
     }
 
     private static func push(reason: Reason) {
@@ -334,11 +348,21 @@ public enum WatchMirrorPushCoordinator {
         let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
         let data: Data
         let digests: [String: String]
+        let carriedKeys: Set<String>
         do {
             let snapshot = try WatchDatabaseMirror.snapshot(version: version)
-            let encoded = try snapshot.encodeForWatch()
-            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
             digests = snapshot.tableDigests()
+            // Carry only what changed since the last transfer, the same way the watch-initiated
+            // pull does — a push that repeats the whole reference database would monopolize the
+            // link every time anything changes.
+            let payload = snapshot.omittingTables(matching: lastPushedDigests, currentDigests: digests)
+            carriedKeys = payload.carriedDigestKeys
+            guard !carriedKeys.isEmpty else {
+                Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): no table changed")
+                return
+            }
+            let encoded = try payload.encodeForWatch()
+            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
             Current.clientEventStore.addEvent(.init(
@@ -352,8 +376,11 @@ public enum WatchMirrorPushCoordinator {
             return
         }
         lastPushedData = data
-        // The digests travel in the file-transfer metadata so the watch can store them after
-        // applying this full mirror — keeping its next delta sync request accurate.
+        // Omitted tables matched these digests already, so the whole map describes what the watch
+        // is believed to hold once this payload lands.
+        lastPushedDigests = digests
+        // The digests travel in the file-transfer metadata so the watch can store them — for the
+        // tables this payload carried — keeping its next delta sync request accurate.
         var metadata: [String: Any] = [WatchDatabaseMirror.digestsKey: digests]
         if compressed {
             metadata[WatchDatabaseMirror.compressedKey] = true
@@ -365,13 +392,18 @@ public enum WatchMirrorPushCoordinator {
         )) { result in
             if case let .failure(error) = result {
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
-                queue.async { lastPushedData = nil }
+                // The watch got nothing, so drop both beliefs: the next push rebuilds in full.
+                queue.async {
+                    lastPushedData = nil
+                    lastPushedDigests = [:]
+                }
             }
         }
         Current.clientEventStore.addEvent(.init(
-            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes) — \(reason.logDescription)",
+            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes, "
+                + "\(carriedKeys.sorted().joined(separator: "+"))) — \(reason.logDescription)",
             type: .database,
-            payload: ["reason": reason.rawValue, "bytes": data.count]
+            payload: ["reason": reason.rawValue, "bytes": data.count, "tables": carriedKeys.sorted()]
         ))
     }
 }

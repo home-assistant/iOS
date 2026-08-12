@@ -574,6 +574,11 @@ final class WatchCommunicatorService {
     /// Chunk size for the database sync. Comfortably under WatchConnectivity's per-message ceiling.
     private static let mirrorChunkByteSize = 30000
 
+    /// Serial queue the sync-start payload is built on, so the read/encode/compress work never runs
+    /// on the main queue. Serial so overlapping sync requests queue behind each other instead of
+    /// contending for the same SQLite reader.
+    private static let mirrorBuildQueue = DispatchQueue(label: "watch-mirror-build", qos: .userInitiated)
+
     /// Begin a full database sync: snapshot the reference GRDB tables, encode, split into ordered
     /// chunks held in memory, and tell the watch how many chunks/bytes to expect. The watch then pulls
     /// each chunk via `watchDatabaseMirrorChunk`. A single interactive reply here can exceed the size
@@ -590,59 +595,75 @@ final class WatchCommunicatorService {
         let version = message.content[WatchDatabaseMirror.versionKey] as? Int ?? WatchDatabaseMirror.legacyVersion
         WatchMirrorPushCoordinator.peerMirrorVersion = version
         let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
-        let data: Data
-        let digests: [String: String]
-        do {
-            var mirror = try WatchDatabaseMirror.snapshot(version: version)
-            digests = mirror.tableDigests()
-            // Delta sync: a watch that echoes previously-issued digests receives only the tables
-            // that changed since (nil = retain). Watches that send no digests — older builds or a
-            // first sync — get the full snapshot.
-            if let stored = message.content[WatchDatabaseMirror.digestsKey] as? [String: String],
-               !stored.isEmpty {
-                mirror = mirror.omittingTables(matching: stored, currentDigests: digests)
+        let storedDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
+        // Building the snapshot reads every reference table and then encodes, hashes and compresses
+        // megabytes of rows. On the main queue that competes with everything else the app is doing,
+        // and the watch's reply ceiling expires before the answer lands ("The counterpart did not
+        // reply in time"), so the build runs off-main; only the buffer bookkeeping and the reply
+        // itself hop back. Replying off the main queue would be safe too, but the buffer is
+        // main-queue state.
+        Self.mirrorBuildQueue.async { [weak self] in
+            let data: Data
+            let digests: [String: String]
+            do {
+                var mirror = try WatchDatabaseMirror.snapshot(version: version)
+                digests = mirror.tableDigests()
+                // Delta sync: a watch that echoes previously-issued digests receives only the tables
+                // that changed since (nil = retain). Watches that send no digests — older builds or a
+                // first sync — get the full snapshot.
+                if let storedDigests, !storedDigests.isEmpty {
+                    mirror = mirror.omittingTables(matching: storedDigests, currentDigests: digests)
+                }
+                let encoded = try mirror.encodeForWatch()
+                data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
+            } catch {
+                Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
+                message.reply(.init(identifier: responseId, content: ["error": true]))
+                return
             }
-            let encoded = try mirror.encodeForWatch()
-            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
-        } catch {
-            Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
-            message.reply(.init(identifier: responseId, content: ["error": true]))
-            return
-        }
 
-        let chunkSize = Self.mirrorChunkByteSize
-        var chunks: [Data] = []
-        var offset = 0
-        while offset < data.count {
-            let end = min(offset + chunkSize, data.count)
-            chunks.append(data.subdata(in: offset ..< end))
-            offset = end
-        }
-        if chunks.isEmpty { chunks = [Data()] }
+            let chunkSize = Self.mirrorChunkByteSize
+            var chunks: [Data] = []
+            var offset = 0
+            while offset < data.count {
+                let end = min(offset + chunkSize, data.count)
+                chunks.append(data.subdata(in: offset ..< end))
+                offset = end
+            }
+            if chunks.isEmpty { chunks = [Data()] }
+            let builtChunks = chunks
 
-        let transferId = UUID().uuidString
-        databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: chunks)
-        // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
-        // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails the
-        // whole sync on the watch), so a buffer still around after this long is abandoned.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
-            guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
-            Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
+            DispatchQueue.main.async {
+                guard let self else {
+                    message.reply(.init(identifier: responseId, content: ["error": true]))
+                    return
+                }
+                let transferId = UUID().uuidString
+                databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: builtChunks)
+                // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
+                // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails
+                // the whole sync on the watch), so a buffer still around after this long is abandoned.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
+                    guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
+                    Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
+                }
+                Current.Log
+                    .info("Watch DB sync start: \(builtChunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
+                var replyContent: [String: Any] = [
+                    "transferId": transferId,
+                    "totalChunks": builtChunks.count,
+                    "totalBytes": data.count,
+                    // The watch stores these after a successful apply and echoes them on the next sync.
+                    WatchDatabaseMirror.digestsKey: digests,
+                ]
+                // Explicit flag rather than inferred from the requested version: a watch that asked for
+                // v2 but is answered by an older phone build gets no flag and decodes the plain payload.
+                if compressed {
+                    replyContent[WatchDatabaseMirror.compressedKey] = true
+                }
+                message.reply(.init(identifier: responseId, content: replyContent))
+            }
         }
-        Current.Log.info("Watch DB sync start: \(chunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
-        var replyContent: [String: Any] = [
-            "transferId": transferId,
-            "totalChunks": chunks.count,
-            "totalBytes": data.count,
-            // The watch stores these after a successful apply and echoes them on the next sync.
-            WatchDatabaseMirror.digestsKey: digests,
-        ]
-        // Explicit flag rather than inferred from the requested version: a watch that asked for v2
-        // but is answered by an older phone build gets no flag and decodes the plain payload.
-        if compressed {
-            replyContent[WatchDatabaseMirror.compressedKey] = true
-        }
-        message.reply(.init(identifier: responseId, content: replyContent))
     }
 
     /// Serve one chunk of an in-progress database sync. The buffer is freed once every chunk has

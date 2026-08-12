@@ -92,6 +92,65 @@ struct WatchDatabaseMirrorFullReferenceTests {
         }
     }
 
+    /// Regression: a phone whose reference tables read back empty (a refresh that fetched nothing, a
+    /// reset, a rebuild in progress) used to send authoritative empty arrays, which deleted every
+    /// mirrored row on the watch and left it unable to resolve any item.
+    @Test("An empty phone table is carried as nil (retain), never as an authoritative wipe")
+    func emptyTablesAreNotAuthoritative() throws {
+        try withDatabase { database in
+            // Areas exist; entities, registry and devices are empty — the state that wiped watches.
+            try database.write { db in
+                try Self.area(areaId: "kitchen").insert(db)
+            }
+
+            for version in [WatchDatabaseMirror.legacyVersion, WatchDatabaseMirror.fullReferenceVersion] {
+                let snapshot = try WatchDatabaseMirror.snapshot(version: version)
+                #expect(snapshot.entities == nil)
+                #expect(snapshot.registry == nil)
+                #expect(snapshot.devices == nil)
+                #expect(snapshot.pipelines == nil)
+                // The table that does have rows is still carried.
+                #expect(snapshot.areas?.map(\.areaId) == ["kitchen"])
+                // A table that isn't carried publishes no digest, so it can never be "matched" and
+                // skipped on a later sync once the phone has rows again.
+                let digests = snapshot.tableDigests()
+                #expect(digests["entities"] == nil)
+                #expect(digests["registry"] == nil)
+                #expect(snapshot.carriedDigestKeys.contains("areas"))
+                #expect(!snapshot.carriedDigestKeys.contains("entities"))
+            }
+        }
+    }
+
+    @Test("carriedDigestKeys tracks exactly the tables a payload holds")
+    func carriedKeys() {
+        let full = WatchDatabaseMirror(
+            entities: [],
+            areas: [],
+            pipelines: [],
+            registry: [],
+            devices: [],
+            complications: [],
+            complicationConfigs: [],
+            servers: Data()
+        )
+        #expect(full.carriedDigestKeys == ["entities", "areas", "pipelines", "registry", "devices",
+                                           "complications", "servers"])
+
+        // Delta payloads carry only what changed.
+        let delta = WatchDatabaseMirror(entities: nil, areas: [], pipelines: nil)
+        #expect(delta.carriedDigestKeys == ["areas"])
+
+        // The complication group needs both halves to count as carried.
+        let halfComplications = WatchDatabaseMirror(
+            entities: nil,
+            areas: nil,
+            pipelines: nil,
+            complications: []
+        )
+        #expect(halfComplications.carriedDigestKeys.isEmpty)
+    }
+
     @Test("Applying a mirror replaces the registry and device tables; nil retains them")
     func applySemantics() throws {
         try withDatabase { database in
@@ -143,6 +202,20 @@ struct WatchDatabaseMirrorFullReferenceTests {
             icon: nil,
             rawDeviceClass: nil,
             isHidden: isHidden
+        )
+    }
+
+    private static func area(areaId: String, serverId: String = "1") -> AppArea {
+        .init(
+            id: "\(serverId)-\(areaId)",
+            serverId: serverId,
+            areaId: areaId,
+            name: areaId.capitalized,
+            aliases: [],
+            picture: nil,
+            icon: nil,
+            sortOrder: nil,
+            entities: []
         )
     }
 
