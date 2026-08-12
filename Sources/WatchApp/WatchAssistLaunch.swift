@@ -11,7 +11,15 @@ enum WatchAssistLaunch {
 
     /// Asks the app to run `pipelineId` on `serverId`, whether or not the UI is already on screen.
     /// An empty `pipelineId` means the server's preferred pipeline.
+    ///
+    /// App Intents can run `perform()` off the main thread, and `NotificationCenter` delivers
+    /// synchronously on the posting thread — which would land `WatchHomeView`'s SwiftUI state
+    /// mutation off-main. Hop first so both the latch and the delivery happen on the main thread.
     static func request(serverId: String, pipelineId: String) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { request(serverId: serverId, pipelineId: pipelineId) }
+            return
+        }
         pendingPresentation = .session(serverId: serverId, pipelineId: pipelineId, prompt: nil)
         NotificationCenter.default.post(name: launchNotification, object: nil)
     }

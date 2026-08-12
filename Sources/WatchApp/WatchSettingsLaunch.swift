@@ -10,7 +10,15 @@ enum WatchSettingsLaunch {
     static var pendingLaunch = false
 
     /// Asks the app to show its settings, whether or not the UI is already on screen.
+    ///
+    /// App Intents can run `perform()` off the main thread, and `NotificationCenter` delivers
+    /// synchronously on the posting thread — which would land `WatchHomeView`'s SwiftUI state
+    /// mutation off-main. Hop first so both the latch and the delivery happen on the main thread.
     static func request() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { request() }
+            return
+        }
         pendingLaunch = true
         NotificationCenter.default.post(name: launchNotification, object: nil)
     }
