@@ -165,6 +165,7 @@
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
+		42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */; };
@@ -189,6 +190,10 @@
 		42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */; };
 		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
 		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
+		42D6FE11300F900000D4BEB9 /* CabinPressureSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE10300F900000D4BEB9 /* CabinPressureSample.swift */; };
+		42D6FE13300F900000D4BEB9 /* CabinPressureEvidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE12300F900000D4BEB9 /* CabinPressureEvidence.swift */; };
+		42D6FE15300F900000D4BEB9 /* CabinPressureMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE14300F900000D4BEB9 /* CabinPressureMonitor.swift */; };
+		42D6FE17300F900000D4BEB9 /* FlightSpeedProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE16300F900000D4BEB9 /* FlightSpeedProbe.swift */; };
 		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
 		42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */; };
@@ -649,6 +654,7 @@
 		42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStoreRestoreLastURL.test.swift; sourceTree = "<group>"; };
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
+		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
@@ -663,6 +669,10 @@
 		42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
 		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
+		42D6FE10300F900000D4BEB9 /* CabinPressureSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureSample.swift; sourceTree = "<group>"; };
+		42D6FE12300F900000D4BEB9 /* CabinPressureEvidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureEvidence.swift; sourceTree = "<group>"; };
+		42D6FE14300F900000D4BEB9 /* CabinPressureMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.swift; sourceTree = "<group>"; };
+		42D6FE16300F900000D4BEB9 /* FlightSpeedProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSpeedProbe.swift; sourceTree = "<group>"; };
 		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
 		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
 		42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.swift; sourceTree = "<group>"; };
@@ -2418,6 +2428,10 @@
 				42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */,
 				42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */,
 				424D4160300F75B7001998ED /* GreetingsSettingsView.swift */,
+				42D6FE10300F900000D4BEB9 /* CabinPressureSample.swift */,
+				42D6FE12300F900000D4BEB9 /* CabinPressureEvidence.swift */,
+				42D6FE14300F900000D4BEB9 /* CabinPressureMonitor.swift */,
+				42D6FE16300F900000D4BEB9 /* FlightSpeedProbe.swift */,
 			);
 			path = FlightGreetings;
 			sourceTree = "<group>";
@@ -2537,6 +2551,7 @@
 				42EDBB773002FBBE0051FC9B /* Kiosk */,
 				42EDBB663002FBBE0051FC9B /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
+				42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				42EDBB963002FBBE0051FC9B /* Additions */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
@@ -4009,6 +4024,10 @@
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
 				42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */,
+				42D6FE11300F900000D4BEB9 /* CabinPressureSample.swift in Sources */,
+				42D6FE13300F900000D4BEB9 /* CabinPressureEvidence.swift in Sources */,
+				42D6FE15300F900000D4BEB9 /* CabinPressureMonitor.swift in Sources */,
+				42D6FE17300F900000D4BEB9 /* FlightSpeedProbe.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
 				42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
@@ -4026,6 +4045,7 @@
 				42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */,
 				42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */,
 				42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,

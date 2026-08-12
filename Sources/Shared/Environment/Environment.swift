@@ -650,6 +650,10 @@ public class AppEnvironment {
 
     public var barometer = Barometer()
 
+    /// Multiplexes the single altimeter session `Barometer` exposes, so more than one consumer can
+    /// read pressure at a time.
+    public var barometerObserver = BarometerObserver()
+
     public var device = DeviceWrapper()
 
     public var matter = MatterWrapper()
