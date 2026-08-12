@@ -351,6 +351,22 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var inlineOptions = options
         inlineOptions.title = render.inlineText
         inlineOptions.showName = !render.inlineText.isEmpty
+        // The corner doesn't stack a label above its content the way the other families do — it runs
+        // outside-in — so its two areas land the other way round (see `LegacyComplicationRender.Corner`).
+        let cornerOptions = PerFamily(
+            fraction: render.fraction,
+            tint: render.tint,
+            showValue: !render.corner.value.isEmpty,
+            showName: !render.corner.title.isEmpty,
+            showIcon: iconData != nil,
+            gaugeStyle: render.gaugeStyle,
+            textColor: render.corner.textColor,
+            bottomTextColor: render.bottomTextColor,
+            title: render.corner.title,
+            value: render.corner.value,
+            bottomText: render.bottomText,
+            showBottomText: !render.bottomText.isEmpty
+        )
 
         self.init(
             id: complication.identifier,
@@ -368,7 +384,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             perFamily: [
                 WatchComplicationConfig.Family.circular.rawValue: options,
                 WatchComplicationConfig.Family.rectangular.rawValue: options,
-                WatchComplicationConfig.Family.corner.rawValue: options,
+                WatchComplicationConfig.Family.corner.rawValue: cornerOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
             menuName: complication.displayName

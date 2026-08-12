@@ -34,6 +34,24 @@ public struct LegacyComplicationRender: Equatable {
     public let iconName: String?
     /// Hex color for the icon.
     public let iconColor: String?
+    /// The same areas mapped onto the corner family, whose two text positions run the other way round
+    /// (see `Corner`).
+    public let corner: Corner
+
+    /// The corner family's two text positions. Every other family stacks a label above its content, so
+    /// the areas collapse onto title → value in declaration order. The corner doesn't stack: WidgetKit
+    /// draws an `accessoryCorner` widget's own content on the *outside* of the corner's curve and its
+    /// `widgetLabel` on the *inside*. ClockKit put the first declared area on the outside too — that is
+    /// what `GraphicCornerStackText`'s `outerTextProvider` is — so the corner takes the areas in plain
+    /// declaration order instead, and the title/value pair comes out swapped relative to the others.
+    public struct Corner: Equatable {
+        /// Outside of the curve: the widget's own content. The template's first text area.
+        public let value: String
+        /// Inside of the curve: the `widgetLabel`. The template's second text area.
+        public let title: String
+        /// Hex color for `value`, or nil to use the face's default.
+        public let textColor: String?
+    }
 
     public init(complication: WatchComplication) {
         let data = complication.Data
@@ -67,6 +85,11 @@ public struct LegacyComplicationRender: Equatable {
         }
         self.textColor = graphicOnly(resolved.count > 1 ? resolved[1].color : resolved.first?.color)
         self.bottomTextColor = graphicOnly(resolved.dropFirst(2).first?.color)
+        self.corner = Corner(
+            value: resolved.first?.text ?? "",
+            title: resolved.count > 1 ? resolved[1].text : "",
+            textColor: graphicOnly(resolved.first?.color)
+        )
 
         self.fraction = Self.fraction(from: data)
         self.tint = Self.tint(from: data)

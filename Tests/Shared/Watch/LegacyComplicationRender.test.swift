@@ -76,6 +76,72 @@ struct LegacyComplicationRenderTests {
         #expect(render.value == "inner")
     }
 
+    // MARK: - Corner family
+
+    /// The corner is the one family that doesn't stack a label above its content: WidgetKit draws an
+    /// `accessoryCorner` widget's own content on the outside of the curve and its `widgetLabel` on the
+    /// inside, and ClockKit's `outerTextProvider` was likewise the outer line. So the first area has to
+    /// stay on the outside there, which is the opposite of the label-then-content reading above.
+    @Test func cornerKeepsTheOuterAreaOutside() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerStackText,
+            textAreas: ["Inner": ("inner", "#00FF00FF"), "Outer": ("outer", "#268BD2FF")]
+        ))
+
+        #expect(render.corner.value == "outer")
+        #expect(render.corner.title == "inner")
+        // The color follows the text it was picked for, so it swaps with it.
+        #expect(render.corner.textColor == "#268BD2FF")
+    }
+
+    /// The long-standing rain-sparkline recipe: a single Center area rendering a block-element bar
+    /// graph, plus an icon. The graph is the complication's whole content, so it belongs in the corner
+    /// itself — demoting it to the bezel re-typesets it small and rotates it glyph by glyph, which is
+    /// exactly what a bar graph can't survive.
+    @Test func cornerSingleAreaIsTheCornerContent() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerTextImage,
+            textAreas: ["Center": ("{{ states('sensor.rain') }}", "#268BD2FF")],
+            rendered: ["textArea,Center": "▁▂▃▄▅▆▇█"],
+            extra: ["icon": ["icon": "weather_rainy", "icon_color": "#FFFFFFFF"]]
+        ))
+
+        #expect(render.corner.value == "▁▂▃▄▅▆▇█")
+        #expect(render.corner.title.isEmpty)
+        #expect(render.iconName == "weather_rainy")
+    }
+
+    /// The gauge variant leads with its Outer area too, with the gauge's end labels behind it.
+    @Test func cornerGaugeTextLeadsWithItsOuterArea() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerGaugeText,
+            textAreas: [
+                "Outer": ("21.5°", "#FFFFFFFF"),
+                "Leading": ("16", "#FFFFFFFF"),
+                "Trailing": ("30", "#FFFFFFFF"),
+            ]
+        ))
+
+        #expect(render.corner.value == "21.5°")
+        #expect(render.corner.title == "16")
+    }
+
+    /// An image-only template fills neither corner position, so the face can leave the bezel label off
+    /// instead of drawing an empty one.
+    @Test func cornerWithoutTextFillsNeitherPosition() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerCircularImage,
+            extra: ["icon": ["icon": "ab_testing", "icon_color": "#30D158FF"]]
+        ))
+
+        #expect(render.corner.value.isEmpty)
+        #expect(render.corner.title.isEmpty)
+    }
+
     /// Outer / Inner / Leading / Trailing / Bottom and the third table row used to be unreachable:
     /// the renderer looked up a fixed list of area names that never mentioned them.
     @Test func areasOutsideTheOldKeyListRender() {
