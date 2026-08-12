@@ -411,7 +411,9 @@ final class WatchHomeViewModel: ObservableObject {
             if !emptyTables.isEmpty {
                 Current.Log
                     .info("Re-requesting mirrored tables that are empty locally: \(emptyTables.sorted())")
-                for key in emptyTables { digests[key] = nil }
+                for key in emptyTables {
+                    digests[key] = nil
+                }
                 WatchUserDefaults.shared.databaseMirrorDigests = digests
             }
             if !digests.isEmpty {

@@ -321,12 +321,12 @@ public struct WatchDatabaseMirror: WatchCodable {
     private func logApplyOutcome() {
         let carried = carriedDigestKeys.sorted().joined(separator: "+")
         let counts = (try? Current.database().read { db in
-            [
-                "entities": try HAAppEntity.fetchCount(db),
-                "areas": try AppArea.fetchCount(db),
-                "registry": try EntityRegistryListForDisplay.Entity.fetchCount(db),
-                "devices": try AppDeviceRegistry.fetchCount(db),
-                "pipelines": try AssistPipelines.fetchCount(db),
+            try [
+                "entities": HAAppEntity.fetchCount(db),
+                "areas": AppArea.fetchCount(db),
+                "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
+                "devices": AppDeviceRegistry.fetchCount(db),
+                "pipelines": AssistPipelines.fetchCount(db),
             ]
         }) ?? [:]
         let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
