@@ -714,9 +714,13 @@ final class WatchHomeViewModel: ObservableObject {
     private func updateAreasMode(config: WatchConfig, entitiesPerServer: [String: [HAAppEntity]]) {
         Self.areasModeQueue.async { [weak self] in
             let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
-            let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-                let watchEntities = entities.filter { $0.isWatchCompatible(allowedDomains: allowedDomains) }
-                return Set(watchEntities.map(\.entityId))
+            let watchEntityIdsByServer = entitiesPerServer.reduce(into: [String: Set<String>]()) { result, pair in
+                let (serverId, entities) = pair
+                let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
+                let watchEntities = entities.filter {
+                    $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded)
+                }
+                result[serverId] = Set(watchEntities.map(\.entityId))
             }
             let mode = WatchHomeAreasMode.compute(
                 areas: (try? AppArea.fetchAllAreas()) ?? [],

@@ -515,8 +515,9 @@ final class WatchCommunicatorService {
                 // The user picks the server before seeing entities, so drop the server prefix that
                 // `getInfo` adds to the context line when multiple servers are configured.
                 let serverPrefix = "\(server.info.name) • "
+                let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
                 let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
-                    .filter { $0.isWatchCompatible(allowedDomains: allowedDomains) }
+                    .filter { $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded) }
                     .compactMap { entity in
                         let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
                         guard let info = magicItemProvider.getInfo(for: item) else { return nil }
