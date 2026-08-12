@@ -6545,8 +6545,6 @@ public enum L10n {
         public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
         /// Gauge range (optional)
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
-        /// Gauge template
-        public static var gaugeTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_template") }
         /// Icon
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
@@ -6643,6 +6641,10 @@ public enum L10n {
         public static var valueSource: String { return L10n.tr("Localizable", "watch.complications.builder.value_source") }
         /// State
         public static var valueSourceState: String { return L10n.tr("Localizable", "watch.complications.builder.value_source_state") }
+        /// Value template
+        public static var valueTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.value_template") }
+        /// When the progress bar or gauge is visible, the template result should be a number between 0 and 1.
+        public static var valueTemplateFooter: String { return L10n.tr("Localizable", "watch.complications.builder.value_template_footer") }
       }
       public enum Family {
         /// Circular

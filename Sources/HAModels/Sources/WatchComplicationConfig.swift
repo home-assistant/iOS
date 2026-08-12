@@ -258,15 +258,16 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         name ?? entityDisplayName ?? entityId ?? "Complication"
     }
 
-    /// The name rendered on the complication face — what the `{name}` formula token resolves to.
-    /// Entity complications always show the entity's name here: the complication's own `name` only
-    /// labels it in the iOS list and the watch gallery (see `displayName`). Template complications
-    /// have no entity, so the complication name stands in — via `displayName`, so a missing name
-    /// still renders its non-empty "Complication" fallback instead of a blank title.
+    /// The static part of the name rendered on the complication face — what the `{name}` formula
+    /// token resolves to. Entity complications show the entity's name. The complication's own
+    /// `name` NEVER renders on the face: it only labels the config in the iOS list and the watch
+    /// gallery (see `displayName`). Template complications resolve their on-face text from the
+    /// rendered "Display name" template instead, so their static face name is empty and every
+    /// render surface substitutes the rendered result.
     public var faceName: String {
         switch kind {
         case .entity: return entityDisplayName ?? entityId ?? ""
-        case .customTemplate: return displayName
+        case .customTemplate: return ""
         }
     }
 
@@ -451,6 +452,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// The default content per slot. Entity kind uses only on-device tokens — never a template
     /// (server-side rendering is admin-only); template kind routes the value through the config's
     /// text template. Subtitle/bottom text defaults only matter once the user shows those slots.
+    ///
+    /// Template complications render exactly one text — the display-name template, in the value
+    /// slot — so their title/subtitle default to empty: the `{name}` token resolves to the same
+    /// rendered text, and defaulting the title to it would duplicate the value right above itself
+    /// (while the pre-fix behavior rendered the list-only complication name, which never belongs
+    /// on the face).
     public func defaultFormula(for slot: ComplicationSlot, family: Family) -> ComplicationFormula {
         let valuePart: ComplicationFormula.Part = kind == .customTemplate
             ? .template(customTextTemplate ?? "")
@@ -459,6 +466,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case .icon:
             return ComplicationFormula(parts: [])
         case .title where family == .inline:
+            // Template kind: name and value both resolve to the rendered display-name template, so
+            // the single value part stands in for either legacy flag being on.
+            if kind == .customTemplate {
+                let showsLine = showsName(for: .inline) || showsValue(for: .inline)
+                return ComplicationFormula(parts: showsLine ? [valuePart] : [])
+            }
             // Inline joined name and value per the legacy flags, so name-only / value-only
             // combinations keep rendering exactly as before.
             var parts: [ComplicationFormula.Part] = []
@@ -468,10 +481,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
                 parts.append(valuePart)
             }
             return ComplicationFormula(parts: parts)
-        case .title:
-            return ComplicationFormula(parts: [.entityName])
-        case .subtitle:
-            return ComplicationFormula(parts: [.entityName])
+        case .title, .subtitle:
+            return ComplicationFormula(parts: kind == .customTemplate ? [] : [.entityName])
         case .value, .bottomText:
             return ComplicationFormula(parts: [valuePart])
         }
