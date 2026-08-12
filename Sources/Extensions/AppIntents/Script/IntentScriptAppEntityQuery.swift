@@ -2,7 +2,7 @@ import AppIntents
 import SFSafeSymbols
 import Shared
 
-@available(macOS 13.0, *)
+@available(macOS 13.0, watchOS 9.4, *)
 struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentScriptEntity] {
         getScriptEntities().flatMap(\.1).filter { identifiers.contains($0.id) }

@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
+@available(watchOS 9.4, *)
 struct AssistPipelineEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Assist Pipeline")
     static let defaultQuery = AssistPipelineEntityQuery()

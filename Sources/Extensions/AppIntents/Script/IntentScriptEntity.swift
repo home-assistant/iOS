@@ -1,7 +1,7 @@
 import AppIntents
 import Shared
 
-@available(macOS 13.0, *)
+@available(macOS 13.0, watchOS 9.4, *)
 struct IntentScriptEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Script")
 

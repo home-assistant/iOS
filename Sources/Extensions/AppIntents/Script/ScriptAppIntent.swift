@@ -3,6 +3,7 @@ import Foundation
 import PromiseKit
 import Shared
 
+@available(watchOS 9.4, *)
 final class ScriptAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init("widgets.script.description.title", defaultValue: "Run Script")
 

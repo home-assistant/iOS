@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
+@available(watchOS 9.4, *)
 struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [AssistPipelineEntity] {
         let pipelinesPerServer = try await pipelines()

@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
+@available(watchOS 9.4, *)
 struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
     // Carries over shortcuts built with the deprecated SiriKit AssistIntent
     static let intentClassName = "AssistIntent"
