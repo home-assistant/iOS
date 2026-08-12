@@ -134,8 +134,15 @@ struct WatchDatabaseMirrorFullReferenceTests {
             complicationConfigs: [],
             servers: Data()
         )
-        #expect(full.carriedDigestKeys == ["entities", "areas", "pipelines", "registry", "devices",
-                                           "complications", "servers"])
+        #expect(full.carriedDigestKeys == [
+            "entities",
+            "areas",
+            "pipelines",
+            "registry",
+            "devices",
+            "complications",
+            "servers",
+        ])
 
         // Delta payloads carry only what changed.
         let delta = WatchDatabaseMirror(entities: nil, areas: [], pipelines: nil)
