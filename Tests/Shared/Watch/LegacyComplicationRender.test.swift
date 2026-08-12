@@ -76,30 +76,44 @@ struct LegacyComplicationRenderTests {
         #expect(render.value == "inner")
     }
 
-    // MARK: - Corner family
+    // MARK: - Content-led families (corner and circular)
 
-    /// The corner is the one family that doesn't stack a label above its content: WidgetKit draws an
-    /// `accessoryCorner` widget's own content on the outside of the curve and its `widgetLabel` on the
-    /// inside, and ClockKit's `outerTextProvider` was likewise the outer line. So the first area has to
-    /// stay on the outside there, which is the opposite of the label-then-content reading above.
-    @Test func cornerKeepsTheOuterAreaOutside() {
+    /// The corner and circular templates have no `Header`: they lead with the content and caption it
+    /// after. WidgetKit draws an `accessoryCorner` widget's own content on the outside of the curve and
+    /// its `widgetLabel` on the inside — where ClockKit's `outerTextProvider` drew too — and the
+    /// circular face stacks its value above its name. So the first area has to be the value there,
+    /// the opposite of the label-then-content reading above.
+    @Test func contentLedKeepsTheFirstAreaAsTheValue() {
         let render = LegacyComplicationRender(complication: complication(
             family: .graphicCorner,
             template: .GraphicCornerStackText,
             textAreas: ["Inner": ("inner", "#00FF00FF"), "Outer": ("outer", "#268BD2FF")]
         ))
 
-        #expect(render.corner.value == "outer")
-        #expect(render.corner.title == "inner")
+        #expect(render.contentLed.value == "outer")
+        #expect(render.contentLed.title == "inner")
         // The color follows the text it was picked for, so it swaps with it.
-        #expect(render.corner.textColor == "#268BD2FF")
+        #expect(render.contentLed.textColor == "#268BD2FF")
+    }
+
+    /// The circular open gauge's Center area is its big number and Bottom is the caption under it —
+    /// not the other way round, which would read the subtext as the value.
+    @Test func circularOpenGaugeLeadsWithItsCenterArea() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCircular,
+            template: .GraphicCircularOpenGaugeSimpleText,
+            textAreas: ["Center": ("21.5°", "#268BD2FF"), "Bottom": ("now", "#FFFFFFFF")]
+        ))
+
+        #expect(render.contentLed.value == "21.5°")
+        #expect(render.contentLed.title == "now")
     }
 
     /// The long-standing rain-sparkline recipe: a single Center area rendering a block-element bar
     /// graph, plus an icon. The graph is the complication's whole content, so it belongs in the corner
     /// itself — demoting it to the bezel re-typesets it small and rotates it glyph by glyph, which is
     /// exactly what a bar graph can't survive.
-    @Test func cornerSingleAreaIsTheCornerContent() {
+    @Test func contentLedSingleAreaIsTheContent() {
         let render = LegacyComplicationRender(complication: complication(
             family: .graphicCorner,
             template: .GraphicCornerTextImage,
@@ -108,12 +122,49 @@ struct LegacyComplicationRenderTests {
             extra: ["icon": ["icon": "weather_rainy", "icon_color": "#FFFFFFFF"]]
         ))
 
-        #expect(render.corner.value == "▁▂▃▄▅▆▇█")
-        #expect(render.corner.title.isEmpty)
+        #expect(render.contentLed.value == "▁▂▃▄▅▆▇█")
+        #expect(render.contentLed.title.isEmpty)
         #expect(render.iconName == "weather_rainy")
     }
 
-    /// The gauge variant leads with its Outer area too, with the gauge's end labels behind it.
+    /// An image-only template fills neither position, so the face can leave the bezel label off instead
+    /// of drawing an empty one.
+    @Test func contentLedWithoutTextFillsNeitherPosition() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerCircularImage,
+            extra: ["icon": ["icon": "ab_testing", "icon_color": "#30D158FF"]]
+        ))
+
+        #expect(render.contentLed.value.isEmpty)
+        #expect(render.contentLed.title.isEmpty)
+    }
+
+    // MARK: - Gauge end labels
+
+    /// Leading and Trailing label the two ends of the gauge — they are not body text. Reading them as
+    /// text slots made the gauge's minimum the complication's value and dropped the maximum entirely.
+    @Test func gaugeEndLabelsGoToTheGaugeNotTheTextSlots() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCircular,
+            template: .GraphicCircularOpenGaugeRangeText,
+            textAreas: [
+                "Center": ("21.5", "#AA00FFFF"),
+                "Leading": ("16", "#268BD2FF"),
+                "Trailing": ("30", "#DC322FFF"),
+            ],
+            extra: ["gauge": ["gauge": "0.5", "gauge_type": "open", "gauge_color": "#268BD2FF"]]
+        ))
+
+        #expect(render.minLabel == "16")
+        #expect(render.maxLabel == "30")
+        // The value is the Center area, and neither end label captions it.
+        #expect(render.contentLed.value == "21.5")
+        #expect(render.contentLed.title.isEmpty)
+        #expect(render.bottomText.isEmpty)
+    }
+
+    /// The corner gauge variant leads with its Outer area, with Leading / Trailing going to the gauge.
     @Test func cornerGaugeTextLeadsWithItsOuterArea() {
         let render = LegacyComplicationRender(complication: complication(
             family: .graphicCorner,
@@ -125,21 +176,26 @@ struct LegacyComplicationRenderTests {
             ]
         ))
 
-        #expect(render.corner.value == "21.5°")
-        #expect(render.corner.title == "16")
+        #expect(render.contentLed.value == "21.5°")
+        #expect(render.contentLed.title.isEmpty)
+        #expect(render.minLabel == "16")
+        #expect(render.maxLabel == "30")
     }
 
-    /// An image-only template fills neither corner position, so the face can leave the bezel label off
-    /// instead of drawing an empty one.
-    @Test func cornerWithoutTextFillsNeitherPosition() {
+    /// Inline draws no gauge, so its one line still has to carry the end labels — they have nowhere
+    /// else to go there.
+    @Test func inlineStillCarriesTheGaugeEndLabels() {
         let render = LegacyComplicationRender(complication: complication(
-            family: .graphicCorner,
-            template: .GraphicCornerCircularImage,
-            extra: ["icon": ["icon": "ab_testing", "icon_color": "#30D158FF"]]
+            family: .graphicCircular,
+            template: .GraphicCircularOpenGaugeRangeText,
+            textAreas: [
+                "Center": ("21.5", "#FFFFFFFF"),
+                "Leading": ("16", "#FFFFFFFF"),
+                "Trailing": ("30", "#FFFFFFFF"),
+            ]
         ))
 
-        #expect(render.corner.value.isEmpty)
-        #expect(render.corner.title.isEmpty)
+        #expect(render.inlineText == "21.5 16 30")
     }
 
     /// Outer / Inner / Leading / Trailing / Bottom and the third table row used to be unreachable:
