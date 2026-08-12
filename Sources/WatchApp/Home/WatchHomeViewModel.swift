@@ -401,9 +401,22 @@ final class WatchHomeViewModel: ObservableObject {
         var content: [String: Any] = [
             WatchDatabaseMirror.versionKey: WatchDatabaseMirror.fullReferenceVersion,
         ]
-        // Echo the digests from the last applied mirror so the phone can omit unchanged tables.
-        if let digests = WatchUserDefaults.shared.databaseMirrorDigests {
-            content[WatchDatabaseMirror.digestsKey] = digests
+        // Echo the digests from the last applied mirror so the phone can omit unchanged tables —
+        // minus any table that is empty here, which the phone would otherwise keep omitting forever
+        // (see `digestKeysForEmptyLocalTables`). Pruning is persisted so the repair sticks even if
+        // this sync fails.
+        if var digests = WatchUserDefaults.shared.databaseMirrorDigests {
+            let emptyTables = WatchDatabaseMirror.digestKeysForEmptyLocalTables()
+                .filter { digests[$0] != nil }
+            if !emptyTables.isEmpty {
+                Current.Log
+                    .info("Re-requesting mirrored tables that are empty locally: \(emptyTables.sorted())")
+                for key in emptyTables { digests[key] = nil }
+                WatchUserDefaults.shared.databaseMirrorDigests = digests
+            }
+            if !digests.isEmpty {
+                content[WatchDatabaseMirror.digestsKey] = digests
+            }
         }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirror.rawValue,

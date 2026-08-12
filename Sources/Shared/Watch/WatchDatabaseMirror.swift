@@ -170,6 +170,29 @@ public struct WatchDatabaseMirror: WatchCodable {
         return keys
     }
 
+    /// Digest keys whose mirrored table holds no rows in the local database (called on the watch).
+    ///
+    /// A stored digest asserts "this table is already here, at this version", and the phone uses that
+    /// assertion to omit the table from the next sync. If the table is actually empty — wiped by an
+    /// older build that accepted an authoritative empty payload, a failed apply, a "delete local
+    /// data" — the assertion is false and the omission repeats on every sync, so the table never
+    /// comes back. The visible symptom is a home screen that resolves no names and falls back to
+    /// showing entity ids, alongside syncs that transfer almost nothing.
+    ///
+    /// Dropping these keys before echoing the digests makes the phone send those tables again, so a
+    /// watch already stuck in that state repairs itself on its next sync.
+    public static func digestKeysForEmptyLocalTables() -> Set<String> {
+        (try? Current.database().read { db in
+            var keys: Set<String> = []
+            if try HAAppEntity.fetchCount(db) == 0 { keys.insert("entities") }
+            if try AppArea.fetchCount(db) == 0 { keys.insert("areas") }
+            if try AssistPipelines.fetchCount(db) == 0 { keys.insert("pipelines") }
+            if try EntityRegistryListForDisplay.Entity.fetchCount(db) == 0 { keys.insert("registry") }
+            if try AppDeviceRegistry.fetchCount(db) == 0 { keys.insert("devices") }
+            return keys
+        }) ?? []
+    }
+
     /// All `.entity` items the watch home screen renders, including those nested inside folders.
     private static func entityItems(in items: [MagicItem]) -> [MagicItem] {
         items.flatMap { item -> [MagicItem] in

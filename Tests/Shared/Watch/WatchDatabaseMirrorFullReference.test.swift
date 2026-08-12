@@ -122,6 +122,29 @@ struct WatchDatabaseMirrorFullReferenceTests {
         }
     }
 
+    /// Regression: a watch whose tables were wiped kept echoing digests claiming it still held them,
+    /// so the phone omitted those tables on every sync. Nothing ever refilled them, the home screen
+    /// could resolve no names (falling back to entity ids) and each sync carried almost no data.
+    @Test("Digests are reported stale for tables that are empty locally")
+    func emptyLocalTablesInvalidateTheirDigests() throws {
+        try withDatabase { database in
+            // Nothing stored yet: every mirrored table is empty, so no digest may be trusted.
+            #expect(WatchDatabaseMirror.digestKeysForEmptyLocalTables() ==
+                ["entities", "areas", "pipelines", "registry", "devices"])
+
+            try database.write { db in
+                try Self.entity(entityId: "light.kitchen", domain: "light").insert(db)
+                try Self.area(areaId: "kitchen").insert(db)
+            }
+
+            // The tables that now hold rows drop out; the still-empty ones remain stale.
+            let stale = WatchDatabaseMirror.digestKeysForEmptyLocalTables()
+            #expect(!stale.contains("entities"))
+            #expect(!stale.contains("areas"))
+            #expect(stale == ["pipelines", "registry", "devices"])
+        }
+    }
+
     @Test("carriedDigestKeys tracks exactly the tables a payload holds")
     func carriedKeys() {
         let full = WatchDatabaseMirror(
