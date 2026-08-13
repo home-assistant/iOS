@@ -134,7 +134,14 @@ enum ComplicationStateFetcher {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["template": template])
-        guard let data = await data(for: request, server: server, token: token).data else { return nil }
-        return String(data: data, encoding: .utf8)
+        guard let data = await data(for: request, server: server, token: token).data,
+              let rendered = String(data: data, encoding: .utf8),
+              !rendered.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            // An empty body is not a render. Reporting one as successful marks the complication live
+            // and writes a blank value over the last-known snapshot, so a template the server couldn't
+            // render blanks the face instead of leaving its previous value up.
+            return nil
+        }
+        return rendered
     }
 }

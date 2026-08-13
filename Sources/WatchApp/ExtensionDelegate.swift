@@ -15,6 +15,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     fileprivate var watchConnectivityWatchdogTimer: Timer?
 
     private var immediateCommunicatorService: ImmediateCommunicatorService?
+    /// Held for the app's lifetime — see `observeLegacyComplicationRenders`.
+    private var legacyComplicationRenderToken: NSObjectProtocol?
 
     override init() {
         (self.watchConnectivityBackgroundPromise, self.watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
@@ -46,6 +48,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         setupWatchCommunicator()
         WatchWidgetComplicationSnapshotStore.update()
+        observeLegacyComplicationRenders()
 
         // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
         // connection info doesn't carry the override across launches/syncs).
@@ -403,6 +406,20 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             // The mirror is now the only complication delivery path, so it also reloads the ClockKit
             // timelines (previously done when the application context arrived).
             self?.updateComplications()
+        }
+    }
+
+    /// Rebuild the WidgetKit snapshots whenever freshly rendered legacy complication templates land in
+    /// the database. `WebhookResponseUpdateComplications` writes them from `Shared`, which can't reach
+    /// the snapshot store in this target, so it announces the write and this picks it up — without it
+    /// the new text sits in the database until the next periodic refresh happens to rebuild.
+    private func observeLegacyComplicationRenders() {
+        legacyComplicationRenderToken = NotificationCenter.default.addObserver(
+            forName: WatchComplication.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchWidgetComplicationSnapshotStore.update()
         }
     }
 
