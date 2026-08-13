@@ -85,13 +85,7 @@ struct GesturesSetupView: View {
                 }
             }
         }
-        .modify { view in
-            if #available(iOS 17.0, *) {
-                view.contentMargins(.top, DesignSystem.Spaces.half)
-            } else {
-                view
-            }
-        }
+        .listTopContentMargin()
     }
 
     private var gestureActionsPickerContent: ListPickerContent {

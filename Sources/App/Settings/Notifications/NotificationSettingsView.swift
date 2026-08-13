@@ -41,13 +41,7 @@ struct NotificationSettingsView: View {
             viewModel.refreshPermissionStatus()
             viewModel.refreshBadgeCount()
         }
-        .modify { view in
-            if #available(iOS 17.0, *) {
-                view.contentMargins(.top, DesignSystem.Spaces.half)
-            } else {
-                view
-            }
-        }
+        .listTopContentMargin()
     }
 
     // MARK: - Sections

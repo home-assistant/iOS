@@ -12,13 +12,7 @@ struct SettingsServersView: View {
             }
         }
         .navigationTitle(L10n.Settings.ConnectionSection.servers)
-        .modify { view in
-            if #available(iOS 17.0, *) {
-                view.contentMargins(.top, DesignSystem.Spaces.half)
-            } else {
-                view
-            }
-        }
+        .listTopContentMargin()
     }
 }
 
