@@ -2024,6 +2024,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.unit_automatic" = "Automatic";
 "watch.complications.builder.value_source" = "Value";
 "watch.complications.builder.value_source_state" = "State";
+"watch.complications.builder.value_template" = "Value template";
+"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";

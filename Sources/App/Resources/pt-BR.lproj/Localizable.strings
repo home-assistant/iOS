@@ -185,10 +185,10 @@
 "assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.section.labs.title" = "Mais";
 "assist.settings.start_mode.auto" = "Auto";
-"assist.settings.start_mode.footer" = "Controls how Assist starts when you trigger it from a Home Assistant dashboard. \"Auto\" follows what the dashboard asks for, while \"Voice\" and \"Text\" always override it. This does not apply to widgets, shortcuts or other app features.";
-"assist.settings.start_mode.text" = "Text";
-"assist.settings.start_mode.title" = "Assist start mode";
-"assist.settings.start_mode.voice" = "Voice";
+"assist.settings.start_mode.footer" = "Controla como o Assist inicia quando você o aciona a partir de um dashboard do Home Assistant. \"Auto\" segue o que o dashboard solicita, enquanto \"Voz\" e \"Texto\" sempre o substituem. Isso não se aplica a widgets, atalhos ou outros recursos do aplicativo.";
+"assist.settings.start_mode.text" = "Texto";
+"assist.settings.start_mode.title" = "Modo de início do Assist";
+"assist.settings.start_mode.voice" = "Voz";
 "assist.settings.title" = "Configurações do Assist";
 "assist.settings.tts_mute.footer" = "Quando habilitado, o Assist não reproduzirá respostas em áudio mesmo que o pipeline tenha conversão de texto em fala configurada. Você ainda verá as respostas em texto.";
 "assist.settings.tts_mute.toggle" = "Silenciar respostas de voz";
@@ -2025,6 +2025,8 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.complications.builder.unit_automatic" = "Automático";
 "watch.complications.builder.value_source" = "Valor";
 "watch.complications.builder.value_source_state" = "Estado";
+"watch.complications.builder.value_template" = "Value template";
+"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Canto";
 "watch.complications.family.inline" = "Em linha";
@@ -2492,7 +2494,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.actions.title" = "Ações";
 "widgets.assist.action_title" = "Perguntar ao Assist";
 "widgets.assist.description" = "Abra o Assist no aplicativo";
-"widgets.assist.not_configured" = "No Pipelines Configured";
+"widgets.assist.not_configured" = "Nenhum pipeline configurado";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configurar";
 "widgets.automation.trigger.title" = "Acionar automação";

@@ -244,7 +244,7 @@ public extension HomeAssistantAPI {
             HomeAssistantAPI.syncWatchContext()
             #else
             // in case the user updated just the complication's metadata, force a refresh
-            WebhookResponseUpdateComplications.updateComplications()
+            NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
             #endif
 
             return .value(())
