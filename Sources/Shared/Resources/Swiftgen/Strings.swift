@@ -342,11 +342,21 @@ public enum L10n {
       public static func failedServers(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.error.failed_servers", String(describing: p1))
       }
+      /// Home Assistant returned HTTP %li
+      public static func httpStatus(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "app_intents.error.http_status", p1)
+      }
+      /// Unexpected response from Home Assistant
+      public static var invalidResponse: String { return L10n.tr("Localizable", "app_intents.error.invalid_response") }
       /// No server provided
       public static var noServer: String { return L10n.tr("Localizable", "app_intents.error.no_server") }
       /// Timed out after %li seconds
       public static func timedOut(_ p1: Int) -> String {
         return L10n.tr("Localizable", "app_intents.error.timed_out", p1)
+      }
+      /// Could not get an access token for this server
+      public static var tokenUnavailable: String {
+        return L10n.tr("Localizable", "app_intents.error.token_unavailable")
       }
     }
     public enum Fan {

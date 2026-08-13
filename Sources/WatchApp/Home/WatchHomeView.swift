@@ -103,6 +103,15 @@ struct WatchHomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
             viewModel.loadCache()
         }
+        .onReceive(NotificationCenter.default.publisher(for: WatchSettingsLaunch.launchNotification)) { _ in
+            WatchSettingsLaunch.pendingLaunch = false
+            showSettings = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: WatchAssistLaunch.launchNotification)) { _ in
+            guard let presentation = WatchAssistLaunch.pendingPresentation else { return }
+            WatchAssistLaunch.pendingPresentation = nil
+            assistPresentation = presentation
+        }
         .fullScreenCover(item: $assistPresentation, content: { presentation in
             switch presentation {
             case let .session(serverId, pipelineId, prompt):
@@ -187,6 +196,15 @@ struct WatchHomeView: View {
             if AssistDefaultComplication.pendingLaunch {
                 AssistDefaultComplication.pendingLaunch = false
                 presentConfiguredAssist()
+            }
+            // Same for the App Intents that open the app: settings, and a specific Assist pipeline.
+            if WatchSettingsLaunch.pendingLaunch {
+                WatchSettingsLaunch.pendingLaunch = false
+                showSettings = true
+            }
+            if let presentation = WatchAssistLaunch.pendingPresentation {
+                WatchAssistLaunch.pendingPresentation = nil
+                assistPresentation = presentation
             }
             updateIPhoneReachability(Communicator.shared.currentReachability)
             startReachabilityObservation()
