@@ -712,34 +712,6 @@
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
 		};
-		42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AppIntents/Assist/AssistPipelineEntity.swift,
-				AppIntents/Assist/AssistPipelineEntityQuery.swift,
-				AppIntents/AssistPromptAppIntent.swift,
-				AppIntents/FireEventAppIntent.swift,
-				AppIntents/GetCameraSnapshotAppIntent.swift,
-				AppIntents/IntentActionEntity.swift,
-				AppIntents/IntentActionEntityQuery.swift,
-				AppIntents/IntentCameraEntity.swift,
-				AppIntents/IntentCameraEntityQuery.swift,
-				AppIntents/IntentServerAppEntitiy.swift,
-				AppIntents/OpenAppSettingsAppIntent.swift,
-				AppIntents/PerformActionAppIntent.swift,
-				AppIntents/RenderTemplateAppIntent.swift,
-				AppIntents/Script/IntentScriptAppEntityQuery.swift,
-				AppIntents/Script/IntentScriptEntity.swift,
-				AppIntents/Script/ScriptAppIntent.swift,
-				AppIntents/ShortcutAppIntentSupport.swift,
-				AppIntents/UpdateLocationAppIntent.swift,
-				AppIntents/UpdateSensorsAppIntent.swift,
-				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
-				Widgets/Assist/AssistAppIntent.swift,
-				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
-			);
-			target = B6CC5D812159D10D00833E5D /* WatchApp */;
-		};
 		4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1022,6 +994,34 @@
 			);
 			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
 		};
+		42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/Assist/AssistPipelineEntity.swift,
+				AppIntents/Assist/AssistPipelineEntityQuery.swift,
+				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/FireEventAppIntent.swift,
+				AppIntents/GetCameraSnapshotAppIntent.swift,
+				AppIntents/IntentActionEntity.swift,
+				AppIntents/IntentActionEntityQuery.swift,
+				AppIntents/IntentCameraEntity.swift,
+				AppIntents/IntentCameraEntityQuery.swift,
+				AppIntents/IntentServerAppEntitiy.swift,
+				AppIntents/OpenAppSettingsAppIntent.swift,
+				AppIntents/PerformActionAppIntent.swift,
+				AppIntents/RenderTemplateAppIntent.swift,
+				AppIntents/Script/IntentScriptAppEntityQuery.swift,
+				AppIntents/Script/IntentScriptEntity.swift,
+				AppIntents/Script/ScriptAppIntent.swift,
+				AppIntents/ShortcutAppIntentSupport.swift,
+				AppIntents/UpdateLocationAppIntent.swift,
+				AppIntents/UpdateSensorsAppIntent.swift,
+				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
+				Widgets/Assist/AssistAppIntent.swift,
+				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
+			);
+			target = B6CC5D812159D10D00833E5D /* WatchApp */;
+		};
 		42EDBB533002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1288,6 +1288,7 @@
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
+				AppleWatch/Complications/WatchComplicationConfigurationSheet.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchAddItemDestination.swift,
@@ -1454,6 +1455,7 @@
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
+				AppleWatch/Complications/WatchComplicationConfigurationSheet.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchAddItemDestination.swift,
@@ -1989,13 +1991,13 @@
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.text-only.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.value-as-text.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.zero-fraction.png",
-				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.accented.png",
-				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.fullColor.png",
-				"__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.vibrant.png",
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.accented.png,
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.fullColor.png,
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.vibrant.png,
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
 		};
-	/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		11AF1EC52528FB2300AAE364 /* Entitlements */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Entitlements; sourceTree = "<group>"; };
@@ -2005,7 +2007,7 @@
 		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
 		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
 		42479B4630013FE300F7FCD3 /* WatchApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42479B7630013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchApp; sourceTree = "<group>"; };
-		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
+		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		4283E0D53004DCF4004D1061 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283E1713004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1723004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1733004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1743004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1753004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1763004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (gallery.ckcomplication, ); path = Resources; sourceTree = "<group>"; };
 		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
