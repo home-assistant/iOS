@@ -6579,6 +6579,10 @@ public enum L10n {
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
         /// Progress bar color
         public static var progressBarColor: String { return L10n.tr("Localizable", "watch.complications.builder.progress_bar_color") }
+        /// Remove %@
+        public static func removeToken(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.complications.builder.remove_token", String(describing: p1))
+        }
         /// Show
         public static var show: String { return L10n.tr("Localizable", "watch.complications.builder.show") }
         /// Show as gauge / ring

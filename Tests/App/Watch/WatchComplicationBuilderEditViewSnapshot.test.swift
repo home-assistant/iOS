@@ -3,10 +3,11 @@
 import SwiftUI
 import Testing
 
-/// Snapshots the reorganized watch-complication builder. The builder reveals itself step by step, so
-/// two states are captured: the initial screen (source picker + live preview) and a fully-configured
-/// rectangular entity complication, which shows the element-centric sections (one per slot, the value
-/// section carrying the gauge and colors inline).
+/// Snapshots the watch-complication builder, which is only the source flow — name, source, entity or
+/// template — with the live preview on top; the rendering options now live behind the Customize row in
+/// `WatchComplicationConfigurationSheet`. The flow reveals itself step by step, so two states are
+/// captured: the initial screen (source picker + live preview) and an existing rectangular entity
+/// complication, whose source is already set so the Customize row is reachable.
 ///
 /// Only the first screenful is captured — the form is scrollable — so these guard the top of the flow
 /// and the preview; the on-face rendering itself is covered by the complication content-view snapshots.

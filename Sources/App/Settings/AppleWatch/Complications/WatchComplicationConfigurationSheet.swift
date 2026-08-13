@@ -514,7 +514,7 @@ extension WatchComplicationConfigurationSheet {
     /// operation. Nested (rather than its own file) so it stays App-target-only without a
     /// project-file change: this folder is synchronized into the Shared targets too, and a
     /// standalone file would need per-file membership exceptions in the pbxproj.
-    struct ComplicationSlotRow: View {
+    private struct ComplicationSlotRow: View {
         @Binding var config: WatchComplicationConfig
         let slot: ComplicationSlot
         let server: Server?
@@ -631,6 +631,7 @@ extension WatchComplicationConfigurationSheet {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(L10n.Watch.Complications.Builder.removeToken(accessibilityTitle(for: part)))
             }
             .font(.callout)
             .padding(.horizontal, DesignSystem.Spaces.one)
@@ -647,6 +648,13 @@ extension WatchComplicationConfigurationSheet {
             case let .attribute(name): return name
             case .template: return L10n.Watch.Complications.Builder.tokenTemplate
             }
+        }
+
+        /// VoiceOver name for a pill: same as the visible title, but an as-yet-empty text pill falls
+        /// back to the generic "Text" label so the remove button never announces a dangling "Remove".
+        private func accessibilityTitle(for part: ComplicationFormula.Part) -> String {
+            let title = pillTitle(for: part)
+            return title.isEmpty ? L10n.Watch.Complications.Builder.tokenText : title
         }
 
         private func updateParts(_ mutate: (inout [ComplicationFormula.Part]) -> Void) {
