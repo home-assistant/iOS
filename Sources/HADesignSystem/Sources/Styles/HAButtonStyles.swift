@@ -9,6 +9,9 @@ enum HAButtonStylesConstants {
     static var hoverOpacity: CGFloat = 0.9
     static var hoverScale: CGFloat = 1.02
     static var animationDuration: Double = 0.1
+    /// Tinted fill of the quiet (low-emphasis) buttons — matches `TextButton`.
+    static var quietFillOpacity: CGFloat = 0.12
+    static var quietFillHighlightedOpacity: CGFloat = 0.08
 }
 
 public struct HAButtonStyle: ButtonStyle {
@@ -73,6 +76,36 @@ public struct HAButtonStyle: ButtonStyle {
     VStack {
         Button("Primary Button") {}
             .buttonStyle(.primaryButton)
+    }
+}
+
+/// The primary button's shape and size with the quiet colors of `TextButton`: a tinted fill and
+/// `haPrimary` text instead of a solid `haPrimary` background. For actions that should read as a
+/// full-size button without competing with the screen's primary one.
+public struct HAPrimaryQuietButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .foregroundColor(Color.haPrimary)
+            .haButtonBasicSizing()
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .background(Color.haPrimary.opacity(
+                configuration.isPressed
+                    ? HAButtonStylesConstants.quietFillHighlightedOpacity
+                    : HAButtonStylesConstants.quietFillOpacity
+            ))
+            .clipShape(Capsule())
+            .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
+            .haButtonHoverEffect(isEnabled: isEnabled, isPressed: configuration.isPressed)
+    }
+}
+
+#Preview {
+    VStack {
+        Button("Primary Quiet Button") {}
+            .buttonStyle(.primaryQuietButton)
     }
 }
 
@@ -191,6 +224,12 @@ public struct HALinkButtonStyle: ButtonStyle {
 public extension ButtonStyle where Self == HAButtonStyle {
     static var primaryButton: HAButtonStyle {
         HAButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HAPrimaryQuietButtonStyle {
+    static var primaryQuietButton: HAPrimaryQuietButtonStyle {
+        HAPrimaryQuietButtonStyle()
     }
 }
 

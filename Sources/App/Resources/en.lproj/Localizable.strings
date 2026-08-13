@@ -1994,6 +1994,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
