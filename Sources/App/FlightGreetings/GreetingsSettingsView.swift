@@ -14,6 +14,13 @@ struct GreetingsSettingsView: View {
             }
         }
         .navigationTitle(L10n.Settings.Greetings.title)
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 
     static var settingsSearchEntries: [SettingsSearchEntry] {

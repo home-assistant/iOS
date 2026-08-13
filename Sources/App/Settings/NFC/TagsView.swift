@@ -17,6 +17,13 @@ struct TagsView: View {
             }
         }
         .navigationTitle(L10n.Tags.title)
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 }
 

@@ -117,6 +117,13 @@ struct KioskSettingsView: View {
         .onAppear {
             viewModel.authenticateIfNeeded()
         }
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 
     private var lockOverlay: some View {

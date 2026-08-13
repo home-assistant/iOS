@@ -51,6 +51,13 @@ struct CustomWidgetsListView: View {
         .onAppear {
             viewModel.loadWidgets()
         }
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 
     private var header: some View {

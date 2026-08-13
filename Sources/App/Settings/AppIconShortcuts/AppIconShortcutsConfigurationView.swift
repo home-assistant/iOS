@@ -37,6 +37,13 @@ struct AppIconShortcutsConfigurationView: View {
                 Text(verbatim: L10n.okLabel)
             })
         }
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 
     private var header: some View {

@@ -175,6 +175,13 @@ struct DebugView: View {
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
         }
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.contentMargins(.top, DesignSystem.Spaces.half)
+            } else {
+                view
+            }
+        }
     }
 
     private func forceAppRestartAfterKeychainDeletion() {
