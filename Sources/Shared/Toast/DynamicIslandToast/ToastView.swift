@@ -68,6 +68,7 @@ private struct ToastWindowInstaller: UIViewRepresentable {
 
             let hostingController = ToastHostingController(rootView: ToastWindowContent())
             hostingController.view.backgroundColor = .clear
+            hostingController.statusBarHiddenWhenIdle = statusBarHidden(in: windowScene)
 
             let toastWindow = ToastWindow(windowScene: windowScene)
             toastWindow.rootViewController = hostingController
@@ -88,9 +89,7 @@ private struct ToastWindowInstaller: UIViewRepresentable {
 
             guard !presenting else {
                 isPresenting = true
-                // Read while the toast window is still off screen, so it reflects what the app itself wants.
-                let statusBarHidden = windowScene?.statusBarManager?.isStatusBarHidden ?? false
-                hostingController?.statusBarHiddenWhenIdle = statusBarHidden
+                hostingController?.statusBarHiddenWhenIdle = statusBarHidden(in: windowScene)
                 toastWindow?.isHidden = false
                 hostingController?.setNeedsStatusBarAppearanceUpdate()
                 return
@@ -104,6 +103,11 @@ private struct ToastWindowInstaller: UIViewRepresentable {
             }
             self.hideWorkItem = hideWorkItem
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.hideDelay, execute: hideWorkItem)
+        }
+
+        /// Read while the toast window is off screen, so it reflects what the app itself wants.
+        private func statusBarHidden(in windowScene: UIWindowScene?) -> Bool {
+            windowScene?.statusBarManager?.isStatusBarHidden ?? false
         }
     }
 
