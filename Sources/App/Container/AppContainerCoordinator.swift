@@ -110,7 +110,7 @@ final class AppContainerCoordinator: AppCoordinator {
         }
     }
 
-    func selectServer(prompt: String?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
         // The picker is the Settings sheet at its medium detent, so anything already presented (Settings
         // itself, What's New, …) would swallow it — clear the screen first. Presenting is deferred by a
         // runloop hop so a sheet that was just torn down can't swallow the one replacing it.
@@ -218,7 +218,7 @@ final class AppContainerCoordinator: AppCoordinator {
                 isComingFromAppIntent: isComingFromAppIntent
             )
         } else if servers.count > 1 {
-            selectServer(prompt: skipConfirm ? nil : from.message(with: openUrlRaw)) {
+            selectServer(prompt: skipConfirm ? nil : from.serverSelectPrompt(with: openUrlRaw)) {
                 [weak self] server in
                 self?.open(
                     from: from,

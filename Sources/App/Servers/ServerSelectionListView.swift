@@ -9,7 +9,7 @@ struct ServerSelectionListView: View {
     @StateObject private var observer = ServersObserver()
     @State private var activeServerIdentifier: Identifier<Server>?
 
-    let prompt: String?
+    let prompt: ServerSelectPrompt?
     let selectAction: (Server) -> Void
     let expandAction: () -> Void
 
@@ -50,15 +50,26 @@ struct ServerSelectionListView: View {
         .onAppear(perform: updateActiveServer)
     }
 
-    private func promptSection(_ prompt: String) -> some View {
+    private func promptSection(_ prompt: ServerSelectPrompt) -> some View {
         Section {
-            Text(prompt)
-                .font(.body)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
-                .padding(.horizontal)
-                .listRowBackground(Color.clear)
-                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                Text(prompt.message)
+                    .font(.body)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                if let link = prompt.link {
+                    Text(link)
+                        .font(.system(.footnote, design: .monospaced))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .padding(.vertical, DesignSystem.Spaces.one)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
+                        .background(Color(uiColor: .secondarySystemBackground), in: Capsule())
+                }
+            }
+            .padding(.horizontal)
+            .listRowBackground(Color.clear)
+            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 
@@ -92,5 +103,12 @@ struct ServerSelectionListView: View {
 }
 
 #Preview("Servers with prompt") {
-    ServerSelectionListView(prompt: "Are you sure?", selectAction: { _ in }, expandAction: {})
+    ServerSelectionListView(
+        prompt: ServerSelectPrompt(
+            message: L10n.Alerts.OpenUrlFromDeepLink.selectServer,
+            link: "/?more-info-entity-id=light.living_room_lamp"
+        ),
+        selectAction: { _ in },
+        expandAction: {}
+    )
 }
