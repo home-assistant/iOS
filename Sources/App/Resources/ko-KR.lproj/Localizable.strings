@@ -2025,6 +2025,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.unit_automatic" = "자동";
 "watch.complications.builder.value_source" = "값";
 "watch.complications.builder.value_source_state" = "상태";
+"watch.complications.builder.value_template" = "Value template";
+"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
 "watch.complications.family.circular" = "원형";
 "watch.complications.family.corner" = "모서리";
 "watch.complications.family.inline" = "인라인";

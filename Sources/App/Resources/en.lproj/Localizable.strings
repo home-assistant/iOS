@@ -1977,6 +1977,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.entity" = "Entity";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
+"watch.complications.builder.gauge_template" = "Gauge template";
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.icon_color" = "Icon color";
 "watch.complications.builder.insert_token" = "Insert";
