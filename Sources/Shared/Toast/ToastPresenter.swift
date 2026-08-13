@@ -2,7 +2,7 @@ import SFSafeSymbols
 import SwiftUI
 
 /// Holds the currently presented toast and drives auto-dismissal. Pure state — the toast is rendered
-/// by the SwiftUI `toastOverlay()` modifier attached at the app root, with no UIKit window involved.
+/// by the SwiftUI `toastOverlay()` modifier attached at the app root.
 ///
 /// Example:
 /// ```swift
