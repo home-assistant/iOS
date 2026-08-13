@@ -2,9 +2,6 @@ import Foundation
 import GRDB
 import PromiseKit
 import UserNotifications
-#if os(watchOS)
-import ClockKit
-#endif
 
 extension WebhookResponseIdentifier {
     static var updateComplications: Self { .init(rawValue: "updateComplications") }
@@ -81,7 +78,11 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             }
         }.done {
             #if os(watchOS)
-            Self.updateComplications()
+            // The face renders from the WidgetKit snapshots in the app group, not from these rows, so
+            // announce the write and let the watch app rebuild them (see
+            // `ExtensionDelegate.observeLegacyComplicationRenders`). Reloading ClockKit here — which is
+            // what this used to do — updates nothing: the watch left ClockKit behind in #5036.
+            NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
             #else
             HomeAssistantAPI.syncWatchContext()
             // Current watch builds only read complications from the database mirror (the context
@@ -95,16 +96,4 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             return Guarantee.value(WebhookResponseHandlerResult.default)
         }
     }
-
-    #if os(watchOS)
-    static func updateComplications() {
-        let server = CLKComplicationServer.sharedInstance()
-
-        server.activeComplications?.forEach {
-            server.reloadTimeline(for: $0)
-        }
-
-        server.reloadComplicationDescriptors()
-    }
-    #endif
 }

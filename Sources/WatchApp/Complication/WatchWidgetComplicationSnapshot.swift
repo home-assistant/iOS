@@ -339,6 +339,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             showName: !render.title.isEmpty,
             showIcon: iconData != nil,
             gaugeStyle: render.gaugeStyle,
+            minLabel: render.minLabel,
+            maxLabel: render.maxLabel,
             textColor: render.textColor,
             bottomTextColor: render.bottomTextColor,
             title: render.title,
@@ -351,6 +353,25 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var inlineOptions = options
         inlineOptions.title = render.inlineText
         inlineOptions.showName = !render.inlineText.isEmpty
+        // The corner and circular families lead with the complication's content and caption it after,
+        // rather than heading it with a label, so their two areas land the other way round (see
+        // `LegacyComplicationRender.ContentLed`).
+        let contentLedOptions = PerFamily(
+            fraction: render.fraction,
+            tint: render.tint,
+            showValue: !render.contentLed.value.isEmpty,
+            showName: !render.contentLed.title.isEmpty,
+            showIcon: iconData != nil,
+            gaugeStyle: render.gaugeStyle,
+            minLabel: render.minLabel,
+            maxLabel: render.maxLabel,
+            textColor: render.contentLed.textColor,
+            bottomTextColor: render.bottomTextColor,
+            title: render.contentLed.title,
+            value: render.contentLed.value,
+            bottomText: render.bottomText,
+            showBottomText: !render.bottomText.isEmpty
+        )
 
         self.init(
             id: complication.identifier,
@@ -366,9 +387,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             // Spelled out rather than aliased to `Family`: `WatchComplication.Family` is the legacy
             // ClockKit family, and the two reading alike in one initializer invites a mix-up.
             perFamily: [
-                WatchComplicationConfig.Family.circular.rawValue: options,
+                WatchComplicationConfig.Family.circular.rawValue: contentLedOptions,
                 WatchComplicationConfig.Family.rectangular.rawValue: options,
-                WatchComplicationConfig.Family.corner.rawValue: options,
+                WatchComplicationConfig.Family.corner.rawValue: contentLedOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
             menuName: complication.displayName
