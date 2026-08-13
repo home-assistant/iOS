@@ -21,7 +21,7 @@ final class AppSettingsPresenter: ObservableObject {
     /// A pending "pick a server" request (deep link, notification, gesture, empty state). `onSelect` runs when
     /// the user activates a server from the compact sheet, and is dropped when the sheet goes away instead.
     struct ServerSelectionRequest {
-        let prompt: String?
+        let prompt: ServerSelectPrompt?
         /// Only the stand-by view has something for the sheet to zoom out of; every other entry point gets the
         /// regular slide-up.
         let zoomsFromStandBy: Bool

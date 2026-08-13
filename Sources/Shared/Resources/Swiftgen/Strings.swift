@@ -230,12 +230,16 @@ public enum L10n {
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
       }
+      /// Choose which server should open this link
+      public static var selectServer: String { return L10n.tr("Localizable", "alerts.open_url_from_deep_link.select_server") }
     }
     public enum OpenUrlFromNotification {
       /// Open URL (%@) found in notification?
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_notification.message", String(describing: p1))
       }
+      /// Choose which server should open this notification link
+      public static var selectServer: String { return L10n.tr("Localizable", "alerts.open_url_from_notification.select_server") }
       /// Open URL?
       public static var title: String { return L10n.tr("Localizable", "alerts.open_url_from_notification.title") }
     }
