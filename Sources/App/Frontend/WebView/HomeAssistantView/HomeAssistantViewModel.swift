@@ -285,9 +285,13 @@ final class HomeAssistantViewModel: ObservableObject {
         isFullScreenLoaderMounted = false
     }
 
-    func selectServer(_ server: Server) {
+    /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
+    /// the stand-by view's server pill, which is the only thing that triggers it.
+    func presentServerSelection() {
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.activate(server: server)
+            coordinator.selectServer(prompt: nil, zoomsFromStandBy: true) { server in
+                coordinator.activate(server: server)
+            }
         }
     }
 }

@@ -13,8 +13,8 @@ struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var launchMessages = LaunchMessagesState()
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var showServerSelection = false
-    @Namespace private var serverSelectionNamespace
+    /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
+    @Environment(\.serverSelectionNamespace) private var serverSelectionNamespace
 
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
@@ -59,21 +59,6 @@ struct HomeAssistantView: View, WebFrontendView {
             noActiveURLState
             standByView
         }
-        .sheet(isPresented: $showServerSelection) {
-            ServerSelectView(prompt: nil, includeSettings: true, selectAction: viewModel.selectServer)
-                .presentationDetents([.medium, .large])
-                .presentationBackground(Color(uiColor: .systemBackground))
-                .modify { view in
-                    if #available(iOS 18.0, *) {
-                        view.navigationTransition(.zoom(
-                            sourceID: HomeAssistantStandByView.serverSelectionTransitionID,
-                            in: serverSelectionNamespace
-                        ))
-                    } else {
-                        view
-                    }
-                }
-        }
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
         .statusBarHidden(viewModel.chrome.statusBarHidden)
@@ -99,7 +84,6 @@ struct HomeAssistantView: View, WebFrontendView {
         }
         .onDisappear { viewModel.disappear(reduceMotion: reduceMotion) }
         .dismissesOnAppNavigation {
-            showServerSelection = false
             launchMessages.dismissAll()
         }
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
@@ -174,7 +158,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 emptyState: viewModel.displayedEmptyState,
                 isLoading: viewModel.overlayState.isLoading,
                 serverSelectionNamespace: serverSelectionNamespace,
-                onSelectServerTapped: { showServerSelection = true },
+                onSelectServerTapped: viewModel.presentServerSelection,
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },

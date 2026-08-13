@@ -41,7 +41,7 @@ final class MockAppCoordinator: AppCoordinator {
         activatedServers.append(server)
     }
 
-    func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {}
+    func selectServer(prompt: String?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {}
     func presentInvitation(url: URL?) {}
     func setup() {}
 
