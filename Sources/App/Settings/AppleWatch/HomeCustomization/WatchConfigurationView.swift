@@ -102,6 +102,7 @@ struct WatchConfigurationView: View {
         .sheet(isPresented: $showAddFolderSheet) {
             addFolderSheet
         }
+        .listTopContentMargin()
     }
 
     private var resetView: some View {

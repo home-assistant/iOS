@@ -40,6 +40,7 @@ struct MacToolbarSettingsView: View {
         .onAppear {
             viewModel.load()
         }
+        .listTopContentMargin()
     }
 }
 

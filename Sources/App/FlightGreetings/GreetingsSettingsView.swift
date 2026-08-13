@@ -14,6 +14,7 @@ struct GreetingsSettingsView: View {
             }
         }
         .navigationTitle(L10n.Settings.Greetings.title)
+        .listTopContentMargin()
     }
 
     static var settingsSearchEntries: [SettingsSearchEntry] {

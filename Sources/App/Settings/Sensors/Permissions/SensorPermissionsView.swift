@@ -42,6 +42,7 @@ struct SensorPermissionsView: View {
         } message: {
             Text(viewModel.alertMessage ?? "")
         }
+        .listTopContentMargin()
     }
 }
 

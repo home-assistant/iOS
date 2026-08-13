@@ -85,6 +85,7 @@ struct GesturesSetupView: View {
                 }
             }
         }
+        .listTopContentMargin()
     }
 
     private var gestureActionsPickerContent: ListPickerContent {

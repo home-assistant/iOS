@@ -51,6 +51,7 @@ struct CustomWidgetsListView: View {
         .onAppear {
             viewModel.loadWidgets()
         }
+        .listTopContentMargin()
     }
 
     private var header: some View {

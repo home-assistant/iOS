@@ -107,6 +107,7 @@ struct SensorListView: View {
                 secondaryButton: .cancel(Text(L10n.cancelLabel))
             )
         }
+        .listTopContentMargin()
     }
 
     /// Apple Health has too many sensors to mix into the list below, so they get their own screen.

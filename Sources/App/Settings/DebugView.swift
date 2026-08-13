@@ -175,6 +175,7 @@ struct DebugView: View {
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
         }
+        .listTopContentMargin()
     }
 
     private func forceAppRestartAfterKeychainDeletion() {

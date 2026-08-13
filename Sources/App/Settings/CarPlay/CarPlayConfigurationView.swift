@@ -97,6 +97,7 @@ struct CarPlayConfigurationView: View {
         .sheet(isPresented: $showAddFolderSheet) {
             addFolderSheet
         }
+        .listTopContentMargin()
     }
 
     @ViewBuilder

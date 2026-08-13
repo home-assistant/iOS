@@ -37,6 +37,7 @@ struct AppIconShortcutsConfigurationView: View {
                 Text(verbatim: L10n.okLabel)
             })
         }
+        .listTopContentMargin()
     }
 
     private var header: some View {

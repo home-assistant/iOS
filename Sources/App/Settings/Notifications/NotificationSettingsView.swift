@@ -41,6 +41,7 @@ struct NotificationSettingsView: View {
             viewModel.refreshPermissionStatus()
             viewModel.refreshBadgeCount()
         }
+        .listTopContentMargin()
     }
 
     // MARK: - Sections

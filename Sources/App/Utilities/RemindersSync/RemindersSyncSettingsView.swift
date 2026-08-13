@@ -95,6 +95,7 @@ struct RemindersSyncSettingsView: View {
                 viewModel.load()
             }
         }
+        .listTopContentMargin()
     }
 
     private var refreshSections: some View {
