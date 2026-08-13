@@ -30,7 +30,7 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
             IntentItemSection<AssistPipelineEntity>(
                 .init(stringLiteral: server.info.name),
                 items: entities(forServer: server, pipelines: pipelines)
-                    .filter { $0.name.contains(string) }
+                    .filter { $0.name.localizedCaseInsensitiveContains(string) }
                     .map { .init($0) }
             )
         })

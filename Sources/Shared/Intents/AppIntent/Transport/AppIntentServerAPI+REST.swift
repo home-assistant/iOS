@@ -34,8 +34,13 @@ extension AppIntentServerAPI {
             body: ["template": template],
             timeout: requestTimeout
         )
-        // `POST /api/template` answers with the rendered text itself, not JSON.
-        return String(data: data, encoding: .utf8) ?? ""
+        // `POST /api/template` answers with the rendered text itself, not JSON. A body that isn't
+        // UTF-8 is a transport or server problem, not an empty render — surface it rather than
+        // handing back a blank string that reads like a successful result.
+        guard let rendered = String(data: data, encoding: .utf8) else {
+            throw HomeAssistantRESTError.invalidResponse
+        }
+        return rendered
     }
 
     static func actionDefinitionsViaREST(server: Server) async throws -> [IntentActionDefinition] {
