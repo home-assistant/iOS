@@ -65,7 +65,7 @@ struct ConditionalContainerView: View {
         .injectingViewControllerProvider()
         #if !targetEnvironment(macCatalyst)
             .presentationDetents(sheetDetents, selection: $appSettings.detent)
-            .presentationDragIndicator(canSelectServer ? .visible : .automatic)
+            .presentationDragIndicator(offersCompactDetent ? .visible : .automatic)
             .modify { view in
                 if #available(iOS 18.0, *), appSettings.selectionRequest?.zoomsFromStandBy == true {
                     view.navigationTransition(.zoom(
@@ -81,7 +81,7 @@ struct ConditionalContainerView: View {
                 withAnimation(DesignSystem.Animation.easeInOutFaster) {
                     if detent == .large {
                         appSettings.showFullSettings()
-                    } else if canSelectServer {
+                    } else {
                         appSettings.showServerSelection()
                     }
                 }
@@ -89,13 +89,14 @@ struct ConditionalContainerView: View {
         #endif
     }
 
-    /// The picker only earns the medium detent when there is more than one server to choose between.
-    private var canSelectServer: Bool {
-        Current.servers.all.count > 1
+    /// A sheet showing the picker keeps its detent whatever the servers do; one opened on Settings only offers
+    /// to shrink into the picker when there is more than one server to switch between.
+    private var offersCompactDetent: Bool {
+        appSettings.mode == .serverSelection || Current.servers.all.count > 1
     }
 
     private var sheetDetents: Set<PresentationDetent> {
-        canSelectServer ? [.medium, .large] : [.large]
+        offersCompactDetent ? [.medium, .large] : [.large]
     }
 
     private var content: some View {

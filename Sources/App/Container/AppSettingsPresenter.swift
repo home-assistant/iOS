@@ -51,14 +51,9 @@ final class AppSettingsPresenter: ObservableObject {
         isSheetPresented = true
     }
 
-    /// Opens the sheet on the compact server picker. With a single server there is nothing to pick, so the
-    /// request is dropped and Settings opens instead — callers that need a choice (deep links) only ask for
-    /// one when there is more than one server.
+    /// Opens the sheet on the compact server picker. Always presents it, however many servers there are: the
+    /// request is the caller's only way of hearing back, so it is never dropped on their behalf.
     func presentServerSelection(_ request: ServerSelectionRequest) {
-        guard Current.servers.all.count > 1 else {
-            presentSettings()
-            return
-        }
         selectionRequest = request
         mode = .serverSelection
         isFullSettingsMounted = false
@@ -66,9 +61,10 @@ final class AppSettingsPresenter: ObservableObject {
         isSheetPresented = true
     }
 
-    /// Uncovers Settings, either because the sheet was expanded or because the picker's own Settings row was
-    /// tapped. On Catalyst — where the sheet has no detents to drag — Settings is its own scene instead.
-    /// The pending request is kept: collapsing back to the picker can still complete it.
+    /// Shows Settings, either because the sheet was expanded or because the picker's settings button was
+    /// tapped. A pending request survives it, so collapsing back to the picker can still complete it — except
+    /// on Catalyst, where the sheet has no detents to drag and Settings is its own scene: closing the sheet
+    /// there drops the request like any other dismissal.
     func showFullSettings() {
         if Current.isCatalyst, Current.sceneManager.supportsMultipleScenes {
             isSheetPresented = false
