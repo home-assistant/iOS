@@ -84,6 +84,10 @@ struct CameraPlayerView: View {
                         .transition(.opacity)
                     }
                 }
+                // Only the WebRTC player toggles `controlsVisible` inside `withAnimation`; the HLS and
+                // MJPEG ones toggle it bare, so scope the animation here to fade the scrim on every
+                // player type. Matches the curve WebRTC uses for the rest of the controls.
+                .animation(.easeInOut(duration: 0.2), value: isToolbarVisible)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
