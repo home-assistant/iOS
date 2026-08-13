@@ -72,7 +72,7 @@ final class WebViewGestureHandler {
 
     private func showServersList() {
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.selectServer(prompt: nil, includeSettings: true) { server in
+            coordinator.selectServer(prompt: nil) { server in
                 coordinator.activate(server: server)
             }
         }

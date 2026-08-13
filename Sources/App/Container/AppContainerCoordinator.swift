@@ -22,10 +22,6 @@ final class AppContainerCoordinator: AppCoordinator {
     var onShowDownloadManager: ((DownloadManagerViewModel) -> Void)?
     /// Set by `ContainerView` to present the forced onboarding-permissions decision as a full-screen cover.
     var onShowOnboardingPermissions: ((Server, [OnboardingPermissionsNavigationViewModel.StepID]) -> Void)?
-    /// Set by `ContainerView` to present the server picker as a sheet. The picked server is delivered back
-    /// via `completeServerSelection(_:)` (the completion can't be forwarded through this non-escaping hook).
-    var onSelectServer: ((String?, Bool) -> Void)?
-    private var pendingServerSelection: ((Server) -> Void)?
 
     /// Seals for in-flight `open(server:)` requests, keyed by server. Keyed + arrayed so concurrent opens
     /// (same or different servers) don't overwrite each other and leave callers hanging.
@@ -114,20 +110,17 @@ final class AppContainerCoordinator: AppCoordinator {
         }
     }
 
-    func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {
-        pendingServerSelection = completion
-        // The picker is a sheet on the container, so anything already presented (Settings, What's New, …)
-        // would swallow it — clear the screen first.
-        dismissPresentedContent { [weak self] in
-            self?.onSelectServer?(prompt, includeSettings)
+    func selectServer(prompt: String?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+        // The picker is the Settings sheet at its medium detent, so anything already presented (Settings
+        // itself, What's New, …) would swallow it — clear the screen first. Presenting is deferred by a
+        // runloop hop so a sheet that was just torn down can't swallow the one replacing it.
+        dismissPresentedContent {
+            DispatchQueue.main.async {
+                AppSettingsPresenter.shared.presentServerSelection(
+                    .init(prompt: prompt, zoomsFromStandBy: zoomsFromStandBy, onSelect: completion)
+                )
+            }
         }
-    }
-
-    /// Called by `ContainerView`'s server-picker sheet when the user picks a server.
-    func completeServerSelection(_ server: Server) {
-        let completion = pendingServerSelection
-        pendingServerSelection = nil
-        completion?(server)
     }
 
     func presentInvitation(url inviteURL: URL?) {
@@ -225,7 +218,7 @@ final class AppContainerCoordinator: AppCoordinator {
                 isComingFromAppIntent: isComingFromAppIntent
             )
         } else if servers.count > 1 {
-            selectServer(prompt: skipConfirm ? nil : from.message(with: openUrlRaw), includeSettings: false) {
+            selectServer(prompt: skipConfirm ? nil : from.message(with: openUrlRaw)) {
                 [weak self] server in
                 self?.open(
                     from: from,

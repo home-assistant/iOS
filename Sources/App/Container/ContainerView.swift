@@ -3,18 +3,6 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Drives app Settings presentation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
-/// so that toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear Settings down with the
-/// container it would otherwise be presented from. Settings requested by the frontend external bus is pushed
-/// onto the container's navigation stack; every other entry point (gestures, empty state, …) uses a sheet.
-/// On Catalyst it opens in its own scene.
-final class AppSettingsPresenter: ObservableObject {
-    static let shared = AppSettingsPresenter()
-    @Published var isSheetPresented = false
-    @Published var isPushPresented = false
-    private init() {}
-}
-
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
@@ -46,17 +34,12 @@ struct ContainerView: View {
                 if pushOntoNavigationStack, UIDevice.current.userInterfaceIdiom == .phone {
                     AppSettingsPresenter.shared.isPushPresented = true
                 } else {
-                    AppSettingsPresenter.shared.isSheetPresented = true
+                    AppSettingsPresenter.shared.presentSettings()
                 }
             }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
             coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
-            coordinator.onSelectServer = { prompt, includeSettings in
-                viewModel.presentServerSelect(prompt: prompt, includeSettings: includeSettings) {
-                    coordinator.completeServerSelection($0)
-                }
-            }
             Current.sceneManager.registerAppCoordinator(coordinator)
             fadeOutLaunchSplashIfNeeded(for: state.screen)
         }
@@ -78,10 +61,6 @@ struct ContainerView: View {
                         .presentationDetents([.medium, .large])
                     #endif
                 }
-            case let .serverSelect(prompt, includeSettings, onSelect):
-                ServerSelectView(prompt: prompt, includeSettings: includeSettings, selectAction: onSelect)
-                    .presentationDetents([.medium, .large])
-                    .presentationBackground(Color(uiColor: .systemBackground))
             }
         }
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in
