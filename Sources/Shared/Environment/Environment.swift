@@ -276,6 +276,8 @@ public class AppEnvironment {
         $0.register(provider: KioskModeSensor.self)
         $0.register(provider: KioskBrightnessSensor.self)
         $0.register(provider: KioskVolumeSensor.self)
+        $0.register(provider: CameraMotionSensor.self)
+        $0.register(provider: CameraStreamSensor.self)
     }
 
     public var localized = LocalizedManager()
@@ -311,6 +313,10 @@ public class AppEnvironment {
     #endif
 
     public lazy var activeState: ActiveStateManager = .init()
+
+    public lazy var motionDetection: MotionDetectionManager = .init()
+
+    public lazy var cameraStreamServer: CameraStreamServer = .init()
 
     public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 

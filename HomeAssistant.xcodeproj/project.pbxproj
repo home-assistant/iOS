@@ -1674,6 +1674,24 @@
 		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
 		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
+		CA9EA0000000000000000002 /* CredentialsDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000001 /* CredentialsDraft.swift */; };
+		CA9EA0000000000000000004 /* SensorDetailCredentialFieldRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000003 /* SensorDetailCredentialFieldRow.swift */; };
+		CA9EA0000000000000000006 /* SensorDetailCredentialSaveRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000005 /* SensorDetailCredentialSaveRow.swift */; };
+		CA9EA0000000000000000008 /* SensorDetailNumericFieldRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000007 /* SensorDetailNumericFieldRow.swift */; };
+		CA9EA000000000000000000A /* SensorDetailOptionsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000009 /* SensorDetailOptionsRow.swift */; };
+		CA9EA000000000000000000C /* SensorDetailSliderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000000B /* SensorDetailSliderRow.swift */; };
+		CA9EA000000000000000000E /* CameraMotionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000000D /* CameraMotionSensor.swift */; };
+		CA9EA000000000000000000F /* CameraMotionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000000D /* CameraMotionSensor.swift */; };
+		CA9EA0000000000000000011 /* CameraStreamSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000010 /* CameraStreamSensor.swift */; };
+		CA9EA0000000000000000012 /* CameraStreamSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000010 /* CameraStreamSensor.swift */; };
+		CA9EA0000000000000000014 /* CameraStreamServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000013 /* CameraStreamServer.swift */; };
+		CA9EA0000000000000000015 /* CameraStreamServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000013 /* CameraStreamServer.swift */; };
+		CA9EA0000000000000000017 /* MotionDetectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000016 /* MotionDetectionManager.swift */; };
+		CA9EA0000000000000000018 /* MotionDetectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000016 /* MotionDetectionManager.swift */; };
+		CA9EA000000000000000001A /* CameraMotionSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA0000000000000000019 /* CameraMotionSensor.test.swift */; };
+		CA9EA000000000000000001C /* CameraStreamSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000001B /* CameraStreamSensor.test.swift */; };
+		CA9EA000000000000000001E /* CameraStreamServerAuth.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000001D /* CameraStreamServerAuth.test.swift */; };
+		CA9EA0000000000000000020 /* MotionDetectionManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9EA000000000000000001F /* MotionDetectionManager.test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3604,6 +3622,20 @@
 		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000001 /* CredentialsDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsDraft.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000003 /* SensorDetailCredentialFieldRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailCredentialFieldRow.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000005 /* SensorDetailCredentialSaveRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailCredentialSaveRow.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000007 /* SensorDetailNumericFieldRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailNumericFieldRow.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000009 /* SensorDetailOptionsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailOptionsRow.swift; sourceTree = "<group>"; };
+		CA9EA000000000000000000B /* SensorDetailSliderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailSliderRow.swift; sourceTree = "<group>"; };
+		CA9EA000000000000000000D /* CameraMotionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMotionSensor.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000010 /* CameraStreamSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamSensor.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000013 /* CameraStreamServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamServer.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000016 /* MotionDetectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionDetectionManager.swift; sourceTree = "<group>"; };
+		CA9EA0000000000000000019 /* CameraMotionSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMotionSensor.test.swift; sourceTree = "<group>"; };
+		CA9EA000000000000000001B /* CameraStreamSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamSensor.test.swift; sourceTree = "<group>"; };
+		CA9EA000000000000000001D /* CameraStreamServerAuth.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamServerAuth.test.swift; sourceTree = "<group>"; };
+		CA9EA000000000000000001F /* MotionDetectionManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionDetectionManager.test.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4355,6 +4387,8 @@
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 				115BC8272676F44E00452430 /* FocusSensor.swift */,
 				42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */,
+				CA9EA000000000000000000D /* CameraMotionSensor.swift */,
+				CA9EA0000000000000000010 /* CameraStreamSensor.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -4375,6 +4409,10 @@
 				11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */,
 				110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */,
 				115AD72C267C57DA0090B243 /* FocusSensor.test.swift */,
+				CA9EA0000000000000000019 /* CameraMotionSensor.test.swift */,
+				CA9EA000000000000000001B /* CameraStreamSensor.test.swift */,
+				CA9EA000000000000000001D /* CameraStreamServerAuth.test.swift */,
+				CA9EA000000000000000001F /* MotionDetectionManager.test.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -6095,6 +6133,12 @@
 				42B980D82DC24E5D00BC5C08 /* SensorDetailViewModel.swift */,
 				42B980D22DC24E1300BC5C08 /* SensorDetailLabelRowView.swift */,
 				42B980D62DC24E4500BC5C08 /* SensorDetailsDecimalStepper.swift */,
+				CA9EA0000000000000000001 /* CredentialsDraft.swift */,
+				CA9EA0000000000000000003 /* SensorDetailCredentialFieldRow.swift */,
+				CA9EA0000000000000000005 /* SensorDetailCredentialSaveRow.swift */,
+				CA9EA0000000000000000007 /* SensorDetailNumericFieldRow.swift */,
+				CA9EA0000000000000000009 /* SensorDetailOptionsRow.swift */,
+				CA9EA000000000000000000B /* SensorDetailSliderRow.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -7262,6 +7306,8 @@
 				427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */,
 				4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */,
 				427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */,
+				CA9EA0000000000000000013 /* CameraStreamServer.swift */,
+				CA9EA0000000000000000016 /* MotionDetectionManager.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -9900,6 +9946,12 @@
 				577142E05D7B54FFFEB61CED /* WidgetGaugeView.swift in Sources */,
 				D73456479437738B202696E1 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				756FCCCE01A8BFA7864E61C7 /* NotificationSnoozeActionsView.swift in Sources */,
+				CA9EA0000000000000000002 /* CredentialsDraft.swift in Sources */,
+				CA9EA0000000000000000004 /* SensorDetailCredentialFieldRow.swift in Sources */,
+				CA9EA0000000000000000006 /* SensorDetailCredentialSaveRow.swift in Sources */,
+				CA9EA0000000000000000008 /* SensorDetailNumericFieldRow.swift in Sources */,
+				CA9EA000000000000000000A /* SensorDetailOptionsRow.swift in Sources */,
+				CA9EA000000000000000000C /* SensorDetailSliderRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10290,6 +10342,10 @@
 				6F5492612DCB9E3CBD67F178 /* CallServiceResponse.swift in Sources */,
 				B04052B547BCC2FA7B75F85B /* NotificationSnoozeActionTable.swift in Sources */,
 				257083A269ACE9E924DB3BAB /* NotificationSnoozeAction.swift in Sources */,
+				CA9EA000000000000000000F /* CameraMotionSensor.swift in Sources */,
+				CA9EA0000000000000000012 /* CameraStreamSensor.swift in Sources */,
+				CA9EA0000000000000000015 /* CameraStreamServer.swift in Sources */,
+				CA9EA0000000000000000018 /* MotionDetectionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10654,6 +10710,10 @@
 				B5B0ED4D411BE12F4C7DC29A /* CallServiceResponse.swift in Sources */,
 				7CD3C880084E8C73B781D130 /* NotificationSnoozeActionTable.swift in Sources */,
 				D0FD54AF3CFE27E4C0B959EC /* NotificationSnoozeAction.swift in Sources */,
+				CA9EA000000000000000000E /* CameraMotionSensor.swift in Sources */,
+				CA9EA0000000000000000011 /* CameraStreamSensor.swift in Sources */,
+				CA9EA0000000000000000014 /* CameraStreamServer.swift in Sources */,
+				CA9EA0000000000000000017 /* MotionDetectionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10736,6 +10796,10 @@
 				71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */,
 				897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */,
 				94802EABC64FDEEC9F875310 /* CallServiceResponse.test.swift in Sources */,
+				CA9EA000000000000000001A /* CameraMotionSensor.test.swift in Sources */,
+				CA9EA000000000000000001C /* CameraStreamSensor.test.swift in Sources */,
+				CA9EA000000000000000001E /* CameraStreamServerAuth.test.swift in Sources */,
+				CA9EA0000000000000000020 /* MotionDetectionManager.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,15 +8,28 @@ struct SensorDetailLabelRowView: View {
         HStack {
             Text(attribute)
             Spacer()
-            if let number = value as? NSNumber, number === kCFBooleanTrue || number === kCFBooleanFalse {
-                Text(String(describing: number.boolValue))
-                    .foregroundColor(.secondary)
-            } else {
-                Text(String(describing: value))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-            }
+            Text(displayValue)
+                .foregroundColor(.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
         }
+        #if !os(watchOS)
+        .textSelection(.enabled)
+        #endif
+    }
+
+    private var displayValue: String {
+        if let number = value as? NSNumber, number === kCFBooleanTrue || number === kCFBooleanFalse {
+            return String(describing: number.boolValue)
+        }
+        return String(describing: value)
+    }
+}
+
+#Preview {
+    List {
+        SensorDetailLabelRowView(attribute: "Stream URL", value: "http://192.168.1.20:8090/camera")
+        SensorDetailLabelRowView(attribute: "Clients", value: 1)
+        SensorDetailLabelRowView(attribute: "Motion", value: true)
     }
 }
