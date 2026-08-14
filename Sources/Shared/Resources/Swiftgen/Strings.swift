@@ -855,6 +855,8 @@ public enum L10n {
   }
 
   public enum CameraPlayer {
+    /// Camera
+    public static var defaultCameraName: String { return L10n.tr("Localizable", "camera_player.default_camera_name") }
     public enum Errors {
       /// No stream available
       public static var noStreamAvailable: String { return L10n.tr("Localizable", "camera_player.errors.no_stream_available") }
