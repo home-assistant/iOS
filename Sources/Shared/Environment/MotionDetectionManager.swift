@@ -124,6 +124,8 @@ public class MotionDetectionManager: NSObject {
     private let processingQueue = DispatchQueue(label: "motion-detection-frames")
     private var isCaptureSessionConfigured = false
     private var captureDevice: AVCaptureDevice?
+    /// Retained so the capture connection can be re-oriented as the device rotates.
+    private var videoOutput: AVCaptureVideoDataOutput?
 
     /// Subsampling step over the Y plane; with VGA input this yields roughly
     /// 80x60 samples per frame, plenty for presence detection.
@@ -154,6 +156,12 @@ public class MotionDetectionManager: NSObject {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(deviceOrientationDidChange),
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
     }
 
     // MARK: - Observers
@@ -164,6 +172,7 @@ public class MotionDetectionManager: NSObject {
         observers.add(observer)
         if wasEmpty {
             wantsRunning = true
+            setGeneratingOrientationNotifications(true)
             startSession()
         }
     }
@@ -172,6 +181,7 @@ public class MotionDetectionManager: NSObject {
         observers.remove(observer)
         if observers.allObjects.isEmpty {
             wantsRunning = false
+            setGeneratingOrientationNotifications(false)
             stopSession()
         }
     }
@@ -232,6 +242,110 @@ public class MotionDetectionManager: NSObject {
     @objc private func applicationDidBecomeActive() {
         if wantsRunning {
             startSession()
+            // Orientation notifications are suspended in the background, so the device
+            // may have been rotated since the session last ran.
+            refreshVideoOrientation()
+        }
+    }
+
+    // MARK: - Orientation
+
+    @objc private func deviceOrientationDidChange() {
+        refreshVideoOrientation()
+    }
+
+    /// `UIDevice.orientationDidChangeNotification` is only posted while orientation
+    /// notifications are being generated; the calls are reference counted, so this is
+    /// balanced against observer registration.
+    private func setGeneratingOrientationNotifications(_ generating: Bool) {
+        DispatchQueue.main.async {
+            if generating {
+                UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+            } else {
+                UIDevice.current.endGeneratingDeviceOrientationNotifications()
+            }
+        }
+    }
+
+    /// Re-reads how the device is being held and applies it to the capture connection.
+    /// Safe to call from any thread.
+    public func refreshVideoOrientation() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let orientation = Self.currentVideoOrientation()
+            sessionQueue.async { [weak self] in
+                self?.apply(videoOrientation: orientation)
+            }
+        }
+    }
+
+    /// The video orientation that keeps captured frames upright for a device held in
+    /// `deviceOrientation`, or `nil` when the device orientation says nothing about
+    /// which way is up (`.faceUp`, `.faceDown`, `.unknown`).
+    ///
+    /// The two landscape cases swap: `UIDeviceOrientation` names them after which way
+    /// the *device* was rotated, while `AVCaptureVideoOrientation` names them after
+    /// where the resulting *image* has its bottom edge. Rotating the device to the
+    /// left leaves the camera looking out of what it calls the right-hand landscape.
+    static func videoOrientation(for deviceOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+        switch deviceOrientation {
+        case .portrait: return .portrait
+        case .portraitUpsideDown: return .portraitUpsideDown
+        case .landscapeLeft: return .landscapeRight
+        case .landscapeRight: return .landscapeLeft
+        default: return nil
+        }
+    }
+
+    /// The screen's rotation expressed as a device orientation. Derived from screen
+    /// geometry, so it stays meaningful when the device itself reports `.faceUp`,
+    /// `.faceDown` or `.unknown` — the usual case for a flat or wall-mounted tablet.
+    private static func screenOrientation() -> UIDeviceOrientation {
+        let screen = UIScreen.main
+        let point = screen.coordinateSpace.convert(CGPoint.zero, to: screen.fixedCoordinateSpace)
+        if point == CGPoint.zero {
+            return .portrait
+        } else if point.x != 0, point.y != 0 {
+            return .portraitUpsideDown
+        } else if point.x == 0, point.y != 0 {
+            return .landscapeRight
+        } else if point.x != 0, point.y == 0 {
+            return .landscapeLeft
+        } else {
+            return .unknown
+        }
+    }
+
+    /// How the device is currently held. Prefers the physical device orientation —
+    /// what matters for a camera is which way the room actually is, not whether the
+    /// UI happens to be rotation-locked — and falls back to the screen's rotation
+    /// when the device reports no usable orientation.
+    ///
+    /// Must be called on the main thread: it reads UIKit state.
+    private static func currentVideoOrientation() -> AVCaptureVideoOrientation {
+        videoOrientation(for: UIDevice.current.orientation)
+            ?? videoOrientation(for: screenOrientation())
+            ?? .portrait
+    }
+
+    /// Rotates captured frames so they stay upright. Frames are handed to the MJPEG
+    /// stream exactly as captured, so without this the stream keeps whatever fixed
+    /// orientation the connection defaulted to and comes out rotated or upside down
+    /// on any device that isn't held that way — routinely the case on iPad, which has
+    /// no natural orientation.
+    private func apply(videoOrientation: AVCaptureVideoOrientation) {
+        guard let connection = videoOutput?.connection(with: .video),
+              connection.isVideoOrientationSupported,
+              connection.videoOrientation != videoOrientation else { return }
+
+        connection.videoOrientation = videoOrientation
+        Current.Log.info("Motion detection: capture orientation now \(videoOrientation.rawValue)")
+
+        // Samples from before and after a rotation aren't comparable: a 180° flip
+        // keeps the sample count identical, so the diff would read as a frame full of
+        // motion and trip the sensor.
+        processingQueue.async { [weak self] in
+            self?.previousSamples = nil
         }
     }
 
@@ -264,24 +378,26 @@ public class MotionDetectionManager: NSObject {
             captureSession.sessionPreset = .vga640x480
         }
 
-        let videoOutput = AVCaptureVideoDataOutput()
-        videoOutput.videoSettings = [
+        let output = AVCaptureVideoDataOutput()
+        output.videoSettings = [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
         ]
-        videoOutput.alwaysDiscardsLateVideoFrames = true
-        videoOutput.setSampleBufferDelegate(self, queue: processingQueue)
+        output.alwaysDiscardsLateVideoFrames = true
+        output.setSampleBufferDelegate(self, queue: processingQueue)
 
         guard captureSession.canAddInput(deviceInput),
-              captureSession.canAddOutput(videoOutput) else {
+              captureSession.canAddOutput(output) else {
             Current.Log.error("Motion detection: unable to add capture input/output")
             return
         }
 
         captureSession.addInput(deviceInput)
-        captureSession.addOutput(videoOutput)
+        captureSession.addOutput(output)
+        videoOutput = output
 
         isCaptureSessionConfigured = true
         applyFrameRate()
+        refreshVideoOrientation()
     }
 
     /// Applies the capture frame rate: the highest rate among active consumers
@@ -418,6 +534,7 @@ public class MotionDetectionManager {
 
     public func register(observer: MotionDetectionObserver) {}
     public func unregister(observer: MotionDetectionObserver) {}
+    public func refreshVideoOrientation() {}
 }
 
 #endif
