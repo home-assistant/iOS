@@ -130,9 +130,19 @@ struct CameraPlayerView: View {
         }
     }
 
+    /// Entities can reach the picker without a usable name — an empty `friendly_name` upstream, or no
+    /// cached entity at all — and a menu row with no title is unpickable, so fall back to a generic
+    /// localized "Camera" rather than rendering blank.
+    private func displayName(_ name: String?) -> String {
+        guard let name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return L10n.CameraPlayer.defaultCameraName
+        }
+        return name
+    }
+
     @ViewBuilder
     private var nameBadge: some View {
-        if let name, controlsVisible {
+        if controlsVisible {
             Menu {
                 ForEach(cameras) { camera in
                     Button {
@@ -145,7 +155,7 @@ struct CameraPlayerView: View {
                         } else {
                             Image(systemSymbol: .videoFill)
                         }
-                        Text(camera.name)
+                        Text(displayName(camera.name))
                         if let subtitle = cameraSubtitles[camera.entityId], !subtitle.isEmpty {
                             Text(subtitle)
                         }
@@ -154,7 +164,7 @@ struct CameraPlayerView: View {
             } label: {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Text(name)
+                        Text(displayName(name))
                             .font(DesignSystem.Font.caption.bold())
                             .foregroundStyle(.primary)
                             .frame(maxWidth: maxTitleTextWidth, alignment: .leading)
