@@ -33,6 +33,20 @@ enum WidgetEnergyPeriod: String, Codable, Sendable, AppEnum {
         }
     }
 
+    /// Hour of the day before which "today" has too little behind it to be worth showing on its own.
+    static let earlyMorningHour = 5
+
+    /// The window to fall back to when the selected one came back without any data. Before
+    /// ``earlyMorningHour`` "today" is usually empty simply because the day just started, so the
+    /// widget summarises the day before instead — exactly as if "Yesterday" had been picked.
+    /// Nil for every other case: an empty window is the honest answer there.
+    func emptyDataFallback(now: Date, calendar: Calendar = .current) -> WidgetEnergyPeriod? {
+        guard self == .today, calendar.component(.hour, from: now) < Self.earlyMorningHour else {
+            return nil
+        }
+        return .yesterday
+    }
+
     /// The `[start, end)` range for the window, anchored to the user's calendar.
     func dateRange(now: Date, calendar: Calendar = .current) -> (start: Date, end: Date) {
         let startOfToday = calendar.startOfDay(for: now)

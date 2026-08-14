@@ -71,6 +71,28 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
         ].compactMap { $0 }
     }
 
+    /// The same series as `metrics(for:)`, but never empty: when the server has nothing to report for
+    /// the period yet — early in the day, typically — the series the source preference asks for come
+    /// back as blank stand-ins, so the layout keeps its shape instead of collapsing to a lone
+    /// "no energy data" line.
+    static func metricsOrPlaceholders(for entry: WidgetEnergyEntry) -> [WidgetEnergyMetric] {
+        let metrics = metrics(for: entry)
+        guard metrics.isEmpty else { return metrics }
+        return [
+            entry.source.showsSolar ? placeholder(kind: .solar) : nil,
+            entry.source.showsGrid ? placeholder(kind: .grid) : nil,
+        ].compactMap { $0 }
+    }
+
+    private static func placeholder(kind: Kind) -> WidgetEnergyMetric {
+        .init(
+            kind: kind,
+            value: WidgetEnergyStyle.emptyValue,
+            unit: WidgetEnergyStyle.energyUnit,
+            direction: .none
+        )
+    }
+
     static func solar(for entry: WidgetEnergyEntry) -> WidgetEnergyMetric? {
         if let watts = entry.livePowerSolar {
             let power = WidgetEnergyStyle.power(watts)
