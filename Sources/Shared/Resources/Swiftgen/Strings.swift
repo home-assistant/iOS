@@ -4030,6 +4030,42 @@ public enum L10n {
       public static var detailFooter: String { return L10n.tr("Localizable", "sensors.camera_stream.detail_footer") }
       /// To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.
       public static var footer: String { return L10n.tr("Localizable", "sensors.camera_stream.footer") }
+      public enum AddToHomeAssistant {
+        /// Add to Home Assistant
+        public static var button: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.button") }
+        /// %@ Camera
+        public static func cameraName(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.camera_name", String(describing: p1))
+        }
+        /// Choose which server should add this camera
+        public static var chooseServer: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.choose_server") }
+        /// Could Not Add Camera
+        public static var failureTitle: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.failure_title") }
+        /// Sets up the “MJPEG IP Camera” integration for you, with the stream URL and credentials above already filled in. Requires an owner or administrator account.
+        public static var footer: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.footer") }
+        /// “%@” was added to Home Assistant.
+        public static func success(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.success", String(describing: p1))
+        }
+        /// Camera Added
+        public static var successTitle: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.success_title") }
+        public enum Error {
+          /// This camera stream is already set up in Home Assistant.
+          public static var alreadyConfigured: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.already_configured") }
+          /// Home Assistant could not reach the stream. Check that it is on the same network as this device and keep the app in the foreground while it connects.
+          public static var cannotConnect: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.cannot_connect") }
+          /// Home Assistant could not set up the camera (%@).
+          public static func flow(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.flow", String(describing: p1))
+          }
+          /// Enable this sensor first, so the stream is running when Home Assistant connects to it.
+          public static var inactive: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.inactive") }
+          /// Home Assistant could not sign in to the stream with the username and password set above.
+          public static var invalidAuth: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.invalid_auth") }
+          /// This device has no Wi-Fi address, so there is nothing for Home Assistant to connect to. Join a Wi-Fi network and try again.
+          public static var noAddress: String { return L10n.tr("Localizable", "sensors.camera_stream.add_to_home_assistant.error.no_address") }
+        }
+      }
       public enum Setting {
         /// Leave both blank to allow anyone on your network to view the stream. When set, configure the MJPEG integration in Home Assistant with the same username and password.
         public static var credentialsFooter: String { return L10n.tr("Localizable", "sensors.camera_stream.setting.credentials_footer") }

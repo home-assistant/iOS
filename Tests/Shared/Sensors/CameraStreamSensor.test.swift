@@ -53,7 +53,10 @@ class CameraStreamSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].UniqueID, "cameraStream")
         XCTAssertEqual(sensors[0].Icon, "mdi:cctv-off")
         XCTAssertEqual(sensors[0].State as? String, "idle")
-        XCTAssertEqual(sensors[0].Settings.count, 3)
+        XCTAssertEqual(sensors[0].Settings.count, 4)
+        guard case .action(.addCameraStreamToHomeAssistant) = sensors[0].Settings[3].type else {
+            return XCTFail("expected the last setting to be the add-to-Home-Assistant action")
+        }
     }
 
     func testStreaming() throws {

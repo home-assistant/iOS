@@ -33,6 +33,8 @@ public struct WebhookSensorSetting {
             maximum: Double = 100
         )
         case credentials(fields: [CredentialField])
+        /// A tappable row that runs an app-level flow instead of editing a value.
+        case action(SensorSettingAction)
     }
 
     public struct CredentialField {

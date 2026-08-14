@@ -170,6 +170,11 @@ struct SensorDetailView: View {
                         setter: setter
                     )
                 )
+            case let .action(action):
+                switch action {
+                case .addCameraStreamToHomeAssistant:
+                    return AnyView(AddCameraStreamToHomeAssistantRow(title: setting.title))
+                }
             case .credentials:
                 return AnyView(EmptyView())
             }

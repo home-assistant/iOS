@@ -112,6 +112,11 @@ final class CameraStreamSensor: SensorProvider {
                 title: L10n.Sensors.CameraStream.Setting.username,
                 subtitle: L10n.Sensors.CameraStream.Setting.credentialsFooter
             ),
+            // The row supplies its own caption: what the button does, or why it can't be tapped.
+            .init(
+                type: .action(.addCameraStreamToHomeAssistant),
+                title: L10n.Sensors.CameraStream.AddToHomeAssistant.button
+            ),
         ]
 
         // Set up our observer (starts/stops the server with sensor enablement)

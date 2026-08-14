@@ -427,6 +427,7 @@ public class CameraStreamServer {
     public var isActive: Bool { false }
     public var isStreaming: Bool { false }
     public var clientCount: Int { 0 }
+    public var streamURL: String? { nil }
     public var port: Int = 8090
     public var streamFrameRate: Double = 15
     public var username: String = ""
