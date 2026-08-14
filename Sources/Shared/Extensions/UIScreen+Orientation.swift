@@ -1,7 +1,14 @@
 import Foundation
+
+#if os(iOS)
 import UIKit
 
-extension UIScreen {
+public extension UIScreen {
+    /// The screen's current rotation, expressed as the equivalent device orientation.
+    ///
+    /// Unlike `UIDevice.current.orientation` this is derived from the screen geometry,
+    /// so it stays meaningful when the device itself reports `.faceUp`, `.faceDown` or
+    /// `.unknown` — the usual case for a flat or wall-mounted tablet.
     var orientation: UIDeviceOrientation {
         let point = coordinateSpace.convert(CGPoint.zero, to: fixedCoordinateSpace)
         if point == CGPoint.zero {
@@ -17,3 +24,4 @@ extension UIScreen {
         }
     }
 }
+#endif
