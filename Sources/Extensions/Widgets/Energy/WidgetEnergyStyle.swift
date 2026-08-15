@@ -19,6 +19,10 @@ enum WidgetEnergyStyle {
     /// Unit symbol for energy, sourced from Foundation rather than hardcoded.
     static let energyUnit = UnitEnergy.kilowattHours.symbol
 
+    /// Stand-in for a figure the server hasn't reported yet — early in the day the statistics simply
+    /// have no buckets. Keeps the layout intact without claiming the value is zero.
+    static let emptyValue = "—"
+
     enum Direction {
         case up, down, none
 
@@ -39,6 +43,13 @@ enum WidgetEnergyStyle {
             case .none: ""
             }
         }
+    }
+
+    /// Arrow describing a signed energy total: up when generating or exporting, down when consuming,
+    /// and no arrow at all when there is no total to describe.
+    static func direction(ofTotal value: Double?) -> Direction {
+        guard let value else { return .none }
+        return value >= 0 ? .up : .down
     }
 
     /// Empty-state copy shared by every layout, so the accessories draw the same distinction the

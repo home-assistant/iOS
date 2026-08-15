@@ -136,12 +136,55 @@ struct WidgetsSnapshotTests {
     }
 
     @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoDataSystemSmallSnapshot() {
+        assertEnergyNoDataSnapshot(family: .systemSmall)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoDataSystemMediumSnapshot() {
+        assertEnergyNoDataSnapshot(family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
     @MainActor @Test func energyWidgetNotConfiguredSnapshot() {
         let size = snapshotSize(for: .systemMedium)
         assertLightDarkSnapshots(
             of: WidgetEnergyView(entry: WidgetEnergyEntry(period: .today, isConfigured: false))
                 .environment(\.widgetFamily, .systemMedium),
             layout: .fixed(width: size.width, height: size.height)
+        )
+    }
+
+    /// Configured, but the server has nothing for the period yet — early in the day, typically. The
+    /// figures blank out and the chart draws empty instead of the card becoming a "no data" line.
+    @available(iOS 18, *)
+    @MainActor private func assertEnergyNoDataSnapshot(
+        family: WidgetFamily,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: family)
+        let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+        let entry = WidgetEnergyEntry(
+            date: dayStart.addingTimeInterval(2 * 3600),
+            period: .today,
+            source: .auto,
+            serverName: "Home",
+            isConfigured: true
+        )
+        assertLightDarkSnapshots(
+            of: WidgetEnergyView(entry: entry)
+                .environment(\.widgetFamily, family)
+                .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
         )
     }
 

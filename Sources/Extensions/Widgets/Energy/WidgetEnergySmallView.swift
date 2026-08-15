@@ -9,34 +9,30 @@ struct WidgetEnergySmallView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
-        let metrics = WidgetEnergyMetric.metrics(for: entry)
+        // Placeholders rather than metrics when the period has no data yet: an empty figure per series
+        // reads better than swapping the card for a "no energy data" line.
+        let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry)
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             WidgetEnergyHeaderView(period: entry.period, date: entry.date)
 
             Spacer(minLength: 0)
 
-            if metrics.isEmpty {
-                Text(L10n.Widgets.Energy.noData)
-                    .font(.footnote)
-                    .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            } else {
-                ForEach(metrics) { metric in
-                    WidgetEnergyStatView(
-                        icon: metric.icon,
-                        value: metric.value,
-                        unit: metric.unit,
-                        label: metric.label,
-                        direction: metric.direction,
-                        color: metric.color,
-                        valueFont: .system(
-                            size: metrics.count == 1 ? 34 : 22,
-                            weight: .bold,
-                            design: .rounded
-                        )
+            ForEach(metrics) { metric in
+                WidgetEnergyStatView(
+                    icon: metric.icon,
+                    value: metric.value,
+                    unit: metric.unit,
+                    label: metric.label,
+                    direction: metric.direction,
+                    color: metric.color,
+                    valueFont: .system(
+                        size: metrics.count == 1 ? 34 : 22,
+                        weight: .bold,
+                        design: .rounded
                     )
-                    if metric.id != metrics.last?.id {
-                        Spacer(minLength: 0)
-                    }
+                )
+                if metric.id != metrics.last?.id {
+                    Spacer(minLength: 0)
                 }
             }
         }
@@ -56,4 +52,6 @@ struct WidgetEnergySmallView: View {
         livePowerGrid: -180,
         livePowerSolar: 250
     )
+    // Early in the day, before any statistics exist.
+    WidgetEnergyEntry(period: .today, isConfigured: true)
 }

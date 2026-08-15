@@ -50,11 +50,15 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     let value: String
     let unit: String?
     let direction: WidgetEnergyStyle.Direction
+    /// True when the figure is a stand-in for data the server hasn't reported yet.
+    var isPlaceholder = false
 
     var id: String { kind.rawValue }
     var icon: MaterialDesignIcons { kind.icon }
     var label: String { kind.label }
-    var color: Color { kind.color }
+    /// The series colour, except for a placeholder: a blank figure in solar orange or grid blue reads
+    /// as content, so it stays in the secondary text colour instead.
+    var color: Color { isPlaceholder ? WidgetEnergyStyle.secondaryText : kind.color }
 
     /// Value and unit on one line, e.g. "12,4 kWh", for the accessory layouts that can't stack them.
     var valueWithUnit: String {
@@ -69,6 +73,29 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             entry.source.showsSolar ? solar(for: entry) : nil,
             entry.source.showsGrid ? grid(for: entry) : nil,
         ].compactMap { $0 }
+    }
+
+    /// The same series as `metrics(for:)`, but never empty: when the server has nothing to report for
+    /// the period yet — early in the day, typically — the series the source preference asks for come
+    /// back as blank stand-ins, so the layout keeps its shape instead of collapsing to a lone
+    /// "no energy data" line.
+    static func metricsOrPlaceholders(for entry: WidgetEnergyEntry) -> [WidgetEnergyMetric] {
+        let metrics = metrics(for: entry)
+        guard metrics.isEmpty else { return metrics }
+        return [
+            entry.source.showsSolar ? placeholder(kind: .solar) : nil,
+            entry.source.showsGrid ? placeholder(kind: .grid) : nil,
+        ].compactMap { $0 }
+    }
+
+    private static func placeholder(kind: Kind) -> WidgetEnergyMetric {
+        .init(
+            kind: kind,
+            value: WidgetEnergyStyle.emptyValue,
+            unit: WidgetEnergyStyle.energyUnit,
+            direction: .none,
+            isPlaceholder: true
+        )
     }
 
     static func solar(for entry: WidgetEnergyEntry) -> WidgetEnergyMetric? {

@@ -88,37 +88,35 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         let info: EnergyInfo? = await send(.energyInfo(), on: connection)
         let gridSources = prefs.energySources.filter { $0.type == "grid" }
         let solarSources = prefs.energySources.filter { $0.type == "solar" }
-
-        let gridImportIds = gridSources.compactMap(\.statEnergyFrom)
-        let gridExportIds = gridSources.compactMap(\.statEnergyTo)
-        let solarIds = solarSources.compactMap(\.statEnergyFrom)
-        let costIds = costStatIds(gridSources: gridSources, info: info)
-
-        let range = configuration.period.dateRange(now: Current.date())
-        let statIds = Array(Set(gridImportIds + gridExportIds + solarIds + costIds))
-
-        var entry = WidgetEnergyEntry(
-            period: configuration.period,
-            source: configuration.source,
-            serverName: server.info.name,
-            widgetURL: widgetURL,
-            isConfigured: true
+        let ids = StatisticIds(
+            gridImport: gridSources.compactMap(\.statEnergyFrom),
+            gridExport: gridSources.compactMap(\.statEnergyTo),
+            solar: solarSources.compactMap(\.statEnergyFrom),
+            cost: costStatIds(gridSources: gridSources, info: info)
         )
 
-        if !statIds.isEmpty, let stats: EnergyStatistics = await send(
-            .statisticsDuringPeriod(
-                startTime: range.start,
-                endTime: range.end,
-                statisticIds: statIds,
-                period: configuration.period.statisticsPeriod
-            ),
-            on: connection
-        ) {
-            entry.gridConsumed = sumTotals(ids: gridImportIds, in: stats)
-            entry.gridReturned = sumTotals(ids: gridExportIds, in: stats)
-            entry.solarGenerated = sumTotals(ids: solarIds, in: stats)
-            entry.cost = sumTotals(ids: costIds, in: stats)
-            entry.chartPoints = chartPoints(importIds: gridImportIds, solarIds: solarIds, in: stats)
+        var entry = await entryWithStatistics(
+            for: configuration.period,
+            ids: ids,
+            on: connection,
+            base: WidgetEnergyEntry(
+                period: configuration.period,
+                source: configuration.source,
+                serverName: server.info.name,
+                widgetURL: widgetURL,
+                isConfigured: true
+            )
+        )
+
+        // Early in the morning "today" is usually empty only because the day just began, so summarise
+        // the day before rather than showing a blank card until the first statistics land.
+        if !entry.hasStatistics, let fallback = configuration.period.emptyDataFallback(now: Current.date()) {
+            var fallbackEntry = entry
+            fallbackEntry.period = fallback
+            fallbackEntry = await entryWithStatistics(for: fallback, ids: ids, on: connection, base: fallbackEntry)
+            if fallbackEntry.hasStatistics {
+                entry = fallbackEntry
+            }
         }
 
         entry.currencyCode = entry.cost == nil ? nil : await fetchCurrency(on: connection)
@@ -133,6 +131,48 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     // MARK: - Statistics helpers
+
+    /// The statistic ids the energy dashboard preferences resolve to, grouped by the series each one
+    /// feeds. They don't depend on the period, so a fallback query reuses them as they are.
+    private struct StatisticIds {
+        let gridImport: [String]
+        let gridExport: [String]
+        let solar: [String]
+        let cost: [String]
+
+        var all: [String] { Array(Set(gridImport + gridExport + solar + cost)) }
+    }
+
+    /// Queries the statistics for one window and returns the entry filled with its totals and chart.
+    /// Returns the entry unchanged when there is nothing to ask for or the request fails, which is
+    /// what lets the caller retry a different window on an entry that came back empty.
+    private func entryWithStatistics(
+        for period: WidgetEnergyPeriod,
+        ids: StatisticIds,
+        on connection: HAConnection,
+        base: WidgetEnergyEntry
+    ) async -> WidgetEnergyEntry {
+        let statIds = ids.all
+        guard !statIds.isEmpty else { return base }
+        let range = period.dateRange(now: Current.date())
+        guard let stats: EnergyStatistics = await send(
+            .statisticsDuringPeriod(
+                startTime: range.start,
+                endTime: range.end,
+                statisticIds: statIds,
+                period: period.statisticsPeriod
+            ),
+            on: connection
+        ) else { return base }
+
+        var entry = base
+        entry.gridConsumed = sumTotals(ids: ids.gridImport, in: stats)
+        entry.gridReturned = sumTotals(ids: ids.gridExport, in: stats)
+        entry.solarGenerated = sumTotals(ids: ids.solar, in: stats)
+        entry.cost = sumTotals(ids: ids.cost, in: stats)
+        entry.chartPoints = chartPoints(importIds: ids.gridImport, solarIds: ids.solar, in: stats)
+        return entry
+    }
 
     private func costStatIds(gridSources: [EnergySource], info: EnergyInfo?) -> [String] {
         var ids: [String] = []

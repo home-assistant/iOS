@@ -61,4 +61,31 @@ struct WidgetEnergyMetricTests {
         let nothing = WidgetEnergyEntry(isConfigured: true)
         #expect(WidgetEnergyMetric.metrics(for: nothing).isEmpty)
     }
+
+    @available(iOS 17, *)
+    @Test func placeholdersStandInForEverySeriesWhenThereIsNoData() {
+        let entry = WidgetEnergyEntry(isConfigured: true)
+        let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry)
+
+        #expect(metrics.map(\.kind) == [.solar, .grid])
+        #expect(metrics.allSatisfy { $0.value == WidgetEnergyStyle.emptyValue })
+        #expect(metrics.allSatisfy { $0.unit == WidgetEnergyStyle.energyUnit })
+        // Nothing to point at, so no arrows.
+        #expect(metrics.allSatisfy { $0.direction == .none })
+    }
+
+    @available(iOS 17, *)
+    @Test func placeholdersFollowTheSourcePreference() {
+        let entry = WidgetEnergyEntry(source: .solar, isConfigured: true)
+        #expect(WidgetEnergyMetric.metricsOrPlaceholders(for: entry).map(\.kind) == [.solar])
+    }
+
+    @available(iOS 17, *)
+    @Test func realMetricsWinOverPlaceholders() {
+        let entry = WidgetEnergyEntry(isConfigured: true, solarGenerated: 12.4)
+        let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry)
+
+        #expect(metrics.map(\.kind) == [.solar])
+        #expect(metrics[0].value != WidgetEnergyStyle.emptyValue)
+    }
 }
