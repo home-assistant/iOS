@@ -21,7 +21,10 @@ struct WidgetEnergyRefreshButton: View {
             .lineLimit(1)
         }
         .buttonStyle(.plain)
-        .accessibilityHint(Text(L10n.Widgets.Energy.refreshTitle))
+        // The visible text is a timestamp, so name the action explicitly and leave the time as the
+        // value — otherwise VoiceOver announces a bare time with no hint of what tapping does.
+        .accessibilityLabel(Text(L10n.Widgets.Energy.refreshTitle))
+        .accessibilityValue(Text(date, style: .time))
     }
 }
 

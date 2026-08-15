@@ -23,7 +23,7 @@ struct WidgetEnergyView: View {
             // A configured entry always draws its layout, even with nothing to show yet: the figures
             // and the chart come back empty rather than being replaced by prose. Only an entry the
             // widget can't read at all — no dashboard, or a failed load — falls back to the message.
-            if !entry.isConfigured {
+            if !entry.isConfigured || entry.loadFailed {
                 emptyView
             } else if family == .systemSmall {
                 WidgetEnergySmallView(entry: entry)
@@ -63,6 +63,8 @@ struct WidgetEnergyView: View {
 } timeline: {
     WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
+    // Configured but the statistics request failed: the message, with a retry.
+    WidgetEnergyEntry(period: .today, isConfigured: true, loadFailed: true)
     // Configured but nothing reported yet: empty figures, not prose.
     WidgetEnergyEntry(period: .today, isConfigured: true)
 }

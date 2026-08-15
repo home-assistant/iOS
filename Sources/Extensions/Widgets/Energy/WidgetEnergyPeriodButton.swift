@@ -16,7 +16,9 @@ struct WidgetEnergyPeriodButton: View {
                 .lineLimit(1)
         }
         .buttonStyle(.plain)
-        .accessibilityHint(Text(L10n.Widgets.Energy.refreshTitle))
+        // Same as the refresh button: the action, not the period, is what the control does.
+        .accessibilityLabel(Text(L10n.Widgets.Energy.refreshTitle))
+        .accessibilityValue(Text(period.displayTitle))
     }
 }
 

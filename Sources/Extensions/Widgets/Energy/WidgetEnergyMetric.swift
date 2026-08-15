@@ -51,7 +51,7 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     let unit: String?
     let direction: WidgetEnergyStyle.Direction
     /// True when the figure is a stand-in for data the server hasn't reported yet.
-    var isPlaceholder = false
+    let isPlaceholder: Bool
 
     var id: String { kind.rawValue }
     var icon: MaterialDesignIcons { kind.icon }
@@ -101,14 +101,15 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     static func solar(for entry: WidgetEnergyEntry) -> WidgetEnergyMetric? {
         if let watts = entry.livePowerSolar {
             let power = WidgetEnergyStyle.power(watts)
-            return .init(kind: .solar, value: power.value, unit: power.unit, direction: .up)
+            return .init(kind: .solar, value: power.value, unit: power.unit, direction: .up, isPlaceholder: false)
         }
         if let kWh = entry.solarGenerated {
             return .init(
                 kind: .solar,
                 value: WidgetEnergyStyle.energy(kWh),
                 unit: WidgetEnergyStyle.energyUnit,
-                direction: .up
+                direction: .up,
+                isPlaceholder: false
             )
         }
         return nil
@@ -118,14 +119,21 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
         if let watts = entry.livePowerGrid {
             // Live grid power is net: positive is drawn from the grid, negative is returned to it.
             let power = WidgetEnergyStyle.power(watts)
-            return .init(kind: .grid, value: power.value, unit: power.unit, direction: watts > 0 ? .down : .up)
+            return .init(
+                kind: .grid,
+                value: power.value,
+                unit: power.unit,
+                direction: watts > 0 ? .down : .up,
+                isPlaceholder: false
+            )
         }
         if let net = entry.gridNet {
             return .init(
                 kind: .grid,
                 value: WidgetEnergyStyle.energy(net),
                 unit: WidgetEnergyStyle.energyUnit,
-                direction: net >= 0 ? .up : .down
+                direction: net >= 0 ? .up : .down,
+                isPlaceholder: false
             )
         }
         return nil

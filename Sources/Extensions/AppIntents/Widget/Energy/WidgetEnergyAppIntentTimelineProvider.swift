@@ -109,8 +109,10 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         )
 
         // Early in the morning "today" is usually empty only because the day just began, so summarise
-        // the day before rather than showing a blank card until the first statistics land.
-        if !entry.hasStatistics, let fallback = configuration.period.emptyDataFallback(now: Current.date()) {
+        // the day before rather than showing a blank card until the first statistics land. A failed
+        // load is not an empty day, so it never falls back — it reports the failure instead.
+        if !entry.hasStatistics, !entry.loadFailed,
+           let fallback = configuration.period.emptyDataFallback(now: Current.date()) {
             var fallbackEntry = entry
             fallbackEntry.period = fallback
             fallbackEntry = await entryWithStatistics(for: fallback, ids: ids, on: connection, base: fallbackEntry)
@@ -144,8 +146,8 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     /// Queries the statistics for one window and returns the entry filled with its totals and chart.
-    /// Returns the entry unchanged when there is nothing to ask for or the request fails, which is
-    /// what lets the caller retry a different window on an entry that came back empty.
+    /// A failed request comes back flagged as such, so the widget can offer a retry instead of
+    /// passing the outage off as a period with nothing in it.
     private func entryWithStatistics(
         for period: WidgetEnergyPeriod,
         ids: StatisticIds,
@@ -163,7 +165,11 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
                 period: period.statisticsPeriod
             ),
             on: connection
-        ) else { return base }
+        ) else {
+            var entry = base
+            entry.loadFailed = true
+            return entry
+        }
 
         var entry = base
         entry.gridConsumed = sumTotals(ids: ids.gridImport, in: stats)
