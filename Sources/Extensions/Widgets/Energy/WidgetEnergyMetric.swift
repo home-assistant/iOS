@@ -53,6 +53,22 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     /// True when the figure is a stand-in for data the server hasn't reported yet.
     let isPlaceholder: Bool
 
+    /// Spelled out rather than left to the memberwise initialiser so `isPlaceholder` can stay
+    /// immutable while every real metric keeps constructing without mentioning it.
+    init(
+        kind: Kind,
+        value: String,
+        unit: String?,
+        direction: WidgetEnergyStyle.Direction,
+        isPlaceholder: Bool = false
+    ) {
+        self.kind = kind
+        self.value = value
+        self.unit = unit
+        self.direction = direction
+        self.isPlaceholder = isPlaceholder
+    }
+
     var id: String { kind.rawValue }
     var icon: MaterialDesignIcons { kind.icon }
     var label: String { kind.label }
@@ -101,15 +117,14 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     static func solar(for entry: WidgetEnergyEntry) -> WidgetEnergyMetric? {
         if let watts = entry.livePowerSolar {
             let power = WidgetEnergyStyle.power(watts)
-            return .init(kind: .solar, value: power.value, unit: power.unit, direction: .up, isPlaceholder: false)
+            return .init(kind: .solar, value: power.value, unit: power.unit, direction: .up)
         }
         if let kWh = entry.solarGenerated {
             return .init(
                 kind: .solar,
                 value: WidgetEnergyStyle.energy(kWh),
                 unit: WidgetEnergyStyle.energyUnit,
-                direction: .up,
-                isPlaceholder: false
+                direction: .up
             )
         }
         return nil
@@ -119,21 +134,14 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
         if let watts = entry.livePowerGrid {
             // Live grid power is net: positive is drawn from the grid, negative is returned to it.
             let power = WidgetEnergyStyle.power(watts)
-            return .init(
-                kind: .grid,
-                value: power.value,
-                unit: power.unit,
-                direction: watts > 0 ? .down : .up,
-                isPlaceholder: false
-            )
+            return .init(kind: .grid, value: power.value, unit: power.unit, direction: watts > 0 ? .down : .up)
         }
         if let net = entry.gridNet {
             return .init(
                 kind: .grid,
                 value: WidgetEnergyStyle.energy(net),
                 unit: WidgetEnergyStyle.energyUnit,
-                direction: net >= 0 ? .up : .down,
-                isPlaceholder: false
+                direction: net >= 0 ? .up : .down
             )
         }
         return nil
