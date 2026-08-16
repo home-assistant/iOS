@@ -342,6 +342,7 @@ public struct WatchDatabaseMirror: WatchCodable {
     public func apply() throws {
         try Current.database().write { db in
             try applyReferenceTables(in: db)
+            try applySettingsTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
         }
         logApplyOutcome()
@@ -405,6 +406,11 @@ public struct WatchDatabaseMirror: WatchCodable {
                 try device.insert(db)
             }
         }
+    }
+
+    /// The user's own settings that travel on the mirror, as opposed to the server-derived reference
+    /// tables above. Same present-is-authoritative / absent-means-retain contract.
+    private func applySettingsTables(in db: Database) throws {
         // The watch seeds this table with the same defaults the phone does, so a replace (rather than
         // an upsert) is what lets a preset the user *removed* on the phone disappear from the watch.
         if let notificationSnoozeActions {
