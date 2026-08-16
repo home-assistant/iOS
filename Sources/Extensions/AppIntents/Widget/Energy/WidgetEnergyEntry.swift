@@ -44,6 +44,12 @@ struct WidgetEnergyEntry: TimelineEntry {
         let solar: Double
     }
 
+    /// Whether the server reported anything for the period. Live power is deliberately excluded: it
+    /// describes right now, not the window, so it can't stand in for missing statistics.
+    var hasStatistics: Bool {
+        gridConsumed != nil || gridReturned != nil || solarGenerated != nil || !chartPoints.isEmpty
+    }
+
     /// Net grid energy over the period (returned − consumed). Positive means net export.
     var gridNet: Double? {
         guard gridConsumed != nil || gridReturned != nil else { return nil }

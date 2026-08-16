@@ -9,6 +9,8 @@ struct WidgetEnergyChartView: View {
     let points: [WidgetEnergyEntry.ChartPoint]
     var source: WidgetEnergySource = .auto
     var period: WidgetEnergyPeriod = .today
+    /// Anchors the x-axis to the right days when there are no points to derive it from.
+    var date = Date()
 
     private static let gridFlow = "grid"
     private static let solarFlow = "solar"
@@ -50,16 +52,22 @@ struct WidgetEnergyChartView: View {
         }
     }
 
-    /// Force the x-axis to represent the whole period even when data only reaches "now".
+    /// Force the x-axis to represent the whole period even when data only reaches "now" — or, with no
+    /// data at all, when there is nothing but the axes to draw.
     private var xDomain: ClosedRange<Date> {
         let calendar = Calendar.current
-        guard let first = points.first?.date, let last = points.last?.date else {
-            let start = calendar.startOfDay(for: Date(timeIntervalSince1970: 0))
-            return start ... start.addingTimeInterval(24 * 3600)
+        let start: Date
+        let end: Date
+        if let first = points.first?.date, let last = points.last?.date {
+            start = calendar.startOfDay(for: first)
+            end = calendar.startOfDay(for: last).addingTimeInterval(24 * 3600)
+        } else {
+            // `end` is exclusive, so step back inside it before rounding up to the end of its day.
+            let range = period.dateRange(now: date)
+            start = calendar.startOfDay(for: range.start)
+            end = calendar.startOfDay(for: range.end.addingTimeInterval(-1)).addingTimeInterval(24 * 3600)
         }
-        let start = calendar.startOfDay(for: first)
-        let end = calendar.startOfDay(for: last).addingTimeInterval(24 * 3600)
-        return start ... end
+        return start ... max(end, start.addingTimeInterval(24 * 3600))
     }
 
     var body: some View {
@@ -71,6 +79,16 @@ struct WidgetEnergyChartView: View {
                 )
                 .foregroundStyle(by: .value("Flow", point.flow))
                 .cornerRadius(2)
+            }
+
+            if flowPoints.isEmpty {
+                // Nothing to plot: an invisible bar still gives the y-axis a domain, so the empty
+                // chart draws both axes instead of a bare grid.
+                BarMark(
+                    x: .value("Time", xDomain.lowerBound, unit: isDaily ? .day : .hour),
+                    y: .value("Energy", 1)
+                )
+                .opacity(0)
             }
         }
         .chartForegroundStyleScale([
@@ -121,6 +139,14 @@ struct WidgetEnergyChartView: View {
         )
     }
     return WidgetEnergyChartView(points: points)
+        .padding()
+        .frame(height: 150)
+        .background(WidgetEnergyStyle.background)
+}
+
+@available(iOS 17, *)
+#Preview("No data") {
+    WidgetEnergyChartView(points: [], period: .today)
         .padding()
         .frame(height: 150)
         .background(WidgetEnergyStyle.background)

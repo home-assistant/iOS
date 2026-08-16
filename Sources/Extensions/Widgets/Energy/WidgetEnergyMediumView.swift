@@ -9,26 +9,28 @@ struct WidgetEnergyMediumView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+            // Every series the source preference asks for keeps its slot even before the server has
+            // reported anything for the period: the figure blanks out, the layout doesn't move.
             HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
-                if entry.source.showsSolar, let solar = entry.solarGenerated {
+                if entry.source.showsSolar {
                     WidgetEnergyStatView(
                         icon: .solarPowerIcon,
-                        value: WidgetEnergyStyle.energy(solar),
+                        value: entry.solarGenerated.map(WidgetEnergyStyle.energy) ?? WidgetEnergyStyle.emptyValue,
                         unit: WidgetEnergyStyle.energyUnit,
                         label: L10n.Widgets.Energy.solar,
-                        direction: .up,
-                        color: WidgetEnergyStyle.solar
+                        direction: WidgetEnergyStyle.direction(ofTotal: entry.solarGenerated),
+                        color: entry.solarGenerated == nil ? WidgetEnergyStyle.secondaryText : WidgetEnergyStyle.solar
                     )
                 }
 
-                if entry.source.showsGrid, let net = entry.gridNet {
+                if entry.source.showsGrid {
                     WidgetEnergyStatView(
                         icon: .transmissionTowerIcon,
-                        value: WidgetEnergyStyle.energy(net),
+                        value: entry.gridNet.map(WidgetEnergyStyle.energy) ?? WidgetEnergyStyle.emptyValue,
                         unit: WidgetEnergyStyle.energyUnit,
                         label: L10n.Widgets.Energy.electricityTotal,
-                        direction: net >= 0 ? .up : .down,
-                        color: WidgetEnergyStyle.consumption
+                        direction: WidgetEnergyStyle.direction(ofTotal: entry.gridNet),
+                        color: entry.gridNet == nil ? WidgetEnergyStyle.secondaryText : WidgetEnergyStyle.consumption
                     )
                 }
 
@@ -37,21 +39,24 @@ struct WidgetEnergyMediumView: View {
                 topTrailingAccessory
             }
 
-            if !entry.chartPoints.isEmpty {
-                WidgetEnergyChartView(points: entry.chartPoints, source: entry.source, period: entry.period)
-                    .frame(maxHeight: .infinity)
-            } else {
-                Spacer(minLength: 0)
-            }
+            // Drawn even with no points, so the period reads as "nothing yet" rather than as a card
+            // that lost its chart.
+            WidgetEnergyChartView(
+                points: entry.chartPoints,
+                source: entry.source,
+                period: entry.period,
+                date: entry.date
+            )
+            .frame(maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(DesignSystem.Spaces.two)
         .widgetBackground(WidgetEnergyStyle.background)
     }
 
-    /// The period cost when available, followed by the summarised period and the time the entry was
-    /// refreshed. Replaces the shared header on these families, which have room for it on the
-    /// trailing edge of the stats row.
+    /// The period cost when available, followed by the summarised period and the reload button
+    /// carrying the time the entry was refreshed. Replaces the shared header on these families, which
+    /// have room for it on the trailing edge of the stats row.
     private var topTrailingAccessory: some View {
         VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
             if entry.source.showsGrid, let cost = entry.cost {
@@ -67,24 +72,19 @@ struct WidgetEnergyMediumView: View {
                 }
 
                 // The cost already claims a line, so period and time share the next one.
-                periodText + Text(verbatim: " · ").font(.system(size: 11)) + timeText
+                HStack(spacing: DesignSystem.Spaces.half) {
+                    WidgetEnergyPeriodButton(period: entry.period)
+                    Text(verbatim: "·")
+                        .font(.system(size: 11))
+                    WidgetEnergyRefreshButton(date: entry.date)
+                }
             } else {
-                periodText
-                timeText
+                WidgetEnergyPeriodButton(period: entry.period)
+                WidgetEnergyRefreshButton(date: entry.date)
             }
         }
         .lineLimit(1)
         .foregroundStyle(WidgetEnergyStyle.secondaryText)
-    }
-
-    private var periodText: Text {
-        Text(entry.period.displayTitle)
-            .font(.system(size: 11, weight: .semibold))
-    }
-
-    private var timeText: Text {
-        Text(entry.date, style: .time)
-            .font(.system(size: 11))
     }
 }
 
@@ -109,4 +109,6 @@ struct WidgetEnergyMediumView: View {
             )
         }
     )
+    // Early in the day, before any statistics exist.
+    WidgetEnergyEntry(period: .today, isConfigured: true)
 }

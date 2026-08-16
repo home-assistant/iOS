@@ -1,8 +1,9 @@
 import Foundation
 import SwiftUI
 
-/// Header shared by the home screen Energy layouts: the summarised period on the leading edge and
-/// the time the entry was refreshed on the trailing edge.
+/// Header shared by the home screen Energy layouts: the summarised period on the leading edge and the
+/// reload button plus the time the entry was refreshed on the trailing edge. Both ends reload the
+/// widget when tapped.
 @available(iOS 17, *)
 struct WidgetEnergyHeaderView: View {
     let period: WidgetEnergyPeriod
@@ -10,13 +11,9 @@ struct WidgetEnergyHeaderView: View {
 
     var body: some View {
         HStack {
-            Text(period.displayTitle)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
+            WidgetEnergyPeriodButton(period: period, font: .system(size: 12, weight: .semibold))
             Spacer()
-            Text(date, style: .time)
-                .font(.system(size: 11))
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
+            WidgetEnergyRefreshButton(date: date)
         }
         .lineLimit(1)
     }
