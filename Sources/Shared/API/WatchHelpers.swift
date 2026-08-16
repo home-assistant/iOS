@@ -271,6 +271,7 @@ public enum WatchMirrorPushCoordinator {
         case complicationChanged
         case serversChanged
         case watchConfigChanged
+        case notificationSnoozeActionsChanged
 
         /// Human-readable text used in logs and client events.
         public var logDescription: String {
@@ -279,6 +280,7 @@ public enum WatchMirrorPushCoordinator {
             case .complicationChanged: return "complication changed"
             case .serversChanged: return "servers changed"
             case .watchConfigChanged: return "watch config changed"
+            case .notificationSnoozeActionsChanged: return "notification snooze actions changed"
             }
         }
     }

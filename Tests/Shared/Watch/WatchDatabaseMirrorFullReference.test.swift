@@ -215,7 +215,71 @@ struct WatchDatabaseMirrorFullReferenceTests {
         }
     }
 
+    /// Regression: snooze presets edited on the iPhone never reached the Apple Watch, which builds its
+    /// notification actions from its own copy of this table and so stayed on the seeded 5/15/60.
+    @Test("Snooze presets are mirrored, and an empty set is authoritative rather than retained")
+    func snoozeActionsAreMirrored() throws {
+        try withDatabase { database in
+            // The table seeds 5/15/60; replace it with an edited set, as the settings screen would.
+            try database.write { db in
+                try NotificationSnoozeAction.deleteAll(db)
+                try NotificationSnoozeAction(id: "a", minutes: 30, sortOrder: 1).insert(db)
+                try NotificationSnoozeAction(id: "b", minutes: 10, isEnabled: false, sortOrder: 0).insert(db)
+            }
+
+            for version in [WatchDatabaseMirror.legacyVersion, WatchDatabaseMirror.fullReferenceVersion] {
+                let snapshot = try WatchDatabaseMirror.snapshot(version: version)
+                // Carried in the sort order the watch renders them in.
+                #expect(snapshot.notificationSnoozeActions?.map(\.minutes) == [10, 30])
+                #expect(snapshot.notificationSnoozeActions?.map(\.isEnabled) == [false, true])
+                #expect(snapshot.carriedDigestKeys.contains("notificationSnoozeActions"))
+                #expect(snapshot.tableDigests()["notificationSnoozeActions"] != nil)
+            }
+
+            // Round-trips over the wire, and matching digests omit it from the next delta sync.
+            let snapshot = try WatchDatabaseMirror.snapshot()
+            let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(snapshot.encodeForWatch())
+            #expect(decoded.notificationSnoozeActions?.map(\.minutes) == [10, 30])
+            let digests = snapshot.tableDigests()
+            #expect(snapshot.omittingTables(matching: digests, currentDigests: digests)
+                .notificationSnoozeActions == nil)
+            #expect(snapshot.omittingTables(matching: [:], currentDigests: digests)
+                .notificationSnoozeActions != nil)
+
+            // Applying replaces the local presets outright, so one removed on the phone disappears.
+            try decoded.apply()
+            let applied = try Self.storedMinutes(in: database)
+            #expect(applied == [10, 30])
+
+            // Deleting every preset on the phone is a real choice: it must propagate, not be retained.
+            try database.write { db in try NotificationSnoozeAction.deleteAll(db) }
+            let emptied = try WatchDatabaseMirror.snapshot()
+            #expect(emptied.notificationSnoozeActions == [])
+            try emptied.apply()
+            let afterWipe = try Self.storedMinutes(in: database)
+            #expect(afterWipe.isEmpty)
+
+            // A delta payload that doesn't carry the table retains whatever the watch holds.
+            try database.write { db in
+                try NotificationSnoozeAction(id: "c", minutes: 45, sortOrder: 0).insert(db)
+            }
+            try WatchDatabaseMirror(entities: nil, areas: nil, pipelines: nil).apply()
+            let retained = try Self.storedMinutes(in: database)
+            #expect(retained == [45])
+        }
+    }
+
     // MARK: - Fixtures
+
+    /// The locally stored snooze presets, in the order the watch would render them.
+    private static func storedMinutes(in database: DatabaseQueue) throws -> [Int] {
+        try database.read { db in
+            try NotificationSnoozeAction
+                .order(Column(DatabaseTables.NotificationSnoozeAction.sortOrder.rawValue))
+                .fetchAll(db)
+                .map(\.minutes)
+        }
+    }
 
     private static func entity(
         entityId: String,
@@ -289,6 +353,7 @@ struct WatchDatabaseMirrorFullReferenceTests {
             AppDeviceRegistryTable(),
             AppAreaTable(),
             AssistPipelinesTable(),
+            NotificationSnoozeActionTable(),
         ]
         for table in tables {
             try table.createIfNeeded(database: database)
