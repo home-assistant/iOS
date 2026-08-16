@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "이 페이지가 Home Assistant 서버 외부에 있거나 페이지를 찾을 수 없어 표시할 수 없습니다.";
 "alerts.navigation_error.title" = "탐색 오류";
 "alerts.open_url_from_deep_link.message" = "서버를 탭하여 (%@) 딥 링크 URL을 여시겠습니까?";
+"alerts.open_url_from_deep_link.select_server" = "이 링크를 열 서버를 선택하세요";
 "alerts.open_url_from_notification.message" = "알림에서 찾은 URL(%@)을 여시겠습니까?";
+"alerts.open_url_from_notification.select_server" = "이 알림 링크를 열 서버를 선택하세요";
 "alerts.open_url_from_notification.title" = "URL을 여시겠습니까?";
 "alerts.prompt.cancel" = "취소";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "앱에서 Assist";
 "app_intents.cover.title" = "커버";
 "app_intents.error.failed_servers" = "실패한 서버: %@";
+"app_intents.error.http_status" = "Home Assistant에서 HTTP %li 상태 코드를 반환했습니다";
+"app_intents.error.invalid_response" = "Home Assistant에서 예상하지 못한 응답을 받았습니다";
 "app_intents.error.no_server" = "서버가 제공되지 않았습니다";
 "app_intents.error.timed_out" = "%li초 후 시간 초과됨";
+"app_intents.error.token_unavailable" = "이 서버의 액세스 토큰을 가져올 수 없습니다";
 "app_intents.fan.off_state_icon.title" = "꺼짐 상태 아이콘";
 "app_intents.fan.on_state_icon.title" = "켜짐 상태 아이콘";
 "app_intents.fan.title" = "송풍기";
@@ -207,6 +212,7 @@
 "camera_list.title" = "카메라";
 "camera_list.unavailable.message" = "Mac에서는 카메라 스트리밍을 사용할 수 없습니다.";
 "camera_list.unavailable.title" = "Mac에서 사용할 수 없음";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "사용 가능한 스트림 없음";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistant에 연결할 수 없습니다";
 "camera_player.errors.unknown" = "알 수 없는 오류";
@@ -1989,6 +1995,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.precision_automatic" = "자동";
 "watch.complications.builder.preview" = "미리보기";
 "watch.complications.builder.progress_bar_color" = "진행률 표시줄 색상";
+"watch.complications.builder.remove_token" = "%@ 제거";
 "watch.complications.builder.show" = "표시";
 "watch.complications.builder.show_gauge" = "게이지/링으로 표시";
 "watch.complications.builder.show_icon" = "아이콘 표시";
@@ -2025,8 +2032,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.unit_automatic" = "자동";
 "watch.complications.builder.value_source" = "값";
 "watch.complications.builder.value_source_state" = "상태";
-"watch.complications.builder.value_template" = "Value template";
-"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
+"watch.complications.builder.value_template" = "값 템플릿";
+"watch.complications.builder.value_template_footer" = "진행률 표시줄 또는 게이지가 표시될 때 템플릿 결과는 0에서 1 사이의 숫자여야 합니다.";
 "watch.complications.family.circular" = "원형";
 "watch.complications.family.corner" = "모서리";
 "watch.complications.family.inline" = "인라인";

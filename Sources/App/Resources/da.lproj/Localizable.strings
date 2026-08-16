@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Denne side kan ikke vises, fordi den er uden for din Home Assistant-server, eller fordi siden ikke blev fundet.";
 "alerts.navigation_error.title" = "Navigationsfejl";
 "alerts.open_url_from_deep_link.message" = "Tryk på serveren for at åbne (%@) webadresse til dybt link?";
+"alerts.open_url_from_deep_link.select_server" = "Vælg hvilken server der skal åbne dette link";
 "alerts.open_url_from_notification.message" = "Åbn webadressen (%@) fundet i notifikationen?";
+"alerts.open_url_from_notification.select_server" = "Vælg hvilken server der skal åbne dette notifikationslink";
 "alerts.open_url_from_notification.title" = "Åbn webadresse?";
 "alerts.prompt.cancel" = "Annullér";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist i app";
 "app_intents.cover.title" = "Gardin/port";
 "app_intents.error.failed_servers" = "Servere med fejl: %@";
+"app_intents.error.http_status" = "Home Assistant returnerede HTTP %li";
+"app_intents.error.invalid_response" = "Uventet svar fra Home Assistant";
 "app_intents.error.no_server" = "Ingen server angivet";
 "app_intents.error.timed_out" = "Timeout efter %li sekunder";
+"app_intents.error.token_unavailable" = "Kunne ikke hente et adgangstoken til denne server";
 "app_intents.fan.off_state_icon.title" = "Ikon for slukket tilstand";
 "app_intents.fan.on_state_icon.title" = "Ikon for tændt tilstand";
 "app_intents.fan.title" = "Blæser";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kameraer";
 "camera_list.unavailable.message" = "Kamerastreaming er ikke tilgængelig på Mac.";
 "camera_list.unavailable.title" = "Ikke tilgængelig på Mac";
+"camera_player.default_camera_name" = "Kamera";
 "camera_player.errors.no_stream_available" = "Ingen stream tilgængelig";
 "camera_player.errors.unable_to_connect_to_server" = "Kunne ikke oprette forbindelse til Home Assistant";
 "camera_player.errors.unknown" = "Ukendt fejl";
@@ -1989,6 +1995,7 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Forhåndsvisning";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
@@ -2461,12 +2468,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-værktøjslinje";
 "web_view.add_to.option.Widget.title" = "Widget";
-"web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genopretter den forbindelsen, når den er online igen.";
+"web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genoprettes forbindelsen, når den er online igen.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Ryd cachen og genindlæs";
 "web_view.empty_state.open_settings_button" = "Åbn app-indstillinger";
 "web_view.empty_state.reauthenticate_button" = "Godkend igen";
 "web_view.empty_state.retry_button" = "Prøv igen";
-"web_view.empty_state.title" = "Der er ikke forbindelse";
+"web_view.empty_state.title" = "Ingen forbindelse";
 "web_view.no_url_available.body" = "🔐 På grund af dine sikkerhedsvalg er der ingen webadresse, som vi må bruge. \
 \
 ➡️ Åbn app-indstillingerne, og opdater dine sikkerhedsvalg eller URL'er.";

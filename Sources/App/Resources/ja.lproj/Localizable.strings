@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "このページは Home Assistant サーバーの外部にあるか、ページが見つからなかったため、表示できません。";
 "alerts.navigation_error.title" = "ナビゲーションエラー";
 "alerts.open_url_from_deep_link.message" = "サーバーをタップして（%@）のディープリンクURLを開きますか？";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "通知で見つかったURL (%@) を開きますか？";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "URLを開く？";
 "alerts.prompt.cancel" = "キャンセル";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "アプリでアシスト";
 "app_intents.cover.title" = "カバー";
 "app_intents.error.failed_servers" = "障害が発生したサーバー: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "サーバーが提供されていません";
 "app_intents.error.timed_out" = "タイムアウト後 %li 秒";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "オフ状態のアイコン";
 "app_intents.fan.on_state_icon.title" = "オン状態のアイコン";
 "app_intents.fan.title" = "ファン";
@@ -207,6 +212,7 @@
 "camera_list.title" = "カメラ";
 "camera_list.unavailable.message" = "カメラストリーミングはMacでは利用できません。";
 "camera_list.unavailable.title" = "Macでは利用できません";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "ストリームが利用できません";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistantに接続できません";
 "camera_player.errors.unknown" = "不明なエラー";
@@ -1988,6 +1994,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";

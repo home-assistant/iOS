@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Deze pagina kan niet worden weergegeven omdat deze zich buiten je Home Assistant-server bevindt of omdat de pagina niet is gevonden.";
 "alerts.navigation_error.title" = "Navigatiefout";
 "alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Open in melding gevonden URL (%@)?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "URL openen?";
 "alerts.prompt.cancel" = "Annuleren";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Poort of luik";
 "app_intents.error.failed_servers" = "Failed servers: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Geen server opgegeven";
 "app_intents.error.timed_out" = "Time-out na %li seconden";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Icoon voor uit-stand";
 "app_intents.fan.on_state_icon.title" = "Icoon voor aan-stand";
 "app_intents.fan.title" = "Ventilator";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Camera's";
 "camera_list.unavailable.message" = "Camerastreaming is niet beschikbaar op Mac.";
 "camera_list.unavailable.title" = "Niet beschikbaar op Mac";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Geen stream beschikbaar";
 "camera_player.errors.unable_to_connect_to_server" = "Kan geen verbinding maken met Home Assistant";
 "camera_player.errors.unknown" = "Onbekende fout";
@@ -1989,6 +1995,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatisch";
 "watch.complications.builder.preview" = "Voorbeeld";
 "watch.complications.builder.progress_bar_color" = "Kleur van de voortgangsbalk";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Weergeven";
 "watch.complications.builder.show_gauge" = "Toon als meter / ring";
 "watch.complications.builder.show_icon" = "Show icon";

@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Diese Seite kann nicht angezeigt werden, da sie sich außerhalb deines Home Assistant-Servers befindet oder die Seite nicht gefunden wurde.";
 "alerts.navigation_error.title" = "Navigationsfehler";
 "alerts.open_url_from_deep_link.message" = "Auf den Server tippen, um die Deep-Link-URL (%@) zu öffnen?";
+"alerts.open_url_from_deep_link.select_server" = "Wähle aus, welcher Server diesen Link öffnen soll";
 "alerts.open_url_from_notification.message" = "URL (%@) aus der Benachrichtigung öffnen?";
+"alerts.open_url_from_notification.select_server" = "Wähle aus, welcher Server diesen Benachrichtigungslink öffnen soll";
 "alerts.open_url_from_notification.title" = "Adresse öffnen?";
 "alerts.prompt.cancel" = "Abbrechen";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist in der App";
 "app_intents.cover.title" = "Abdeckung";
 "app_intents.error.failed_servers" = "Fehlgeschlagene Server: %@";
+"app_intents.error.http_status" = "Home Assistant gab HTTP %li zurück";
+"app_intents.error.invalid_response" = "Unerwartete Antwort von Home Assistant";
 "app_intents.error.no_server" = "Kein Server angegeben";
 "app_intents.error.timed_out" = "Zeitüberschreitung nach %li Sekunden";
+"app_intents.error.token_unavailable" = "Für diesen Server konnte kein Zugriffstoken abgerufen werden";
 "app_intents.fan.off_state_icon.title" = "Symbol für Aus-Zustand";
 "app_intents.fan.on_state_icon.title" = "Symbol für Ein-Zustand";
 "app_intents.fan.title" = "Ventilator";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kameras";
 "camera_list.unavailable.message" = "Kamera-Streaming ist auf dem Mac nicht verfügbar.";
 "camera_list.unavailable.title" = "Auf Mac nicht verfügbar";
+"camera_player.default_camera_name" = "Kamera";
 "camera_player.errors.no_stream_available" = "Kein Stream verfügbar";
 "camera_player.errors.unable_to_connect_to_server" = "Verbindung zu Home Assistant nicht möglich";
 "camera_player.errors.unknown" = "Unbekannter Fehler";
@@ -1990,6 +1996,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.complications.builder.precision_automatic" = "Automatisch";
 "watch.complications.builder.preview" = "Vorschau";
 "watch.complications.builder.progress_bar_color" = "Fortschrittsbalken-Farbe";
+"watch.complications.builder.remove_token" = "%@ entfernen";
 "watch.complications.builder.show" = "Anzeigen";
 "watch.complications.builder.show_gauge" = "Als Analoganzeige/Ring anzeigen";
 "watch.complications.builder.show_icon" = "Symbol anzeigen";
@@ -2026,8 +2033,8 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.complications.builder.unit_automatic" = "Automatisch";
 "watch.complications.builder.value_source" = "Wert";
 "watch.complications.builder.value_source_state" = "Zustand";
-"watch.complications.builder.value_template" = "Value template";
-"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
+"watch.complications.builder.value_template" = "Wert-Template";
+"watch.complications.builder.value_template_footer" = "Wenn der Fortschrittsbalken oder die Fortschrittsanzeige sichtbar ist, sollte das Ergebnis des Templates eine Zahl zwischen 0 und 1 sein.";
 "watch.complications.family.circular" = "Kreisförmig";
 "watch.complications.family.corner" = "Ecke";
 "watch.complications.family.inline" = "Seitlich";

@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Esta página não pode ser exibida porque está fora do seu servidor do Home Assistant ou a página não foi encontrada.";
 "alerts.navigation_error.title" = "Erro de navegação";
 "alerts.open_url_from_deep_link.message" = "Tocar no servidor para abrir a URL de deep link (%@)?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Abrir URL (%@) encontrada na notificação?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Abrir URL?";
 "alerts.prompt.cancel" = "Cancelar";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist no aplicativo";
 "app_intents.cover.title" = "Cobertura";
 "app_intents.error.failed_servers" = "Servidores com falha: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Nenhum servidor fornecido";
 "app_intents.error.timed_out" = "Tempo esgotado após %li segundos";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Ícone para estado desligado";
 "app_intents.fan.on_state_icon.title" = "Ícone para estado ligado";
 "app_intents.fan.title" = "Ventilador";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Câmeras";
 "camera_list.unavailable.message" = "Câmera para streaming de vídeo não está disponível no Mac.";
 "camera_list.unavailable.title" = "Não disponível no Mac";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Nenhuma transmissão disponível";
 "camera_player.errors.unable_to_connect_to_server" = "Não foi possível conectar ao Home Assistant";
 "camera_player.errors.unknown" = "Erro desconhecido";
@@ -1989,6 +1995,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.complications.builder.precision_automatic" = "Automático";
 "watch.complications.builder.preview" = "Pré-visualização";
 "watch.complications.builder.progress_bar_color" = "Cor da barra de progresso";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Mostrar";
 "watch.complications.builder.show_gauge" = "Mostrar como medidor / anel";
 "watch.complications.builder.show_icon" = "Mostrar ícone";

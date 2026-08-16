@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Seda lehte ei saa kuvada kuna see asub väljaspool Home Assistant serverit või lehte ei leitud.";
 "alerts.navigation_error.title" = "Navigeerimisviga";
 "alerts.open_url_from_deep_link.message" = "Kas puudutada serverit, et avada (%@) süvaviite URL?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Kas avada teavitusest leitud URL-i (%@)?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Kas avada URL?";
 "alerts.prompt.cancel" = "Loobu";
 "alerts.prompt.ok" = "Sobib";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist rakenduses";
 "app_intents.cover.title" = "Avakate";
 "app_intents.error.failed_servers" = "Ebaõnnestunud serverid: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Serverit pole esitatud";
 "app_intents.error.timed_out" = "Aegus pärast %li sekundit";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Väljalülitatud oleku ikoon";
 "app_intents.fan.on_state_icon.title" = "Sisselülitatud oleku ikoon";
 "app_intents.fan.title" = "Ventilaator";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kaamerad";
 "camera_list.unavailable.message" = "Kaamera voogedastus pole Macis saadaval.";
 "camera_list.unavailable.title" = "Pole Macis saadaval";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Voog pole saadaval";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistantiga ei õnnestu ühendust luua";
 "camera_player.errors.unknown" = "Tundmatu tõrge";
@@ -1989,6 +1995,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automaatne";
 "watch.complications.builder.preview" = "Eelvaade";
 "watch.complications.builder.progress_bar_color" = "Edenemisriba värv";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Näita mõõdikuna / ringina";
 "watch.complications.builder.show_icon" = "Kuva ikoon";
