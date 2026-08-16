@@ -241,10 +241,10 @@ struct WatchDatabaseMirrorFullReferenceTests {
             let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(snapshot.encodeForWatch())
             #expect(decoded.notificationSnoozeActions?.map(\.minutes) == [10, 30])
             let digests = snapshot.tableDigests()
-            #expect(snapshot.omittingTables(matching: digests, currentDigests: digests)
-                .notificationSnoozeActions == nil)
-            #expect(snapshot.omittingTables(matching: [:], currentDigests: digests)
-                .notificationSnoozeActions != nil)
+            let omitted = snapshot.omittingTables(matching: digests, currentDigests: digests)
+            #expect(omitted.notificationSnoozeActions == nil)
+            let carried = snapshot.omittingTables(matching: [:], currentDigests: digests)
+            #expect(carried.notificationSnoozeActions != nil)
 
             // Applying replaces the local presets outright, so one removed on the phone disappears.
             try decoded.apply()
