@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Αυτή η σελίδα δεν μπορεί να εμφανιστεί επειδή βρίσκεται εκτός του Home Assistant server σας ή επειδή η σελίδα δεν βρέθηκε.";
 "alerts.navigation_error.title" = "Σφάλμα πλοήγησης";
 "alerts.open_url_from_deep_link.message" = "Πάτημα server για άνοιγμα (%@) deep link URL;";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Ανοιγμα διεύθυνσης URL ( %@ ) που βρέθηκε στην ειδοποίηση;";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Άνοιγμα διεύθυνσης URL;";
 "alerts.prompt.cancel" = "Ακύρωση";
 "alerts.prompt.ok" = "Εντάξει";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Βοηθός στην εφαρμογή";
 "app_intents.cover.title" = "Ρολό";
 "app_intents.error.failed_servers" = "Servers των οποίων η λειτουργία έχει διακοπεί: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Δεν παρέχεται server";
 "app_intents.error.timed_out" = "Λήξη χρονικού ορίου μετά από %li δευτερόλεπτα";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Εικονίδιο για κατάσταση \"ανενεργό\"";
 "app_intents.fan.on_state_icon.title" = "Εικονίδιο για κατάσταση \"ενεργό\"";
 "app_intents.fan.title" = "Ανεμιστήρας";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Κάμερες";
 "camera_list.unavailable.message" = "Η ροή κάμερας δεν είναι διαθέσιμη σε Mac.";
 "camera_list.unavailable.title" = "Δεν είναι διαθέσιμο σε Mac";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Δεν υπάρχει διαθέσιμη ροή";
 "camera_player.errors.unable_to_connect_to_server" = "Δεν είναι δυνατή η σύνδεση με το Home Assistant";
 "camera_player.errors.unknown" = "Αγνωστο σφάλμα";
@@ -1989,6 +1995,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";

@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Bu sayfa, Home Assistant sunucunuzun dışında olduğu veya sayfa bulunamadığı için görüntülenemiyor.";
 "alerts.navigation_error.title" = "Yönlendirme Hatası";
 "alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "URL Aç?";
 "alerts.prompt.cancel" = "İptal";
 "alerts.prompt.ok" = "Tamam";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Uygulamada assist";
 "app_intents.cover.title" = "Kapak";
 "app_intents.error.failed_servers" = "Failed servers: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "No server provided";
 "app_intents.error.timed_out" = "Timed out after %li seconds";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Kapalı durum simgesi";
 "app_intents.fan.on_state_icon.title" = "Açık durum simgesi";
 "app_intents.fan.title" = "Fan";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kameralar";
 "camera_list.unavailable.message" = "Kamera akışı Mac'te kullanılamaz.";
 "camera_list.unavailable.title" = "Mac'te kullanılamaz";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Yayın mevcut değil.";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistant'a bağlanılamadı";
 "camera_player.errors.unknown" = "Bilinmeyen hata";
@@ -1989,6 +1995,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";

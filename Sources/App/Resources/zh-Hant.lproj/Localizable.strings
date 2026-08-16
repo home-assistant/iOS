@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "此頁面無法顯示，因為它位於 Home Assistant 伺服器之外，或找不到該頁面。";
 "alerts.navigation_error.title" = "導航錯誤";
 "alerts.open_url_from_deep_link.message" = "點選伺服器以開啟 (%@) 深層連結網址？";
+"alerts.open_url_from_deep_link.select_server" = "選擇要用哪個伺服器開啟此連結";
 "alerts.open_url_from_notification.message" = "開啟通知訊息中的網址（%@）？";
+"alerts.open_url_from_notification.select_server" = "選擇要用哪個伺服器開啟此通知連結";
 "alerts.open_url_from_notification.title" = "是否打開網址?";
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "好";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "App 中的助理";
 "app_intents.cover.title" = "門簾";
 "app_intents.error.failed_servers" = "失敗的伺服器：%@";
+"app_intents.error.http_status" = "Home Assistant 回傳了 HTTP %li";
+"app_intents.error.invalid_response" = "來自 Home Assistant 的意外回應";
 "app_intents.error.no_server" = "未提供伺服器";
 "app_intents.error.timed_out" = "超時 %li 秒";
+"app_intents.error.token_unavailable" = "無法取得此伺服器的存取權杖";
 "app_intents.fan.off_state_icon.title" = "關閉狀態的圖示";
 "app_intents.fan.on_state_icon.title" = "開啟狀態的圖示";
 "app_intents.fan.title" = "風扇";
@@ -207,6 +212,7 @@
 "camera_list.title" = "攝影機";
 "camera_list.unavailable.message" = "Mac 系統不支援攝影機串流功能。";
 "camera_list.unavailable.title" = "Mac 版本不支援";
+"camera_player.default_camera_name" = "攝影機";
 "camera_player.errors.no_stream_available" = "沒有可用的串流";
 "camera_player.errors.unable_to_connect_to_server" = "無法連線至 Home Assistant";
 "camera_player.errors.unknown" = "未知錯誤";
@@ -1989,6 +1995,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.precision_automatic" = "自動";
 "watch.complications.builder.preview" = "預覽";
 "watch.complications.builder.progress_bar_color" = "進度條顏色";
+"watch.complications.builder.remove_token" = "移除 %@";
 "watch.complications.builder.show" = "顯示";
 "watch.complications.builder.show_gauge" = "顯示為量表／圓環";
 "watch.complications.builder.show_icon" = "顯示圖示";
@@ -2025,8 +2032,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.unit_automatic" = "自動";
 "watch.complications.builder.value_source" = "數值";
 "watch.complications.builder.value_source_state" = "狀態";
-"watch.complications.builder.value_template" = "Value template";
-"watch.complications.builder.value_template_footer" = "When the progress bar or gauge is visible, the template result should be a number between 0 and 1.";
+"watch.complications.builder.value_template" = "數值模板";
+"watch.complications.builder.value_template_footer" = "當進度條或量表可見時，模板結果應為 0 到 1 之間的數字。";
 "watch.complications.family.circular" = "圓環";
 "watch.complications.family.corner" = "角落";
 "watch.complications.family.inline" = "對齊";

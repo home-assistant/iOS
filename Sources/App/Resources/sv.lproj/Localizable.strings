@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Den här sidan kan inte visas eftersom den ligger utanför din Home Assistant-server eller eftersom sidan inte hittades.";
 "alerts.navigation_error.title" = "Navigeringsfel";
 "alerts.open_url_from_deep_link.message" = "Tryck på servern för att öppna (%@) djuplänks-URL?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Öppna URL (%@) från aviseringen?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Öppna URL?";
 "alerts.prompt.cancel" = "Avbryt";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assistent i appen";
 "app_intents.cover.title" = "Skydd";
 "app_intents.error.failed_servers" = "Servrar som inte fungerar: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Ingen server angiven";
 "app_intents.error.timed_out" = "Timeout efter %li sekunder";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Ikon för avstängt";
 "app_intents.fan.on_state_icon.title" = "Ikon för påslaget";
 "app_intents.fan.title" = "Fläkt";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kameror";
 "camera_list.unavailable.message" = "Kameraströmning är inte tillgängligt på Mac.";
 "camera_list.unavailable.title" = "Inte tillgänglig på Mac";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Ingen ström tillgänglig";
 "camera_player.errors.unable_to_connect_to_server" = "Det går inte att ansluta till Home Assistant";
 "camera_player.errors.unknown" = "Okänt fel";
@@ -1984,6 +1990,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatisk";
 "watch.complications.builder.preview" = "Förhandsvisning";
 "watch.complications.builder.progress_bar_color" = "Färg på förloppsindikatorn";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Visa som mätare / ring";
 "watch.complications.builder.show_icon" = "Visa ikon";

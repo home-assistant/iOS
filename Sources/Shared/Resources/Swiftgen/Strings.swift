@@ -359,9 +359,7 @@ public enum L10n {
         return L10n.tr("Localizable", "app_intents.error.timed_out", p1)
       }
       /// Could not get an access token for this server
-      public static var tokenUnavailable: String {
-        return L10n.tr("Localizable", "app_intents.error.token_unavailable")
-      }
+      public static var tokenUnavailable: String { return L10n.tr("Localizable", "app_intents.error.token_unavailable") }
     }
     public enum Fan {
       /// Fan

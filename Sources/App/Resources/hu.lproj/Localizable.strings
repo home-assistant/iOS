@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Ez az oldal nem jeleníthető meg, mert a Home Assistant szerveren kívül található vagy az oldal nem található.";
 "alerts.navigation_error.title" = "Navigációs hiba";
 "alerts.open_url_from_deep_link.message" = "Megnyitja a szerverhez tartozó (%@) deep link URL-t?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Megnyitja az értesítésben talált URL-t (%@)?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Megnyitja az URL-t?";
 "alerts.prompt.cancel" = "Mégse";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist az alkalmazásban";
 "app_intents.cover.title" = "Árnyékoló";
 "app_intents.error.failed_servers" = "Sikertelen szerverek: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Nem lett szerver megadva";
 "app_intents.error.timed_out" = "Időtúllépés %li másodperc után";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Ikon a kikapcsolt állapothoz";
 "app_intents.fan.on_state_icon.title" = "Ikon a bekapcsolt állapothoz";
 "app_intents.fan.title" = "Ventilátor";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kamerák";
 "camera_list.unavailable.message" = "A kamera streaming nem elérhető Mac-en.";
 "camera_list.unavailable.title" = "Nem elérhető Mac-en";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Nincs elérhető stream";
 "camera_player.errors.unable_to_connect_to_server" = "Nem sikerült kapcsolódni a Home Assistanthoz";
 "camera_player.errors.unknown" = "Ismeretlen hiba";
@@ -1988,6 +1994,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";

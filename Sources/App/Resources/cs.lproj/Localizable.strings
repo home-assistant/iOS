@@ -43,7 +43,9 @@
 "alerts.navigation_error.message" = "Tuto stránku nelze zobrazit, protože se nachází mimo server vašeho Home Assistanta nebo stránka nebyla nalezena.";
 "alerts.navigation_error.title" = "Chyba navigace";
 "alerts.open_url_from_deep_link.message" = "Klepnutím na server pro otevření (%@) URL adresy přímého odkazu?";
+"alerts.open_url_from_deep_link.select_server" = "Choose which server should open this link";
 "alerts.open_url_from_notification.message" = "Otevřít URL (%@) nalezenou v oznámení?";
+"alerts.open_url_from_notification.select_server" = "Choose which server should open this notification link";
 "alerts.open_url_from_notification.title" = "Otevřít URL?";
 "alerts.prompt.cancel" = "Zrušit";
 "alerts.prompt.ok" = "OK";
@@ -69,8 +71,11 @@
 "app_intents.controls.assist.title" = "Assist v aplikaci";
 "app_intents.cover.title" = "Roleta";
 "app_intents.error.failed_servers" = "Selhaly servery: %@";
+"app_intents.error.http_status" = "Home Assistant returned HTTP %li";
+"app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "Není k dispozici žádný server";
 "app_intents.error.timed_out" = "Časový limit vypršel po %li sekundách";
+"app_intents.error.token_unavailable" = "Could not get an access token for this server";
 "app_intents.fan.off_state_icon.title" = "Ikona pro vypnutý stav";
 "app_intents.fan.on_state_icon.title" = "Ikona pro zapnutý stav";
 "app_intents.fan.title" = "Ventilátor";
@@ -207,6 +212,7 @@
 "camera_list.title" = "Kamery";
 "camera_list.unavailable.message" = "Streamování z kamery není na Macu k dispozici.";
 "camera_list.unavailable.title" = "Není k dispozici na Macu";
+"camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Není dostupný žádný proud";
 "camera_player.errors.unable_to_connect_to_server" = "Nelze se připojit k Home Assistantovi";
 "camera_player.errors.unknown" = "Neznámá chyba";
@@ -1989,6 +1995,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.complications.builder.precision_automatic" = "Automaticky";
 "watch.complications.builder.preview" = "Náhled";
 "watch.complications.builder.progress_bar_color" = "Barva ukazatele průběhu";
+"watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.show" = "Zobrazit";
 "watch.complications.builder.show_gauge" = "Zobrazit jako měřidlo / kroužek";
 "watch.complications.builder.show_icon" = "Zobrazit ikonu";
