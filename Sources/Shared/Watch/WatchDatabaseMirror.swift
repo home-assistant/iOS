@@ -226,6 +226,20 @@ public struct WatchDatabaseMirror: WatchCodable {
         }
     }
 
+    /// The user's snooze presets, in the order the watch renders them.
+    ///
+    /// Read in its own transaction (GRDB serializes reads, so it can't nest inside `snapshot()`'s).
+    /// Not run through `retainingIfEmpty` — these are the user's own settings, so "none left" is a
+    /// real choice that must reach the watch — but a *failed* read still yields `nil`, keeping the
+    /// "only a successful read is authoritative" rule the complication tables follow.
+    private static func snoozeActionsSnapshot() -> [NotificationSnoozeAction]? {
+        try? Current.database().read { db in
+            try NotificationSnoozeAction
+                .order(Column(DatabaseTables.NotificationSnoozeAction.sortOrder.rawValue))
+                .fetchAll(db)
+        }
+    }
+
     /// Read the current reference tables from the local GRDB (called on the phone). Pass the mirror
     /// version the receiving watch advertised; the default serves the legacy slice (see the type doc).
     public static func snapshot(version: Int = legacyVersion) throws -> WatchDatabaseMirror {
@@ -254,15 +268,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         // Deterministic order keeps the encoded payload — and therefore the delta-sync digests —
         // stable across snapshots of unchanged data.
         registry.sort { ($0.serverId, $0.entityId) < ($1.serverId, $1.entityId) }
-        // Read in its own transaction (GRDB serializes reads, so this can't nest inside the one
-        // below). Not run through `retainingIfEmpty` — these are the user's own settings, so "none
-        // left" is a real choice that must reach the watch — but a *failed* read still carries `nil`,
-        // keeping the "only a successful read is authoritative" rule the complication tables follow.
-        let snoozeActions = try? Current.database().read { db in
-            try NotificationSnoozeAction
-                .order(Column(DatabaseTables.NotificationSnoozeAction.sortOrder.rawValue))
-                .fetchAll(db)
-        }
+        let snoozeActions = snoozeActionsSnapshot()
         // Resolved outside the GRDB read: servers live in their own store, not the database.
         let servers = Current.servers.restorableState()
 
@@ -356,7 +362,7 @@ public struct WatchDatabaseMirror: WatchCodable {
                 "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
                 "devices": AppDeviceRegistry.fetchCount(db),
                 "pipelines": AssistPipelines.fetchCount(db),
-                "snoozeActions": NotificationSnoozeAction.fetchCount(db),
+                "notificationSnoozeActions": NotificationSnoozeAction.fetchCount(db),
             ]
         }) ?? [:]
         let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
