@@ -24,11 +24,16 @@ struct WatchComplicationSyncTests {
     func reasons() {
         #expect(Set(WatchMirrorPushCoordinator.Reason.allCases.map(\.rawValue)) == [
             "databaseUpdated", "complicationChanged", "serversChanged", "watchConfigChanged",
+            "notificationSnoozeActionsChanged",
         ])
         #expect(WatchMirrorPushCoordinator.Reason.databaseUpdated.logDescription == "database updated")
         #expect(WatchMirrorPushCoordinator.Reason.complicationChanged.logDescription == "complication changed")
         #expect(WatchMirrorPushCoordinator.Reason.serversChanged.logDescription == "servers changed")
         #expect(WatchMirrorPushCoordinator.Reason.watchConfigChanged.logDescription == "watch config changed")
+        #expect(
+            WatchMirrorPushCoordinator.Reason.notificationSnoozeActionsChanged.logDescription
+                == "notification snooze actions changed"
+        )
     }
     #endif
 

@@ -68,6 +68,17 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// without carrying the whole registry. Encoded under the pre-rename `complicationEntities` key
     /// so payloads stay compatible across builds.
     public var registryEntities: [EntityRegistryListForDisplay.Entity]
+    /// The user's notification snooze presets, so the watch's long-look offers the same quick actions
+    /// the iPhone does. The watch builds its actions from its *own* copy of this table at presentation
+    /// time (`UNNotificationContent.userInfoActions`), so without this the watch was stuck forever on
+    /// the 5/15/60 defaults its database seeds at creation.
+    ///
+    /// Unlike the reference tables above, an empty array is authoritative here: "the user disabled or
+    /// deleted every preset" is a state worth propagating, and the phone only ever reads this table
+    /// from its own settings (never from a server refresh that can transiently read back empty).
+    /// `nil` still means "not carried" — a delta sync, or a payload from a build that predates this
+    /// field — and the watch retains what it has.
+    public var notificationSnoozeActions: [NotificationSnoozeAction]?
     /// The phone's servers (`ServerManager.restorableState()` encoding), so every sync — the chunked
     /// pull and the proactive background push — also refreshes the watch's servers *in addition to*
     /// the on-demand `serversConfigSync` interactive exchange (which additionally carries the mTLS
@@ -84,6 +95,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         complications: [WatchComplication]? = nil,
         complicationConfigs: [WatchComplicationConfig]? = nil,
         registryEntities: [EntityRegistryListForDisplay.Entity] = [],
+        notificationSnoozeActions: [NotificationSnoozeAction]? = nil,
         servers: Data? = nil
     ) {
         self.entities = entities
@@ -94,11 +106,13 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.complications = complications
         self.complicationConfigs = complicationConfigs
         self.registryEntities = registryEntities
+        self.notificationSnoozeActions = notificationSnoozeActions
         self.servers = servers
     }
 
     private enum CodingKeys: String, CodingKey {
         case entities, areas, pipelines, registry, devices, complications, complicationConfigs, servers
+        case notificationSnoozeActions
         case registryEntities = "complicationEntities"
     }
 
@@ -127,6 +141,10 @@ public struct WatchDatabaseMirror: WatchCodable {
             [EntityRegistryListForDisplay.Entity].self,
             forKey: .registryEntities
         )).flatMap { $0 } ?? []
+        self.notificationSnoozeActions = (try? container.decodeIfPresent(
+            [NotificationSnoozeAction].self,
+            forKey: .notificationSnoozeActions
+        )).flatMap { $0 }
         self.servers = (try? container.decodeIfPresent(Data.self, forKey: .servers)).flatMap { $0 }
     }
 
@@ -166,6 +184,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         if registry != nil { keys.insert("registry") }
         if devices != nil { keys.insert("devices") }
         if complications != nil, complicationConfigs != nil { keys.insert("complications") }
+        if notificationSnoozeActions != nil { keys.insert("notificationSnoozeActions") }
         if servers != nil { keys.insert("servers") }
         return keys
     }
@@ -207,6 +226,20 @@ public struct WatchDatabaseMirror: WatchCodable {
         }
     }
 
+    /// The user's snooze presets, in the order the watch renders them.
+    ///
+    /// Read in its own transaction (GRDB serializes reads, so it can't nest inside `snapshot()`'s).
+    /// Not run through `retainingIfEmpty` — these are the user's own settings, so "none left" is a
+    /// real choice that must reach the watch — but a *failed* read still yields `nil`, keeping the
+    /// "only a successful read is authoritative" rule the complication tables follow.
+    private static func snoozeActionsSnapshot() -> [NotificationSnoozeAction]? {
+        try? Current.database().read { db in
+            try NotificationSnoozeAction
+                .order(Column(DatabaseTables.NotificationSnoozeAction.sortOrder.rawValue))
+                .fetchAll(db)
+        }
+    }
+
     /// Read the current reference tables from the local GRDB (called on the phone). Pass the mirror
     /// version the receiving watch advertised; the default serves the legacy slice (see the type doc).
     public static func snapshot(version: Int = legacyVersion) throws -> WatchDatabaseMirror {
@@ -235,6 +268,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         // Deterministic order keeps the encoded payload — and therefore the delta-sync digests —
         // stable across snapshots of unchanged data.
         registry.sort { ($0.serverId, $0.entityId) < ($1.serverId, $1.entityId) }
+        let snoozeActions = snoozeActionsSnapshot()
         // Resolved outside the GRDB read: servers live in their own store, not the database.
         let servers = Current.servers.restorableState()
 
@@ -280,6 +314,7 @@ public struct WatchDatabaseMirror: WatchCodable {
                 complications: complications,
                 complicationConfigs: configs,
                 registryEntities: registry,
+                notificationSnoozeActions: snoozeActions,
                 servers: servers
             )
         }
@@ -307,6 +342,7 @@ public struct WatchDatabaseMirror: WatchCodable {
     public func apply() throws {
         try Current.database().write { db in
             try applyReferenceTables(in: db)
+            try applySettingsTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
         }
         logApplyOutcome()
@@ -327,6 +363,7 @@ public struct WatchDatabaseMirror: WatchCodable {
                 "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
                 "devices": AppDeviceRegistry.fetchCount(db),
                 "pipelines": AssistPipelines.fetchCount(db),
+                "notificationSnoozeActions": NotificationSnoozeAction.fetchCount(db),
             ]
         }) ?? [:]
         let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
@@ -367,6 +404,19 @@ public struct WatchDatabaseMirror: WatchCodable {
             try AppDeviceRegistry.deleteAll(db)
             for device in devices {
                 try device.insert(db)
+            }
+        }
+    }
+
+    /// The user's own settings that travel on the mirror, as opposed to the server-derived reference
+    /// tables above. Same present-is-authoritative / absent-means-retain contract.
+    private func applySettingsTables(in db: Database) throws {
+        // The watch seeds this table with the same defaults the phone does, so a replace (rather than
+        // an upsert) is what lets a preset the user *removed* on the phone disappear from the watch.
+        if let notificationSnoozeActions {
+            try NotificationSnoozeAction.deleteAll(db)
+            for action in notificationSnoozeActions {
+                try action.insert(db)
             }
         }
     }
@@ -426,6 +476,9 @@ public struct WatchDatabaseMirror: WatchCodable {
            let entitiesData = try? encoder.encode(registryEntities) {
             digests["complications"] = Self.digest(of: [complicationsData, configsData, entitiesData])
         }
+        if let notificationSnoozeActions, let data = try? encoder.encode(notificationSnoozeActions) {
+            digests["notificationSnoozeActions"] = Self.digest(of: [data])
+        }
         if let servers {
             digests["servers"] = Self.digest(of: [servers])
         }
@@ -461,6 +514,7 @@ public struct WatchDatabaseMirror: WatchCodable {
             copy.complicationConfigs = nil
             copy.registryEntities = []
         }
+        if matches("notificationSnoozeActions") { copy.notificationSnoozeActions = nil }
         if matches("servers") { copy.servers = nil }
         return copy
     }
