@@ -81,6 +81,19 @@ public final class TokenManager: @unchecked Sendable {
         authenticationAPI.revokeToken(tokenInfo: server.info.token)
     }
 
+    /// Call after `revokeToken()` succeeded (the user logged out). Home Assistant drops the refresh
+    /// token and with it every access token minted from it, so both are dead from that moment on;
+    /// remembering the rejection keeps the app from re-sending them while the user logs back in, which
+    /// the server would log as invalid auth and eventually answer with an IP ban.
+    ///
+    /// The stored token is deliberately left in place: it is the only thing the reauthentication flow
+    /// replaces, and blanking it would make the server look like one restored from the keychain mirror.
+    public func handleTokenRevoked() {
+        let revokedToken = server.info.token.accessToken
+        HANetworkingEnvironment.current.log.info("Access token \(revokedToken.hash) was revoked")
+        rejectedAccessTokens.mutate { $0.insert(revokedToken) }
+    }
+
     public var bearerToken: Promise<(String, Date)> {
         firstly {
             self.currentToken

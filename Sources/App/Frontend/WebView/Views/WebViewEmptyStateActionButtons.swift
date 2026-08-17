@@ -138,7 +138,8 @@ struct WebViewEmptyStateActionButtons: View {
     }
 
     private var showsReauthURLPicker: Bool {
-        guard style == .unauthenticated || style == .recoveredServerNeedingReauthentication else { return false }
+        guard style == .unauthenticated || style == .loggedOut
+            || style == .recoveredServerNeedingReauthentication else { return false }
         return availableReauthURLTypes.count > 1
     }
 
@@ -146,7 +147,7 @@ struct WebViewEmptyStateActionButtons: View {
         switch style {
         case .disconnected, .inFlight:
             retryAction()
-        case .unauthenticated:
+        case .unauthenticated, .loggedOut:
             reauthAction(selectedReauthURLType)
         case .recoveredServerNeedingReauthentication:
             if recoveredServerReauthAction == nil {
