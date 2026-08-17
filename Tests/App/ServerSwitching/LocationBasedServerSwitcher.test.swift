@@ -276,6 +276,53 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         XCTAssertEqual(closest.server.identifier, server1.identifier)
     }
 
+    @MainActor
+    func testDeepLinkSkipsTheEvaluationForThatActivation() {
+        let previousSetting = Current.settingsStore.locationBasedServerSwitching
+        defer { Current.settingsStore.locationBasedServerSwitching = previousSetting }
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        let switcher = LocationBasedServerSwitcher()
+        // The link arrives before the activation that it triggered (cold launch ordering).
+        switcher.deepLinkWillOpen()
+        switcher.evaluate()
+
+        XCTAssertFalse(switcher.isEvaluating)
+    }
+
+    @MainActor
+    func testDeepLinkCancelsAnEvaluationAlreadyInFlight() {
+        let previousSetting = Current.settingsStore.locationBasedServerSwitching
+        defer { Current.settingsStore.locationBasedServerSwitching = previousSetting }
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        let switcher = LocationBasedServerSwitcher()
+        // The activation lands first and the link follows while the location fix is still pending.
+        switcher.evaluate()
+        XCTAssertTrue(switcher.isEvaluating)
+
+        switcher.deepLinkWillOpen()
+
+        XCTAssertFalse(switcher.isEvaluating)
+    }
+
+    @MainActor
+    func testSuppressionAppliesOnlyToTheDeepLinkedActivation() {
+        let previousSetting = Current.settingsStore.locationBasedServerSwitching
+        defer { Current.settingsStore.locationBasedServerSwitching = previousSetting }
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        let switcher = LocationBasedServerSwitcher()
+        switcher.deepLinkWillOpen()
+        switcher.evaluate()
+
+        // The next activation is an ordinary return to the app, so switching runs again.
+        switcher.evaluate()
+        XCTAssertTrue(switcher.isEvaluating)
+        // Leave no evaluation running past the test.
+        switcher.deepLinkWillOpen()
+    }
+
     func testClosestServerIsNilWithoutZonesOrNetworkMatch() {
         XCTAssertNil(LocationBasedServerSwitcher.closestServer(
             to: location(at: home1),
