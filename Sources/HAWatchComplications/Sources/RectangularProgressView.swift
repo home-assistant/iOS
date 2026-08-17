@@ -105,23 +105,23 @@ public struct RectangularProgressView: View {
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
                         thumb(valueLabel)
-                        // Fit the value: grow past the minimum pill width so it never crops, keeping a
-                        // fixed height. `fixedSize` sizes to the text on every platform (no async
-                        // measurement), and the measured width keeps the thumb clamped inside the bar.
-                        .frame(height: Self.thumbHeight)
-                        .frame(minWidth: Self.thumbWidth)
-                        .fixedSize(horizontal: true, vertical: false)
-                        .background(
-                            GeometryReader { proxy in
-                                Color.clear
-                                    .onAppear { thumbWidth = proxy.size.width }
-                                    .onChange(of: proxy.size.width) { thumbWidth = $0 }
-                            }
-                        )
-                        .position(
-                            x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
-                            y: Self.thumbHeight / 2
-                        )
+                            // Fit the value: grow past the minimum pill width so it never crops, keeping a
+                            // fixed height. `fixedSize` sizes to the text on every platform (no async
+                            // measurement), and the measured width keeps the thumb clamped inside the bar.
+                            .frame(height: Self.thumbHeight)
+                            .frame(minWidth: Self.thumbWidth)
+                            .fixedSize(horizontal: true, vertical: false)
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.clear
+                                        .onAppear { thumbWidth = proxy.size.width }
+                                        .onChange(of: proxy.size.width) { thumbWidth = $0 }
+                                }
+                            )
+                            .position(
+                                x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
+                                y: Self.thumbHeight / 2
+                            )
                     }
                 }
                 .frame(height: Self.thumbHeight)
