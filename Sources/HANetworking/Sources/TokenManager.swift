@@ -86,12 +86,15 @@ public final class TokenManager: @unchecked Sendable {
     /// remembering the rejection keeps the app from re-sending them while the user logs back in, which
     /// the server would log as invalid auth and eventually answer with an IP ban.
     ///
-    /// The stored token is deliberately left in place: it is the only thing the reauthentication flow
-    /// replaces, and blanking it would make the server look like one restored from the keychain mirror.
+    /// The expiration is pushed into the past on the same best-effort terms as
+    /// `handleAccessTokenRejected`, so the invalidation outlives this process where it can be written.
+    /// The token strings themselves stay put: clearing them is what `mirrorPlaceholderToken` is, which
+    /// would make the server look like one restored from the keychain mirror.
     public func handleTokenRevoked() {
         let revokedToken = server.info.token.accessToken
         HANetworkingEnvironment.current.log.info("Access token \(revokedToken.hash) was revoked")
         rejectedAccessTokens.mutate { $0.insert(revokedToken) }
+        server.update { $0.token.expiration = .distantPast }
     }
 
     public var bearerToken: Promise<(String, Date)> {

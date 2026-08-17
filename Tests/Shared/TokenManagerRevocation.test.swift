@@ -28,17 +28,20 @@ class TokenManagerRevocationTests: XCTestCase {
         wait(for: [settled], timeout: 5)
     }
 
-    /// Blanking the stored token would make the server indistinguishable from one restored from the
-    /// keychain mirror, which sends the app to the recovered-server import flow at launch instead of
-    /// the logged-out state.
-    func testRevocationLeavesStoredTokenInPlace() {
+    /// The expiration is pushed into the past so the invalidation reaches the processes that read the
+    /// store fresh, but the token strings stay: clearing those is what the keychain-mirror placeholder
+    /// is, and it would send the app to the recovered-server import flow at launch instead of the
+    /// logged-out state.
+    func testRevocationInvalidatesExpirationWithoutBlankingTheToken() {
         let server = Server.fake()
         let tokenManager = TokenManager(server: server)
         let token = server.info.token
 
         tokenManager.handleTokenRevoked()
 
-        XCTAssertEqual(server.info.token, token)
+        XCTAssertEqual(server.info.token.accessToken, token.accessToken)
+        XCTAssertEqual(server.info.token.refreshToken, token.refreshToken)
+        XCTAssertEqual(server.info.token.expiration, .distantPast)
         XCTAssertFalse(server.info.requiresReauthenticationAfterMirrorRestore)
     }
 }

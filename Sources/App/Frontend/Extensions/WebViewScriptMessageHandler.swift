@@ -155,14 +155,19 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         }
     }
 
-    /// Tears down everything the revoked token was driving and surfaces the logged-out state. The
+    /// Drops the connection the revoked token was driving and surfaces the logged-out state. The
     /// tokens are dead from the revocation on, so they are marked as such: without that, the app and
     /// the frontend keep re-sending them, which Home Assistant logs as invalid auth and eventually
     /// answers with an IP ban.
+    ///
+    /// The model manager is deliberately left subscribed. Its subscriptions are established once at
+    /// launch and never re-established, and they cover every server, so unsubscribing here would kill
+    /// model syncing app-wide until the next launch — for the other servers immediately, and for this
+    /// one even after a successful log in. Disconnecting is enough: HAKit restores the subscriptions
+    /// when re-authentication reconnects.
     private func requireLogin(for server: Server) {
         let api = Current.api(for: server)
         api?.tokenManager.handleTokenRevoked()
-        Current.modelManager.unsubscribe()
         api?.connection.disconnect()
         webView?.showLoggedOutState()
     }
