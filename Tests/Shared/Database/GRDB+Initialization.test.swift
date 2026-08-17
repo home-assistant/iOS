@@ -27,10 +27,10 @@ struct GRDBInitializationTests {
         )
     }
 
-    @Test("Tables returns exactly 26 tables")
-    func tablesReturns26Tables() throws {
+    @Test("Tables returns exactly 27 tables")
+    func tablesReturns27Tables() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 26, "DatabaseQueue.tables() should return exactly 26 tables")
+        #expect(tables.count == 27, "DatabaseQueue.tables() should return exactly 27 tables")
     }
 
     @Test("Tables contains all expected table names")
@@ -65,6 +65,7 @@ struct GRDBInitializationTests {
             GRDBDatabaseTable.remindersSyncConfig.rawValue,
             GRDBDatabaseTable.remindersSyncItemLink.rawValue,
             GRDBDatabaseTable.remindersSyncHistoryEntry.rawValue,
+            GRDBDatabaseTable.focusName.rawValue,
         ]
 
         for expectedName in expectedTableNames {

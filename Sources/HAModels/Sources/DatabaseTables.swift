@@ -36,6 +36,8 @@ public enum GRDBDatabaseTable: String {
     case remindersSyncConfig
     case remindersSyncItemLink
     case remindersSyncHistoryEntry
+    // Focus names the user pairs with an iOS Focus Filter
+    case focusName
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -363,5 +365,12 @@ public enum DatabaseTables {
         case success
         case error
         case details
+    }
+
+    // Focus names paired with an iOS Focus Filter. Column names must match `FocusName`'s stored
+    // properties.
+    public enum FocusName: String, CaseIterable {
+        case id
+        case name
     }
 }
