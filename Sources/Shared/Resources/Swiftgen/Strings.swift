@@ -1905,6 +1905,49 @@ public enum L10n {
     }
   }
 
+  public enum Focus {
+    /// Report which Focus is running to Home Assistant by pairing a name you create here with an iOS Focus Filter.
+    public static var subtitle: String { return L10n.tr("Localizable", "focus.subtitle") }
+    /// Focus
+    public static var title: String { return L10n.tr("Localizable", "focus.title") }
+    public enum Names {
+      /// Reporting now
+      public static var active: String { return L10n.tr("Localizable", "focus.names.active") }
+      /// Add Focus name
+      public static var add: String { return L10n.tr("Localizable", "focus.names.add") }
+      /// Give this Focus a name to report to Home Assistant, such as the name of the Focus itself.
+      public static var addMessage: String { return L10n.tr("Localizable", "focus.names.add_message") }
+      /// No Focus names yet.
+      public static var empty: String { return L10n.tr("Localizable", "focus.names.empty") }
+      /// iOS never tells apps which Focus is running, only that one is. Create a name here for each Focus you want reported, then open Settings > Focus, pick that Focus, add Home Assistant under Focus Filters and select the matching name.
+      public static var footer: String { return L10n.tr("Localizable", "focus.names.footer") }
+      /// Focus names
+      public static var header: String { return L10n.tr("Localizable", "focus.names.header") }
+      /// Name
+      public static var placeholder: String { return L10n.tr("Localizable", "focus.names.placeholder") }
+    }
+    public enum PermissionMissing {
+      /// Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.
+      public static var body: String { return L10n.tr("Localizable", "focus.permission_missing.body") }
+      /// Focus permission is off
+      public static var title: String { return L10n.tr("Localizable", "focus.permission_missing.title") }
+    }
+    public enum Reported {
+      /// Focus name
+      public static var currentName: String { return L10n.tr("Localizable", "focus.reported.current_name") }
+      /// Reported to Home Assistant
+      public static var header: String { return L10n.tr("Localizable", "focus.reported.header") }
+      /// Nothing reported yet
+      public static var noneYet: String { return L10n.tr("Localizable", "focus.reported.none_yet") }
+    }
+    public enum SensorDisabled {
+      /// Turn on the Focus name sensor so the name reaches Home Assistant.
+      public static var body: String { return L10n.tr("Localizable", "focus.sensor_disabled.body") }
+      /// Focus name sensor is off
+      public static var title: String { return L10n.tr("Localizable", "focus.sensor_disabled.title") }
+    }
+  }
+
   public enum Gestures {
     public enum _1Finger {
       /// Using one finger
@@ -5069,6 +5112,8 @@ public enum L10n {
       public static var complications: String { return L10n.tr("Localizable", "settings.search_keywords.complications") }
       /// logs, diagnostics, export, database, troubleshooting, reset
       public static var debugging: String { return L10n.tr("Localizable", "settings.search_keywords.debugging") }
+      /// focus filter, do not disturb, sleep, work, driving, personal
+      public static var focus: String { return L10n.tr("Localizable", "settings.search_keywords.focus") }
       /// appearance, theme, app icon, browser, links, display, launch
       public static var general: String { return L10n.tr("Localizable", "settings.search_keywords.general") }
       /// swipe, tap, navigation, shortcuts

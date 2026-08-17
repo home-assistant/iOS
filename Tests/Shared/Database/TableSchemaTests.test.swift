@@ -290,13 +290,22 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 26 tables create successfully together")
+    @Test("FocusNameTable schema validation")
+    func focusNameTableSchema() throws {
+        try verifyTableSchema(
+            table: FocusNameTable(),
+            expectedTableName: GRDBDatabaseTable.focusName.rawValue,
+            expectedColumns: DatabaseTables.FocusName.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("All 27 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 26 tables
-        #expect(tables.count == 26, "Should have exactly 26 tables, but found \(tables.count)")
+        // Verify we have exactly 27 tables
+        #expect(tables.count == 27, "Should have exactly 27 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

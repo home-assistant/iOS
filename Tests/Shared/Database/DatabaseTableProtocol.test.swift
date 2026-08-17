@@ -159,10 +159,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 26 tables conform to DatabaseTableProtocol")
+    @Test("All 27 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 26, "Should have exactly 26 tables")
+        #expect(tables.count == 27, "Should have exactly 27 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName
