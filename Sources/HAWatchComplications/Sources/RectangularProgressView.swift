@@ -63,8 +63,8 @@ public struct RectangularProgressView: View {
 
     /// The value pill riding the bar. Full color and accented both draw the text over the fill, which
     /// the system colours as two separate groups. Vibrant (watch night mode, iPhone Lock Screen)
-    /// desaturates everything into a single shade, so text over the fill would disappear — there the
-    /// glyphs are knocked out of the pill instead, letting the dimmed face show through them.
+    /// desaturates everything into a single shade, so the value is rendered by punching the glyphs out
+    /// of the pill and revealing the pill’s backing capsule instead of drawing tinted text over the fill.
     @ViewBuilder
     private func thumb(_ valueLabel: String) -> some View {
         let label = Text(verbatim: valueLabel)
