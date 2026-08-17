@@ -8023,6 +8023,14 @@ public enum L10n {
       public static var retryButton: String { return L10n.tr("Localizable", "web_view.empty_state.retry_button") }
       /// You're disconnected
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
+      public enum LoggedOut {
+        /// You have been signed out of this server. Log in again to continue using it on this device.
+        public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.logged_out.body") }
+        /// Log in
+        public static var loginButton: String { return L10n.tr("Localizable", "web_view.empty_state.logged_out.login_button") }
+        /// You're logged out
+        public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.logged_out.title") }
+      }
     }
     public enum NoUrlAvailable {
       /// 🔐  Due to your security choices, there's no URL that we are allowed to use. 

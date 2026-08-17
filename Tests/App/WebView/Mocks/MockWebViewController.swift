@@ -37,6 +37,8 @@ final class MockWebViewController: WebViewControllerProtocol {
     var handleExternalAuthFailureCalled = false
     var lastExternalAuthFailure: Error?
     var handleExternalAuthFailureExpectation: XCTestExpectation?
+    var showLoggedOutStateCalled = false
+    var showLoggedOutStateExpectation: XCTestExpectation?
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -98,6 +100,11 @@ final class MockWebViewController: WebViewControllerProtocol {
         handleExternalAuthFailureCalled = true
         lastExternalAuthFailure = error
         handleExternalAuthFailureExpectation?.fulfill()
+    }
+
+    func showLoggedOutState() {
+        showLoggedOutStateCalled = true
+        showLoggedOutStateExpectation?.fulfill()
     }
 
     func updateImprovEntryView(show: Bool) {

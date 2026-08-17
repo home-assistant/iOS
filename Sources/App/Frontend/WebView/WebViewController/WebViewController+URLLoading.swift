@@ -67,6 +67,15 @@ extension WebViewController {
     static let loadActiveURLStaleInterval: TimeInterval = 10
 
     @objc func loadActiveURLIfNeeded() {
+        // After a log out the web view deliberately sits on a blank page behind the logged-out empty
+        // state, which every caller here would read as "wrong URL loaded" and correct by navigating
+        // back into the server -- taking the empty state down and re-authenticating the frontend with
+        // the token the user just revoked. Re-authenticating clears the flag and loads the URL again.
+        guard !didLogOut else {
+            Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
+            return
+        }
+
         // Checked before the stale handling below so a hung attempt is only ever replaced while
         // active, when the fallback load and the fresh attempt can both actually run.
         guard !isAppInBackground() else {
@@ -81,7 +90,22 @@ extension WebViewController {
         }
     }
 
+    /// Stops an active-URL attempt that is already running. `performLoadActiveURL()` re-checks
+    /// cancellation after every await, so a cancelled attempt cannot navigate once it wakes up.
+    func cancelActiveURLLoading() {
+        loadActiveURLTask?.cancel()
+        loadActiveURLTask = nil
+        loadActiveURLTaskStartDate = nil
+    }
+
     private func continueLoadingActiveURLIfNeeded() {
+        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
+        // was in flight would otherwise navigate back into the server from this completion.
+        guard !didLogOut else {
+            Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
+            return
+        }
+
         guard !isAppInBackground() else {
             Current.Log.info("not loading, in background")
             return

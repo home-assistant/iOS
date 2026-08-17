@@ -125,6 +125,10 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     /// Revokes the current authentication token and informs the web view via a JavaScript callback.
+    ///
+    /// The server itself stays registered: logging out only invalidates the credentials, so the user is
+    /// asked to log in again instead of losing the server and everything configured against it
+    /// (widgets, watch and CarPlay items, sensors, notification registration).
     private func handleRevokeExternalAuth(_ messageBody: [String: Any]) {
         guard let callbackName = messageBody["callback"], let server = webView?.server else { return }
 
@@ -134,24 +138,42 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             Current.api(for: server)?.tokenManager
                 .revokeToken() ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { [weak self, server] _ in
-            Current.servers.remove(identifier: server.identifier)
-            Current.resetAPICache(for: [server.identifier])
             let script = "\(callbackName)(true)"
 
             Current.Log.verbose("Running revoke external auth callback \(script)")
 
             self?.webView?.evaluateJavaScript(script) { _, error in
-                Current.onboardingObservation.needed(.logout)
-
                 if let error {
                     Current.Log.error("Failed calling sign out callback: \(error)")
                 }
 
                 Current.Log.verbose("Successfully informed web client of log out.")
+                self?.requireLogin(for: server)
             }
         }.catch { error in
             Current.Log.error("Failed to revoke token: \(error)")
         }
+    }
+
+    /// Drops the connection the revoked token was driving and surfaces the logged-out state. The
+    /// tokens are dead from the revocation on, so they are marked as such: without that, the app and
+    /// the frontend keep re-sending them, which Home Assistant logs as invalid auth and eventually
+    /// answers with an IP ban.
+    ///
+    /// The model manager is deliberately left subscribed. Its subscriptions are established once at
+    /// launch and never re-established, and they cover every server, so unsubscribing here would kill
+    /// model syncing app-wide until the next launch — for the other servers immediately, and for this
+    /// one even after a successful log in. Disconnecting is enough: HAKit restores the subscriptions
+    /// when re-authentication reconnects.
+    private func requireLogin(for server: Server) {
+        // The web view is put into the logged-out state first: invalidating the token writes to the
+        // server, and the observers watching it re-evaluate which URL should be loaded. They have to
+        // find the log out already recorded, or they navigate straight back into the server.
+        webView?.showLoggedOutState()
+
+        let api = Current.api(for: server)
+        api?.tokenManager.handleTokenRevoked()
+        api?.connection.disconnect()
     }
 
     private func handleLogError(_ messageBody: [String: Any]) {

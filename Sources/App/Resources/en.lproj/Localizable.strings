@@ -2470,6 +2470,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
+"web_view.empty_state.logged_out.body" = "You have been signed out of this server. Log in again to continue using it on this device.";
+"web_view.empty_state.logged_out.login_button" = "Log in";
+"web_view.empty_state.logged_out.title" = "You're logged out";
 "web_view.empty_state.open_settings_button" = "Open App settings";
 "web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Retry";
