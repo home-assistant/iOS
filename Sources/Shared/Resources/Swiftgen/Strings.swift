@@ -1910,6 +1910,48 @@ public enum L10n {
     public static var subtitle: String { return L10n.tr("Localizable", "focus.subtitle") }
     /// Focus
     public static var title: String { return L10n.tr("Localizable", "focus.title") }
+    public enum HowItWorks {
+      /// iOS tells apps that a Focus is on, but never which one. A Focus Filter is the one place iOS lets you hand that detail to an app, so you tell it the name once and it reports it from then on.
+      public static var intro: String { return L10n.tr("Localizable", "focus.how_it_works.intro") }
+      /// How it works?
+      public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.title") }
+      public enum Filter {
+        /// Open Settings > Focus on this device, pick a Focus, add Home Assistant under Focus Filters and choose the matching name.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.filter.body") }
+        /// Pair it with a Focus
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.filter.title") }
+      }
+      public enum Naming {
+        /// Create a name here for each Focus you want reported. The name is sent exactly as you type it, so it is what you will see in Home Assistant.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.naming.body") }
+        /// Name your Focuses
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.naming.title") }
+      }
+      public enum NoFocus {
+        /// The sensor reports Not focused once every Focus has ended. This needs the Focus permission, which is what tells the app a Focus is running at all.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.body") }
+        /// When no Focus is on
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.title") }
+      }
+      public enum Privacy {
+        /// The names are yours, kept on this device, and only leave it as the state of the sensor you enable. The app never reads your Focus settings.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.privacy.body") }
+        /// Your privacy
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.privacy.title") }
+      }
+      public enum Reporting {
+        /// Turning that Focus on runs the filter, and the app sends the name to Home Assistant as the Focus name sensor.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.reporting.body") }
+        /// It reports itself
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.reporting.title") }
+      }
+      public enum Unpaired {
+        /// iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.body") }
+        /// Focuses without a filter
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.title") }
+      }
+    }
     public enum Names {
       /// Reporting now
       public static var active: String { return L10n.tr("Localizable", "focus.names.active") }
@@ -1919,7 +1961,7 @@ public enum L10n {
       public static var addMessage: String { return L10n.tr("Localizable", "focus.names.add_message") }
       /// No Focus names yet.
       public static var empty: String { return L10n.tr("Localizable", "focus.names.empty") }
-      /// iOS never tells apps which Focus is running, only that one is. Create a name here for each Focus you want reported, then open Settings > Focus, pick that Focus, add Home Assistant under Focus Filters and select the matching name.
+      /// Create a name for each Focus you want reported, then pick it in Settings > Focus > Focus Filters.
       public static var footer: String { return L10n.tr("Localizable", "focus.names.footer") }
       /// Focus names
       public static var header: String { return L10n.tr("Localizable", "focus.names.header") }

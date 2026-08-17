@@ -14,6 +14,11 @@ struct FocusSettingsView: View {
                 title: L10n.Focus.title,
                 subtitle: L10n.Focus.subtitle
             )
+            Section {
+                NavigationLink(destination: FocusHowItWorksView()) {
+                    Label(L10n.Focus.HowItWorks.title, systemSymbol: .questionmarkCircle)
+                }
+            }
             Section(
                 header: Text(L10n.Focus.Names.header),
                 footer: Text(L10n.Focus.Names.footer)
@@ -114,6 +119,7 @@ extension FocusSettingsView: SettingsScreenSearchable {
         [
             SettingsSearchEntry(L10n.Focus.Names.header),
             SettingsSearchEntry(L10n.Focus.Names.add),
+            SettingsSearchEntry(L10n.Focus.HowItWorks.title),
         ]
     }
 }
