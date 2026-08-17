@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import HAKit
 import PromiseKit
 
 public final class TokenManager: @unchecked Sendable {
@@ -38,6 +39,15 @@ public final class TokenManager: @unchecked Sendable {
     }
 
     private let refreshPromiseCache = RefreshPromiseCache()
+
+    /// Access tokens the server refused while their stored expiration still said they were valid.
+    ///
+    /// Tracked in memory because the persisted invalidation in `handleAccessTokenRejected` cannot be
+    /// relied on: `ServerInfo` equality considers two tokens with the same access/refresh pair equal, so
+    /// the server store drops a write that only pushes a token's expiration into the past as a no-op.
+    /// Without this, every websocket reconnect and every request keeps re-sending a token the server has
+    /// already rejected, which Home Assistant logs as invalid auth and eventually answers with an IP ban.
+    private let rejectedAccessTokens = HAProtected<Set<String>>(value: [])
 
     public init(server: Server) {
         self.authenticationAPI = AuthenticationAPI(server: server)
@@ -93,10 +103,13 @@ public final class TokenManager: @unchecked Sendable {
     /// server was restored from a backup. Without this, every poll re-sends the same rejected token,
     /// which the server logs as invalid auth and eventually answers with an IP ban.
     ///
-    /// Marking the stored token expired makes every future `bearerToken` refuse to hand it out and go
+    /// Remembering the rejection makes every future `bearerToken` refuse to hand the token out and go
     /// through a refresh instead: either the refresh mints a working token, or it fails with
     /// 400...403 and the reauthentication-required flow kicks in — in both cases the rejected token is
-    /// never sent again.
+    /// never sent again. The expiration is also pushed into the past, but only as a best effort: the
+    /// store coalesces a write that changes nothing but the expiration (see `rejectedAccessTokens`), so
+    /// it lands solely where there is no cache to coalesce against — an app extension invalidating a
+    /// token the server just refused, which the other processes then read fresh.
     public func handleAccessTokenRejected(_ rejectedToken: String) {
         // A refresh may have already replaced the token by the time the 401 lands; only the
         // currently stored token must be invalidated, never its fresh successor.
@@ -104,6 +117,7 @@ public final class TokenManager: @unchecked Sendable {
         HANetworkingEnvironment.current.log.error(
             "Server rejected access token \(rejectedToken.hash) before its expiration; forcing refresh"
         )
+        rejectedAccessTokens.mutate { $0.insert(rejectedToken) }
         server.update { $0.token.expiration = .distantPast }
     }
 
@@ -130,6 +144,13 @@ public final class TokenManager: @unchecked Sendable {
     private var currentToken: Promise<(String, Date)> {
         Promise<(String, Date)> { seal in
             let tokenInfo = server.info.token
+
+            if rejectedAccessTokens.read({ $0.contains(tokenInfo.accessToken) }) {
+                HANetworkingEnvironment.current.log
+                    .error("Token \(tokenInfo.accessToken.hash) was rejected by the server, refusing to reuse it")
+                seal.reject(TokenError.expired)
+                return
+            }
 
             // Refresh a full minute early (matching `TokenInfo.needsRefresh`) so we never hand back a
             // token that lapses in flight — especially on slow watch/cloud paths where the round trip
@@ -206,8 +227,18 @@ extension TokenManager: Authenticator {
         AuthenticationInterceptor(authenticator: self, credential: server.info.token, refreshWindow: nil)
     }
 
+    /// Signs the request with the token in the store rather than with the credential Alamofire hands
+    /// back.
+    ///
+    /// `AuthenticationInterceptor` keeps the credential it was built with and only replaces it after a
+    /// refresh it drove itself. Re-authentication mints a token through an entirely different path (the
+    /// login web view exchanging a fresh authorization code), so that snapshot outlives it: every
+    /// request the session sends afterwards carries the access token the server already rejected, which
+    /// Home Assistant logs as invalid auth, and since the session lives as long as the cached
+    /// `HomeAssistantAPI`, only relaunching the app stopped it. The store is the single source of truth
+    /// here, the same way `ServerRequestAdapter` resolves the active URL fresh per request.
     public func apply(_ credential: TokenInfo, to urlRequest: inout URLRequest) {
-        urlRequest.headers.add(.authorization(bearerToken: credential.accessToken))
+        urlRequest.headers.add(.authorization(bearerToken: server.info.token.accessToken))
     }
 
     public func refresh(
@@ -237,8 +268,11 @@ extension TokenManager: Authenticator {
         }
     }
 
+    /// Compared against the stored token for the same reason `apply` signs with it: a 401 for a request
+    /// that carried a superseded token has to be retried with the current one instead of being taken as
+    /// a rejection of the token the interceptor still has cached.
     public func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: TokenInfo) -> Bool {
-        let bearerToken = HTTPHeader.authorization(bearerToken: credential.accessToken).value
+        let bearerToken = HTTPHeader.authorization(bearerToken: server.info.token.accessToken).value
         return urlRequest.headers["Authorization"] == bearerToken
     }
 }

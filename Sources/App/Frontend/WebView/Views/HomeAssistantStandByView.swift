@@ -624,19 +624,7 @@ struct HomeAssistantStandByView: View {
 
     private func actionButtons(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
         VStack(spacing: DesignSystem.Spaces.one) {
-            Button(action: {
-                switch emptyState.style {
-                case .disconnected, .inFlight:
-                    emptyState.retryAction()
-                case .unauthenticated:
-                    emptyState.reauthAction(selectedReauthURLType)
-                case .recoveredServerNeedingReauthentication:
-                    emptyState.reauthAction(selectedReauthURLType)
-                }
-            }) {
-                Text(emptyState.style.primaryButtonTitle)
-            }
-            .buttonStyle(.primaryButton)
+            styledPrimaryButton(for: emptyState)
             reauthURLHint(for: emptyState)
             if canShowErrorDetailsButton(for: emptyState) {
                 Button(action: {
@@ -658,6 +646,34 @@ struct HomeAssistantStandByView: View {
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.top)
+    }
+
+    /// Re-authentication is on the user, not on the app retrying, so it gets the warning-colored button
+    /// (the frontend's `ha-button variant="warning"`) to read as "action required".
+    @ViewBuilder
+    private func styledPrimaryButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
+        if emptyState.style.primaryActionRequiresAttention {
+            primaryButton(for: emptyState)
+                .buttonStyle(.warningButton)
+        } else {
+            primaryButton(for: emptyState)
+                .buttonStyle(.primaryButton)
+        }
+    }
+
+    private func primaryButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
+        Button(action: {
+            switch emptyState.style {
+            case .disconnected, .inFlight:
+                emptyState.retryAction()
+            case .unauthenticated:
+                emptyState.reauthAction(selectedReauthURLType)
+            case .recoveredServerNeedingReauthentication:
+                emptyState.reauthAction(selectedReauthURLType)
+            }
+        }) {
+            Text(emptyState.style.primaryButtonTitle)
+        }
     }
 
     @ViewBuilder

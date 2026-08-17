@@ -6,6 +6,15 @@ import UIKit
 public extension ShapeStyle where Self == Color {
     static var haPrimary: Color { srgb(0x00, 0x9A, 0xC7, opacity: 1) }
 
+    /// The frontend's `--ha-color-fill-warning-loud-resting`: `orange-70` on light, `orange-40` on dark.
+    /// The fill `ha-button variant="warning"` uses, for actions that need the user to step in.
+    static var haWarning: Color {
+        adaptive(
+            light: srgb(0xFF, 0x93, 0x42, opacity: 1),
+            dark: srgb(0x9D, 0x38, 0x00, opacity: 1)
+        )
+    }
+
     static var track: Color { displayP3(0, 0, 0, opacity: 0.12) }
 
     static var onSurface: Color {

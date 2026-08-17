@@ -114,8 +114,7 @@ struct WebViewEmptyStateView: View {
 
     private var actionButtons: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
-            primaryButton
-                .buttonStyle(.primaryButton)
+            styledPrimaryButton
             reauthURLHint
             if canShowErrorDetailsButton {
                 errorDetailsButton
@@ -243,6 +242,19 @@ struct WebViewEmptyStateView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DesignSystem.Spaces.two)
+        }
+    }
+
+    /// Re-authentication is on the user, not on the app retrying, so it gets the warning-colored button
+    /// (the frontend's `ha-button variant="warning"`) to read as "action required".
+    @ViewBuilder
+    private var styledPrimaryButton: some View {
+        if style.primaryActionRequiresAttention {
+            primaryButton
+                .buttonStyle(.warningButton)
+        } else {
+            primaryButton
+                .buttonStyle(.primaryButton)
         }
     }
 

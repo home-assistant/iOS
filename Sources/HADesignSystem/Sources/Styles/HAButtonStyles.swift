@@ -79,6 +79,44 @@ public struct HAButtonStyle: ButtonStyle {
     }
 }
 
+/// The primary button in the frontend's `warning` variant: same shape, size and white label, filled
+/// with `haWarning` instead of `haPrimary`. For a primary action the user has to take before the app
+/// can carry on, such as re-authenticating a server whose token the server no longer accepts.
+public struct HAWarningButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .foregroundColor(.white)
+            .haButtonBasicSizing()
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .background(backgroundColorForState(isEnabled: isEnabled, isPressed: configuration.isPressed))
+            .clipShape(Capsule())
+            .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
+            .haButtonHoverEffect(isEnabled: isEnabled, isPressed: configuration.isPressed)
+    }
+
+    private func backgroundColorForState(isEnabled: Bool, isPressed: Bool) -> Color {
+        if !isEnabled {
+            return Color.gray
+        }
+
+        if isPressed {
+            return Color.haWarning.opacity(HAButtonStylesConstants.highlightedOpacity)
+        }
+
+        return Color.haWarning
+    }
+}
+
+#Preview {
+    VStack {
+        Button("Warning Button") {}
+            .buttonStyle(.warningButton)
+    }
+}
+
 /// The primary button's shape and size with the quiet colors of `TextButton`: a tinted fill and
 /// `haPrimary` text instead of a solid `haPrimary` background. For actions that should read as a
 /// full-size button without competing with the screen's primary one.
@@ -224,6 +262,12 @@ public struct HALinkButtonStyle: ButtonStyle {
 public extension ButtonStyle where Self == HAButtonStyle {
     static var primaryButton: HAButtonStyle {
         HAButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HAWarningButtonStyle {
+    static var warningButton: HAWarningButtonStyle {
+        HAWarningButtonStyle()
     }
 }
 
