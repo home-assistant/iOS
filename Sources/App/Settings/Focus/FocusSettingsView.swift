@@ -106,7 +106,6 @@ struct FocusSettingsView: View {
                 }
             }
         }
-        .navigationTitle(L10n.Focus.title)
         .onAppear {
             viewModel.load()
         }
