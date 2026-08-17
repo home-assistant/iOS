@@ -98,6 +98,17 @@ enum WebViewEmptyStateStyle: Equatable {
         }
     }
 
+    /// Whether the primary action is something the user has to do for the app to work again (rather than
+    /// a retry it could also perform itself), which the warning-colored button signals.
+    var primaryActionRequiresAttention: Bool {
+        switch self {
+        case .disconnected, .inFlight:
+            false
+        case .unauthenticated, .recoveredServerNeedingReauthentication:
+            true
+        }
+    }
+
     var showsServerPicker: Bool {
         switch self {
         case .disconnected, .inFlight, .unauthenticated, .recoveredServerNeedingReauthentication:

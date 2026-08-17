@@ -48,7 +48,10 @@ public class HomeAssistantAPI {
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
     public let tokenManager: TokenManager
-    public var server: Server
+    /// Fixed for the lifetime of the API: the token manager, the websocket's connection-info and
+    /// token closures and the request adapters all capture this instance at init, so swapping it
+    /// afterwards would only change what this property reports. Build a new API instead.
+    public let server: Server
     public internal(set) var connection: HAConnection
 
     private var rejectedReconnectAttempts = 0
