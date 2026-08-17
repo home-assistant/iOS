@@ -46,6 +46,8 @@ final class WebViewControllerTests: XCTestCase {
     func testShowLoggedOutStateKeepsServerAndPublishesLoggedOutEmptyState() {
         let server = Server.fake()
         let sut = makeSUT(server: server)
+        // Entering the logged-out state parks the web view on a blank page, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
         let overlayState = WebFrontendOverlayState()
         sut.overlayState = overlayState
 
