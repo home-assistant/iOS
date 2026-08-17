@@ -4,13 +4,10 @@ import SwiftUI
 import UIKit
 
 struct HomeAssistantStandByView: View {
-    static let dismissTapThreshold = 5
     static let logoDismissTapThreshold = 10
 
-    private static let headerAccessorySize = CGSize(width: 44, height: 44)
+    private static let connectionTypeIndicatorSize = CGSize(width: 44, height: 44)
     static let loadingLogoResourceName = "home-assistant-logo-loading"
-    private static let emptyStateLogoSize = CGSize(width: 80, height: 80)
-    private static let reauthenticationIconSize: CGFloat = 56
     private static let serverPillHeight: CGFloat = 44
     private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
     static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
@@ -28,11 +25,6 @@ struct HomeAssistantStandByView: View {
     private let delayedSettingsButtonDelay: Duration
     private let cleanCacheButtonDelay: Duration
 
-    @State private var selectedReauthURLType: ConnectionInfo.URLType
-    @State private var showURLPicker = false
-    @State private var isPerformingPrimaryAction = false
-    @State private var errorMessage: String?
-    @State private var dismissTapCount = 0
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
@@ -73,7 +65,7 @@ struct HomeAssistantStandByView: View {
         // While loading, the logo mirrors the splash logo exactly (size and full-screen-centered
         // position) so the launch-screen → splash → stand-by hand-off is a pure crossfade with no
         // movement; the logo only moves (to the top, smaller) for the empty/error state.
-        showsEmptyState ? Self.emptyStateLogoSize : LaunchSplashOverlayView.Constants.splashLogoSize
+        showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
     private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
@@ -107,7 +99,6 @@ struct HomeAssistantStandByView: View {
         self.onCleanCacheAndReload = onCleanCacheAndReload
         self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
         self.cleanCacheButtonDelay = cleanCacheButtonDelay
-        self._selectedReauthURLType = State(initialValue: emptyState?.availableReauthURLTypes.first ?? .external)
         self._showsAnimatedLogo = State(initialValue: emptyState == nil)
     }
 
@@ -151,7 +142,14 @@ struct HomeAssistantStandByView: View {
         VStack(spacing: DesignSystem.Spaces.three) {
             iconView
             if let emptyState {
-                emptyStateBody(for: emptyState)
+                WebViewEmptyStateMessage(
+                    style: emptyState.style,
+                    server: server,
+                    complementaryMessageAction: openSettings
+                )
+                .opacity(contentOpacity)
+                .transition(.opacity)
+                Spacer()
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
@@ -192,32 +190,37 @@ struct HomeAssistantStandByView: View {
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
-                header(for: emptyState)
-                    .opacity(contentOpacity)
+                WebViewEmptyStateHeader(
+                    style: emptyState.style,
+                    server: server,
+                    isLoading: isLoading,
+                    showsServerSelection: emptyState.style.showsServerPicker
+                        && Current.servers.all.count > 1
+                        && !Current.isCatalyst,
+                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                    settingsAction: emptyState.settingsAction,
+                    serverSelectionAction: selectServer,
+                    dismissAction: emptyState.dismissAction
+                )
+                .opacity(contentOpacity)
             }
         }
         .safeAreaInset(edge: .bottom) {
             if let emptyState {
-                actionButtons(for: emptyState)
-                    .opacity(contentOpacity)
+                WebViewEmptyStateActionButtons(
+                    style: emptyState.style,
+                    availableReauthURLTypes: emptyState.availableReauthURLTypes,
+                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                    retryAction: emptyState.retryAction,
+                    settingsAction: emptyState.settingsAction,
+                    errorDetailsAction: emptyState.errorDetailsAction,
+                    reauthAction: emptyState.reauthAction
+                )
+                .opacity(contentOpacity)
             } else if showsCleanCacheAndReloadButton {
                 cleanCacheButton
                     .transition(.opacity)
             }
-        }
-        .alert(L10n.errorLabel, isPresented: .init(
-            get: { errorMessage != nil },
-            set: { newValue in
-                if !newValue {
-                    errorMessage = nil
-                }
-            }
-        )) {
-            Button(L10n.okLabel, role: .cancel) {
-                errorMessage = nil
-            }
-        } message: {
-            Text(errorMessage ?? "")
         }
         .animation(DesignSystem.Animation.default, value: standByContentOpacity)
         .animation(DesignSystem.Animation.default, value: showsEmptyState)
@@ -229,9 +232,6 @@ struct HomeAssistantStandByView: View {
         }
         .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
         .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
-        .onChange(of: emptyState?.availableReauthURLTypes ?? []) { availableReauthURLTypes in
-            selectedReauthURLType = availableReauthURLTypes.first ?? .external
-        }
         .onReceive(
             NotificationCenter.default
                 .publisher(for: Current.connectivity.connectivityDidChangeNotification())
@@ -331,20 +331,6 @@ struct HomeAssistantStandByView: View {
     }
 
     @ViewBuilder
-    private func emptyStateBody(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Text(emptyState.style.title)
-                .font(.title2)
-                .fontWeight(.semibold)
-            bodyText(for: emptyState)
-            bodyComplementaryText(for: emptyState)
-        }
-        .opacity(contentOpacity)
-        .transition(.opacity)
-        Spacer()
-    }
-
-    @ViewBuilder
     private var currentServerPill: some View {
         if #available(iOS 26.0, *) {
             GlassEffectContainer {
@@ -414,7 +400,10 @@ struct HomeAssistantStandByView: View {
                 .modify { view in
                     if #available(iOS 26.0, *) {
                         view
-                            .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
+                            .frame(
+                                width: Self.connectionTypeIndicatorSize.width,
+                                height: Self.connectionTypeIndicatorSize.height
+                            )
                             .glassEffect(.regular.interactive(), in: .circle)
                             .contentShape(Circle())
                     } else {
@@ -480,37 +469,26 @@ struct HomeAssistantStandByView: View {
         }
     }
 
-    @ViewBuilder
     private var iconView: some View {
-        Group {
-            if emptyState?.style == .recoveredServerNeedingReauthentication {
-                Image(systemSymbol: .key)
-                    .font(.system(size: Self.reauthenticationIconSize))
-                    .foregroundStyle(Color.haPrimary)
-            } else {
-                ZStack(alignment: .bottomTrailing) {
-                    // Keep the static logo behind the animated SVG while loading: the launch-splash
-                    // hero morphs into a pixel-identical `Image(.logo)` (matched geometry), and it
-                    // also fills any frame before the WKWebView paints. The animated SVG sits on top
-                    // once loaded, and is swapped out for the static logo around the empty-state
-                    // move since the webview can't track animated frame changes.
-                    Image(.logo)
-                        .resizable()
-                        .scaledToFit()
-                    // Hidden via opacity (never removed) with animation explicitly disabled, so the
-                    // swap to the static logo is always instantaneous — a conditional removal would
-                    // inherit the surrounding empty-state animation and fade out mid-move.
-                    AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
-                        .opacity(showsAnimatedLogo ? 1 : 0)
-                        .animation(nil, value: showsAnimatedLogo)
-                        // Decorative duplicate of the static logo; its webview is already
-                        // non-interactive, this also keeps it out of VoiceOver.
-                        .accessibilityHidden(true)
-                    if case .inFlight = emptyState?.style {
-                        inFlightIcon
-                            .offset(x: 15, y: 15)
-                    }
-                }
+        ZStack(alignment: .bottomTrailing) {
+            // Keep the static logo behind the animated SVG while loading: the launch-splash
+            // hero morphs into a pixel-identical `Image(.logo)` (matched geometry), and it
+            // also fills any frame before the WKWebView paints. The animated SVG sits on top
+            // once loaded, and is swapped out for the static logo around the empty-state
+            // move since the webview can't track animated frame changes.
+            WebViewEmptyStateIcon(style: emptyState?.style, size: logoSize)
+            // Hidden via opacity (never removed) with animation explicitly disabled, so the
+            // swap to the static logo is always instantaneous — a conditional removal would
+            // inherit the surrounding empty-state animation and fade out mid-move.
+            AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
+                .opacity(showsAnimatedLogo ? 1 : 0)
+                .animation(nil, value: showsAnimatedLogo)
+                // Decorative duplicate of the static logo; its webview is already
+                // non-interactive, this also keeps it out of VoiceOver.
+                .accessibilityHidden(true)
+            if case .inFlight = emptyState?.style {
+                inFlightIcon
+                    .offset(x: 15, y: 15)
             }
         }
         .frame(width: logoSize.width, height: logoSize.height)
@@ -537,179 +515,6 @@ struct HomeAssistantStandByView: View {
             }
     }
 
-    private func header(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        HStack {
-            headerAccessory(resolvedLeadingHeaderAccessory(for: emptyState))
-            Spacer()
-            serverSelection(for: emptyState)
-            Spacer()
-            headerAccessory(emptyState.style.trailingHeaderAccessory)
-        }
-        .padding()
-    }
-
-    @ViewBuilder
-    private func headerAccessory(_ accessory: WebViewEmptyStateStyle.HeaderAccessory) -> some View {
-        switch accessory {
-        case .none:
-            Color.clear
-                .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
-        case .settings:
-            ModalReusableButton(
-                icon: .sfSymbol(.gearshape),
-                action: {
-                    emptyState?.settingsAction()
-                }
-            )
-            .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
-        case .hiddenDismiss:
-            Color.clear
-                .frame(width: Self.headerAccessorySize.width, height: Self.headerAccessorySize.height)
-                .overlay {
-                    if isLoading {
-                        ProgressView()
-                    }
-                }
-                .contentShape(Rectangle())
-                .onTapGesture(perform: registerDismissTap)
-                .accessibilityHidden(true)
-        }
-    }
-
-    @ViewBuilder
-    private func serverSelection(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        if emptyState.style.showsServerPicker, Current.servers.all.count > 1, !Current.isCatalyst {
-            ServerPickerView(server: server, onSelect: selectServer)
-                .background(Color(uiColor: .secondarySystemBackground))
-                .clipShape(Capsule())
-        }
-    }
-
-    @ViewBuilder
-    private func bodyText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        switch emptyState.style {
-        case .disconnected, .inFlight, .unauthenticated:
-            Text(emptyState.style.body)
-                .font(.callout)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-        case .recoveredServerNeedingReauthentication:
-            Text(L10n.Onboarding.ServerImport.Reauthenticate.message(server.info.name))
-                .font(.callout)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-        }
-    }
-
-    @ViewBuilder
-    private func bodyComplementaryText(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        switch emptyState.style {
-        case .inFlight:
-            if let text = emptyState.style.complementaryMessage {
-                Button(action: openSettings) {
-                    Text(text)
-                        .font(.caption2.italic())
-                        .foregroundColor(.haPrimary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, DesignSystem.Spaces.two)
-                }
-                .buttonStyle(.plain)
-            }
-        default:
-            EmptyView()
-        }
-    }
-
-    private func actionButtons(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            styledPrimaryButton(for: emptyState)
-            reauthURLHint(for: emptyState)
-            if canShowErrorDetailsButton(for: emptyState) {
-                Button(action: {
-                    emptyState.errorDetailsAction()
-                }) {
-                    Text(L10n.ConnectionError.MoreDetailsSection.title)
-                }
-                .buttonStyle(.secondaryButton)
-            }
-            if emptyState.style.showsSecondarySettingsButton, !canShowErrorDetailsButton(for: emptyState) {
-                Button(action: {
-                    emptyState.settingsAction()
-                }) {
-                    Text(emptyState.style.secondaryButtonTitle)
-                }
-                .buttonStyle(.secondaryButton)
-            }
-        }
-        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .padding(.horizontal, DesignSystem.Spaces.two)
-        .padding(.top)
-    }
-
-    /// Re-authentication is on the user, not on the app retrying, so it gets the warning-colored button
-    /// (the frontend's `ha-button variant="warning"`) to read as "action required".
-    @ViewBuilder
-    private func styledPrimaryButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        if emptyState.style.primaryActionRequiresAttention {
-            primaryButton(for: emptyState)
-                .buttonStyle(.warningButton)
-        } else {
-            primaryButton(for: emptyState)
-                .buttonStyle(.primaryButton)
-        }
-    }
-
-    private func primaryButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        Button(action: {
-            switch emptyState.style {
-            case .disconnected, .inFlight:
-                emptyState.retryAction()
-            case .unauthenticated:
-                emptyState.reauthAction(selectedReauthURLType)
-            case .recoveredServerNeedingReauthentication:
-                emptyState.reauthAction(selectedReauthURLType)
-            }
-        }) {
-            Text(emptyState.style.primaryButtonTitle)
-        }
-    }
-
-    @ViewBuilder
-    private func reauthURLHint(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> some View {
-        if emptyState.style == .unauthenticated, emptyState.availableReauthURLTypes.count > 1 {
-            Button {
-                showURLPicker = true
-            } label: {
-                HStack(spacing: 4) {
-                    Text(selectedReauthURLType.description)
-                    Image(systemSymbol: .chevronUpChevronDown)
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-            .confirmationDialog(
-                emptyState.style.urlPickerTitle,
-                isPresented: $showURLPicker,
-                titleVisibility: .visible
-            ) {
-                ForEach(emptyState.availableReauthURLTypes, id: \.self) { urlType in
-                    Button(urlType.description) {
-                        selectedReauthURLType = urlType
-                    }
-                }
-            }
-        }
-    }
-
-    private func registerDismissTap() {
-        dismissTapCount += 1
-        guard dismissTapCount >= Self.dismissTapThreshold else { return }
-        dismissTapCount = 0
-        emptyState?.dismissAction()
-    }
-
     // Debug escape hatch while the loader is stuck; empty-state mode already has its own hidden dismiss accessory.
     private func registerLogoDismissTap() {
         guard emptyState == nil, let onLogoDismiss else { return }
@@ -728,16 +533,6 @@ struct HomeAssistantStandByView: View {
     private func openSettings() {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.showSettings()
-        }
-    }
-
-    private func resolvedLeadingHeaderAccessory(
-        for emptyState: WebFrontendOverlayState.EmptyStateContent
-    ) -> WebViewEmptyStateStyle.HeaderAccessory {
-        if emptyState.style.showsSecondarySettingsButton, canShowErrorDetailsButton(for: emptyState) {
-            .settings
-        } else {
-            emptyState.style.leadingHeaderAccessory
         }
     }
 
