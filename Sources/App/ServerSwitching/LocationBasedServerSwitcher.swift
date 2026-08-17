@@ -11,7 +11,8 @@ import UIKit
 /// only, one check per activation, no background monitoring. A match is applied once per visit, so
 /// manually switching away isn't undone by quick app switches. The manual choice expires after the
 /// app stays in the background for a while (or is relaunched), so reopening later lands on the
-/// server for the home the user is at.
+/// server for the home the user is at. A deep link opening the app names its own destination, so
+/// switching stands down for that activation — see `deepLinkWillOpen()`.
 @MainActor
 final class LocationBasedServerSwitcher {
     static let shared = LocationBasedServerSwitcher()
@@ -29,6 +30,13 @@ final class LocationBasedServerSwitcher {
     /// user who manually switched away stays put until they leave the home, come back to the app
     /// after `matchMemoryLifetime` in the background, or relaunch it.
     private var lastMatchedServerIdentifier: Identifier<Server>?
+    /// Set while a deep link is opening the app: the link picked the destination, so the evaluation
+    /// this activation would run is skipped. Cleared when the app next goes to the background, so a
+    /// link handled while already active never suppresses a later return from the background.
+    private var skipNextEvaluation = false
+
+    /// Whether an evaluation is in flight. Non-private for tests.
+    var isEvaluating: Bool { evaluationTask != nil }
 
     func start() {
         guard didBecomeActiveObserver == nil else { return }
@@ -48,11 +56,31 @@ final class LocationBasedServerSwitcher {
         ) { [weak self] _ in
             Task { @MainActor in
                 self?.enteredBackgroundDate = Date()
+                self?.skipNextEvaluation = false
             }
         }
     }
 
+    /// Stands switching down for the activation a deep link is opening. Deep links (`homeassistant://`
+    /// URLs, universal links, NFC tags, widget and App Intent taps) carry their own destination —
+    /// often an explicit server — and location-based switching landing afterwards would replace what
+    /// the link asked for. Call this synchronously as the link arrives, before the work that resolves
+    /// its destination, so it lands whichever side of `didBecomeActive` the link is delivered on.
+    func deepLinkWillOpen() {
+        // An evaluation already running would finish after the link opens — it waits up to
+        // `locationTimeout` for a fix — so drop its result rather than let it switch on top.
+        evaluationTask?.cancel()
+        evaluationTask = nil
+        // On a cold launch the link arrives before the activation notification, so also skip the
+        // evaluation that activation is about to start.
+        skipNextEvaluation = true
+    }
+
     func evaluate() {
+        guard !skipNextEvaluation else {
+            skipNextEvaluation = false
+            return
+        }
         guard Current.settingsStore.locationBasedServerSwitching,
               // Kiosk mode pins the app to its configured server.
               !Current.kioskSettings.enabled,
@@ -69,6 +97,7 @@ final class LocationBasedServerSwitcher {
         evaluationTask = Task { [weak self] in
             // The Wi-Fi check works even without a location fix (and resolves faster than one).
             let ssid = await Current.connectivity.currentWiFiSSID()
+            guard !Task.isCancelled else { return }
 
             var location: CLLocation?
             let authorizationStatus = CLLocationManager().authorizationStatus
@@ -79,7 +108,9 @@ final class LocationBasedServerSwitcher {
                         .catch { _ in continuation.resume(returning: nil) }
                 }
             }
-            guard let self else { return }
+            // A cancelled task leaves `evaluationTask` alone: whoever cancelled it already cleared
+            // the slot, and a later activation may have started a new evaluation in it.
+            guard let self, !Task.isCancelled else { return }
             evaluationTask = nil
             guard ssid != nil || location != nil else { return }
             apply(location: location, currentSSID: ssid)
