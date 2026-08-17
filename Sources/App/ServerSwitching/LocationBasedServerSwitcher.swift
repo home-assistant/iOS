@@ -30,10 +30,14 @@ final class LocationBasedServerSwitcher {
     /// user who manually switched away stays put until they leave the home, come back to the app
     /// after `matchMemoryLifetime` in the background, or relaunch it.
     private var lastMatchedServerIdentifier: Identifier<Server>?
-    /// Set while a deep link is opening the app: the link picked the destination, so the evaluation
-    /// this activation would run is skipped. Cleared when the app next goes to the background, so a
-    /// link handled while already active never suppresses a later return from the background.
+    /// Set while a deep link is opening the app: the link picked the destination, so the activation
+    /// it is bringing on skips its evaluation. Only ever set with an activation still ahead, so it
+    /// is consumed by that activation rather than lingering into a later one.
     private var skipNextEvaluation = false
+
+    /// The app's activation state, telling a link that is opening the app from one handled while it
+    /// is already up. Replaceable in tests.
+    var applicationStateGetter: () -> UIApplication.State = { UIApplication.shared.applicationState }
 
     /// Whether an evaluation is in flight. Non-private for tests.
     var isEvaluating: Bool { evaluationTask != nil }
@@ -56,6 +60,7 @@ final class LocationBasedServerSwitcher {
         ) { [weak self] _ in
             Task { @MainActor in
                 self?.enteredBackgroundDate = Date()
+                // Backstop: the app is down, so no activation is pending to consume a skip.
                 self?.skipNextEvaluation = false
             }
         }
@@ -71,9 +76,12 @@ final class LocationBasedServerSwitcher {
         // `locationTimeout` for a fix — so drop its result rather than let it switch on top.
         evaluationTask?.cancel()
         evaluationTask = nil
-        // On a cold launch the link arrives before the activation notification, so also skip the
-        // evaluation that activation is about to start.
-        skipNextEvaluation = true
+        // Only a link that is opening the app still has an activation ahead of it, and on that
+        // ordering (cold launch) the link lands before `didBecomeActive`, so the evaluation it is
+        // about to start has to be skipped too. Once the app is active that notification has been
+        // and gone — cancelling above is then the whole job, and a flag left set here would swallow
+        // the next, unrelated activation instead.
+        skipNextEvaluation = applicationStateGetter() != .active
     }
 
     func evaluate() {
