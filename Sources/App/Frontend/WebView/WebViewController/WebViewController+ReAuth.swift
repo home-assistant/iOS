@@ -24,6 +24,9 @@ extension WebViewController {
         Current.Log.info("User logged out of server \(server.identifier.rawValue), asking to log in again")
 
         didLogOut = true
+        // The flag only stops attempts that have yet to start; one already running would still
+        // navigate into the server when it resolves the URL it was awaiting.
+        cancelActiveURLLoading()
         connectionState = .authInvalid
         overlayState?.connectionState = .authInvalid
         load(request: URLRequest(url: URL(string: "about:blank")!))

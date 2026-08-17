@@ -90,7 +90,22 @@ extension WebViewController {
         }
     }
 
+    /// Stops an active-URL attempt that is already running. `performLoadActiveURL()` re-checks
+    /// cancellation after every await, so a cancelled attempt cannot navigate once it wakes up.
+    func cancelActiveURLLoading() {
+        loadActiveURLTask?.cancel()
+        loadActiveURLTask = nil
+        loadActiveURLTaskStartDate = nil
+    }
+
     private func continueLoadingActiveURLIfNeeded() {
+        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
+        // was in flight would otherwise navigate back into the server from this completion.
+        guard !didLogOut else {
+            Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
+            return
+        }
+
         guard !isAppInBackground() else {
             Current.Log.info("not loading, in background")
             return
