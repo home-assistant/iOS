@@ -96,9 +96,9 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
     /// connections immediately, so the revoke request fails fast instead of reaching the network.
     @MainActor private func givenLoggedInServer() -> Server {
         let servers = FakeServerManager(initial: 0)
-        let server = servers.add(identifier: "logged-in", serverInfo: .fake())
+        let server = servers.addFake()
         server.update { info in
-            info.connection.set(address: URL(string: "http://127.0.0.1:1")!, for: .external)
+            info.connection.set(address: URL(string: "http://127.0.0.1:1")!, for: ConnectionInfo.URLType.external)
         }
         Current.servers = servers
         Current.cachedApis = [server.identifier: HomeAssistantAPI(server: server)]
