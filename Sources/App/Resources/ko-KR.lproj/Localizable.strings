@@ -212,7 +212,7 @@
 "camera_list.title" = "카메라";
 "camera_list.unavailable.message" = "Mac에서는 카메라 스트리밍을 사용할 수 없습니다.";
 "camera_list.unavailable.title" = "Mac에서 사용할 수 없음";
-"camera_player.default_camera_name" = "Camera";
+"camera_player.default_camera_name" = "카메라";
 "camera_player.errors.no_stream_available" = "사용 가능한 스트림 없음";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistant에 연결할 수 없습니다";
 "camera_player.errors.unknown" = "알 수 없는 오류";
