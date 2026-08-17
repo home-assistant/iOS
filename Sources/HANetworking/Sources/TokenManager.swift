@@ -106,8 +106,10 @@ public final class TokenManager: @unchecked Sendable {
     /// Remembering the rejection makes every future `bearerToken` refuse to hand the token out and go
     /// through a refresh instead: either the refresh mints a working token, or it fails with
     /// 400...403 and the reauthentication-required flow kicks in — in both cases the rejected token is
-    /// never sent again. The expiration is also pushed into the past so processes that share the store
-    /// (the extensions, which read it fresh rather than from a cache) see the invalidation too.
+    /// never sent again. The expiration is also pushed into the past, but only as a best effort: the
+    /// store coalesces a write that changes nothing but the expiration (see `rejectedAccessTokens`), so
+    /// it lands solely where there is no cache to coalesce against — an app extension invalidating a
+    /// token the server just refused, which the other processes then read fresh.
     public func handleAccessTokenRejected(_ rejectedToken: String) {
         // A refresh may have already replaced the token by the time the 401 lands; only the
         // currently stored token must be invalidated, never its fresh successor.
