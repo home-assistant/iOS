@@ -1637,6 +1637,7 @@
 				EntityFuzzySearch/FuzzySearcher.swift,
 				EntityFuzzySearch/FuzzyTextNormalizer.swift,
 				Environment.swift,
+				FocusFilterWrapper.swift,
 				FocusStatusWrapper.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
