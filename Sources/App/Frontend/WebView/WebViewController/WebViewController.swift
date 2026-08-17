@@ -41,6 +41,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var connectionState: FrontEndConnectionState = .unknown
 
+    /// Set when the user signed out from the frontend. The server stays registered, so the empty state
+    /// asks for a log in rather than reporting an expired session, until re-authentication succeeds.
+    var didLogOut = false
+
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
     var overlayState: WebFrontendOverlayState?

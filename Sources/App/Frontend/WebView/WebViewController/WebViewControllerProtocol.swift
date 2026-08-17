@@ -17,6 +17,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissControllerAboveOverlayController()
     func updateFrontendConnectionState(state: String)
     func handleExternalAuthFailure(error: Error)
+    func showLoggedOutState()
     func navigateToPath(path: String)
     func showBanner(request: BannerRequest)
     func hideBanner(id: String)

@@ -136,6 +136,14 @@ struct WebViewEmptyStateView: View {
     )
 }
 
+#Preview("Logged Out") {
+    WebViewEmptyStatePreview.view(
+        style: .loggedOut,
+        availableReauthURLTypes: [.external],
+        reauthAction: { _ in }
+    )
+}
+
 #Preview("Recovered Server Reauthentication") {
     WebViewEmptyStatePreview.view(
         style: .recoveredServerNeedingReauthentication,
