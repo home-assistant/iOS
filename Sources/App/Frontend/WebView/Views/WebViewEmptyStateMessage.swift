@@ -33,7 +33,7 @@ struct WebViewEmptyStateMessage: View {
 
     private var bodyText: String {
         switch style {
-        case .disconnected, .inFlight, .unauthenticated:
+        case .disconnected, .inFlight, .unauthenticated, .loggedOut:
             style.body
         case .recoveredServerNeedingReauthentication:
             L10n.Onboarding.ServerImport.Reauthenticate.message(server.info.name)
