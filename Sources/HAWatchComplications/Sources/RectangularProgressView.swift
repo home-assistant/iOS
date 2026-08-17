@@ -61,6 +61,40 @@ public struct RectangularProgressView: View {
             ? .black : .white
     }
 
+    /// The value pill riding the bar. Full color and accented both draw the text over the fill, which
+    /// the system colours as two separate groups. Vibrant (watch night mode, iPhone Lock Screen)
+    /// desaturates everything into a single shade, so the value is rendered by punching the glyphs out
+    /// of the pill and revealing the pill’s backing capsule instead of drawing tinted text over the fill.
+    @ViewBuilder
+    private func thumb(_ valueLabel: String) -> some View {
+        let label = Text(verbatim: valueLabel)
+            .font(.body.bold())
+            .lineLimit(1)
+            .padding(.vertical, Layout.thumbVerticalPadding)
+            .padding(.horizontal, Layout.thumbHorizontalPadding)
+
+        if renderingMode == .vibrant {
+            ZStack {
+                // Backs the pill so the bar passing behind it can't show through the knocked-out glyphs.
+                Capsule().fill(.black)
+                ZStack {
+                    Capsule().fill(tint)
+                    label
+                        .foregroundStyle(.white)
+                        .blendMode(.destinationOut)
+                }
+                .compositingGroup()
+            }
+        } else {
+            ZStack {
+                Capsule()
+                    .fill(tint)
+                    .widgetAccentable()
+                label.foregroundStyle(valueTextColor)
+            }
+        }
+    }
+
     public var body: some View {
         let clamped = min(max(fraction, 0), 1)
         VStack(spacing: Layout.stackSpacing) {
@@ -70,34 +104,24 @@ public struct RectangularProgressView: View {
                     Capsule().fill(tint.opacity(Layout.trackOpacity)).frame(height: Self.barHeight)
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
-                        ZStack {
-                            Capsule()
-                                .fill(tint)
-                                .widgetAccentable()
-                            Text(verbatim: valueLabel)
-                                .font(.body.bold())
-                                .foregroundStyle(valueTextColor)
-                                .lineLimit(1)
-                                .padding(.vertical, Layout.thumbVerticalPadding)
-                                .padding(.horizontal, Layout.thumbHorizontalPadding)
-                        }
-                        // Fit the value: grow past the minimum pill width so it never crops, keeping a
-                        // fixed height. `fixedSize` sizes to the text on every platform (no async
-                        // measurement), and the measured width keeps the thumb clamped inside the bar.
-                        .frame(height: Self.thumbHeight)
-                        .frame(minWidth: Self.thumbWidth)
-                        .fixedSize(horizontal: true, vertical: false)
-                        .background(
-                            GeometryReader { proxy in
-                                Color.clear
-                                    .onAppear { thumbWidth = proxy.size.width }
-                                    .onChange(of: proxy.size.width) { thumbWidth = $0 }
-                            }
-                        )
-                        .position(
-                            x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
-                            y: Self.thumbHeight / 2
-                        )
+                        thumb(valueLabel)
+                            // Fit the value: grow past the minimum pill width so it never crops, keeping a
+                            // fixed height. `fixedSize` sizes to the text on every platform (no async
+                            // measurement), and the measured width keeps the thumb clamped inside the bar.
+                            .frame(height: Self.thumbHeight)
+                            .frame(minWidth: Self.thumbWidth)
+                            .fixedSize(horizontal: true, vertical: false)
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.clear
+                                        .onAppear { thumbWidth = proxy.size.width }
+                                        .onChange(of: proxy.size.width) { thumbWidth = $0 }
+                                }
+                            )
+                            .position(
+                                x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
+                                y: Self.thumbHeight / 2
+                            )
                     }
                 }
                 .frame(height: Self.thumbHeight)
