@@ -155,6 +155,49 @@ struct WidgetsSnapshotTests {
         )
     }
 
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionSystemSmallSnapshot() {
+        assertEnergyNoConnectionSnapshot(family: .systemSmall)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionSystemMediumSnapshot() {
+        assertEnergyNoConnectionSnapshot(family: .systemMedium)
+    }
+
+    /// No URL resolves for the server, so there was nothing to load: the card points at the URL
+    /// configuration and still offers the retry. The small family is the tight one — the copy is
+    /// the longest of the empty states and has to stay legible in 160pt.
+    @available(iOS 18, *)
+    @MainActor private func assertEnergyNoConnectionSnapshot(
+        family: WidgetFamily,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: family)
+        let entry = WidgetEnergyEntry(
+            date: Date(timeIntervalSince1970: 1_700_000_000),
+            period: .today,
+            serverName: "Home",
+            isConfigured: false,
+            noConnection: true
+        )
+        assertLightDarkSnapshots(
+            of: WidgetEnergyView(entry: entry)
+                .environment(\.widgetFamily, family)
+                .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
+        )
+    }
+
     /// Configured, but the server has nothing for the period yet — early in the day, typically. The
     /// figures blank out and the chart draws empty instead of the card becoming a "no data" line.
     @available(iOS 18, *)
