@@ -18,6 +18,7 @@ struct HAExpandedTrailingView: View {
             Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(.white)
+                .lineLimit(1)
                 .minimumScaleFactor(minimumScaleFactor)
         }
     }
