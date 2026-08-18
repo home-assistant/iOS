@@ -8,6 +8,7 @@ public enum NotificationIdentifier: String {
     case intentActivateFailed
     case intentPressFailed
     case serverUnreachable
+    case liveActivityTokenUnreachable
 
     // Debug
     case debug

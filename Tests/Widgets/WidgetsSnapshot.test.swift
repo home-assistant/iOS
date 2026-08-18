@@ -155,6 +155,71 @@ struct WidgetsSnapshotTests {
         )
     }
 
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionSystemSmallSnapshot() {
+        assertEnergyNoConnectionSnapshot(family: .systemSmall)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionSystemMediumSnapshot() {
+        assertEnergyNoConnectionSnapshot(family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionAccessoryRectangularSnapshot() {
+        let size = snapshotSize(for: .accessoryRectangular)
+        assertLightDarkSnapshots(
+            of: WidgetEnergyAccessoryRectangularView(entry: Self.noConnectionEntry)
+                .environment(\.widgetFamily, .accessoryRectangular),
+            layout: .fixed(width: size.width, height: size.height)
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetNoConnectionAccessoryInlineSnapshot() {
+        let size = snapshotSize(for: .accessoryInline)
+        assertLightDarkSnapshots(
+            of: WidgetEnergyAccessoryInlineView(entry: Self.noConnectionEntry)
+                .environment(\.widgetFamily, .accessoryInline),
+            layout: .fixed(width: size.width, height: size.height)
+        )
+    }
+
+    @available(iOS 17, *)
+    private static var noConnectionEntry: WidgetEnergyEntry {
+        WidgetEnergyEntry(
+            date: Date(timeIntervalSince1970: 1_700_000_000),
+            period: .today,
+            source: .auto,
+            serverName: "Home",
+            isConfigured: false,
+            noConnection: true
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor private func assertEnergyNoConnectionSnapshot(
+        family: WidgetFamily,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: family)
+        assertLightDarkSnapshots(
+            of: WidgetEnergyView(entry: Self.noConnectionEntry)
+                .environment(\.widgetFamily, family)
+                .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
+        )
+    }
+
     /// Configured, but the server has nothing for the period yet — early in the day, typically. The
     /// figures blank out and the chart draws empty instead of the card becoming a "no data" line.
     @available(iOS 18, *)
@@ -244,6 +309,10 @@ struct WidgetsSnapshotTests {
             CGSize(width: 350, height: 160)
         case .systemLarge:
             CGSize(width: 350, height: 310)
+        case .accessoryRectangular:
+            CGSize(width: 172, height: 76)
+        case .accessoryInline:
+            CGSize(width: 250, height: 24)
         default:
             CGSize(width: 600, height: 600)
         }

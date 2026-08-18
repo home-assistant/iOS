@@ -7,12 +7,16 @@ class FakeCLLocationManager: CLLocationManager {
     var isMonitoringSigLocChanges = false
     var overrideMonitoredRegions = Set<CLRegion>()
     var requestedRegions = [CLRegion]()
+    var monitoredRegionsReadsWereOnMainThread = [Bool]()
+    var startMonitoringCallsWereOnMainThread = [Bool]()
 
     override var monitoredRegions: Set<CLRegion> {
-        overrideMonitoredRegions
+        monitoredRegionsReadsWereOnMainThread.append(Thread.isMainThread)
+        return overrideMonitoredRegions
     }
 
     override func startMonitoring(for region: CLRegion) {
+        startMonitoringCallsWereOnMainThread.append(Thread.isMainThread)
         startMonitoringRegions.append(region)
         overrideMonitoredRegions.insert(region)
     }

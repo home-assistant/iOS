@@ -18,6 +18,11 @@ struct WidgetEnergyEntry: TimelineEntry {
     /// True when the empty state is due to a failed load rather than a missing energy dashboard.
     var loadFailed = false
 
+    /// True when the app has no active URL for the widget's server, so there is nowhere to load
+    /// from. Distinct from `loadFailed`: no request was ever made, and the fix is in the server's
+    /// URL configuration rather than a retry.
+    var noConnection = false
+
     // Energy totals over the selected period, in kWh. Nil when the source isn't configured.
     var gridConsumed: Double?
     var gridReturned: Double?
