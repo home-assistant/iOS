@@ -9,7 +9,7 @@ import Shared
 /// domain (`.calendar.calendar`) only exists in the iOS 27 SDK, while the project still builds
 /// against Xcode 26.4. The shape below is the one the schema expects, so adopting
 /// `@AppEntity(schema: .calendar.calendar)` later is an annotation change rather than a rewrite.
-struct HACalendarAppEntity: AppEntity {
+struct HACalendarAppEntity: AppEntity, Sendable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
         "app_intents.calendar.entity.name",
         defaultValue: "Calendar"
@@ -22,10 +22,13 @@ struct HACalendarAppEntity: AppEntity {
     let serverId: String
     let serverName: String?
 
+    /// The picker groups calendars into a section per server, so the subtitle carries the entity id
+    /// instead of repeating the server name. That is also what separates same-named calendars on one
+    /// server, which is common when an integration names them after itself rather than the account.
     var displayRepresentation: DisplayRepresentation {
         .init(
             title: .init(stringLiteral: name),
-            subtitle: serverName.map { .init(stringLiteral: $0) },
+            subtitle: .init(stringLiteral: entityId),
             image: .init(systemName: "calendar")
         )
     }

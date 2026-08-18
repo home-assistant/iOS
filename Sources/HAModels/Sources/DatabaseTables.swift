@@ -40,6 +40,8 @@ public enum GRDBDatabaseTable: String {
     case focusName
     // Calendar entities mirrored from Home Assistant
     case HACalendar = "hACalendar"
+    // Events cached from the calendars above, so a fetch failure can fall back to them
+    case HACalendarEvent = "hACalendarEvent"
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -374,6 +376,22 @@ public enum DatabaseTables {
     public enum FocusName: String, CaseIterable {
         case id
         case name
+    }
+
+    // Cached calendar events. Column names must match `HACalendarEventRecord`'s stored properties.
+    public enum HACalendarEvent: String, CaseIterable {
+        case id
+        case serverId
+        case calendarEntityId
+        case uid
+        case recurrenceId
+        case summary
+        case start
+        case end
+        case isAllDay
+        case eventDescription
+        case location
+        case rrule
     }
 
     // Calendar entities mirrored from Home Assistant. Column names must match `HACalendar`'s stored

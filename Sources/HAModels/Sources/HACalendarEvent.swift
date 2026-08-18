@@ -131,7 +131,9 @@ public struct HACalendarEvent: Decodable, Identifiable, Hashable {
         }
     }
 
-    private static let dayFormatter: DateFormatter = {
+    /// The `yyyy-MM-dd` form Home Assistant uses for all-day boundaries, shared by decoding here and
+    /// by the create command so the two can't drift apart.
+    public static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.locale = Locale(identifier: "en_US_POSIX")
