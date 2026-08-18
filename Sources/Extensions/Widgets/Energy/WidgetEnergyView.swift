@@ -24,7 +24,7 @@ struct WidgetEnergyView: View {
             // and the chart come back empty rather than being replaced by prose. Only an entry the
             // widget can't read at all — no server URL to reach, no dashboard, or a failed load —
             // falls back to the message.
-            if !entry.isConfigured || entry.loadFailed {
+            if !entry.isConfigured || entry.loadFailed || entry.noConnection {
                 emptyView
             } else if family == .systemSmall {
                 WidgetEnergySmallView(entry: entry)
