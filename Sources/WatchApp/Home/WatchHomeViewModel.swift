@@ -583,8 +583,8 @@ final class WatchHomeViewModel: ObservableObject {
         }
     }
 
-    /// Main-actor tail of a successfully applied mirror: server refresh, widget snapshots and the
-    /// follow-up config pull, all expected on the main thread (matching the pushed-mirror path).
+    /// Main-actor tail of a successfully applied mirror: kick off the server refresh (applied on
+    /// its own queue), widget snapshots and the follow-up config pull.
     @MainActor
     private func finishAppliedDatabaseSync(mirror: WatchDatabaseMirror) {
         // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
