@@ -571,11 +571,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// location permission isn't "Always") makes the webhook fail with `noActiveURL`, so the token
     /// never reaches Core.
     static func serversWithResolvableWebhookURL(_ servers: [Server]) async -> [Server] {
-        var reachable: [Server] = []
-        for server in servers where await server.webhookURL() != nil {
-            reachable.append(server)
-        }
-        return reachable
+        // Refresh once for the whole set: `Server.webhookURL()` refreshes on every call, so asking it
+        // per server would repeat the same SSID lookup for each configured server.
+        await Current.connectivity.refreshNetworkInformation()
+        return servers.filter { $0.webhookURLUsingLastKnownNetworkState() != nil }
     }
 
     /// Tell the user, through an ordinary local notification, that this Live Activity won't receive
