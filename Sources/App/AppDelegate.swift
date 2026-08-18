@@ -135,6 +135,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        HACalendarSpotlightIndexer.shared.start()
 
         return true
     }

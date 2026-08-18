@@ -38,6 +38,8 @@ public enum GRDBDatabaseTable: String {
     case remindersSyncHistoryEntry
     // Focus names the user pairs with an iOS Focus Filter
     case focusName
+    // Calendar entities mirrored from Home Assistant
+    case HACalendar = "hACalendar"
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -372,5 +374,17 @@ public enum DatabaseTables {
     public enum FocusName: String, CaseIterable {
         case id
         case name
+    }
+
+    // Calendar entities mirrored from Home Assistant. Column names must match `HACalendar`'s stored
+    // properties.
+    public enum HACalendar: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case name
+        case backgroundColor
+        case supportedFeatures
+        case sortOrder
     }
 }

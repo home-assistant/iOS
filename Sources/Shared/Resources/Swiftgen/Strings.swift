@@ -323,6 +323,12 @@ public enum L10n {
         }
       }
     }
+    public enum Calendar {
+      public enum Entity {
+        /// Calendar
+        public static var name: String { return L10n.tr("Localizable", "app_intents.calendar.entity.name") }
+      }
+    }
     public enum ClosedStateIcon {
       /// Icon for closed state
       public static var title: String { return L10n.tr("Localizable", "app_intents.closed_state_icon.title") }
@@ -395,6 +401,24 @@ public enum L10n {
       public enum EventName {
         /// Event name
         public static var title: String { return L10n.tr("Localizable", "app_intents.fire_event.event_name.title") }
+      }
+    }
+    public enum FocusFilter {
+      /// Reports the Focus name you pick to Home Assistant while this Focus is on.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.focus_filter.description") }
+      /// Report Focus name
+      public static var title: String { return L10n.tr("Localizable", "app_intents.focus_filter.title") }
+      public enum Display {
+        /// No Focus name picked
+        public static var `none`: String { return L10n.tr("Localizable", "app_intents.focus_filter.display.none") }
+      }
+      public enum Entity {
+        /// Focus name
+        public static var name: String { return L10n.tr("Localizable", "app_intents.focus_filter.entity.name") }
+      }
+      public enum FocusName {
+        /// Focus name
+        public static var title: String { return L10n.tr("Localizable", "app_intents.focus_filter.focus_name.title") }
       }
     }
     public enum GetCameraSnapshot {
@@ -4405,6 +4429,8 @@ public enum L10n {
         public enum Progress {
           /// Updating areas
           public static var areas: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.areas") }
+          /// Updating calendars
+          public static var calendars: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.calendars") }
           /// Updating devices
           public static var devices: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.devices") }
           /// Updating entities
@@ -4494,6 +4520,42 @@ public enum L10n {
         public static var message: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.message") }
         /// Delete cached entity data
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.cached_entity_data.title") }
+      }
+      public enum Calendars {
+        /// All-day
+        public static var allDay: String { return L10n.tr("Localizable", "settings.debugging.calendars.all_day") }
+        /// %d calendars
+        public static func countD(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.debugging.calendars.count_%d", p1)
+        }
+        /// Entity ID
+        public static var entityId: String { return L10n.tr("Localizable", "settings.debugging.calendars.entity_id") }
+        /// No events on this day
+        public static var noEvents: String { return L10n.tr("Localizable", "settings.debugging.calendars.no_events") }
+        /// Could not fetch calendars from Home Assistant
+        public static var refreshFailed: String { return L10n.tr("Localizable", "settings.debugging.calendars.refresh_failed") }
+        /// Calendars
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.calendars.title") }
+        public enum Empty {
+          /// Pull down to fetch the calendars from Home Assistant.
+          public static var subtitle: String { return L10n.tr("Localizable", "settings.debugging.calendars.empty.subtitle") }
+          /// No calendars stored
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.calendars.empty.title") }
+        }
+        public enum ServerSelection {
+          /// Select server
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.calendars.server_selection.title") }
+        }
+        public enum SupportedFeatures {
+          /// Create events
+          public static var create: String { return L10n.tr("Localizable", "settings.debugging.calendars.supported_features.create") }
+          /// Delete events
+          public static var delete: String { return L10n.tr("Localizable", "settings.debugging.calendars.supported_features.delete") }
+          /// Supported features
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.calendars.supported_features.title") }
+          /// Update events
+          public static var update: String { return L10n.tr("Localizable", "settings.debugging.calendars.supported_features.update") }
+        }
       }
       public enum ClearAllowedTags {
         /// Clear approved NFC tags?

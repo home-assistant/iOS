@@ -366,6 +366,15 @@ struct DebugView: View {
                 )
             }
 
+            NavigationLink {
+                CalendarsDebugServerListView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .calendar),
+                    title: L10n.Settings.Debugging.Calendars.title
+                )
+            }
+
             #if DEBUG
             NavigationLink {
                 KeychainExplorerView()
