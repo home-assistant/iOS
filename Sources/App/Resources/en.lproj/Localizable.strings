@@ -80,6 +80,7 @@
 "app_intents.calendar.create_event.event_description.title" = "Description";
 "app_intents.calendar.create_event.location.title" = "Location";
 "app_intents.calendar.create_event.response_success" = "Added %@ to %@";
+"app_intents.calendar.create_event.repeat.title" = "Repeat";
 "app_intents.calendar.create_event.start.title" = "Starts";
 "app_intents.calendar.create_event.summary.title" = "Title";
 "app_intents.calendar.create_event.title" = "Add calendar event";
@@ -97,6 +98,11 @@
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
 "app_intents.calendar.error.zero_duration" = "The end must be after the start";
 "app_intents.calendar.event.entity.name" = "Calendar event";
+"app_intents.calendar.repeat.daily" = "Daily";
+"app_intents.calendar.repeat.monthly" = "Monthly";
+"app_intents.calendar.repeat.none" = "No repeat";
+"app_intents.calendar.repeat.weekly" = "Weekly";
+"app_intents.calendar.repeat.yearly" = "Yearly";
 "app_intents.calendar.get_events.description" = "Get the events on a Home Assistant calendar between two dates";
 "app_intents.calendar.get_events.end.title" = "To";
 "app_intents.calendar.get_events.start.title" = "From";

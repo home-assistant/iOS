@@ -349,6 +349,10 @@ public enum L10n {
           /// Location
           public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.location.title") }
         }
+        public enum Repeat {
+          /// Repeat
+          public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.repeat.title") }
+        }
         public enum Start {
           /// Starts
           public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.start.title") }
@@ -423,6 +427,18 @@ public enum L10n {
           /// From
           public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.get_events.start.title") }
         }
+      }
+      public enum Repeat {
+        /// Daily
+        public static var daily: String { return L10n.tr("Localizable", "app_intents.calendar.repeat.daily") }
+        /// Monthly
+        public static var monthly: String { return L10n.tr("Localizable", "app_intents.calendar.repeat.monthly") }
+        /// No repeat
+        public static var `none`: String { return L10n.tr("Localizable", "app_intents.calendar.repeat.none") }
+        /// Weekly
+        public static var weekly: String { return L10n.tr("Localizable", "app_intents.calendar.repeat.weekly") }
+        /// Yearly
+        public static var yearly: String { return L10n.tr("Localizable", "app_intents.calendar.repeat.yearly") }
       }
     }
     public enum ClosedStateIcon {

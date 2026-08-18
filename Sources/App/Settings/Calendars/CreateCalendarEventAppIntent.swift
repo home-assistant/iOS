@@ -3,10 +3,8 @@ import Foundation
 import Shared
 
 /// Adds an event to a Home Assistant calendar, offering the fields from the frontend's event editor
-/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day and start/end.
-/// Start and end are optional and default the way the editor opens a new event. The recurrence rule
-/// is left out — it needs a rule builder to be usable, and a raw RRULE string is not something to
-/// ask for in a Shortcut.
+/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day, start/end and a
+/// repeat preset. Start and end are optional and default the way the editor opens a new event.
 @available(iOS 17.0, *)
 struct CreateCalendarEventAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
@@ -28,6 +26,7 @@ struct CreateCalendarEventAppIntent: AppIntent {
                 \.$calendar
                 \.$summary
                 \.$isAllDay
+                \.$repeatFrequency
                 \.$eventDescription
                 \.$location
             }
@@ -38,6 +37,7 @@ struct CreateCalendarEventAppIntent: AppIntent {
                 \.$isAllDay
                 \.$startDate
                 \.$endDate
+                \.$repeatFrequency
                 \.$eventDescription
                 \.$location
             }
@@ -70,6 +70,12 @@ struct CreateCalendarEventAppIntent: AppIntent {
         kind: .dateTime
     )
     var endDate: Date?
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.repeat.title", defaultValue: "Repeat"),
+        default: CalendarEventRepeatAppEnum.none
+    )
+    var repeatFrequency: CalendarEventRepeatAppEnum
 
     @Parameter(
         title: .init("app_intents.calendar.create_event.event_description.title", defaultValue: "Description"),
@@ -117,6 +123,7 @@ struct CreateCalendarEventAppIntent: AppIntent {
             summary: summary,
             description: eventDescription,
             location: location,
+            rrule: repeatFrequency.rrule(startingOn: start),
             start: start,
             end: end,
             isAllDay: isAllDay
