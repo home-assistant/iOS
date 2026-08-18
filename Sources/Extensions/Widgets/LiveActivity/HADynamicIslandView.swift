@@ -107,10 +107,11 @@ struct HACompactTrailingView: View {
     private static let compactTrailingTimerWidth: CGFloat = 44
     /// Maximum width for non-timer compact trailing content (criticalText, progress %).
     private static let compactTrailingMaxWidth: CGFloat = 50
+    private static let compactTrailingMinimumScaleFactor: CGFloat = 0.7
 
     var body: some View {
         if state.chronometer == true, let end = state.countdownEnd {
-            HAActivityChronometerText(end: end, start: state.chronometerStart)
+            HAActivityCompactChronometerText(end: end, start: state.chronometerStart)
                 .font(.footnote.monospacedDigit())
                 .foregroundStyle(.white)
                 .frame(width: Self.compactTrailingTimerWidth)
@@ -119,6 +120,7 @@ struct HACompactTrailingView: View {
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
+                .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
                 .frame(maxWidth: Self.compactTrailingMaxWidth)
         } else if let fraction = state.progressFraction {
             Text(HAActivityVisualStyle.percentString(for: fraction))
