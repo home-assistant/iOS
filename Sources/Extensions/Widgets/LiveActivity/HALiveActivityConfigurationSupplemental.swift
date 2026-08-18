@@ -49,6 +49,36 @@ struct HALiveActivityConfigurationSupplemental: Widget {
 
 @available(iOS 18.0, *)
 #Preview(
+    "Dynamic Island Compact",
+    as: .dynamicIsland(.compact),
+    using: HALiveActivityAttributes(tag: "preview", title: "Laundry")
+) {
+    HALiveActivityConfigurationSupplemental()
+} contentStates: {
+    HALiveActivityAttributes.ContentState(
+        message: "Pasta",
+        chronometer: true,
+        countdownEnd: Current.date().addingTimeInterval(12013),
+        icon: "timer",
+        color: "#FF9800"
+    )
+    HALiveActivityAttributes.ContentState(
+        message: "Pasta",
+        chronometer: true,
+        countdownEnd: Current.date().addingTimeInterval(1500),
+        icon: "timer",
+        color: "#FF9800"
+    )
+    HALiveActivityAttributes.ContentState(
+        message: "Charging paused",
+        criticalText: "03:20:13",
+        icon: "battery-alert",
+        color: "#F44336"
+    )
+}
+
+@available(iOS 18.0, *)
+#Preview(
     "Dynamic Island",
     as: .dynamicIsland(.expanded),
     using: HALiveActivityAttributes(tag: "preview", title: "Laundry")
