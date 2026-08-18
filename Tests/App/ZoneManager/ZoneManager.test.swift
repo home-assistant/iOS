@@ -346,6 +346,10 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertFalse(locationManager.monitoredRegionsReadsWereOnMainThread.contains(true))
         XCTAssertFalse(locationManager.startMonitoringCallsWereOnMainThread.isEmpty)
         XCTAssertFalse(locationManager.startMonitoringCallsWereOnMainThread.contains(false))
+        XCTAssertEqual(
+            collector.ignoreNextStateCallsWereOnMainThread.count,
+            locationManager.startMonitoringCallsWereOnMainThread.count
+        )
         XCTAssertFalse(collector.ignoreNextStateCallsWereOnMainThread.contains(false))
 
         withExtendedLifetime(manager) { /* silences unused variable */ }
