@@ -859,6 +859,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sync.done" = "Synced";
 "live_activity.sync.footer" = "Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.";
 "live_activity.title" = "Live Activities";
+"live_activity.token_unreachable.body" = "Home Assistant couldn't be reached to register this Live Activity, so it won't receive updates. Check the server's connection security level in the companion app settings, and if you rely on your internal URL make sure location permission is set to “Always”.";
+"live_activity.token_unreachable.title" = "Live Activity won't update";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";

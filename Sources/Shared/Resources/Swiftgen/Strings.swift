@@ -2869,6 +2869,12 @@ public enum L10n {
       /// Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.
       public static var footer: String { return L10n.tr("Localizable", "live_activity.sync.footer") }
     }
+    public enum TokenUnreachable {
+      /// Home Assistant couldn't be reached to register this Live Activity, so it won't receive updates. Check the server's connection security level in the companion app settings, and if you rely on your internal URL make sure location permission is set to “Always”.
+      public static var body: String { return L10n.tr("Localizable", "live_activity.token_unreachable.body") }
+      /// Live Activity won't update
+      public static var title: String { return L10n.tr("Localizable", "live_activity.token_unreachable.title") }
+    }
   }
 
   public enum LocationChangeNotification {
