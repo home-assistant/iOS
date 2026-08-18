@@ -52,6 +52,7 @@ enum WatchServerSync {
     static func applyMirroredServersAndWait(_ data: Data?) {
         guard let data else { return }
         dispatchPrecondition(condition: .notOnQueue(.main))
+        dispatchPrecondition(condition: .notOnQueue(applyQueue))
         applyQueue.sync { applyMirroredServersNow(data) }
     }
 
