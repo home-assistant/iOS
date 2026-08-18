@@ -122,7 +122,10 @@ public final class WriteBehindServerManagerKeychain: ServerManagerKeychain {
             case .remove: try upstream.remove(key)
             }
         } catch {
+            // Keep the pending write on failure so readers still see it and the next flush
+            // for this key retries it.
             HANetworkingEnvironment.current.log.error("failed to flush keychain write for \(key): \(error)")
+            return
         }
 
         // Only clear the entry that was just persisted: a write that raced in during the
