@@ -1,3 +1,4 @@
+import CoreSpotlight
 import PromiseKit
 import Shared
 import SwiftUI
@@ -14,6 +15,7 @@ struct HAApp: App {
                 .toastOverlay()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
+                .onContinueUserActivity(CSSearchableItemActionType) { handleIncoming(userActivity: $0) }
                 // SwiftUI copy of the launch screen; hides the system-splash → first-screen hand-off by
                 // morphing the splash logo into the first screen's logo before fading out.
                 .overlay { LaunchSplashOverlayView(state: .shared) }

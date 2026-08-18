@@ -25,7 +25,8 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         timeoutSeal(())
@@ -38,7 +39,8 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, _) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         let clError = CLError(.deferredAccuracyTooLow)
@@ -52,7 +54,8 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, _) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         enum SomeError: Error {
@@ -71,7 +74,8 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         timeoutSeal(())
@@ -84,10 +88,53 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didFailWithError: CLError(.deferredAccuracyTooLow))
+        XCTAssertEqual(try hang(promise), cachedLocation)
+    }
+
+    func testCachedLocationIsNotReadUntilExecutorRuns() {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        locationManager.cachedLocation = CLLocation(latitude: 123, longitude: -123)
+
+        var queuedWork = [() -> Void]()
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { queuedWork.append($0) }
+        ).promise
+
+        XCTAssertEqual(queuedWork.count, 1)
+
+        // the cached location was never seeded, so timing out must fail
+        timeoutSeal(())
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? OneShotError, OneShotError.outOfTime)
+        }
+    }
+
+    func testCachedLocationSeededFromBackgroundThread() throws {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let cachedLocation = CLLocation(latitude: 123, longitude: -123)
+        locationManager.cachedLocation = cachedLocation
+
+        var queuedWork = [() -> Void]()
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { queuedWork.append($0) }
+        ).promise
+
+        // run the seed read off the main thread like the default executor does; it hops back
+        // to the main queue, so it lands before the timeout sealed below
+        DispatchQueue(label: "one-shot-test-seed").sync {
+            queuedWork.forEach { $0() }
+        }
+
+        timeoutSeal(())
         XCTAssertEqual(try hang(promise), cachedLocation)
     }
 
@@ -110,7 +157,8 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -128,7 +176,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -146,7 +195,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -172,7 +222,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
@@ -197,7 +248,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location2, location1])
@@ -229,7 +281,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -270,7 +323,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -314,7 +368,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -344,7 +399,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
@@ -374,7 +430,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
@@ -407,7 +464,8 @@ class OneShotLocationTests: XCTestCase {
 
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
@@ -477,7 +535,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -523,7 +582,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
@@ -549,7 +609,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
@@ -568,7 +629,8 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
@@ -685,7 +747,8 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise
+            timeout: timeoutPromise,
+            cachedLocationExecutor: { $0() }
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: locations)

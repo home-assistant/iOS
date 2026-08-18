@@ -1,0 +1,208 @@
+import AppIntents
+import CoreSpotlight
+import CryptoKit
+import Foundation
+import Shared
+
+/// Publishes the entities cached in the local database to Spotlight, so searching the system for an
+/// entity's name (or its area, device or server) finds it and opens its more-info dialog.
+///
+/// The index is rebuilt from the database rather than kept in sync incrementally: a full snapshot is
+/// cheap to derive, and comparing its signature against the last indexed one means a refresh that
+/// changed nothing costs a single hash instead of thousands of Spotlight writes.
+@available(iOS 18.0, *)
+@MainActor
+final class SpotlightEntityIndexer: ServerObserver {
+    static let shared = SpotlightEntityIndexer()
+
+    private enum Constants {
+        static let indexName = "HomeAssistantEntities"
+        static let stateKey = "spotlightEntityIndexState"
+        static let batchSize = 500
+        static let coalescingDelay: Duration = .seconds(2)
+        /// Bump this when the attributes written per entity change, so a build that indexes the same
+        /// entities differently still rewrites the index instead of matching the stored signature.
+        static let formatVersion = 3
+    }
+
+    /// What the index currently holds: the signature of the snapshot that produced it, and the ids it
+    /// contains, so entities that disappear from the database can be removed from Spotlight too.
+    private struct IndexState: Codable {
+        let signature: String
+        let entityIds: [String]
+    }
+
+    private struct Snapshot {
+        let entities: [HAAppEntityAppIntentEntity]
+        let signature: String
+    }
+
+    private let index = CSSearchableIndex(name: Constants.indexName)
+    private let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
+    private var databaseObserver: NSObjectProtocol?
+    private var reindexTask: Task<Void, Never>?
+
+    private init() {}
+
+    func start() {
+        guard databaseObserver == nil else { return }
+
+        databaseObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishRoutine,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.scheduleReindex(reason: "database updated")
+            }
+        }
+        Current.servers.add(observer: self)
+        scheduleReindex(reason: "app launch")
+    }
+
+    nonisolated func serversDidChange(_ serverManager: ServerManager) {
+        Task { @MainActor [weak self] in
+            self?.scheduleReindex(reason: "servers changed")
+        }
+    }
+
+    /// One notification arrives per server, and a database refresh touches every server in turn, so
+    /// the work is deferred briefly and the pending task replaced to collapse a burst into one pass.
+    private func scheduleReindex(reason: String) {
+        reindexTask?.cancel()
+        reindexTask = Task { [weak self] in
+            try? await Task.sleep(for: Constants.coalescingDelay)
+            guard !Task.isCancelled else { return }
+            await self?.reindex(reason: reason)
+        }
+    }
+
+    private func reindex(reason: String) async {
+        let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value
+        guard let snapshot else { return }
+
+        let previousState = loadState()
+        guard snapshot.signature != previousState?.signature else {
+            Current.Log.verbose("Spotlight entity index already up to date (\(reason))")
+            return
+        }
+
+        let indexedIds = snapshot.entities.map(\.id)
+        let staleIds = Set(previousState?.entityIds ?? []).subtracting(indexedIds)
+
+        do {
+            if !staleIds.isEmpty {
+                try await index.deleteAppEntities(
+                    identifiedBy: Array(staleIds),
+                    ofType: HAAppEntityAppIntentEntity.self
+                )
+            }
+            for batch in stride(from: 0, to: snapshot.entities.count, by: Constants.batchSize) {
+                // A newer pass supersedes this one; leaving the state unsaved makes it redo the work.
+                guard !Task.isCancelled else { return }
+                let upperBound = min(batch + Constants.batchSize, snapshot.entities.count)
+                try await index.indexAppEntities(Array(snapshot.entities[batch ..< upperBound]))
+            }
+            save(IndexState(signature: snapshot.signature, entityIds: indexedIds))
+            Current.Log
+                .info(
+                    "Spotlight entity index updated (\(reason)): \(indexedIds.count) entities, \(staleIds.count) removed"
+                )
+        } catch {
+            Current.Log.error("Failed to update Spotlight entity index: \(error.localizedDescription)")
+        }
+    }
+
+    /// The entities worth searching for, in a stable order, paired with a signature of everything the
+    /// index carries. The server name is part of that signature even when it stays out of the displayed
+    /// subtitle, because it is always indexed as a search term, so renaming a single server still
+    /// rewrites the index.
+    ///
+    /// `nil` when the database can't be read, so a failed read never empties the index — an empty
+    /// snapshot legitimately means "no servers" and does clear it.
+    ///
+    /// Hidden entities are excluded (as everywhere else in the app) and so are config/diagnostic ones,
+    /// which would otherwise bury the entities people search for under firmware versions and signal
+    /// strengths.
+    private nonisolated static func makeSnapshot() -> Snapshot? {
+        let servers = Current.servers.all.sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+        let includesServerContext = servers.count > 1
+
+        let allEntities: [HAAppEntity]
+        do {
+            allEntities = try HAAppEntity.config()
+        } catch {
+            Current.Log.error("Failed to read entities for Spotlight index: \(error.localizedDescription)")
+            return nil
+        }
+
+        var entities: [HAAppEntityAppIntentEntity] = []
+        var signatureLines = ["serverContext=\(includesServerContext)"]
+
+        for server in servers {
+            let serverId = server.identifier.rawValue
+            let serverEntities = allEntities
+                .filter { $0.serverId == serverId && $0.entityCategory == nil }
+                .sorted { $0.id < $1.id }
+            let areasMap = serverEntities.areasMap(for: serverId)
+            let devicesMap = serverEntities.devicesMap(for: serverId)
+            let floorNamesMap = serverEntities.floorNamesMap(for: serverId)
+
+            for entity in serverEntities {
+                let indexed = HAAppEntityAppIntentEntity(
+                    id: entity.id,
+                    entityId: entity.entityId,
+                    serverId: serverId,
+                    serverName: server.info.name,
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: devicesMap[entity.entityId]?.name,
+                    floorName: floorNamesMap[entity.entityId],
+                    displayString: entity.name,
+                    iconName: iconName(for: entity),
+                    includesServerContext: includesServerContext
+                )
+                entities.append(indexed)
+                signatureLines.append([
+                    indexed.id,
+                    indexed.displayString,
+                    indexed.areaName ?? "",
+                    indexed.deviceName ?? "",
+                    indexed.floorName ?? "",
+                    indexed.serverName,
+                    indexed.iconName,
+                ].joined(separator: "|"))
+            }
+        }
+
+        return Snapshot(entities: entities, signature: signature(for: signatureLines))
+    }
+
+    /// The same precedence the entity pickers use: the entity's own icon, then the frontend default
+    /// resolved from the backend `entity_component` map, then the domain fallback.
+    private nonisolated static func iconName(for entity: HAAppEntity) -> String {
+        if let icon = entity.icon, !icon.isEmpty {
+            return icon
+        }
+        if let resolvedIcon = entity.resolvedIcon, !resolvedIcon.isEmpty {
+            return resolvedIcon
+        }
+        return Domain(rawValue: entity.domain)?.icon(deviceClass: entity.rawDeviceClass).name
+            ?? MaterialDesignIcons.dotsGridIcon.name
+    }
+
+    private nonisolated static func signature(for lines: [String]) -> String {
+        let payload = (["v\(Constants.formatVersion)"] + lines).joined(separator: "\n")
+        let digest = SHA256.hash(data: Data(payload.utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    private func loadState() -> IndexState? {
+        guard let data = defaults?.data(forKey: Constants.stateKey) else { return nil }
+        return try? JSONDecoder().decode(IndexState.self, from: data)
+    }
+
+    private func save(_ state: IndexState) {
+        guard let data = try? JSONEncoder().encode(state) else { return }
+        defaults?.set(data, forKey: Constants.stateKey)
+    }
+}

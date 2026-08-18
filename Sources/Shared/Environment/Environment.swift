@@ -682,7 +682,9 @@ public class AppEnvironment {
             CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
 
-        public var permissionStatus: CLAuthorizationStatus {
+        /// `authorizationStatus` performs synchronous XPC to locationd and can block for
+        /// seconds; avoid calling this on the main thread.
+        public var permissionStatus: () -> CLAuthorizationStatus = {
             CLLocationManager().authorizationStatus
         }
     }

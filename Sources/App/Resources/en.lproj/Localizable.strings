@@ -148,6 +148,8 @@
 "app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.show_entity_details.parameter.entity" = "Entity";
+"app_intents.show_entity_details.title" = "Show Entity Details";
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.switch.title" = "Switch";
