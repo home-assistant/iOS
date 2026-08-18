@@ -24,16 +24,24 @@ final class HACalendarEventTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.HACalendarEvent.eventDescription.rawValue, .text)
                     t.column(DatabaseTables.HACalendarEvent.location.rawValue, .text)
                     t.column(DatabaseTables.HACalendarEvent.rrule.rawValue, .text)
-
-                    // Every read is "this calendar, this window", so index the pair it filters on.
-                    t.index([
-                        DatabaseTables.HACalendarEvent.serverId.rawValue,
-                        DatabaseTables.HACalendarEvent.calendarEntityId.rawValue,
-                    ])
                 }
             }
         } else {
             try migrateColumns(database: database)
+        }
+
+        // Every read is "this calendar, this window", so the pair it filters on is indexed. GRDB has
+        // no index declaration inside `create(table:)`, and running this outside the creation branch
+        // with `ifNotExists` also covers databases that were created before the index existed.
+        try database.write { db in
+            try db.create(
+                indexOn: tableName,
+                columns: [
+                    DatabaseTables.HACalendarEvent.serverId.rawValue,
+                    DatabaseTables.HACalendarEvent.calendarEntityId.rawValue,
+                ],
+                options: [.ifNotExists]
+            )
         }
     }
 }
