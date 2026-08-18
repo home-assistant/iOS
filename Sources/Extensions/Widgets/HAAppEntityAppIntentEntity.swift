@@ -19,10 +19,31 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     var floorName: String?
     var displayString: String
     var iconName: String
+    /// Whether the server name leads the context line. Only the Spotlight index sets this, and only
+    /// when more than one server is configured: its results stand alone, while every picker already
+    /// groups entities under a per-server section.
+    var includesServerContext: Bool
+
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
+    }
+
+    /// The `Server • Floor • Area • Device` line shown under the entity name.
+    var subtitle: String? {
+        guard includesServerContext else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            floorName: floorName,
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
         )
     }
 
@@ -35,7 +56,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         deviceName: String? = nil,
         floorName: String? = nil,
         displayString: String,
-        iconName: String
+        iconName: String,
+        includesServerContext: Bool = false
     ) {
         self.id = id
         self.entityId = entityId
@@ -46,6 +68,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         self.floorName = floorName
         self.displayString = displayString
         self.iconName = iconName
+        self.includesServerContext = includesServerContext
     }
 }
 

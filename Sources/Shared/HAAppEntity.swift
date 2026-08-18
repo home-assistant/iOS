@@ -107,6 +107,18 @@ public extension HAAppEntity {
         return Set(compatible.map(\.entityId))
     }
 
+    /// The entity a `ServerEntity.uniqueId` names, without needing to know which server it belongs to.
+    static func entity(uniqueId: String) -> HAAppEntity? {
+        do {
+            return try Current.database().read { db in
+                try HAAppEntity.fetchOne(db, id: uniqueId)
+            }
+        } catch {
+            Current.Log.error("Error fetching entity \(uniqueId): \(error)")
+        }
+        return nil
+    }
+
     static func entity(id: String, serverId: String) -> HAAppEntity? {
         do {
             return try Current.database().read { db in

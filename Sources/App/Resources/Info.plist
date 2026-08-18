@@ -133,6 +133,7 @@
 	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
+		<string>com.apple.corespotlightitem</string>
 		<string>INSendMessageIntent</string>
 		<string>ReloadWidgetsAppIntent</string>
 		<string>ScriptAppIntent</string>
