@@ -114,8 +114,12 @@ final class SpotlightEntityIndexer: ServerObserver {
     }
 
     /// The entities worth searching for, in a stable order, paired with a signature of everything the
-    /// index displays. `nil` when the database can't be read, so a failed read never empties the index
-    /// — an empty snapshot legitimately means "no servers" and does clear it.
+    /// index carries. The server name is part of that signature even when it stays out of the displayed
+    /// subtitle, because it is always indexed as a search term, so renaming a single server still
+    /// rewrites the index.
+    ///
+    /// `nil` when the database can't be read, so a failed read never empties the index — an empty
+    /// snapshot legitimately means "no servers" and does clear it.
     ///
     /// Hidden entities are excluded (as everywhere else in the app) and so are config/diagnostic ones,
     /// which would otherwise bury the entities people search for under firmware versions and signal
@@ -133,7 +137,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         var entities: [HAAppEntityAppIntentEntity] = []
-        var signatureLines: [String] = []
+        var signatureLines = ["serverContext=\(includesServerContext)"]
 
         for server in servers {
             let serverId = server.identifier.rawValue
@@ -164,7 +168,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                     indexed.areaName ?? "",
                     indexed.deviceName ?? "",
                     indexed.floorName ?? "",
-                    includesServerContext ? indexed.serverName : "",
+                    indexed.serverName,
                     indexed.iconName,
                 ].joined(separator: "|"))
             }
