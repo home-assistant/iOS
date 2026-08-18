@@ -112,8 +112,8 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetCalendarTests
+            -only-testing:Tests-App/WidgetCalendarSnapshotTests \
+            -only-testing:Tests-App/WidgetCalendarTests
 
       # Second pass: with the references on disk the same tests must now pass, which is
       # what proves the recorded images are stable rather than merely written.
@@ -123,8 +123,8 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetCalendarTests
+            -only-testing:Tests-App/WidgetCalendarSnapshotTests \
+            -only-testing:Tests-App/WidgetCalendarTests
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload recorded snapshots"
