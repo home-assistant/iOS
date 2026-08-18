@@ -36,8 +36,9 @@ end
 def report_upload_limit_reached(type:)
   store = type == 'osx' ? 'Mac App Store' : 'App Store'
   message = "#{store} upload failed: Apple daily upload limit reached (error 90382). " \
-            'The app built, notarized and stapled fine; this is an App Store Connect ' \
-            'per-app daily quota, not a build failure. Wait ~24h for the reset, then re-run.'
+            'The app built and signed fine; this is an App Store Connect per-app daily ' \
+            'quota, not a build failure. The binary is kept as a workflow artifact, so ' \
+            'upload that once the quota resets instead of re-running the build.'
 
   UI.error(message)
   puts "::error title=#{store} upload limit reached (90382)::#{message}"
@@ -50,9 +51,10 @@ def upload_limit_summary(store, type)
     '',
     "Apple returned **error 90382 (\"Upload limit reached\")** for the `#{type}` package.",
     '',
-    '- The app **built, notarized and stapled successfully**, so this is not a build or code failure.',
+    '- The app **built and signed successfully**, so this is not a build or code failure.',
     '- App Store Connect enforces a **per-app daily upload quota**, which has now been exhausted.',
-    "- **Action:** wait ~24h for Apple's window to reset, then re-run. Re-running sooner hits the same limit."
+    '- The signed binary is kept as a **workflow artifact**, so it does not need to be rebuilt.',
+    '- **Action:** wait ~24h for the quota to reset, then upload that artifact with Transporter.'
   ].join("\n")
 end
 
