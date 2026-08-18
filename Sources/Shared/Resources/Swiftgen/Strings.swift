@@ -1979,8 +1979,6 @@ public enum L10n {
       }
     }
     public enum Names {
-      /// Reporting now
-      public static var active: String { return L10n.tr("Localizable", "focus.names.active") }
       /// Add Focus name
       public static var add: String { return L10n.tr("Localizable", "focus.names.add") }
       /// Give this Focus a name to report to Home Assistant, such as the name of the Focus itself.
@@ -1991,6 +1989,8 @@ public enum L10n {
       public static var footer: String { return L10n.tr("Localizable", "focus.names.footer") }
       /// Focus names
       public static var header: String { return L10n.tr("Localizable", "focus.names.header") }
+      /// Last reported
+      public static var lastReported: String { return L10n.tr("Localizable", "focus.names.last_reported") }
       /// Name
       public static var placeholder: String { return L10n.tr("Localizable", "focus.names.placeholder") }
     }

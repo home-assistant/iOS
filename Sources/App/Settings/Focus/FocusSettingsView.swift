@@ -32,7 +32,7 @@ struct FocusSettingsView: View {
                         Text(focusName.name)
                         if focusName.name == viewModel.activeFocusName {
                             Spacer()
-                            Text(L10n.Focus.Names.active)
+                            Text(L10n.Focus.Names.lastReported)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
