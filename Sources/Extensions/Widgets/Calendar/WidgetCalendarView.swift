@@ -141,23 +141,10 @@ struct WidgetCalendarView: View {
     }
 }
 
-#Preview("Small") {
-    WidgetCalendarView(
-        referenceDate: WidgetCalendarPreviewSample.referenceDate,
-        events: Array(WidgetCalendarPreviewSample.events(
-            referenceDate: WidgetCalendarPreviewSample.referenceDate,
-            calendar: .current
-        ).prefix(2)),
-        calendarCount: 3,
-        showsCalendarName: false,
-        calendar: .current
-    )
-    .padding(DesignSystem.Spaces.two)
-    .frame(width: 158, height: 158)
-    .environment(\.widgetFamily, .systemSmall)
-}
-
-#Preview("Medium") {
+// The family-specific previews live on `WidgetCalendar`, through WidgetKit's own preview macro:
+// `\.widgetFamily` is read-only inside the widget extension, so a plain preview here cannot choose
+// a family. These two cover the states that do not depend on one.
+#Preview("Events") {
     WidgetCalendarView(
         referenceDate: WidgetCalendarPreviewSample.referenceDate,
         events: Array(WidgetCalendarPreviewSample.events(
@@ -170,23 +157,6 @@ struct WidgetCalendarView: View {
     )
     .padding(DesignSystem.Spaces.two)
     .frame(width: 338, height: 158)
-    .environment(\.widgetFamily, .systemMedium)
-}
-
-#Preview("Large") {
-    WidgetCalendarView(
-        referenceDate: WidgetCalendarPreviewSample.referenceDate,
-        events: Array(WidgetCalendarPreviewSample.events(
-            referenceDate: WidgetCalendarPreviewSample.referenceDate,
-            calendar: .current
-        ).prefix(5)),
-        calendarCount: 3,
-        showsCalendarName: true,
-        calendar: .current
-    )
-    .padding(DesignSystem.Spaces.two)
-    .frame(width: 338, height: 354)
-    .environment(\.widgetFamily, .systemLarge)
 }
 
 #Preview("Not configured") {
@@ -199,5 +169,4 @@ struct WidgetCalendarView: View {
     )
     .padding(DesignSystem.Spaces.two)
     .frame(width: 338, height: 158)
-    .environment(\.widgetFamily, .systemMedium)
 }

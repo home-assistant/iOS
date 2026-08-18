@@ -82,7 +82,11 @@ jobs:
             -skipPackagePluginValidation \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            COMPILER_INDEX_STORE_ENABLE=NO 2>&1 | tee /tmp/build-extension.log
+
+      - name: Report widget extension build errors
+        if: ${{ failure() }}
+        run: grep -n "error:" /tmp/build-extension.log | sort -u | head -50 || true
 
       - name: Build for testing
         run: |
@@ -93,7 +97,11 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             -skipPackagePluginValidation \
             -skipMacroValidation \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            COMPILER_INDEX_STORE_ENABLE=NO 2>&1 | tee /tmp/build-tests.log
+
+      - name: Report test build errors
+        if: ${{ failure() }}
+        run: grep -n "error:" /tmp/build-tests.log | sort -u | head -50 || true
 
       # swift-snapshot-testing writes any reference image it cannot find and fails that
       # run, so the first pass is expected to fail; the images it wrote are the point.
