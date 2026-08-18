@@ -6110,6 +6110,8 @@ public enum L10n {
     public enum Detail {
       /// Attributes
       public static var attributes: String { return L10n.tr("Localizable", "settings_sensors.detail.attributes") }
+      /// Configure Focus names
+      public static var configureFocusNames: String { return L10n.tr("Localizable", "settings_sensors.detail.configure_focus_names") }
       /// Device Class
       public static var deviceClass: String { return L10n.tr("Localizable", "settings_sensors.detail.device_class") }
       /// Enabled

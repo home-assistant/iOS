@@ -1860,6 +1860,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Attributes";
+"settings_sensors.detail.configure_focus_names" = "Configure Focus names";
 "settings_sensors.detail.device_class" = "Device Class";
 "settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Icon";
