@@ -13,17 +13,24 @@ class ZoneManager {
     private(set) var zones: [AppZone]
 
     private var observationToken: AnyDatabaseCancellable?
+    private let syncExecutor: (@escaping () -> Void) -> Void
+
+    private static let regionSyncQueue = DispatchQueue(label: "zone-manager-region-sync", qos: .utility)
 
     init(
         locationManager: CLLocationManager = .init(),
         collector: ZoneManagerCollector = ZoneManagerCollectorImpl(),
         processor: ZoneManagerProcessor = ZoneManagerProcessorImpl(),
-        regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl()
+        regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl(),
+        syncExecutor: @escaping (@escaping () -> Void) -> Void = { work in
+            ZoneManager.regionSyncQueue.async(execute: work)
+        }
     ) {
         self.locationManager = locationManager
         self.collector = collector
         self.processor = processor
         self.regionFilter = regionFilter
+        self.syncExecutor = syncExecutor
         self.zones = AppZone.trackedZones()
 
         self.collector.delegate = self
@@ -177,6 +184,15 @@ class ZoneManager {
     }
 
     private func sync(zones: AnyCollection<AppZone>) {
+        syncExecutor { [weak self] in
+            self?.syncNow(zones: zones)
+        }
+    }
+
+    /// Runs on the sync executor: `monitoredRegions` and `location` perform synchronous XPC to
+    /// locationd, which hangs the main thread when the daemon is slow to reply (this was the app's
+    /// top field hang), so they must be read off the main thread.
+    private func syncNow(zones: AnyCollection<AppZone>) {
         let currentRegions = locationManager.monitoredRegions
         let desiredRegions = regionFilter.regions(
             from: zones,
@@ -196,30 +212,35 @@ class ZoneManager {
         let needsRemoval = actual.subtracting(expected)
         let needsAddition = expected.subtracting(actual)
 
-        // process removals before additions
-        // this is important because the system is focused on identifier
-        for region in needsRemoval.map(\.region) {
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Ending monitoring \(region.identifier)",
-                type: .locationUpdate,
-                payload: [
-                    "region": String(describing: region),
-                ]
-            ))
-            locationManager.stopMonitoring(for: region)
-        }
+        // Applied on the main thread because the collector (and its ignore-next-state bookkeeping)
+        // is only ever touched from there; synchronously, so the next queued sync's reads observe
+        // these mutations and can't re-add the same regions.
+        Self.runOnMain { [self] in
+            // process removals before additions
+            // this is important because the system is focused on identifier
+            for region in needsRemoval.map(\.region) {
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Ending monitoring \(region.identifier)",
+                    type: .locationUpdate,
+                    payload: [
+                        "region": String(describing: region),
+                    ]
+                ))
+                locationManager.stopMonitoring(for: region)
+            }
 
-        for region in needsAddition.map(\.region) {
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Initially monitoring \(region.identifier)",
-                type: .locationUpdate,
-                payload: [
-                    "region": String(describing: region),
-                ]
-            ))
+            for region in needsAddition.map(\.region) {
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Initially monitoring \(region.identifier)",
+                    type: .locationUpdate,
+                    payload: [
+                        "region": String(describing: region),
+                    ]
+                ))
 
-            collector.ignoreNextState(for: region)
-            locationManager.startMonitoring(for: region)
+                collector.ignoreNextState(for: region)
+                locationManager.startMonitoring(for: region)
+            }
         }
 
         let counts = (
@@ -237,6 +258,14 @@ class ZoneManager {
                 "ended \(needsRemoval.count)",
             ]
             return info.joined(separator: ", ")
+        }
+    }
+
+    private static func runOnMain(_ work: () -> Void) {
+        if Thread.isMainThread {
+            work()
+        } else {
+            DispatchQueue.main.sync(execute: work)
         }
     }
 }
