@@ -102,7 +102,7 @@ public extension HomeAssistantAPI {
         let day = isExclusiveEnd
             ? Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
             : date
-        return dayFormatter.string(from: day)
+        return HACalendarEvent.dayFormatter.string(from: day)
     }
 
     private func send<T: HADataDecodable>(_ request: HATypedRequest<T>) async throws -> T {
@@ -119,13 +119,4 @@ public extension HomeAssistantAPI {
     }
 
     private static let iso8601Formatter = ISO8601DateFormatter()
-
-    private static let dayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = .current
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
 }

@@ -5,12 +5,14 @@ import Foundation
 /// (`src/data/calendar.ts`). Ignored for events that do not recur.
 @available(iOS 17.0, *)
 enum CalendarEventDeleteScopeAppEnum: String, Codable, Sendable, AppEnum {
-    /// `RecurrenceRange.THISEVENT` — the empty string on the wire.
+    /// `RecurrenceRange.THISEVENT`, which the frontend represents as an empty string. Nothing is
+    /// sent for it: `deleteCalendarEvent` omits empty values, and omitting `recurrence_range`
+    /// already means the single occurrence.
     case thisEvent
     /// `RecurrenceRange.THISANDFUTURE`.
     case thisAndFuture
 
-    /// The value Home Assistant expects in `recurrence_range`.
+    /// The value Home Assistant expects in `recurrence_range`, empty where the key is left out.
     var recurrenceRange: String {
         switch self {
         case .thisEvent: ""
