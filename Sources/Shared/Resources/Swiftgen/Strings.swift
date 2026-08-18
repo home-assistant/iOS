@@ -397,6 +397,24 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.fire_event.event_name.title") }
       }
     }
+    public enum FocusFilter {
+      /// Reports the Focus name you pick to Home Assistant while this Focus is on.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.focus_filter.description") }
+      /// Report Focus name
+      public static var title: String { return L10n.tr("Localizable", "app_intents.focus_filter.title") }
+      public enum Display {
+        /// No Focus name picked
+        public static var `none`: String { return L10n.tr("Localizable", "app_intents.focus_filter.display.none") }
+      }
+      public enum Entity {
+        /// Focus name
+        public static var name: String { return L10n.tr("Localizable", "app_intents.focus_filter.entity.name") }
+      }
+      public enum FocusName {
+        /// Focus name
+        public static var title: String { return L10n.tr("Localizable", "app_intents.focus_filter.focus_name.title") }
+      }
+    }
     public enum GetCameraSnapshot {
       /// Get a single still frame from a camera
       public static var description: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.description") }
