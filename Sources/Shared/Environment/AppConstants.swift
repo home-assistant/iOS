@@ -211,6 +211,20 @@ public enum AppConstants {
         ])
     }
 
+    /// Opens the frontend's calendar panel, which is where a tap on the calendar widget lands.
+    ///
+    /// The panel has no per-calendar route, so only the server is carried: the widget can merge
+    /// calendars from several servers, and each row opens the panel on the server its event came
+    /// from.
+    public static func calendarOpenURL(serverId: String) -> URL? {
+        guard !serverId.isEmpty else {
+            return nil
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/calendar")?.appending(queryItems: [
+            URLQueryItem(name: "serverId", value: serverId),
+        ])
+    }
+
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"

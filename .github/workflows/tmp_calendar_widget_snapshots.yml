@@ -1,0 +1,136 @@
+name: "Temp: Calendar widget snapshots"
+
+# Temporary helper for the calendar widget branch: lints the change and records the
+# calendar widget's reference snapshots on a macOS runner, then commits them back to
+# the branch. Delete this file once the snapshots are in.
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
+
+concurrency:
+  group: tmp-calendar-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+      - name: YamlLint
+        run: yamllint --strict --format github .
+      - name: SwiftLint
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/realm/swiftlint:0.54.0 \
+            swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
+      - name: SwiftFormat
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/nicklockwood/swiftformat:0.53.1 \
+            --lint --config .swiftformat .
+
+  record:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Install Gems
+        run: bundle install --jobs 4 --retry 3
+
+      # Compiles the widget extension itself, which the unit test scheme does not build.
+      - name: Build widget extension
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project HomeAssistant.xcodeproj \
+            -scheme Extensions-Widgets \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Build for testing
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      # swift-snapshot-testing writes any reference image it cannot find and fails that
+      # run, so the first pass is expected to fail; the images it wrote are the point.
+      - name: Record calendar widget snapshots
+        continue-on-error: true
+        run: |
+          xcodebuild test-without-building \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetCalendarTests
+
+      # Second pass: with the references on disk the same tests must now pass, which is
+      # what proves the recorded images are stable rather than merely written.
+      - name: Verify recorded snapshots
+        run: |
+          xcodebuild test-without-building \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetCalendarTests
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload recorded snapshots"
+        if: ${{ always() }}
+        with:
+          name: calendar-widget-snapshots
+          path: Tests/Widgets/__Snapshots__/WidgetCalendarSnapshot.test
+
+      - name: Commit recorded snapshots
+        if: ${{ always() }}
+        run: |
+          if [ -z "$(git status --porcelain Tests/Widgets/__Snapshots__)" ]; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Tests/Widgets/__Snapshots__
+          git commit -m "Record calendar widget snapshots"
+          git push origin HEAD:${{ github.ref_name }}
