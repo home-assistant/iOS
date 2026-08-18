@@ -1,5 +1,4 @@
 import AppIntents
-import CoreSpotlight
 import Foundation
 import Shared
 
@@ -47,17 +46,5 @@ struct HACalendarAppEntity: AppEntity {
             serverId: calendar.serverId,
             serverName: Current.servers.server(forServerIdentifier: calendar.serverId)?.info.name
         )
-    }
-}
-
-/// Semantic indexing is what lets Siri resolve "my family calendar" to this entity without an exact
-/// string match. It arrived in iOS 18, so the conformance is gated while the app still supports 17.
-@available(iOS 18, *)
-extension HACalendarAppEntity: IndexedEntity {
-    var attributeSet: CSSearchableItemAttributeSet {
-        let attributeSet = defaultAttributeSet
-        attributeSet.contentDescription = entityId
-        attributeSet.keywords = [name, entityId, serverName].compactMap { $0 }
-        return attributeSet
     }
 }

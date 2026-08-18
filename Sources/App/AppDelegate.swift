@@ -138,7 +138,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
         }
-        HACalendarSpotlightIndexer.shared.start()
 
         return true
     }
