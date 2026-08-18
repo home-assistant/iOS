@@ -17,8 +17,8 @@ struct WidgetCalendarAppIntentTimelineProvider: AppIntentTimelineProvider {
     /// How far ahead events are fetched. Two weeks is enough to fill the largest family even for a
     /// sparse calendar, without asking a server for a whole year on every refresh.
     private static let lookahead: TimeInterval = 14 * 24 * 60 * 60
-    /// Cap on entries per timeline. Each one costs memory in WidgetKit's archive, and a day with
-    /// more transitions than this simply reloads sooner.
+    /// Cap on entries per timeline. Each one costs memory in WidgetKit's archive; a day with more
+    /// transitions than this reloads as soon as the entries run out.
     private static let maximumEntries = 12
     /// How long before the widget asks for fresh events. Entries already cover events starting and
     /// ending, so this only governs picking up changes made on the server.
@@ -69,7 +69,14 @@ struct WidgetCalendarAppIntentTimelineProvider: AppIntentTimelineProvider {
             )
         }
 
-        return Timeline(entries: entries, policy: .after(now.addingTimeInterval(Self.refreshInterval)))
+        // Never later than the last entry: a day busy enough for `transitions` to be truncated runs
+        // out of entries before the interval elapses, and WidgetKit would keep showing the last one
+        // — listing events that have since ended — until the reload came due.
+        let reloadAt = min(
+            now.addingTimeInterval(Self.refreshInterval),
+            entries.last?.date ?? now.addingTimeInterval(Self.refreshInterval)
+        )
+        return Timeline(entries: entries, policy: .after(reloadAt))
     }
 
     /// The moments the widget's content visibly changes: now, every point an event drops off the

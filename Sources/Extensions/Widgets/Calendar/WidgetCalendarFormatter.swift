@@ -14,10 +14,13 @@ enum WidgetCalendarFormatter {
     }
 
     /// "TUE" — the abbreviated weekday the date badge shows above the day number.
+    ///
+    /// Uppercased with the calendar's own locale rather than `localizedUppercase`, which would
+    /// apply the device's casing rules to a string formatted in a different language.
     static func weekdayAbbreviation(_ date: Date, calendar: Calendar) -> String {
         date
             .formatted(style(.dateTime.weekday(.abbreviated), calendar: calendar))
-            .localizedUppercase
+            .uppercased(with: calendar.locale ?? .autoupdatingCurrent)
     }
 
     /// "18" — the day of the month, on its own.
