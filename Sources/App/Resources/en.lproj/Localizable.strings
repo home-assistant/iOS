@@ -80,8 +80,6 @@
 "app_intents.calendar.create_event.event_description.title" = "Description";
 "app_intents.calendar.create_event.location.title" = "Location";
 "app_intents.calendar.create_event.response_success" = "Added %@ to %@";
-"app_intents.calendar.create_event.rrule.description" = "An iCalendar RRULE, for example FREQ=WEEKLY;BYDAY=MO";
-"app_intents.calendar.create_event.rrule.title" = "Recurrence rule";
 "app_intents.calendar.create_event.start.title" = "Starts";
 "app_intents.calendar.create_event.summary.title" = "Title";
 "app_intents.calendar.create_event.title" = "Add calendar event";
@@ -94,6 +92,7 @@
 "app_intents.calendar.error.create_unsupported" = "%@ does not allow adding events";
 "app_intents.calendar.error.delete_unsupported" = "%@ does not allow deleting events";
 "app_intents.calendar.error.event_not_deletable" = "%@ cannot be deleted because Home Assistant did not give it an identifier";
+"app_intents.calendar.error.event_not_in_calendar" = "%1$@ is not an event on %2$@";
 "app_intents.calendar.error.invalid_duration" = "The end must not be before the start";
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
 "app_intents.calendar.event.entity.name" = "Calendar event";

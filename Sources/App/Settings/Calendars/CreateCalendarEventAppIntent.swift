@@ -2,9 +2,10 @@ import AppIntents
 import Foundation
 import Shared
 
-/// Adds an event to a Home Assistant calendar, offering the same fields as the frontend's event
-/// editor (`dialog-calendar-event-editor.ts`): summary, description, location, all-day, start/end
-/// and a recurrence rule.
+/// Adds an event to a Home Assistant calendar, offering the fields from the frontend's event editor
+/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day and start/end. The
+/// editor's recurrence rule is left out — it needs a rule builder to be usable, and a raw RRULE
+/// string is not something to ask for in a Shortcut.
 @available(iOS 17.0, *)
 struct CreateCalendarEventAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
@@ -26,7 +27,6 @@ struct CreateCalendarEventAppIntent: AppIntent {
             \.$endDate
             \.$eventDescription
             \.$location
-            \.$recurrenceRule
         }
     }
 
@@ -45,10 +45,16 @@ struct CreateCalendarEventAppIntent: AppIntent {
     )
     var isAllDay: Bool
 
-    @Parameter(title: .init("app_intents.calendar.create_event.start.title", defaultValue: "Starts"))
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.start.title", defaultValue: "Starts"),
+        kind: .dateTime
+    )
     var startDate: Date
 
-    @Parameter(title: .init("app_intents.calendar.create_event.end.title", defaultValue: "Ends"))
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.end.title", defaultValue: "Ends"),
+        kind: .dateTime
+    )
     var endDate: Date
 
     @Parameter(
@@ -62,16 +68,6 @@ struct CreateCalendarEventAppIntent: AppIntent {
         inputOptions: .init(capitalizationType: .sentences)
     )
     var location: String?
-
-    @Parameter(
-        title: .init("app_intents.calendar.create_event.rrule.title", defaultValue: "Recurrence rule"),
-        description: .init(
-            "app_intents.calendar.create_event.rrule.description",
-            defaultValue: "An iCalendar RRULE, for example FREQ=WEEKLY;BYDAY=MO"
-        ),
-        inputOptions: .init(capitalizationType: .none, autocorrect: false, smartQuotes: false, smartDashes: false)
-    )
-    var recurrenceRule: String?
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
@@ -97,7 +93,6 @@ struct CreateCalendarEventAppIntent: AppIntent {
             summary: summary,
             description: eventDescription,
             location: location,
-            rrule: recurrenceRule,
             start: startDate,
             end: endDate,
             isAllDay: isAllDay

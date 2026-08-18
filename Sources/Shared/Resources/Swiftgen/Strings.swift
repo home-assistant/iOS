@@ -349,12 +349,6 @@ public enum L10n {
           /// Location
           public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.location.title") }
         }
-        public enum Rrule {
-          /// An iCalendar RRULE, for example FREQ=WEEKLY;BYDAY=MO
-          public static var description: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.rrule.description") }
-          /// Recurrence rule
-          public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.rrule.title") }
-        }
         public enum Start {
           /// Starts
           public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.start.title") }
@@ -398,6 +392,10 @@ public enum L10n {
         /// %@ cannot be deleted because Home Assistant did not give it an identifier
         public static func eventNotDeletable(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.event_not_deletable", String(describing: p1))
+        }
+        /// %1$@ is not an event on %2$@
+        public static func eventNotInCalendar(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.event_not_in_calendar", String(describing: p1), String(describing: p2))
         }
         /// The end must not be before the start
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }

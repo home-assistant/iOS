@@ -44,7 +44,6 @@ public extension HomeAssistantAPI {
         summary: String,
         description: String?,
         location: String?,
-        rrule: String?,
         start: Date,
         end: Date,
         isAllDay: Bool
@@ -56,7 +55,6 @@ public extension HomeAssistantAPI {
         ]
         if let description, !description.isEmpty { event["description"] = description }
         if let location, !location.isEmpty { event["location"] = location }
-        if let rrule, !rrule.isEmpty { event["rrule"] = rrule }
 
         _ = try await send(HATypedRequest<HAResponseVoid>(request: .init(
             type: "calendar/event/create",

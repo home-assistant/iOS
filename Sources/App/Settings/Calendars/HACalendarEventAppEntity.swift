@@ -9,6 +9,8 @@ import Shared
 /// one never needs a round-trip: Home Assistant has no "fetch event by uid" endpoint, only a
 /// windowed query, and a Shortcut that runs days after it was built would otherwise fail to resolve
 /// an event that has scrolled out of the window it was picked from.
+// iOS 17 because its query scopes options through `@IntentParameterDependency`.
+@available(iOS 17.0, *)
 struct HACalendarEventAppEntity: AppEntity, Sendable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
         "app_intents.calendar.event.entity.name",

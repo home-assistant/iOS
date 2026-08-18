@@ -29,10 +29,16 @@ struct GetCalendarEventsAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.calendar.entity.name", defaultValue: "Calendar"))
     var calendar: HACalendarAppEntity
 
-    @Parameter(title: .init("app_intents.calendar.get_events.start.title", defaultValue: "From"))
+    @Parameter(
+        title: .init("app_intents.calendar.get_events.start.title", defaultValue: "From"),
+        kind: .dateTime
+    )
     var startDate: Date
 
-    @Parameter(title: .init("app_intents.calendar.get_events.end.title", defaultValue: "To"))
+    @Parameter(
+        title: .init("app_intents.calendar.get_events.end.title", defaultValue: "To"),
+        kind: .dateTime
+    )
     var endDate: Date
 
     func perform() async throws -> some IntentResult & ReturnsValue<[HACalendarEventAppEntity]> {
