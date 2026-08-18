@@ -21,7 +21,7 @@ struct WidgetEnergyAccessoryInlineView: View {
     }
 
     private var emptyText: String {
-        WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed)
+        WidgetEnergyStyle.emptyStateText(for: entry)
     }
 
     /// Joins the metrics onto one line. The unit is hoisted to the end when every series shares it,
@@ -50,4 +50,5 @@ struct WidgetEnergyAccessoryInlineView: View {
         solarGenerated: 12.4
     )
     WidgetEnergyEntry(period: .today, isConfigured: false)
+    WidgetEnergyEntry(period: .today, isConfigured: false, noConnection: true)
 }

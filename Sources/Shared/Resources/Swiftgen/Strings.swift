@@ -8563,6 +8563,8 @@ public enum L10n {
       public static var electricityTotal: String { return L10n.tr("Localizable", "widgets.energy.electricity_total") }
       /// Grid
       public static var grid: String { return L10n.tr("Localizable", "widgets.energy.grid") }
+      /// No connection available, review your Home Assistant URL configuration
+      public static var noConnection: String { return L10n.tr("Localizable", "widgets.energy.no_connection") }
       /// No energy data
       public static var noData: String { return L10n.tr("Localizable", "widgets.energy.no_data") }
       /// No energy dashboard configured

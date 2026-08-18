@@ -53,10 +53,15 @@ enum WidgetEnergyStyle {
     }
 
     /// Empty-state copy shared by every layout, so the accessories draw the same distinction the
-    /// home screen card does: an entry that was never set up says so, while one that is configured
-    /// but came back without usable data — or failed to load — reports missing data instead.
-    static func emptyStateText(isConfigured: Bool, loadFailed: Bool) -> String {
-        isConfigured || loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured
+    /// home screen card does: a server the app has no URL to reach points at the URL configuration,
+    /// an entry that was never set up says so, and one that is configured but came back without
+    /// usable data — or failed to load — reports missing data instead.
+    @available(iOS 17, *)
+    static func emptyStateText(for entry: WidgetEnergyEntry) -> String {
+        if entry.noConnection {
+            return L10n.Widgets.Energy.noConnection
+        }
+        return entry.isConfigured || entry.loadFailed ? L10n.Widgets.Energy.noData : L10n.Widgets.Energy.notConfigured
     }
 
     /// Lock screen accessories render vibrant or accented, where the system flattens saturated
