@@ -8416,6 +8416,30 @@ public enum L10n {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
+    public enum Calendar {
+      /// All-day
+      public static var allDay: String { return L10n.tr("Localizable", "widgets.calendar.all_day") }
+      /// See what is coming up on your calendars.
+      public static var description: String { return L10n.tr("Localizable", "widgets.calendar.description") }
+      /// No upcoming events
+      public static var noEvents: String { return L10n.tr("Localizable", "widgets.calendar.no_events") }
+      /// Refresh Calendar
+      public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.calendar.refresh_title") }
+      /// Edit widget to select calendars.
+      public static var selectCalendars: String { return L10n.tr("Localizable", "widgets.calendar.select_calendars") }
+      /// Calendar
+      public static var title: String { return L10n.tr("Localizable", "widgets.calendar.title") }
+      /// Today
+      public static var today: String { return L10n.tr("Localizable", "widgets.calendar.today") }
+      /// Tomorrow
+      public static var tomorrow: String { return L10n.tr("Localizable", "widgets.calendar.tomorrow") }
+      public enum Parameter {
+        /// Calendars
+        public static var calendars: String { return L10n.tr("Localizable", "widgets.calendar.parameter.calendars") }
+        /// Show calendar name
+        public static var showCalendarName: String { return L10n.tr("Localizable", "widgets.calendar.parameter.show_calendar_name") }
+      }
+    }
     public enum CommonlyUsedEntities {
       /// Display your commonly used entities based on your usage patterns.
       public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }

@@ -211,6 +211,24 @@ public enum AppConstants {
         ])
     }
 
+    /// Opens the frontend's calendar panel, which is where a tap on the calendar widget lands.
+    ///
+    /// `entityId` names the calendar the tapped event belongs to, the same way the to-do deep link
+    /// names a list; leaving it out opens the panel on everything, which is what a tap anywhere
+    /// other than an event should do. The server is always carried, because the widget can merge
+    /// calendars from several servers.
+    public static func calendarOpenURL(serverId: String, entityId: String? = nil) -> URL? {
+        guard !serverId.isEmpty else {
+            return nil
+        }
+        var queryItems = [URLQueryItem(name: "serverId", value: serverId)]
+        if let entityId, !entityId.isEmpty {
+            queryItems.insert(URLQueryItem(name: "entity_id", value: entityId), at: 0)
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/calendar")?
+            .appending(queryItems: queryItems)
+    }
+
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"

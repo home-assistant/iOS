@@ -18,6 +18,23 @@ enum WidgetFamilySizes {
         }
     }
 
+    /// How many events the calendar widget lists.
+    ///
+    /// Lower than the to-do counts because a calendar row is two lines and the larger families also
+    /// spend height on a heading per day — these are the counts that fit without the last row being
+    /// clipped.
+    static func calendarSize(for family: WidgetFamily) -> Int {
+        switch family {
+        case .systemSmall: return 2
+        case .systemMedium: return 3
+        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: return 5
+        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+            return 1
+        @unknown default:
+            return 1
+        }
+    }
+
     static func todoListSize(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: return 3
