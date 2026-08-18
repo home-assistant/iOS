@@ -66,6 +66,7 @@
 "app_intents.automations.icon.title" = "Icon";
 "app_intents.automations.parameter.automation.title" = "Automation";
 "app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
+"app_intents.calendar.entity.name" = "Calendar";
 "app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
@@ -1331,6 +1332,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.update_database.finished" = "Server information updated";
 "settings.connection_section.update_database.progress.areas" = "Updating areas";
+"settings.connection_section.update_database.progress.calendars" = "Updating calendars";
 "settings.connection_section.update_database.progress.devices" = "Updating devices";
 "settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
@@ -1359,6 +1361,19 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.debugging.cached_entity_data.delete_button" = "Delete Entity Data";
 "settings.debugging.cached_entity_data.message" = "Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again.";
 "settings.debugging.cached_entity_data.title" = "Delete cached entity data";
+"settings.debugging.calendars.all_day" = "All-day";
+"settings.debugging.calendars.count_%d" = "%d calendars";
+"settings.debugging.calendars.empty.subtitle" = "Pull down to fetch the calendars from Home Assistant.";
+"settings.debugging.calendars.empty.title" = "No calendars stored";
+"settings.debugging.calendars.entity_id" = "Entity ID";
+"settings.debugging.calendars.no_events" = "No events on this day";
+"settings.debugging.calendars.refresh_failed" = "Could not fetch calendars from Home Assistant";
+"settings.debugging.calendars.server_selection.title" = "Select server";
+"settings.debugging.calendars.supported_features.create" = "Create events";
+"settings.debugging.calendars.supported_features.delete" = "Delete events";
+"settings.debugging.calendars.supported_features.title" = "Supported features";
+"settings.debugging.calendars.supported_features.update" = "Update events";
+"settings.debugging.calendars.title" = "Calendars";
 "settings.debugging.clear_allowed_tags.alert_title" = "Clear approved NFC tags?";
 "settings.debugging.clear_allowed_tags.clear_button" = "Clear Tags";
 "settings.debugging.clear_allowed_tags.message" = "Removes all NFC tags that this app has approved. You will need to approve those tags again before using them.";

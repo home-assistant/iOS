@@ -239,6 +239,10 @@ public class AppEnvironment {
         EntityComponentIconsService.shared
     }
 
+    public var calendarsModel: () -> HACalendarsModelProtocol = {
+        HACalendarsModel.shared
+    }
+
     /// APNs environment string for token reporting. "sandbox" in DEBUG builds, "production" otherwise.
     /// TestFlight uses distribution signing and routes through the production APNs endpoint.
     public var apnsEnvironment: String {

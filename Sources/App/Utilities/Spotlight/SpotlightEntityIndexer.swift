@@ -4,8 +4,9 @@ import CryptoKit
 import Foundation
 import Shared
 
-/// Publishes the entities cached in the local database to Spotlight, so searching the system for an
-/// entity's name (or its area, device or server) finds it and opens its more-info dialog.
+/// Publishes the entities and calendars cached in the local database to Spotlight, so searching the
+/// system for an entity's name (or its area, device or server) finds it and opens its more-info
+/// dialog, and searching for a calendar finds it.
 ///
 /// The index is rebuilt from the database rather than kept in sync incrementally: a full snapshot is
 /// cheap to derive, and comparing its signature against the last indexed one means a refresh that
@@ -22,18 +23,23 @@ final class SpotlightEntityIndexer: ServerObserver {
         static let coalescingDelay: Duration = .seconds(2)
         /// Bump this when the attributes written per entity change, so a build that indexes the same
         /// entities differently still rewrites the index instead of matching the stored signature.
-        static let formatVersion = 3
+        static let formatVersion = 4
     }
 
     /// What the index currently holds: the signature of the snapshot that produced it, and the ids it
     /// contains, so entities that disappear from the database can be removed from Spotlight too.
+    ///
+    /// `calendarIds` is optional so state written before calendars were indexed still decodes; a nil
+    /// list simply means there is nothing of that type to clean up.
     private struct IndexState: Codable {
         let signature: String
         let entityIds: [String]
+        let calendarIds: [String]?
     }
 
     private struct Snapshot {
         let entities: [HAAppEntityAppIntentEntity]
+        let calendars: [HACalendarAppEntity]
         let signature: String
     }
 
@@ -88,7 +94,9 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         let indexedIds = snapshot.entities.map(\.id)
+        let indexedCalendarIds = snapshot.calendars.map(\.id)
         let staleIds = Set(previousState?.entityIds ?? []).subtracting(indexedIds)
+        let staleCalendarIds = Set(previousState?.calendarIds ?? []).subtracting(indexedCalendarIds)
 
         do {
             if !staleIds.isEmpty {
@@ -97,16 +105,32 @@ final class SpotlightEntityIndexer: ServerObserver {
                     ofType: HAAppEntityAppIntentEntity.self
                 )
             }
+            if !staleCalendarIds.isEmpty {
+                try await index.deleteAppEntities(
+                    identifiedBy: Array(staleCalendarIds),
+                    ofType: HACalendarAppEntity.self
+                )
+            }
             for batch in stride(from: 0, to: snapshot.entities.count, by: Constants.batchSize) {
                 // A newer pass supersedes this one; leaving the state unsaved makes it redo the work.
                 guard !Task.isCancelled else { return }
                 let upperBound = min(batch + Constants.batchSize, snapshot.entities.count)
                 try await index.indexAppEntities(Array(snapshot.entities[batch ..< upperBound]))
             }
-            save(IndexState(signature: snapshot.signature, entityIds: indexedIds))
+            // Indexed separately because `indexAppEntities` takes one entity type at a time; the two
+            // share the index and the state so a single signature still covers both.
+            if !snapshot.calendars.isEmpty {
+                guard !Task.isCancelled else { return }
+                try await index.indexAppEntities(snapshot.calendars)
+            }
+            save(IndexState(
+                signature: snapshot.signature,
+                entityIds: indexedIds,
+                calendarIds: indexedCalendarIds
+            ))
             Current.Log
                 .info(
-                    "Spotlight entity index updated (\(reason)): \(indexedIds.count) entities, \(staleIds.count) removed"
+                    "Spotlight entity index updated (\(reason)): \(indexedIds.count) entities, \(indexedCalendarIds.count) calendars, \(staleIds.count + staleCalendarIds.count) removed"
                 )
         } catch {
             Current.Log.error("Failed to update Spotlight entity index: \(error.localizedDescription)")
@@ -174,7 +198,22 @@ final class SpotlightEntityIndexer: ServerObserver {
             }
         }
 
-        return Snapshot(entities: entities, signature: signature(for: signatureLines))
+        let calendars = HACalendar.all().map(HACalendarAppEntity.init(calendar:))
+        for calendar in calendars {
+            signatureLines.append([
+                "calendar",
+                calendar.id,
+                calendar.name,
+                calendar.entityId,
+                calendar.serverName ?? "",
+            ].joined(separator: "|"))
+        }
+
+        return Snapshot(
+            entities: entities,
+            calendars: calendars,
+            signature: signature(for: signatureLines)
+        )
     }
 
     /// The same precedence the entity pickers use: the entity's own icon, then the frontend default
