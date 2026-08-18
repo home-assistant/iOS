@@ -69,6 +69,12 @@ public struct HACalendarEvent: Decodable, Identifiable, Hashable {
         self.start = start.date
         self.end = end.date
         self.isAllDay = start.isAllDay
+        // `try?` rather than plain `decodeIfPresent` on purpose. Missing keys and explicit `null`
+        // are already covered; what this additionally tolerates is a wrong *type* from an
+        // integration that fills these fields itself. Decoding a list fails as a whole, so letting
+        // one odd `location` throw would empty the entire month instead of dropping one field —
+        // the same failure the device registry hit when a single malformed identifier killed the
+        // whole fetch (#5113). The fields that must be trustworthy — `start` and `end` — still throw.
         self.description = try? container.decodeIfPresent(String.self, forKey: .description)
         self.location = try? container.decodeIfPresent(String.self, forKey: .location)
         self.uid = try? container.decodeIfPresent(String.self, forKey: .uid)

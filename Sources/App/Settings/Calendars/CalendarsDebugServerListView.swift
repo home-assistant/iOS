@@ -2,7 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Entry point of the debug Calendars flow: picks whose server's calendars to inspect.
+/// Entry point of the debug Calendars flow: picks which server's calendars to inspect.
 struct CalendarsDebugServerListView: View {
     @State private var calendarCounts: [String: Int] = [:]
 
