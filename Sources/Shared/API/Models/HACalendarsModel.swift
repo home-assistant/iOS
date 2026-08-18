@@ -8,6 +8,8 @@ public protocol HACalendarsModelProtocol {
     /// Returns `false` when the server could not be reached or the write failed.
     @discardableResult
     func refresh(server: Server) async -> Bool
+    /// Live events for `calendar` in `[start, end)`, cached as a side effect.
+    func events(for calendar: HACalendar, start: Date, end: Date) async -> [HACalendarEvent]
 }
 
 /// Derives the `HACalendar` rows from the entity states, mirroring the frontend's `getCalendars`
@@ -81,5 +83,85 @@ final class HACalendarsModel: HACalendarsModelProtocol {
         guard let entities else { return false }
         await updateModel(entities, server: server)
         return true
+    }
+
+    /// Reads a calendar's events straight from the server and refreshes the cache with what came
+    /// back. The cache is only read when the fetch fails, so callers always get live data when the
+    /// server is reachable and the last known events when it isn't.
+    func events(for calendar: HACalendar, start: Date, end: Date) async -> [HACalendarEvent] {
+        guard let server = Current.servers.server(forServerIdentifier: calendar.serverId) else {
+            Current.Log.error("No server for calendar \(calendar.entityId), reading cached events")
+            return await cachedEvents(for: calendar, start: start, end: end)
+        }
+
+        do {
+            let events = try await HomeAssistantAPI.calendarEvents(
+                server: server,
+                entityId: calendar.entityId,
+                start: start,
+                end: end
+            )
+            await HACalendarEventRecord.replace(
+                events.map { $0.record(for: calendar) },
+                serverId: calendar.serverId,
+                calendarEntityId: calendar.entityId,
+                start: start,
+                end: end
+            )
+            return events
+        } catch {
+            Current.Log.error("Failed to fetch events for \(calendar.entityId), falling back to cache: \(error)")
+            return await cachedEvents(for: calendar, start: start, end: end)
+        }
+    }
+
+    private func cachedEvents(for calendar: HACalendar, start: Date, end: Date) async -> [HACalendarEvent] {
+        await HACalendarEventRecord.events(
+            serverId: calendar.serverId,
+            calendarEntityId: calendar.entityId,
+            start: start,
+            end: end
+        ).map(\.event)
+    }
+}
+
+extension HACalendarEvent {
+    func record(for calendar: HACalendar) -> HACalendarEventRecord {
+        .init(
+            id: HACalendarEventRecord.uniqueId(
+                serverId: calendar.serverId,
+                calendarEntityId: calendar.entityId,
+                uid: uid,
+                recurrenceId: recurrenceId,
+                start: start
+            ),
+            serverId: calendar.serverId,
+            calendarEntityId: calendar.entityId,
+            uid: uid,
+            recurrenceId: recurrenceId,
+            summary: summary,
+            start: start,
+            end: end,
+            isAllDay: isAllDay,
+            eventDescription: description,
+            location: location,
+            rrule: rrule
+        )
+    }
+}
+
+extension HACalendarEventRecord {
+    var event: HACalendarEvent {
+        .init(
+            summary: summary,
+            start: start,
+            end: end,
+            isAllDay: isAllDay,
+            description: eventDescription,
+            location: location,
+            uid: uid,
+            recurrenceId: recurrenceId,
+            rrule: rrule
+        )
     }
 }

@@ -29,7 +29,8 @@ struct HACalendarEventAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     /// Upcoming events, oldest first. Calendars are queried concurrently because each one is a
-    /// separate REST call, the same way the frontend fans out.
+    /// separate REST call, the same way the frontend fans out. Each fetch also refreshes the cache,
+    /// so the picker still offers something when the server is unreachable.
     private func upcomingEvents() async -> [HACalendarEventAppEntity] {
         let calendars = scopedCalendars()
         guard !calendars.isEmpty else { return [] }
@@ -39,20 +40,9 @@ struct HACalendarEventAppEntityQuery: EntityQuery, EntityStringQuery {
 
         return await withTaskGroup(of: [HACalendarEventAppEntity].self) { group in
             for calendar in calendars {
-                guard let server = Current.servers.server(forServerIdentifier: calendar.serverId) else { continue }
                 group.addTask {
-                    do {
-                        let events = try await HomeAssistantAPI.calendarEvents(
-                            server: server,
-                            entityId: calendar.entityId,
-                            start: start,
-                            end: end
-                        )
-                        return events.compactMap { HACalendarEventAppEntity(event: $0, calendar: calendar) }
-                    } catch {
-                        Current.Log.error("Failed to fetch events for \(calendar.entityId), error: \(error)")
-                        return []
-                    }
+                    let events = await Current.calendarsModel().events(for: calendar, start: start, end: end)
+                    return events.compactMap { HACalendarEventAppEntity(event: $0, calendar: calendar) }
                 }
             }
             var results: [HACalendarEventAppEntity] = []

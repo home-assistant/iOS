@@ -50,18 +50,10 @@ struct GetCalendarEventsAppIntent: AppIntent {
         guard startDate <= endDate else {
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
         }
-        guard let server = Current.servers.server(forServerIdentifier: stored.serverId) else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
-        }
-
         // Reading needs no capability check: `supported_features` only gates creating, updating and
-        // deleting, every calendar entity can be queried.
-        let events = try await HomeAssistantAPI.calendarEvents(
-            server: server,
-            entityId: stored.entityId,
-            start: startDate,
-            end: endDate
-        )
+        // deleting, every calendar entity can be queried. The events come from the server and
+        // refresh the cache; the cache is only read back if the server can't be reached.
+        let events = await Current.calendarsModel().events(for: stored, start: startDate, end: endDate)
 
         return .result(value: events.compactMap { HACalendarEventAppEntity(event: $0, calendar: stored) })
     }

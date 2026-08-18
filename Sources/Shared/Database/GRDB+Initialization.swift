@@ -88,6 +88,7 @@ public extension DatabaseQueue {
             RemindersSyncHistoryEntryTable(),
             FocusNameTable(),
             HACalendarTable(),
+            HACalendarEventTable(),
         ]
     }
 
