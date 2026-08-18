@@ -821,6 +821,7 @@
 				Widgets/HAAppEntityAppIntentEntity.swift,
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
+				Widgets/LiveActivity/HACompactTrailingView.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
 				Widgets/Lockscreen/Gauge/GaugeArcView.swift,
