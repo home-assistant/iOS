@@ -53,10 +53,23 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     // MARK: - Entry building
 
     private func entry(for configuration: WidgetEnergyAppIntent, in context: Context) async throws -> Entry {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first,
-              let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("Energy widget: no API for server (selected id: \(configuration.server.id))")
+        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Energy widget: no server available (selected id: \(configuration.server.id))")
             return WidgetEnergyEntry(period: configuration.period, isConfigured: false, loadFailed: true)
+        }
+
+        // Without an active URL there is nowhere to load from — an internal-only URL off the home
+        // network, or a configuration that never resolves. The network information is refreshed
+        // first so a widget waking up on a different network isn't judged on a stale evaluation.
+        guard await server.activeURL() != nil, let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("Energy widget: no active URL for server \(server.identifier.rawValue)")
+            return WidgetEnergyEntry(
+                period: configuration.period,
+                source: configuration.source,
+                serverName: server.info.name,
+                isConfigured: false,
+                noConnection: true
+            )
         }
 
         // Tapping the widget opens the server's energy dashboard.
