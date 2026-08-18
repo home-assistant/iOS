@@ -85,12 +85,15 @@ class ZoneManagerTests: XCTestCase {
         super.tearDown()
     }
 
-    private func newZoneManager() -> ZoneManager {
+    private func newZoneManager(
+        syncExecutor: @escaping (@escaping () -> Void) -> Void = { $0() }
+    ) -> ZoneManager {
         ZoneManager(
             locationManager: locationManager,
             collector: collector,
             processor: processor,
-            regionFilter: regionFilter
+            regionFilter: regionFilter,
+            syncExecutor: syncExecutor
         )
     }
 
@@ -316,6 +319,62 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(regionFilter.lastAskedZones.flatMap { Set($0) }, Set(zones))
     }
 
+    func testSyncReadsRegionsOffMainThreadAndAppliesOnMainThread() throws {
+        _ = try addedZones([
+            AppZone(
+                entityId: "home",
+                serverIdentifier: apis[0].server.identifier.rawValue,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 100,
+                trackingEnabled: true
+            ),
+        ])
+
+        let syncQueue = DispatchQueue(label: "zone-manager-test-sync")
+        let manager = newZoneManager(syncExecutor: { work in
+            syncQueue.async(execute: work)
+        })
+
+        // poll a property only the fake writes, so the wait itself doesn't
+        // record main-thread reads of monitoredRegions
+        waitForZoneSync { [locationManager] in
+            !locationManager!.startMonitoringRegions.isEmpty
+        }
+
+        XCTAssertFalse(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+        XCTAssertFalse(locationManager.monitoredRegionsReadsWereOnMainThread.contains(true))
+        XCTAssertFalse(locationManager.startMonitoringCallsWereOnMainThread.isEmpty)
+        XCTAssertFalse(locationManager.startMonitoringCallsWereOnMainThread.contains(false))
+        XCTAssertFalse(collector.ignoreNextStateCallsWereOnMainThread.contains(false))
+
+        withExtendedLifetime(manager) { /* silences unused variable */ }
+    }
+
+    func testSyncUsesInjectedExecutor() throws {
+        _ = try addedZones([
+            AppZone(
+                entityId: "home",
+                serverIdentifier: apis[0].server.identifier.rawValue,
+                latitude: 37.1234,
+                longitude: -122.4567,
+                radius: 100,
+                trackingEnabled: true
+            ),
+        ])
+
+        var executions = 0
+        let manager = newZoneManager(syncExecutor: { work in
+            executions += 1
+            work()
+        })
+
+        XCTAssertEqual(executions, 1)
+        XCTAssertFalse(locationManager.startMonitoringRegions.isEmpty)
+
+        withExtendedLifetime(manager) { /* silences unused variable */ }
+    }
+
     func testBasicStartup() {
         let manager = newZoneManager()
         XCTAssertTrue(locationManager.isMonitoringSigLocChanges)
@@ -531,8 +590,10 @@ private class FakeCollector: NSObject, ZoneManagerCollector {
     var delegate: ZoneManagerCollectorDelegate?
 
     var ignoringNextStates = Set<CLRegion>()
+    var ignoreNextStateCallsWereOnMainThread = [Bool]()
 
     func ignoreNextState(for region: CLRegion) {
+        ignoreNextStateCallsWereOnMainThread.append(Thread.isMainThread)
         ignoringNextStates.insert(region)
     }
 }
