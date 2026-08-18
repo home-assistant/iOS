@@ -31,4 +31,21 @@ struct HAActivityCompactChronometerText: View {
         }
     }
 }
+
+@available(iOS 17.2, *)
+#Preview {
+    VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+        HAActivityCompactChronometerText(end: Current.date().addingTimeInterval(12013), start: nil)
+        HAActivityCompactChronometerText(end: Current.date().addingTimeInterval(1500), start: nil)
+        HAActivityCompactChronometerText(end: Current.date().addingTimeInterval(-600), start: nil)
+        HAActivityCompactChronometerText(
+            end: Current.date().addingTimeInterval(600),
+            start: Current.date().addingTimeInterval(-8400)
+        )
+    }
+    .font(.footnote.monospacedDigit())
+    .foregroundStyle(.white)
+    .padding(DesignSystem.Spaces.two)
+    .background(.black)
+}
 #endif
