@@ -30,6 +30,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         Current.Log.verbose("didFinishLaunching")
 
+        // A background cold launch (background refresh, WCSession delivery) never fires
+        // `applicationDidEnterBackground`, so without this the suspension machinery stays disarmed
+        // and every database access runs unprotected — GRDB work still in flight when the process
+        // freezes was the remaining 0xdead10cc crash cluster. Arming it here routes those accesses
+        // through the expiring-activity protection; a later foreground transition resumes as usual.
+        if WKApplication.shared().applicationState == .background {
+            AppDatabaseSuspension.suspend()
+        }
+
         // Import any legacy Realm data into GRDB before anything reads it
         RealmToGRDBMigration.migrateIfNeeded()
 
@@ -340,10 +349,22 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
     }
 
+    /// Serial queue the pushed-mirror decompress + decode runs on: the payload is a full reference
+    /// mirror (hundreds of KB of plist), far too slow for the main queue the blob observation
+    /// arrives on — decoding there at launch was a watchdog-kill crash cluster. Serial so burst
+    /// deliveries decode in arrival order.
+    private static let pushedMirrorQueue = DispatchQueue(label: "pushed-mirror-decode", qos: .utility)
+
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        Self.pushedMirrorQueue.async { [weak self] in
+            self?.decodeAndApplyPushedDatabaseMirror(data, metadata: metadata)
+        }
+    }
+
+    private func decodeAndApplyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
         var data = data
         // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
         if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
@@ -381,6 +402,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     metadata?[WatchDatabaseMirror.digestsKey] as? [String: String],
                     carrying: mirror.carriedDigestKeys
                 )
+                // The mirror also carries the servers. Applied here, inside the protected window,
+                // for two reasons: restoring writes the Keychain mirror back through GRDB, and doing
+                // it from the main-queue completion below blocked the main thread behind the burst
+                // of mirror writes (the watch's watchdog-kill crash cluster) against a database the
+                // expired activity may already have re-suspended.
+                WatchServerSync.applyMirroredServersAndWait(mirror.servers)
                 Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
@@ -398,8 +425,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 return false
             }
         } completion: { [weak self] in
-            // The mirror also carries the servers; keep them in step with the reference tables.
-            WatchServerSync.applyMirroredServers(mirror.servers)
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
