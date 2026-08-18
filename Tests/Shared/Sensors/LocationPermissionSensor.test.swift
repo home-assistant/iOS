@@ -12,8 +12,16 @@ class LocationPermissionSensorTests: XCTestCase {
         serverVersion: Version()
     )
 
+    private var previousPermissionStatus: (() -> CLAuthorizationStatus)!
+
+    override func setUp() {
+        super.setUp()
+
+        previousPermissionStatus = Current.location.permissionStatus
+    }
+
     override func tearDown() {
-        Current.location.permissionStatus = { CLLocationManager().authorizationStatus }
+        Current.location.permissionStatus = previousPermissionStatus
 
         super.tearDown()
     }
@@ -36,15 +44,22 @@ class LocationPermissionSensorTests: XCTestCase {
     }
 
     func testStatusIsReadOffTheMainThread() throws {
+        let lock = NSLock()
         var readOnMainThread: Bool?
         Current.location.permissionStatus = {
+            lock.lock()
             readOnMainThread = Thread.isMainThread
+            lock.unlock()
             return .notDetermined
         }
 
         let sensors = try hang(LocationPermissionSensor(request: request).sensors())
 
         XCTAssertEqual(sensors[0].State as? String, "Not determined")
-        XCTAssertEqual(readOnMainThread, false)
+
+        lock.lock()
+        let wasReadOnMainThread = readOnMainThread
+        lock.unlock()
+        XCTAssertEqual(wasReadOnMainThread, false)
     }
 }
