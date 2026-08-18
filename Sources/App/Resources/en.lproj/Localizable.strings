@@ -95,6 +95,7 @@
 "app_intents.calendar.error.event_not_in_calendar" = "%1$@ is not an event on %2$@";
 "app_intents.calendar.error.invalid_duration" = "The end must not be before the start";
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
+"app_intents.calendar.error.zero_duration" = "The end must be after the start";
 "app_intents.calendar.event.entity.name" = "Calendar event";
 "app_intents.calendar.get_events.description" = "Get the events on a Home Assistant calendar between two dates";
 "app_intents.calendar.get_events.end.title" = "To";

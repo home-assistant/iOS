@@ -80,8 +80,17 @@ struct CreateCalendarEventAppIntent: AppIntent {
         guard stored.supports(.createEvent) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.createUnsupported(stored.name))
         }
-        guard startDate <= endDate else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
+        // Home Assistant requires at least a second of duration, so a timed event needs a strictly
+        // later end. All-day events may start and end on the same day: the stored end is exclusive,
+        // so that still persists as a full day. Same rule as the frontend's `_isValidStartEnd`.
+        if isAllDay {
+            guard startDate <= endDate else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
+            }
+        } else {
+            guard startDate < endDate else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.zeroDuration)
+            }
         }
         guard let server = Current.servers.server(forServerIdentifier: stored.serverId),
               let api = Current.api(for: server) else {

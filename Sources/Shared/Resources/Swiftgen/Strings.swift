@@ -401,6 +401,8 @@ public enum L10n {
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
         /// That calendar is no longer available
         public static var unknownCalendar: String { return L10n.tr("Localizable", "app_intents.calendar.error.unknown_calendar") }
+        /// The end must be after the start
+        public static var zeroDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.zero_duration") }
       }
       public enum Event {
         public enum Entity {
