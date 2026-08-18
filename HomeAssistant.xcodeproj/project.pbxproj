@@ -94,6 +94,7 @@
 		423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62BA82D8A3AC5002C0001 /* SwiftUI.framework */; };
 		423FB77D2FFFDFDF000CB8FD /* Extensions-WatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */; };
 		4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -613,6 +614,7 @@
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
 		423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-WatchWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBehindServerManagerKeychain.test.swift; sourceTree = "<group>"; };
 		4245DC022EBA42C3005E0E04 /* AreasService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
 		4254C4C92D103ABB00245021 /* ExternalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLink.swift; sourceTree = "<group>"; };
@@ -2700,6 +2702,7 @@
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
 				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
+				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4149,6 +4152,7 @@
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
 				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
+				424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */,
 				42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */,
 				42F1C0153140B00011AABB15 /* TokenManagerRevocation.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,

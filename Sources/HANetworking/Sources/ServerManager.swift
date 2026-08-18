@@ -131,7 +131,9 @@ public final class ServerManagerImpl: ServerManager {
     /// + GRDB mirror store. The designated initializer takes them explicitly (used by tests to inject fakes).
     public convenience init() {
         self.init(
-            keychain: Keychain(service: ServerManagerImpl.service),
+            // Write-behind so saving server info (e.g. during token refresh on the main thread)
+            // never blocks on securityd's synchronous XPC, which was a top field hang.
+            keychain: WriteBehindServerManagerKeychain(upstream: Keychain(service: ServerManagerImpl.service)),
             historicKeychain: Keychain(service: HANetworkingEnvironment.current.bundleID),
             mirrorStore: ServerManagerGRDBMirrorStore()
         )
