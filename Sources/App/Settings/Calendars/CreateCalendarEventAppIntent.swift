@@ -3,9 +3,10 @@ import Foundation
 import Shared
 
 /// Adds an event to a Home Assistant calendar, offering the fields from the frontend's event editor
-/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day and start/end. The
-/// editor's recurrence rule is left out — it needs a rule builder to be usable, and a raw RRULE
-/// string is not something to ask for in a Shortcut.
+/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day and start/end.
+/// Start and end are optional and default the way the editor opens a new event. The recurrence rule
+/// is left out — it needs a rule builder to be usable, and a raw RRULE string is not something to
+/// ask for in a Shortcut.
 @available(iOS 17.0, *)
 struct CreateCalendarEventAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
@@ -18,15 +19,28 @@ struct CreateCalendarEventAppIntent: AppIntent {
         defaultValue: "Add an event to a Home Assistant calendar"
     ))
 
+    // An all-day event has no times to pick, so the summary drops start and end there. They stay
+    // settable in the expanded parameter list for an all-day event on a specific day; left empty,
+    // they fall back to the defaults below.
     static var parameterSummary: some ParameterSummary {
-        Summary {
-            \.$calendar
-            \.$summary
-            \.$isAllDay
-            \.$startDate
-            \.$endDate
-            \.$eventDescription
-            \.$location
+        When(\.$isAllDay, .equalTo, true) {
+            Summary {
+                \.$calendar
+                \.$summary
+                \.$isAllDay
+                \.$eventDescription
+                \.$location
+            }
+        } otherwise: {
+            Summary {
+                \.$calendar
+                \.$summary
+                \.$isAllDay
+                \.$startDate
+                \.$endDate
+                \.$eventDescription
+                \.$location
+            }
         }
     }
 
@@ -49,13 +63,13 @@ struct CreateCalendarEventAppIntent: AppIntent {
         title: .init("app_intents.calendar.create_event.start.title", defaultValue: "Starts"),
         kind: .dateTime
     )
-    var startDate: Date
+    var startDate: Date?
 
     @Parameter(
         title: .init("app_intents.calendar.create_event.end.title", defaultValue: "Ends"),
         kind: .dateTime
     )
-    var endDate: Date
+    var endDate: Date?
 
     @Parameter(
         title: .init("app_intents.calendar.create_event.event_description.title", defaultValue: "Description"),
@@ -80,15 +94,16 @@ struct CreateCalendarEventAppIntent: AppIntent {
         guard stored.supports(.createEvent) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.createUnsupported(stored.name))
         }
+        let (start, end) = resolvedBounds()
         // Home Assistant requires at least a second of duration, so a timed event needs a strictly
         // later end. All-day events may start and end on the same day: the stored end is exclusive,
         // so that still persists as a full day. Same rule as the frontend's `_isValidStartEnd`.
         if isAllDay {
-            guard startDate <= endDate else {
+            guard start <= end else {
                 throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
             }
         } else {
-            guard startDate < endDate else {
+            guard start < end else {
                 throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.zeroDuration)
             }
         }
@@ -102,11 +117,27 @@ struct CreateCalendarEventAppIntent: AppIntent {
             summary: summary,
             description: eventDescription,
             location: location,
-            start: startDate,
-            end: endDate,
+            start: start,
+            end: end,
             isAllDay: isAllDay
         )
 
         return .result(value: L10n.AppIntents.Calendar.CreateEvent.responseSuccess(summary, stored.name))
+    }
+
+    /// Fills in the boundaries the user left empty, using the same defaults the frontend's editor
+    /// opens a new event with: the next hour for an hour, or today for an all-day event.
+    private func resolvedBounds() -> (start: Date, end: Date) {
+        let systemCalendar = Calendar.current
+        if isAllDay {
+            let start = startDate ?? systemCalendar.startOfDay(for: Current.date())
+            return (start, endDate ?? start)
+        }
+        let now = Current.date()
+        let startOfHour = systemCalendar.date(
+            from: systemCalendar.dateComponents([.year, .month, .day, .hour], from: now)
+        ) ?? now
+        let start = startDate ?? startOfHour
+        return (start, endDate ?? start.addingTimeInterval(60 * 60))
     }
 }
