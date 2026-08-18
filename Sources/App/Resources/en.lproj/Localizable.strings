@@ -543,12 +543,12 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "focus.how_it_works.title" = "How it works?";
 "focus.how_it_works.unpaired.body" = "iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.";
 "focus.how_it_works.unpaired.title" = "Focuses without a filter";
-"focus.names.active" = "Reporting now";
 "focus.names.add" = "Add Focus name";
 "focus.names.add_message" = "Give this Focus a name to report to Home Assistant, such as the name of the Focus itself.";
 "focus.names.empty" = "No Focus names yet.";
 "focus.names.footer" = "Create a name for each Focus you want reported, then pick it in Settings > Focus > Focus Filters.";
 "focus.names.header" = "Focus names";
+"focus.names.last_reported" = "Last reported";
 "focus.names.placeholder" = "Name";
 "focus.permission_missing.body" = "Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.";
 "focus.permission_missing.title" = "Focus permission is off";
