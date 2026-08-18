@@ -9,6 +9,9 @@ permissions:
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - claude/multi-calendar-widget-suo3cy
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
