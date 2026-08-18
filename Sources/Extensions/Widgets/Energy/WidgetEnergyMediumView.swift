@@ -8,29 +8,22 @@ struct WidgetEnergyMediumView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
+        // Only the series the server actually reports: a blank figure beside a real one reads as a
+        // broken series rather than as one this home simply doesn't have. Placeholders come back
+        // when nothing is reported at all, so a period that has only just begun keeps the layout's
+        // shape instead of collapsing to a bare chart. Totals rather than live power: these families
+        // summarise the whole period, and the gallery placeholder entry carries live power too.
+        let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry, figure: .totals)
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            // Every series the source preference asks for keeps its slot even before the server has
-            // reported anything for the period: the figure blanks out, the layout doesn't move.
             HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
-                if entry.source.showsSolar {
+                ForEach(metrics) { metric in
                     WidgetEnergyStatView(
-                        icon: .solarPowerIcon,
-                        value: entry.solarGenerated.map(WidgetEnergyStyle.energy) ?? WidgetEnergyStyle.emptyValue,
-                        unit: WidgetEnergyStyle.energyUnit,
-                        label: L10n.Widgets.Energy.solar,
-                        direction: WidgetEnergyStyle.direction(ofTotal: entry.solarGenerated),
-                        color: entry.solarGenerated == nil ? WidgetEnergyStyle.secondaryText : WidgetEnergyStyle.solar
-                    )
-                }
-
-                if entry.source.showsGrid {
-                    WidgetEnergyStatView(
-                        icon: .transmissionTowerIcon,
-                        value: entry.gridNet.map(WidgetEnergyStyle.energy) ?? WidgetEnergyStyle.emptyValue,
-                        unit: WidgetEnergyStyle.energyUnit,
-                        label: L10n.Widgets.Energy.electricityTotal,
-                        direction: WidgetEnergyStyle.direction(ofTotal: entry.gridNet),
-                        color: entry.gridNet == nil ? WidgetEnergyStyle.secondaryText : WidgetEnergyStyle.consumption
+                        icon: metric.icon,
+                        value: metric.value,
+                        unit: metric.unit,
+                        label: metric.kind.totalLabel,
+                        direction: metric.direction,
+                        color: metric.color
                     )
                 }
 
@@ -105,6 +98,21 @@ struct WidgetEnergyMediumView: View {
             return WidgetEnergyEntry.ChartPoint(
                 date: dayStart.addingTimeInterval(h * 3600),
                 grid: 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6),
+                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
+            )
+        }
+    )
+    // A home with solar but no grid statistics: the grid figure is dropped, not blanked.
+    WidgetEnergyEntry(
+        period: .today,
+        isConfigured: true,
+        solarGenerated: 40.3,
+        chartPoints: (0 ..< 24).map { hour in
+            let h = Double(hour)
+            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+            return WidgetEnergyEntry.ChartPoint(
+                date: dayStart.addingTimeInterval(h * 3600),
+                grid: 0,
                 solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
             )
         }
