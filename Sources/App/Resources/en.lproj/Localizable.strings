@@ -76,11 +76,6 @@
 "app_intents.error.no_server" = "No server provided";
 "app_intents.error.timed_out" = "Timed out after %li seconds";
 "app_intents.error.token_unavailable" = "Could not get an access token for this server";
-"app_intents.focus_filter.description" = "Reports the Focus name you pick to Home Assistant while this Focus is on.";
-"app_intents.focus_filter.display.none" = "No Focus name picked";
-"app_intents.focus_filter.entity.name" = "Focus name";
-"app_intents.focus_filter.focus_name.title" = "Focus name";
-"app_intents.focus_filter.title" = "Report Focus name";
 "app_intents.fan.off_state_icon.title" = "Icon for off state";
 "app_intents.fan.on_state_icon.title" = "Icon for on state";
 "app_intents.fan.title" = "Fan";
@@ -91,6 +86,11 @@
 "app_intents.fire_event.event_name.title" = "Event name";
 "app_intents.fire_event.response_success" = "Fired event %@";
 "app_intents.fire_event.title" = "Fire event";
+"app_intents.focus_filter.description" = "Reports the Focus name you pick to Home Assistant while this Focus is on.";
+"app_intents.focus_filter.display.none" = "No Focus name picked";
+"app_intents.focus_filter.entity.name" = "Focus name";
+"app_intents.focus_filter.focus_name.title" = "Focus name";
+"app_intents.focus_filter.title" = "Report Focus name";
 "app_intents.get_camera_snapshot.camera.title" = "Camera";
 "app_intents.get_camera_snapshot.description" = "Get a single still frame from a camera";
 "app_intents.get_camera_snapshot.error.png_conversion" = "Image could not be converted to PNG";
