@@ -1,4 +1,5 @@
 import GRDB
+import Intents
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -22,6 +23,7 @@ class FocusNameSensorTests: XCTestCase {
         try clearFocusNames()
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
+        Current.isAppExtension = false
         try super.tearDownWithError()
     }
 
@@ -98,5 +100,43 @@ class FocusNameSensorTests: XCTestCase {
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, "Sleep")
         XCTAssertNil(sensors[0].Attributes?["Is focused"])
+    }
+
+    /// The Focus Filter only runs when a Focus starts, so a received status saying nothing is
+    /// running is the only signal that the reported name is stale.
+    func testReceivedStatusClearsTheNameWhenEveryFocusEnded() throws {
+        Current.isAppExtension = true
+        var storedName: String? = "Work"
+        Current.focusFilter.activeFocusName = { storedName }
+        Current.focusFilter.setActiveFocusName = { storedName = $0 }
+
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
+
+        XCTAssertNil(storedName)
+    }
+
+    func testReceivedStatusKeepsTheNameWhileAFocusRuns() throws {
+        Current.isAppExtension = true
+        var storedName: String? = "Work"
+        Current.focusFilter.activeFocusName = { storedName }
+        Current.focusFilter.setActiveFocusName = { storedName = $0 }
+
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: true))
+
+        XCTAssertEqual(storedName, "Work")
+    }
+
+    /// iOS sends an unknown focus state when the permission is there but it won't say; that is not
+    /// the same as "no Focus is running", so the name has to survive it.
+    func testReceivedStatusKeepsTheNameWhenFocusStateIsUnknown() throws {
+        Current.isAppExtension = true
+        var storedName: String? = "Work"
+        Current.focusFilter.activeFocusName = { storedName }
+        Current.focusFilter.setActiveFocusName = { storedName = $0 }
+
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: nil))
+        Current.focusStatus.update(fromReceived: nil)
+
+        XCTAssertEqual(storedName, "Work")
     }
 }

@@ -51,14 +51,16 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 ///
 /// The user creates the names in the app's Focus settings and pairs each one with a Focus in
 /// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
-/// name for this sensor to send.
+/// name for this sensor to send. `FocusStatusWrapper` clears that name again when the Focus status
+/// says every Focus ended, so a name only sticks around while some Focus is running.
 final class FocusNameSensor: SensorProvider {
     public enum FocusNameError: Error, Equatable {
         /// No Focus name has been created, so there is nothing this sensor could ever report.
         case unconfigured
     }
 
-    /// Reported while iOS says no Focus is running.
+    /// Reported while iOS says no Focus is running. The stored name is normally already cleared by
+    /// then; this also covers the window before that clear lands, and reads taken without one.
     static let notFocusedState = "Not focused"
     /// Reported while a Focus is running that no Focus Filter has named — either the user hasn't
     /// paired that Focus yet, or the Focus status permission is missing so we can't tell.

@@ -77,6 +77,14 @@ public class FocusStatusWrapper {
     public func update(fromReceived status: INFocusStatus?) {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
+
+        // A Focus Filter only runs when a Focus starts, so nothing ever tells us the name it
+        // reported has gone stale. This is the moment we learn every Focus ended, so drop it here
+        // rather than leave the last name sitting in the app group.
+        if lastStatus?.isFocused == false {
+            Current.focusFilter.setActiveFocusName(nil)
+        }
+
         trigger.value = Current.date()
     }
 
