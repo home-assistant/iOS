@@ -55,6 +55,12 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
             }
     }
 
+    /// The Focus name sensor reports the names the user manages in Focus settings, so its detail
+    /// links straight there instead of leaving them to find the screen on their own.
+    var showsFocusConfiguration: Bool {
+        sensor.UniqueID == WebhookSensorId.focusName.rawValue
+    }
+
     func setEnabled(_ enabled: Bool) {
         Current.sensors.setEnabled(enabled, for: sensor)
         isEnabled = enabled
