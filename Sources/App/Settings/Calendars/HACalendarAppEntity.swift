@@ -22,10 +22,13 @@ struct HACalendarAppEntity: AppEntity, Sendable {
     let serverId: String
     let serverName: String?
 
+    /// The picker groups calendars into a section per server, so the subtitle carries the entity id
+    /// instead of repeating the server name. That is also what separates same-named calendars on one
+    /// server, which is common when an integration names them after itself rather than the account.
     var displayRepresentation: DisplayRepresentation {
         .init(
             title: .init(stringLiteral: name),
-            subtitle: serverName.map { .init(stringLiteral: $0) },
+            subtitle: .init(stringLiteral: entityId),
             image: .init(systemName: "calendar")
         )
     }
