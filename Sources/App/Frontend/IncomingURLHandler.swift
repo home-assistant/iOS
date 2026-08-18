@@ -1,4 +1,5 @@
 import CallbackURLKit
+import CoreSpotlight
 import Foundation
 import PromiseKit
 import SafariServices
@@ -238,6 +239,11 @@ class IncomingURLHandler {
     func handle(userActivity: NSUserActivity) -> Bool {
         Current.Log.info(userActivity)
 
+        if userActivity.activityType == CSSearchableItemActionType,
+           let identifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            return handleSpotlightEntity(identifier: identifier)
+        }
+
         switch Current.tags.handle(userActivity: userActivity) {
         case let .handled(type):
             showTagReadConfirmation(type: type)
@@ -256,6 +262,21 @@ class IncomingURLHandler {
                 return false
             }
         }
+    }
+
+    /// Opens the entity a tapped Spotlight result stands for. `ShowEntityDetailsAppIntent` handles this
+    /// for the system, so this is the fallback for when the tap arrives as a user activity instead. The
+    /// identifier is the indexed entity's id, which is what the local database keys its rows by.
+    private func handleSpotlightEntity(identifier: String) -> Bool {
+        guard let entity = HAAppEntity.entity(uniqueId: identifier),
+              let url = AppConstants.openEntityDestinationURL(
+                  entityId: entity.entityId,
+                  serverId: entity.serverId
+              ) else {
+            Current.Log.error("Can't route Spotlight entity \(identifier)")
+            return false
+        }
+        return handle(url: url)
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {

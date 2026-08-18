@@ -175,6 +175,15 @@ public enum AppConstants {
         return components.url
     }
 
+    /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
+    /// dialog for everything else.
+    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
+        if Domain(entityId: entityId) == .camera {
+            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
+        }
+        return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
+    }
+
     public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"

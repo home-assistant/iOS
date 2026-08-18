@@ -625,6 +625,14 @@ public enum L10n {
       /// Confirmation notification
       public static var title: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.title") }
     }
+    public enum ShowEntityDetails {
+      /// Show Entity Details
+      public static var title: String { return L10n.tr("Localizable", "app_intents.show_entity_details.title") }
+      public enum Parameter {
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "app_intents.show_entity_details.parameter.entity") }
+      }
+    }
     public enum State {
       /// Target state
       public static var target: String { return L10n.tr("Localizable", "app_intents.state.target") }

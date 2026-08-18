@@ -135,6 +135,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        if #available(iOS 18.0, *) {
+            SpotlightEntityIndexer.shared.start()
+        }
 
         return true
     }
