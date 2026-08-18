@@ -395,6 +395,10 @@ public enum L10n {
         public static func deleteUnsupported(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.delete_unsupported", String(describing: p1))
         }
+        /// %@ cannot be deleted because Home Assistant did not give it an identifier
+        public static func eventNotDeletable(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.event_not_deletable", String(describing: p1))
+        }
         /// The end must not be before the start
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
         /// That calendar is no longer available
@@ -404,6 +408,20 @@ public enum L10n {
         public enum Entity {
           /// Calendar event
           public static var name: String { return L10n.tr("Localizable", "app_intents.calendar.event.entity.name") }
+        }
+      }
+      public enum GetEvents {
+        /// Get the events on a Home Assistant calendar between two dates
+        public static var description: String { return L10n.tr("Localizable", "app_intents.calendar.get_events.description") }
+        /// Get calendar events
+        public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.get_events.title") }
+        public enum End {
+          /// To
+          public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.get_events.end.title") }
+        }
+        public enum Start {
+          /// From
+          public static var title: String { return L10n.tr("Localizable", "app_intents.calendar.get_events.start.title") }
         }
       }
     }

@@ -46,14 +46,14 @@ struct HACalendarEventAppEntity: AppEntity, Sendable {
         self.payload = payload
     }
 
+    /// `uid` is kept optional rather than filtered on: not every integration supplies one, and a
+    /// listing intent should still return those events even though they can't be deleted.
     init?(event: HACalendarEvent, calendar: HACalendar) {
-        // Only events Home Assistant gave a uid can be deleted; anything else can't be addressed.
-        guard let uid = event.uid else { return nil }
         self.init(payload: .init(
             serverId: calendar.serverId,
             calendarEntityId: calendar.entityId,
             calendarName: calendar.name,
-            uid: uid,
+            uid: event.uid,
             recurrenceId: event.recurrenceId,
             summary: event.summary,
             start: event.start.timeIntervalSince1970,
@@ -67,7 +67,7 @@ struct HACalendarEventAppEntity: AppEntity, Sendable {
         let serverId: String
         let calendarEntityId: String
         let calendarName: String
-        let uid: String
+        let uid: String?
         let recurrenceId: String?
         let summary: String
         /// Seconds since 1970, so the id stays stable regardless of locale or calendar.
@@ -92,7 +92,7 @@ struct HACalendarEventAppEntity: AppEntity, Sendable {
             serverId: String,
             calendarEntityId: String,
             calendarName: String,
-            uid: String,
+            uid: String?,
             recurrenceId: String?,
             summary: String,
             start: TimeInterval,

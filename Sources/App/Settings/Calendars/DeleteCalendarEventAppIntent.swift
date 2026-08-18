@@ -44,6 +44,10 @@ struct DeleteCalendarEventAppIntent: AppIntent {
         guard stored.supports(.deleteEvent) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.deleteUnsupported(stored.name))
         }
+        // Deleting addresses an event by its uid, and not every integration supplies one.
+        guard let uid = payload.uid else {
+            throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.eventNotDeletable(payload.summary))
+        }
         guard let server = Current.servers.server(forServerIdentifier: payload.serverId),
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -53,7 +57,7 @@ struct DeleteCalendarEventAppIntent: AppIntent {
         // makes Home Assistant reject the command.
         try await api.deleteCalendarEvent(
             entityId: payload.calendarEntityId,
-            uid: payload.uid,
+            uid: uid,
             recurrenceId: payload.isRecurring ? payload.recurrenceId : nil,
             recurrenceRange: payload.isRecurring ? scope.recurrenceRange : nil
         )

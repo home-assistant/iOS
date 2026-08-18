@@ -93,9 +93,14 @@
 "app_intents.calendar.delete_event.title" = "Delete calendar event";
 "app_intents.calendar.error.create_unsupported" = "%@ does not allow adding events";
 "app_intents.calendar.error.delete_unsupported" = "%@ does not allow deleting events";
+"app_intents.calendar.error.event_not_deletable" = "%@ cannot be deleted because Home Assistant did not give it an identifier";
 "app_intents.calendar.error.invalid_duration" = "The end must not be before the start";
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
 "app_intents.calendar.event.entity.name" = "Calendar event";
+"app_intents.calendar.get_events.description" = "Get the events on a Home Assistant calendar between two dates";
+"app_intents.calendar.get_events.end.title" = "To";
+"app_intents.calendar.get_events.start.title" = "From";
+"app_intents.calendar.get_events.title" = "Get calendar events";
 "app_intents.error.no_server" = "No server provided";
 "app_intents.error.timed_out" = "Timed out after %li seconds";
 "app_intents.error.token_unavailable" = "Could not get an access token for this server";
