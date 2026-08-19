@@ -12,6 +12,7 @@ public enum WidgetsKind: String, CaseIterable {
     case energy
     case controlAutomation
     case todoList
+    case calendar
     case controlScript
     case controlScene
     case controlAssist
