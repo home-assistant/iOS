@@ -17,6 +17,7 @@ class FocusNameSensorTests: XCTestCase {
         try clearFocusNames()
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
+        Current.isTestFlight = true
     }
 
     override func tearDownWithError() throws {
@@ -24,6 +25,7 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
         Current.isAppExtension = false
+        Current.isTestFlight = true
         try super.tearDownWithError()
     }
 
@@ -51,6 +53,17 @@ class FocusNameSensorTests: XCTestCase {
         let promise = FocusNameSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unconfigured)
+        }
+    }
+
+    func testUnavailableOutsideTestFlight() throws {
+        Current.isTestFlight = false
+        FocusName(name: "Work").save()
+        setUpDependencies(activeFocusName: "Work", isFocused: true)
+
+        let promise = FocusNameSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unavailable)
         }
     }
 

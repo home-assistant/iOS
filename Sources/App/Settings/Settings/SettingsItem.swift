@@ -206,7 +206,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .liveActivities:
             return Self.canShowLiveActivities
-        case .remindersSync:
+        case .remindersSync, .focus:
             // Labs feature, limited to TestFlight builds while it matures.
             return Current.isTestFlight
         case .macToolbar:
