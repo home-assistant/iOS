@@ -1,0 +1,6 @@
+project: "HomeAssistant.xcodeproj"
+schemes:
+  - "Tests-Unit"
+build_arguments:
+  - "-destination"
+  - "'generic/platform=iOS Simulator'"
