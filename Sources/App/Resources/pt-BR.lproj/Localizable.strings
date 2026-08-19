@@ -2688,7 +2688,6 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.custom.subtitle" = "Crie widgets com seu próprio estilo";
 "widgets.custom.title" = "Widgets personalizados";
 "widgets.details.description" = "Exibir estados usando o Home Assistant em texto";
-"widgets.details.description_with_warning" = "Exibir estados usando o Home Assistant em texto. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos templates";
 "widgets.details.gallery_description" = "Exibir uma entidade, uma complicação de relógio ou um template do Home Assistant como texto";
 "widgets.details.parameters.action" = "Ação";
 "widgets.details.parameters.details_template" = "Template de texto de detalhes (somente na família retangular)";
@@ -2718,7 +2717,6 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.energy.title" = "Energia";
 "widgets.entity_state.placeholder" = "Estado da entidade";
 "widgets.gauge.description" = "Exibir estados numéricos do Home Assistant em um medidor";
-"widgets.gauge.description_with_warning" = "Exibir estados numéricos do Home Assistant em um medidor. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos templates";
 "widgets.gauge.gallery_description" = "Exibir uma entidade, uma complicação de relógio ou um template do Home Assistant em um medidor";
 "widgets.gauge.parameters.action" = "Ação";
 "widgets.gauge.parameters.gauge_type" = "Tipo de medidor";

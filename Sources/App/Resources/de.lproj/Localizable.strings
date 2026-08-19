@@ -2689,7 +2689,6 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
-"widgets.details.description_with_warning" = "Anzeige von Zuständen aus Home Assistant in Textform. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
 "widgets.details.gallery_description" = "Eine Entität, eine Watch-Komplikation oder ein Template aus Home Assistant als Text anzeigen";
 "widgets.details.parameters.action" = "Aktion";
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";
@@ -2719,7 +2718,6 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.title" = "Energie";
 "widgets.entity_state.placeholder" = "Entitätszustand";
 "widgets.gauge.description" = "Numerische Zustände von Home Assistant in einer Analoganzeige darstellen";
-"widgets.gauge.description_with_warning" = "Anzeige von numerischen Zuständen aus Home Assistant in einer Analoganzeige. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
 "widgets.gauge.gallery_description" = "Eine Entität, eine Watch-Komplikation oder ein Template aus Home Assistant als Analoganzeige anzeigen";
 "widgets.gauge.parameters.action" = "Aktion";
 "widgets.gauge.parameters.gauge_type" = "Analoganzeigentyp";

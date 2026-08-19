@@ -2688,7 +2688,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Crea widget con il tuo stile personalizzato";
 "widgets.custom.title" = "Widget personalizzati";
 "widgets.details.description" = "Visualizza gli stati utilizzando Home Assistant nel testo";
-"widgets.details.description_with_warning" = "Visualizza gli stati tramite Home Assistant in formato testo. ATTENZIONE: l'utente deve essere amministratore per poter accedere ai modelli";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Azione";
 "widgets.details.parameters.details_template" = "Dettagli Template di testo (solo nella famiglia rettangolare)";
@@ -2718,7 +2717,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Stato dell'entità";
 "widgets.gauge.description" = "Visualizza stati numerici da Home Assistant in un indicatore";
-"widgets.gauge.description_with_warning" = "Visualizza gli stati numerici di Home Assistant in un indicatore. ATTENZIONE: per poter accedere ai modelli, l'utente deve essere amministratore";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Azione";
 "widgets.gauge.parameters.gauge_type" = "Tipo d'indicatore";

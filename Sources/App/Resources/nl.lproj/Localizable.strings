@@ -2688,7 +2688,6 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.custom.subtitle" = "Maak widgets in je eigen stijl";
 "widgets.custom.title" = "Aangepaste widgets";
 "widgets.details.description" = "Statussen weergeven met behulp van Home Assistant in tekst";
-"widgets.details.description_with_warning" = "Statussen weergeven van Home Assistant in tekst. LET OP: Gebruiker moet beheerder zijn voor template-toegang";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Actie";
 "widgets.details.parameters.details_template" = "Details tekstsjabloon (alleen in rechthoekige familie)";
@@ -2718,7 +2717,6 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Entiteitsstatus";
 "widgets.gauge.description" = "Numerieke statussen van Home Assistant weergeven in een meter";
-"widgets.gauge.description_with_warning" = "Numerieke statussen van Home Assistant weergeven in een meter. LET OP: Gebruiker moet beheerder zijn voor template-toegang";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Actie";
 "widgets.gauge.parameters.gauge_type" = "Type meter";
