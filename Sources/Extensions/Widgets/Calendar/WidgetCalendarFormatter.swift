@@ -42,22 +42,50 @@ enum WidgetCalendarFormatter {
         return day.formatted(style(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), calendar: calendar))
     }
 
-    /// The secondary line under an event: when it happens, and — when the widget merges several
-    /// calendars — which calendar it came from.
-    static func subtitle(for event: WidgetCalendarEvent, showsCalendarName: Bool, calendar: Calendar) -> String {
-        var parts = [timing(for: event, calendar: calendar)]
+    /// The secondary line under an event: which day it falls on when that isn't the day being shown,
+    /// when it happens, and — when the widget merges several calendars — which calendar it came from.
+    ///
+    /// `showsDay` is what the families without a day heading turn on. Without it a row for tomorrow
+    /// is indistinguishable from one for today, since the only date on those layouts is the badge.
+    static func subtitle(
+        for event: WidgetCalendarEvent,
+        relativeTo reference: Date,
+        showsDay: Bool,
+        showsCalendarName: Bool,
+        calendar: Calendar
+    ) -> String {
+        let day = showsDay ? dayLabel(for: event, relativeTo: reference, calendar: calendar) : nil
+        // A row that already names another day has said the important part, so it drops the end time
+        // rather than pushing the calendar name out of a narrow layout.
+        var parts = [day, timing(for: event, calendar: calendar, startOnly: day != nil)].compactMap { $0 }
         if showsCalendarName {
             parts.append(event.calendarName)
         }
         return parts.joined(separator: " · ")
     }
 
+    /// The day an event reads as, or `nil` when that is the day already on screen.
+    ///
+    /// An event that started earlier and is still running counts as today, matching how the larger
+    /// families group it under the current day rather than the one it began on.
+    private static func dayLabel(
+        for event: WidgetCalendarEvent,
+        relativeTo reference: Date,
+        calendar: Calendar
+    ) -> String? {
+        let day = calendar.startOfDay(for: max(event.start, reference))
+        guard day != calendar.startOfDay(for: reference) else { return nil }
+        return daySectionTitle(for: day, relativeTo: reference, calendar: calendar)
+    }
+
     /// All-day events say so; a timed event shows its range, collapsed to just the start when it
     /// runs past midnight and an end time on its own would read as the wrong day.
-    private static func timing(for event: WidgetCalendarEvent, calendar: Calendar) -> String {
+    private static func timing(for event: WidgetCalendarEvent, calendar: Calendar, startOnly: Bool) -> String {
         guard !event.isAllDay else { return L10n.Widgets.Calendar.allDay }
         let start = time(event.start, calendar: calendar)
-        guard calendar.isDate(event.start, inSameDayAs: event.end), event.end > event.start else { return start }
+        guard !startOnly, calendar.isDate(event.start, inSameDayAs: event.end), event.end > event.start else {
+            return start
+        }
         return "\(start) – \(time(event.end, calendar: calendar))"
     }
 

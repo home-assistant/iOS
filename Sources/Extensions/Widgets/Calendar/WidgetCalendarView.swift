@@ -74,6 +74,8 @@ struct WidgetCalendarView: View {
                                 ForEach(events) { event in
                                     WidgetCalendarEventRow(
                                         event: event,
+                                        referenceDate: referenceDate,
+                                        showsDay: true,
                                         showsCalendarName: showsCalendarName,
                                         calendar: calendar
                                     )
@@ -94,6 +96,8 @@ struct WidgetCalendarView: View {
                             ForEach(events) { event in
                                 WidgetCalendarEventRow(
                                     event: event,
+                                    referenceDate: referenceDate,
+                                    showsDay: true,
                                     showsCalendarName: showsCalendarName,
                                     calendar: calendar
                                 )
@@ -123,6 +127,8 @@ struct WidgetCalendarView: View {
                                     ForEach(group.events) { event in
                                         WidgetCalendarEventRow(
                                             event: event,
+                                            referenceDate: referenceDate,
+                                            showsDay: false,
                                             showsCalendarName: showsCalendarName,
                                             calendar: calendar
                                         )

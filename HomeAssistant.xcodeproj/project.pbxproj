@@ -1837,6 +1837,8 @@
 			membershipExceptions = (
 				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.dark.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNextDaySnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNextDaySnapshot.light.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNoEventsSnapshot.dark.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNoEventsSnapshot.light.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNotConfiguredSnapshot.dark.png,
