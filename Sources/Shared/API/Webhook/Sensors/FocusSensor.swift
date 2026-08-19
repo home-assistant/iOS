@@ -20,7 +20,7 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
     override func observe() {
         super.observe()
         guard !isObserving else { return }
-        cancellable = Current.focusStatus.trigger.observe { [weak self] _ in
+        cancellable = Current.focusStatus.receivedStatus.observe { [weak self] _ in
             #if os(watchOS)
             self?.signal()
             #else

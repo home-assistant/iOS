@@ -120,10 +120,14 @@ class FocusSensorTests: XCTestCase {
 
         let date = Date()
         Current.isForegroundApp = { false }
-        Current.focusStatus.trigger.value = date
+        Current.focusStatus.receivedStatus.value = .init(isFocused: true, date: date, lastEndedDate: nil)
 
         Current.isForegroundApp = { true }
-        Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
+        Current.focusStatus.receivedStatus.value = .init(
+            isFocused: true,
+            date: date.addingTimeInterval(1.0),
+            lastEndedDate: nil
+        )
 
         // so it sticks around, but we don't need to access it directly
         await fulfillment(of: [expectation2], timeout: 10)
