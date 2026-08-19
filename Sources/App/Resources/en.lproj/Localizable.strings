@@ -576,6 +576,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "focus.how_it_works.title" = "How it works?";
 "focus.how_it_works.unpaired.body" = "iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.";
 "focus.how_it_works.unpaired.title" = "Focuses without a filter";
+"focus.names.active" = "Reporting now";
 "focus.names.add" = "Add Focus name";
 "focus.names.add_message" = "Give this Focus a name to report to Home Assistant, such as the name of the Focus itself.";
 "focus.names.empty" = "No Focus names yet.";
@@ -1395,7 +1396,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.debugging.cached_entity_data.message" = "Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again.";
 "settings.debugging.cached_entity_data.title" = "Delete cached entity data";
 "settings.debugging.calendars.all_day" = "All-day";
-"settings.debugging.calendars.count_%d" = "%d calendars";
+"settings.debugging.calendars.count_%d" = "%li calendars";
 "settings.debugging.calendars.empty.subtitle" = "Pull down to fetch the calendars from Home Assistant.";
 "settings.debugging.calendars.empty.title" = "No calendars stored";
 "settings.debugging.calendars.entity_id" = "Entity ID";
