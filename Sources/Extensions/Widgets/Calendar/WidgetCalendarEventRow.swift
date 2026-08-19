@@ -10,6 +10,11 @@ import SwiftUI
 @available(iOS 17, *)
 struct WidgetCalendarEventRow: View {
     let event: WidgetCalendarEvent
+    /// The day the widget is showing, which is what decides whether the row has to name its own.
+    let referenceDate: Date
+    /// Whether the row names the day it falls on when that isn't `referenceDate`. The large family
+    /// groups events under a day heading instead, so it leaves this off.
+    let showsDay: Bool
     let showsCalendarName: Bool
     let calendar: Calendar
 
@@ -34,6 +39,8 @@ struct WidgetCalendarEventRow: View {
                         .truncationMode(.tail)
                     Text(verbatim: WidgetCalendarFormatter.subtitle(
                         for: event,
+                        relativeTo: referenceDate,
+                        showsDay: showsDay,
                         showsCalendarName: showsCalendarName,
                         calendar: calendar
                     ))
@@ -56,8 +63,14 @@ struct WidgetCalendarEventRow: View {
 @available(iOS 17, *)
 #Preview {
     VStack(spacing: DesignSystem.Spaces.one) {
-        ForEach(WidgetCalendarPreviewSample.events(referenceDate: Date(), calendar: .current).prefix(3)) { event in
-            WidgetCalendarEventRow(event: event, showsCalendarName: true, calendar: .current)
+        ForEach(WidgetCalendarPreviewSample.events(referenceDate: Date(), calendar: .current).prefix(6)) { event in
+            WidgetCalendarEventRow(
+                event: event,
+                referenceDate: Date(),
+                showsDay: true,
+                showsCalendarName: true,
+                calendar: .current
+            )
         }
     }
     .padding()

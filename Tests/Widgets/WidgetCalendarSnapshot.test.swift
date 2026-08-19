@@ -59,6 +59,21 @@ struct WidgetCalendarSnapshotTests {
         )
     }
 
+    /// The list spilling into the following day, which is the case the day label exists for: the
+    /// families without a day heading carry no other date, so an unlabelled row for tomorrow reads
+    /// as belonging to the badge.
+    @available(iOS 18, *)
+    @MainActor @Test func systemMediumNextDaySnapshot() {
+        let spanning = Self.events(10)
+            .dropFirst(2)
+            .prefix(WidgetFamilySizes.calendarSize(for: .systemMedium))
+        assertCalendarSnapshot(
+            family: .systemMedium,
+            events: Array(spanning),
+            showsCalendarName: true
+        )
+    }
+
     /// A configured widget on a quiet fortnight still shows the date, which is what separates this
     /// from the unconfigured state below.
     @available(iOS 18, *)

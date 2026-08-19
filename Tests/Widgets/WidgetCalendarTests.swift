@@ -112,11 +112,15 @@ struct WidgetCalendarTests {
 
         let withoutName = WidgetCalendarFormatter.subtitle(
             for: event,
+            relativeTo: Self.now,
+            showsDay: true,
             showsCalendarName: false,
             calendar: Self.calendar
         )
         let withName = WidgetCalendarFormatter.subtitle(
             for: event,
+            relativeTo: Self.now,
+            showsDay: true,
             showsCalendarName: true,
             calendar: Self.calendar
         )
@@ -131,11 +135,73 @@ struct WidgetCalendarTests {
 
         let subtitle = WidgetCalendarFormatter.subtitle(
             for: event,
+            relativeTo: Self.now,
+            showsDay: true,
             showsCalendarName: false,
             calendar: Self.calendar
         )
 
         #expect(subtitle == L10n.Widgets.Calendar.allDay)
+    }
+
+    /// The families without a day heading are the only date-less layouts, so a row for another day
+    /// has to say so — otherwise it reads as belonging to the date on the badge.
+    @Test func subtitleNamesTheDayWhenItIsNotTheOneOnScreen() {
+        let today = Self.event(id: "today", startHour: 14, endHour: 15)
+        let tomorrow = Self.event(id: "tomorrow", startHour: 10, endHour: 11, dayOffset: 1)
+
+        let todaySubtitle = WidgetCalendarFormatter.subtitle(
+            for: today,
+            relativeTo: Self.now,
+            showsDay: true,
+            showsCalendarName: false,
+            calendar: Self.calendar
+        )
+        let tomorrowSubtitle = WidgetCalendarFormatter.subtitle(
+            for: tomorrow,
+            relativeTo: Self.now,
+            showsDay: true,
+            showsCalendarName: false,
+            calendar: Self.calendar
+        )
+
+        #expect(!todaySubtitle.contains(L10n.Widgets.Calendar.tomorrow))
+        #expect(tomorrowSubtitle.hasPrefix("\(L10n.Widgets.Calendar.tomorrow) · "))
+        // The day replaces the end time rather than being added on top of it.
+        #expect(!tomorrowSubtitle.contains("–"))
+    }
+
+    /// The large family already heads each day, so repeating it on every row would be noise.
+    @Test func subtitleOmitsTheDayWhenTheLayoutAlreadyHeadsIt() {
+        let tomorrow = Self.event(id: "tomorrow", startHour: 10, endHour: 11, dayOffset: 1)
+
+        let subtitle = WidgetCalendarFormatter.subtitle(
+            for: tomorrow,
+            relativeTo: Self.now,
+            showsDay: false,
+            showsCalendarName: false,
+            calendar: Self.calendar
+        )
+
+        #expect(!subtitle.contains(L10n.Widgets.Calendar.tomorrow))
+        #expect(subtitle.contains("–"))
+    }
+
+    /// An event that began yesterday and is still running belongs to the day on screen, so labelling
+    /// it with the day it started would be both wrong and confusing.
+    @Test func subtitleTreatsAnOngoingEventAsToday() {
+        let ongoing = Self.event(id: "ongoing", startHour: 22, endHour: 34, dayOffset: -1)
+
+        let subtitle = WidgetCalendarFormatter.subtitle(
+            for: ongoing,
+            relativeTo: Self.now,
+            showsDay: true,
+            showsCalendarName: false,
+            calendar: Self.calendar
+        )
+
+        #expect(!subtitle.contains(L10n.Widgets.Calendar.today))
+        #expect(!subtitle.contains(L10n.Widgets.Calendar.tomorrow))
     }
 
     /// A tap on an event opens its own calendar; a tap that misses one opens the panel on all of
@@ -157,6 +223,8 @@ struct WidgetCalendarTests {
 
         let subtitle = WidgetCalendarFormatter.subtitle(
             for: event,
+            relativeTo: Self.now,
+            showsDay: true,
             showsCalendarName: false,
             calendar: Self.calendar
         )
