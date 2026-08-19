@@ -2097,6 +2097,8 @@ public enum L10n {
       }
     }
     public enum Names {
+      /// Reporting now
+      public static var active: String { return L10n.tr("Localizable", "focus.names.active") }
       /// Add Focus name
       public static var add: String { return L10n.tr("Localizable", "focus.names.add") }
       /// Give this Focus a name to report to Home Assistant, such as the name of the Focus itself.
@@ -4650,7 +4652,7 @@ public enum L10n {
       public enum Calendars {
         /// All-day
         public static var allDay: String { return L10n.tr("Localizable", "settings.debugging.calendars.all_day") }
-        /// %d calendars
+        /// %li calendars
         public static func countD(_ p1: Int) -> String {
           return L10n.tr("Localizable", "settings.debugging.calendars.count_%d", p1)
         }
