@@ -17,6 +17,9 @@ class FocusNameSensorTests: XCTestCase {
         try clearFocusNames()
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
+
+        let previousIsTestFlight = Current.isTestFlight
+        addTeardownBlock { Current.isTestFlight = previousIsTestFlight }
         Current.isTestFlight = true
     }
 
@@ -25,7 +28,6 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
         Current.isAppExtension = false
-        Current.isTestFlight = true
         try super.tearDownWithError()
     }
 
