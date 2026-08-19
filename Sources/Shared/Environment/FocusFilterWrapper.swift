@@ -30,9 +30,15 @@ public class FocusFilterStateSync: UserDefaultsValueSync<FocusFilterState> {
 public class FocusFilterWrapper {
     private(set) lazy var state = FocusFilterStateSync()
 
+    /// The last Focus Filter run, with the moment it happened so it can be ordered against what
+    /// the Focus status pushed us.
+    public lazy var activeFocusState: () -> FocusFilterState? = { [weak self] in
+        self?.state.value
+    }
+
     /// The name reported by the last Focus Filter run, if any.
     public lazy var activeFocusName: () -> String? = { [weak self] in
-        self?.state.value?.name
+        self?.activeFocusState()?.name
     }
 
     /// Called by the Focus Filter's App Intent when a Focus activates.
