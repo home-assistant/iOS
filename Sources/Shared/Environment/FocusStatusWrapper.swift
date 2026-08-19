@@ -1,12 +1,13 @@
 import Intents
 import PromiseKit
 
-/// The Focus status iOS last pushed to us, kept in the app group with the moment it arrived so any
-/// process can order it against what the Focus Filter reported.
+/// The Focus status iOS last pushed to us, kept in the app group so every process reads the same
+/// thing instead of asking iOS itself, along with when a Focus last ended — which is what decides
+/// whether the name the Focus Filter reported is still the Focus that is running.
 public struct FocusStatusState: Codable, Equatable {
     /// Whether any Focus was running, or `nil` when iOS sent a status without saying.
     public var isFocused: Bool?
-    /// When this status arrived, so it can be told apart from an older or newer Focus Filter run.
+    /// When this status arrived, so pushing the same status twice still notifies observers.
     public var date: Date
     /// When iOS last said every Focus had ended, kept across later updates. A name the filter
     /// reported before that moment belongs to a Focus that is over; one reported after it doesn't.
