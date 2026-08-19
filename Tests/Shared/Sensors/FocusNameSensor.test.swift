@@ -22,6 +22,10 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter.state.value = nil
         Current.focusStatus.receivedStatus.value = nil
         Current.date = { [now] in now }
+
+        let previousIsTestFlight = Current.isTestFlight
+        addTeardownBlock { Current.isTestFlight = previousIsTestFlight }
+        Current.isTestFlight = true
     }
 
     override func tearDownWithError() throws {
@@ -81,6 +85,17 @@ class FocusNameSensorTests: XCTestCase {
         let promise = FocusNameSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unconfigured)
+        }
+    }
+
+    func testUnavailableOutsideTestFlight() throws {
+        Current.isTestFlight = false
+        FocusName(name: "Work").save()
+        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: true, at: -59))
+
+        let promise = FocusNameSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unavailable)
         }
     }
 

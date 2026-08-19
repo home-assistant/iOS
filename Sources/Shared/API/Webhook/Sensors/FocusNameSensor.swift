@@ -53,10 +53,15 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 /// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
 /// name for this sensor to send. `FocusReport` pairs that name with the Focus status iOS pushes us
 /// to work out whether it is still the Focus that is running.
+///
+/// Labs feature, limited to TestFlight builds while it matures, matching the Focus settings screen
+/// where the names are created.
 final class FocusNameSensor: SensorProvider {
     public enum FocusNameError: Error, Equatable {
         /// No Focus name has been created, so there is nothing this sensor could ever report.
         case unconfigured
+        /// Labs feature, limited to TestFlight builds while it matures.
+        case unavailable
     }
 
     /// Reported once iOS has told us every Focus ended, and while nothing has ever told us one is
@@ -72,6 +77,10 @@ final class FocusNameSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
+        guard Current.isTestFlight else {
+            return .init(error: FocusNameError.unavailable)
+        }
+
         let report = FocusReport.current()
 
         guard report.name != nil || !FocusName.all().isEmpty else {
