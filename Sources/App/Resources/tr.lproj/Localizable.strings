@@ -2688,7 +2688,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Kendi stilinizle widget'lar yaratın";
 "widgets.custom.title" = "Kişiselleştirilmiş widget'lar";
 "widgets.details.description" = "Metinde Home Asistanı'nın kullanıldığı durumları görüntüleme";
-"widgets.details.description_with_warning" = "Home Assistant'tan metinde durumları görüntüle. DİKKAT: Şablon erişimi için kullanıcının yönetici olması gerekir";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Eylem";
 "widgets.details.parameters.details_template" = "Ayrıntılar Metin Şablonu (yalnızca dikdörtgen ailede)";
@@ -2718,7 +2717,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Varlık durumu";
 "widgets.gauge.description" = "Home Assistant'taki sayısal durumları bir göstergede görüntüleyin";
-"widgets.gauge.description_with_warning" = "Home Assistant'tan sayısal durumları bir göstergede görüntüleyin. DİKKAT: Şablon erişimi için kullanıcının yönetici olması gerekir";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Eylem";
 "widgets.gauge.parameters.gauge_type" = "Gösterge Tipi";

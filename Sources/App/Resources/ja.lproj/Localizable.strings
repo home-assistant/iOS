@@ -2687,7 +2687,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "独自のスタイルでウィジェットを作成する";
 "widgets.custom.title" = "カスタムウィジェット";
 "widgets.details.description" = "Home Assistantからテキストを使用して状態を表示する";
-"widgets.details.description_with_warning" = "Home Assistant からの状態をテキストで表示します。注意: テンプレートにアクセスするには、ユーザーは管理者である必要があります。";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "アクション";
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";
@@ -2717,7 +2716,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "エンティティの状態";
 "widgets.gauge.description" = "ホームアシスタントからの数値をゲージに表示";
-"widgets.gauge.description_with_warning" = "Home Assistant からの数値状態をゲージに表示します。注意: テンプレートにアクセスするには、ユーザーは管理者である必要があります。";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "アクション";
 "widgets.gauge.parameters.gauge_type" = "ゲージタイプ";

@@ -2687,7 +2687,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Saját stílusú widgetek létrehozása";
 "widgets.custom.title" = "Egyedi widgetek";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
-"widgets.details.description_with_warning" = "Állapotok megjelenítése szöveges formában a Home Assistantból. FIGYELEM: A sablonkezeléshez adminisztrátori jogosultság szükséges.";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
@@ -2717,7 +2716,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Entitás állapota";
 "widgets.gauge.description" = "Számértékek megjelenítése a Home Assistantból egy mérőműszer segítségével";
-"widgets.gauge.description_with_warning" = "Számszerű állapotok megjelenítése a Home Assistantból egy mérőműszerben. FIGYELEM: A sablonkezeléshez adminisztrátori jogosultság szükséges.";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Művelet";
 "widgets.gauge.parameters.gauge_type" = "Mérőműszer típusa";

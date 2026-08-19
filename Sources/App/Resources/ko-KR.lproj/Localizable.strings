@@ -2686,7 +2686,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.custom.subtitle" = "나만의 스타일로 위젯 만들기";
 "widgets.custom.title" = "사용자 정의 위젯";
 "widgets.details.description" = "Home Assistant의 상태를 텍스트로 표시합니다";
-"widgets.details.description_with_warning" = "Home Assistant에서 텍스트로 상태를 표시합니다. 주의: 사용자는 템플릿 액세스를 위해 관리자여야 합니다.";
 "widgets.details.gallery_description" = "Home Assistant의 엔티티, 시계 컴플리케이션 또는 템플릿을 텍스트로 표시합니다";
 "widgets.details.parameters.action" = "동작";
 "widgets.details.parameters.details_template" = "세부정보 텍스트 템플릿(직사각형군에만 해당)";
@@ -2716,7 +2715,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.title" = "에너지";
 "widgets.entity_state.placeholder" = "엔티티 상태";
 "widgets.gauge.description" = "Home Assistant의 숫자 상태를 게이지에 표시";
-"widgets.gauge.description_with_warning" = "Home Assistant에서 게이지에 숫자 상태를 표시합니다. 주의: 사용자는 템플릿 액세스를 위해 관리자여야 합니다.";
 "widgets.gauge.gallery_description" = "Home Assistant의 엔티티, 시계 컴플리케이션 또는 템플릿을 게이지로 표시합니다";
 "widgets.gauge.parameters.action" = "동작";
 "widgets.gauge.parameters.gauge_type" = "게이지 유형";
