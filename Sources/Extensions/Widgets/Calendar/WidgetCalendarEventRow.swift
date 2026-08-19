@@ -62,11 +62,16 @@ struct WidgetCalendarEventRow: View {
 
 @available(iOS 17, *)
 #Preview {
-    VStack(spacing: DesignSystem.Spaces.one) {
-        ForEach(WidgetCalendarPreviewSample.events(referenceDate: Date(), calendar: .current).prefix(6)) { event in
+    // The sample's fixed reference date, shared by the events and the rows: two `Date()` calls
+    // could straddle midnight and label rows against a day the events were not built around.
+    let referenceDate = WidgetCalendarPreviewSample.referenceDate
+    return VStack(spacing: DesignSystem.Spaces.one) {
+        ForEach(
+            WidgetCalendarPreviewSample.events(referenceDate: referenceDate, calendar: .current).prefix(6)
+        ) { event in
             WidgetCalendarEventRow(
                 event: event,
-                referenceDate: Date(),
+                referenceDate: referenceDate,
                 showsDay: true,
                 showsCalendarName: true,
                 calendar: .current
