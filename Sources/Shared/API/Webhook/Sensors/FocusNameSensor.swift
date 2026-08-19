@@ -28,7 +28,7 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
             self?.signal()
         }
         // …and the Focus status tells us when every Focus ended, which no filter reports.
-        focusStatusCancellable = Current.focusStatus.trigger.observe { [weak self] _ in
+        focusStatusCancellable = Current.focusStatus.receivedStatus.observe { [weak self] _ in
             self?.signal()
         }
         isObserving = true
@@ -51,16 +51,16 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 ///
 /// The user creates the names in the app's Focus settings and pairs each one with a Focus in
 /// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
-/// name for this sensor to send. `FocusStatusWrapper` clears that name again when the Focus status
-/// says every Focus ended, so a name only sticks around while some Focus is running.
+/// name for this sensor to send. `FocusReport` pairs that name with the Focus status iOS pushes us
+/// to work out whether it is still the Focus that is running.
 final class FocusNameSensor: SensorProvider {
     public enum FocusNameError: Error, Equatable {
         /// No Focus name has been created, so there is nothing this sensor could ever report.
         case unconfigured
     }
 
-    /// Reported while iOS says no Focus is running. The stored name is normally already cleared by
-    /// then; this also covers the window before that clear lands, and reads taken without one.
+    /// Reported once iOS has told us every Focus ended, and while nothing has ever told us one is
+    /// running.
     static let notFocusedState = "Not focused"
     /// Reported while a Focus is running that no Focus Filter has named — either the user hasn't
     /// paired that Focus yet, or the Focus status permission is missing so we can't tell.
@@ -72,19 +72,18 @@ final class FocusNameSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        let activeName = Current.focusFilter.activeFocusName()
+        let report = FocusReport.current()
 
-        guard activeName != nil || !FocusName.all().isEmpty else {
+        guard report.name != nil || !FocusName.all().isEmpty else {
             return .init(error: FocusNameError.unconfigured)
         }
 
-        let isFocused = currentIsFocused()
         let state: String
 
-        if isFocused == false {
+        if let name = report.name {
+            state = name
+        } else if report.isFocused == false {
             state = Self.notFocusedState
-        } else if let activeName, !activeName.isEmpty {
-            state = activeName
         } else {
             state = Self.unknownState
         }
@@ -95,7 +94,7 @@ final class FocusNameSensor: SensorProvider {
             icon: "mdi:moon-waning-crescent",
             state: state
         )) {
-            if let isFocused {
+            if let isFocused = report.isFocused {
                 $0.Attributes = ["Is focused": isFocused]
             }
         }
@@ -104,15 +103,5 @@ final class FocusNameSensor: SensorProvider {
         let _: FocusNameSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         return .value([sensor])
-    }
-
-    /// Whether any Focus is running, when the user granted the Focus status permission. `nil` when
-    /// iOS won't tell us, in which case the last name the filter reported is the best we have.
-    private func currentIsFocused() -> Bool? {
-        guard Current.focusStatus.isAvailable(),
-              Current.focusStatus.authorizationStatus() == .authorized else {
-            return nil
-        }
-        return Current.focusStatus.status().isFocused
     }
 }

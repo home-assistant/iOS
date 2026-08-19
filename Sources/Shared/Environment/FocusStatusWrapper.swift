@@ -1,14 +1,34 @@
 import Intents
 import PromiseKit
 
-public class FocusStateTrigger: UserDefaultsValueSync<Date> {
+/// The Focus status iOS last pushed to us, kept in the app group with the moment it arrived so any
+/// process can order it against what the Focus Filter reported.
+public struct FocusStatusState: Codable, Equatable {
+    /// Whether any Focus was running, or `nil` when iOS sent a status without saying.
+    public var isFocused: Bool?
+    /// When this status arrived, so it can be told apart from an older or newer Focus Filter run.
+    public var date: Date
+    /// When iOS last said every Focus had ended, kept across later updates. A name the filter
+    /// reported before that moment belongs to a Focus that is over; one reported after it doesn't.
+    public var lastEndedDate: Date?
+
+    public init(isFocused: Bool?, date: Date, lastEndedDate: Date?) {
+        self.isFocused = isFocused
+        self.date = date
+        self.lastEndedDate = lastEndedDate
+    }
+}
+
+public class FocusStatusStateSync: UserDefaultsValueSync<FocusStatusState> {
     init() {
-        super.init(settingsKey: "FocusStateTriggerKey")
+        super.init(settingsKey: "FocusStatusStateKey")
     }
 }
 
 public class FocusStatusWrapper {
-    private(set) lazy var trigger = FocusStateTrigger()
+    /// Every Focus status iOS pushed us, in the app group. Observed to signal the Focus sensors,
+    /// and read back by `FocusReport` to decide whether a reported name is still current.
+    private(set) lazy var receivedStatus = FocusStatusStateSync()
 
     public enum AuthorizationStatus: Equatable {
         case notDetermined
@@ -78,14 +98,17 @@ public class FocusStatusWrapper {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
 
-        // A Focus Filter only runs when a Focus starts, so nothing ever tells us the name it
-        // reported has gone stale. This is the moment we learn every Focus ended, so drop it here
-        // rather than leave the last name sitting in the app group.
-        if lastStatus?.isFocused == false {
-            Current.focusFilter.setActiveFocusName(nil)
-        }
+        let now = Current.date()
+        let isFocused = lastStatus?.isFocused
 
-        trigger.value = Current.date()
+        // Recorded rather than acted on: iOS runs the next Focus' filter before it tells us the
+        // previous one ended, so which of the two is current is decided when they are read back
+        // together, not by letting whichever arrives last overwrite the other.
+        receivedStatus.value = FocusStatusState(
+            isFocused: isFocused,
+            date: now,
+            lastEndedDate: isFocused == false ? now : receivedStatus.value?.lastEndedDate
+        )
     }
 
     public lazy var status: () -> Status = { [weak self] in
@@ -94,5 +117,10 @@ public class FocusStatusWrapper {
         } else {
             return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
         }
+    }
+
+    /// The last status iOS pushed us, from whichever process received it.
+    public lazy var lastReceived: () -> FocusStatusState? = { [weak self] in
+        self?.receivedStatus.value
     }
 }
