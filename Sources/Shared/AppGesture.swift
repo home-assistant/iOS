@@ -35,7 +35,6 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Page
     case backPage
     case nextPage
-    case smartBack
     // Servers
     case showServersList
     case nextServer
@@ -46,11 +45,18 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Other
     case none
 
+    public init(from decoder: Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        // Actions removed in newer versions decode as no-op instead of throwing, otherwise a single
+        // stale entry would make the whole persisted gesture configuration fall back to defaults.
+        self = HAGestureAction(rawValue: rawValue) ?? .none
+    }
+
     public var category: HAGestureActionCategory {
         switch self {
         case .showSidebar, .quickSearch, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
-        case .backPage, .nextPage, .smartBack:
+        case .backPage, .nextPage:
             .page
         case .showServersList, .nextServer, .previousServer:
             .servers
@@ -69,8 +75,6 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.backPage
         case .nextPage:
             L10n.Gestures.Value.Option.nextPage
-        case .smartBack:
-            L10n.Gestures.Value.Option.smartBack
         case .quickSearch:
             L10n.Gestures.Value.Option.quickSearch
         case .searchEntities:
@@ -96,16 +100,6 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         }
     }
 
-    /// Whether the action is experimental and should display a Labs label
-    public var isLabsFeature: Bool {
-        switch self {
-        case .smartBack:
-            true
-        default:
-            false
-        }
-    }
-
     public var moreInfo: String? {
         switch self {
         case .showSidebar:
@@ -114,8 +108,6 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .nextPage:
             nil
-        case .smartBack:
-            L10n.Gestures.Value.Option.MoreInfo.smartBack
         case .quickSearch:
             L10n.Gestures.Value.Option.MoreInfo.quickSearch
         case .searchEntities:
