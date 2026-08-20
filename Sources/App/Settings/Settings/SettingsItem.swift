@@ -12,7 +12,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case notifications
     case liveActivities
     case sensors
-    case focus
     case nfc
     case macToolbar
     case widgets
@@ -39,7 +38,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
-        case .focus: return L10n.Focus.title
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
@@ -81,8 +79,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: Self.iconSize)
             case .sensors:
                 MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: Self.iconSize)
-            case .focus:
-                MaterialDesignIconsImage(icon: .moonWaningCrescentIcon, size: Self.iconSize)
             case .nfc:
                 MaterialDesignIconsImage(icon: .nfcVariantIcon, size: Self.iconSize)
             case .widgets:
@@ -149,8 +145,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             #endif
         case .sensors:
             SensorListView()
-        case .focus:
-            FocusSettingsView()
         case .nfc:
             TagsView()
         case .widgets:
@@ -185,8 +179,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             .servers,
             .gestures,
             .kiosk,
-            // Focus Filters are configured from the iOS Settings app.
-            .focus,
             .watch,
             .carPlay,
             .appIconShortcuts,
@@ -206,7 +198,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .liveActivities:
             return Self.canShowLiveActivities
-        case .remindersSync, .focus:
+        case .remindersSync:
             // Labs feature, limited to TestFlight builds while it matures.
             return Current.isTestFlight
         case .macToolbar:
@@ -243,7 +235,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
-        case .focus: return L10n.Settings.SearchKeywords.focus
         case .nfc: return L10n.Settings.SearchKeywords.nfc
         case .widgets: return L10n.Settings.SearchKeywords.widgets
         case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
@@ -281,7 +272,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return []
             #endif
         case .sensors: return SensorListView.settingsSearchEntries
-        case .focus: return FocusSettingsView.settingsSearchEntries
         case .nfc: return TagsView.settingsSearchEntries
         case .widgets: return CustomWidgetsListView.settingsSearchEntries
         case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries

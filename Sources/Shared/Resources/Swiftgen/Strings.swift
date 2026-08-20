@@ -5344,8 +5344,6 @@ public enum L10n {
       public static var complications: String { return L10n.tr("Localizable", "settings.search_keywords.complications") }
       /// logs, diagnostics, export, database, troubleshooting, reset
       public static var debugging: String { return L10n.tr("Localizable", "settings.search_keywords.debugging") }
-      /// focus filter, do not disturb, sleep, work, driving, personal
-      public static var focus: String { return L10n.tr("Localizable", "settings.search_keywords.focus") }
       /// appearance, theme, app icon, browser, links, display, launch
       public static var general: String { return L10n.tr("Localizable", "settings.search_keywords.general") }
       /// swipe, tap, navigation, shortcuts
@@ -6478,6 +6476,8 @@ public enum L10n {
       }
     }
     public enum Sensors {
+      /// Configure
+      public static var configure: String { return L10n.tr("Localizable", "settings_sensors.sensors.configure") }
       /// Enable all sensors
       public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.sensors.enable_all") }
       /// Sensors
