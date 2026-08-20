@@ -1611,7 +1611,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.car_play" = "voiture, véhicule, conduite, tableau de bord";
 "settings.search_keywords.complications" = "cadran, apple watch, aperçu";
 "settings.search_keywords.debugging" = "journaux, diagnostics, exportation, base de données, dépannage, réinitialisation";
-"settings.search_keywords.focus" = "focus filter, do not disturb, sleep, work, driving, personal";
 "settings.search_keywords.general" = "apparence, thème, icône de l'app, navigateur, liens, affichage, lancement";
 "settings.search_keywords.gestures" = "balayage, appui, navigation, raccourcis";
 "settings.search_keywords.greetings" = "vol, avion, aviation, voyage, bienvenue";

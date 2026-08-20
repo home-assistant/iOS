@@ -4,6 +4,7 @@ import PromiseKit
 
 final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     var cancellable: HACancellable?
+    private var focusFilterCancellable: HACancellable?
     private let signal: () -> Void
 
     init(signal: @escaping () -> Void) {
@@ -15,6 +16,7 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 
     deinit {
         cancellable?.cancel()
+        focusFilterCancellable?.cancel()
     }
 
     override func observe() {
@@ -31,6 +33,11 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
             }
             #endif
         }
+        // The sensor also stands on Focus Filter runs, whose own explicit sensor update can fail
+        // (unreachable server) — and they are the only signal when Focus status isn't shared.
+        focusFilterCancellable = Current.focusFilter.state.observe { [weak self] _ in
+            self?.signal()
+        }
         isObserving = true
 
         #if DEBUG
@@ -42,6 +49,7 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         super.stopObserving()
         guard isObserving else { return }
         cancellable?.cancel()
+        focusFilterCancellable?.cancel()
         isObserving = false
     }
 }

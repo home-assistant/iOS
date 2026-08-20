@@ -1611,7 +1611,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.search_keywords.car_play" = "자동차, 차량, 운전, 대시보드";
 "settings.search_keywords.complications" = "시계 페이스, 애플 워치, 한눈에 보기";
 "settings.search_keywords.debugging" = "로그, 진단, 내보내기, 데이터베이스, 문제 해결, 재설정";
-"settings.search_keywords.focus" = "집중 모드 필터, 방해 금지, 수면, 업무, 운전, 개인";
 "settings.search_keywords.general" = "외관, 테마, 앱 아이콘, 브라우저, 링크, 표시, 실행";
 "settings.search_keywords.gestures" = "스와이프, 탭, 탐색, 바로가기";
 "settings.search_keywords.greetings" = "비행, 비행기, 항공기, 여행, 환영";

@@ -1611,7 +1611,6 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "settings.search_keywords.car_play" = "bil, køretøj, kørsel, instrumentbræt";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
-"settings.search_keywords.focus" = "focus filter, do not disturb, sleep, work, driving, personal";
 "settings.search_keywords.general" = "udseende, tema, app-ikon, browser, links, skærm, opstart";
 "settings.search_keywords.gestures" = "swipe, stryg, tap, tryk, navigation, genveje";
 "settings.search_keywords.greetings" = "flyvning, fly, flyrejse, rejse, velkommen";

@@ -1611,7 +1611,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.search_keywords.car_play" = "汽車、車輛、駕駛、儀表板";
 "settings.search_keywords.complications" = "錶面、Apple Watch、快速瀏覽";
 "settings.search_keywords.debugging" = "記錄、診斷、匯出、資料庫、疑難排解、重設";
-"settings.search_keywords.focus" = "專注模式過濾、勿擾、睡眠、工作、駕駛、個人";
 "settings.search_keywords.general" = "外觀、主題、應用程式圖示、瀏覽器、連結、顯示、啟動";
 "settings.search_keywords.gestures" = "滑動、點按、導覽、快捷鍵";
 "settings.search_keywords.greetings" = "飛行、飛機、空中旅行、旅遊、歡迎";

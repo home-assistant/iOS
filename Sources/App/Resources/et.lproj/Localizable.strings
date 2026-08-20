@@ -1611,7 +1611,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.car_play" = "auto, sõiduk, juhtimine, kuvapaneel";
 "settings.search_keywords.complications" = "kella sihverplaat, Apple Watch, glance";
 "settings.search_keywords.debugging" = "logid, diagnostika, eksport, andmebaas, tõrkeotsing, lähtestamine";
-"settings.search_keywords.focus" = "focus filter, do not disturb, sleep, work, driving, personal";
 "settings.search_keywords.general" = "välimus, teema, rakenduse ikoon, brauser, lingid, kuvamine, käivitamine";
 "settings.search_keywords.gestures" = "pühkimine, puudutamine, navigeerimine, otseteed";
 "settings.search_keywords.greetings" = "lend, lennuk, lennuk, reisimine, tere tulemast";

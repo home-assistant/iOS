@@ -189,4 +189,32 @@ class FocusSensorTests: XCTestCase {
         // so it sticks around, but we don't need to access it directly
         await fulfillment(of: [expectation2], timeout: 10)
     }
+
+    /// A Focus Filter run must signal the sensor: its own explicit update can fail, and it is the
+    /// only signal when Focus status isn't shared.
+    @MainActor
+    func testSignalerFiresOnFilterRun() async throws {
+        setUpDependencies(status: .init(isFocused: true))
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let observationExpectation = expectation(description: "Observation")
+        let signalExpectation = expectation(description: "Signal")
+        let signaler = FocusSensorUpdateSignaler(signal: {
+            signalExpectation.fulfill()
+        })
+
+        signaler.notifyObservation = {
+            observationExpectation.fulfill()
+        }
+
+        await fulfillment(of: [observationExpectation], timeout: 10)
+
+        Current.focusFilter.state.value = FocusFilterState(
+            name: "Personal",
+            date: Date(),
+            lastKnownName: "Personal"
+        )
+
+        await fulfillment(of: [signalExpectation], timeout: 10)
+    }
 }
