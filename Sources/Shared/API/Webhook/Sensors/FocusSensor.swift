@@ -58,18 +58,27 @@ final class FocusSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        guard Current.focusStatus.isAvailable() else {
-            return .init(error: FocusError.unavailable)
+        // Everything we know, not just the live status: a Focus Filter run proves a Focus is on
+        // even while the live query still describes the one that just ended (or can't answer at
+        // all because the user doesn't share Focus status), and the status iOS pushed us is what
+        // says it ended. This is what flips the sensor when iOS wakes us for a Focus change.
+        let report = FocusReport.current()
+
+        if report.isFocused == nil {
+            // Only when nothing can answer do the old reasons apply, so the sensor still explains
+            // itself when the permission is missing.
+            guard Current.focusStatus.isAvailable() else {
+                return .init(error: FocusError.unavailable)
+            }
+
+            guard Current.focusStatus.authorizationStatus() == .authorized else {
+                return .init(error: FocusError.unauthorized)
+            }
         }
 
-        guard Current.focusStatus.authorizationStatus() == .authorized else {
-            return .init(error: FocusError.unauthorized)
-        }
-
-        let focusState = Current.focusStatus.status()
         var sensors = [WebhookSensor]()
 
-        if let isFocused = focusState.isFocused {
+        if let isFocused = report.isFocused {
             sensors.append(with(WebhookSensor(
                 name: "Focus",
                 uniqueID: WebhookSensorId.focus.rawValue,

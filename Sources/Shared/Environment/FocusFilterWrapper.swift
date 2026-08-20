@@ -4,14 +4,19 @@ import Foundation
 /// whichever process happens to be running.
 public struct FocusFilterState: Codable, Equatable {
     /// The `FocusName` the user paired with the Focus that activated, or `nil` when the filter ran
-    /// without one selected.
+    /// without one selected — including the reset run iOS makes when a Focus deactivates.
     public var name: String?
     /// When the filter last ran, so writing the same name twice still notifies observers.
     public var date: Date
+    /// The last non-empty name any filter run ever reported, surviving the nil-name runs that
+    /// clear `name`. iOS doesn't re-run the filter when the same Focus quickly reactivates, so
+    /// this is the only durable record of which Focus the user was last in.
+    public var lastKnownName: String?
 
-    public init(name: String?, date: Date) {
+    public init(name: String?, date: Date, lastKnownName: String? = nil) {
         self.name = name
         self.date = date
+        self.lastKnownName = lastKnownName
     }
 }
 
@@ -41,8 +46,18 @@ public class FocusFilterWrapper {
         self?.activeFocusState()?.name
     }
 
-    /// Called by the Focus Filter's App Intent when a Focus activates.
+    /// Called by the Focus Filter's App Intent when a Focus activates — and, with `nil`, when one
+    /// deactivates. A nil run must not erase the last name we knew: iOS skips re-running the
+    /// filter for quick reactivations, so the previous name is carried forward instead.
     public lazy var setActiveFocusName: (String?) -> Void = { [weak self] name in
-        self?.state.value = FocusFilterState(name: name, date: Current.date())
+        guard let self else { return }
+        let previous = state.value
+        let lastKnownName: String?
+        if let name, !name.isEmpty {
+            lastKnownName = name
+        } else {
+            lastKnownName = previous?.lastKnownName ?? previous?.name
+        }
+        state.value = FocusFilterState(name: name, date: Current.date(), lastKnownName: lastKnownName)
     }
 }
