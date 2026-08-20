@@ -41,6 +41,11 @@ struct FocusHowItWorksView: View {
             body: L10n.Focus.HowItWorks.Unpaired.body
         ),
         Step(
+            symbol: .clockArrowCirclepath,
+            title: L10n.Focus.HowItWorks.Automatic.title,
+            body: L10n.Focus.HowItWorks.Automatic.body
+        ),
+        Step(
             symbol: .handRaisedFill,
             title: L10n.Focus.HowItWorks.Privacy.title,
             body: L10n.Focus.HowItWorks.Privacy.body

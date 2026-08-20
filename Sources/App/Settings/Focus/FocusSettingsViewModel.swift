@@ -33,6 +33,15 @@ final class FocusSettingsViewModel: ObservableObject {
         load()
     }
 
+    /// Reports a name straight away, which is how the user recovers when iOS changed the Focus
+    /// without running the filter: nothing else will correct the name until a paired Focus starts.
+    func report(name: String?) {
+        Task {
+            await FocusNameReporter.report(name: name, source: .manual)
+            load()
+        }
+    }
+
     func delete(_ focusName: FocusName) {
         focusName.delete()
         // A deleted name may still be selected in a Focus Filter, so stop reporting it right away.

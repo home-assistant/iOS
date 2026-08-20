@@ -63,12 +63,29 @@ struct FocusSettingsView: View {
                     Text(L10n.Focus.Names.addMessage)
                 }
             }
-            Section(header: Text(L10n.Focus.Reported.header)) {
+            Section(
+                header: Text(L10n.Focus.Reported.header),
+                footer: Text(L10n.Focus.Reported.footer)
+            ) {
                 HStack {
                     Text(L10n.Focus.Reported.currentName)
                     Spacer()
                     Text(viewModel.activeFocusName ?? L10n.Focus.Reported.noneYet)
                         .foregroundStyle(.secondary)
+                }
+                if !viewModel.focusNames.isEmpty {
+                    Menu {
+                        ForEach(viewModel.focusNames) { focusName in
+                            Button(focusName.name) {
+                                viewModel.report(name: focusName.name)
+                            }
+                        }
+                        Button(L10n.Focus.Reported.reportNone) {
+                            viewModel.report(name: nil)
+                        }
+                    } label: {
+                        Label(L10n.Focus.Reported.reportNow, systemSymbol: .arrowClockwise)
+                    }
                 }
                 if !viewModel.isFocusSensorEnabled {
                     NavigationLink {
@@ -119,6 +136,7 @@ extension FocusSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Focus.Names.header),
             SettingsSearchEntry(L10n.Focus.Names.add),
             SettingsSearchEntry(L10n.Focus.HowItWorks.title),
+            SettingsSearchEntry(L10n.Focus.Reported.reportNow),
         ]
     }
 }

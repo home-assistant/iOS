@@ -659,6 +659,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.template.title") }
       }
     }
+    public enum ReportFocusName {
+      /// Reports which Focus is running, for Focus automations iOS doesn't run the Focus Filter for.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.report_focus_name.description") }
+      /// Report Focus name to Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "app_intents.report_focus_name.title") }
+      public enum FocusName {
+        /// Focus name
+        public static var title: String { return L10n.tr("Localizable", "app_intents.report_focus_name.focus_name.title") }
+      }
+    }
     public enum Scenes {
       /// Run Scene
       public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.title") }
@@ -2059,6 +2069,12 @@ public enum L10n {
       public static var intro: String { return L10n.tr("Localizable", "focus.how_it_works.intro") }
       /// How it works?
       public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.title") }
+      public enum Automatic {
+        /// iOS does not always run the filter when a Focus turns on by itself, on a schedule or from an automation — Sleep at bedtime is the usual one. Nothing reaches the app then, so the Focus that was running before keeps being reported. In Shortcuts, add a personal automation for that Focus that runs Report Focus name to Home Assistant, and it gets reported anyway.
+        public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.automatic.body") }
+        /// Focus that turns on by itself
+        public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.automatic.title") }
+      }
       public enum Filter {
         /// Open Settings > Focus on this device, pick a Focus, add Home Assistant under Focus Filters and choose the matching name.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.filter.body") }
@@ -2123,10 +2139,16 @@ public enum L10n {
     public enum Reported {
       /// Focus name
       public static var currentName: String { return L10n.tr("Localizable", "focus.reported.current_name") }
+      /// Report a name yourself when the one above is out of date, such as after a Focus turned on without running its filter.
+      public static var footer: String { return L10n.tr("Localizable", "focus.reported.footer") }
       /// Reported to Home Assistant
       public static var header: String { return L10n.tr("Localizable", "focus.reported.header") }
       /// Nothing reported yet
       public static var noneYet: String { return L10n.tr("Localizable", "focus.reported.none_yet") }
+      /// No Focus
+      public static var reportNone: String { return L10n.tr("Localizable", "focus.reported.report_none") }
+      /// Report a name now
+      public static var reportNow: String { return L10n.tr("Localizable", "focus.reported.report_now") }
     }
     public enum SensorDisabled {
       /// Turn on the Focus name sensor so the name reaches Home Assistant.

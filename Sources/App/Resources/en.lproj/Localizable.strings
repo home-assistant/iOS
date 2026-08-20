@@ -161,6 +161,9 @@
 "app_intents.render_template.description" = "Render a Home Assistant template. Only users with the admin role can perform this action.";
 "app_intents.render_template.template.title" = "Template";
 "app_intents.render_template.title" = "Render template";
+"app_intents.report_focus_name.description" = "Reports which Focus is running, for Focus automations iOS doesn't run the Focus Filter for.";
+"app_intents.report_focus_name.focus_name.title" = "Focus name";
+"app_intents.report_focus_name.title" = "Report Focus name to Home Assistant";
 "app_intents.scenes.failure_message.content" = "Scene \"%@\" failed to execute, please check your logs.";
 "app_intents.scenes.icon.title" = "Icon";
 "app_intents.scenes.parameter.scene.title" = "Scene";
@@ -562,6 +565,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
 "flight_greetings.empty_state.title" = "Have a nice flight";
 "flight_greetings.greeting" = "Have a nice flight!";
+"focus.how_it_works.automatic.body" = "iOS does not always run the filter when a Focus turns on by itself, on a schedule or from an automation — Sleep at bedtime is the usual one. Nothing reaches the app then, so the Focus that was running before keeps being reported. In Shortcuts, add a personal automation for that Focus that runs Report Focus name to Home Assistant, and it gets reported anyway.";
+"focus.how_it_works.automatic.title" = "Focus that turns on by itself";
 "focus.how_it_works.filter.body" = "Open Settings > Focus on this device, pick a Focus, add Home Assistant under Focus Filters and choose the matching name.";
 "focus.how_it_works.filter.title" = "Pair it with a Focus";
 "focus.how_it_works.intro" = "iOS tells apps that a Focus is on, but never which one. A Focus Filter is the one place iOS lets you hand that detail to an app, so you tell it the name once and it reports it from then on.";
@@ -587,8 +592,11 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "focus.permission_missing.body" = "Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.";
 "focus.permission_missing.title" = "Focus permission is off";
 "focus.reported.current_name" = "Focus name";
+"focus.reported.footer" = "Report a name yourself when the one above is out of date, such as after a Focus turned on without running its filter.";
 "focus.reported.header" = "Reported to Home Assistant";
 "focus.reported.none_yet" = "Nothing reported yet";
+"focus.reported.report_none" = "No Focus";
+"focus.reported.report_now" = "Report a name now";
 "focus.sensor_disabled.body" = "Turn on the Focus name sensor so the name reaches Home Assistant.";
 "focus.sensor_disabled.title" = "Focus name sensor is off";
 "focus.subtitle" = "Report which Focus is running to Home Assistant by pairing a name you create here with an iOS Focus Filter.";

@@ -56,6 +56,12 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 /// and restores the same name. Only knowing every Focus ended blanks it; not being able to tell
 /// keeps the last name rather than inventing a state.
 ///
+/// A Focus that iOS turns on by itself can replace the running one without running any filter and
+/// without changing the shared Focus status — a Sleep schedule at bedtime is the one users hit —
+/// and nothing here can tell that apart from the Focus we were told about still running. The name
+/// then stays on the previous Focus until something reports a new one, which is what the manual
+/// report in Focus settings and `ReportFocusNameAppIntent` (a Shortcuts automation) are for.
+///
 /// Labs feature, limited to TestFlight builds while it matures, matching the Focus settings screen
 /// where the names are created.
 final class FocusNameSensor: SensorProvider {
