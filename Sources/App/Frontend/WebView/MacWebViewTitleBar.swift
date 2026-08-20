@@ -74,6 +74,7 @@ extension MacWebViewTitleBar {
             .none,
             .nextPage,
             .backPage,
+            .openInBrowser,
             .smartBack
         ].contains($0) }
 
@@ -409,6 +410,8 @@ extension MacWebViewTitleBar {
                 .arrowUturnForward
             case .smartBack:
                 .arrowUturnBackward
+            case .openInBrowser:
+                .safari
             case .showServersList:
                 .serverRack
             case .nextServer:

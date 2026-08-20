@@ -21,6 +21,8 @@ final class WebViewGestureHandler {
             webViewNavigateForward()
         case .smartBack:
             smartBack()
+        case .openInBrowser:
+            webView?.openInBrowser()
         case .showServersList:
             showServersList()
         case .nextServer:
