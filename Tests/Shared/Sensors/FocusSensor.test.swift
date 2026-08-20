@@ -13,16 +13,32 @@ class FocusSensorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        Current.focusFilter = FocusFilterWrapper()
+        Current.focusStatus = FocusStatusWrapper()
+        Current.focusFilter.state.value = nil
+        Current.focusStatus.receivedStatus.value = nil
+    }
+
+    override func tearDown() {
+        Current.focusFilter.state.value = nil
+        Current.focusStatus.receivedStatus.value = nil
+        Current.focusFilter = FocusFilterWrapper()
+        Current.focusStatus = FocusStatusWrapper()
+        super.tearDown()
     }
 
     private func setUpDependencies(
         authorization: FocusStatusWrapper.AuthorizationStatus = .authorized,
         isAvailable: Bool = true,
-        status: FocusStatusWrapper.Status = .init(isFocused: nil)
+        status: FocusStatusWrapper.Status = .init(isFocused: nil),
+        filterState: FocusFilterState? = nil,
+        receivedStatus: FocusStatusState? = nil
     ) {
         Current.focusStatus.authorizationStatus = { authorization }
         Current.focusStatus.isAvailable = { isAvailable }
         Current.focusStatus.status = { status }
+        Current.focusStatus.lastReceived = { receivedStatus }
+        Current.focusFilter.activeFocusState = { filterState }
     }
 
     func testNotAvailable() throws {
@@ -80,6 +96,47 @@ class FocusSensorTests: XCTestCase {
         XCTAssertEqual(focusSensor.State as? Bool, false)
     }
 
+    /// A named Focus Filter run is proof a Focus started, standing even while the live status
+    /// still describes the Focus that just ended — this is what flips the sensor to true when iOS
+    /// wakes us for a Focus change.
+    func testIsFocusedYesWhileNamedFilterRunStandsDespiteLiveNo() throws {
+        setUpDependencies(
+            status: .init(isFocused: false),
+            filterState: .init(name: "Personal", date: Date(), lastKnownName: "Personal")
+        )
+
+        let sensors = try hang(FocusSensor(request: request).sensors())
+        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
+        XCTAssertEqual(focusSensor.State as? Bool, true)
+    }
+
+    /// The filter path doesn't need the Focus status permission, so a named run answers even when
+    /// the live status can't.
+    func testIsFocusedYesFromNamedFilterRunWithoutAuthorization() throws {
+        setUpDependencies(
+            authorization: .denied,
+            filterState: .init(name: "Personal", date: Date(), lastKnownName: "Personal")
+        )
+
+        let sensors = try hang(FocusSensor(request: request).sensors())
+        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
+        XCTAssertEqual(focusSensor.State as? Bool, true)
+    }
+
+    /// The nil-name run iOS makes when a Focus deactivates is not proof one is on: the pushed
+    /// status decides.
+    func testFilterResetRunDefersToTheReceivedStatus() throws {
+        let now = Date()
+        setUpDependencies(
+            filterState: .init(name: nil, date: now, lastKnownName: "Personal"),
+            receivedStatus: .init(isFocused: false, date: now, lastEndedDate: now)
+        )
+
+        let sensors = try hang(FocusSensor(request: request).sensors())
+        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
+        XCTAssertEqual(focusSensor.State as? Bool, false)
+    }
+
     func testUpdateSignalerCreated() throws {
         setUpDependencies(status: .init(isFocused: false))
 
@@ -131,5 +188,33 @@ class FocusSensorTests: XCTestCase {
 
         // so it sticks around, but we don't need to access it directly
         await fulfillment(of: [expectation2], timeout: 10)
+    }
+
+    /// A Focus Filter run must signal the sensor: its own explicit update can fail, and it is the
+    /// only signal when Focus status isn't shared.
+    @MainActor
+    func testSignalerFiresOnFilterRun() async throws {
+        setUpDependencies(status: .init(isFocused: true))
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let observationExpectation = expectation(description: "Observation")
+        let signalExpectation = expectation(description: "Signal")
+        let signaler = FocusSensorUpdateSignaler(signal: {
+            signalExpectation.fulfill()
+        })
+
+        signaler.notifyObservation = {
+            observationExpectation.fulfill()
+        }
+
+        await fulfillment(of: [observationExpectation], timeout: 10)
+
+        Current.focusFilter.state.value = FocusFilterState(
+            name: "Personal",
+            date: Date(),
+            lastKnownName: "Personal"
+        )
+
+        await fulfillment(of: [signalExpectation], timeout: 10)
     }
 }

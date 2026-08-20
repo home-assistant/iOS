@@ -47,29 +47,26 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     }
 }
 
-/// Reports _which_ Focus is running, which iOS has no API for.
+/// Reports _which_ Focus is running, which iOS has no API for — empty while none is.
 ///
 /// The user creates the names in the app's Focus settings and pairs each one with a Focus in
 /// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
-/// name for this sensor to send. `FocusReport` pairs that name with the Focus status iOS pushes us
-/// to work out whether it is still the Focus that is running.
+/// name for this sensor to send. The stored name is sticky — iOS wipes it on deactivation and
+/// skips re-running the filter for quick reactivations — so ending and restarting a Focus blanks
+/// and restores the same name. Only knowing every Focus ended blanks it; not being able to tell
+/// keeps the last name rather than inventing a state.
 ///
 /// Labs feature, limited to TestFlight builds while it matures, matching the Focus settings screen
 /// where the names are created.
 final class FocusNameSensor: SensorProvider {
     public enum FocusNameError: Error, Equatable {
-        /// No Focus name has been created, so there is nothing this sensor could ever report.
+        /// No Focus name has been created and none was ever reported, so there is nothing this
+        /// sensor could ever say. An errored provider drops out of the sensors list entirely, so
+        /// this must only fire while the feature is genuinely unused.
         case unconfigured
         /// Labs feature, limited to TestFlight builds while it matures.
         case unavailable
     }
-
-    /// Reported once iOS has told us every Focus ended, and while nothing has ever told us one is
-    /// running.
-    static let notFocusedState = "Not focused"
-    /// Reported while a Focus is running that no Focus Filter has named — either the user hasn't
-    /// paired that Focus yet, or the Focus status permission is missing so we can't tell.
-    static let unknownState = "Unknown"
 
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {
@@ -87,14 +84,15 @@ final class FocusNameSensor: SensorProvider {
             return .init(error: FocusNameError.unconfigured)
         }
 
+        // iOS does tell us when every Focus ends (the pushed status and the filter's reset run),
+        // so the name is blanked then; an inconclusive status keeps the last name rather than
+        // inventing a state. Empty is also the state before the first named filter run, which is
+        // what keeps the sensor registered from the moment the user creates their names.
         let state: String
-
-        if let name = report.name {
+        if let name = report.name, report.isFocused != false {
             state = name
-        } else if report.isFocused == false {
-            state = Self.notFocusedState
         } else {
-            state = Self.unknownState
+            state = ""
         }
 
         let sensor = with(WebhookSensor(

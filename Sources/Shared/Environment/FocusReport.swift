@@ -1,6 +1,7 @@
 import Foundation
 
-/// What we currently know about Focus: which named Focus is running, and whether any is at all.
+/// What we currently know about Focus: which named Focus the user was last in, and whether any
+/// Focus is running right now.
 ///
 /// Two sources each know half of it and neither is complete on its own. The Focus Filter runs when
 /// a Focus *starts* and is the only thing that ever tells us its name. `INShareFocusStatusIntent`
@@ -8,11 +9,11 @@ import Foundation
 /// asking iOS for that status back reports `false` for a Focus whose status the user doesn't
 /// share, and during a switch it still describes the Focus that just ended.
 ///
-/// So neither source is allowed to overrule the other outright: they are ordered by when they
-/// happened, and a filter run that nothing newer has ended stands as proof that its Focus is on.
+/// The name is deliberately sticky: iOS wipes the filter's name on deactivation and skips
+/// re-running the filter for quick reactivations, so the last reported name is the best answer to
+/// "which Focus?" at all times — `isFocused` is what answers "is one on?".
 public struct FocusReport: Equatable {
-    /// The name the Focus Filter reported for the running Focus. `nil` when no Focus is running, or
-    /// when the running one has no filter pairing it with a name.
+    /// The last name any Focus Filter run reported. `nil` only while no named filter has ever run.
     public let name: String?
     /// Whether any Focus is running, or `nil` when nothing we have access to can say.
     public let isFocused: Bool?
@@ -31,16 +32,23 @@ public struct FocusReport: Equatable {
         let filterState = Current.focusFilter.activeFocusState()
         let receivedStatus = Current.focusStatus.lastReceived()
 
-        if let filterState, !hasEnded(filterState: filterState, receivedStatus: receivedStatus) {
-            let reportedName = filterState.name
-            return .init(
-                name: reportedName?.isEmpty == false ? reportedName : nil,
-                // A filter only runs when a Focus starts, and nothing has told us it ended since.
-                isFocused: true
-            )
+        // Falling back to `name` covers state persisted before `lastKnownName` existed.
+        let lastKnownName = filterState?.lastKnownName ?? filterState?.name
+
+        let isFocused: Bool?
+        if let filterState, filterState.name?.isEmpty == false,
+           !hasEnded(filterState: filterState, receivedStatus: receivedStatus) {
+            // A filter only runs with a name when a Focus starts — the nil-name run iOS makes on
+            // deactivation must not count — and nothing has told us it ended since.
+            isFocused = true
+        } else {
+            isFocused = receivedStatus?.isFocused ?? liveIsFocused()
         }
 
-        return .init(name: nil, isFocused: receivedStatus?.isFocused ?? liveIsFocused())
+        return .init(
+            name: lastKnownName?.isEmpty == false ? lastKnownName : nil,
+            isFocused: isFocused
+        )
     }
 
     /// Whether iOS said every Focus had ended after the filter ran, which is what makes the name it
