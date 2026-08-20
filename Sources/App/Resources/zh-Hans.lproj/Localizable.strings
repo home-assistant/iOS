@@ -2598,6 +2598,16 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.automation.trigger.title" = "触发自动化";
 "widgets.automations.description" = "运行自动化";
 "widgets.button.reload_timeline" = "重新加载所有小组件";
+"widgets.calendar.all_day" = "All-day";
+"widgets.calendar.description" = "See what is coming up on your calendars.";
+"widgets.calendar.no_events" = "No upcoming events";
+"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
+"widgets.calendar.refresh_title" = "Refresh Calendar";
+"widgets.calendar.select_calendars" = "Edit widget to select calendars.";
+"widgets.calendar.title" = "Calendar";
+"widgets.calendar.today" = "Today";
+"widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "根据您的使用习惯显示常用实体。";
 "widgets.commonly_used_entities.empty.description" = "未找到常用实体。使用 Home Assistant 可构建您的使用历史记录。";
 "widgets.commonly_used_entities.title" = "通用控制";

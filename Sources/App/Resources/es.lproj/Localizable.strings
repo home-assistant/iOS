@@ -2600,6 +2600,16 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Recargar todos los widgets";
+"widgets.calendar.all_day" = "All-day";
+"widgets.calendar.description" = "See what is coming up on your calendars.";
+"widgets.calendar.no_events" = "No upcoming events";
+"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
+"widgets.calendar.refresh_title" = "Refresh Calendar";
+"widgets.calendar.select_calendars" = "Edit widget to select calendars.";
+"widgets.calendar.title" = "Calendar";
+"widgets.calendar.today" = "Today";
+"widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
 "widgets.commonly_used_entities.title" = "Common Controls";

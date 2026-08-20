@@ -82,7 +82,7 @@
 "app_intents.calendar.delete_event.scope.this_event" = "This event only";
 "app_intents.calendar.delete_event.scope.title" = "Delete";
 "app_intents.calendar.delete_event.title" = "Delete calendar event";
-"app_intents.calendar.entity.name" = "Calendar";
+"app_intents.calendar.entity.name" = "Календарь";
 "app_intents.calendar.error.create_unsupported" = "%@ does not allow adding events";
 "app_intents.calendar.error.delete_unsupported" = "%@ does not allow deleting events";
 "app_intents.calendar.error.event_not_deletable" = "%@ cannot be deleted because Home Assistant did not give it an identifier";
@@ -562,7 +562,7 @@
 "flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
 "flight_greetings.empty_state.title" = "Have a nice flight";
 "flight_greetings.greeting" = "Have a nice flight!";
-"focus.how_it_works.filter.body" = "Откройте Настройки > Фокусирование на этом устройстве, выберите фокусирование, добавьте Home Assistant в разделе Фильтры фокусировки и выберите подходящее название.";
+"focus.how_it_works.filter.body" = "Откройте Настройки > Фокусирование на этом устройстве, выберите фокусирование, добавьте Home Assistant в разделе Фильтры фокусирования и выберите подходящее название.";
 "focus.how_it_works.filter.title" = "Pair it with a Focus";
 "focus.how_it_works.intro" = "iOS tells apps that a Focus is on, but never which one. A Focus Filter is the one place iOS lets you hand that detail to an app, so you tell it the name once and it reports it from then on.";
 "focus.how_it_works.naming.body" = "Create a name here for each Focus you want reported. The name is sent exactly as you type it, so it is what you will see in Home Assistant.";
@@ -896,7 +896,7 @@
 "live_activity.sync.done" = "Synced";
 "live_activity.sync.footer" = "Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.";
 "live_activity.title" = "Эфир активности";
-"live_activity.token_unreachable.body" = "Home Assistant couldn't be reached to register this Live Activity, so it won't receive updates. Check the server's connection security level in the companion app settings, and if you rely on your internal URL make sure location permission is set to “Always”.";
+"live_activity.token_unreachable.body" = "Не удалось связаться с Home Assistant для регистрации этого эфира активности, поэтому оно не будет обновляться. Проверьте уровень безопасности подключения к серверу в настройках сопутствующего приложения. Если вы используете внутренний URL-адрес, убедитесь, что для разрешения геопозиции установлено значение «Всегда».";
 "live_activity.token_unreachable.title" = "Live Activity won't update";
 "location_change_notification.app_shortcut.body" = "Геопозиция обновлена командой приложения";
 "location_change_notification.background_fetch.body" = "Обновление геопозиции происходит в фоне";
@@ -1407,7 +1407,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.debugging.calendars.supported_features.delete" = "Delete events";
 "settings.debugging.calendars.supported_features.title" = "Supported features";
 "settings.debugging.calendars.supported_features.update" = "Update events";
-"settings.debugging.calendars.title" = "Calendars";
+"settings.debugging.calendars.title" = "Календари";
 "settings.debugging.clear_allowed_tags.alert_title" = "Очистить одобренные метки NFC?";
 "settings.debugging.clear_allowed_tags.clear_button" = "Очистить метки";
 "settings.debugging.clear_allowed_tags.message" = "Removes all NFC tags that this app has approved. You will need to approve those tags again before using them.";
@@ -2600,6 +2600,16 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.automation.trigger.title" = "Запустить автоматизацию";
 "widgets.automations.description" = "Запуск автоматизации";
 "widgets.button.reload_timeline" = "Перезагрузить все виджеты";
+"widgets.calendar.all_day" = "All-day";
+"widgets.calendar.description" = "See what is coming up on your calendars.";
+"widgets.calendar.no_events" = "No upcoming events";
+"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
+"widgets.calendar.refresh_title" = "Refresh Calendar";
+"widgets.calendar.select_calendars" = "Edit widget to select calendars.";
+"widgets.calendar.title" = "Calendar";
+"widgets.calendar.today" = "Today";
+"widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Отображайте часто используемые объекты на основе частоты использования.";
 "widgets.commonly_used_entities.empty.description" = "Часто используемые объекты не найдены. Используйте Home Assistant для формирования истории использования.";
 "widgets.commonly_used_entities.title" = "Стандартные элементы управления";

@@ -2600,6 +2600,16 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.automation.trigger.title" = "Attiva l'automazione";
 "widgets.automations.description" = "Esegui l'automazione";
 "widgets.button.reload_timeline" = "Ricarica tutti i widget";
+"widgets.calendar.all_day" = "All-day";
+"widgets.calendar.description" = "See what is coming up on your calendars.";
+"widgets.calendar.no_events" = "No upcoming events";
+"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
+"widgets.calendar.refresh_title" = "Refresh Calendar";
+"widgets.calendar.select_calendars" = "Edit widget to select calendars.";
+"widgets.calendar.title" = "Calendar";
+"widgets.calendar.today" = "Today";
+"widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Visualizza le entità che utilizzi più spesso in base alle tue abitudini di utilizzo.";
 "widgets.commonly_used_entities.empty.description" = "Non sono state trovate entità comunemente utilizzate. Utilizza Home Assistant per creare la cronologia dei tuoi utilizzi.";
 "widgets.commonly_used_entities.title" = "Controlli comuni";
