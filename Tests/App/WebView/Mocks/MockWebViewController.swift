@@ -39,6 +39,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var handleExternalAuthFailureExpectation: XCTestExpectation?
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
+    var openInBrowserCalled = false
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -62,6 +63,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func goForward() {
         // Simulate going forward
+    }
+
+    func openInBrowser() {
+        openInBrowserCalled = true
     }
 
     func styleUI() {
