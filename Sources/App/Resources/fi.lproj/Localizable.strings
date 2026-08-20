@@ -2688,7 +2688,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Luo widgetejä omalla tyylilläsi";
 "widgets.custom.title" = "Mukautetut widgetit";
 "widgets.details.description" = "Display states using from Home Assistant in text";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Toiminto";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
@@ -2718,7 +2717,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Entiteetin tila";
 "widgets.gauge.description" = "Home Assistantin numeeristen tilojen näyttäminen mittarissa";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Toiminto";
 "widgets.gauge.parameters.gauge_type" = "Mittarin tyyppi";

@@ -2686,7 +2686,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
 "widgets.custom.title" = "自定义小部件";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
-"widgets.details.description_with_warning" = "Home Assistant 中以文本形式显示状态。注意：管理员用户才有制作模板的权限";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";
@@ -2716,7 +2715,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "实体状态";
 "widgets.gauge.description" = "以仪表方式显示 Home Assistant 中的数字状态";
-"widgets.gauge.description_with_warning" = "Home Assistant 中以仪表形式显示数字状态。注意：管理员用户才有制作模板的权限";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "动作";
 "widgets.gauge.parameters.gauge_type" = "仪表类型";

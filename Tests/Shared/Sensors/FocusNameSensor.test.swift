@@ -12,18 +12,30 @@ class FocusNameSensorTests: XCTestCase {
         serverVersion: Version()
     )
 
+    private let now = Date(timeIntervalSince1970: 1_700_000_000)
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         try clearFocusNames()
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
+        Current.focusFilter.state.value = nil
+        Current.focusStatus.receivedStatus.value = nil
+        Current.date = { [now] in now }
+
+        let previousIsTestFlight = Current.isTestFlight
+        addTeardownBlock { Current.isTestFlight = previousIsTestFlight }
+        Current.isTestFlight = true
     }
 
     override func tearDownWithError() throws {
         try clearFocusNames()
+        Current.focusFilter.state.value = nil
+        Current.focusStatus.receivedStatus.value = nil
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
         Current.isAppExtension = false
+        Current.date = Date.init
         try super.tearDownWithError()
     }
 
@@ -33,20 +45,42 @@ class FocusNameSensorTests: XCTestCase {
         }
     }
 
+    /// - Parameters:
+    ///   - filterRan: how long before now the Focus Filter reported `activeFocusName`, so a test
+    ///     can place it before or after what the Focus status pushed.
+    ///   - receivedStatus: what iOS last pushed us, which is what tells us a Focus ended.
     private func setUpDependencies(
         activeFocusName: String?,
-        isFocused: Bool?,
+        filterRan: TimeInterval = -60,
+        receivedStatus: FocusStatusState? = nil,
+        liveIsFocused: Bool? = nil,
         focusAuthorization: FocusStatusWrapper.AuthorizationStatus = .authorized,
         focusAvailable: Bool = true
     ) {
-        Current.focusFilter.activeFocusName = { activeFocusName }
+        Current.focusFilter.activeFocusState = { [now] in
+            activeFocusName.map { FocusFilterState(name: $0, date: now.addingTimeInterval(filterRan)) }
+        }
+        Current.focusStatus.lastReceived = { receivedStatus }
         Current.focusStatus.isAvailable = { focusAvailable }
         Current.focusStatus.authorizationStatus = { focusAuthorization }
-        Current.focusStatus.status = { .init(isFocused: isFocused) }
+        Current.focusStatus.status = { .init(isFocused: liveIsFocused) }
+    }
+
+    private func received(
+        isFocused: Bool?,
+        at offset: TimeInterval,
+        lastEnded: TimeInterval? = nil
+    ) -> FocusStatusState {
+        let date = now.addingTimeInterval(offset)
+        return FocusStatusState(
+            isFocused: isFocused,
+            date: date,
+            lastEndedDate: lastEnded.map { now.addingTimeInterval($0) } ?? (isFocused == false ? date : nil)
+        )
     }
 
     func testUnconfiguredWithoutNamesOrActiveName() throws {
-        setUpDependencies(activeFocusName: nil, isFocused: true)
+        setUpDependencies(activeFocusName: nil, liveIsFocused: true)
 
         let promise = FocusNameSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -54,9 +88,20 @@ class FocusNameSensorTests: XCTestCase {
         }
     }
 
+    func testUnavailableOutsideTestFlight() throws {
+        Current.isTestFlight = false
+        FocusName(name: "Work").save()
+        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: true, at: -59))
+
+        let promise = FocusNameSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unavailable)
+        }
+    }
+
     func testReportsActiveNameWhileFocused() throws {
         FocusName(name: "Work").save()
-        setUpDependencies(activeFocusName: "Work", isFocused: true)
+        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: true, at: -59))
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors.count, 1)
@@ -65,78 +110,125 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
     }
 
-    func testReportsNotFocusedEvenWithStaleName() throws {
+    /// The bug behind #5467: iOS runs the new Focus' filter before it reports the status of the
+    /// switch, and reading the status back at that moment still says nothing is running — which
+    /// used to throw away the name the filter had just reported.
+    func testReportsNameReportedRightBeforeAStatusSayingNothingIsRunning() throws {
+        FocusName(name: "Personal").save()
+        setUpDependencies(
+            activeFocusName: "Personal",
+            filterRan: -1,
+            receivedStatus: received(isFocused: false, at: 0),
+            liveIsFocused: false
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Personal")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
+    /// A Focus whose status the user doesn't share reads back as "not focused" for as long as it
+    /// runs, so the name has to stand on the filter's word alone.
+    func testReportsNameWhileTheLiveStatusKeepsSayingNotFocused() throws {
+        FocusName(name: "Personal").save()
+        setUpDependencies(activeFocusName: "Personal", liveIsFocused: false)
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Personal")
+    }
+
+    func testReportsNotFocusedOnceEveryFocusEnded() throws {
         FocusName(name: "Work").save()
-        setUpDependencies(activeFocusName: "Work", isFocused: false)
+        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: false, at: -10))
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, FocusNameSensor.notFocusedState)
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, false)
     }
 
+    /// A Focus without a filter starting after every Focus ended must not inherit the name of the
+    /// Focus before it, even though the status now says one is running again.
+    func testReportsUnknownWhenAnUnpairedFocusStartsAfterTheNameWentStale() throws {
+        FocusName(name: "Work").save()
+        setUpDependencies(
+            activeFocusName: "Work",
+            receivedStatus: received(isFocused: true, at: -5, lastEnded: -10)
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, FocusNameSensor.unknownState)
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
     /// A configured name with nothing reported yet: the user created names but hasn't paired a
     /// Focus Filter with them, so we can't tell which Focus is running.
     func testReportsUnknownWhenNoFilterReported() throws {
         FocusName(name: "Work").save()
-        setUpDependencies(activeFocusName: nil, isFocused: true)
+        setUpDependencies(activeFocusName: nil, receivedStatus: received(isFocused: true, at: -5))
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, FocusNameSensor.unknownState)
     }
 
-    /// Without the Focus status permission the filter's name is all we have, and the "no Focus is
-    /// running" attribute has to be left off rather than guessed.
+    /// iOS sending a status without saying whether a Focus is running is not the same as saying
+    /// none is, so the reported name has to survive it.
+    func testKeepsTheNameWhenTheReceivedStatusIsUnknown() throws {
+        FocusName(name: "Work").save()
+        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: nil, at: -5))
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Work")
+    }
+
+    /// Without the Focus status permission nothing can tell us a Focus ended, so the filter's own
+    /// report is all there is — and it only ever runs when a Focus starts.
     func testReportsNameWithoutFocusAuthorization() throws {
-        setUpDependencies(activeFocusName: "Sleep", isFocused: false, focusAuthorization: .denied)
+        setUpDependencies(activeFocusName: "Sleep", focusAuthorization: .denied)
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, "Sleep")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
+    func testReportsUnknownWithoutAuthorizationAndWithoutAnyReport() throws {
+        FocusName(name: "Sleep").save()
+        setUpDependencies(activeFocusName: nil, focusAuthorization: .denied)
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, FocusNameSensor.unknownState)
         XCTAssertNil(sensors[0].Attributes?["Is focused"])
     }
 
     func testReportsNameWhenFocusStatusUnavailable() throws {
-        setUpDependencies(activeFocusName: "Sleep", isFocused: false, focusAvailable: false)
+        setUpDependencies(activeFocusName: "Sleep", focusAvailable: false)
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, "Sleep")
-        XCTAssertNil(sensors[0].Attributes?["Is focused"])
     }
 
-    /// The Focus Filter only runs when a Focus starts, so a received status saying nothing is
-    /// running is the only signal that the reported name is stale.
-    func testReceivedStatusClearsTheNameWhenEveryFocusEnded() throws {
+    /// The received status is what every process reads back, so it has to survive the one that
+    /// received it going away — and it has to remember when a Focus last ended.
+    func testReceivedStatusIsStoredWithWhenEveryFocusLastEnded() throws {
         Current.isAppExtension = true
-        var storedName: String? = "Work"
-        Current.focusFilter.activeFocusName = { storedName }
-        Current.focusFilter.setActiveFocusName = { storedName = $0 }
+
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, false)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastEndedDate, now)
+
+        Current.date = { [now] in now.addingTimeInterval(60) }
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: true))
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, true)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastEndedDate, now)
+    }
+
+    /// A received status must not destroy the reported name: whether it is still current depends on
+    /// when the filter ran, which is only known when the two are read back together.
+    func testReceivedStatusKeepsTheReportedName() throws {
+        Current.isAppExtension = true
+        Current.focusFilter.setActiveFocusName("Work")
 
         Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
 
-        XCTAssertNil(storedName)
-    }
-
-    func testReceivedStatusKeepsTheNameWhileAFocusRuns() throws {
-        Current.isAppExtension = true
-        var storedName: String? = "Work"
-        Current.focusFilter.activeFocusName = { storedName }
-        Current.focusFilter.setActiveFocusName = { storedName = $0 }
-
-        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: true))
-
-        XCTAssertEqual(storedName, "Work")
-    }
-
-    /// iOS sends an unknown focus state when the permission is there but it won't say; that is not
-    /// the same as "no Focus is running", so the name has to survive it.
-    func testReceivedStatusKeepsTheNameWhenFocusStateIsUnknown() throws {
-        Current.isAppExtension = true
-        var storedName: String? = "Work"
-        Current.focusFilter.activeFocusName = { storedName }
-        Current.focusFilter.setActiveFocusName = { storedName = $0 }
-
-        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: nil))
-        Current.focusStatus.update(fromReceived: nil)
-
-        XCTAssertEqual(storedName, "Work")
+        XCTAssertEqual(Current.focusFilter.activeFocusName(), "Work")
     }
 }

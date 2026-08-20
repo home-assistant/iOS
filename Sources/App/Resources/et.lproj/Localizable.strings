@@ -2688,7 +2688,6 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";
 "widgets.details.description" = "Kuva olekud kasutades Home Assistanti teksti";
-"widgets.details.description_with_warning" = "Home Assistanti olekute kuvamine tekstina. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Toiming";
 "widgets.details.parameters.details_template" = "Üksikasjade tekstimall (ainult ristkülikus)";
@@ -2718,7 +2717,6 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Üksuse olek";
 "widgets.gauge.description" = "Kuva Home Assistanti numbrilised olekud mõõturis";
-"widgets.gauge.description_with_warning" = "Home Assistanti numbriliste olekute kuvamine näidikul. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Toiming";
 "widgets.gauge.parameters.gauge_type" = "Mõõturi tüüp";

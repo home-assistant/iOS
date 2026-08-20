@@ -2688,7 +2688,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Skab widgets med din egen stil";
 "widgets.custom.title" = "Brugerdefinerede widgets";
 "widgets.details.description" = "Vis tilstande fra Home Assistant i tekstform";
-"widgets.details.description_with_warning" = "Vis tilstande, der bruges fra Home Assistant, i tekst. OBS: Brugeren skal være administrator for at få adgang til skabeloner";
 "widgets.details.gallery_description" = "Vis en enhed, en urkomplikation eller en skabelon fra Home Assistant som tekst";
 "widgets.details.parameters.action" = "Handling";
 "widgets.details.parameters.details_template" = "Detaljer tekstskabelon (kun i rektangulær familie)";
@@ -2718,7 +2717,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energi";
 "widgets.entity_state.placeholder" = "Entitettilstand";
 "widgets.gauge.description" = "Vis numeriske tilstande fra Home Assistant i en måler";
-"widgets.gauge.description_with_warning" = "Vis numeriske tilstande fra Home Assistant i en måler. OBS: Brugeren skal være administrator for at få adgang til skabelonerne";
 "widgets.gauge.gallery_description" = "Vis en enhed, en urkomplikation eller en skabelon fra Home Assistant i en måler";
 "widgets.gauge.parameters.action" = "Handling";
 "widgets.gauge.parameters.gauge_type" = "Målertype";

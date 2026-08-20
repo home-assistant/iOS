@@ -2688,7 +2688,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.subtitle" = "Δημιουργήστε γραφικά στοιχεία με το δικό σας στυλ";
 "widgets.custom.title" = "Προσαρμοσμένα γραφικά στοιχεία";
 "widgets.details.description" = "Εμφάνιση καταστάσεων με χρήση από το Home Assistant σε κείμενο";
-"widgets.details.description_with_warning" = "Εμφάνιση των καταστάσεων που χρησιμοποιούνται από το Home Assistant σε κείμενο. ΠΡΟΣΟΧΗ: Ο χρήστης πρέπει να είναι διαχειριστής για την πρόσβαση σε πρότυπα";
 "widgets.details.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant as text";
 "widgets.details.parameters.action" = "Ενέργεια";
 "widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";
@@ -2718,7 +2717,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.title" = "Energy";
 "widgets.entity_state.placeholder" = "Κατάσταση οντότητας";
 "widgets.gauge.description" = "Εμφάνιση αριθμητικών καταστάσεων από το Home Assistant σε ένα μετρητή";
-"widgets.gauge.description_with_warning" = "Εμφάνιση αριθμητικών καταστάσεων από το Home Assistant σε ένα μετρητή. ΠΡΟΣΟΧΗ: Ο χρήστης πρέπει να είναι διαχειριστής για την πρόσβαση σε πρότυπα";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
 "widgets.gauge.parameters.action" = "Ενέργεια";
 "widgets.gauge.parameters.gauge_type" = "Τύπος μετρητή";

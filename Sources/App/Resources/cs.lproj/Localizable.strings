@@ -2688,7 +2688,6 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
 "widgets.custom.title" = "Vlastní widgety";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
-"widgets.details.description_with_warning" = "Zobrazení stavů pomocí aplikace Home Assistant v textu. POZOR: Uživatel musí být správcem pro přístup k šablonám.";
 "widgets.details.gallery_description" = "Zobrazí entitu, komplikaci hodinek nebo šablonu z Home Assistanta jako text.";
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
@@ -2718,7 +2717,6 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.energy.title" = "Energie";
 "widgets.entity_state.placeholder" = "Stav entity";
 "widgets.gauge.description" = "Zobrazí číselné stavy z Home Assistanta na ukazateli.";
-"widgets.gauge.description_with_warning" = "Zobrazení číselných stavů z Home Assistanta na měřidle. POZOR: Uživatel musí být správcem pro přístup k šablonám.";
 "widgets.gauge.gallery_description" = "Zobrazí entitu, komplikaci hodinek nebo šablony z Home Assistanta v ukazateli.";
 "widgets.gauge.parameters.action" = "Akce";
 "widgets.gauge.parameters.gauge_type" = "Typ ukazatele";
