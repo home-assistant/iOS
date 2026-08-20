@@ -2598,6 +2598,16 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.automation.trigger.title" = "トリガーオートメーション";
 "widgets.automations.description" = "オートメーションの実行";
 "widgets.button.reload_timeline" = "すべてのウィジェットを再読み込み";
+"widgets.calendar.all_day" = "All-day";
+"widgets.calendar.description" = "See what is coming up on your calendars.";
+"widgets.calendar.no_events" = "No upcoming events";
+"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
+"widgets.calendar.refresh_title" = "Refresh Calendar";
+"widgets.calendar.select_calendars" = "Edit widget to select calendars.";
+"widgets.calendar.title" = "Calendar";
+"widgets.calendar.today" = "Today";
+"widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "使用パターンに基づいて、よく使用するエンティティを表示します。";
 "widgets.commonly_used_entities.empty.description" = "よく使用されるエンティティが見つかりませんでした。使用履歴を作成するには、Home Assistantを使用してください。";
 "widgets.commonly_used_entities.title" = "一般的なコントロール";
