@@ -46,10 +46,15 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     case none
 
     public init(from decoder: Decoder) throws {
-        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        let decodedRawValue = try decoder.singleValueContainer().decode(String.self)
         // Actions removed in newer versions decode as no-op instead of throwing, otherwise a single
         // stale entry would make the whole persisted gesture configuration fall back to defaults.
-        self = HAGestureAction(rawValue: rawValue) ?? .none
+        if let action = HAGestureAction(rawValue: decodedRawValue) {
+            self = action
+        } else {
+            Current.Log.info("Unknown gesture action '\(decodedRawValue)' decoded as none")
+            self = .none
+        }
     }
 
     public var category: HAGestureActionCategory {
