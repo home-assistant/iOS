@@ -1,12 +1,29 @@
-Welcome to Home Assistant Companion version 2019.1, also known as 2.0! It's been a very long time coming but it's finally here. Here's some of the new features in this release:
+New
+- Energy widget: follow your energy dashboard from the Home Screen and Lock Screen
+- Calendar widget: see your upcoming Home Assistant calendar events at a glance
+- Redesigned Apple Watch app: control lights, covers, fans, climate, locks and vacuums, browse areas, and see sensors on your wrist
+- All-new Apple Watch complications, fully customizable and configurable directly on the watch
+- Assist on Apple Watch, plus a medium-size Assist widget with support for multiple pipelines
+- Climate and vacuum controls in CarPlay, and folders for Quick Access
+- Automatic server switching based on your location
+- Apple Health sensors: share health data with Home Assistant (Labs)
+- Sync Apple Reminders with your Home Assistant to-do lists (Labs)
+- Search your entities from Spotlight, and new App Intents for events and calendars
+- New app icon and refreshed launch experience
 
-- Brand new push notification engine, powered by Firebase, for even more complex notifications than ever before, including critical notifications and much much more
-- Siri Shortcuts: Now, you can interact with your Home Assistant via Siri and the Shortcuts app
-- Apple Watch: Control your home via the Apple Watch app and monitor its status with Complications
-- Widget: Quickly trigger actions at home via a widget. Also available via home screen icon
-- Nabu Casa Cloud support: Cloudhooks and remote UI are here so you can (optionally) never open a port in your router again
-- New connection engine: now you can have internal and external URLs for total customizability
+Fixed
+- Many crashes and stability issues across iPhone, Apple Watch and Mac
+- Widgets and Assist audio now work on servers using mTLS client certificates
+- Camera stream orientation on iPad
+- Deep links no longer ignored while another screen is open
+- Apple Watch complications showing stale values
+- Deleted servers no longer reappear
 
-There's plenty more new features and improvements to discover instead. Check the forums and the new documentation for more information.
-
-Thanks for using Home Assistant Companion!
+Improved
+- Faster launch, and the app restores your last used server and page
+- Settings reorganized into clearer groups, now with search
+- Entity pickers with better search, filters and multiple selection
+- Better camera player with more reliable remote streaming
+- More reliable Apple Watch syncing and connectivity
+- The app now recovers automatically when your session expires
+- Live Activities: compact layout for Apple Watch and CarPlay, and progress bar options
