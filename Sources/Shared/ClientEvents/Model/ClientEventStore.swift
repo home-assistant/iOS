@@ -12,30 +12,36 @@ final class ClientEventStore: ClientEventStoreProtocol {
     static var jsonCacheName = "databases/clientEvents.json"
     /// Events are recorded from every queue in the app (main, the WatchConnectivity callbacks, the
     /// expiring-activity queue, cooperative pool tasks). Appending is a read-modify-write of one shared
-    /// file, so without this lock concurrent writers lose each other's events — and a reader landing
-    /// mid-write decodes a truncated file, which throws away the whole history.
-    private static let fileLock = NSLock()
+    /// file, so without serialization concurrent writers lose each other's events — and a reader
+    /// landing mid-write decodes a truncated file, which throws away the whole history.
+    ///
+    /// A serial queue (instead of a lock held on the caller's thread) also keeps the cost off the
+    /// recording thread: every append decodes and atomically rewrites a file holding up to 1000
+    /// events, which is far too slow for the main thread — the very first event ("Application
+    /// Starting") is recorded during app launch.
+    private static let ioQueue = DispatchQueue(label: "io.home-assistant.client-event-store", qos: .utility)
 
     public func addEvent(_ event: ClientEvent) {
         Current.Log.verbose("Adding event: \(event.text), \(event.jsonPayload)")
         let eventsCacheLimit = 1000
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        var events = readEvents()
-        events.append(event)
-        if events.count > eventsCacheLimit {
-            events = events.suffix(eventsCacheLimit)
+        Self.ioQueue.async { [self] in
+            var events = readEvents()
+            events.append(event)
+            if events.count > eventsCacheLimit {
+                events = events.suffix(eventsCacheLimit)
+            }
+            saveJSONData(events)
         }
-        saveJSONData(events)
     }
 
     public func getEvents() -> [ClientEvent] {
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        return readEvents()
+        // Sync on the serial queue so pending `addEvent` writes are visible to this read.
+        Self.ioQueue.sync {
+            readEvents()
+        }
     }
 
-    /// Unsynchronized read; callers must hold `fileLock`.
+    /// Unsynchronized read; callers must be on `ioQueue`.
     private func readEvents() -> [ClientEvent] {
         guard let containerURL = FileManager.default
             .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID) else {
@@ -63,12 +69,12 @@ final class ClientEventStore: ClientEventStoreProtocol {
     }
 
     public func clearAllEvents() {
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        saveJSONData([])
+        Self.ioQueue.sync {
+            saveJSONData([])
+        }
     }
 
-    /// Unsynchronized write; callers must hold `fileLock`.
+    /// Unsynchronized write; callers must be on `ioQueue`.
     private func saveJSONData(_ events: [ClientEvent]) {
         do {
             let fileURL = AppConstants.clientEventsFile

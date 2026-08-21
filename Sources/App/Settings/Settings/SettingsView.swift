@@ -335,8 +335,17 @@ struct SettingsView: View {
                     item.accessoryIcon
                 }
             }
-        } else {
+        } else if Current.isCatalyst {
+            // The Catalyst sidebar lives in a `NavigationView`, which value-based links don't
+            // support, so it keeps the eager destination.
             NavigationLink(destination: item.destinationView) {
+                settingsItemLabel(item, subtitle: subtitle)
+            }
+        } else {
+            // Value-based, resolved by `navigationDestination(for:)` in `iOSNavigationContent`, so
+            // `item.destinationView` — and every destination's stored properties with it — is only
+            // constructed on navigation instead of for every row on every list evaluation.
+            NavigationLink(value: item) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
         }
