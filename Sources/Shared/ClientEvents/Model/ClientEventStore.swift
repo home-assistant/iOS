@@ -28,7 +28,7 @@ final class ClientEventStore: ClientEventStoreProtocol {
             var events = readEvents()
             events.append(event)
             if events.count > eventsCacheLimit {
-                events = events.suffix(eventsCacheLimit)
+                events = Array(events.suffix(eventsCacheLimit))
             }
             saveJSONData(events)
         }
