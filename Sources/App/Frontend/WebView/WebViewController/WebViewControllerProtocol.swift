@@ -28,6 +28,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func openDebug()
     func goBack()
     func goForward()
+    func openInBrowser()
     func styleUI()
     func styleUI(publishesThemedStatusBar: Bool)
 }

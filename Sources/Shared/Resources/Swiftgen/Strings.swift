@@ -2257,6 +2257,8 @@ public enum L10n {
         public static var `none`: String { return L10n.tr("Localizable", "gestures.value.option.none") }
         /// Open debug
         public static var openDebug: String { return L10n.tr("Localizable", "gestures.value.option.open_debug") }
+        /// Open page in browser
+        public static var openInBrowser: String { return L10n.tr("Localizable", "gestures.value.option.open_in_browser") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
         /// Quick search
@@ -2276,6 +2278,8 @@ public enum L10n {
         /// Smart back
         public static var smartBack: String { return L10n.tr("Localizable", "gestures.value.option.smart_back") }
         public enum MoreInfo {
+          /// Opens the page currently shown in the app in your preferred browser
+          public static var openInBrowser: String { return L10n.tr("Localizable", "gestures.value.option.more_info.open_in_browser") }
           /// Quick search
           public static var quickSearch: String { return L10n.tr("Localizable", "gestures.value.option.more_info.quick_search") }
           /// Search commands
