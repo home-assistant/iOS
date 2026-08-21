@@ -5,6 +5,7 @@ New
 - All-new Apple Watch complications, fully customizable and configurable directly on the watch
 - Assist on Apple Watch, plus a medium-size Assist widget with support for multiple pipelines
 - Climate and vacuum controls in CarPlay, and folders for Quick Access
+- Live Activities: follow timers and progress from Home Assistant on your Lock Screen and Dynamic Island, now available to everyone
 - Automatic server switching based on your location
 - Apple Health sensors: share health data with Home Assistant (Labs)
 - Sync Apple Reminders with your Home Assistant to-do lists (Labs)
@@ -26,4 +27,3 @@ Improved
 - Better camera player with more reliable remote streaming
 - More reliable Apple Watch syncing and connectivity
 - The app now recovers automatically when your session expires
-- Live Activities: compact layout for Apple Watch and CarPlay, and progress bar options
