@@ -314,7 +314,10 @@ enum SettingsItem: String, Hashable, CaseIterable {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
         if Current.isDebug {
             return true
-        } else if case .paired = Communicator.shared.currentWatchState {
+        } else if case .paired = Communicator.shared.lastKnownWatchState {
+            // The cached state, not `currentWatchState`: `isVisible` runs on the main thread for
+            // every settings list evaluation, and the live getters synchronously wait on WCSession's
+            // internal operation queue, which can stall while the session is busy.
             return true
         }
         return false
@@ -339,9 +342,25 @@ struct MaterialDesignIconsImage: View {
     let icon: MaterialDesignIcons
     let size: CGFloat
 
+    /// Rendered glyph bitmaps keyed by icon and size. Rendering goes through CoreText into a bitmap
+    /// context, which is too slow to repeat for ~20 rows on every settings list body evaluation.
+    /// The image is displayed as a template (only its alpha channel matters), so the cache doesn't
+    /// need to vary by color or light/dark appearance.
+    private static let renderedImageCache = NSCache<NSString, UIImage>()
+
     var body: some View {
-        Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
+        Image(uiImage: Self.image(for: icon, size: size))
             .renderingMode(.template)
+    }
+
+    private static func image(for icon: MaterialDesignIcons, size: CGFloat) -> UIImage {
+        let cacheKey = "\(icon.unicode)-\(size)" as NSString
+        if let cached = renderedImageCache.object(forKey: cacheKey) {
+            return cached
+        }
+        let image = icon.image(ofSize: CGSize(width: size, height: size), color: .label)
+        renderedImageCache.setObject(image, forKey: cacheKey)
+        return image
     }
 }
 

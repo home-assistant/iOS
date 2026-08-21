@@ -19,22 +19,27 @@ enum AppIconShortcutItemsUpdater {
             publish(shortcutItems: forcedShortcutItems)
         }
 
-        let magicItemProvider = Current.magicItemProvider()
-        magicItemProvider.loadInformation { _ in
-            let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-            let configuredShortcutItems = config.items
-                .filter { $0.type != .unsupported }
-                .prefix(maximumShortcutItems)
-                .map { item in
-                    UIApplicationShortcutItem(
-                        type: shortcutType(for: item),
-                        localizedTitle: title(for: item, provider: magicItemProvider),
-                        localizedSubtitle: subtitle(for: item, provider: magicItemProvider),
-                        icon: icon(for: item, provider: magicItemProvider)
-                    )
-                }
-            let shortcutItems = forcedShortcutItems + configuredShortcutItems
-            publish(shortcutItems: shortcutItems)
+        // `loadInformation` fetches every entity, area, and device row for every server
+        // synchronously on the calling thread, and `update()` runs at app launch — keep that work
+        // off the main thread. The resulting items are published back on main.
+        DispatchQueue.global(qos: .utility).async {
+            let magicItemProvider = Current.magicItemProvider()
+            magicItemProvider.loadInformation { _ in
+                let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
+                let configuredShortcutItems = config.items
+                    .filter { $0.type != .unsupported }
+                    .prefix(maximumShortcutItems)
+                    .map { item in
+                        UIApplicationShortcutItem(
+                            type: shortcutType(for: item),
+                            localizedTitle: title(for: item, provider: magicItemProvider),
+                            localizedSubtitle: subtitle(for: item, provider: magicItemProvider),
+                            icon: icon(for: item, provider: magicItemProvider)
+                        )
+                    }
+                let shortcutItems = forcedShortcutItems + configuredShortcutItems
+                publish(shortcutItems: shortcutItems)
+            }
         }
     }
 
