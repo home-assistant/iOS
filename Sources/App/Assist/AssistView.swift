@@ -10,12 +10,11 @@ struct AssistView: View {
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
     private let feedbackGenerator = UINotificationFeedbackGenerator()
-    private var isIpad: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
 
     private let showCloseButton: Bool
 
@@ -244,7 +243,7 @@ struct AssistView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.vertical)
-        .padding(.bottom, isIpad ? DesignSystem.Spaces.two : DesignSystem.Spaces.half)
+        .padding(.bottom, horizontalSizeClass == .regular ? DesignSystem.Spaces.two : DesignSystem.Spaces.half)
         .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
         .opacity(viewModel.isRecording ? 0 : 1)
     }

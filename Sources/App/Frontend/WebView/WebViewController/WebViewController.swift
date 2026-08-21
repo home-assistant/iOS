@@ -329,6 +329,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
         }
+
+        // The strip depends on the horizontal size class, which changes with window resizes and
+        // foldables folding/unfolding — not just once per device.
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            updateThemedStatusBar()
+        }
     }
 
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
