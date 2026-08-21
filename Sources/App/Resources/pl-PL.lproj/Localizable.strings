@@ -1609,6 +1609,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
+"settings.search_keywords.focus" = "focus filter, do not disturb, sleep, work, driving, personal";
 "settings.search_keywords.general" = "appearance, theme, app icon, browser, links, display, launch";
 "settings.search_keywords.gestures" = "swipe, tap, navigation, shortcuts";
 "settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
@@ -1974,6 +1975,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.permissions.status.requested" = "Requested";
 "settings_sensors.permissions.status.restricted" = "Restricted";
 "settings_sensors.permissions.status.while_in_use" = "While in use";
+"settings_sensors.sensors.configure" = "Configure";
 "settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "Sensory";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
