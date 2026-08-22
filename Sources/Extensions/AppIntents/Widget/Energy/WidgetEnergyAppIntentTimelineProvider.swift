@@ -11,16 +11,20 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     static let expiration: Measurement<UnitDuration> = .init(value: 15, unit: .minutes)
 
     func placeholder(in context: Context) -> WidgetEnergyEntry {
-        WidgetEnergyEntry(
+        // The headline figures are the sample day's own totals, so the gallery card doesn't quote
+        // numbers the chart beneath it contradicts.
+        let points = WidgetEnergyChartSample.day(startingAt: Calendar.current.startOfDay(for: Current.date()))
+        let totals = WidgetEnergyChartSample.totals(of: points)
+        return WidgetEnergyEntry(
             isConfigured: true,
-            gridConsumed: 6.2,
-            gridReturned: 10.5,
-            solarGenerated: 12.4,
+            gridConsumed: totals.gridConsumed,
+            gridReturned: totals.gridReturned,
+            solarGenerated: totals.solarGenerated,
             cost: -0.49,
             currencyCode: "EUR",
             livePowerGrid: -250,
             livePowerSolar: 250,
-            chartPoints: Self.placeholderChart()
+            chartPoints: points
         )
     }
 
@@ -189,7 +193,12 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         entry.gridReturned = sumTotals(ids: ids.gridExport, in: stats)
         entry.solarGenerated = sumTotals(ids: ids.solar, in: stats)
         entry.cost = sumTotals(ids: ids.cost, in: stats)
-        entry.chartPoints = chartPoints(importIds: ids.gridImport, solarIds: ids.solar, in: stats)
+        entry.chartPoints = Self.chartPoints(
+            importIds: ids.gridImport,
+            exportIds: ids.gridExport,
+            solarIds: ids.solar,
+            in: stats
+        )
         return entry
     }
 
@@ -212,33 +221,42 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         return present.reduce(0) { $0 + (stats.totalChange(for: $1) ?? 0) }
     }
 
-    /// Builds the chart series: grid consumption and solar generation, both clamped to ≥ 0 and
-    /// stacked as positive bars, keyed per statistics bucket.
-    private func chartPoints(
+    /// Builds the chart series per statistics bucket: grid consumption, solar generation and energy
+    /// returned to the grid. All three are clamped to ≥ 0 — they are magnitudes, and the chart is
+    /// what decides which side of the axis each one is drawn on.
+    ///
+    /// Static and internal so the aggregation can be exercised directly: it is the step that decides
+    /// what the graph plots, and it has no seam through the live provider.
+    static func chartPoints(
         importIds: [String],
+        exportIds: [String],
         solarIds: [String],
         in stats: EnergyStatistics
     ) -> [WidgetEnergyEntry.ChartPoint] {
-        var gridByStart: [Date: Double] = [:]
-        var solarByStart: [Date: Double] = [:]
-        for id in importIds {
-            for bucket in stats.byStatId[id] ?? [] {
-                gridByStart[bucket.start, default: 0] += (bucket.change ?? 0)
-            }
-        }
-        for id in solarIds {
-            for bucket in stats.byStatId[id] ?? [] {
-                solarByStart[bucket.start, default: 0] += (bucket.change ?? 0)
-            }
-        }
-        let dates = Set(gridByStart.keys).union(solarByStart.keys).sorted()
+        let gridByStart = bucketTotals(ids: importIds, in: stats)
+        let returnedByStart = bucketTotals(ids: exportIds, in: stats)
+        let solarByStart = bucketTotals(ids: solarIds, in: stats)
+        let dates = Set(gridByStart.keys).union(solarByStart.keys).union(returnedByStart.keys).sorted()
         return dates.map { date in
             WidgetEnergyEntry.ChartPoint(
                 date: date,
                 grid: max(gridByStart[date] ?? 0, 0),
-                solar: max(solarByStart[date] ?? 0, 0)
+                solar: max(solarByStart[date] ?? 0, 0),
+                gridReturned: max(returnedByStart[date] ?? 0, 0)
             )
         }
+    }
+
+    /// Sums the given statistics' change per bucket start, merging the ids that feed one series —
+    /// a home can have several grid meters, and the graph plots their combined flow.
+    private static func bucketTotals(ids: [String], in stats: EnergyStatistics) -> [Date: Double] {
+        var totals: [Date: Double] = [:]
+        for id in ids {
+            for bucket in stats.byStatId[id] ?? [] {
+                totals[bucket.start, default: 0] += (bucket.change ?? 0)
+            }
+        }
+        return totals
     }
 
     // MARK: - Live power
@@ -327,21 +345,6 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
                     continuation.resume(returning: nil)
                 }
             }
-        }
-    }
-
-    private static func placeholderChart() -> [WidgetEnergyEntry.ChartPoint] {
-        let dayStart = Calendar.current.startOfDay(for: Current.date())
-        return (0 ..< 24).map { hour in
-            // Grid consumption peaks morning and evening; solar peaks midday.
-            let h = Double(hour)
-            let grid = 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6)
-            let solar = h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: grid,
-                solar: solar
-            )
         }
     }
 }

@@ -748,6 +748,7 @@
 				AppIntents/Widget/Details/WidgetDetailsAttributeAppEntity.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntent.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntentTimelineProvider.swift,
+				AppIntents/Widget/Energy/WidgetEnergyChartSample.swift,
 				AppIntents/Widget/Energy/WidgetEnergyEntry.swift,
 				AppIntents/Widget/Energy/WidgetEnergyPeriod.swift,
 				AppIntents/Widget/Energy/WidgetEnergySource.swift,

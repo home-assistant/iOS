@@ -36,8 +36,9 @@ struct WidgetEnergyEntry: TimelineEntry {
     var livePowerGrid: Double?
     var livePowerSolar: Double?
 
-    /// Per-bucket energy for the chart: grid consumption and solar generation, stacked as positive
-    /// bars above the axis, both in kWh.
+    /// Per-bucket energy for the chart, in kWh: what came from the grid, what solar generated, and
+    /// what went back to the grid. All three are magnitudes; the chart decides which side of the
+    /// axis each one is drawn on.
     var chartPoints: [ChartPoint] = []
 
     struct ChartPoint: Identifiable, Equatable {
@@ -47,6 +48,22 @@ struct WidgetEnergyEntry: TimelineEntry {
         let grid: Double
         /// Solar generated this bucket (kWh, ≥ 0).
         let solar: Double
+        /// Energy returned to the grid this bucket (kWh, ≥ 0).
+        let gridReturned: Double
+
+        /// Defaults `gridReturned` rather than relying on the memberwise initialiser, so the many
+        /// call sites describing a home without export keep reading as two series.
+        init(date: Date, grid: Double, solar: Double, gridReturned: Double = 0) {
+            self.date = date
+            self.grid = grid
+            self.solar = solar
+            self.gridReturned = gridReturned
+        }
+
+        /// The share of this bucket's generation the home used itself. The chart paints this over
+        /// the consumption bar and draws the exported remainder below the axis, so plotting raw
+        /// generation would count everything that was exported twice.
+        var solarUsed: Double { max(solar - gridReturned, 0) }
     }
 
     /// Whether the server reported anything for the period. Live power is deliberately excluded: it
