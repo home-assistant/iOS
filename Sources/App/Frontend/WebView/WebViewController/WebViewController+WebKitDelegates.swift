@@ -186,6 +186,14 @@ extension WebViewController {
 
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: style)
 
+        // iPad presents an unanchored action sheet as a popover and traps without location information,
+        // even in a compact-width window — anchor it to the web view, arrowless, as a backstop.
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = webView
+            popover.sourceRect = CGRect(x: webView.bounds.midX, y: webView.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+
         alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
             completionHandler(true)
         }))
