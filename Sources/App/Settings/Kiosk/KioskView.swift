@@ -12,10 +12,13 @@ struct ConditionalContainerView: View {
 
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone {
-            NavigationStack {
+            // Path-driven so Settings and the screens it pushes share one mechanism: a boolean
+            // `navigationDestination(isPresented:)` alongside Settings' value-based destinations made
+            // SwiftUI push Settings again in place of the screen that was tapped.
+            NavigationStack(path: $appSettings.pushPath) {
                 content
                     .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(isPresented: $appSettings.isPushPresented) {
+                    .navigationDestination(for: AppSettingsPushRoute.self) { _ in
                         SettingsView(embedInOwnNavigation: false)
                             .injectingViewControllerProvider()
                     }

@@ -31,7 +31,25 @@ final class AppSettingsPresenter: ObservableObject {
     static let shared = AppSettingsPresenter()
 
     @Published var isSheetPresented = false
-    @Published var isPushPresented = false
+    /// The container's navigation stack on iPhone: `AppSettingsPushRoute.settings` while Settings is pushed
+    /// over the frontend, followed by whatever `SettingsView` pushed on top of it. The path is the single
+    /// source of truth for that stack so its own push and Settings' pushes can't disagree on its depth.
+    @Published var pushPath = NavigationPath()
+
+    /// Whether Settings is pushed over the frontend, expressed through `pushPath`. Setting it to `false`
+    /// takes the screens Settings pushed with it, which is what every caller means by closing Settings.
+    var isPushPresented: Bool {
+        get { !pushPath.isEmpty }
+        set {
+            if newValue {
+                guard pushPath.isEmpty else { return }
+                pushPath.append(AppSettingsPushRoute.settings)
+            } else if !pushPath.isEmpty {
+                pushPath = NavigationPath()
+            }
+        }
+    }
+
     @Published private(set) var mode: Mode = .full
     /// Whether Settings is mounted behind the picker. It stays mounted once shown so that its navigation
     /// survives a collapse back to the picker; a sheet opened straight on the picker doesn't pay for it until
