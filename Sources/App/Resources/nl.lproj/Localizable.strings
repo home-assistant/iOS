@@ -624,6 +624,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.swipe_right.title" = "Veeg naar rechts";
 "gestures.value.option.assist" = "Assist openen";
 "gestures.value.option.back_page" = "Vorige pagina";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Snel zoeken";
 "gestures.value.option.more_info.search_commands" = "Commando's zoeken";
 "gestures.value.option.more_info.search_devices" = "Apparaten zoeken";
@@ -633,6 +634,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.next_server" = "Volgende server";
 "gestures.value.option.none" = "Geen";
 "gestures.value.option.open_debug" = "Debug openen";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Vorige server";
 "gestures.value.option.quick_search" = "Snel zoeken";
 "gestures.value.option.search_commands" = "Commando's zoeken";
@@ -1606,7 +1608,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.search.no_results.subtitle" = "Controleer de spelling of probeer een andere zoekopdracht.";
 "settings.search.no_results.title" = "Geen resultaten voor '%@'";
-"settings.search.prompt" = "Inztellingen zoeken";
+"settings.search.prompt" = "Instellingen zoeken";
 "settings.search_keywords.app_icon_shortcuts" = "snelle acties, startscherm, lang indrukken, launcher";
 "settings.search_keywords.car_play" = "auto, voertuig, rijden, dashboard";
 "settings.search_keywords.complications" = "wijzerplaat, Apple Watch, Glance";

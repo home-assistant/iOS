@@ -624,6 +624,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.swipe_right.title" = "Stryg til højre";
 "gestures.value.option.assist" = "Åbn Assist";
 "gestures.value.option.back_page" = "Tilbage til tidligere side";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Hurtig søgning";
 "gestures.value.option.more_info.search_commands" = "Søg i kommandoer";
 "gestures.value.option.more_info.search_devices" = "Søg i enheder";
@@ -633,6 +634,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.value.option.next_server" = "Næste server";
 "gestures.value.option.none" = "Ingen";
 "gestures.value.option.open_debug" = "Åbn fejlfinding";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Tidligere server";
 "gestures.value.option.quick_search" = "Hurtig søgning";
 "gestures.value.option.search_commands" = "Søg i kommandoer";

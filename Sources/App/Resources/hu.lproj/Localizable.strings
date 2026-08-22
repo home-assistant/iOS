@@ -624,6 +624,7 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "gestures.swipe_right.title" = "Csúsztassa jobbra";
 "gestures.value.option.assist" = "Assist megnyitása";
 "gestures.value.option.back_page" = "Vissza az előző oldalra";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Gyors keresés";
 "gestures.value.option.more_info.search_commands" = "Parancsok keresése";
 "gestures.value.option.more_info.search_devices" = "Eszközök keresése";
@@ -633,6 +634,7 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "gestures.value.option.next_server" = "Következő szerver";
 "gestures.value.option.none" = "Nincs";
 "gestures.value.option.open_debug" = "Hibakeresés megnyitása";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Előző szerver";
 "gestures.value.option.quick_search" = "Gyors keresés";
 "gestures.value.option.search_commands" = "Parancsok keresése";

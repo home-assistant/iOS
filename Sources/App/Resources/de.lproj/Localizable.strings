@@ -624,6 +624,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.assist" = "Assist öffnen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Schnellsuche";
 "gestures.value.option.more_info.search_commands" = "Befehle durchsuchen";
 "gestures.value.option.more_info.search_devices" = "Geräte durchsuchen";
@@ -633,6 +634,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
 "gestures.value.option.open_debug" = "Debuggen öffnen";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Vorheriger Server";
 "gestures.value.option.quick_search" = "Schnellsuche";
 "gestures.value.option.search_commands" = "Befehle durchsuchen";
@@ -1977,7 +1979,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings_sensors.permissions.status.requested" = "Angefordert";
 "settings_sensors.permissions.status.restricted" = "Eingeschränkt";
 "settings_sensors.permissions.status.while_in_use" = "Während der Nutzung";
-"settings_sensors.sensors.configure" = "Configure";
+"settings_sensors.sensors.configure" = "Konfigurieren";
 "settings_sensors.sensors.enable_all" = "Alle Sensoren aktivieren";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Keine Sensoren passen zu deiner Suche";
