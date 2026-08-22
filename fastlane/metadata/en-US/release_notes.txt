@@ -2,10 +2,10 @@ New
 - Energy widget: follow your energy dashboard from the Home Screen and Lock Screen
 - Calendar widget: see your upcoming Home Assistant calendar events at a glance
 - Redesigned Apple Watch app: control lights, covers, fans, climate, locks and vacuums, browse areas, and see sensors on your wrist
-- All-new Apple Watch complications, fully customizable and configurable directly on the watch
-- Assist on Apple Watch, plus a medium-size Assist widget with support for multiple pipelines
+- All-new Apple Watch complications, fully customizable and configurable directly on the watch (Labs)
+- Medium-size Assist widget with support for multiple pipelines
 - Climate and vacuum controls in CarPlay, and folders for Quick Access
-- Live Activities: follow timers and progress from Home Assistant on your Lock Screen and Dynamic Island. Thanks to Ryan (@rwarner on GitHub)
+- Live Activities: follow timers and progress from Home Assistant on your Lock Screen and Dynamic Island. Special thanks to Ryan (@rwarner on GitHub) for starting this one.
 - Automatic server switching based on your location
 - Apple Health sensors: share health data with Home Assistant (Labs)
 - Sync Apple Reminders with your Home Assistant to-do lists (Labs)
@@ -15,13 +15,11 @@ New
 Fixed
 - Many crashes and stability issues across iPhone, Apple Watch and Mac
 - Widgets and Assist audio now work on servers using mTLS client certificates
-- Camera stream orientation on iPad
 - Deep links no longer ignored while another screen is open
-- Apple Watch complications showing stale values
 - Deleted servers no longer reappear
 
 Improved
-- Faster launch, and the app restores your last used server and page
+- Faster launch
 - Settings reorganized into clearer groups, now with search
 - Entity pickers with better search, filters and multiple selection
 - Better camera player with more reliable remote streaming
