@@ -43,6 +43,10 @@ public final class WatchConnectivityManager: NSObject {
     private var cachedReceivedContext: [String: Any]?
     #if os(iOS)
     var complicationCompletions: [ObjectIdentifier: (Result<Int, Error>) -> Void] = [:]
+
+    /// In-memory copy of the most recently observed watch state; see `lastKnownWatchState`.
+    private let watchStateCacheLock = NSLock()
+    private var cachedWatchState: HAWatchConnectivity.WatchState?
     #endif
 
     public let state = HAWatchConnectivity.Observable<HAWatchConnectivity.SessionState>()
@@ -133,6 +137,20 @@ public final class WatchConnectivityManager: NSObject {
                 : .notEnabled
         return .paired(.installed(complicationState, session.watchDirectoryURLProxy))
     }
+
+    /// The watch state most recently broadcast by `notifyWatchState()` — i.e. read at activation and
+    /// on every `sessionWatchStateDidChange`, both away from the main thread.
+    ///
+    /// `currentWatchState` reads several `WCSession` properties that synchronously wait on the
+    /// session's internal operation queue (see `mostRecentlyReceivedContext` for the same problem),
+    /// so main-thread callers that only need the latest known state — e.g. deciding whether to show
+    /// watch-related UI — should read this instead of blocking on the live getters. `.notPaired`
+    /// until the session has activated.
+    public var lastKnownWatchState: HAWatchConnectivity.WatchState {
+        watchStateCacheLock.lock()
+        defer { watchStateCacheLock.unlock() }
+        return cachedWatchState ?? .notPaired
+    }
     #endif
 
     /// Claim `WCSession.default.delegate` and activate. Called once at startup by
@@ -165,7 +183,13 @@ public final class WatchConnectivityManager: NSObject {
     }
 
     #if os(iOS)
-    func notifyWatchState() { watchState.notify(currentWatchState) }
+    func notifyWatchState() {
+        let state = currentWatchState
+        watchStateCacheLock.lock()
+        cachedWatchState = state
+        watchStateCacheLock.unlock()
+        watchState.notify(state)
+    }
     #endif
 
     /// Resolve a file (blob) transfer completion by handle identity. Called by the delegate with the

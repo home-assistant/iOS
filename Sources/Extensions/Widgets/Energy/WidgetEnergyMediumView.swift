@@ -85,37 +85,26 @@ struct WidgetEnergyMediumView: View {
 #Preview(as: .systemMedium) {
     WidgetEnergy()
 } timeline: {
+    let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+    let points = WidgetEnergyChartSample.day(startingAt: dayStart)
+    let totals = WidgetEnergyChartSample.totals(of: points)
+
     WidgetEnergyEntry(
         isConfigured: true,
-        gridConsumed: 6.2,
-        gridReturned: 10.5,
-        solarGenerated: 12.4,
+        gridConsumed: totals.gridConsumed,
+        gridReturned: totals.gridReturned,
+        solarGenerated: totals.solarGenerated,
         cost: -0.49,
         currencyCode: "EUR",
-        chartPoints: (0 ..< 24).map { hour in
-            let h = Double(hour)
-            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6),
-                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            )
-        }
+        chartPoints: points
     )
-    // A home with solar but no grid statistics: the grid figure is dropped, not blanked.
+    // A home with solar but no grid statistics: the grid figure is dropped, not blanked, and with
+    // nothing exported on screen the chart plots the full generation.
     WidgetEnergyEntry(
         period: .today,
         isConfigured: true,
-        solarGenerated: 40.3,
-        chartPoints: (0 ..< 24).map { hour in
-            let h = Double(hour)
-            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: 0,
-                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            )
-        }
+        solarGenerated: totals.solarGenerated,
+        chartPoints: points.map { .init(date: $0.date, grid: 0, solar: $0.solar) }
     )
     // Early in the day, before any statistics exist.
     WidgetEnergyEntry(period: .today, isConfigured: true)

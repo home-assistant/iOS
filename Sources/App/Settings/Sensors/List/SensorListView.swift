@@ -132,6 +132,7 @@ struct SensorListView: View {
                 } label: {
                     HStack {
                         Text(L10n.SettingsSensors.Health.Sensors.title)
+                        LabsLabel()
                         Spacer()
                         // Inside the label rather than `.badge`, so the count sits between the
                         // title and the disclosure chevron instead of after it.

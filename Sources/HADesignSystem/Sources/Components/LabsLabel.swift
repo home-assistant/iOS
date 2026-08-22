@@ -7,17 +7,21 @@ public struct LabsLabel: View {
     @State private var showInfo = false
     private let info: String?
 
+    /// Rendered once and reused: the glyph is drawn through CoreText into a bitmap context, which is
+    /// too slow to repeat on every body evaluation of every row carrying the label.
+    private static let labsIcon = MaterialDesignIcons.testTubeIcon.image(
+        ofSize: .init(width: 15, height: 15),
+        color: .white
+    )
+
     public init(info: String? = nil) {
         self.info = info
     }
 
     public var body: some View {
         HStack(spacing: .zero) {
-            Image(uiImage: MaterialDesignIcons.testTubeIcon.image(
-                ofSize: .init(width: 15, height: 15),
-                color: .white
-            ))
-            .padding(.leading, DesignSystem.Spaces.one)
+            Image(uiImage: Self.labsIcon)
+                .padding(.leading, DesignSystem.Spaces.one)
             Text("Labs")
                 .font(.caption2.bold())
                 .padding(.leading, DesignSystem.Spaces.half)

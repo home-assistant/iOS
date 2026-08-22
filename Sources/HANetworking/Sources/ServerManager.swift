@@ -490,13 +490,23 @@ public final class ServerManagerImpl: ServerManager {
     }
 
     private func syncMirrorStoreFromKeychain() {
-        // The mirror is a best-effort startup snapshot, not a second source of truth.
-        // Rebuild it from the current Keychain contents whenever the app opens.
-        mirrorStore.removeAll()
-        for (key, value) in keychain.allServerInfo(decoder: decoder) {
-            mirrorStore.set(value, key: key)
+        // The mirror is a best-effort startup snapshot, not a second source of truth. Rebuild it
+        // from the current Keychain contents whenever the app opens — but only when the snapshot
+        // actually changed: this runs synchronously during launch, and the delete-all plus one
+        // insert per server otherwise costs several write transactions on the shared database
+        // queue every single launch.
+        let desired = keychain.allServerInfo(decoder: decoder)
+            .map { key, info in (key, info.mirroredForPersistence) }
+        let desiredByKey = Dictionary(desired, uniquingKeysWith: { first, _ in first })
+        let existingByKey = Dictionary(mirrorStore.allServerInfo(), uniquingKeysWith: { first, _ in first })
+
+        if desiredByKey != existingByKey {
+            mirrorStore.removeAll()
+            for (key, value) in desired {
+                mirrorStore.set(value, key: key)
+            }
         }
-        pruneRestoredMirroredServers(validKeys: Set(mirrorStore.allKeys()))
+        pruneRestoredMirroredServers(validKeys: Set(desiredByKey.keys))
     }
 
     private var restoredMirroredServers: Set<String> {

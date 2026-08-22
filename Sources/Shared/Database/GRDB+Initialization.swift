@@ -107,14 +107,28 @@ public extension DatabaseQueue {
             GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
             "entityRegistry",
         ]
-        for tableName in obsoleteTables {
+        // Check existence in a single read first: on a steady-state launch none of these tables
+        // exist anymore, and this runs on the main thread as part of the first database access, so
+        // it must not open write transactions it doesn't need.
+        let existingObsoleteTables: [String]
+        do {
+            existingObsoleteTables = try database.read { db in
+                try obsoleteTables.filter { try db.tableExists($0) }
+            }
+        } catch {
+            Current.Log.verbose(
+                "Failed to check for obsolete GRDB tables, error: \(error.localizedDescription)"
+            )
+            return
+        }
+        for tableName in existingObsoleteTables {
             do {
                 try database.write { db in
                     try db.drop(table: tableName)
                 }
             } catch {
                 Current.Log.verbose(
-                    "Failed or not needed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
+                    "Failed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
                 )
             }
         }
@@ -377,24 +391,31 @@ protocol DatabaseTableProtocol {
 extension DatabaseTableProtocol {
     /// Migrates the table by adding new columns and removing obsolete columns
     func migrateColumns(database: DatabaseQueue) throws {
-        try database.write { db in
-            let existingColumns = try db.columns(in: tableName)
-            let definedColumnSet = Set(definedColumns)
+        // Inspect the schema in a read first and only open a write transaction when something
+        // actually changed: this runs for every table on the first database access of a launch
+        // (on the main thread), and on a steady-state launch nothing needs migrating.
+        let existingColumnNames = try database.read { db in
+            try db.columns(in: tableName).map(\.name)
+        }
+        let existingColumnSet = Set(existingColumnNames)
+        let definedColumnSet = Set(definedColumns)
 
+        let columnsToAdd = definedColumns.filter { !existingColumnSet.contains($0) }
+        let columnsToDrop = existingColumnNames.filter { !definedColumnSet.contains($0) }
+        guard !columnsToAdd.isEmpty || !columnsToDrop.isEmpty else { return }
+
+        try database.write { db in
             // Add new columns that don't exist yet
-            for columnName in definedColumns {
-                let shouldCreateColumn = !existingColumns.contains { $0.name == columnName }
-                if shouldCreateColumn {
-                    try db.alter(table: tableName) { tableAlteration in
-                        tableAlteration.add(column: columnName)
-                    }
+            for columnName in columnsToAdd {
+                try db.alter(table: tableName) { tableAlteration in
+                    tableAlteration.add(column: columnName)
                 }
             }
 
             // Remove columns that are no longer defined
-            for existingColumn in existingColumns where !definedColumnSet.contains(existingColumn.name) {
+            for columnName in columnsToDrop {
                 try db.alter(table: tableName) { tableAlteration in
-                    tableAlteration.drop(column: existingColumn.name)
+                    tableAlteration.drop(column: columnName)
                 }
             }
         }

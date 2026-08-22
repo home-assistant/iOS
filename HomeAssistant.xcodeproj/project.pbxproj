@@ -748,6 +748,7 @@
 				AppIntents/Widget/Details/WidgetDetailsAttributeAppEntity.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntent.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntentTimelineProvider.swift,
+				AppIntents/Widget/Energy/WidgetEnergyChartSample.swift,
 				AppIntents/Widget/Energy/WidgetEnergyEntry.swift,
 				AppIntents/Widget/Energy/WidgetEnergyPeriod.swift,
 				AppIntents/Widget/Energy/WidgetEnergySource.swift,
@@ -2089,6 +2090,7 @@
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
 		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
 		42DF4EE5302CACB600589E49 /* FlightGreetings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FlightGreetings; sourceTree = "<group>"; };
@@ -2611,6 +2613,7 @@
 				42EDBB893002FBBE0051FC9B /* Auth */,
 				42EDBB7B3002FBBE0051FC9B /* CarPlay */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
+				42CE0001300000000051FC9B /* Container */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				119C786625CF845800D41734 /* LocalizedStrings.test.swift */,
 				42EDBB743002FBBE0051FC9B /* MagicItem */,
@@ -3152,6 +3155,7 @@
 				42EDBBEF3002FBC90051FC9B /* Notifications */,
 				42EDBBF33002FBC90051FC9B /* WhatsNew */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
+				42CE0001300000000051FC9B /* Container */,
 			);
 			name = "Tests-App";
 			packageProductDependencies = (
