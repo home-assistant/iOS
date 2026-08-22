@@ -624,6 +624,7 @@
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.assist" = "Open Assist";
 "gestures.value.option.back_page" = "Back to previous page";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Szybkie wyszukiwanie";
 "gestures.value.option.more_info.search_commands" = "Search commands";
 "gestures.value.option.more_info.search_devices" = "Search devices";
@@ -633,6 +634,7 @@
 "gestures.value.option.next_server" = "Następny serwer";
 "gestures.value.option.none" = "None";
 "gestures.value.option.open_debug" = "Open debug";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Poprzedni serwer";
 "gestures.value.option.quick_search" = "Szybkie wyszukiwanie";
 "gestures.value.option.search_commands" = "Search commands";
