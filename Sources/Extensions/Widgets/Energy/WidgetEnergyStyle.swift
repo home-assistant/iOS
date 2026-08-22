@@ -15,6 +15,8 @@ enum WidgetEnergyStyle {
     static let solar = Color(red: 1.0, green: 0.596, blue: 0.0)
     /// Energy consumed from the grid. Matches the frontend `--energy-grid-consumption-color` (#488fc2).
     static let consumption = Color(red: 0.282, green: 0.561, blue: 0.761)
+    /// Energy returned to the grid. Matches the frontend `--energy-grid-return-color` (#8353d1).
+    static let gridReturn = Color(red: 0.514, green: 0.325, blue: 0.820)
 
     /// Unit symbol for energy, sourced from Foundation rather than hardcoded.
     static let energyUnit = UnitEnergy.kilowattHours.symbol
