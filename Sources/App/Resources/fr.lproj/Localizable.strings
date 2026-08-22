@@ -624,6 +624,7 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "gestures.swipe_right.title" = "Balayer vers la droite";
 "gestures.value.option.assist" = "Ouvrir Assist";
 "gestures.value.option.back_page" = "Retour à la page précédente";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Recherche rapide";
 "gestures.value.option.more_info.search_commands" = "Rechercher des commandes";
 "gestures.value.option.more_info.search_devices" = "Rechercher des appareils";
@@ -633,6 +634,7 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "gestures.value.option.next_server" = "Serveur suivant";
 "gestures.value.option.none" = "Aucun";
 "gestures.value.option.open_debug" = "Ouvrir le débogage";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Serveur précédent";
 "gestures.value.option.quick_search" = "Recherche rapide";
 "gestures.value.option.search_commands" = "Rechercher des commandes";

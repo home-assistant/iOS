@@ -624,6 +624,7 @@
 "gestures.swipe_right.title" = "右にスワイプ";
 "gestures.value.option.assist" = "アシストを開く";
 "gestures.value.option.back_page" = "前のページへ";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "クイック検索";
 "gestures.value.option.more_info.search_commands" = "検索コマンド";
 "gestures.value.option.more_info.search_devices" = "デバイスを検索";
@@ -633,6 +634,7 @@
 "gestures.value.option.next_server" = "次のサーバー";
 "gestures.value.option.none" = "なし";
 "gestures.value.option.open_debug" = "デバッグを開く";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "前のサーバー";
 "gestures.value.option.quick_search" = "クイック検索";
 "gestures.value.option.search_commands" = "検索コマンド";

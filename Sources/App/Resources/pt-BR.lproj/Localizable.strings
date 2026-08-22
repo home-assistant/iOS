@@ -624,6 +624,7 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "gestures.swipe_right.title" = "Deslize para a direita";
 "gestures.value.option.assist" = "Abrir Assist";
 "gestures.value.option.back_page" = "Voltar para a página anterior";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Pesquisa rápida";
 "gestures.value.option.more_info.search_commands" = "Pesquisar comandos";
 "gestures.value.option.more_info.search_devices" = "Pesquisar dispositivos";
@@ -633,6 +634,7 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "gestures.value.option.next_server" = "Próximo servidor";
 "gestures.value.option.none" = "Nenhum";
 "gestures.value.option.open_debug" = "Abrir depuração";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Servidor anterior";
 "gestures.value.option.quick_search" = "Pesquisa rápida";
 "gestures.value.option.search_commands" = "Pesquisar comandos";

@@ -624,6 +624,7 @@
 "gestures.swipe_right.title" = "向右滑";
 "gestures.value.option.assist" = "開啟助理";
 "gestures.value.option.back_page" = "回上一頁";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "快速搜尋";
 "gestures.value.option.more_info.search_commands" = "搜尋命令";
 "gestures.value.option.more_info.search_devices" = "搜尋裝置";
@@ -633,6 +634,7 @@
 "gestures.value.option.next_server" = "下一個伺服器";
 "gestures.value.option.none" = "無";
 "gestures.value.option.open_debug" = "開啟除錯";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "上一個伺服器";
 "gestures.value.option.quick_search" = "快速搜尋";
 "gestures.value.option.search_commands" = "搜尋命令";
@@ -1977,7 +1979,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.permissions.status.requested" = "已請求";
 "settings_sensors.permissions.status.restricted" = "受限制";
 "settings_sensors.permissions.status.while_in_use" = "使用時";
-"settings_sensors.sensors.configure" = "Configure";
+"settings_sensors.sensors.configure" = "設定";
 "settings_sensors.sensors.enable_all" = "啟用所有感測器";
 "settings_sensors.sensors.header" = "感測器";
 "settings_sensors.sensors.no_results" = "未找到符合搜尋條件的感測器。";

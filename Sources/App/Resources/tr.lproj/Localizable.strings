@@ -624,6 +624,7 @@
 "gestures.swipe_right.title" = "Sağa Kaydır";
 "gestures.value.option.assist" = "Açık Asistan";
 "gestures.value.option.back_page" = "Önceki sayfaya dön";
+"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Hızlı arama";
 "gestures.value.option.more_info.search_commands" = "Komutları Ara";
 "gestures.value.option.more_info.search_devices" = "Cihazları ara";
@@ -633,6 +634,7 @@
 "gestures.value.option.next_server" = "Sonraki sunucu";
 "gestures.value.option.none" = "Hiçbiri";
 "gestures.value.option.open_debug" = "Hata ayıklamayı aç";
+"gestures.value.option.open_in_browser" = "Open page in browser";
 "gestures.value.option.previous_server" = "Önceki sunucu";
 "gestures.value.option.quick_search" = "Hızlı arama";
 "gestures.value.option.search_commands" = "Arama komutları";
