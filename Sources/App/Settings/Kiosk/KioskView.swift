@@ -7,11 +7,12 @@ struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
     @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showKioskSettings = false
     @Namespace private var serverSelectionNamespace
 
     var body: some View {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if horizontalSizeClass == .compact {
             NavigationStack {
                 content
                     .toolbar(.hidden, for: .navigationBar)

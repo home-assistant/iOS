@@ -13,6 +13,7 @@ private enum AppleLikeBottomSheetConstants {
 
 public struct AppleLikeBottomSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Used for appear and disappear bottom sheet animation
     @State private var displayBottomSheet = false
     private let title: String?
@@ -119,7 +120,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var maxWidth: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if horizontalSizeClass == .compact {
             .infinity
         } else {
             400
@@ -128,7 +129,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
 
     private var perfectCornerRadius: CGFloat {
         let cornerRadius: CGFloat = {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if horizontalSizeClass == .compact {
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
             } else {
                 return 50
