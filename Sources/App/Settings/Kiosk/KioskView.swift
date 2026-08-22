@@ -7,11 +7,12 @@ struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
     @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showKioskSettings = false
     @Namespace private var serverSelectionNamespace
 
     var body: some View {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if horizontalSizeClass == .compact {
             // Path-driven so Settings and the screens it pushes share one mechanism: a boolean
             // `navigationDestination(isPresented:)` alongside Settings' value-based destinations made
             // SwiftUI push Settings again in place of the screen that was tapped.

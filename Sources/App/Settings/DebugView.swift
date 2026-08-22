@@ -7,6 +7,7 @@ import XCGLogger
 
 struct DebugView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showShareSheet = false
     @State private var logsURL: URL?
@@ -489,7 +490,7 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
-            if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
+            if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar
                 }, set: { newValue in
