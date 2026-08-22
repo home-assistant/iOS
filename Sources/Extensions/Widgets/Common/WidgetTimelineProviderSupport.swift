@@ -91,16 +91,21 @@ struct WidgetEntityStateProvider {
             return [:]
         }
 
-        if let cache = readCache(), cache.cacheCreatedDate.timeIntervalSinceNow > -cacheValiditySeconds {
+        let neededItems = items.filter(itemFilter)
+        if let cache = readCache(),
+           cache.cacheCreatedDate.timeIntervalSinceNow > -cacheValiditySeconds,
+           Set(neededItems).isSubset(of: Set(cache.states.keys)) {
             Current.Log.verbose("\(logPrefix) widget states cache is still valid, returning cached states")
             return cache.states
         }
 
         Current.Log.verbose("\(logPrefix) widget has no valid cache, fetching states")
 
-        var states: [MagicItem: WidgetEntityState] = [:]
+        // Merge so a small-family refresh (prefix of 3) cannot wipe states
+        // already fetched for medium/large. Fixes #3520.
+        var states = readCache()?.states ?? [:]
 
-        for item in items where itemFilter(item) {
+        for item in neededItems {
             let serverId = item.serverId
             let entityId = item.id
             guard let domain = item.domain,
