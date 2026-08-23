@@ -61,13 +61,60 @@ struct WidgetEnergyEntryTests {
         let point = WidgetEnergyEntry.ChartPoint(date: Date(timeIntervalSince1970: 0), grid: 0.4, solar: 0.2)
         #expect(point.gridReturned == 0)
         #expect(point.solarUsed == 0.2)
+        // Nothing went back, so every kWh that came in was demand.
+        #expect(point.gridUsed == 0.4)
     }
 
     /// Net grid energy stays independent of the chart series: it's what the headline figure quotes.
+    /// Oriented like the dashboard's "Electricity total" — drawn from the grid counts positive, so a
+    /// home that returned more than it took ends the period below zero.
     @available(iOS 17, *)
-    @Test func gridNetIsReturnedMinusConsumed() {
-        #expect(abs((WidgetEnergyEntry(gridConsumed: 6.2, gridReturned: 10.5).gridNet ?? 0) - 4.3) < 0.0001)
-        #expect(WidgetEnergyEntry(gridConsumed: 6.2).gridNet == -6.2)
+    @Test func gridNetIsConsumedMinusReturned() {
+        #expect(abs((WidgetEnergyEntry(gridConsumed: 6.2, gridReturned: 10.5).gridNet ?? 0) + 4.3) < 0.0001)
+        #expect(WidgetEnergyEntry(gridConsumed: 6.2).gridNet == 6.2)
         #expect(WidgetEnergyEntry(solarGenerated: 12.4).gridNet == nil)
+    }
+
+    /// A bucket that both imported and exported only demanded the difference. The dashboard's graph
+    /// plots that difference, so the import share has to come down to meet it — the widget used to
+    /// plot the raw import and stood the bar above anything the home consumed.
+    @available(iOS 17, *)
+    @Test func gridUsedExcludesImportThatLeftAgain() {
+        let point = WidgetEnergyEntry.ChartPoint(
+            date: Date(timeIntervalSince1970: 0),
+            grid: 5,
+            solar: 0,
+            gridReturned: 3
+        )
+        #expect(point.gridUsed == 2)
+        #expect(point.solarUsed == 0)
+    }
+
+    /// Generation covers the export before it covers the home, and the grid covers only what is
+    /// left. The two used shares add up to everything the home consumed that bucket.
+    @available(iOS 17, *)
+    @Test func generationCoversTheExportBeforeTheHome() {
+        let point = WidgetEnergyEntry.ChartPoint(
+            date: Date(timeIntervalSince1970: 0),
+            grid: 1,
+            solar: 2,
+            gridReturned: 1.5
+        )
+        #expect(abs(point.solarUsed - 0.5) < 0.0001)
+        #expect(abs(point.gridUsed - 1) < 0.0001)
+    }
+
+    /// Exporting more than everything that came in leaves nothing to have been used, rather than a
+    /// bar that dips below the axis on the consumption side.
+    @available(iOS 17, *)
+    @Test func aBucketThatExportedEverythingUsedNothing() {
+        let point = WidgetEnergyEntry.ChartPoint(
+            date: Date(timeIntervalSince1970: 0),
+            grid: 1,
+            solar: 0.5,
+            gridReturned: 2
+        )
+        #expect(point.gridUsed == 0)
+        #expect(point.solarUsed == 0)
     }
 }

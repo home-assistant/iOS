@@ -54,6 +54,15 @@ enum WidgetEnergyStyle {
         return value >= 0 ? .up : .down
     }
 
+    /// Arrow describing a grid figure, which counts energy drawn from the grid as positive the way
+    /// the energy dashboard's "Electricity total" does. That is the opposite orientation to a
+    /// generation figure, so the arrow runs the other way: drawing points down, sending back points
+    /// up, and a period that broke even points up rather than nowhere.
+    static func gridDirection(ofTotal value: Double?) -> Direction {
+        guard let value else { return .none }
+        return value > 0 ? .down : .up
+    }
+
     /// Empty-state copy shared by every layout, so the accessories draw the same distinction the
     /// home screen card does: a server the app has no URL to reach points at the URL configuration,
     /// an entry that was never set up says so, and one that is configured but came back without
