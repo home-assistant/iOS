@@ -624,7 +624,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.assist" = "Assist öffnen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
-"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
+"gestures.value.option.more_info.open_in_browser" = "Öffnet die aktuell in der App angezeigte Seite in deinem bevorzugten Browser.";
 "gestures.value.option.more_info.quick_search" = "Schnellsuche";
 "gestures.value.option.more_info.search_commands" = "Befehle durchsuchen";
 "gestures.value.option.more_info.search_devices" = "Geräte durchsuchen";
@@ -634,7 +634,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
 "gestures.value.option.open_debug" = "Debuggen öffnen";
-"gestures.value.option.open_in_browser" = "Open page in browser";
+"gestures.value.option.open_in_browser" = "Seite im Browser öffnen";
 "gestures.value.option.previous_server" = "Vorheriger Server";
 "gestures.value.option.quick_search" = "Schnellsuche";
 "gestures.value.option.search_commands" = "Befehle durchsuchen";

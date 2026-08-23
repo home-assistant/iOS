@@ -624,7 +624,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.swipe_right.title" = "Přejetí vpravo";
 "gestures.value.option.assist" = "Otevřít Assist";
 "gestures.value.option.back_page" = "Zpět na předchozí stránku";
-"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
+"gestures.value.option.more_info.open_in_browser" = "Otevře stránku aktuálně zobrazenou v aplikaci ve vašem preferovaném prohlížeči.";
 "gestures.value.option.more_info.quick_search" = "Rychlé hledání";
 "gestures.value.option.more_info.search_commands" = "Hledat v příkazech";
 "gestures.value.option.more_info.search_devices" = "Hledat zařízení";
@@ -634,7 +634,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.value.option.next_server" = "Další server";
 "gestures.value.option.none" = "Nic";
 "gestures.value.option.open_debug" = "Otevřít ladění";
-"gestures.value.option.open_in_browser" = "Open page in browser";
+"gestures.value.option.open_in_browser" = "Otevřít stránku v prohlížeči";
 "gestures.value.option.previous_server" = "Předchozí server";
 "gestures.value.option.quick_search" = "Rychlé hledání";
 "gestures.value.option.search_commands" = "Hledat v příkazech";

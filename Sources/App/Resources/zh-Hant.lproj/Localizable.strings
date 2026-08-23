@@ -624,7 +624,7 @@
 "gestures.swipe_right.title" = "向右滑";
 "gestures.value.option.assist" = "開啟助理";
 "gestures.value.option.back_page" = "回上一頁";
-"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
+"gestures.value.option.more_info.open_in_browser" = "於偏好的瀏覽器中開啟應用程式目前顯示的頁面";
 "gestures.value.option.more_info.quick_search" = "快速搜尋";
 "gestures.value.option.more_info.search_commands" = "搜尋命令";
 "gestures.value.option.more_info.search_devices" = "搜尋裝置";
@@ -634,7 +634,7 @@
 "gestures.value.option.next_server" = "下一個伺服器";
 "gestures.value.option.none" = "無";
 "gestures.value.option.open_debug" = "開啟除錯";
-"gestures.value.option.open_in_browser" = "Open page in browser";
+"gestures.value.option.open_in_browser" = "於瀏覽器中開啟頁面";
 "gestures.value.option.previous_server" = "上一個伺服器";
 "gestures.value.option.quick_search" = "快速搜尋";
 "gestures.value.option.search_commands" = "搜尋命令";

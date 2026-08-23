@@ -253,7 +253,7 @@
 "component::sensor::title" = "传感器";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "空闲";
 "component::shelly::entity::sensor::valve_status::state::closed" = "已关闭";
-"component::shelly::selector::ble_scanner_mode::options::active" = "激活";
+"component::shelly::selector::ble_scanner_mode::options::active" = "主动（消耗更多设备电量，更新速度最快）";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "已禁用";
 "component::siren::entity_component::_::state::off" = "关闭";
 "component::siren::entity_component::_::state::on" = "开启";
