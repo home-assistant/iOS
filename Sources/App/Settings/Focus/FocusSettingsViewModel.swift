@@ -36,9 +36,7 @@ final class FocusSettingsViewModel: ObservableObject {
     func delete(_ focusName: FocusName) {
         focusName.delete()
         // A deleted name may still be selected in a Focus Filter, so stop reporting it right away.
-        if Current.focusFilter.activeFocusName() == focusName.name {
-            Current.focusFilter.setActiveFocusName(nil)
-        }
+        Current.focusFilter.forgetFocusName(focusName.name)
         load()
     }
 }

@@ -23,10 +23,16 @@ public struct FocusReport: Equatable {
         self.isFocused = isFocused
     }
 
+    /// How long after a filter run a status saying nothing is running is read as the tail end of a
+    /// switch rather than as that Focus ending.
+    ///
     /// iOS starts the new Focus — running its filter — before it reports the previous one ending,
-    /// so a status saying nothing is running this soon after a filter run is the tail end of a
-    /// switch rather than the Focus we were just told about ending.
-    static let switchGracePeriod: TimeInterval = 5
+    /// and the two land in different processes: the status in the Intents extension, the filter in
+    /// the app, which iOS often has to launch in the background first. The window has to cover
+    /// that launch, or a Focus started while the app isn't running blanks the sensor it just
+    /// reported to. Nothing hangs on the window being tight: the filter's own reset run is what
+    /// normally ends a Focus, and it clears the name whenever it lands.
+    static let switchGracePeriod: TimeInterval = 30
 
     public static func current() -> FocusReport {
         let filterState = Current.focusFilter.activeFocusState()
@@ -45,10 +51,26 @@ public struct FocusReport: Equatable {
             isFocused = receivedStatus?.isFocused ?? liveIsFocused()
         }
 
-        return .init(
+        let report = FocusReport(
             name: lastKnownName?.isEmpty == false ? lastKnownName : nil,
             isFocused: isFocused
         )
+
+        // Both Focus sensors stand on this, and every input comes from a different process at a
+        // different moment, so the inputs are logged alongside the answer to make a wrong report
+        // readable after the fact.
+        Current.Log.info {
+            let filter = filterState.map {
+                "name(\($0.name ?? "<none>")) lastKnown(\($0.lastKnownName ?? "<none>")) at(\($0.date))"
+            } ?? "<never ran>"
+            let status = receivedStatus.map {
+                "isFocused(\(String(describing: $0.isFocused))) at(\($0.date)) " +
+                    "lastEnded(\(String(describing: $0.lastEndedDate)))"
+            } ?? "<never received>"
+            return "focus report: \(report) from filter[\(filter)] status[\(status)]"
+        }
+
+        return report
     }
 
     /// Whether iOS said every Focus had ended after the filter ran, which is what makes the name it

@@ -137,6 +137,23 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].State as? String, "Personal")
     }
 
+    /// The filter runs in an app iOS often has to launch in the background first, so the status of
+    /// the Focus that ended can be processed well after it: inside the switch window the name the
+    /// filter just reported still stands.
+    func testKeepsTheNameWhenTheEndedStatusIsProcessedLongAfterTheFilterRun() throws {
+        FocusName(name: "Sleep").save()
+        setUpDependencies(
+            activeFocusName: "Sleep",
+            filterRan: -20,
+            receivedStatus: received(isFocused: false, at: 0),
+            liveIsFocused: false
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Sleep")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
     /// Knowing every Focus ended blanks the name rather than reporting a made-up state.
     func testReportsEmptyOnceEveryFocusEnded() throws {
         FocusName(name: "Work").save()
@@ -269,6 +286,7 @@ class FocusNameSensorTests: XCTestCase {
     /// iOS won't re-run the filter when the same Focus quickly reactivates.
     func testFilterResetCarriesTheLastKnownNameForward() throws {
         Current.focusFilter.setActiveFocusName("Work")
+        Current.date = { [now] in now.addingTimeInterval(FocusFilterWrapper.resetGracePeriod + 1) }
         Current.focusFilter.setActiveFocusName(nil)
 
         XCTAssertNil(Current.focusFilter.state.value?.name)
@@ -276,5 +294,35 @@ class FocusNameSensorTests: XCTestCase {
 
         Current.focusFilter.setActiveFocusName("Sleep")
         XCTAssertEqual(Current.focusFilter.state.value?.lastKnownName, "Sleep")
+    }
+
+    /// Switching Focus runs the ending Focus' reset pass and the starting Focus' named pass around
+    /// the same moment and in no guaranteed order, so a reset landing second must not erase the
+    /// name the switch just reported.
+    func testFilterResetRightAfterANamedRunIsIgnored() throws {
+        Current.focusFilter.setActiveFocusName("Sleep")
+        Current.date = { [now] in now.addingTimeInterval(FocusFilterWrapper.resetGracePeriod - 1) }
+        Current.focusFilter.setActiveFocusName(nil)
+
+        XCTAssertEqual(Current.focusFilter.state.value?.name, "Sleep")
+        XCTAssertEqual(Current.focusFilter.state.value?.date, now)
+    }
+
+    /// A name the user deleted has to stop being reported, including through the sticky copy the
+    /// nil-name runs fall back to.
+    func testForgetFocusNameClearsTheNameAndTheLastKnownOne() throws {
+        Current.focusFilter.setActiveFocusName("Work")
+        Current.focusFilter.forgetFocusName("Work")
+
+        XCTAssertNil(Current.focusFilter.state.value?.name)
+        XCTAssertNil(Current.focusFilter.state.value?.lastKnownName)
+    }
+
+    func testForgetFocusNameKeepsAnUnrelatedName() throws {
+        Current.focusFilter.setActiveFocusName("Work")
+        Current.focusFilter.forgetFocusName("Sleep")
+
+        XCTAssertEqual(Current.focusFilter.state.value?.name, "Work")
+        XCTAssertEqual(Current.focusFilter.state.value?.lastKnownName, "Work")
     }
 }
