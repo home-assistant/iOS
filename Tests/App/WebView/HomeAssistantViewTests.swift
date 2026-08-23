@@ -180,6 +180,68 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(sut.isFullScreenLoaderMounted)
     }
 
+    func testDisplayedEmptyStateIsShownBeforeLoaderMinimumDurationElapses() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: Server.fake(),
+            overlayState: overlayState
+        )
+        XCTAssertFalse(sut.loaderMinimumDurationElapsed)
+
+        overlayState.emptyState = emptyStateContent(server: sut.server)
+
+        XCTAssertNotNil(sut.displayedEmptyState)
+        XCTAssertTrue(sut.shouldShowStandByView)
+    }
+
+    func testResetWebFrontendKeepsDisconnectedEmptyStateSoServerPickerStaysInteractive() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: Server.fake(),
+            overlayState: overlayState
+        )
+        overlayState.emptyState = emptyStateContent(server: sut.server)
+        let initialResetID = sut.webViewResetID
+
+        sut.resetWebFrontend()
+
+        XCTAssertNotEqual(sut.webViewResetID, initialResetID)
+        XCTAssertNotNil(overlayState.emptyState)
+        XCTAssertNotNil(sut.displayedEmptyState)
+        XCTAssertEqual(sut.displayedEmptyState?.style, .disconnected)
+        XCTAssertTrue(sut.shouldShowStandByView)
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+    }
+
+    func testResetWebFrontendDoesNotClearEmptyStateWhenLoaderCycleRestarts() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: Server.fake(),
+            overlayState: overlayState
+        )
+        overlayState.emptyState = emptyStateContent(server: sut.server)
+        sut.loaderMinimumDurationElapsed = true
+
+        sut.resetWebFrontend()
+
+        XCTAssertFalse(sut.loaderMinimumDurationElapsed)
+        XCTAssertNotNil(sut.displayedEmptyState)
+    }
+
+    private func emptyStateContent(server: Server) -> WebFrontendOverlayState.EmptyStateContent {
+        WebFrontendOverlayState.EmptyStateContent(
+            style: .disconnected,
+            server: server,
+            showsErrorDetailsButton: false,
+            availableReauthURLTypes: [],
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: {},
+            reauthAction: { _ in },
+            dismissAction: {}
+        )
+    }
+
     private func server(version: Version) -> Server {
         Server.fake { info in
             info.version = version

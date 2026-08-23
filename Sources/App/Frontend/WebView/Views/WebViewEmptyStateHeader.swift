@@ -19,6 +19,16 @@ struct WebViewEmptyStateHeader: View {
     let serverSelectionAction: (Server) -> Void
     let dismissAction: () -> Void
 
+    /// Whether the empty-state header should render the server picker. Hidden on Catalyst (the Mac
+    /// title bar owns server switching) and when there is nothing to switch to.
+    static func showsServerSelection(
+        style: WebViewEmptyStateStyle,
+        serverCount: Int,
+        isCatalyst: Bool
+    ) -> Bool {
+        style.showsServerPicker && serverCount > 1 && !isCatalyst
+    }
+
     var body: some View {
         HStack {
             Accessory(

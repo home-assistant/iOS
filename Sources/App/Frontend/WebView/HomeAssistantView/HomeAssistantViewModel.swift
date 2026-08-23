@@ -38,7 +38,6 @@ final class HomeAssistantViewModel: ObservableObject {
     private let onWebViewController: ((WebViewController) -> Void)?
 
     // The standby loader remains mounted until both the minimum duration has elapsed and the frontend reconnects.
-    // Empty-state content waits for the same minimum duration so transient reload failures don't flash immediately.
     private var loaderCycleID = UUID()
     private var loaderMinimumDurationTask: Task<Void, Never>?
 
@@ -96,9 +95,10 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var displayedEmptyState: WebFrontendOverlayState.EmptyStateContent? {
-        guard let emptyState = overlayState.emptyState else { return nil }
-        guard isFullScreenLoaderMounted else { return emptyState }
-        return loaderMinimumDurationElapsed ? emptyState : nil
+        // Keep a published empty state on screen even while a loader cycle remounts the webview
+        // (automatic reconnect). Hiding it for the loader minimum duration was replacing the
+        // interactive header with the loader and leaving the server picker untappable.
+        overlayState.emptyState
     }
 
     var standByOpacity: Double {
@@ -135,7 +135,9 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     func resetWebFrontend() {
-        overlayState.emptyState = nil
+        // Leave `emptyState` in place so the disconnected header (and its server picker) stays
+        // interactive while the webview is torn down and rebuilt. Successful connection still
+        // clears it via `hideEmptyState`; an explicit Retry already nils it beforehand.
         overlayState.showsNoActiveURL = false
         webViewController = nil
         beginFullScreenLoaderCycle()
@@ -153,6 +155,11 @@ final class HomeAssistantViewModel: ObservableObject {
     func handleWebViewController(_ controller: WebViewController) {
         webViewController = controller
         onWebViewController?(controller)
+        // Empty-state action closures captured the previous controller. Rebuild them on the new
+        // one so Retry / Settings / re-auth keep working across reconnect resets.
+        if overlayState.emptyState != nil {
+            controller.showEmptyState()
+        }
     }
 
     func handleWebViewLoaded(_ controller: WebViewController) {
@@ -223,8 +230,8 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     private func beginFullScreenLoaderCycle() {
-        // A load cycle starts optimistic: show the standby loader, hold empty-state content back, and wait for
-        // the frontend connection state to confirm whether we can fade the loader away or should show an error.
+        // A load cycle starts optimistic: show the standby loader, and wait for the frontend connection
+        // state to confirm whether we can fade the loader away or should show an error.
         let cycleID = UUID()
         loaderMinimumDurationTask?.cancel()
         isFullScreenLoaderMounted = true

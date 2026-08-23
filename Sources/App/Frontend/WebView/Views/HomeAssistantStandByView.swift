@@ -177,9 +177,9 @@ struct HomeAssistantStandByView: View {
         }
         .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
         .opacity(standByContentOpacity)
-        // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
-        // while buttons keep priority.
-        .background {
+        // Confined to the content safe area so it cannot cover the empty-state header's server picker.
+        // The overlay view itself also passes through single-finger taps (see `WebFrontendGesturesOverlay`).
+        .background(ignoresSafeAreaEdges: []) {
             if let onGestureAction {
                 WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
             }
@@ -187,6 +187,9 @@ struct HomeAssistantStandByView: View {
         .background(Color(uiColor: .systemBackground))
         .overlay(alignment: .topLeading) {
             delayedSettingsButton
+                // The overlay layer is full-size and ignores the top inset; never let it steal
+                // taps from the empty-state server picker even while the gear is animating out.
+                .allowsHitTesting(!showsEmptyState && showsDelayedSettingsButton)
         }
         .safeAreaInset(edge: .top) {
             if let emptyState {
@@ -194,9 +197,11 @@ struct HomeAssistantStandByView: View {
                     style: emptyState.style,
                     server: server,
                     isLoading: isLoading,
-                    showsServerSelection: emptyState.style.showsServerPicker
-                        && Current.servers.all.count > 1
-                        && !Current.isCatalyst,
+                    showsServerSelection: WebViewEmptyStateHeader.showsServerSelection(
+                        style: emptyState.style,
+                        serverCount: Current.servers.all.count,
+                        isCatalyst: Current.isCatalyst
+                    ),
                     showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
                     settingsAction: emptyState.settingsAction,
                     serverSelectionAction: selectServer,
