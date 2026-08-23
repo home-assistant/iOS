@@ -2286,6 +2286,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.section.sensors.title" = "Sensors";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

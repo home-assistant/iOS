@@ -7455,6 +7455,10 @@ public enum L10n {
         /// Cancel and use cache
         public static var title: String { return L10n.tr("Localizable", "watch.home.cancel_and_use_cache.title") }
       }
+      public enum Device {
+        /// There are no compatible entities for this device.
+        public static var empty: String { return L10n.tr("Localizable", "watch.home.device.empty") }
+      }
       public enum Loading {
         public enum Skip {
           /// Skip

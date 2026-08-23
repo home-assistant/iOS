@@ -2,18 +2,18 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The watch-compatible entities of one area, pushed by `WatchAreaRow` through the home screen's
-/// `NavigationStack`. Rows are the same `WatchMagicViewRow` the home screen uses, so entities can
-/// be controlled exactly as if they were configured items. Entities of a device that contributes
-/// more than one row get their own section, titled with — and drilling into — that device. The
-/// navigation bar stays hidden: the custom header provides the back button, matching
-/// `WatchFolderContentView`.
-struct WatchAreaEntitiesView: View {
-    @StateObject private var viewModel: WatchAreaEntitiesViewModel
+/// The watch-compatible entities of one device, pushed by tapping a device section header on the
+/// area screen. Same two sections and same rows as the area screen; the device grouping is undone
+/// here because every row already belongs to the device the screen is named after. The navigation
+/// bar stays hidden — the custom header provides the back button, matching `WatchAreaEntitiesView`.
+struct WatchDeviceEntitiesView: View {
+    let name: String
+    @StateObject private var viewModel: WatchDeviceEntitiesViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(areaId: String, serverId: String) {
-        self._viewModel = .init(wrappedValue: .init(areaId: areaId, serverId: serverId))
+    init(deviceId: String, serverId: String, name: String) {
+        self.name = name
+        self._viewModel = .init(wrappedValue: .init(deviceId: deviceId, serverId: serverId))
     }
 
     var body: some View {
@@ -26,7 +26,7 @@ struct WatchAreaEntitiesView: View {
                 }
                 .buttonStyle(.plain)
                 .circularGlassOrLegacyBackground()
-                Text(viewModel.areaName ?? L10n.Watch.Home.Areas.title)
+                Text(verbatim: name)
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -34,45 +34,27 @@ struct WatchAreaEntitiesView: View {
             .padding(.top, DesignSystem.Spaces.one)
             if let sections = viewModel.sections {
                 if sections.isEmpty {
-                    Text(verbatim: L10n.Watch.Home.Areas.empty)
+                    Text(verbatim: L10n.Watch.Home.Device.empty)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .listRowBackground(Color.clear)
                 } else {
                     if !sections.controls.isEmpty {
                         Section {
-                            ForEach(sections.controls.ungrouped) { entry in
+                            ForEach(sections.controls.allEntries) { entry in
                                 WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
                             }
                         } header: {
                             Text(verbatim: L10n.Watch.Home.Areas.Section.Controls.title)
                         }
-                        ForEach(sections.controls.deviceGroups) { group in
-                            Section {
-                                ForEach(group.entries) { entry in
-                                    WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
-                                }
-                            } header: {
-                                WatchAreaDeviceSectionHeader(group: group, serverId: viewModel.serverId)
-                            }
-                        }
                     }
                     if !sections.sensors.isEmpty {
                         Section {
-                            ForEach(sections.sensors.ungrouped) { entry in
+                            ForEach(sections.sensors.allEntries) { entry in
                                 WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
                             }
                         } header: {
                             Text(verbatim: L10n.Watch.Home.Areas.Section.Sensors.title)
-                        }
-                        ForEach(sections.sensors.deviceGroups) { group in
-                            Section {
-                                ForEach(group.entries) { entry in
-                                    WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
-                                }
-                            } header: {
-                                WatchAreaDeviceSectionHeader(group: group, serverId: viewModel.serverId)
-                            }
                         }
                     }
                 }
@@ -102,6 +84,6 @@ struct WatchAreaEntitiesView: View {
 #Preview {
     MaterialDesignIcons.register()
     return NavigationStack {
-        WatchAreaEntitiesView(areaId: "living_room", serverId: "1")
+        WatchDeviceEntitiesView(deviceId: "device-1", serverId: "1", name: "Living Room Lamp")
     }
 }
