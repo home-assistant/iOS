@@ -18,6 +18,9 @@ public struct CircularComplicationContentView: View {
         /// Enlarged icon when no gauge is drawn: without a ring or min/max labels the center owns the
         /// whole disc, so the content can breathe.
         static let iconSizeNoGauge: CGFloat = 16
+        /// Icon size when the value moved to the gauge's bottom label: the icon owns the inner circle,
+        /// so it leads at a size the 10pt shared-center glyph could never reach.
+        static let iconSizeIconLed: CGFloat = 20
         /// Slightly negative to counteract the value font's tall line box, which otherwise leaves too
         /// large a gap above the name.
         static let centerSpacing: CGFloat = -2
@@ -36,6 +39,9 @@ public struct CircularComplicationContentView: View {
         /// Value size without a gauge — no ring or labels to clear, so the text scales up with the icon.
         static let valueSizeNoGauge: CGFloat = 16
         static let valueMinScale: CGFloat = 0.2
+        /// Value size in the gauge's bottom label, where the ring's own width — not the center stack —
+        /// is what has to be cleared.
+        static let bottomValueSize: CGFloat = 11
         static let nameSize: CGFloat = 8
         static let nameSizeNoGauge: CGFloat = 10
         static let nameMinScale: CGFloat = 0.4
@@ -55,6 +61,17 @@ public struct CircularComplicationContentView: View {
                     center(padded: false)
                 }
                 .gaugeStyle(.accessoryCircularCapacity)
+                .tint(model.tint)
+            } else if model.isIconLedWithBottomValue {
+                // Open gauge with the min/max labels hidden: that bottom slot is free, so the value
+                // moves into it and the icon leads the inner circle at full size (with the name, when
+                // shown, captioning it) instead of the two sharing the middle at reading-glass sizes.
+                Gauge(value: fraction) {
+                    bottomValue
+                } currentValueLabel: {
+                    iconLedCenter
+                }
+                .gaugeStyle(.accessoryCircular)
                 .tint(model.tint)
             } else if model.minLabel != nil || model.maxLabel != nil {
                 Gauge(value: fraction) {
@@ -91,6 +108,37 @@ public struct CircularComplicationContentView: View {
     private var valueFontSize: CGFloat {
         if model.isValueOnly { return FontMetrics.valueOnlySize }
         return hasGauge ? FontMetrics.valueSize : FontMetrics.valueSizeNoGauge
+    }
+
+    /// The value as the open gauge's bottom label, used by the icon-led layout.
+    private var bottomValue: some View {
+        Text(model.valueText)
+            .font(.system(size: FontMetrics.bottomValueSize, weight: .semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(FontMetrics.valueMinScale)
+            .foregroundStyle(model.textColor ?? .primary)
+    }
+
+    /// The icon-led center: the icon at full size, captioned by the name when one is shown. The value
+    /// is not here — it renders in `bottomValue`.
+    private var iconLedCenter: some View {
+        VStack(spacing: Layout.centerSpacing) {
+            if let iconImage = model.iconImage {
+                iconImage
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: Layout.iconSizeIconLed, height: Layout.iconSizeIconLed)
+                    .widgetAccentable()
+            }
+            if model.showsName, !model.title.isEmpty {
+                Text(model.title)
+                    .font(.system(size: FontMetrics.nameSize))
+                    .minimumScaleFactor(FontMetrics.nameMinScale)
+                    .lineLimit(1)
+                    .foregroundStyle(model.textColor ?? .primary)
+            }
+        }
+        .padding(Layout.iconGaugePadding)
     }
 
     /// Center of the complication: icon / value / name per the toggles. `padded` insets it off the

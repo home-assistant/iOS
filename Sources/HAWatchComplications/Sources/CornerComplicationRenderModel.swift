@@ -26,7 +26,7 @@ public struct CornerComplicationRenderModel {
         valueText: String = "",
         showsValue: Bool = false,
         fraction: Double? = nil,
-        tint: Color = .accentColor,
+        tint: Color = .complicationDefaultTint,
         textColor: Color? = nil
     ) {
         self.iconImage = iconImage
