@@ -23,6 +23,17 @@ public class HomeAssistantAPI {
     struct TokenFetchFailure: LocalizedError {
         let underlyingType: String
         let shouldDisconnectPermanently: Bool
+        let statusCode: Int?
+
+        init(
+            underlyingType: String,
+            shouldDisconnectPermanently: Bool,
+            statusCode: Int? = nil
+        ) {
+            self.underlyingType = underlyingType
+            self.shouldDisconnectPermanently = shouldDisconnectPermanently
+            self.statusCode = statusCode
+        }
 
         var errorDescription: String? {
             "Token fetch failed (\(underlyingType))"
@@ -33,11 +44,25 @@ public class HomeAssistantAPI {
         let errorType = String(reflecting: type(of: error))
         let errorDescription = String(describing: error)
         let underlyingInfo = "\(errorType): \(errorDescription)"
+        let authenticationError = error.authenticationAPIError
 
         return TokenFetchFailure(
             underlyingType: underlyingInfo,
-            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+            shouldDisconnectPermanently: authenticationError?.shouldRequireReauthentication == true,
+            statusCode: authenticationError?.statusCode
         )
+    }
+
+    /// True when the server rejected credentials (`invalid_grant` / HTTP 400-403) and retrying
+    /// the connection cannot recover — the user has to re-authenticate.
+    public static func isPermanentAuthenticationFailure(_ error: Error) -> Bool {
+        if error.authenticationAPIError?.shouldRequireReauthentication == true {
+            return true
+        }
+        if let failure = error as? TokenFetchFailure {
+            return failure.shouldDisconnectPermanently
+        }
+        return false
     }
 
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
@@ -1680,9 +1705,25 @@ extension HomeAssistantAPI: HAConnectionDelegate {
             }
             Current.Log.info("stopping websocket reconnects after fatal auth token fetch failure")
             connection.disconnect()
+            requireReauthentication(for: tokenFetchFailure)
         case .connecting, .authenticating, .disconnected(reason: .disconnected):
             break
         }
+    }
+
+    /// Surfaces the same re-authentication path `TokenManager` uses on a 400-403 refresh failure.
+    /// HAKit wraps that failure as `TokenFetchFailure`, so the UI must not depend on `TokenManager.tap`
+    /// unwrapping the original `AuthenticationError`.
+    private func requireReauthentication(for failure: TokenFetchFailure) {
+        let statusCode = failure.statusCode ?? 401
+        Current.Log.error(
+            "Refresh token rejected (\(failure.underlyingType)); requiring re-authentication"
+        )
+        HANetworkingEnvironment.current.handleReauthenticationRequired(
+            server,
+            statusCode,
+            failure.underlyingType
+        )
     }
 
     /// A rejected websocket means the server refused the access token we just authenticated with, even

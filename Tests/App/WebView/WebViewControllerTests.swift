@@ -150,6 +150,33 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.connectionState, .authInvalid)
     }
 
+    func testExternalAuthFailureWithInvalidGrantSetsAuthInvalid() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.handleExternalAuthFailure(error: Self.invalidGrantError())
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testExternalAuthFailureWithInvalidGrantUpgradesDisconnectedEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertEqual(overlayState.emptyState?.style, .disconnected)
+
+        sut.handleExternalAuthFailure(error: Self.invalidGrantError())
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+    }
+
     func testRepeatedExternalAuthFailuresDoNotPushBackTheEmptyState() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()
@@ -397,6 +424,106 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
     }
 
+    func testShowEmptyStateDoesNotStartReconnectManagerForAuthInvalid() {
+        var scheduleCount = 0
+        let manager = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: { _, _ in
+                scheduleCount += 1
+                return {}
+            }
+        )
+        let sut = makeSUT()
+        sut.reconnectManager = manager
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .authInvalid
+
+        sut.showEmptyState()
+
+        XCTAssertEqual(scheduleCount, 0)
+        XCTAssertEqual(sut.overlayState?.emptyState?.style, .unauthenticated)
+    }
+
+    func testShowEmptyStateStartsReconnectManagerForDisconnected() {
+        var scheduleCount = 0
+        let manager = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: { _, _ in
+                scheduleCount += 1
+                return {}
+            }
+        )
+        let sut = makeSUT()
+        sut.reconnectManager = manager
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .disconnected
+
+        sut.showEmptyState()
+
+        XCTAssertEqual(scheduleCount, 1)
+    }
+
+    func testShowReAuthPopupStopsReconnectManager() {
+        var scheduleCount = 0
+        let manager = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: { _, _ in
+                scheduleCount += 1
+                return {}
+            }
+        )
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        sut.webView = WKWebView(frame: .zero)
+        sut.reconnectManager = manager
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertEqual(scheduleCount, 1)
+
+        sut.showReAuthPopup(serverId: server.identifier.rawValue, code: 401)
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(scheduleCount, 1)
+        XCTAssertEqual(sut.overlayState?.emptyState?.style, .unauthenticated)
+    }
+
+    func testRecoverDisconnectedFrontendDoesNotRunWhileAuthInvalid() {
+        var resetCalled = false
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.resetFrontendAction = { resetCalled = true }
+        sut.connectionState = .authInvalid
+
+        sut.recoverDisconnectedFrontend()
+
+        XCTAssertFalse(resetCalled)
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+    }
+
+    func testExternalAuthFailureWithInvalidGrantStopsReconnectManager() {
+        var scheduleCount = 0
+        let manager = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: { _, _ in
+                scheduleCount += 1
+                return {}
+            }
+        )
+        let sut = makeSUT()
+        sut.reconnectManager = manager
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertEqual(scheduleCount, 1)
+
+        sut.handleExternalAuthFailure(error: Self.invalidGrantError())
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(scheduleCount, 1)
+        XCTAssertEqual(sut.overlayState?.emptyState?.style, .unauthenticated)
+    }
+
     func testShowReAuthPopupIgnoresEventsForOtherServers() {
         let sut = makeSUT(server: .fake())
         let overlayState = WebFrontendOverlayState()
@@ -494,6 +621,16 @@ final class WebViewControllerTests: XCTestCase {
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         return sut
+    }
+
+    private static func invalidGrantError() -> Error {
+        AFError.responseValidationFailed(reason: .customValidationFailed(
+            error: AuthenticationAPI.AuthenticationError.serverError(
+                statusCode: 400,
+                errorCode: "invalid_grant",
+                error: nil
+            )
+        ))
     }
 
     private func waitUntil(

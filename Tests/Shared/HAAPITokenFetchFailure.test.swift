@@ -49,27 +49,32 @@ class HAAPITokenFetchFailureTests: XCTestCase {
     }
 
     func testTokenFetchFailureMarksRevokedCredentialsAsPermanent() {
-        let error = AFError.responseValidationFailed(reason: .customValidationFailed(
-            error: AuthenticationAPI.AuthenticationError.serverError(
-                statusCode: 400,
-                errorCode: "invalid_grant",
-                error: nil
-            )
-        ))
+        let error = Self.invalidGrantError()
 
         let failure = HomeAssistantAPI.tokenFetchFailure(from: error)
 
         XCTAssertTrue(failure.shouldDisconnectPermanently)
+        XCTAssertEqual(failure.statusCode, 400)
         XCTAssertTrue(failure.errorDescription?.contains("invalid_grant") == true)
+        XCTAssertTrue(HomeAssistantAPI.isPermanentAuthenticationFailure(error))
+        XCTAssertTrue(HomeAssistantAPI.isPermanentAuthenticationFailure(failure))
     }
 
     func testTokenFetchFailureLeavesTransientErrorsRetryable() {
-        let failure = HomeAssistantAPI.tokenFetchFailure(from: URLError(.notConnectedToInternet))
+        let error = URLError(.notConnectedToInternet)
+        let failure = HomeAssistantAPI.tokenFetchFailure(from: error)
 
         XCTAssertFalse(failure.shouldDisconnectPermanently)
+        XCTAssertNil(failure.statusCode)
+        XCTAssertFalse(HomeAssistantAPI.isPermanentAuthenticationFailure(error))
+        XCTAssertFalse(HomeAssistantAPI.isPermanentAuthenticationFailure(failure))
     }
 
     func testConnectionDelegateStopsReconnectLoopForPermanentTokenFetchFailure() {
+        let previousHandler = HANetworkingEnvironment.current.handleReauthenticationRequired
+        defer { HANetworkingEnvironment.current.handleReauthenticationRequired = previousHandler }
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { _, _, _ in }
+
         let api = HomeAssistantAPI(server: .fake())
         let connection = HAMockConnection()
         connection.delegate = api
@@ -89,7 +94,80 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         XCTAssertEqual(connection.state, .disconnected(reason: .disconnected))
     }
 
+    func testConnectionDelegateRequestsReauthenticationForPermanentTokenFetchFailure() {
+        let previousHandler = HANetworkingEnvironment.current.handleReauthenticationRequired
+        defer { HANetworkingEnvironment.current.handleReauthenticationRequired = previousHandler }
+
+        var capturedServer: Server?
+        var capturedStatusCode: Int?
+        var capturedDescription: String?
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, description in
+            capturedServer = server
+            capturedStatusCode = statusCode
+            capturedDescription = description
+        }
+
+        let server = Server.fake()
+        let api = HomeAssistantAPI(server: server)
+        let connection = HAMockConnection()
+        connection.delegate = api
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .waitingToReconnect(
+            lastError: HomeAssistantAPI.TokenFetchFailure(
+                underlyingType: "Alamofire.AFError: invalid_grant",
+                shouldDisconnectPermanently: true,
+                statusCode: 400
+            ),
+            atLatest: Date(),
+            retryCount: 1
+        )), waitForQueue: false)
+
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .disconnected(reason: .disconnected))
+        XCTAssertEqual(capturedServer?.identifier, server.identifier)
+        XCTAssertEqual(capturedStatusCode, 400)
+        XCTAssertEqual(capturedDescription, "Alamofire.AFError: invalid_grant")
+    }
+
+    func testConnectionDelegateDefaultsMissingStatusCodeTo401WhenRequiringReauthentication() {
+        let previousHandler = HANetworkingEnvironment.current.handleReauthenticationRequired
+        defer { HANetworkingEnvironment.current.handleReauthenticationRequired = previousHandler }
+
+        var capturedStatusCode: Int?
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { _, statusCode, _ in
+            capturedStatusCode = statusCode
+        }
+
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        connection.delegate = api
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .waitingToReconnect(
+            lastError: HomeAssistantAPI.TokenFetchFailure(
+                underlyingType: "fatal",
+                shouldDisconnectPermanently: true
+            ),
+            atLatest: Date(),
+            retryCount: 1
+        )), waitForQueue: false)
+
+        drainMainQueue()
+
+        XCTAssertEqual(capturedStatusCode, 401)
+    }
+
     func testConnectionDelegateKeepsRetryingForNonPermanentTokenFetchFailure() {
+        let previousHandler = HANetworkingEnvironment.current.handleReauthenticationRequired
+        defer { HANetworkingEnvironment.current.handleReauthenticationRequired = previousHandler }
+
+        var didRequestReauthentication = false
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { _, _, _ in
+            didRequestReauthentication = true
+        }
+
         let api = HomeAssistantAPI(server: .fake())
         let connection = HAMockConnection()
         connection.delegate = api
@@ -109,6 +187,7 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         drainMainQueue()
 
         XCTAssertEqual(connection.state, expectedState)
+        XCTAssertFalse(didRequestReauthentication)
     }
 
     func testConnectionDelegateRecoversFromRejectedStateWhenReconnectSucceeds() {
@@ -165,6 +244,16 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         // (which would keep tripping HA's auth-ban endpoint).
         XCTAssertEqual(connection.connectCount, 3)
         XCTAssertEqual(connection.state, .disconnected(reason: .rejected))
+    }
+
+    private static func invalidGrantError() -> Error {
+        AFError.responseValidationFailed(reason: .customValidationFailed(
+            error: AuthenticationAPI.AuthenticationError.serverError(
+                statusCode: 400,
+                errorCode: "invalid_grant",
+                error: nil
+            )
+        ))
     }
 }
 

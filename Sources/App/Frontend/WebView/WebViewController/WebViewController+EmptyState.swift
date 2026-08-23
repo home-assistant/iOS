@@ -26,6 +26,8 @@ extension WebViewController {
         withAnimation(DesignSystem.Animation.easeInOutFaster) {
             overlayState?.emptyState = makeEmptyStateContent()
         }
+        // `.authInvalid` is a dead end until the user re-authenticates; the reconnect manager's
+        // hard reset would rebuild the web view and drop that state back to Retry-only.
         if connectionState == .disconnected || connectionState == .unknown {
             reconnectManager?.start { [weak self] in
                 self?.recoverDisconnectedFrontend()
@@ -84,6 +86,16 @@ extension WebViewController {
         guard !connectionState.isReadyForDisplay else { return }
         latestLoadError = Self.presentableExternalAuthError(for: error)
 
+        if HomeAssistantAPI.isPermanentAuthenticationFailure(error) {
+            Current.Log.error("Frontend authentication failed permanently, showing re-auth: \(error)")
+            connectionState = .authInvalid
+            overlayState?.connectionState = .authInvalid
+            emptyStateTimer?.invalidate()
+            emptyStateTimer = nil
+            showEmptyState()
+            return
+        }
+
         // The frontend retries in a tight loop, so only the first failure arms the grace period; an
         // empty state that is already up must not be pushed back by the retries behind it.
         guard emptyStateTimer == nil, overlayState?.emptyState == nil else { return }
@@ -126,6 +138,11 @@ extension WebViewController {
     }
 
     func recoverDisconnectedFrontend() {
+        guard connectionState != .authInvalid else {
+            Current.Log.info("Skipping disconnected frontend recovery while re-authentication is required")
+            reconnectManager?.stop()
+            return
+        }
         if let resetFrontendAction {
             resetFrontendAction()
         } else {

@@ -158,7 +158,11 @@ public class AppEnvironment {
         HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
         HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
         HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        // TokenManager and HAAPI can both report the same revoked-token failure. Collapse those
+        // into one client event / onboarding transition so re-auth UI is not presented twice.
+        let reauthDeduper = ReauthenticationRequiredDeduper(date: { Current.date() })
         HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
+            guard reauthDeduper.shouldNotify(serverId: server.identifier.rawValue) else { return }
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Refresh token is invalid, notifying user",
                 type: .networkRequest,
