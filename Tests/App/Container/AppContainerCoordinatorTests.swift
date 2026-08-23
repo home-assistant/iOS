@@ -24,6 +24,8 @@ final class AppContainerCoordinatorTests: XCTestCase {
         AppSettingsPresenter.shared.isSheetPresented = false
         AppSettingsPresenter.shared.isPushPresented = false
         AppSettingsPresenter.shared.sheetDismissed()
+        Current.settingsStore.lastActiveServerIdentifier = nil
+        Current.settingsStore.lastActiveURLPath = nil
         super.tearDown()
     }
 
@@ -100,6 +102,35 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
         XCTAssertEqual(openedServer?.identifier, otherServer.identifier)
         XCTAssertEqual(frontend.navigateToRootCallCount, 0)
+    }
+
+    func testOpenPersistsLastActiveServerIdentifierImmediately() {
+        Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
+        Current.settingsStore.lastActiveURLPath = "/lovelace/kitchen"
+        let otherServer = Server.fake()
+        coordinator.onOpenServer = { _ in }
+
+        coordinator.open(server: otherServer)
+
+        XCTAssertEqual(Current.settingsStore.lastActiveServerIdentifier, otherServer.identifier.rawValue)
+        XCTAssertNil(Current.settingsStore.lastActiveURLPath)
+    }
+
+    func testOpenPersistsLastActiveServerIdentifierWhenAlreadyShowingThatServer() {
+        Current.settingsStore.lastActiveServerIdentifier = nil
+        coordinator.open(server: server)
+
+        XCTAssertEqual(Current.settingsStore.lastActiveServerIdentifier, server.identifier.rawValue)
+    }
+
+    func testOpenKeepsLastPathWhenReopeningTheSameServer() {
+        Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
+        Current.settingsStore.lastActiveURLPath = "/lovelace/kitchen"
+
+        coordinator.open(server: server)
+
+        XCTAssertEqual(Current.settingsStore.lastActiveServerIdentifier, server.identifier.rawValue)
+        XCTAssertEqual(Current.settingsStore.lastActiveURLPath, "/lovelace/kitchen")
     }
 
     func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() {

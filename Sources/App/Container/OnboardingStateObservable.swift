@@ -39,6 +39,7 @@ final class OnboardingStateObservable: ObservableObject {
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.
     func showWebView(for server: Server) {
+        persistLastActiveServer(server)
         screen = .webView(server, initialPath: nil)
     }
 
@@ -180,6 +181,12 @@ final class OnboardingStateObservable: ObservableObject {
         return .onboarding(.initial)
     }
 
+    /// Persist immediately on a server switch so a kill before the web view's first http(s) navigation
+    /// still restores this server on the next launch (#5064).
+    private func persistLastActiveServer(_ server: Server) {
+        Current.settingsStore.rememberLastActiveServer(identifier: server.identifier.rawValue)
+    }
+
     /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, otherwise the
     /// last server the user was viewing, falling back to the first registered server. Non-private for tests.
     static func preferredInitialServer() -> Server? {
@@ -221,9 +228,9 @@ final class OnboardingStateObservable: ObservableObject {
         case let .needed(type):
             switch type {
             case .error, .logout:
-                // A server was removed / logged out. Fall back to another server if one remains,
-                // otherwise restart onboarding. Mirrors `WebViewWindowController.onboardingStateDidChange`.
-                if let server = Current.servers.all.first {
+                // A server was removed / logged out. Fall back to the last-used remaining server
+                // (not `all.first`, which is Settings order and caused #5064 / #5234).
+                if let server = Self.preferredInitialServer() {
                     screen = .webView(server, initialPath: nil)
                 } else {
                     screen = .onboarding(.initial)
@@ -234,8 +241,8 @@ final class OnboardingStateObservable: ObservableObject {
                 break
             }
         case .complete:
-            if let server = Current.servers.all.first {
-                screen = .webView(server, initialPath: nil)
+            if let server = Self.preferredInitialServer() {
+                screen = .webView(server, initialPath: Self.restoredInitialPath(for: server))
             }
         case .didConnect:
             // Connection established mid-onboarding; the `.complete` transition drives the screen swap.

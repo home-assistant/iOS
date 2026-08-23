@@ -90,6 +90,8 @@ final class AppContainerCoordinator: AppCoordinator {
 
     @discardableResult
     func open(server: Server) -> Guarantee<any WebFrontend> {
+        // Record before the web view loads so a kill during connection still restores this server.
+        Current.settingsStore.rememberLastActiveServer(identifier: server.identifier.rawValue)
         if let current = frontend, current.server.identifier == server.identifier {
             return .value(current)
         }

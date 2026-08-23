@@ -268,6 +268,15 @@ public class SettingsStore {
         }
     }
 
+    /// Records the server currently being viewed. When the identifier changes, the last-viewed path is
+    /// cleared so a path from another server is never restored onto this one.
+    public func rememberLastActiveServer(identifier: String) {
+        if lastActiveServerIdentifier != identifier {
+            lastActiveURLPath = nil
+        }
+        lastActiveServerIdentifier = identifier
+    }
+
     public var lastActiveURLPath: String? {
         get {
             prefs.string(forKey: "lastActiveURLPath")
