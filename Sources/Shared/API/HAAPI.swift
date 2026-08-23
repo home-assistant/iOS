@@ -1643,7 +1643,11 @@ extension HomeAssistantAPI: SensorObserver {
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
         lastUpdate: SensorObserverUpdate?
     ) {
-        Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
+        guard server.info.setting(for: .sensorPrivacy) == .all else { return }
+
+        // Include the server id so two APIs don't share one single-flight background-task name.
+        let taskName = "\(BackgroundTask.signaledUpdateSensors.rawValue)-\(server.identifier.rawValue)"
+        Current.backgroundTask(withName: taskName) { _ in
             firstly { () -> Promise<Void> in
                 guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
                     return .value(())
