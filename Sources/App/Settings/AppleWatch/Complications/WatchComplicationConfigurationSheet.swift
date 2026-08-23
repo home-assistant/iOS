@@ -1,6 +1,8 @@
+import CoreTransferable
 import Shared
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// The complication builder's configuration step: everything that shapes how the complication
 /// renders, once its source (entity or template) is picked. Presented as a medium/large sheet over
@@ -584,15 +586,23 @@ extension WatchComplicationConfigurationSheet {
                 if isCustomContent.wrappedValue {
                     // The formula is edited as pills, not raw token text: dynamic tokens are tinted
                     // capsules, hardcoded text is typed straight into neutral capsule fields, and each
-                    // pill removes with its x. New pieces come from the + menu and land at the end.
+                    // pill removes with its x. New pieces come from the + menu and land at the end,
+                    // from where a pill can be dragged onto another to reorder the formula.
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             ForEach(Array(formula.parts.enumerated()), id: \.offset) { index, part in
-                                partPill(at: index, part: part)
+                                reorderablePartPill(at: index, part: part)
                             }
                             insertMenu
                         }
                         .padding(.vertical, DesignSystem.Spaces.half)
+                    }
+                    // Only worth saying once there is something to reorder — a single pill has nowhere
+                    // to go, and the hint would just be noise in every slot the user customizes.
+                    if formula.parts.count > 1 {
+                        Text(L10n.Watch.Complications.Builder.reorderTokensHint)
+                            .font(DesignSystem.Font.caption)
+                            .foregroundStyle(.secondary)
                     }
                     if config.kind == .customTemplate, let server, !formula.templates.isEmpty {
                         JinjaTemplateButton(
@@ -606,38 +616,102 @@ extension WatchComplicationConfigurationSheet {
             }
         }
 
+        /// The drag payload for reordering: the dragged pill's position in the formula. A private
+        /// `Codable` type carried as JSON, so only a pill from this very list can be dropped onto
+        /// another one — text dragged in from elsewhere fails to decode and the drop is refused.
+        private struct DraggedFormulaPart: Codable, Transferable {
+            let index: Int
+
+            static var transferRepresentation: some TransferRepresentation {
+                CodableRepresentation(contentType: .json)
+            }
+        }
+
+        /// A pill the user can pick up and drop onto another one to reorder the formula. The drag
+        /// preview is the pill itself (minus its remove button, which has nothing to act on mid-drag),
+        /// and the same move is offered as VoiceOver actions, which cannot perform a drag.
+        private func reorderablePartPill(at index: Int, part: ComplicationFormula.Part) -> some View {
+            partPill(at: index, part: part)
+                .draggable(DraggedFormulaPart(index: index)) {
+                    pillLabel(for: part)
+                }
+                .dropDestination(for: DraggedFormulaPart.self) { items, _ in
+                    guard let source = items.first?.index else { return false }
+                    return movePart(from: source, to: index)
+                }
+                .accessibilityAction(named: Text(L10n.Watch.Complications.Builder.moveTokenLeft)) {
+                    _ = movePart(from: index, to: index - 1)
+                }
+                .accessibilityAction(named: Text(L10n.Watch.Complications.Builder.moveTokenRight)) {
+                    _ = movePart(from: index, to: index + 1)
+                }
+        }
+
+        /// Moves a pill to another position, keeping the rest of the formula in order. Returns whether
+        /// anything moved, which is also the drop's "was this accepted" answer.
+        @discardableResult
+        private func movePart(from source: Int, to destination: Int) -> Bool {
+            guard source != destination, formula.parts.indices.contains(source),
+                  formula.parts.indices.contains(destination) else { return false }
+            withAnimation {
+                updateParts { parts in
+                    parts.insert(parts.remove(at: source), at: destination)
+                }
+            }
+            return true
+        }
+
         /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
         /// friendly name; every pill carries its own remove button.
-        @ViewBuilder
         private func partPill(at index: Int, part: ComplicationFormula.Part) -> some View {
-            let isText: Bool = {
-                if case .text = part { return true }
-                return false
-            }()
-            HStack(spacing: DesignSystem.Spaces.half) {
-                if isText {
-                    TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .fixedSize()
-                } else {
-                    Text(verbatim: pillTitle(for: part))
+            let isText = isTextPart(part)
+            return pillChrome(isText: isText) {
+                HStack(spacing: DesignSystem.Spaces.half) {
+                    if isText {
+                        TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                            .fixedSize()
+                    } else {
+                        Text(verbatim: pillTitle(for: part))
+                    }
+                    Button {
+                        withAnimation { removePart(at: index) }
+                    } label: {
+                        Image(systemSymbol: .xmarkCircleFill)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(L10n.Watch.Complications.Builder.removeToken(accessibilityTitle(for: part)))
                 }
-                Button {
-                    withAnimation { removePart(at: index) }
-                } label: {
-                    Image(systemSymbol: .xmarkCircleFill)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(L10n.Watch.Complications.Builder.removeToken(accessibilityTitle(for: part)))
             }
-            .font(.callout)
-            .padding(.horizontal, DesignSystem.Spaces.one)
-            .padding(.vertical, DesignSystem.Spaces.half)
-            .foregroundStyle(isText ? Color.primary : Color.haPrimary)
-            .background(Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15)))
+        }
+
+        /// The pill under the finger while dragging: the same capsule with its title only — the text
+        /// field and the remove button have nothing to act on mid-drag.
+        private func pillLabel(for part: ComplicationFormula.Part) -> some View {
+            pillChrome(isText: isTextPart(part)) {
+                Text(verbatim: accessibilityTitle(for: part))
+            }
+        }
+
+        /// The pill's chrome: the capsule fill and text color that tell a dynamic token apart from
+        /// hardcoded text. Shared by the editable pill and the drag preview so the two look alike.
+        private func pillChrome(isText: Bool, @ViewBuilder content: () -> some View) -> some View {
+            content()
+                .font(.callout)
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.vertical, DesignSystem.Spaces.half)
+                .foregroundStyle(isText ? Color.primary : Color.haPrimary)
+                .background(
+                    Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15))
+                )
+        }
+
+        private func isTextPart(_ part: ComplicationFormula.Part) -> Bool {
+            if case .text = part { return true }
+            return false
         }
 
         private func pillTitle(for part: ComplicationFormula.Part) -> String {

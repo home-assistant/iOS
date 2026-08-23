@@ -105,11 +105,13 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         let info: EnergyInfo? = await send(.energyInfo(), on: connection)
         let gridSources = prefs.energySources.filter { $0.type == "grid" }
         let solarSources = prefs.energySources.filter { $0.type == "solar" }
+        let costIds = Self.costStatIds(gridSources: gridSources, info: info)
         let ids = StatisticIds(
             gridImport: gridSources.compactMap(\.statEnergyFrom),
             gridExport: gridSources.compactMap(\.statEnergyTo),
             solar: solarSources.compactMap(\.statEnergyFrom),
-            cost: costStatIds(gridSources: gridSources, info: info)
+            cost: costIds.cost,
+            compensation: costIds.compensation
         )
 
         var entry = await entryWithStatistics(
@@ -157,9 +159,13 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         let gridImport: [String]
         let gridExport: [String]
         let solar: [String]
+        /// What the period's grid imports cost.
         let cost: [String]
+        /// What the period's grid exports earned back. Counted up as a positive amount like every
+        /// other statistic, so it is subtracted from `cost` rather than summed with it.
+        let compensation: [String]
 
-        var all: [String] { Array(Set(gridImport + gridExport + solar + cost)) }
+        var all: [String] { Array(Set(gridImport + gridExport + solar + cost + compensation)) }
     }
 
     /// Queries the statistics for one window and returns the entry filled with its totals and chart.
@@ -189,10 +195,10 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
 
         var entry = base
-        entry.gridConsumed = sumTotals(ids: ids.gridImport, in: stats)
-        entry.gridReturned = sumTotals(ids: ids.gridExport, in: stats)
-        entry.solarGenerated = sumTotals(ids: ids.solar, in: stats)
-        entry.cost = sumTotals(ids: ids.cost, in: stats)
+        entry.gridConsumed = Self.sumTotals(ids: ids.gridImport, in: stats)
+        entry.gridReturned = Self.sumTotals(ids: ids.gridExport, in: stats)
+        entry.solarGenerated = Self.sumTotals(ids: ids.solar, in: stats)
+        entry.cost = Self.netCost(cost: ids.cost, compensation: ids.compensation, in: stats)
         entry.chartPoints = Self.chartPoints(
             importIds: ids.gridImport,
             exportIds: ids.gridExport,
@@ -202,20 +208,39 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         return entry
     }
 
-    private func costStatIds(gridSources: [EnergySource], info: EnergyInfo?) -> [String] {
-        var ids: [String] = []
+    /// The grid sources' monetary statistic ids, split by direction: what importing costs, and what
+    /// exporting earns back. They have to stay apart — the two are netted off against each other,
+    /// and a single list would silently add the earnings to the bill.
+    static func costStatIds(
+        gridSources: [EnergySource],
+        info: EnergyInfo?
+    ) -> (cost: [String], compensation: [String]) {
+        var cost: [String] = []
+        var compensation: [String] = []
         for source in gridSources {
-            if let cost = source.statCost ?? source.statEnergyFrom.flatMap({ info?.costSensors[$0] }) {
-                ids.append(cost)
+            if let id = source.statCost ?? source.statEnergyFrom.flatMap({ info?.costSensors[$0] }) {
+                cost.append(id)
             }
-            if let compensation = source.statCompensation ?? source.statEnergyTo.flatMap({ info?.costSensors[$0] }) {
-                ids.append(compensation)
+            if let id = source.statCompensation ?? source.statEnergyTo.flatMap({ info?.costSensors[$0] }) {
+                compensation.append(id)
             }
         }
-        return ids
+        return (cost, compensation)
     }
 
-    private func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
+    /// What the period cost overall: the grid imports' bill less what the exports earned back, the
+    /// same netting the energy dashboard's totals table does. Compensation statistics count upward
+    /// like any other, so summing them in would grow the bill with every kWh returned instead of
+    /// shrinking it. Nil when the dashboard tracks no money at all; a home that earns more than it
+    /// spends legitimately comes back negative.
+    static func netCost(cost: [String], compensation: [String], in stats: EnergyStatistics) -> Double? {
+        let spent = sumTotals(ids: cost, in: stats)
+        let earned = sumTotals(ids: compensation, in: stats)
+        guard spent != nil || earned != nil else { return nil }
+        return (spent ?? 0) - (earned ?? 0)
+    }
+
+    private static func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
         let present = ids.filter { stats.byStatId[$0] != nil }
         guard !present.isEmpty else { return nil }
         return present.reduce(0) { $0 + (stats.totalChange(for: $1) ?? 0) }

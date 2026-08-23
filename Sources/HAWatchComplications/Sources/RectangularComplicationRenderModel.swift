@@ -43,7 +43,7 @@ public struct RectangularComplicationRenderModel {
         showsValue: Bool = false,
         bottomText: String = "",
         showsBottomText: Bool = false,
-        tint: Color = .accentColor,
+        tint: Color = .complicationDefaultTint,
         textColor: Color? = nil,
         bottomTextColor: Color? = nil
     ) {

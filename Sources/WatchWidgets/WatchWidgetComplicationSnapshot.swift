@@ -1,3 +1,4 @@
+import HAWatchComplications
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -108,9 +109,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
         options(for: widgetFamily)?.fraction ?? fraction
     }
 
-    /// The tint color for a given family.
+    /// The tint color for a given family. A complication with no color of its own falls back to the
+    /// shared complication default rather than this extension's accent color, which is undefined here
+    /// — that mismatch is what made a default complication look different on the face than in the
+    /// iPhone builder preview.
     func tintColor(for widgetFamily: WidgetFamily) -> Color {
-        Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .accentColor
+        Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .complicationDefaultTint
     }
 
     /// The value/text color for a given family, or nil to use the default.
@@ -236,7 +240,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     }
 
     var tintColor: Color {
-        Color(hex: tint) ?? .accentColor
+        Color(hex: tint) ?? .complicationDefaultTint
     }
 
     private var isBuiltIn: Bool {

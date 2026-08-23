@@ -214,6 +214,11 @@ public extension HomeAssistantAPI {
             Current.Log.warning("Watch reload requested but watch not paired or app not installed")
             return .watchUnavailable
         }
+        // Current watch builds read complications from the database mirror and ignore the context
+        // keys below, so the reload has to travel that way too — and, once the rows land, ask the
+        // watch to fetch their values and re-render. Without this the button only refreshed watches
+        // old enough to still read the context.
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
         let context = await HAWatchConnectivity.Context(content: watchContext())
         do {
             try syncRespectingSizeLimit(context)
@@ -268,7 +273,16 @@ public enum WatchMirrorPushCoordinator {
     /// share the same source of truth.
     public enum Reason: String, CaseIterable {
         case databaseUpdated
+        /// Complication data changed on its own — e.g. the server re-rendered a legacy complication's
+        /// templates. Delivered like any other change; the watch rebuilds its faces when it applies
+        /// the mirror.
         case complicationChanged
+        /// The user created, edited, deleted or reordered a complication. Delivered *and* followed by
+        /// a complication refresh request (see `WatchComplicationRefreshRequest`), so the face shows
+        /// the change right after Save instead of at the watch's next periodic refresh. Kept apart
+        /// from `complicationChanged` because that request spends one of the watch's budgeted
+        /// background wakes, which belongs to a user action rather than to routine data flow.
+        case complicationSaved
         case serversChanged
         case watchConfigChanged
         case notificationSnoozeActionsChanged
@@ -278,6 +292,7 @@ public enum WatchMirrorPushCoordinator {
             switch self {
             case .databaseUpdated: return "database updated"
             case .complicationChanged: return "complication changed"
+            case .complicationSaved: return "complication saved"
             case .serversChanged: return "servers changed"
             case .watchConfigChanged: return "watch config changed"
             case .notificationSnoozeActionsChanged: return "notification snooze actions changed"
@@ -291,6 +306,11 @@ public enum WatchMirrorPushCoordinator {
     private static let queue = DispatchQueue(label: AppConstants.BundleID + ".watchMirrorPush")
     private static var pendingWork: DispatchWorkItem?
     private static var lastPushedData: Data?
+    /// Whether any trigger coalesced into the pending push was a complication change, so the watch is
+    /// told to re-render once it has the new rows. Tracked separately from the push's `reason`, which
+    /// is only the newest trigger: a complication save followed by an unrelated trigger within the
+    /// debounce window would otherwise silently lose its refresh.
+    private static var pendingComplicationRefresh = false
 
     private static let peerMirrorVersionKey = "watchMirrorPeerVersion"
 
@@ -311,6 +331,7 @@ public enum WatchMirrorPushCoordinator {
     /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
     public static func schedule(reason: Reason) {
         queue.async {
+            pendingComplicationRefresh = pendingComplicationRefresh || reason == .complicationSaved
             pendingWork?.cancel()
             let work = DispatchWorkItem { push(reason: reason) }
             pendingWork = work
@@ -339,6 +360,10 @@ public enum WatchMirrorPushCoordinator {
     }
 
     private static func push(reason: Reason) {
+        // Consumed up front: whether the watch gets asked to re-render is decided per push, and a
+        // failed one leaves the ask to the next push rather than firing against data that never landed.
+        let refreshesComplications = pendingComplicationRefresh
+        pendingComplicationRefresh = false
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
             return
@@ -361,6 +386,8 @@ public enum WatchMirrorPushCoordinator {
             carriedKeys = payload.carriedDigestKeys
             guard !carriedKeys.isEmpty else {
                 Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): no table changed")
+                // Nothing to send, but the watch already holds the complications — let it re-render now.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
                 return
             }
             let encoded = try payload.encodeForWatch()
@@ -371,10 +398,13 @@ public enum WatchMirrorPushCoordinator {
                 text: "Watch mirror push failed to build (\(reason.logDescription)): \(error.localizedDescription)",
                 type: .database
             ))
+            // Nothing was sent, so keep the ask for the next push rather than dropping it.
+            pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
             return
         }
         if data == lastPushedData {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): unchanged")
+            if refreshesComplications { WatchComplicationRefreshRequest.send() }
             return
         }
         lastPushedData = data
@@ -392,12 +422,20 @@ public enum WatchMirrorPushCoordinator {
             content: data,
             metadata: metadata
         )) { result in
-            if case let .failure(error) = result {
+            switch result {
+            case .success:
+                // The transfer completes on delivery, so the watch now holds the new complication
+                // rows: this is the moment it can be told to fetch their values and re-render, rather
+                // than waiting for its next periodic refresh.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
+            case let .failure(error):
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
                 // The watch got nothing, so drop both beliefs: the next push rebuilds in full.
                 queue.async {
                     lastPushedData = nil
                     lastPushedDigests = [:]
+                    // The rows never landed, so re-arm the ask for the push that carries them.
+                    pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
                 }
             }
         }

@@ -33,6 +33,15 @@ public class FocusFilterStateSync: UserDefaultsValueSync<FocusFilterState> {
 /// sensor reads it back, and pairs it with `Current.focusStatus` to tell "no Focus is running" from
 /// "a Focus is running that we have no name for".
 public class FocusFilterWrapper {
+    /// How long a reported name is protected from the reset run that follows it.
+    ///
+    /// Switching Focus runs two filter passes — the starting Focus' with its name, the ending
+    /// Focus' with none — around the same moment and in no guaranteed order, and both are timed by
+    /// when the app got round to running them rather than by when iOS decided them. Without this,
+    /// a reset arriving second erases the name the switch just reported, and the sensor blanks
+    /// while a Focus is running.
+    static let resetGracePeriod: TimeInterval = 10
+
     private(set) lazy var state = FocusFilterStateSync()
 
     /// The last Focus Filter run, with the moment it happened so it can be ordered against what
@@ -52,12 +61,36 @@ public class FocusFilterWrapper {
     public lazy var setActiveFocusName: (String?) -> Void = { [weak self] name in
         guard let self else { return }
         let previous = state.value
+        let now = Current.date()
+        let isReset = name?.isEmpty != false
+
+        if isReset, let previous, let previousName = previous.name, !previousName.isEmpty,
+           now.timeIntervalSince(previous.date) < Self.resetGracePeriod {
+            // The Focus that just ended in a switch, reported after the one that started it.
+            Current.Log.info("focus filter ignoring reset run right after \(previousName) was reported")
+            return
+        }
+
         let lastKnownName: String?
         if let name, !name.isEmpty {
             lastKnownName = name
         } else {
             lastKnownName = previous?.lastKnownName ?? previous?.name
         }
-        state.value = FocusFilterState(name: name, date: Current.date(), lastKnownName: lastKnownName)
+        state.value = FocusFilterState(name: name, date: now, lastKnownName: lastKnownName)
+    }
+
+    /// Stops reporting a name the user deleted in settings, including the sticky `lastKnownName`
+    /// copy — otherwise a deleted name keeps being reported until another Focus runs. A filter
+    /// still paired with it reports it again the next time it runs, which is when the name exists
+    /// again as far as the app is concerned.
+    public lazy var forgetFocusName: (String) -> Void = { [weak self] name in
+        guard let self, let previous = state.value,
+              previous.name == name || previous.lastKnownName == name else { return }
+        state.value = FocusFilterState(
+            name: previous.name == name ? nil : previous.name,
+            date: Current.date(),
+            lastKnownName: previous.lastKnownName == name ? nil : previous.lastKnownName
+        )
     }
 }
