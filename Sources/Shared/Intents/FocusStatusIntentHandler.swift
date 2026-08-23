@@ -17,19 +17,14 @@ class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {
         Current.focusStatus.update(fromReceived: currentState)
         Current.Log.info("starting, status from intent is \(String(describing: currentState)) from \(intent)")
 
-        let limitedTo: [SensorProvider.Type]?
-
-        if Current.isCatalyst {
-            limitedTo = [FocusSensor.self]
-        } else {
-            limitedTo = nil
-        }
-
         firstly {
             after(seconds: Self.settleDelay)
         }.then {
+            // Only the Focus sensors: an Intents extension gets little time to begin with, and the
+            // wait above spends some of it, so a full update risks being cut off before the state
+            // this handler exists to report goes out.
             when(fulfilled: Current.apis.map {
-                $0.UpdateSensors(trigger: .Siri, limitedTo: limitedTo)
+                $0.updateFocusSensors(trigger: .Siri)
             })
         }.done {
             Current.Log.info("finished successfully")
