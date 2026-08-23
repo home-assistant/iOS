@@ -154,6 +154,33 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowStandByView)
     }
 
+    func testWebViewContentOpacityFadesWithPullToRefreshProgress() {
+        let sut = HomeAssistantViewModel(server: Server.fake(), overlayState: WebFrontendOverlayState())
+        sut.forceDismissStandByView()
+        sut.fade(to: 1, reduceMotion: true)
+
+        sut.pullToRefreshProgress = 0.5
+
+        XCTAssertEqual(sut.webViewContentOpacity, 0.5, accuracy: 0.001)
+        XCTAssertTrue(sut.showsPullToRefresh)
+
+        sut.pullToRefreshProgress = 0
+
+        XCTAssertEqual(sut.webViewContentOpacity, 1, accuracy: 0.001)
+        XCTAssertFalse(sut.showsPullToRefresh)
+    }
+
+    func testWebViewContentOpacityIsZeroWhilePullToRefreshIsActive() {
+        let sut = HomeAssistantViewModel(server: Server.fake(), overlayState: WebFrontendOverlayState())
+        sut.forceDismissStandByView()
+        sut.fade(to: 1, reduceMotion: true)
+        sut.pullToRefreshProgress = 1
+        sut.isPullToRefreshActive = true
+
+        XCTAssertEqual(sut.webViewContentOpacity, 0)
+        XCTAssertTrue(sut.showsPullToRefresh)
+    }
+
     func testCleanCacheAndReloadClearsFrontendAssetCacheThenResetsFrontend() {
         let previousHandler = Current.websiteDataStoreHandler
         defer { Current.websiteDataStoreHandler = previousHandler }
