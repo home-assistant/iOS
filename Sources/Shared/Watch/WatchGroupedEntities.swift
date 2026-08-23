@@ -57,29 +57,30 @@ public struct WatchGroupedEntities {
         }
 
         var ungrouped: [WatchEntityEntry] = []
-        var groupsByDeviceId: [String: DeviceGroup] = [:]
+        var namePerDevice: [String: String] = [:]
+        var entriesPerDevice: [String: [WatchEntityEntry]] = [:]
         for entry in entries {
             guard let device = entry.device, entryCountPerDevice[device.id, default: 0] > 1 else {
                 ungrouped.append(entry)
                 continue
             }
-            let existing = groupsByDeviceId[device.id]
-            groupsByDeviceId[device.id] = DeviceGroup(
-                deviceId: device.id,
-                name: device.name,
-                entries: (existing?.entries ?? []) + [entry]
-            )
+            namePerDevice[device.id] = device.name
+            entriesPerDevice[device.id, default: []].append(entry)
         }
 
         return .init(
             ungrouped: ungrouped,
             // Dictionary order is arbitrary, so the id breaks name ties: without it two devices
             // sharing a name could swap places between two builds of the same data.
-            deviceGroups: groupsByDeviceId.values.sorted { lhs, rhs in
-                let comparison = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
-                if comparison != .orderedSame { return comparison == .orderedAscending }
-                return lhs.deviceId < rhs.deviceId
-            }
+            deviceGroups: entriesPerDevice
+                .map { deviceId, entries in
+                    DeviceGroup(deviceId: deviceId, name: namePerDevice[deviceId] ?? deviceId, entries: entries)
+                }
+                .sorted { lhs, rhs in
+                    let comparison = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
+                    if comparison != .orderedSame { return comparison == .orderedAscending }
+                    return lhs.deviceId < rhs.deviceId
+                }
         )
     }
 }
