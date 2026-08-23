@@ -172,6 +172,13 @@ struct WidgetsSnapshotTests {
         assertEnergySnapshot(source: .auto, scenario: .solarWithoutExport, family: .systemMedium)
     }
 
+    /// Importing and exporting within the same bucket: the evening bars carry a purple tail below
+    /// the axis and a consumption bar reduced by it, rather than the full import standing above.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetMixedFlowSystemMediumSnapshot() {
+        assertEnergySnapshot(source: .auto, scenario: .mixedFlow, family: .systemMedium)
+    }
+
     /// Daily buckets rather than hourly, with the whole week on the x-axis.
     @available(iOS 18, *)
     @MainActor @Test func energyWidgetThisWeekSystemMediumSnapshot() {
@@ -366,6 +373,11 @@ struct WidgetsSnapshotTests {
         case noSolar
         /// Solar with no export meter configured — generation is all the widget knows about.
         case solarWithoutExport
+        /// A meter reporting both directions in the same bucket, exporting after dark more than the
+        /// panels made — a battery discharging into the grid, which the widget's preferences never
+        /// resolve. Energy that only passed through was never demand, so the consumption bar comes
+        /// down to the difference instead of standing at the raw import.
+        case mixedFlow
 
         func points(period: WidgetEnergyPeriod) -> [WidgetEnergyEntry.ChartPoint] {
             let isDaily = period == .thisWeek || period == .thisMonth
@@ -398,12 +410,14 @@ struct WidgetsSnapshotTests {
             let solar: Double = switch self {
             case .noSolar: 0
             case .heavyExport: daylight * sunniness * 4
-            case .solarDay, .solarWithoutExport: daylight * sunniness
+            case .solarDay, .solarWithoutExport, .mixedFlow: daylight * sunniness
             }
+            // An evening discharge into the grid, from a source the widget can't see.
+            let unexplainedExport = self == .mixedFlow && hour >= 18 && hour <= 21 ? 0.9 : 0
             return (
                 grid: max(load - solar, 0),
                 solar: solar,
-                returned: self == .solarWithoutExport ? 0 : max(solar - load, 0)
+                returned: self == .solarWithoutExport ? 0 : max(solar - load, 0) + unexplainedExport
             )
         }
 

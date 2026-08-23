@@ -158,16 +158,22 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
 
     static func grid(for entry: WidgetEnergyEntry, figure: Figure = .livePowerOrTotals) -> WidgetEnergyMetric? {
         if figure == .livePowerOrTotals, let watts = entry.livePowerGrid {
-            // Live grid power is net: positive is drawn from the grid, negative is returned to it.
+            // Live grid power is net: positive is drawn from the grid, negative is returned to it —
+            // the same orientation as the period total below.
             let power = WidgetEnergyStyle.power(watts)
-            return .init(kind: .grid, value: power.value, unit: power.unit, direction: watts > 0 ? .down : .up)
+            return .init(
+                kind: .grid,
+                value: power.value,
+                unit: power.unit,
+                direction: WidgetEnergyStyle.gridDirection(ofTotal: watts)
+            )
         }
         if let net = entry.gridNet {
             return .init(
                 kind: .grid,
                 value: WidgetEnergyStyle.energy(net),
                 unit: WidgetEnergyStyle.energyUnit,
-                direction: WidgetEnergyStyle.direction(ofTotal: net)
+                direction: WidgetEnergyStyle.gridDirection(ofTotal: net)
             )
         }
         return nil

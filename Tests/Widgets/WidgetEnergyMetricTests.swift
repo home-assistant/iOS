@@ -16,7 +16,7 @@ struct WidgetEnergyMetricTests {
 
         #expect(metrics.map(\.kind) == [.solar, .grid])
         #expect(metrics.allSatisfy { $0.unit == WidgetEnergyStyle.energyUnit })
-        // Net grid is +4.3 kWh (more returned than consumed), so both series point up.
+        // Net grid is -4.3 kWh (more returned than consumed), so both series point up.
         #expect(metrics.map(\.direction) == [.up, .up])
     }
 

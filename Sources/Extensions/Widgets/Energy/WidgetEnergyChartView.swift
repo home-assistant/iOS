@@ -40,10 +40,14 @@ struct WidgetEnergyChartView: View {
     /// The full height of each bucket's bar: everything the home consumed, drawn from the grid and
     /// from its own solar. Painted first and in one piece, so the solar share can overlay its lower
     /// part instead of being stacked on top of it.
+    ///
+    /// Both halves are the used shares rather than the raw meter readings. A bucket that imported
+    /// and exported at once only demanded the difference, and the dashboard's graph plots that
+    /// difference — plotting the raw import would stand the bar above what the home ever used.
     private var consumptionSegments: [FlowSegment] {
         guard source.showsGrid else { return [] }
         return segments(flow: Self.gridFlow) { point in
-            (0, point.grid + (source.showsSolar ? point.solarUsed : 0))
+            (0, point.gridUsed + (source.showsSolar ? point.solarUsed : 0))
         }
     }
 
