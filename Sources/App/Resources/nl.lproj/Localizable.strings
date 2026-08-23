@@ -629,7 +629,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.more_info.search_commands" = "Commando's zoeken";
 "gestures.value.option.more_info.search_devices" = "Apparaten zoeken";
 "gestures.value.option.more_info.search_entities" = "Entiteiten zoeken";
-"gestures.value.option.more_info.smart_back" = "Gaat terug naar de vorige pagina, of toont de zijbalk als er geen pagina is om naar terug te gaan";
 "gestures.value.option.next_page" = "Volgende pagina";
 "gestures.value.option.next_server" = "Volgende server";
 "gestures.value.option.none" = "Geen";
@@ -643,7 +642,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.servers_list" = "Serverlijst";
 "gestures.value.option.show_settings" = "Open app-instellingen";
 "gestures.value.option.show_sidebar" = "Toon zijbalk";
-"gestures.value.option.smart_back" = "Slim terug";
 "grdb.config.migration_error.failed_access_grdb" = "Geen toegang tot database (GRDB), fout: %@";
 "grdb.config.migration_error.failed_to_save" = "Kan nieuwe configuratie niet opslaan, fout: %@";
 "ha_api.api_error.cant_build_url" = "Kon de API URL niet maken";

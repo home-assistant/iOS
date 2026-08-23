@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "Αναζήτηση εντολών";
 "gestures.value.option.more_info.search_devices" = "Αναζήτηση συσκευών";
 "gestures.value.option.more_info.search_entities" = "Αναζήτηση οντοτήτων";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Μετάβαση στην επόμενη σελίδα";
 "gestures.value.option.next_server" = "Επόμενος διακομιστής";
 "gestures.value.option.none" = "Κανένα";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "Λίστα διακομιστών";
 "gestures.value.option.show_settings" = "Ανοιγμα ρυθμίσεων εφαρμογής";
 "gestures.value.option.show_sidebar" = "Εμφάνιση πλαϊνής γραμμής";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Αποτυχία πρόσβασης στη βάση δεδομένων (GRDB), σφάλμα: %@";
 "grdb.config.migration_error.failed_to_save" = "Αποτυχία αποθήκευσης νέας διαμόρφωσης, σφάλμα: %@";
 "ha_api.api_error.cant_build_url" = "Δεν είναι δυνατή η δημιουργία URL API";

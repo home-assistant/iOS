@@ -2275,8 +2275,6 @@ public enum L10n {
         public static var showSettings: String { return L10n.tr("Localizable", "gestures.value.option.show_settings") }
         /// Show sidebar
         public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
-        /// Smart back
-        public static var smartBack: String { return L10n.tr("Localizable", "gestures.value.option.smart_back") }
         public enum MoreInfo {
           /// Opens the page currently shown in the app in your preferred browser
           public static var openInBrowser: String { return L10n.tr("Localizable", "gestures.value.option.more_info.open_in_browser") }
@@ -2288,8 +2286,6 @@ public enum L10n {
           public static var searchDevices: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_devices") }
           /// Search entities
           public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_entities") }
-          /// Goes back to the previous page, or shows the sidebar when there is no page to go back to
-          public static var smartBack: String { return L10n.tr("Localizable", "gestures.value.option.more_info.smart_back") }
         }
       }
     }
