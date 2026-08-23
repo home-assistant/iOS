@@ -93,25 +93,35 @@ enum AppIconShortcutItemsUpdater {
         provider.getAreaName(for: item)
     }
 
-    private static func icon(for item: MagicItem, provider: MagicItemProviderProtocol) -> UIApplicationShortcutIcon? {
-        switch item.type {
-        case .script:
-            return .init(systemSymbol: .applescriptFill)
-        case .scene:
-            return .init(systemSymbol: .sparkles)
-        case .entity:
-            return .init(systemSymbol: .rectangleAndPaperclip)
-        case .folder:
-            return .init(systemSymbol: .folderFill)
-        case .area:
-            // Areas can only be added to the watch, so this is never reached in practice.
-            return .init(systemSymbol: .squareGrid2x2Fill)
-        case .assistPipeline, .assistPrompt:
-            return .init(systemSymbol: .micFill)
-        case .complication:
-            return .init(systemSymbol: .applewatch)
-        case .unsupported:
-            return nil
+    static func materialDesignIcon(
+        for item: MagicItem,
+        provider: MagicItemProviderProtocol
+    ) -> MaterialDesignIcons {
+        if let info = provider.getInfo(for: item) {
+            return item.icon(info: info)
         }
+        return fallbackIcon(for: item.type)
+    }
+
+    static func fallbackIcon(for type: MagicItem.ItemType) -> MaterialDesignIcons {
+        switch type {
+        case .script: return .scriptIcon
+        case .scene: return .paletteIcon
+        case .entity: return .dotsGridIcon
+        case .folder: return .folderIcon
+        case .area: return .textureBoxIcon
+        case .assistPipeline: return .microphoneIcon
+        case .assistPrompt: return .messageProcessingOutlineIcon
+        case .complication: return .watchIcon
+        case .unsupported: return .dotsGridIcon
+        }
+    }
+
+    private static func icon(for item: MagicItem, provider: MagicItemProviderProtocol) -> UIApplicationShortcutIcon? {
+        guard item.type != .unsupported else { return nil }
+        // Home-screen shortcut icons only accept SF Symbols / bundled templates. Map the item's
+        // MaterialDesignIcons glyph (enum names end with `Icon`) through `similarSFSymbol` rather
+        // than passing MDI names as string SF Symbols, which do not resolve and appear blank.
+        return .init(systemSymbol: materialDesignIcon(for: item, provider: provider).similarSFSymbol)
     }
 }

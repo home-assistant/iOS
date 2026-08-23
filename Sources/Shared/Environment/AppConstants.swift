@@ -16,6 +16,8 @@ public enum AppConstants {
         public static var betaMac = URL(string: "https://companion.home-assistant.io/app/ios/beta_mac")!
         public static var review = URL(string: "https://companion.home-assistant.io/app/ios/review")!
         public static var reviewMac = URL(string: "https://companion.home-assistant.io/app/ios/review_mac")!
+        /// Mac App Store listing for App Store builds (Check for Updates).
+        public static var macAppStore = URL(string: "macappstore://apps.apple.com/app/id1099568401")!
         public static var translate = URL(string: "https://companion.home-assistant.io/app/ios/translate")!
         public static var forums = URL(string: "https://community.home-assistant.io/")!
         public static var chat = URL(string: "https://companion.home-assistant.io/app/ios/chat")!

@@ -124,6 +124,43 @@ enum StatusItemTitleRenderer {
 /// browser instead of spawning a web-view window. The preference is read live on every call because
 /// flipping it does not reconfigure the status item (it posts no `menuRelatedSettingDidChange`).
 enum StatusItemPrimaryAction {
+    struct CheckForUpdatesActions: Equatable {
+        /// Menu-bar-only (accessory) users must not be yanked into a web-view window.
+        var activatesWebView: Bool
+        var performsSparkleCheck: Bool
+        var opensAppStore: Bool
+    }
+
+    /// Direct-download Mac builds use Sparkle in-process. App Store builds have no Sparkle, so the
+    /// previous path activated the app and then no-op'd (`Updater.isSupported` is false).
+    static func checkForUpdatesActions(
+        isSupported: Bool = Current.updater.isSupported,
+        isCatalyst: Bool = Current.isCatalyst
+    ) -> CheckForUpdatesActions {
+        CheckForUpdatesActions(
+            activatesWebView: false,
+            performsSparkleCheck: isSupported,
+            opensAppStore: !isSupported && isCatalyst
+        )
+    }
+
+    static func checkForUpdates(from sender: AnyObject?) {
+        let actions = checkForUpdatesActions()
+        if actions.opensAppStore {
+            URLOpener.shared.open(AppConstants.WebURLs.macAppStore, options: [:], completionHandler: nil)
+            return
+        }
+        guard actions.performsSparkleCheck else { return }
+        // Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's internal
+        // delegate, which doesn't respond to `checkForUpdate(_:)`; target our recorded instance.
+        UIApplication.shared.sendAction(
+            #selector(AppDelegate.checkForUpdate(_:)),
+            to: AppDelegate.shared,
+            from: sender,
+            for: nil
+        )
+    }
+
     /// Opens Home Assistant in the default browser when the browser preference is on.
     /// - Returns: `true` if it handled the action (browser opened), `false` to fall through to the
     ///   normal toggle/activate behaviour.
@@ -229,17 +266,7 @@ class MenuManager {
                 callbackInfo.activate()
             },
             .init(name: L10n.Updater.CheckForUpdatesMenu.title) { callbackInfo in
-                Current.sceneManager.activateAnyScene(for: .webView)
-                callbackInfo.activate()
-
-                // Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's internal
-                // delegate, which doesn't respond to `checkForUpdate(_:)`; target our recorded instance.
-                UIApplication.shared.sendAction(
-                    #selector(AppDelegate.checkForUpdate(_:)),
-                    to: AppDelegate.shared,
-                    from: callbackInfo,
-                    for: nil
-                )
+                StatusItemPrimaryAction.checkForUpdates(from: callbackInfo as AnyObject)
             },
         ]
     }
@@ -457,15 +484,7 @@ final class StatusItemManager {
                 callbackInfo.activate()
             },
             .init(name: L10n.Updater.CheckForUpdatesMenu.title) { callbackInfo in
-                Current.sceneManager.activateAnyScene(for: .webView)
-                callbackInfo.activate()
-
-                UIApplication.shared.sendAction(
-                    #selector(AppDelegate.checkForUpdate(_:)),
-                    to: AppDelegate.shared,
-                    from: callbackInfo,
-                    for: nil
-                )
+                StatusItemPrimaryAction.checkForUpdates(from: callbackInfo as AnyObject)
             },
         ]
     }
