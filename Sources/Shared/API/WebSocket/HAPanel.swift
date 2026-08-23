@@ -26,7 +26,10 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
         self.icon = data.decode("icon", fallback: fallbackIcon)
         self.path = try data.decode("url_path")
 
-        let title: String = data.decode("title", fallback: component)
+        // Hidden dashboards used to omit title (it was treated as sidebar-only). Fall back to the
+        // path so pickers can tell them apart instead of labeling every one with the component name.
+        let decodedTitle: String = data.decode("title", fallback: "")
+        let title: String = decodedTitle.isEmpty ? (path.isEmpty ? component : path) : decodedTitle
 
         let possibleFrontendKey: String
         if path == "lovelace" {
@@ -96,6 +99,7 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
         try self.init(
             panelsByPath: dictionary
                 .compactMapKeys {
+                    // Internal frontend panels (`_my`, …) are not user-openable destinations.
                     if $0.hasPrefix("_") {
                         return nil
                     } else {
@@ -105,8 +109,6 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
                 .mapValues {
                     try HAPanel(data: .init(value: $0))
                 }
-                // non-show_in_sidebar dashboards have badly-named titles
-                .filter(\.value.showInSidebar)
         )
     }
 }

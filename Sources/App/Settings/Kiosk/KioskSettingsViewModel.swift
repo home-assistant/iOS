@@ -83,6 +83,7 @@ final class KioskSettingsViewModel: ObservableObject {
         }
         do {
             panels = try AppPanel.panels(serverId: serverId) ?? []
+            panels.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
         } catch {
             Current.Log.error("Failed to load kiosk dashboards: \(error.localizedDescription)")
             panels = []

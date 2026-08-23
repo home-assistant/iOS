@@ -4,6 +4,7 @@ import HAKit
 
 // `AppPanel` itself lives in the `HAModels` package; these are its database-backed queries.
 public extension AppPanel {
+    /// All stored panels for the server, including dashboards hidden from the sidebar.
     static func panels(serverId: String) throws -> [AppPanel]? {
         try Current.database().read({ db in
             try AppPanel

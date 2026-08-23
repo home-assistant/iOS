@@ -154,7 +154,7 @@ final class KioskScreensaverController: ObservableObject {
 
     private var isEnabled = false
     private var isCameraOverlayVisible = false
-    private var brightnessBeforeDimming: CGFloat?
+    private let brightness = KioskScreenBrightnessController()
     private var idleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
     private var isMotionObserving = false
@@ -168,6 +168,7 @@ final class KioskScreensaverController: ObservableObject {
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
+                self?.brightness.handleDidBecomeActive()
                 self?.restartIdleTimer()
                 self?.updateBrightness()
             }
@@ -175,7 +176,13 @@ final class KioskScreensaverController: ObservableObject {
         NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
             .sink { [weak self] _ in
                 self?.idleTimer?.invalidate()
-                self?.restoreBrightness()
+                self?.brightness.handleWillResignActive()
+            }
+            .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in
+                self?.idleTimer?.invalidate()
+                self?.brightness.handleDidEnterBackground()
             }
             .store(in: &cancellables)
 
@@ -200,10 +207,21 @@ final class KioskScreensaverController: ObservableObject {
 
     deinit {
         idleTimer?.invalidate()
-        restoreBrightness()
+        brightness.restore()
         Current.motionDetection.unregister(observer: self)
         // The screensaver is no longer on screen once this controller goes away (e.g. kiosk mode disabled).
         Current.kiosk.setScreensaverVisible(false)
+    }
+
+    func handleScenePhase(_ phase: ScenePhase) {
+        if phase == .inactive || phase == .background {
+            idleTimer?.invalidate()
+        }
+        brightness.handleScenePhase(phase)
+        if phase == .active {
+            restartIdleTimer()
+            updateBrightness()
+        }
     }
 
     func recordActivity() {
@@ -273,38 +291,10 @@ final class KioskScreensaverController: ObservableObject {
     }
 
     private func updateBrightness() {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        guard shouldDimBrightness else {
-            restoreBrightness()
-            return
-        }
-
-        if brightnessBeforeDimming == nil {
-            brightnessBeforeDimming = UIScreen.main.brightness
-        }
-
-        UIScreen.main.brightness = CGFloat(min(max(screensaver.dimLevel, 0), 1))
-        #endif
-    }
-
-    private var shouldDimBrightness: Bool {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        UIApplication.shared.applicationState == .active &&
-            isEnabled &&
-            isActive &&
-            screensaver.dimEnabled &&
-            !isCameraOverlayVisible
-        #else
-        false
-        #endif
-    }
-
-    private func restoreBrightness() {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        guard let brightnessBeforeDimming else { return }
-        UIScreen.main.brightness = brightnessBeforeDimming
-        self.brightnessBeforeDimming = nil
-        #endif
+        brightness.apply(
+            shouldDim: isEnabled && isActive && screensaver.dimEnabled && !isCameraOverlayVisible,
+            dimLevel: screensaver.dimLevel
+        )
     }
 }
 

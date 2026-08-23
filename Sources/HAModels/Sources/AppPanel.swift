@@ -1,8 +1,8 @@
 import Foundation
 import GRDB
 
-/// A sidebar dashboard panel, scoped to a server. The `Current.database()`-backed queries live in
-/// an extension in the `Shared` module.
+/// A dashboard panel, scoped to a server. Includes panels hidden from the sidebar (`showInSidebar`).
+/// The `Current.database()`-backed queries live in an extension in the `Shared` module.
 public struct AppPanel: Codable, FetchableRecord, PersistableRecord {
     public var id: String = UUID().uuidString
     public var serverId: String = ""

@@ -104,7 +104,7 @@ public enum DatabaseTables {
         case serverInfoJSON
     }
 
-    // Sidebar dashboard panels
+    // Dashboard panels (including those hidden from the sidebar)
     public enum AppPanel: String, CaseIterable {
         case id
         case serverId

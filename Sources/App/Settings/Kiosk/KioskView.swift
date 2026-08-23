@@ -154,6 +154,7 @@ struct ConditionalContainerView: View {
 struct KioskView: View {
     @StateObject private var screensaver = KioskScreensaverController()
     @StateObject private var kiosk = Current.kiosk
+    @Environment(\.scenePhase) private var scenePhase
     @Binding var showSettings: Bool
 
     var body: some View {
@@ -182,6 +183,9 @@ struct KioskView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.4), value: screensaver.isActive)
+            .onChange(of: scenePhase) { phase in
+                screensaver.handleScenePhase(phase)
+            }
     }
 
     private var settingsEntryAlignment: Alignment {
