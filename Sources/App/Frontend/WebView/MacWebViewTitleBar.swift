@@ -4,11 +4,19 @@ import SwiftUI
 import UIKit
 #if targetEnvironment(macCatalyst)
 import AppKit
+import HAKit
 #endif
 
 struct MacWebViewTitleBar: UIViewControllerRepresentable {
     let server: Server
     weak var webViewController: WebViewController?
+
+    /// Title for the macOS Window menu. The custom toolbar hides the title bar, but the window/scene
+    /// still needs a real title or the menu lists a blank entry.
+    static func windowTitle(for server: Server?) -> String {
+        let name = server?.info.name.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return name.isEmpty ? L10n.About.Logo.title : name
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -78,24 +86,32 @@ extension MacWebViewTitleBar {
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
+        private weak var windowScene: UIWindowScene?
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
+        private var serverObserver: HACancellable?
         private var macToolbarItems: [MagicItem] = []
         private var macToolbarConfigObserver: NSObjectProtocol?
 
         func update(server: Server, webViewController: WebViewController?) {
+            let serverChanged = self.server?.identifier != server.identifier
             self.server = server
             self.webViewController = webViewController
 
             loadMacToolbarItems()
             observeMacToolbarConfigChanges()
+            if serverChanged || serverObserver == nil {
+                observeServerName()
+            }
 
             refreshToolbarState()
+            updateWindowTitle()
         }
 
         func attach(to windowScene: UIWindowScene?) {
-            guard let titlebar = windowScene?.titlebar else { return }
+            guard let windowScene, let titlebar = windowScene.titlebar else { return }
+            self.windowScene = windowScene
             self.titlebar = titlebar
 
             if toolbar == nil || titlebar.toolbar !== toolbar {
@@ -105,6 +121,7 @@ extension MacWebViewTitleBar {
                 toolbar.allowsUserCustomization = true
                 toolbar.autosavesConfiguration = true
 
+                // Hidden in the title bar (unified toolbar); window/scene title still feeds the Window menu.
                 titlebar.titleVisibility = .hidden
                 if #available(macCatalyst 14.0, *) {
                     titlebar.toolbarStyle = .unifiedCompact
@@ -115,6 +132,7 @@ extension MacWebViewTitleBar {
             }
 
             refreshToolbarState()
+            updateWindowTitle()
         }
 
         private func refreshToolbarState() {
@@ -124,6 +142,8 @@ extension MacWebViewTitleBar {
         }
 
         func removeToolbar() {
+            serverObserver?.cancel()
+            serverObserver = nil
             if let macToolbarConfigObserver {
                 NotificationCenter.default.removeObserver(macToolbarConfigObserver)
                 self.macToolbarConfigObserver = nil
@@ -131,6 +151,20 @@ extension MacWebViewTitleBar {
             guard titlebar?.toolbar === toolbar else { return }
             titlebar?.toolbar = nil
             toolbar = nil
+        }
+
+        private func observeServerName() {
+            serverObserver?.cancel()
+            serverObserver = server?.observe { [weak self] _ in
+                self?.updateWindowTitle()
+                self?.updateServerPicker()
+            }
+        }
+
+        private func updateWindowTitle() {
+            let title = MacWebViewTitleBar.windowTitle(for: server)
+            windowScene?.title = title
+            windowScene?.windows.forEach { $0.title = title }
         }
 
         private func loadMacToolbarItems() {

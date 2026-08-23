@@ -26,7 +26,9 @@ struct ContainerView: View {
                 RecoveredServerReauthView(server: server, state: state)
             }
         }
-        .navigationTitle(" ") // Remove default macOS title
+        // Real title for the macOS Window menu. The web-view toolbar hides title-bar visibility, so this
+        // text is not shown in the title bar.
+        .navigationTitle(Text(verbatim: macWindowTitle))
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
@@ -102,5 +104,16 @@ struct ContainerView: View {
     /// old `presentOverlayController`'s `onDisappear { refresh() }`.
     private func refreshWebView() {
         Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
+    }
+
+    private var macWindowTitle: String {
+        switch state.screen {
+        case let .webView(server, _):
+            MacWebViewTitleBar.windowTitle(for: server)
+        case let .recoveredServerReauth(server):
+            MacWebViewTitleBar.windowTitle(for: server)
+        case .onboarding, .recoveredServerImport:
+            L10n.About.Logo.title
+        }
     }
 }

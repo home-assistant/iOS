@@ -31,19 +31,11 @@
                                     <constraint firstAttribute="height" constant="25" id="vTX-2e-0yP"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A PROJECT FROM THE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Kv-2m-Wq7">
-                                <rect key="frame" x="135" y="755" width="144" height="16"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
-                                <color key="textColor" systemColor="secondaryLabelColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ESo-tq-1hR"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="9Kv-2m-Wq7" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3Rp-8n-Lc4"/>
-                            <constraint firstItem="pDB-na-0R2" firstAttribute="top" secondItem="9Kv-2m-Wq7" secondAttribute="bottom" id="7Tj-5w-Xa2"/>
                             <constraint firstItem="pDB-na-0R2" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BRP-Fw-g6e"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-50" id="gXx-Ta-dWp"/>
                             <constraint firstItem="mQh-tn-BC1" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hcu-i7-wKs"/>
@@ -59,9 +51,6 @@
     <resources>
         <image name="launchScreen-logo" width="180" height="180"/>
         <image name="ohf-inline" width="2960" height="291"/>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
