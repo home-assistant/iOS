@@ -79,6 +79,8 @@ struct WatchHomeView: View {
                         WatchAreasListView(serverId: serverId)
                     case let .areaEntities(areaId, serverId):
                         WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
+                    case let .deviceEntities(deviceId, serverId, name):
+                        WatchDeviceEntitiesView(deviceId: deviceId, serverId: serverId, name: name)
                     }
                 }
         }
