@@ -34,7 +34,8 @@ struct WidgetScripts: Widget {
                         useCustomColors: false
                     )
                 },
-                type: .button
+                type: .button,
+                widgetKind: .scripts
             )
         }
         .contentMarginsDisabledIfAvailable()

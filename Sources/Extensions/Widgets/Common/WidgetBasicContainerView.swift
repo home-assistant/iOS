@@ -12,6 +12,7 @@ struct WidgetBasicContainerView: View {
     let showLastUpdate: Bool
     let showServerName: Bool
     let serverName: String?
+    let widgetKind: WidgetsKind
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
@@ -19,7 +20,8 @@ struct WidgetBasicContainerView: View {
         type: WidgetType,
         showLastUpdate: Bool = false,
         showServerName: Bool = false,
-        serverName: String? = nil
+        serverName: String? = nil,
+        widgetKind: WidgetsKind
     ) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
@@ -27,6 +29,7 @@ struct WidgetBasicContainerView: View {
         self.showLastUpdate = showLastUpdate
         self.showServerName = showServerName
         self.serverName = serverName
+        self.widgetKind = widgetKind
     }
 
     var body: some View {
@@ -37,6 +40,7 @@ struct WidgetBasicContainerView: View {
             showLastUpdate: showLastUpdate,
             showServerName: showServerName,
             serverName: serverName,
+            widgetKind: widgetKind,
             family: family
         )
     }
@@ -197,6 +201,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 withIconBackgroundColor: withIconBackgroundColor
             ),
             type: .custom,
+            widgetKind: .custom,
             family: familySize
         )
     }
@@ -229,6 +234,7 @@ struct WidgetBasicContainerWrapperView: View {
     let family: WidgetFamily
     let showServerName: Bool
     let serverName: String?
+    let widgetKind: WidgetsKind
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
@@ -237,6 +243,7 @@ struct WidgetBasicContainerWrapperView: View {
         showLastUpdate: Bool = false,
         showServerName: Bool = false,
         serverName: String? = nil,
+        widgetKind: WidgetsKind,
         family: WidgetFamily
     ) {
         self.emptyViewGenerator = emptyViewGenerator
@@ -246,6 +253,7 @@ struct WidgetBasicContainerWrapperView: View {
         self.family = family
         self.showServerName = showServerName
         self.serverName = serverName
+        self.widgetKind = widgetKind
     }
 
     var body: some View {
@@ -256,24 +264,31 @@ struct WidgetBasicContainerWrapperView: View {
                 content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
             }
             if showLastUpdate, !contents.isEmpty {
-                let lastUpdatedTextView = Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") +
-                    Text(Current.date(), style: .time)
-                Group {
-                    if showServerName, let serverName {
-                        Text(serverName) + Text(" · ") + lastUpdatedTextView
-                    } else {
-                        lastUpdatedTextView
-                    }
-                }
-                .font(.system(size: 10).bold())
-                .frame(maxWidth: .infinity, alignment: .center)
-                .multilineTextAlignment(.center)
-                .padding(.bottom, DesignSystem.Spaces.half)
-                .opacity(0.5)
+                lastUpdateFooter
             }
         }
         // Whenever Apple allow apps to use material backgrounds we should update this
         .widgetBackground(.primaryBackground)
+    }
+
+    /// The last refresh time doubles as the reload control, matching the energy widget: tapping the
+    /// glyph or the time reloads this widget's timeline.
+    @ViewBuilder
+    private var lastUpdateFooter: some View {
+        if #available(iOS 17, *) {
+            HStack(spacing: DesignSystem.Spaces.half) {
+                if showServerName, let serverName {
+                    Text(verbatim: "\(serverName) ·")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                WidgetRefreshButton(kind: widgetKind, date: Current.date())
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.horizontal, DesignSystem.Spaces.half)
+            .padding(.bottom, DesignSystem.Spaces.half)
+        }
     }
 
     @ViewBuilder

@@ -2761,6 +2761,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";
 "widgets.preview.empty.create.button" = "Create widget";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "widgets.scene.activate.title" = "Activate scene";

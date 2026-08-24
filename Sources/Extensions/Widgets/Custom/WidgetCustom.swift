@@ -20,7 +20,7 @@ struct WidgetCustom: Widget {
                     infoProvider: timelineEntry.magicItemInfoProvider,
                     states: timelineEntry.entitiesState,
                     showStates: timelineEntry.showStates
-                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime)
+                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime, widgetKind: .custom)
             } else {
                 emptyView
                     .widgetBackground(Color.clear)

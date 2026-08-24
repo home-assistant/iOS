@@ -8380,6 +8380,8 @@ public enum L10n {
   }
 
   public enum Widgets {
+    /// Refresh widget
+    public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.refresh_title") }
     public enum Action {
       public enum Name {
         /// Assist

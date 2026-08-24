@@ -25,7 +25,8 @@ struct WidgetCommonlyUsedEntities: Widget {
                     type: .custom,
                     showLastUpdate: timelineEntry.showLastUpdateTime,
                     showServerName: timelineEntry.serverName != nil,
-                    serverName: timelineEntry.serverName
+                    serverName: timelineEntry.serverName,
+                    widgetKind: .commonlyUsedEntities
                 )
             } else {
                 emptyView
