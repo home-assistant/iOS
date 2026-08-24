@@ -32,7 +32,8 @@ struct WidgetOpenPage: Widget {
                             )
                         }
                     }(),
-                    type: .button
+                    type: .button,
+                    widgetKind: .openPage
                 )
             }
         )

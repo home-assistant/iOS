@@ -65,7 +65,8 @@ struct WidgetAssistView: View {
                     )
                 }
             }(),
-            type: .button
+            type: .button,
+            widgetKind: .assist
         )
     }
 

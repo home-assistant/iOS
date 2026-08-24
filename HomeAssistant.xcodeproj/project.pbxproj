@@ -795,6 +795,8 @@
 				Widgets/Common/WidgetPreviewMagicItemProvider.swift,
 				Widgets/Common/WidgetPreviewSample.swift,
 				Widgets/Common/WidgetPreviewSampleEntity.swift,
+				Widgets/Common/WidgetRefreshAppIntent.swift,
+				Widgets/Common/WidgetRefreshButton.swift,
 				Widgets/Common/WidgetTimelineProviderSupport.swift,
 				Widgets/Controls/Cover/CoverIntent.swift,
 				Widgets/Controls/Cover/IntentCoverEntity.swift,
