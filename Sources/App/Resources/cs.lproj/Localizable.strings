@@ -629,7 +629,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.value.option.more_info.search_commands" = "Hledat v příkazech";
 "gestures.value.option.more_info.search_devices" = "Hledat zařízení";
 "gestures.value.option.more_info.search_entities" = "Hledat entity";
-"gestures.value.option.more_info.smart_back" = "Vrátí se na předchozí stránku nebo zobrazí postranní panel, pokud není k dispozici žádná stránka, na kterou by se dalo vrátit";
 "gestures.value.option.next_page" = "Přejít na další stránku";
 "gestures.value.option.next_server" = "Další server";
 "gestures.value.option.none" = "Nic";
@@ -643,7 +642,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.value.option.servers_list" = "Seznam serverů";
 "gestures.value.option.show_settings" = "Otevřít nastavení aplikace";
 "gestures.value.option.show_sidebar" = "Zobrazit postranní panel";
-"gestures.value.option.smart_back" = "Chytrý návrat";
 "grdb.config.migration_error.failed_access_grdb" = "Nepodařilo se získat přístup k databázi (GRDB), chyba: %@";
 "grdb.config.migration_error.failed_to_save" = "Nepodařilo se uložit nové nastavení, chyba: %@";
 "ha_api.api_error.cant_build_url" = "Nelze sestavit URL API";

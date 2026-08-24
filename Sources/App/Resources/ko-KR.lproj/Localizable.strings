@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "명령 검색";
 "gestures.value.option.more_info.search_devices" = "기기 찾기";
 "gestures.value.option.more_info.search_entities" = "엔티티 찾기";
-"gestures.value.option.more_info.smart_back" = "이전 페이지로 돌아가거나, 돌아갈 페이지가 없으면 사이드바를 표시합니다";
 "gestures.value.option.next_page" = "다음 페이지로 이동";
 "gestures.value.option.next_server" = "다음 서버";
 "gestures.value.option.none" = "없음";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "서버 목록";
 "gestures.value.option.show_settings" = "앱 설정 열기";
 "gestures.value.option.show_sidebar" = "사이드바 표시";
-"gestures.value.option.smart_back" = "상황에 맞게 뒤로 가기";
 "grdb.config.migration_error.failed_access_grdb" = "데이터베이스(GRDB)에 액세스하지 못함, 오류: %@";
 "grdb.config.migration_error.failed_to_save" = "새 구성을 저장하지 못했습니다. 오류: %@";
 "ha_api.api_error.cant_build_url" = "API URL을 빌드할 수 없습니다.";

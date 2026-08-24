@@ -629,7 +629,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "gestures.value.option.more_info.search_commands" = "Parancsok keresése";
 "gestures.value.option.more_info.search_devices" = "Eszközök keresése";
 "gestures.value.option.more_info.search_entities" = "Entitások keresése";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Tovább a következő oldalra";
 "gestures.value.option.next_server" = "Következő szerver";
 "gestures.value.option.none" = "Nincs";
@@ -643,7 +642,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "gestures.value.option.servers_list" = "Szerverek listája";
 "gestures.value.option.show_settings" = "Alkalmazásbeállítások megnyitása";
 "gestures.value.option.show_sidebar" = "Oldalsáv megjelenítése";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Nem sikerült elérni az adatbázist (GRDB), hiba: %@";
 "grdb.config.migration_error.failed_to_save" = "Nem sikerült elmenteni az új konfigurációt, hiba: %@";
 "ha_api.api_error.cant_build_url" = "Nem lehet API URL-t létrehozni";
