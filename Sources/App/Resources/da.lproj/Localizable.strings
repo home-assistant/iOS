@@ -629,6 +629,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.value.option.more_info.search_commands" = "Søg i kommandoer";
 "gestures.value.option.more_info.search_devices" = "Søg i enheder";
 "gestures.value.option.more_info.search_entities" = "Søg i entiteter";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Gå til næste side";
 "gestures.value.option.next_server" = "Næste server";
 "gestures.value.option.none" = "Ingen";
@@ -642,6 +643,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "Åbn app-indstillinger";
 "gestures.value.option.show_sidebar" = "Vis sidepanel";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Kunne ikke tilgå database (GRDB), fejl: %@";
 "grdb.config.migration_error.failed_to_save" = "Kunne ikke gemme den nye konfiguration, fejl: %@";
 "ha_api.api_error.cant_build_url" = "Kan ikke oprette API-URL";
@@ -2080,6 +2082,8 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "Ny Komplikation";
 "watch.complications.builder.precision" = "Decimals";
@@ -2087,6 +2091,7 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "watch.complications.builder.preview" = "Forhåndsvisning";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
@@ -2284,6 +2289,7 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "watch.home.areas.section.sensors.title" = "Sensorer";
 "watch.home.areas.title" = "Områder";
 "watch.home.cancel_and_use_cache.title" = "Annullér og brug cache";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Spring over";
 "watch.home.run.confirmation.title" = "Er du sikker på, at du vil køre \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

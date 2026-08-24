@@ -629,6 +629,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.more_info.search_commands" = "Tìm lệnh";
 "gestures.value.option.more_info.search_devices" = "Tìm kiếm thiết bị";
 "gestures.value.option.more_info.search_entities" = "Search entities";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Next server";
 "gestures.value.option.none" = "None";
@@ -642,6 +643,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";
@@ -2080,6 +2082,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "New complication";
 "watch.complications.builder.precision" = "Decimals";
@@ -2087,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
@@ -2284,6 +2289,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.section.sensors.title" = "Sensors";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

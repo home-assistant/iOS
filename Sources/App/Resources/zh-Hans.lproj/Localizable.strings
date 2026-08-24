@@ -629,6 +629,7 @@
 "gestures.value.option.more_info.search_commands" = "搜索命令";
 "gestures.value.option.more_info.search_devices" = "搜索设备";
 "gestures.value.option.more_info.search_entities" = "搜索实体";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "转至下一页";
 "gestures.value.option.next_server" = "下一个服务器";
 "gestures.value.option.none" = "无";
@@ -642,6 +643,7 @@
 "gestures.value.option.servers_list" = "服务器列表";
 "gestures.value.option.show_settings" = "打开应用设置";
 "gestures.value.option.show_sidebar" = "显示侧边栏";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "无法访问数据库 (GRDB) ，错误：%@";
 "grdb.config.migration_error.failed_to_save" = "无法保存新配置，错误：%@";
 "ha_api.api_error.cant_build_url" = "无法构建API URL";
@@ -2079,6 +2081,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "最大";
 "watch.complications.builder.minimum" = "最小";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "New complication";
 "watch.complications.builder.precision" = "Decimals";
@@ -2086,6 +2090,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "预览";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "移除 %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "显示图标";
@@ -2283,6 +2288,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.section.sensors.title" = "传感器";
 "watch.home.areas.title" = "区域";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "跳过";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

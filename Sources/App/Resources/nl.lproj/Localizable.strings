@@ -629,6 +629,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.more_info.search_commands" = "Commando's zoeken";
 "gestures.value.option.more_info.search_devices" = "Apparaten zoeken";
 "gestures.value.option.more_info.search_entities" = "Entiteiten zoeken";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Volgende pagina";
 "gestures.value.option.next_server" = "Volgende server";
 "gestures.value.option.none" = "Geen";
@@ -642,6 +643,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "gestures.value.option.servers_list" = "Serverlijst";
 "gestures.value.option.show_settings" = "Open app-instellingen";
 "gestures.value.option.show_sidebar" = "Toon zijbalk";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Geen toegang tot database (GRDB), fout: %@";
 "grdb.config.migration_error.failed_to_save" = "Kan nieuwe configuratie niet opslaan, fout: %@";
 "ha_api.api_error.cant_build_url" = "Kon de API URL niet maken";
@@ -2080,6 +2082,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.insert_token" = "Invoegen";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Naam (optioneel)";
 "watch.complications.builder.new_title" = "Nieuwe complicatie";
 "watch.complications.builder.precision" = "Decimalen";
@@ -2087,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Voorbeeld";
 "watch.complications.builder.progress_bar_color" = "Kleur van de voortgangsbalk";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Weergeven";
 "watch.complications.builder.show_gauge" = "Toon als meter / ring";
 "watch.complications.builder.show_icon" = "Show icon";
@@ -2284,6 +2289,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.section.sensors.title" = "Sensors";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Overslaan";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";
 "watch.home.run.error.lock_state_unknown" = "De huidige status van het slot is nog niet bekend, dus de actie is niet verzonden. Wacht tot de status is geladen en probeer het opnieuw.";

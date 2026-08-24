@@ -629,6 +629,7 @@
 "gestures.value.option.more_info.search_commands" = "Поиск команд";
 "gestures.value.option.more_info.search_devices" = "Поиск устройств";
 "gestures.value.option.more_info.search_entities" = "Поиск объектов";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Переход к следующей странице";
 "gestures.value.option.next_server" = "Следующий сервер";
 "gestures.value.option.none" = "Ничего";
@@ -642,6 +643,7 @@
 "gestures.value.option.servers_list" = "Список серверов";
 "gestures.value.option.show_settings" = "Открытие настроек приложения";
 "gestures.value.option.show_sidebar" = "Показать боковую панель";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Не удалось получить доступ к базе данных (GRDB), ошибка: %@";
 "grdb.config.migration_error.failed_to_save" = "Не удалось сохранить новую конфигурацию, ошибка: %@";
 "ha_api.api_error.cant_build_url" = "Не удается построить URL-адрес API";
@@ -2080,6 +2082,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "New complication";
 "watch.complications.builder.precision" = "Decimals";
@@ -2087,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
@@ -2284,6 +2289,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.section.sensors.title" = "Датчики";
 "watch.home.areas.title" = "Пространства";
 "watch.home.cancel_and_use_cache.title" = "Отменить и использовать кэш";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Пропустить";
 "watch.home.run.confirmation.title" = "Вы уверены, что хотите запустить \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

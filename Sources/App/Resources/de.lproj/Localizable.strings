@@ -629,6 +629,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.value.option.more_info.search_commands" = "Befehle durchsuchen";
 "gestures.value.option.more_info.search_devices" = "Geräte durchsuchen";
 "gestures.value.option.more_info.search_entities" = "Entitäten durchsuchen";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Weiter zur nächsten Seite";
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
@@ -642,6 +643,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "App-Einstellungen öffnen";
 "gestures.value.option.show_sidebar" = "Seitenleiste einblenden";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Zugriff auf Datenbank (GRDB) fehlgeschlagen, Fehler: %@";
 "grdb.config.migration_error.failed_to_save" = "Neue Konfiguration konnte nicht gespeichert werden, Fehler: %@";
 "ha_api.api_error.cant_build_url" = "API-URL kann nicht erstellt werden.";
@@ -2081,6 +2083,8 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.complications.builder.insert_token" = "Einfügen";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "Neue Komplikation";
 "watch.complications.builder.precision" = "Dezimalstellen";
@@ -2088,6 +2092,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.complications.builder.preview" = "Vorschau";
 "watch.complications.builder.progress_bar_color" = "Fortschrittsbalken-Farbe";
 "watch.complications.builder.remove_token" = "%@ entfernen";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Anzeigen";
 "watch.complications.builder.show_gauge" = "Als Analoganzeige/Ring anzeigen";
 "watch.complications.builder.show_icon" = "Symbol anzeigen";
@@ -2285,6 +2290,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.home.areas.section.sensors.title" = "Sensoren";
 "watch.home.areas.title" = "Bereiche";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
 "watch.home.run.error.lock_state_unknown" = "Der aktuelle Zustand des Schlosses ist noch nicht bekannt, daher wurde die Aktion nicht gesendet. Warte, bis der Zustand geladen ist, und versuche es erneut.";
