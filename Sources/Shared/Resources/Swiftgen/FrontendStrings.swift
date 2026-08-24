@@ -10,30 +10,48 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 public enum FrontendStrings {
+  /// Apps
+  public static var panelApps: String { return FrontendStrings.tr("Frontend", "panel::apps") }
   /// Calendar
   public static var panelCalendar: String { return FrontendStrings.tr("Frontend", "panel::calendar") }
+  /// Climate
+  public static var panelClimate: String { return FrontendStrings.tr("Frontend", "panel::climate") }
   /// Settings
   public static var panelConfig: String { return FrontendStrings.tr("Frontend", "panel::config") }
+  /// Demo
+  public static var panelDemo: String { return FrontendStrings.tr("Frontend", "panel::demo") }
   /// Developer tools
   public static var panelDeveloperTools: String { return FrontendStrings.tr("Frontend", "panel::developer_tools") }
   /// Energy
   public static var panelEnergy: String { return FrontendStrings.tr("Frontend", "panel::energy") }
   /// History
   public static var panelHistory: String { return FrontendStrings.tr("Frontend", "panel::history") }
+  /// Overview
+  public static var panelHome: String { return FrontendStrings.tr("Frontend", "panel::home") }
+  /// Lights
+  public static var panelLight: String { return FrontendStrings.tr("Frontend", "panel::light") }
   /// Activity
   public static var panelLogbook: String { return FrontendStrings.tr("Frontend", "panel::logbook") }
   /// Mailbox
   public static var panelMailbox: String { return FrontendStrings.tr("Frontend", "panel::mailbox") }
+  /// Maintenance
+  public static var panelMaintenance: String { return FrontendStrings.tr("Frontend", "panel::maintenance") }
   /// Map
   public static var panelMap: String { return FrontendStrings.tr("Frontend", "panel::map") }
   /// Media
   public static var panelMediaBrowser: String { return FrontendStrings.tr("Frontend", "panel::media_browser") }
+  /// Page not found
+  public static var panelNotfound: String { return FrontendStrings.tr("Frontend", "panel::notfound") }
   /// Profile
   public static var panelProfile: String { return FrontendStrings.tr("Frontend", "panel::profile") }
+  /// Security
+  public static var panelSecurity: String { return FrontendStrings.tr("Frontend", "panel::security") }
   /// Shopping list
   public static var panelShoppingList: String { return FrontendStrings.tr("Frontend", "panel::shopping_list") }
   /// Overview
   public static var panelStates: String { return FrontendStrings.tr("Frontend", "panel::states") }
+  /// To-do lists
+  public static var panelTodo: String { return FrontendStrings.tr("Frontend", "panel::todo") }
   /// Unavailable
   public static var stateDefaultUnavailable: String { return FrontendStrings.tr("Frontend", "state::default::unavailable") }
   /// Unknown

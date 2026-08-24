@@ -629,7 +629,7 @@
 "gestures.value.option.more_info.search_commands" = "명령 검색";
 "gestures.value.option.more_info.search_devices" = "기기 찾기";
 "gestures.value.option.more_info.search_entities" = "엔티티 찾기";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
+"gestures.value.option.more_info.smart_back" = "이전 페이지로 돌아가거나, 돌아갈 페이지가 없으면 사이드바를 표시합니다.";
 "gestures.value.option.next_page" = "다음 페이지로 이동";
 "gestures.value.option.next_server" = "다음 서버";
 "gestures.value.option.none" = "없음";
@@ -643,7 +643,7 @@
 "gestures.value.option.servers_list" = "서버 목록";
 "gestures.value.option.show_settings" = "앱 설정 열기";
 "gestures.value.option.show_sidebar" = "사이드바 표시";
-"gestures.value.option.smart_back" = "Smart back";
+"gestures.value.option.smart_back" = "상황에 맞게 뒤로 가기";
 "grdb.config.migration_error.failed_access_grdb" = "데이터베이스(GRDB)에 액세스하지 못함, 오류: %@";
 "grdb.config.migration_error.failed_to_save" = "새 구성을 저장하지 못했습니다. 오류: %@";
 "ha_api.api_error.cant_build_url" = "API URL을 빌드할 수 없습니다.";
@@ -2082,8 +2082,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.insert_token" = "삽입";
 "watch.complications.builder.maximum" = "최대값";
 "watch.complications.builder.minimum" = "최소값";
-"watch.complications.builder.move_token_left" = "Move left";
-"watch.complications.builder.move_token_right" = "Move right";
+"watch.complications.builder.move_token_left" = "왼쪽으로 이동";
+"watch.complications.builder.move_token_right" = "오른쪽으로 이동";
 "watch.complications.builder.name" = "이름(선택 사항)";
 "watch.complications.builder.new_title" = "새 컴플리케이션";
 "watch.complications.builder.precision" = "소수점";
@@ -2091,7 +2091,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.preview" = "미리보기";
 "watch.complications.builder.progress_bar_color" = "진행률 표시줄 색상";
 "watch.complications.builder.remove_token" = "%@ 제거";
-"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
+"watch.complications.builder.reorder_tokens_hint" = "토큰을 다른 토큰 위로 드래그하여 순서를 변경하세요.";
 "watch.complications.builder.show" = "표시";
 "watch.complications.builder.show_gauge" = "게이지/링으로 표시";
 "watch.complications.builder.show_icon" = "아이콘 표시";
@@ -2289,7 +2289,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.home.areas.section.sensors.title" = "센서";
 "watch.home.areas.title" = "영역";
 "watch.home.cancel_and_use_cache.title" = "취소하고 캐시를 사용하세요";
-"watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.empty" = "이 기기와 호환되는 엔티티가 없습니다.";
 "watch.home.loading.skip.title" = "건너뛰기";
 "watch.home.run.confirmation.title" = "\"%@\" 실행하시겠습니까?";
 "watch.home.run.error.lock_state_unknown" = "잠금의 현재 상태를 아직 알 수 없어 액션을 보내지 않았습니다. 상태가 로드될 때까지 기다린 후 다시 시도하세요.";
