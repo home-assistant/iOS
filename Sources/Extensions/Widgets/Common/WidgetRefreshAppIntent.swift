@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import Shared
 import WidgetKit
 
 @available(iOS 17.0, *)
