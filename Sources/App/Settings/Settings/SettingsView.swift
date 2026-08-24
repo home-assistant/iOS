@@ -49,6 +49,8 @@ struct SettingsView: View {
             if isSearching {
                 searchResultsContent
             } else {
+                AppMigrationSettingsSection()
+
                 // Servers section
                 Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
                     ServersListView()
@@ -105,6 +107,8 @@ struct SettingsView: View {
             if isSearching {
                 searchResultsContent
             } else {
+                AppMigrationSettingsSection()
+
                 // Servers section
                 Section(
                     header: Text(L10n.Settings.ConnectionSection.serversHeader),

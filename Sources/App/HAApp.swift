@@ -13,6 +13,7 @@ struct HAApp: App {
         WindowGroup {
             ConditionalContainerView()
                 .toastOverlay()
+                .appMigrationCover()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
                 .onContinueUserActivity(CSSearchableItemActionType) { handleIncoming(userActivity: $0) }
@@ -64,6 +65,11 @@ struct HAApp: App {
     /// `scene(_:openURLContexts:)` / `scene(_:continue:)` under the SwiftUI lifecycle.
     @MainActor
     private func handleIncoming(url: URL) {
+        // Before the coordinator: the developer-account migration is presented over the window root,
+        // not by the coordinator, and on the app taking over the handoff arrives while onboarding is
+        // still up — there may be no coordinator to wait for.
+        guard !AppMigrationPresenter.shared.handle(url: url) else { return }
+
         // Synchronously, before waiting on the coordinator: the link names where to land, so
         // location-based home switching must not fire for the activation it is opening.
         LocationBasedServerSwitcher.shared.deepLinkWillOpen()
@@ -72,6 +78,11 @@ struct HAApp: App {
 
     @MainActor
     private func handleIncoming(userActivity: NSUserActivity) {
+        // A migration handoff sent as a universal link arrives here rather than through `onOpenURL`.
+        if let url = userActivity.webpageURL, AppMigrationPresenter.shared.handle(url: url) {
+            return
+        }
+
         LocationBasedServerSwitcher.shared.deepLinkWillOpen()
         Current.sceneManager.appCoordinator.done {
             IncomingURLHandler(coordinator: $0).handle(userActivity: userActivity)
