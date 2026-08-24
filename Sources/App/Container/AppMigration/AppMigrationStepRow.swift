@@ -15,15 +15,11 @@ struct AppMigrationStepRow: View {
     let state: AppMigrationStepState
 
     var body: some View {
-        HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.one) {
             // Fixed tint: the leading icon says *what* the step is, and only the trailing indicator
             // says how it went. Colouring both meant a failed row turned entirely red and a row's
             // identity shifted as it progressed, which made the list harder to scan, not easier.
-            Image(systemSymbol: icon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-                .foregroundStyle(Color.haPrimary)
+            AppMigrationRowIcon(symbol: icon)
                 .modify { view in
                     if #available(iOS 17.0, *) {
                         // A small kick as the step picks up, so the eye lands on the row that is
@@ -35,15 +31,11 @@ struct AppMigrationStepRow: View {
                 }
 
             Text(title)
-                .font(DesignSystem.Font.body)
                 .foregroundStyle(state == .pending ? Color.secondary : Color.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             indicator
-                .frame(width: 24, height: 24)
         }
-        .padding(.vertical, DesignSystem.Spaces.half)
-        .frame(minHeight: AppMigrationRowMetrics.minimumHeight)
         .opacity(state == .pending ? 0.45 : 1)
         .animation(.spring(response: 0.35, dampingFraction: 0.6), value: state)
         .accessibilityElement(children: .combine)
@@ -53,8 +45,7 @@ struct AppMigrationStepRow: View {
 
     private var indicator: some View {
         Image(systemSymbol: indicatorSymbol)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
+            .imageScale(.large)
             .foregroundStyle(indicatorColor)
             .modify { view in
                 if #available(iOS 17.0, *) {

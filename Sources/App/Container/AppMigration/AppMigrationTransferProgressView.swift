@@ -10,7 +10,7 @@ struct AppMigrationTransferProgressView: View {
     let caption: String
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             ProgressView(value: progress.fraction)
                 .progressViewStyle(.linear)
                 .tint(Color.haPrimary)
@@ -18,9 +18,8 @@ struct AppMigrationTransferProgressView: View {
             Text(caption)
                 .font(DesignSystem.Font.footnote)
                 .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.horizontal, DesignSystem.Spaces.two)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(caption)
     }

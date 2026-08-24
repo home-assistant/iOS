@@ -4,60 +4,63 @@ import SwiftUI
 
 /// Explains the move to the new app before anything happens: what travels, what has to be set up
 /// again, and that the old app stands down afterwards.
+///
+/// A grouped `List`, so the two disclosures are real sections with real headers and separators
+/// rather than a hand-built imitation. Only the header row opts out of list styling.
 struct AppMigrationIntroView: View {
     let serverCount: Int
     let onStart: () -> Void
     let onLater: () -> Void
 
     var body: some View {
-        BaseOnboardingView(
-            illustration: { AppMigrationIllustration(symbol: .arrowUpForwardApp) },
-            title: L10n.AppMigration.Intro.title,
-            primaryDescription: L10n.AppMigration.Intro.primaryDescription,
-            secondaryDescription: L10n.AppMigration.Intro.secondaryDescription,
-            content: { disclosure },
-            primaryActionTitle: L10n.AppMigration.Intro.startButton,
-            primaryAction: onStart,
-            secondaryActionTitle: L10n.AppMigration.Intro.laterButton,
-            secondaryAction: onLater
-        )
-    }
-
-    private var disclosure: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-            group(
-                header: L10n.AppMigration.Intro.Included.header,
-                tint: .haPrimary,
-                symbol: .checkmarkCircleFill,
-                lines: [
-                    L10n.AppMigration.Intro.Included.servers(serverCount),
-                    L10n.AppMigration.Intro.Included.configuration,
-                    L10n.AppMigration.Intro.Included.settings,
-                ]
+        List {
+            AppMigrationHeaderRow(
+                symbol: .arrowUpForwardApp,
+                title: L10n.AppMigration.Intro.title,
+                primaryDescription: L10n.AppMigration.Intro.primaryDescription,
+                secondaryDescription: L10n.AppMigration.Intro.secondaryDescription
             )
-            group(
-                header: L10n.AppMigration.Intro.Excluded.header,
-                tint: .secondary,
-                symbol: .arrowClockwise,
-                lines: [
-                    L10n.AppMigration.Intro.Excluded.widgets,
-                    L10n.AppMigration.Intro.Excluded.complications,
-                    L10n.AppMigration.Intro.Excluded.shortcuts,
-                ]
+            .appMigrationHeaderRowStyle()
+
+            Section(L10n.AppMigration.Intro.Included.header) {
+                rows(
+                    symbol: .checkmarkCircleFill,
+                    tint: .green,
+                    lines: [
+                        L10n.AppMigration.Intro.Included.servers(serverCount),
+                        L10n.AppMigration.Intro.Included.configuration,
+                        L10n.AppMigration.Intro.Included.settings,
+                    ]
+                )
+            }
+
+            Section(L10n.AppMigration.Intro.Excluded.header) {
+                rows(
+                    symbol: .arrowClockwise,
+                    tint: .secondary,
+                    lines: [
+                        L10n.AppMigration.Intro.Excluded.widgets,
+                        L10n.AppMigration.Intro.Excluded.complications,
+                        L10n.AppMigration.Intro.Excluded.shortcuts,
+                    ]
+                )
+            }
+
+        }
+        .listTopContentMargin()
+        .safeAreaInset(edge: .bottom) {
+            AppMigrationBottomActions(
+                primaryTitle: L10n.AppMigration.Intro.startButton,
+                primaryAction: onStart,
+                secondaryTitle: L10n.AppMigration.Intro.laterButton,
+                secondaryAction: onLater
             )
         }
-        .frame(maxWidth: DesignSystem.List.rowMaxWidth, alignment: .leading)
     }
 
-    private func group(header: String, tint: Color, symbol: SFSymbol, lines: [String]) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            Text(header)
-                .font(DesignSystem.Font.subheadline.bold())
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            AppMigrationRowGroup(items: lines) { line in
-                AppMigrationDisclosureRow(symbol: symbol, tint: tint, text: line)
-            }
+    private func rows(symbol: SFSymbol, tint: Color, lines: [String]) -> some View {
+        ForEach(lines, id: \.self) { line in
+            AppMigrationDisclosureRow(symbol: symbol, tint: tint, text: line)
         }
     }
 }

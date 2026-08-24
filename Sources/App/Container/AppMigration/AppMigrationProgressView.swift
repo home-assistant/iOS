@@ -5,10 +5,8 @@ import SwiftUI
 /// The step list shown while data is packaged or applied. Each row fills in as its step finishes, so
 /// the user watches the migration happen rather than staring at one spinner.
 ///
-/// This is the only screen in the flow not built on `BaseOnboardingView` — it has no action button to
-/// offer — so it reproduces that view's vertical rhythm by hand: illustration, title, subtitle, then
-/// content, all top-aligned. Centring it instead would drop the title well below where it sits on the
-/// screens either side of this one.
+/// A grouped `List` like the intro screen: the steps are ordinary rows in a section, and the transfer
+/// bar is a section of its own that only exists while a payload is crossing in more than one link.
 struct AppMigrationProgressView<Step: AppMigrationStepDescribing>: View where Step.AllCases == [Step] {
     let symbol: SFSymbol
     let title: String
@@ -20,40 +18,23 @@ struct AppMigrationProgressView<Step: AppMigrationStepDescribing>: View where St
     var transferCaption: String = ""
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.three) {
-            AppMigrationIllustration(symbol: symbol)
-                .padding(.top, DesignSystem.Spaces.two)
+        List {
+            AppMigrationHeaderRow(symbol: symbol, title: title, primaryDescription: subtitle)
+                .appMigrationHeaderRowStyle()
 
-            Text(title)
-                .font(DesignSystem.Font.largeTitle.bold())
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-
-            Text(subtitle)
-                .font(DesignSystem.Font.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-
-            AppMigrationRowGroup(
-                items: Step.allCases,
-                separatorInset: AppMigrationRowMetrics.stepSeparatorInset
-            ) { step in
-                AppMigrationStepRow(title: step.title, icon: step.icon, state: state(step))
+            Section {
+                ForEach(Step.allCases) { step in
+                    AppMigrationStepRow(title: step.title, icon: step.icon, state: state(step))
+                }
             }
-            .frame(maxWidth: DesignSystem.List.rowMaxWidth)
-            .padding(.horizontal, DesignSystem.Spaces.two)
 
             if let transfer {
-                AppMigrationTransferProgressView(progress: transfer, caption: transferCaption)
-                    .transition(.opacity)
+                Section {
+                    AppMigrationTransferProgressView(progress: transfer, caption: transferCaption)
+                }
             }
-
-            Spacer(minLength: DesignSystem.Spaces.four)
         }
-        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color(uiColor: .systemBackground))
+        .listTopContentMargin()
     }
 }
 
@@ -64,13 +45,11 @@ struct AppMigrationProgressView<Step: AppMigrationStepDescribing>: View where St
         subtitle: "This only takes a moment. Keep the app open.",
         state: { step in
             switch step {
-            case .servers: return .done
-            case .configuration: return .running
-            case .packaging: return .done
+            case .servers, .configuration, .packaging: return .done
             case .handoff: return .running
             }
         },
         transfer: .init(completed: 2, total: 5),
-        transferCaption: "Part 3 of 5 — this app and the new one will swap a few times."
+        transferCaption: "Part 3 of 5 — the two apps will swap a few times to move it all across."
     )
 }
