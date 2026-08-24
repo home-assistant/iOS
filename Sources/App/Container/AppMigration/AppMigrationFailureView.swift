@@ -1,12 +1,15 @@
 import Shared
 import SwiftUI
 
-/// Packaging or handing over failed. The only way forward is to try again: the data never leaves the
-/// device except into the new app, so there is nothing to fall back to that would not mean asking the
-/// user to shepherd their own credentials through a file.
+/// Packaging or handing over failed.
+///
+/// Two ways out, and neither involves the user shepherding their own credentials through a file:
+/// try again, or put it off. "Later" matters more than it looks — this app still holds every server,
+/// so the user can go on using Home Assistant while the move waits.
 struct AppMigrationFailureView: View {
     let message: String
     let onRetry: () -> Void
+    let onLater: () -> Void
 
     var body: some View {
         BaseOnboardingView(
@@ -15,14 +18,21 @@ struct AppMigrationFailureView: View {
             primaryDescription: message,
             secondaryDescription: L10n.AppMigration.Failure.secondaryDescription,
             primaryActionTitle: L10n.AppMigration.Failure.retryButton,
-            primaryAction: onRetry
+            primaryAction: onRetry,
+            secondaryActionTitle: L10n.AppMigration.Failure.laterButton,
+            secondaryAction: onLater
         )
+        .overlay(alignment: .topLeading) {
+            AppMigrationSettingsShortcutButton()
+                .padding(.leading, DesignSystem.Spaces.one)
+        }
     }
 }
 
 #Preview {
     AppMigrationFailureView(
         message: "The new app could not be reached.",
-        onRetry: {}
+        onRetry: {},
+        onLater: {}
     )
 }

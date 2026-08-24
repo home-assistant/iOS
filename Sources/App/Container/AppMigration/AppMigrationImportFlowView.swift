@@ -38,7 +38,10 @@ struct AppMigrationImportFlowView: View {
         case let .completed(summary):
             AppMigrationImportCompletedView(summary: summary, onContinue: onDismiss)
         case let .failed(message):
-            AppMigrationImportFailureView(message: message, onDismiss: onDismiss)
+            AppMigrationImportFailureView(message: message, onDismiss: {
+                viewModel.discardPartialTransfer()
+                onDismiss()
+            })
         }
     }
 }

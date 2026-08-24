@@ -35,11 +35,13 @@ struct AppMigrationProgressView<Step: AppMigrationStepDescribing>: View where St
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DesignSystem.Spaces.two)
 
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(Step.allCases) { step in
-                    AppMigrationStepRow(title: step.title, icon: step.icon, state: state(step))
-                }
+            AppMigrationRowGroup(
+                items: Step.allCases,
+                separatorInset: AppMigrationRowMetrics.stepSeparatorInset
+            ) { step in
+                AppMigrationStepRow(title: step.title, icon: step.icon, state: state(step))
             }
+            .frame(maxWidth: DesignSystem.List.rowMaxWidth)
             .padding(.horizontal, DesignSystem.Spaces.two)
 
             if let transfer {

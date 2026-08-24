@@ -819,6 +819,8 @@ public enum L10n {
       public static var unsupportedSchema: String { return L10n.tr("Localizable", "app_migration.error.unsupported_schema") }
     }
     public enum Failure {
+      /// Later
+      public static var laterButton: String { return L10n.tr("Localizable", "app_migration.failure.later_button") }
       /// Try again
       public static var retryButton: String { return L10n.tr("Localizable", "app_migration.failure.retry_button") }
       /// Nothing has been changed in either app. Your data has not left this device.

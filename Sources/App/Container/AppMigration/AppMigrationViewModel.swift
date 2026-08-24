@@ -106,6 +106,24 @@ final class AppMigrationViewModel: ObservableObject {
         UIApplication.shared.open(AppMigrationConstants.destinationAppStoreURL)
     }
 
+    /// "Later", from the failure screen: throws away the half-finished attempt and gets out of the
+    /// way so the user can carry on using Home Assistant. Nothing has been handed over, this app
+    /// still holds every server, and it has not been retired — so putting the move off costs the
+    /// user nothing but the time it takes to start it again.
+    ///
+    /// Only local state is cleared. A partial payload sitting in the new app cannot be reached from
+    /// here, but it is keyed by session, so the next attempt discards it on its first slice.
+    func cancelAfterFailure() {
+        Current.Log.info("Abandoning the migration after a failure; the app carries on as normal")
+        chunks = []
+        transfer = nil
+        stepStates = [:]
+        nextIndex = 0
+        AppMigrationChunkStore.clear()
+        snoozePrompt()
+        phase = .intro
+    }
+
     /// "Not now": stays out of the way for a few days rather than asking again on the next launch.
     func snoozePrompt() {
         AppMigrationStatus.promptDismissedAt = Current.date()

@@ -15,12 +15,15 @@ struct AppMigrationStepRow: View {
     let state: AppMigrationStepState
 
     var body: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
+        HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
+            // Fixed tint: the leading icon says *what* the step is, and only the trailing indicator
+            // says how it went. Colouring both meant a failed row turned entirely red and a row's
+            // identity shifted as it progressed, which made the list harder to scan, not easier.
             Image(systemSymbol: icon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 20, height: 20)
-                .foregroundStyle(iconColor)
+                .foregroundStyle(Color.haPrimary)
                 .modify { view in
                     if #available(iOS 17.0, *) {
                         // A small kick as the step picks up, so the eye lands on the row that is
@@ -39,7 +42,8 @@ struct AppMigrationStepRow: View {
             indicator
                 .frame(width: 24, height: 24)
         }
-        .padding(.vertical, DesignSystem.Spaces.one)
+        .padding(.vertical, DesignSystem.Spaces.half)
+        .frame(minHeight: AppMigrationRowMetrics.minimumHeight)
         .opacity(state == .pending ? 0.45 : 1)
         .animation(.spring(response: 0.35, dampingFraction: 0.6), value: state)
         .accessibilityElement(children: .combine)
@@ -73,15 +77,11 @@ struct AppMigrationStepRow: View {
     private var indicatorColor: Color {
         switch state {
         case .pending: return .secondary
-        case .running, .done: return .haPrimary
-        case .failed: return .red
-        }
-    }
-
-    private var iconColor: Color {
-        switch state {
-        case .pending: return .secondary
-        case .running, .done: return .haPrimary
+        // Green rather than the brand tint: while the list is filling in, the checkmarks are the
+        // only thing on screen reporting an outcome, and the system's success colour reads as
+        // "this worked" at a glance where another blue glyph would just be more blue.
+        case .done: return .green
+        case .running: return .haPrimary
         case .failed: return .red
         }
     }

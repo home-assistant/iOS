@@ -206,6 +206,7 @@
 "app_migration.error.not_a_migration_payload" = "This is not a migration link.";
 "app_migration.error.payload_too_large" = "There is too much data to hand over. Please report this — your setup is larger than the migration was built for.";
 "app_migration.error.unsupported_schema" = "This migration link was written by a newer version of the app. Update this app and try again.";
+"app_migration.failure.later_button" = "Later";
 "app_migration.failure.retry_button" = "Try again";
 "app_migration.failure.secondary_description" = "Nothing has been changed in either app. Your data has not left this device.";
 "app_migration.failure.title" = "The move did not finish";

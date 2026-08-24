@@ -50,6 +50,14 @@ final class AppMigrationImportViewModel: ObservableObject {
         await run()
     }
 
+    /// Closing a failed import throws away the slices collected so far, so a partly-delivered
+    /// payload is not left sitting in the app group waiting for a handoff that is not coming.
+    func discardPartialTransfer() {
+        Current.Log.info("Discarding a partly delivered app migration payload")
+        AppMigrationChunkStore.clear()
+        transfer = nil
+    }
+
     func state(for step: AppMigrationImportStep) -> AppMigrationStepState {
         stepStates[step] ?? .pending
     }

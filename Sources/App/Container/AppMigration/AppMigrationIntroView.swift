@@ -54,24 +54,14 @@ struct AppMigrationIntroView: View {
             Text(header)
                 .font(DesignSystem.Font.subheadline.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
-            ForEach(lines, id: \.self) { line in
-                HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
-                    Image(systemSymbol: symbol)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 16, height: 16)
-                        .foregroundStyle(tint)
-                        .padding(.top, 2)
-                    Text(line)
-                        .font(DesignSystem.Font.footnote)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
+
+            AppMigrationRowGroup(items: lines) { line in
+                AppMigrationDisclosureRow(symbol: symbol, tint: tint, text: line)
             }
         }
     }
 }
 
 #Preview {
-    AppMigrationIntroView(serverCount: 2, onStart: {}, onLater: {})
+    AppMigrationIntroView(serverCount: 3, onStart: {}, onLater: {})
 }

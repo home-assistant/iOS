@@ -52,7 +52,11 @@ struct AppMigrationFlowView: View {
         case let .failed(message):
             AppMigrationFailureView(
                 message: message,
-                onRetry: { Task { await viewModel.start() } }
+                onRetry: { Task { await viewModel.start() } },
+                onLater: {
+                    viewModel.cancelAfterFailure()
+                    onDismiss()
+                }
             )
         }
     }

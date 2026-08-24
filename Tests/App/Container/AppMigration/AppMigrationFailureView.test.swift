@@ -8,7 +8,8 @@ struct AppMigrationFailureViewTests {
         assertLightDarkSnapshots(
             of: AppMigrationFailureView(
                 message: "The new app could not be reached.",
-                onRetry: {}
+                onRetry: {},
+                onLater: {}
             ),
             named: "app-migration-failure"
         )
