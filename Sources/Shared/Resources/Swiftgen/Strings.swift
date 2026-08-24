@@ -6876,7 +6876,11 @@ public enum L10n {
         public static func removeToken(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.complications.builder.remove_token", String(describing: p1))
         }
-        /// Drag a token onto another one to reorder them.
+        /// Reorder %@
+        public static func reorderToken(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.complications.builder.reorder_token", String(describing: p1))
+        }
+        /// Press and hold a token's handle to drag it into place.
         public static var reorderTokensHint: String { return L10n.tr("Localizable", "watch.complications.builder.reorder_tokens_hint") }
         /// Show
         public static var show: String { return L10n.tr("Localizable", "watch.complications.builder.show") }
