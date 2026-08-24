@@ -747,12 +747,27 @@ extension WatchComplicationConfigurationSheet {
         private func movePart(from source: Int, to destination: Int) -> Bool {
             guard source != destination, formula.parts.indices.contains(source),
                   formula.parts.indices.contains(destination) else { return false }
+            reindexPillWidths { widths in
+                widths.insert(widths.remove(at: source), at: destination)
+            }
             withAnimation {
                 updateParts { parts in
                     parts.insert(parts.remove(at: source), at: destination)
                 }
             }
             return true
+        }
+
+        /// Applies a pill's move (or removal) to the measured widths as well. They are keyed by index,
+        /// so leaving them alone would have every pill from that position on carrying its neighbor's
+        /// width until SwiftUI re-measures — long enough to mistime the next swap of a drag in flight.
+        private func reindexPillWidths(_ mutate: (inout [CGFloat?]) -> Void) {
+            let count = max(formula.parts.count, (pillWidths.keys.max() ?? -1) + 1)
+            var widths: [CGFloat?] = (0 ..< count).map { pillWidths[$0] }
+            mutate(&widths)
+            pillWidths = widths.enumerated().reduce(into: [:]) { result, element in
+                result[element.offset] = element.element
+            }
         }
 
         /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
@@ -831,8 +846,9 @@ extension WatchComplicationConfigurationSheet {
         }
 
         private func removePart(at index: Int) {
+            guard formula.parts.indices.contains(index) else { return }
+            reindexPillWidths { widths in widths.remove(at: index) }
             updateParts { parts in
-                guard parts.indices.contains(index) else { return }
                 parts.remove(at: index)
             }
         }
