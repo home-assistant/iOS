@@ -629,6 +629,7 @@
 "gestures.value.option.more_info.search_commands" = "搜尋命令";
 "gestures.value.option.more_info.search_devices" = "搜尋裝置";
 "gestures.value.option.more_info.search_entities" = "搜尋實體";
+"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "至下一頁";
 "gestures.value.option.next_server" = "下一個伺服器";
 "gestures.value.option.none" = "無";
@@ -642,6 +643,7 @@
 "gestures.value.option.servers_list" = "伺服器列表";
 "gestures.value.option.show_settings" = "開啟 App 設定";
 "gestures.value.option.show_sidebar" = "顯示側邊欄";
+"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "存取資料庫 (GRDB) 失敗，錯誤：%@";
 "grdb.config.migration_error.failed_to_save" = "儲存新設定失敗、錯誤：%@";
 "ha_api.api_error.cant_build_url" = "無法建立 API URL";
@@ -2080,6 +2082,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.insert_token" = "插入";
 "watch.complications.builder.maximum" = "最大值";
 "watch.complications.builder.minimum" = "最小值";
+"watch.complications.builder.move_token_left" = "Move left";
+"watch.complications.builder.move_token_right" = "Move right";
 "watch.complications.builder.name" = "名稱（選項）";
 "watch.complications.builder.new_title" = "新複雜功能";
 "watch.complications.builder.precision" = "小數";
@@ -2087,6 +2091,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.preview" = "預覽";
 "watch.complications.builder.progress_bar_color" = "進度條顏色";
 "watch.complications.builder.remove_token" = "移除 %@";
+"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "顯示";
 "watch.complications.builder.show_gauge" = "顯示為量表／圓環";
 "watch.complications.builder.show_icon" = "顯示圖示";
@@ -2284,6 +2289,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.home.areas.section.sensors.title" = "感測器";
 "watch.home.areas.title" = "分區";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
+"watch.home.device.empty" = "There are no compatible entities for this device.";
 "watch.home.loading.skip.title" = "跳過";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";
 "watch.home.run.error.lock_state_unknown" = "門鎖的目前狀態尚未載入，因此未傳送操作。請等待狀態載入後再試一次。";
