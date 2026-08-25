@@ -35,7 +35,9 @@ struct CornerComplicationView: View {
     @ViewBuilder
     private func cornerContent(_ complication: WatchWidgetComplicationSnapshot) -> some View {
         let text = cornerText(complication)
-        if showsIconInCorner(complication), let iconImage = complication.iconImage {
+        // The downsampled corner variant: the shared 112px icon payload exceeds the corner family's
+        // archived-image cap, which fails the whole timeline archival and blanks the complication.
+        if showsIconInCorner(complication), let iconImage = complication.cornerIconImage {
             // Un-curved: curving a raster image collapses it, so the icon lays out flat and the system
             // fits it into the corner.
             iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()

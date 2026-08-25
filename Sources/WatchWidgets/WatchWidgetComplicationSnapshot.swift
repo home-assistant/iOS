@@ -260,6 +260,35 @@ struct WatchWidgetComplicationSnapshot: Codable {
         return Image(uiImage: image).renderingMode(.template)
     }
 
+    /// The corner family's WidgetKit archiver enforces the smallest image cap of the accessory
+    /// families (81.6 points on watchOS 26/27, vs ~122 for circular). One oversized image fails the
+    /// archival of the whole timeline — `WidgetArchiver.ArchivingError.imageTooLarge` — and the
+    /// complication renders as an empty disc on the face. The shared icon payload is rasterized at
+    /// 112px for the other families' sharpness, so the corner decodes a downsampled copy instead.
+    private static let cornerIconMaxDimension: CGFloat = 72
+
+    /// `iconImage`, downsampled to fit the corner family's archived-image cap (see
+    /// `cornerIconMaxDimension`). The corner draws the icon at ~30 points, so the smaller bitmap
+    /// stays sharp at the watch's 2x scale.
+    var cornerIconImage: Image? {
+        guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
+        let maxSide = max(image.size.width, image.size.height)
+        guard maxSide > Self.cornerIconMaxDimension, maxSide > 0 else {
+            return Image(uiImage: image).renderingMode(.template)
+        }
+        let ratio = Self.cornerIconMaxDimension / maxSide
+        let target = CGSize(width: image.size.width * ratio, height: image.size.height * ratio)
+        // `UIGraphicsImageRenderer` is unavailable on watchOS; scale 1 so the bitmap size equals
+        // `target` — the size the archiver measures.
+        UIGraphicsBeginImageContextWithOptions(target, false, 1)
+        defer { UIGraphicsEndImageContext() }
+        image.draw(in: CGRect(origin: .zero, size: target))
+        guard let resized = UIGraphicsGetImageFromCurrentImageContext() else {
+            return Image(uiImage: image).renderingMode(.template)
+        }
+        return Image(uiImage: resized).renderingMode(.template)
+    }
+
     // Asset-catalog image used when there is no custom template icon: the Assist symbol for the Assist
     // complication, otherwise the Home Assistant logo. Both are template-rendering assets in the
     // widget bundle so they tint cleanly on the watch face.
