@@ -82,22 +82,21 @@ struct SettingsView: View {
 
     // MARK: - iOS List View
 
+    // When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
+    // `AppSettingsPushRoute.item` instead, resolved by `ConditionalContainerView`: that path must stay
+    // single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
     @ViewBuilder
     private var iOSView: some View {
         if embedInOwnNavigation {
             NavigationStack {
-                iOSNavigationContent
+                iOSListContent
+                    .navigationDestination(for: SettingsItem.self) { item in
+                        item.destinationView
+                    }
             }
         } else {
-            iOSNavigationContent
+            iOSListContent
         }
-    }
-
-    private var iOSNavigationContent: some View {
-        iOSListContent
-            .navigationDestination(for: SettingsItem.self) { item in
-                item.destinationView
-            }
     }
 
     private var iOSListContent: some View {
@@ -341,11 +340,16 @@ struct SettingsView: View {
             NavigationLink(destination: item.destinationView) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
-        } else {
-            // Value-based, resolved by `navigationDestination(for:)` in `iOSNavigationContent`, so
+        } else if embedInOwnNavigation {
+            // Value-based, resolved by `navigationDestination(for:)` in `iOSView`, so
             // `item.destinationView` — and every destination's stored properties with it — is only
             // constructed on navigation instead of for every row on every list evaluation.
             NavigationLink(value: item) {
+                settingsItemLabel(item, subtitle: subtitle)
+            }
+        } else {
+            // Pushed onto the container's stack, whose path must stay `AppSettingsPushRoute`-typed.
+            NavigationLink(value: AppSettingsPushRoute.item(item)) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
         }
