@@ -344,7 +344,9 @@ public struct WatchDatabaseMirror: WatchCodable {
             try applyReferenceTables(in: db)
             try applySettingsTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
-            return try Self.mirroredRowCounts(in: db)
+            // Counting is only for the log line below, so a failing count must never roll the
+            // applied rows back.
+            return (try? Self.mirroredRowCounts(in: db)) ?? [:]
         }
         logApplyOutcome(counts: counts)
     }
