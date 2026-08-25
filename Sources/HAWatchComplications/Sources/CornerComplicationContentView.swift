@@ -180,4 +180,10 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 #Preview("Icon + gauge") {
     face(.sample(showValue: false, title: nil)).padding()
 }
+
+/// The long-standing rain-sparkline recipe: an icon plus a block-element bar graph.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Icon + block-element sparkline") {
+    face(.sample(value: "▁▂▃▄▅▆▇█", title: nil, fraction: nil)).padding()
+}
 #endif

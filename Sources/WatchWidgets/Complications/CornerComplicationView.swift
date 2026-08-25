@@ -1,10 +1,10 @@
 import SwiftUI
 import WidgetKit
 
-/// Corner complication: the complication's own content sits in the corner — the value curved along the
-/// outside of the corner via `widgetCurvesContent`, or stacked under the icon when it has one — with the
-/// name carried on the inside of the curve by the bezel label, alongside the gauge when a value exists
-/// (matching the system UV Index / Battery complications).
+/// Corner complication: the value curved along the outside of the corner via `widgetCurvesContent`, or
+/// the icon when it has one — with the remaining text carried on the inside of the curve by the bezel
+/// label, alongside the gauge when a value exists (matching the system UV Index / Battery
+/// complications).
 @available(watchOS 10.0, *)
 struct CornerComplicationView: View {
     let complication: WatchWidgetComplicationSnapshot?
@@ -29,29 +29,18 @@ struct CornerComplicationView: View {
         }
     }
 
-    /// What sits in the corner itself.
-    ///
-    /// The complication's own text stays here whether or not it also has an icon. ClockKit's
-    /// "Text Image" corner drew the glyph and the text together, and the shared preview
-    /// (`CornerComplicationContentView`) still models it that way, so this is the layout the in-app
-    /// editor shows too. Handing the whole corner to the icon instead demotes the text onto the bezel,
-    /// where the system re-typesets it small and rotates it glyph by glyph along the arc — which
-    /// destroys any text whose cells have to abut, such as the block-element bar graphs people build
-    /// rain sparklines from.
+    /// What sits in the corner itself: the icon when it has one, otherwise the complication's own text
+    /// curved along the outer edge. A corner complication's text belongs on the curve, the way the
+    /// system's own do, so an icon takes the corner and hands the text to the bezel.
     @ViewBuilder
     private func cornerContent(_ complication: WatchWidgetComplicationSnapshot) -> some View {
         let text = cornerText(complication)
-        if showsIconInCorner(complication), let iconImage = complication.iconImage {
-            // Un-curved: curving a raster image collapses it, so the icon (and any text under it) lay
-            // out flat and the system fits the pair into the corner.
-            VStack(spacing: 0) {
-                iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
-                if !text.isEmpty {
-                    // The text is sized first and the resizable icon takes what's left, so a long
-                    // value can't be squeezed out of the corner by the glyph above it.
-                    cornerLabel(text, complication).layoutPriority(1)
-                }
-            }
+        // The downsampled corner variant: the shared 112px icon payload exceeds the corner family's
+        // archived-image cap, which fails the whole timeline archival and blanks the complication.
+        if showsIconInCorner(complication), let iconImage = complication.cornerIconImage {
+            // Un-curved: curving a raster image collapses it, so the icon lays out flat and the system
+            // fits it into the corner.
+            iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
         } else {
             // Nothing but text: curve it along the outer edge of the corner, the way the system's own
             // text-only corner complications do.
@@ -72,7 +61,7 @@ struct CornerComplicationView: View {
             .foregroundStyle(complication.textColor(for: family) ?? .primary)
     }
 
-    /// Whether the icon takes the top of the corner, with the text tucked under it.
+    /// Whether the icon takes the corner, leaving the text to ride the arc.
     private func showsIconInCorner(_ complication: WatchWidgetComplicationSnapshot) -> Bool {
         complication.showsIcon(for: family) && complication.iconImage != nil
     }
@@ -110,10 +99,13 @@ struct CornerComplicationView: View {
         }
     }
 
-    /// What rides the arc: whatever the corner isn't already showing. The corner leads with the value,
-    /// so the arc carries the name — never a second copy of the text already in the corner, and nothing
-    /// at all for a complication whose corner is its icon alone.
+    /// What rides the arc: whatever the corner isn't already showing. When the icon takes the corner the
+    /// arc carries the complication's own text, falling back to its name; otherwise the corner leads
+    /// with the value and the arc carries the name — never a second copy of the corner's own text.
     private func arcText(_ complication: WatchWidgetComplicationSnapshot) -> String {
+        if showsIconInCorner(complication) {
+            return cornerText(complication)
+        }
         let corner = cornerText(complication)
         guard !corner.isEmpty, complication.showsName(for: family) else { return "" }
         let title = complication.titleText(for: family)
@@ -218,8 +210,8 @@ struct CornerComplicationView: View {
     )
 }
 
-/// The long-standing rain-sparkline recipe: an icon plus a block-element bar graph, which only reads as
-/// a graph while its cells stay flat and abutting.
+/// The long-standing rain-sparkline recipe: an icon plus a block-element bar graph, which the icon sends
+/// to the bezel arc.
 @available(watchOS 10.0, *)
 #Preview("Icon + block-element sparkline", as: .accessoryCorner) {
     WatchWidgets()
