@@ -2090,6 +2090,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "预览";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "移除 %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -2759,6 +2760,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.preview.custom.description" = "在应用程序内部创建您自己的小部件，然后在此处显示它。";
 "widgets.preview.custom.title" = "自定义小部件";
 "widgets.preview.empty.create.button" = "创建小部件";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "重新加载所有小组件时间线。";
 "widgets.reload_widgets.app_intent.title" = "重新加载小组件";
 "widgets.scene.activate.title" = "激活场景";

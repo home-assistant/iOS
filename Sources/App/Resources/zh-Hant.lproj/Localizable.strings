@@ -2091,6 +2091,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.complications.builder.preview" = "預覽";
 "watch.complications.builder.progress_bar_color" = "進度條顏色";
 "watch.complications.builder.remove_token" = "移除 %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "將一個標記拖曳到另一個標記上以重新排序。";
 "watch.complications.builder.show" = "顯示";
 "watch.complications.builder.show_gauge" = "顯示為量表／圓環";
@@ -2762,6 +2763,7 @@ Companion 應用程式相關資料以獲得更詳細資訊。";
 "widgets.preview.custom.description" = "在應用程式新增小工具，並顯示於此處。";
 "widgets.preview.custom.title" = "自訂小工具";
 "widgets.preview.empty.create.button" = "新增小工具";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "重新載入所有小工具時間軸。";
 "widgets.reload_widgets.app_intent.title" = "重新載入小工具";
 "widgets.scene.activate.title" = "啟用場景";

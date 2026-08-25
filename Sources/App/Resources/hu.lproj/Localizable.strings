@@ -2090,6 +2090,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -2760,6 +2761,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.preview.custom.description" = "Hozzon létre saját widgetet az alkalmazáson belül, majd jelenítse meg itt.";
 "widgets.preview.custom.title" = "Egyéni widget";
 "widgets.preview.empty.create.button" = "Widget létrehozása";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Töltse be újra az összes widget idővonalát.";
 "widgets.reload_widgets.app_intent.title" = "Widgetek újratöltése";
 "widgets.scene.activate.title" = "Jelenet aktiválása";
