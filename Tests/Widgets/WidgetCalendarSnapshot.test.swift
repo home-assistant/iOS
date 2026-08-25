@@ -136,7 +136,7 @@ struct WidgetCalendarSnapshotTests {
         events: [WidgetCalendarEvent],
         calendarCount: Int = 3,
         showsCalendarName: Bool,
-        /// Overrides the family's usual size, for the cases that only go wrong on a smaller phone.
+        // Overrides the family's usual size, for the cases that only go wrong on a smaller phone.
         size: CGSize? = nil,
         fileID: StaticString = #fileID,
         filePath: StaticString = #filePath,
