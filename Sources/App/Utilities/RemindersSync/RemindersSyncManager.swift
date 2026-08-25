@@ -435,9 +435,10 @@ final class RemindersSyncManager: ObservableObject {
 
         if needsCommit {
             // Saves and removals above only stage changes (`commit: false`); this is the XPC
-            // round-trip that writes them, so it stays off the main thread too.
+            // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
+            // spelled out because PromiseKit's `Result<T>` shadows it in this file.
             let store = eventStore
-            try await Self.eventStoreAccess { Result { try store.commit() } }.get()
+            try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
         }
 
         if !createdTodoItemReminderIds.isEmpty {
