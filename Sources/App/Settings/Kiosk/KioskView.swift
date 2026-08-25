@@ -13,15 +13,24 @@ struct ConditionalContainerView: View {
 
     var body: some View {
         if horizontalSizeClass == .compact {
-            // Path-driven so Settings and the screens it pushes share one mechanism: a boolean
-            // `navigationDestination(isPresented:)` alongside Settings' value-based destinations made
-            // SwiftUI push Settings again in place of the screen that was tapped.
+            // Driven entirely by `appSettings.pushPath` so Settings and the screens it pushes share one
+            // value-based mechanism: the boolean `navigationDestination(isPresented:)` used here before
+            // made SwiftUI push Settings again in place of the screen that was tapped. The path is also
+            // single-typed, because SwiftUI's path diffing fatally errors comparing elements of
+            // different types at the same position: Settings' own pushes arrive wrapped as
+            // `AppSettingsPushRoute.item` instead of raw `SettingsItem` values.
             NavigationStack(path: $appSettings.pushPath) {
                 content
                     .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(for: AppSettingsPushRoute.self) { _ in
-                        SettingsView(embedInOwnNavigation: false)
-                            .injectingViewControllerProvider()
+                    .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                        switch route {
+                        case .settings:
+                            SettingsView(embedInOwnNavigation: false)
+                                .injectingViewControllerProvider()
+                        case let .item(item):
+                            item.destinationView
+                                .injectingViewControllerProvider()
+                        }
                     }
             }
             .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
