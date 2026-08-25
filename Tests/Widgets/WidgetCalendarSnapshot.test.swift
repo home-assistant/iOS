@@ -23,6 +23,30 @@ struct WidgetCalendarSnapshotTests {
 
     private static var referenceDate: Date { WidgetCalendarPreviewSample.referenceDate }
 
+    /// One event a day at the same hour, for `count` days running — a recurring automation, say.
+    /// This is the spread the day headings cost the most on: every row brings a heading of its own,
+    /// so the same events are half again as tall as they would be on one day.
+    private static func oneEventPerDay(_ count: Int) -> [WidgetCalendarEvent] {
+        let sample = WidgetCalendarPreviewSample.events(referenceDate: referenceDate, calendar: calendar)
+        let today = calendar.startOfDay(for: referenceDate)
+        return (0 ..< count).map { index in
+            let day = calendar.date(byAdding: .day, value: index, to: today) ?? today
+            let start = calendar.date(byAdding: .hour, value: 10, to: day) ?? day
+            let template = sample[index % sample.count]
+            return WidgetCalendarEvent(
+                id: "one-per-day-\(index)",
+                summary: template.summary,
+                start: start,
+                end: start.addingTimeInterval(60 * 60),
+                isAllDay: false,
+                serverId: template.serverId,
+                calendarEntityId: template.calendarEntityId,
+                calendarName: template.calendarName,
+                calendarColor: template.calendarColor
+            )
+        }
+    }
+
     private static func events(_ count: Int) -> [WidgetCalendarEvent] {
         WidgetCalendarEvent.upcoming(
             WidgetCalendarPreviewSample.events(referenceDate: referenceDate, calendar: calendar),
@@ -56,6 +80,20 @@ struct WidgetCalendarSnapshotTests {
             family: .systemLarge,
             events: Self.events(WidgetFamilySizes.calendarSize(for: .systemLarge)),
             showsCalendarName: true
+        )
+    }
+
+    /// The list the widget cannot show whole: a day heading per event is more than the large family
+    /// is tall, and a stack that outgrows its widget is centred in it — which is what used to push
+    /// the date badge off the top and the refresh footer off the bottom. Drawn at the shortest large
+    /// widget, 321pt on a 4.7" phone, since that is where the room runs out first.
+    @available(iOS 18, *)
+    @MainActor @Test func systemLargeOneEventPerDaySnapshot() {
+        assertCalendarSnapshot(
+            family: .systemLarge,
+            events: Self.oneEventPerDay(WidgetFamilySizes.calendarSize(for: .systemLarge)),
+            showsCalendarName: true,
+            size: CGSize(width: 321, height: 321)
         )
     }
 
@@ -98,13 +136,15 @@ struct WidgetCalendarSnapshotTests {
         events: [WidgetCalendarEvent],
         calendarCount: Int = 3,
         showsCalendarName: Bool,
+        /// Overrides the family's usual size, for the cases that only go wrong on a smaller phone.
+        size: CGSize? = nil,
         fileID: StaticString = #fileID,
         filePath: StaticString = #filePath,
         testName: String = #function,
         line: UInt = #line,
         column: UInt = #column
     ) {
-        let size = snapshotSize(for: family)
+        let size = size ?? snapshotSize(for: family)
         assertLightDarkSnapshots(
             of: WidgetCalendarView(
                 referenceDate: Self.referenceDate,
