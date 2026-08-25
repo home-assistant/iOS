@@ -147,9 +147,10 @@ struct RemindersSyncItemSnapshot: Equatable {
                 $0.timeZone = timeZone
             }
             self.localDateTime = with(DateFormatter()) {
-                $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-                $0.timeZone = timeZone
+                $0.calendar = Calendar(identifier: .gregorian)
                 $0.locale = Locale(identifier: "en_US_POSIX")
+                $0.timeZone = timeZone
+                $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             }
         }
     }
