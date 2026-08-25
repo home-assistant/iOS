@@ -65,6 +65,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
+
+        if WKApplication.shared().applicationState != .background {
+            applyStagedDatabaseMirrors()
+        }
     }
 
     func applicationDidBecomeActive() {
@@ -91,6 +95,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     func applicationWillEnterForeground() {
         AppDatabaseSuspension.resume()
+        applyStagedDatabaseMirrors()
     }
 
     func applicationDidEnterBackground() {
@@ -162,6 +167,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
                 // Schedule the next refresh up front so a deadline hit can't skip it.
                 Current.backgroundRefreshScheduler.schedule().cauterize()
+
+                applyStagedDatabaseMirrors()
 
                 after(seconds: 10).done {
                     if !didComplete {
@@ -359,8 +366,32 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        // The decompress + decode + write costs more CPU than the WatchConnectivity background
+        // action's 2 second allowance, and that allowance covers the whole process — running it on
+        // another queue doesn't help. Backgrounded, the payload is staged and applied from a
+        // background refresh, whose budget is large enough for it.
+        guard WKApplication.shared().applicationState != .background else {
+            PushedMirrorStagingStore.store(data: data, metadata: metadata)
+            Current.backgroundRefreshScheduler
+                .schedule(preferredDate: Current.date().addingTimeInterval(1))
+                .cauterize()
+            return
+        }
+
         Self.pushedMirrorQueue.async { [weak self] in
             self?.decodeAndApplyPushedDatabaseMirror(data, metadata: metadata)
+        }
+    }
+
+    private func applyStagedDatabaseMirrors() {
+        guard PushedMirrorStagingStore.hasStagedMirrors else { return }
+        Self.pushedMirrorQueue.async { [weak self] in
+            // Taking the entries removes them, so bail out before that when there is nothing left
+            // to apply them with — otherwise a staged mirror is dropped unread.
+            guard let self else { return }
+            for entry in PushedMirrorStagingStore.takeAll() {
+                decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
+            }
         }
     }
 
