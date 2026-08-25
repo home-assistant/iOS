@@ -325,10 +325,15 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
-            Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .listRowBackground(Color.clear)
+            // The areas rows fill the screen on their own, so the "add items with +" hint only
+            // shows when there is genuinely nothing else — including while editing, where the
+            // areas are hidden.
+            if isEditing || !viewModel.showsAreasContent {
+                Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .listRowBackground(Color.clear)
+            }
         } else if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
             gridContent
         } else {
