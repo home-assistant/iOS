@@ -245,12 +245,22 @@ final class RemindersSyncManager: ObservableObject {
     /// `EKEventStore` itself is thread-safe, and the `EKCalendar`/`EKReminder` objects involved
     /// are never used from two threads at once: the caller awaits the detached task, then uses
     /// the result back on the main actor — the same serialized handoff that
-    /// `fetchReminders(matching:)` already performs with its internally-fetched reminders. No
-    /// `Sendable` constraints because EventKit types don't declare it.
+    /// `fetchReminders(matching:)` already performs with its internally-fetched reminders.
+    /// EventKit types aren't `Sendable`, so the closure and result cross the task boundary in an
+    /// `@unchecked Sendable` box; the strictly serialized handoff is what makes that safe.
     private nonisolated static func eventStoreAccess<T>(
         _ access: @escaping () -> T
     ) async -> T {
-        await Task.detached { access() }.value
+        let boxedAccess = UncheckedSendableBox(value: access)
+        return await Task.detached {
+            UncheckedSendableBox(value: boxedAccess.value())
+        }.value.value
+    }
+
+    /// See `eventStoreAccess`: transfers one non-`Sendable` value across a task boundary where
+    /// access is strictly serialized by the surrounding `await`.
+    private struct UncheckedSendableBox<Value>: @unchecked Sendable {
+        let value: Value
     }
 
     /// Runs synchronous GRDB access on a background thread instead of the main actor. The
