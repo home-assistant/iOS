@@ -326,9 +326,9 @@ struct WatchHomeView: View {
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
             // The areas rows fill the screen on their own, so the "add items with +" hint only
-            // shows when there is genuinely nothing else — including while editing, where the
-            // areas are hidden.
-            if isEditing || !viewModel.showsAreasContent {
+            // shows when there is genuinely nothing else. It also stays out of edit mode, where the
+            // header swaps the + for Done and the hint would point at a button that isn't there.
+            if !isEditing, !viewModel.showsAreasContent {
                 Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
