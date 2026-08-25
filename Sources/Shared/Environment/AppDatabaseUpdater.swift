@@ -871,11 +871,11 @@ private struct ProfilingTimer {
     init(_ label: String) {
         self.label = label
         self.startTime = CFAbsoluteTimeGetCurrent()
-        Current.Log.info("🔍 [Profiling] \(label)")
+        Current.Log.debug("🔍 [Profiling] \(label)")
     }
 
     func end() {
         let duration = CFAbsoluteTimeGetCurrent() - startTime
-        Current.Log.info("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
+        Current.Log.debug("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
     }
 }
