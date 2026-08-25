@@ -46,26 +46,89 @@ struct WidgetCalendarView: View {
         return order.map { Day(date: $0, events: byDay[$0] ?? []) }
     }
 
+    /// What each piece of the layout costs in height at the default text size, each including the
+    /// spacing that follows it. Deliberately rounded up: overestimating costs a row the widget
+    /// could have shown, underestimating puts a row through the bottom edge.
+    private enum Estimate {
+        /// The date badge — a weekday over a 30pt day number — and the gap below it.
+        static let badge: CGFloat = 55
+        /// A day heading and the gap below it.
+        static let heading: CGFloat = 21
+        /// An event's title over its time, and the gap below it.
+        static let row: CGFloat = 37
+    }
+
+    /// The day sections that fit in `height`, the room the widget has for the badge and the list.
+    ///
+    /// The provider caps the events it hands over, but a cap on events is not a cap on height: the
+    /// same events cost a heading more for every extra day they are spread across, so five events
+    /// on five days are half again as tall as five events on one. Dropping the tail of the list
+    /// here is what keeps the date badge and the refresh footer where they belong — a widget on a
+    /// smaller phone simply shows fewer days.
+    private func visibleDays(in height: CGFloat) -> [Day] {
+        var remaining = height - Estimate.badge
+        var visible: [Day] = []
+        for day in days {
+            // A heading with no row under it names a day the widget then says nothing about, so a
+            // section that cannot fit its first event is where the list stops.
+            guard remaining >= Estimate.heading + Estimate.row else { break }
+            remaining -= Estimate.heading
+            let events = Array(day.events.prefix(Int(remaining / Estimate.row)))
+            visible.append(Day(date: day.date, events: events))
+            remaining -= CGFloat(events.count) * Estimate.row
+        }
+        return visible
+    }
+
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.half) {
-            Group {
-                if calendarCount == .zero {
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        Image(systemSymbol: .calendar)
-                            .font(.system(size: 32))
-                            .foregroundStyle(.haPrimary)
-                        Text(verbatim: L10n.Widgets.Calendar.title)
-                            .font(DesignSystem.Font.callout.bold())
-                        Text(verbatim: L10n.Widgets.Calendar.selectCalendars)
-                            .font(DesignSystem.Font.caption)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if widgetFamily == .systemMedium {
-                    HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
-                        WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
-                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+            // The list is the only part of the widget that grows with the schedule, so it is the
+            // only part allowed to take the height left over — and it is held to it. A stack that
+            // outgrows its widget is centred in it instead, which is what pushed the date badge off
+            // the top and the refresh footer off the bottom. `visibleDays` trims the day-grouped
+            // families to what fits; the clip is what makes overflowing impossible rather than
+            // merely unlikely, at any family and any text size.
+            GeometryReader { proxy in
+                Group {
+                    if calendarCount == .zero {
+                        VStack(spacing: DesignSystem.Spaces.one) {
+                            Image(systemSymbol: .calendar)
+                                .font(.system(size: 32))
+                                .foregroundStyle(.haPrimary)
+                            Text(verbatim: L10n.Widgets.Calendar.title)
+                                .font(DesignSystem.Font.callout.bold())
+                            Text(verbatim: L10n.Widgets.Calendar.selectCalendars)
+                                .font(DesignSystem.Font.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if widgetFamily == .systemMedium {
+                        HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
+                            WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
+                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                                if events.isEmpty {
+                                    Text(verbatim: L10n.Widgets.Calendar.noEvents)
+                                        .font(DesignSystem.Font.caption)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    ForEach(events) { event in
+                                        WidgetCalendarEventRow(
+                                            event: event,
+                                            referenceDate: referenceDate,
+                                            showsDay: true,
+                                            showsCalendarName: showsCalendarName,
+                                            calendar: calendar
+                                        )
+                                    }
+                                }
+                                Spacer(minLength: 0)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    } else if widgetFamily == .systemSmall {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
                             if events.isEmpty {
                                 Text(verbatim: L10n.Widgets.Calendar.noEvents)
                                     .font(DesignSystem.Font.caption)
@@ -83,63 +146,44 @@ struct WidgetCalendarView: View {
                             }
                             Spacer(minLength: 0)
                         }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                } else if widgetFamily == .systemSmall {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
-                        if events.isEmpty {
-                            Text(verbatim: L10n.Widgets.Calendar.noEvents)
-                                .font(DesignSystem.Font.caption)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(events) { event in
-                                WidgetCalendarEventRow(
-                                    event: event,
-                                    referenceDate: referenceDate,
-                                    showsDay: true,
-                                    showsCalendarName: showsCalendarName,
-                                    calendar: calendar
-                                )
-                            }
-                        }
-                        Spacer(minLength: 0)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                } else {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                        WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
-                        if events.isEmpty {
-                            Text(verbatim: L10n.Widgets.Calendar.noEvents)
-                                .font(DesignSystem.Font.caption)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(days) { group in
-                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                                    Text(verbatim: WidgetCalendarFormatter.daySectionTitle(
-                                        for: group.date,
-                                        relativeTo: referenceDate,
-                                        calendar: calendar
-                                    ))
-                                    .font(DesignSystem.Font.caption2.weight(.bold))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    } else {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                            WidgetCalendarDateBadge(date: referenceDate, calendar: calendar)
+                            if events.isEmpty {
+                                Text(verbatim: L10n.Widgets.Calendar.noEvents)
+                                    .font(DesignSystem.Font.caption)
                                     .foregroundStyle(.secondary)
-                                    .textCase(.uppercase)
-                                    ForEach(group.events) { event in
-                                        WidgetCalendarEventRow(
-                                            event: event,
-                                            referenceDate: referenceDate,
-                                            showsDay: false,
-                                            showsCalendarName: showsCalendarName,
+                            } else {
+                                ForEach(visibleDays(in: proxy.size.height)) { group in
+                                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                                        Text(verbatim: WidgetCalendarFormatter.daySectionTitle(
+                                            for: group.date,
+                                            relativeTo: referenceDate,
                                             calendar: calendar
-                                        )
+                                        ))
+                                        .font(DesignSystem.Font.caption2.weight(.bold))
+                                        .foregroundStyle(.secondary)
+                                        .textCase(.uppercase)
+                                        ForEach(group.events) { event in
+                                            WidgetCalendarEventRow(
+                                                event: event,
+                                                referenceDate: referenceDate,
+                                                showsDay: false,
+                                                showsCalendarName: showsCalendarName,
+                                                calendar: calendar
+                                            )
+                                        }
                                     }
                                 }
                             }
+                            Spacer(minLength: 0)
                         }
-                        Spacer(minLength: 0)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+                .clipped()
             }
             // Reloading an unconfigured widget changes nothing, so the footer only appears once
             // there is something to refresh.

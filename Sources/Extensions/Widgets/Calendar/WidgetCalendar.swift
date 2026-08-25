@@ -69,7 +69,7 @@ struct WidgetCalendar: Widget {
         events: Array(WidgetCalendarPreviewSample.events(
             referenceDate: WidgetCalendarPreviewSample.referenceDate,
             calendar: .current
-        ).prefix(5)),
+        ).prefix(6)),
         calendarCount: 3,
         showsCalendarName: true,
         serverId: WidgetCalendarPreviewSample.previewServerId

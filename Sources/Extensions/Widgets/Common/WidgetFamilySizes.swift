@@ -20,14 +20,15 @@ enum WidgetFamilySizes {
 
     /// How many events the calendar widget lists.
     ///
-    /// Lower than the to-do counts because a calendar row is two lines and the larger families also
-    /// spend height on a heading per day — these are the counts that fit without the last row being
-    /// clipped.
+    /// Lower than the to-do counts because a calendar row is two lines. This is the most the family
+    /// can show, not what it always shows: the day-grouped families drop the tail of the list when
+    /// the events are spread over enough days for the headings to stop fitting, since a cap on
+    /// events is not a cap on height. `WidgetCalendarView` is where that is worked out.
     static func calendarSize(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: return 2
         case .systemMedium: return 3
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: return 5
+        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: return 6
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
