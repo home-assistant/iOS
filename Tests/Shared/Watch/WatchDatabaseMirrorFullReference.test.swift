@@ -52,19 +52,24 @@ struct WatchDatabaseMirrorFullReferenceTests {
         #expect(carried.devices != nil)
     }
 
-    @Test("Every carried table publishes a digest")
-    func digestsCoverEveryCarriedTable() {
-        let mirror = WatchDatabaseMirror(
-            entities: [],
-            areas: [],
-            pipelines: [],
-            registry: [.init(serverId: "s1", entityId: "light.a", hidden: true)],
-            devices: [Self.device(deviceId: "d1")]
-        )
-        // A table whose encoding fails silently loses its digest, which can never match, so it is
-        // re-sent on every push instead of only when it changed.
-        let digestKeys = Set(mirror.tableDigests().keys)
-        #expect(mirror.carriedDigestKeys.subtracting(digestKeys).isEmpty)
+    @Test("Every table a snapshot carries publishes a digest")
+    func digestsCoverEveryCarriedTable() throws {
+        try withDatabase { database in
+            try database.write { db in
+                try Self.entity(entityId: "light.kitchen", domain: "light").insert(db)
+                try Self.area(areaId: "kitchen").insert(db)
+                try EntityRegistryListForDisplay.Entity(serverId: "1", entityId: "light.kitchen").insert(db)
+                try Self.device(deviceId: "d1").insert(db)
+                try AssistPipelines(serverId: "1", preferredPipeline: "p", pipelines: []).insert(db)
+            }
+
+            // A table whose encoding fails silently loses its digest, which can never match, so it
+            // would be re-sent on every push instead of only when it changed.
+            let snapshot = try WatchDatabaseMirror.snapshot(version: WatchDatabaseMirror.fullReferenceVersion)
+            let digestKeys = Set(snapshot.tableDigests().keys)
+            #expect(!snapshot.carriedDigestKeys.isEmpty)
+            #expect(snapshot.carriedDigestKeys.subtracting(digestKeys).isEmpty)
+        }
     }
 
     @Test("Compression round-trips and rejects garbage")
