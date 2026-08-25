@@ -12,7 +12,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
-    fileprivate var watchConnectivityWatchdogTimer: Timer?
+    fileprivate var watchConnectivityWatchdogTimer: DispatchSourceTimer?
+
+    /// The deadlines below have to be able to complete a task while the main thread is blocked, so
+    /// they run on their own queue rather than on the main run loop.
+    private static let watchdogQueue = DispatchQueue(label: "background-task-watchdog", qos: .utility)
+
+    private let pendingConnectivityTasksLock = NSLock()
+    private var pendingConnectivityTasks: [WKWatchConnectivityRefreshBackgroundTask] = []
 
     private var immediateCommunicatorService: ImmediateCommunicatorService?
     /// Held for the app's lifetime — see `observeLegacyComplicationRenders`.
@@ -156,13 +163,17 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 // wall-clock budget: 15s when warm, 25s when cold-launched for the refresh
                 // (CSLHandleBackgroundRefreshAction transgression). The refresh work below talks
                 // to the network with timeouts larger than that budget, so completing "when done"
-                // isn't enough — always complete at a hard deadline, even mid-work. Both paths run
-                // on the main queue (PromiseKit's default), so the flag needs no synchronization.
+                // isn't enough — always complete at a hard deadline, even mid-work.
+                let completionLock = NSLock()
                 var didComplete = false
-                let completeTask = {
-                    guard !didComplete else { return }
+                let completeTask = { () -> Bool in
+                    completionLock.lock()
+                    let alreadyCompleted = didComplete
                     didComplete = true
+                    completionLock.unlock()
+                    guard !alreadyCompleted else { return false }
                     backgroundTask.setTaskCompletedWithSnapshot(false)
+                    return true
                 }
 
                 // Schedule the next refresh up front so a deadline hit can't skip it.
@@ -170,12 +181,17 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
                 applyStagedDatabaseMirrors()
 
-                after(seconds: 10).done {
-                    if !didComplete {
-                        Current.Log.info("completing background refresh task at deadline; work still running")
+                let deadline = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                deadline.schedule(deadline: .now() + 10)
+                deadline.setEventHandler {
+                    if completeTask() {
+                        Current.Log.info("completed background refresh task at deadline; work still running")
                     }
-                    completeTask()
+                    // Also releases the handler's reference back to the source, which is what keeps
+                    // the timer alive when the refresh work never finishes.
+                    deadline.cancel()
                 }
+                deadline.resume()
 
                 firstly {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
@@ -190,7 +206,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                         }
                     }
                 }.ensure {
-                    completeTask()
+                    deadline.cancel()
+                    _ = completeTask()
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
@@ -309,39 +326,58 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
+        pendingConnectivityTasksLock.lock()
+        pendingConnectivityTasks.append(task)
+        pendingConnectivityTasksLock.unlock()
+
         DispatchQueue.main.async { [self] in
             guard Communicator.shared.hasPendingDataToBeReceived else {
                 // nothing else to be received
-                task.setTaskCompletedWithSnapshot(false)
+                completePendingConnectivityTasks()
                 return
             }
 
             // wait for it to send the next set of data
-            watchConnectivityBackgroundPromise.done {
-                task.setTaskCompletedWithSnapshot(false)
+            watchConnectivityBackgroundPromise.done { [weak self] in
+                self?.completePendingConnectivityTasks()
             }
 
-            if watchConnectivityWatchdogTimer == nil || watchConnectivityWatchdogTimer?.isValid == false {
+            if watchConnectivityWatchdogTimer == nil {
                 // 10s should be more than enough time, and the system timer's at 15s (last tested watchOS 7)
-                let timer = Timer.scheduledTimer(
-                    withTimeInterval: 10.0,
-                    repeats: true
-                ) { [weak self] _ in
+                let timer = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                timer.schedule(deadline: .now() + 10, repeating: 10)
+                timer.setEventHandler { [weak self] in
                     // we endeavor to not need this timer, but apple's api is so difficult to micromanage
                     // that it's just safer to guess and check every few seconds
                     Current.Log.info("ending background task due to our own watchdog timer")
                     // Force: data can stay "pending" indefinitely (e.g. a wedged file transfer), and
                     // holding the task past ~15s gets the app killed (CSLHandleBackgroundWCSessionAction
                     // transgression). The system delivers a new task when the data actually arrives.
+                    self?.completePendingConnectivityTasks()
                     self?.endWatchConnectivityBackgroundTaskIfNecessary(force: true)
                 }
+                timer.resume()
 
-                watchConnectivityBackgroundPromise.done {
-                    timer.invalidate()
+                watchConnectivityBackgroundPromise.done { [weak self] in
+                    timer.cancel()
+                    self?.watchConnectivityWatchdogTimer = nil
                 }
 
                 watchConnectivityWatchdogTimer = timer
             }
+        }
+    }
+
+    /// Completes every WatchConnectivity task still open. Safe to call off the main queue, which is
+    /// what lets the watchdog end them while the main thread is blocked.
+    private func completePendingConnectivityTasks() {
+        pendingConnectivityTasksLock.lock()
+        let tasks = pendingConnectivityTasks
+        pendingConnectivityTasks.removeAll()
+        pendingConnectivityTasksLock.unlock()
+
+        for task in tasks {
+            task.setTaskCompletedWithSnapshot(false)
         }
     }
 
