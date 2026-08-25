@@ -161,13 +161,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 // isn't enough — always complete at a hard deadline, even mid-work.
                 let completionLock = NSLock()
                 var didComplete = false
-                let completeTask = {
+                let completeTask = { () -> Bool in
                     completionLock.lock()
                     let alreadyCompleted = didComplete
                     didComplete = true
                     completionLock.unlock()
-                    guard !alreadyCompleted else { return }
+                    guard !alreadyCompleted else { return false }
                     backgroundTask.setTaskCompletedWithSnapshot(false)
+                    return true
                 }
 
                 // Schedule the next refresh up front so a deadline hit can't skip it.
@@ -176,8 +177,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 let deadline = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
                 deadline.schedule(deadline: .now() + 10)
                 deadline.setEventHandler {
-                    Current.Log.info("completing background refresh task at deadline; work still running")
-                    completeTask()
+                    if completeTask() {
+                        Current.Log.info("completed background refresh task at deadline; work still running")
+                    }
+                    // Also releases the handler's reference back to the source, which is what keeps
+                    // the timer alive when the refresh work never finishes.
+                    deadline.cancel()
                 }
                 deadline.resume()
 
@@ -195,7 +200,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     }
                 }.ensure {
                     deadline.cancel()
-                    completeTask()
+                    _ = completeTask()
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
