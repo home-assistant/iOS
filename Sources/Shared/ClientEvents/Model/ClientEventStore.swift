@@ -132,17 +132,14 @@ final class ClientEventStore: ClientEventStoreProtocol {
         }
         defer { close(descriptor) }
 
-        line.withUnsafeBytes { buffer in
-            guard let baseAddress = buffer.baseAddress else { return }
-            var written = 0
-            while written < buffer.count {
-                let result = write(descriptor, baseAddress + written, buffer.count - written)
-                guard result > 0 else {
-                    Current.Log.error("Error appending client event, errno \(errno)")
-                    return
-                }
-                written += result
-            }
+        // One `write` call, never a loop: `O_APPEND` makes a single write atomic against the other
+        // processes in the app group, and resuming a partial one would let their bytes land in the
+        // middle of this event. A short write drops the event instead of corrupting its neighbours.
+        let written = line.withUnsafeBytes { buffer in
+            buffer.baseAddress.map { write(descriptor, $0, buffer.count) } ?? 0
+        }
+        if written != line.count {
+            Current.Log.error("Error appending client event, wrote \(written) of \(line.count), errno \(errno)")
         }
     }
 
