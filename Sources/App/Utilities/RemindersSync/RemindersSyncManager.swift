@@ -150,9 +150,12 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// The user's Reminders lists, for the configuration picker.
-    func reminderLists() -> [EKCalendar] {
-        eventStore.calendars(for: .reminder)
-            .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+    func reminderLists() async -> [EKCalendar] {
+        let store = eventStore
+        return await Self.eventStoreAccess {
+            store.calendars(for: .reminder)
+                .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        }
     }
 
     func syncNow() {
@@ -232,6 +235,24 @@ final class RemindersSyncManager: ObservableObject {
         }
     }
 
+    /// Runs a synchronous `EKEventStore` operation on a background thread instead of the main
+    /// actor. Store-level calls like `calendar(withIdentifier:)`, `calendars(for:)` and
+    /// `commit()` are synchronous XPC round-trips to the Reminders daemon; on a cold launch the
+    /// first of them additionally waits for the daemon connection to come up, which blocked the
+    /// main thread for over a second (UIKit-runloop hang reports with the whole hang inside
+    /// `-[EKEventStore calendarWithIdentifier:]`).
+    ///
+    /// `EKEventStore` itself is thread-safe, and the `EKCalendar`/`EKReminder` objects involved
+    /// are never used from two threads at once: the caller awaits the detached task, then uses
+    /// the result back on the main actor — the same serialized handoff that
+    /// `fetchReminders(matching:)` already performs with its internally-fetched reminders. No
+    /// `Sendable` constraints because EventKit types don't declare it.
+    private nonisolated static func eventStoreAccess<T>(
+        _ access: @escaping () -> T
+    ) async -> T {
+        await Task.detached { access() }.value
+    }
+
     /// Runs synchronous GRDB access on a background thread instead of the main actor. The
     /// 0xdead10cc termination this sync used to hit showed the main thread blocked in a commit's
     /// `fsync`: it couldn't service the `didEnterBackground` notification that suspends GRDB and
@@ -291,7 +312,11 @@ final class RemindersSyncManager: ObservableObject {
             Current.Log.error("Reminders sync skipped, no server/API for \(config.serverId)")
             return
         }
-        guard let calendar = eventStore.calendar(withIdentifier: config.reminderListId) else {
+        // Resolved off the main thread: this is the sync's first EventKit call, and cold-launch
+        // daemon startup made it hang the main thread (see `eventStoreAccess`).
+        let store = eventStore
+        let listId = config.reminderListId
+        guard let calendar = await Self.eventStoreAccess({ store.calendar(withIdentifier: listId) }) else {
             Current.Log.error("Reminders sync skipped, list \(config.reminderListName) no longer exists")
             return
         }
@@ -399,7 +424,10 @@ final class RemindersSyncManager: ObservableObject {
         }
 
         if needsCommit {
-            try eventStore.commit()
+            // Saves and removals above only stage changes (`commit: false`); this is the XPC
+            // round-trip that writes them, so it stays off the main thread too.
+            let store = eventStore
+            try await Self.eventStoreAccess { Result { try store.commit() } }.get()
         }
 
         if !createdTodoItemReminderIds.isEmpty {
