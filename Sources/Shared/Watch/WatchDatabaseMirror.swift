@@ -448,11 +448,17 @@ public struct WatchDatabaseMirror: WatchCodable {
     // MARK: - Delta sync digests
 
     /// Opaque per-table digests of this snapshot, generated and compared ONLY on the phone
-    /// (property-list encoding isn't guaranteed byte-stable across devices, so the watch never
-    /// computes these — it stores the map verbatim and echoes it on the next sync request).
+    /// (the encoding isn't guaranteed byte-stable across devices, so the watch never computes
+    /// these — it stores the map verbatim and echoes it on the next sync request).
     /// A group that is `nil` produces no digest, can never "match", and is always carried.
+    ///
+    /// Because these bytes never leave the phone, the encoding is free to be the fast one rather
+    /// than the payload's property list: fingerprinting every table on each push cost about as
+    /// much CPU as building the payload itself.
     public func tableDigests() -> [String: String] {
-        let encoder = PropertyListEncoder()
+        let encoder = with(JSONEncoder()) {
+            $0.outputFormatting = [.sortedKeys]
+        }
         var digests: [String: String] = [:]
         if let entities, let data = try? encoder.encode(entities) {
             digests["entities"] = Self.digest(of: [data])
