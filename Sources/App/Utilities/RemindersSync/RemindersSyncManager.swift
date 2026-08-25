@@ -256,20 +256,24 @@ final class RemindersSyncManager: ObservableObject {
         storedLinks: [RemindersSyncItemLink],
         features: TodoListEntityFeature?
     ) async -> ([String: RemindersSyncItemSnapshot], [RemindersSyncPlanner.LinkState]) {
-        let todoSnapshots = Dictionary(
-            todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
-            uniquingKeysWith: { first, _ in first }
-        )
-        let links = storedLinks
-            .map(RemindersSyncPlanner.LinkState.init(link:))
-            .map { link in
-                RemindersSyncPlanner.LinkState(
-                    todoItemUid: link.todoItemUid,
-                    reminderId: link.reminderId,
-                    snapshot: link.snapshot.trimmed(to: features)
-                )
-            }
-        return (todoSnapshots, links)
+        // Detached rather than relying on `nonisolated async` hopping executors on its own, which is
+        // a rule that has changed between language modes. `databaseAccess` above does the same.
+        await Task.detached {
+            let todoSnapshots = Dictionary(
+                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            let links = storedLinks
+                .map(RemindersSyncPlanner.LinkState.init(link:))
+                .map { link in
+                    RemindersSyncPlanner.LinkState(
+                        todoItemUid: link.todoItemUid,
+                        reminderId: link.reminderId,
+                        snapshot: link.snapshot.trimmed(to: features)
+                    )
+                }
+            return (todoSnapshots, links)
+        }.value
     }
 
     /// Counterpart to `LifecycleManager`'s suspend-on-background: after the sync touches the
