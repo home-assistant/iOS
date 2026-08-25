@@ -2090,6 +2090,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -2760,6 +2761,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.preview.custom.description" = "Buat widget Anda sendiri di dalam aplikasi dan tampilkan di sini.";
 "widgets.preview.custom.title" = "Widget khusus";
 "widgets.preview.empty.create.button" = "Buat widget";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Muat ulang semua widget linimasa.";
 "widgets.reload_widgets.app_intent.title" = "Muat ulang widget";
 "widgets.scene.activate.title" = "Aktifkan skenario";

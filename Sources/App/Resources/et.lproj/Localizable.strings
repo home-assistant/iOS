@@ -2091,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Eelvaade";
 "watch.complications.builder.progress_bar_color" = "Edenemisriba värv";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Näita mõõdikuna / ringina";
@@ -2761,6 +2762,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.preview.custom.description" = "Loo rakenduses oma vidin ja kuva see siis siin.";
 "widgets.preview.custom.title" = "Kohandatud vidin";
 "widgets.preview.empty.create.button" = "Loo vidin";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Taaslae kõik vidinad.";
 "widgets.reload_widgets.app_intent.title" = "Taaslae vidinad";
 "widgets.scene.activate.title" = "Aktiveeri stseen";

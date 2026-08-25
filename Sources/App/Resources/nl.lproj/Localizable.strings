@@ -2091,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Voorbeeld";
 "watch.complications.builder.progress_bar_color" = "Kleur van de voortgangsbalk";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Weergeven";
 "watch.complications.builder.show_gauge" = "Toon als meter / ring";
@@ -2761,6 +2762,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.preview.custom.description" = "Maak je eigen widget in de app en toon hem hier.";
 "widgets.preview.custom.title" = "Aangepaste widget";
 "widgets.preview.empty.create.button" = "Widget maken";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Herlaad alle widgets tijdlijnen.";
 "widgets.reload_widgets.app_intent.title" = "Widgets herladen";
 "widgets.scene.activate.title" = "Scène activeren";

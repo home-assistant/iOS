@@ -2091,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -2610,13 +2611,13 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.calendar.all_day" = "All-day";
 "widgets.calendar.description" = "See what is coming up on your calendars.";
 "widgets.calendar.no_events" = "No upcoming events";
-"widgets.calendar.parameter.calendars" = "Calendars";
+"widgets.calendar.parameter.calendars" = "Календари";
 "widgets.calendar.parameter.show_calendar_name" = "Show calendar name";
 "widgets.calendar.refresh_title" = "Refresh Calendar";
 "widgets.calendar.select_calendars" = "Edit widget to select calendars.";
-"widgets.calendar.title" = "Calendar";
-"widgets.calendar.today" = "Today";
-"widgets.calendar.tomorrow" = "Tomorrow";
+"widgets.calendar.title" = "Календарь";
+"widgets.calendar.today" = "Сегодня";
+"widgets.calendar.tomorrow" = "Завтра";
 "widgets.commonly_used_entities.description" = "Отображайте часто используемые объекты на основе частоты использования.";
 "widgets.commonly_used_entities.empty.description" = "Часто используемые объекты не найдены. Используйте Home Assistant для формирования истории использования.";
 "widgets.commonly_used_entities.title" = "Стандартные элементы управления";
@@ -2761,6 +2762,7 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.preview.custom.description" = "Создайте свой собственный виджет внутри приложения, а затем отобразите его здесь.";
 "widgets.preview.custom.title" = "Пользовательский виджет";
 "widgets.preview.empty.create.button" = "Создать виджет";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Перезагрузить все временные шкалы виджетов.";
 "widgets.reload_widgets.app_intent.title" = "Перезагрузить виджеты";
 "widgets.scene.activate.title" = "Активировать сцену";

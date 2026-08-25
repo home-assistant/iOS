@@ -622,17 +622,17 @@
 "gestures.swipe_right.title" = "Svep åt höger";
 "gestures.value.option.assist" = "Öppna Assist";
 "gestures.value.option.back_page" = "Tillbaka till föregående sida";
-"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
+"gestures.value.option.more_info.open_in_browser" = "Öppnar den sida som just nu visas i appen i din valda webbläsare";
 "gestures.value.option.more_info.quick_search" = "Snabbsökning";
 "gestures.value.option.more_info.search_commands" = "Sök kommandon";
 "gestures.value.option.more_info.search_devices" = "Sök enheter";
 "gestures.value.option.more_info.search_entities" = "Sök entiteter";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
+"gestures.value.option.more_info.smart_back" = "Går tillbaka till föregående sida, eller visar sidofältet om det inte finns någon sida att gå tillbaka till";
 "gestures.value.option.next_page" = "Gå till nästa sida";
 "gestures.value.option.next_server" = "Nästa server";
 "gestures.value.option.none" = "Ingen";
 "gestures.value.option.open_debug" = "Öppna felsökning";
-"gestures.value.option.open_in_browser" = "Open page in browser";
+"gestures.value.option.open_in_browser" = "Öppna sidan i webbläsaren";
 "gestures.value.option.previous_server" = "Föregående server";
 "gestures.value.option.quick_search" = "Snabbsökning";
 "gestures.value.option.search_commands" = "Sök kommandon";
@@ -641,7 +641,7 @@
 "gestures.value.option.servers_list" = "Serverlista";
 "gestures.value.option.show_settings" = "Öppna appinställningar";
 "gestures.value.option.show_sidebar" = "Visa sidofält";
-"gestures.value.option.smart_back" = "Smart back";
+"gestures.value.option.smart_back" = "Smart backning";
 "grdb.config.migration_error.failed_access_grdb" = "Det gick inte att komma åt databasen (GRDB), fel: %@";
 "grdb.config.migration_error.failed_to_save" = "Misslyckades med att spara ny konfiguration, fel: %@";
 "ha_api.api_error.cant_build_url" = "Kan inte skapa API-URL";
@@ -2077,8 +2077,8 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "watch.complications.builder.insert_token" = "Infoga";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
-"watch.complications.builder.move_token_left" = "Move left";
-"watch.complications.builder.move_token_right" = "Move right";
+"watch.complications.builder.move_token_left" = "Flytta åt vänster";
+"watch.complications.builder.move_token_right" = "Flytta åt höger";
 "watch.complications.builder.name" = "Namn (valfritt)";
 "watch.complications.builder.new_title" = "Ny komplikation";
 "watch.complications.builder.precision" = "Decimaler";
@@ -2086,7 +2086,8 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "watch.complications.builder.preview" = "Förhandsvisning";
 "watch.complications.builder.progress_bar_color" = "Färg på förloppsindikatorn";
 "watch.complications.builder.remove_token" = "Ta bort %@";
-"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
+"watch.complications.builder.reorder_token" = "Reorder %@";
+"watch.complications.builder.reorder_tokens_hint" = "Dra en token till en annan för att ändra ordningen på dem.";
 "watch.complications.builder.show" = "Visa";
 "watch.complications.builder.show_gauge" = "Visa som mätare / ring";
 "watch.complications.builder.show_icon" = "Visa ikon";
@@ -2284,7 +2285,7 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "watch.home.areas.section.sensors.title" = "Sensorer";
 "watch.home.areas.title" = "Områden";
 "watch.home.cancel_and_use_cache.title" = "Avbryt och använd cache";
-"watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.empty" = "Det finns inga entiteter som är kompatibla med den här enheten.";
 "watch.home.loading.skip.title" = "Hoppa över";
 "watch.home.run.confirmation.title" = "Är du säker på att du vill köra \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "Låsets aktuella status är ännu inte känd, så åtgärden skickades inte. Vänta tills statusen har laddats och försök igen.";
@@ -2756,6 +2757,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.preview.custom.description" = "Skapa din egen widget i appen och visa den sedan här.";
 "widgets.preview.custom.title" = "Anpassad widget";
 "widgets.preview.empty.create.button" = "Skapa widget";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Ladda om alla widgets tidslinjer.";
 "widgets.reload_widgets.app_intent.title" = "Ladda om widgetar";
 "widgets.scene.activate.title" = "Aktivera scen";

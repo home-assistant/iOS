@@ -2091,6 +2091,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.remove_token" = "Remove %@";
+"watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
 "watch.complications.builder.show" = "Show";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
@@ -2761,6 +2762,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.preview.custom.description" = "Uygulama içerisinde kendi widget'ınızı yaratın ve burada görüntüleyin.";
 "widgets.preview.custom.title" = "Kişiselleştirilmiş widget";
 "widgets.preview.empty.create.button" = "Widget oluştur";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Tüm widget zaman çizelgelerini yeniden yükle.";
 "widgets.reload_widgets.app_intent.title" = "Widget'ları yeniden yükle";
 "widgets.scene.activate.title" = "Sahneyi etkinleştir";

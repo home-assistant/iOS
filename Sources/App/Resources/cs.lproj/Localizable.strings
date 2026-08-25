@@ -629,7 +629,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.value.option.more_info.search_commands" = "Hledat v příkazech";
 "gestures.value.option.more_info.search_devices" = "Hledat zařízení";
 "gestures.value.option.more_info.search_entities" = "Hledat entity";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
+"gestures.value.option.more_info.smart_back" = "Vrátí se na předchozí stránku nebo zobrazí postranní panel, pokud není k dispozici žádná stránka, na kterou by se dalo vrátit";
 "gestures.value.option.next_page" = "Přejít na další stránku";
 "gestures.value.option.next_server" = "Další server";
 "gestures.value.option.none" = "Nic";
@@ -643,7 +643,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "gestures.value.option.servers_list" = "Seznam serverů";
 "gestures.value.option.show_settings" = "Otevřít nastavení aplikace";
 "gestures.value.option.show_sidebar" = "Zobrazit postranní panel";
-"gestures.value.option.smart_back" = "Smart back";
+"gestures.value.option.smart_back" = "Chytrý návrat";
 "grdb.config.migration_error.failed_access_grdb" = "Nepodařilo se získat přístup k databázi (GRDB), chyba: %@";
 "grdb.config.migration_error.failed_to_save" = "Nepodařilo se uložit nové nastavení, chyba: %@";
 "ha_api.api_error.cant_build_url" = "Nelze sestavit URL API";
@@ -2082,8 +2082,8 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.complications.builder.insert_token" = "Vložit";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
-"watch.complications.builder.move_token_left" = "Move left";
-"watch.complications.builder.move_token_right" = "Move right";
+"watch.complications.builder.move_token_left" = "Posun vlevo";
+"watch.complications.builder.move_token_right" = "Posun vpravo";
 "watch.complications.builder.name" = "Název (volitelný)";
 "watch.complications.builder.new_title" = "Nová komplikace";
 "watch.complications.builder.precision" = "Desetinná čísla";
@@ -2091,7 +2091,8 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.complications.builder.preview" = "Náhled";
 "watch.complications.builder.progress_bar_color" = "Barva ukazatele průběhu";
 "watch.complications.builder.remove_token" = "Odebrat %@";
-"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
+"watch.complications.builder.reorder_token" = "Reorder %@";
+"watch.complications.builder.reorder_tokens_hint" = "Přetáhněte jeden token na jiný, chcete-li změnit jejich pořadí.";
 "watch.complications.builder.show" = "Zobrazit";
 "watch.complications.builder.show_gauge" = "Zobrazit jako měřidlo / kroužek";
 "watch.complications.builder.show_icon" = "Zobrazit ikonu";
@@ -2289,7 +2290,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.home.areas.section.sensors.title" = "Senzory";
 "watch.home.areas.title" = "Oblasti";
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
-"watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.empty" = "Pro toto zařízení nejsou k dispozici žádné kompatibilní entity.";
 "watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "Aktuální stav zámku zatím není znám, takže akce nebyla odeslána. Počkejte, až se stav načte, a zkuste to znovu.";
@@ -2761,6 +2762,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.preview.custom.description" = "Vytvořte si vlastní widget v aplikaci a poté jej zde zobrazte.";
 "widgets.preview.custom.title" = "Vlastní widget";
 "widgets.preview.empty.create.button" = "Vytvořit widget";
+"widgets.refresh_title" = "Refresh widget";
 "widgets.reload_widgets.app_intent.description" = "Znovu načíst časové řady všech widgetů";
 "widgets.reload_widgets.app_intent.title" = "Znovu načíst widgety";
 "widgets.scene.activate.title" = "Aktivovat scénu";
