@@ -248,6 +248,30 @@ final class RemindersSyncManager: ObservableObject {
         await Task.detached { access() }.value
     }
 
+    /// Snapshotting every todo item and stored link is pure value work, and running it on the main
+    /// actor alongside the rest of the sync is what froze the UI on a large list. `EKReminder`
+    /// snapshots deliberately stay on the actor: EventKit objects aren't safe to read off-thread.
+    private nonisolated static func planInputs(
+        todoItems: [TodoListItem],
+        storedLinks: [RemindersSyncItemLink],
+        features: TodoListEntityFeature?
+    ) async -> ([String: RemindersSyncItemSnapshot], [RemindersSyncPlanner.LinkState]) {
+        let todoSnapshots = Dictionary(
+            todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let links = storedLinks
+            .map(RemindersSyncPlanner.LinkState.init(link:))
+            .map { link in
+                RemindersSyncPlanner.LinkState(
+                    todoItemUid: link.todoItemUid,
+                    reminderId: link.reminderId,
+                    snapshot: link.snapshot.trimmed(to: features)
+                )
+            }
+        return (todoSnapshots, links)
+    }
+
     /// Counterpart to `LifecycleManager`'s suspend-on-background: after the sync touches the
     /// database while backgrounded, GRDB goes back to the suspended state so nothing can hold the
     /// app-group SQLite lock when the process is frozen.
@@ -273,25 +297,18 @@ final class RemindersSyncManager: ObservableObject {
             let features = await todoListFeatures(server: server, entityId: config.todoEntityId)
             let todoItems = try await fetchTodoItems(api: api, listId: config.todoEntityId)
             let reminders = await fetchReminders(in: calendar)
-            let todoSnapshots = Dictionary(
-                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
-                uniquingKeysWith: { first, _ in first }
-            )
             let remindersById = Dictionary(
                 reminders.map { ($0.calendarItemIdentifier, $0) },
                 uniquingKeysWith: { first, _ in first }
             )
 
             let configId = config.id
-            let links = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
-                .map(RemindersSyncPlanner.LinkState.init(link:))
-                .map { link in
-                    RemindersSyncPlanner.LinkState(
-                        todoItemUid: link.todoItemUid,
-                        reminderId: link.reminderId,
-                        snapshot: link.snapshot.trimmed(to: features)
-                    )
-                }
+            let storedLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
+            let (todoSnapshots, links) = await Self.planInputs(
+                todoItems: todoItems,
+                storedLinks: storedLinks,
+                features: features
+            )
             details = try await applyPlan(
                 config: config,
                 api: api,
