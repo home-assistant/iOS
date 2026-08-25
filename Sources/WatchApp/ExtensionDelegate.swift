@@ -386,8 +386,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     private func applyStagedDatabaseMirrors() {
         guard PushedMirrorStagingStore.hasStagedMirrors else { return }
         Self.pushedMirrorQueue.async { [weak self] in
+            // Taking the entries removes them, so bail out before that when there is nothing left
+            // to apply them with — otherwise a staged mirror is dropped unread.
+            guard let self else { return }
             for entry in PushedMirrorStagingStore.takeAll() {
-                self?.decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
+                decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
             }
         }
     }

@@ -14,12 +14,20 @@ enum PushedMirrorStagingStore {
     private static let fileExtension = "plist"
     private static let entryLimit = 10
 
+    /// Payloads are staged from the WatchConnectivity callback on the main queue and taken on the
+    /// decode queue, so the directory work is serialized rather than left to race.
+    private static let queue = DispatchQueue(label: "pushed-mirror-staging")
+
     private enum Key {
         static let content = "content"
         static let metadata = "metadata"
     }
 
     static func store(data: Data, metadata: HAWatchConnectivity.Content?) {
+        queue.async { storeUnsynchronized(data: data, metadata: metadata) }
+    }
+
+    private static func storeUnsynchronized(data: Data, metadata: HAWatchConnectivity.Content?) {
         guard let directory = directoryURL() else { return }
 
         var payload: [String: Any] = [Key.content: data]
@@ -44,6 +52,10 @@ enum PushedMirrorStagingStore {
     /// Returns the staged mirrors in arrival order and removes them, so a failed apply doesn't
     /// replay forever. The phone re-sends anything the watch is missing on its next sync request.
     static func takeAll() -> [Entry] {
+        queue.sync { takeAllUnsynchronized() }
+    }
+
+    private static func takeAllUnsynchronized() -> [Entry] {
         guard let directory = directoryURL() else { return [] }
 
         return stagedFileURLs(in: directory).compactMap { fileURL in
@@ -63,8 +75,10 @@ enum PushedMirrorStagingStore {
     }
 
     static var hasStagedMirrors: Bool {
-        guard let directory = directoryURL() else { return false }
-        return !stagedFileURLs(in: directory).isEmpty
+        queue.sync { () -> Bool in
+            guard let directory = directoryURL() else { return false }
+            return !stagedFileURLs(in: directory).isEmpty
+        }
     }
 
     private static func stagedFileURLs(in directory: URL) -> [URL] {
