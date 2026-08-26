@@ -19,4 +19,14 @@ struct ListPickerTests {
     @Test func testLitPickerContentUI() async throws {
         assertLightDarkSnapshots(of: ListPickerPreview.content, drawHierarchyInKeyWindow: true)
     }
+
+    @MainActor
+    @Test func testLitPickerContentSearchingUI() async throws {
+        assertLightDarkSnapshots(of: ListPickerPreview.searching, drawHierarchyInKeyWindow: true)
+    }
+
+    @MainActor
+    @Test func testLitPickerContentNoResultsUI() async throws {
+        assertLightDarkSnapshots(of: ListPickerPreview.noResults, drawHierarchyInKeyWindow: true)
+    }
 }
