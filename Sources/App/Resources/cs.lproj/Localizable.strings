@@ -2091,7 +2091,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "watch.complications.builder.preview" = "Náhled";
 "watch.complications.builder.progress_bar_color" = "Barva ukazatele průběhu";
 "watch.complications.builder.remove_token" = "Odebrat %@";
-"watch.complications.builder.reorder_token" = "Reorder %@";
+"watch.complications.builder.reorder_token" = "Přeuspořádat %@";
 "watch.complications.builder.reorder_tokens_hint" = "Přetáhněte jeden token na jiný, chcete-li změnit jejich pořadí.";
 "watch.complications.builder.show" = "Zobrazit";
 "watch.complications.builder.show_gauge" = "Zobrazit jako měřidlo / kroužek";
@@ -2762,7 +2762,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.preview.custom.description" = "Vytvořte si vlastní widget v aplikaci a poté jej zde zobrazte.";
 "widgets.preview.custom.title" = "Vlastní widget";
 "widgets.preview.empty.create.button" = "Vytvořit widget";
-"widgets.refresh_title" = "Refresh widget";
+"widgets.refresh_title" = "Obnovit widget";
 "widgets.reload_widgets.app_intent.description" = "Znovu načíst časové řady všech widgetů";
 "widgets.reload_widgets.app_intent.title" = "Znovu načíst widgety";
 "widgets.scene.activate.title" = "Aktivovat scénu";

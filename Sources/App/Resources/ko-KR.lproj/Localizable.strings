@@ -2091,7 +2091,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.complications.builder.preview" = "미리 보기";
 "watch.complications.builder.progress_bar_color" = "진행률 표시줄 색상";
 "watch.complications.builder.remove_token" = "%@ 제거";
-"watch.complications.builder.reorder_token" = "Reorder %@";
+"watch.complications.builder.reorder_token" = "%@ 순서 변경";
 "watch.complications.builder.reorder_tokens_hint" = "토큰을 다른 토큰 위로 드래그하여 순서를 변경하세요.";
 "watch.complications.builder.show" = "표시";
 "watch.complications.builder.show_gauge" = "게이지/링으로 표시";
@@ -2760,7 +2760,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.preview.custom.description" = "앱 내에서 나만의 위젯을 만든 다음 여기에 표시하세요.";
 "widgets.preview.custom.title" = "사용자 정의 위젯";
 "widgets.preview.empty.create.button" = "위젯 만들기";
-"widgets.refresh_title" = "Refresh widget";
+"widgets.refresh_title" = "위젯 새로고침";
 "widgets.reload_widgets.app_intent.description" = "모든 위젯의 타임라인을 다시 불러옵니다.";
 "widgets.reload_widgets.app_intent.title" = "위젯 새로고침";
 "widgets.scene.activate.title" = "장면 활성화";

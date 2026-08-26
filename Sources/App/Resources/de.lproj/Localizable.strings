@@ -2092,7 +2092,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "watch.complications.builder.preview" = "Vorschau";
 "watch.complications.builder.progress_bar_color" = "Fortschrittsbalken-Farbe";
 "watch.complications.builder.remove_token" = "%@ entfernen";
-"watch.complications.builder.reorder_token" = "Reorder %@";
+"watch.complications.builder.reorder_token" = "%@ neu anordnen";
 "watch.complications.builder.reorder_tokens_hint" = "Ziehe ein Token auf ein anderes, um die Reihenfolge zu ändern.";
 "watch.complications.builder.show" = "Anzeigen";
 "watch.complications.builder.show_gauge" = "Als Analoganzeige/Ring anzeigen";
@@ -2763,7 +2763,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.preview.custom.description" = "Erstelle dein eigenes Widget innerhalb der App und lasse es dann hier anzeigen.";
 "widgets.preview.custom.title" = "Benutzerdefiniertes Widget";
 "widgets.preview.empty.create.button" = "Widget erstellen";
-"widgets.refresh_title" = "Refresh widget";
+"widgets.refresh_title" = "Widget aktualisieren";
 "widgets.reload_widgets.app_intent.description" = "Alle Widget-Zeitleisten neu laden.";
 "widgets.reload_widgets.app_intent.title" = "Widgets neu laden";
 "widgets.scene.activate.title" = "Szene aktivieren";
