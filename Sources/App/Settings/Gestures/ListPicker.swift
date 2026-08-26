@@ -259,7 +259,7 @@ enum ListPickerPreview {
         }
     }
 
-    private static var sampleContent: ListPickerContent {
+    static var sampleContent: ListPickerContent {
         .init(sections: [
             .init(id: "1", title: "Section 1", items: [
                 .init(id: "1", title: "Abc", subtitle: "A longer explanation", icon: .house),

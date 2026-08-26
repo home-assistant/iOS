@@ -13,13 +13,11 @@ struct GesturesSetupViewTests {
     @Test func testActionsPickerUI() async throws {
         let selection = HAGestureAction.showSidebar
         assertLightDarkSnapshots(
-            of: NavigationView {
-                ListPickerContentView(
-                    title: L10n.Gestures._1Finger.title,
-                    selection: .constant(.init(id: selection.rawValue, title: selection.localizedString)),
-                    content: GesturesSetupView.gestureActionsPickerContent
-                )
-            },
+            of: ListPickerContentView(
+                title: L10n.Gestures._1Finger.title,
+                selection: .constant(.init(id: selection.rawValue, title: selection.localizedString)),
+                content: GesturesSetupView.gestureActionsPickerContent
+            ),
             drawHierarchyInKeyWindow: true,
             layout: .fixed(width: 390, height: 1250)
         )
@@ -29,14 +27,12 @@ struct GesturesSetupViewTests {
     @Test func testActionsPickerSearchingUI() async throws {
         let selection = HAGestureAction.showSidebar
         assertLightDarkSnapshots(
-            of: NavigationView {
-                ListPickerContentView(
-                    title: L10n.Gestures._1Finger.title,
-                    selection: .constant(.init(id: selection.rawValue, title: selection.localizedString)),
-                    content: GesturesSetupView.gestureActionsPickerContent,
-                    searchTerm: "server"
-                )
-            },
+            of: ListPickerContentView(
+                title: L10n.Gestures._1Finger.title,
+                selection: .constant(.init(id: selection.rawValue, title: selection.localizedString)),
+                content: GesturesSetupView.gestureActionsPickerContent,
+                searchTerm: "server"
+            ),
             drawHierarchyInKeyWindow: true
         )
     }

@@ -7,6 +7,7 @@
 //
 @testable import HomeAssistant
 import SnapshotTesting
+import SwiftUI
 import Testing
 
 struct ListPickerTests {
@@ -17,16 +18,26 @@ struct ListPickerTests {
 
     @MainActor
     @Test func testLitPickerContentUI() async throws {
-        assertLightDarkSnapshots(of: ListPickerPreview.content, drawHierarchyInKeyWindow: true)
+        assertLightDarkSnapshots(of: contentView(searchTerm: ""), drawHierarchyInKeyWindow: true)
     }
 
     @MainActor
     @Test func testLitPickerContentSearchingUI() async throws {
-        assertLightDarkSnapshots(of: ListPickerPreview.searching, drawHierarchyInKeyWindow: true)
+        assertLightDarkSnapshots(of: contentView(searchTerm: "bbbb"), drawHierarchyInKeyWindow: true)
     }
 
     @MainActor
     @Test func testLitPickerContentNoResultsUI() async throws {
-        assertLightDarkSnapshots(of: ListPickerPreview.noResults, drawHierarchyInKeyWindow: true)
+        assertLightDarkSnapshots(of: contentView(searchTerm: "zzzz"), drawHierarchyInKeyWindow: true)
+    }
+
+    @MainActor
+    private func contentView(searchTerm: String) -> some View {
+        ListPickerContentView(
+            title: "Title 1",
+            selection: .constant(.init(id: "2", title: "aaaa")),
+            content: ListPickerPreview.sampleContent,
+            searchTerm: searchTerm
+        )
     }
 }
