@@ -1,0 +1,62 @@
+name: Record Snapshots
+
+# TEMPORARY: records the widget gallery reference images on a macOS runner and commits them back to
+# the branch, because the snapshots cannot be recorded without Xcode. Delete once they have landed.
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - feature/design-system-widgets
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  FASTLANE_XCODE_LIST_TIMEOUT: 80
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
+  BUNDLE_PATH: vendor/bundle
+
+concurrency:
+  group: record-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      # A missing reference image is recorded on the first run and reported as a failure, so the
+      # tests are expected to fail here. The images they wrote are what this job is after.
+      - name: Run tests
+        continue-on-error: true
+        run: bundle exec fastlane test
+
+      - name: Commit recorded snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- '*__Snapshots__*'
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          git commit -m "Record widget gallery snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload Test Logs"
+        if: ${{ always() }}
+        with:
+          name: record-snapshots-logs
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+            ~/Library/Logs/scan
