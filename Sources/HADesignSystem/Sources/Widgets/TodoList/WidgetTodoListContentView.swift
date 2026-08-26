@@ -161,7 +161,7 @@ public struct WidgetTodoListContentView: View {
                                 ofSize: .init(width: 12, height: 12),
                                 color: item.isOverdue ? UIColor.orange : UIColor.secondaryLabel
                             ))
-                            Text(dueText)
+                            Text(verbatim: dueText)
                                 .font(DesignSystem.Font.caption2)
                                 .foregroundStyle(item.isOverdue ? Color.orange : .secondary)
                                 .lineLimit(1)

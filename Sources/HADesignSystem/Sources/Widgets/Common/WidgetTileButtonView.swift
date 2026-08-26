@@ -36,7 +36,7 @@ public struct WidgetTileButtonView: View {
             WidgetCircularIconView(icon: model.icon, logo: logo)
         case .accessoryInline:
             Label {
-                Text(model.title)
+                Text(verbatim: model.title)
             } icon: {
                 Image(uiImage: model.icon.image(ofSize: .init(width: 10, height: 10), color: .white))
             }

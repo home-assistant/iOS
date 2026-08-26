@@ -122,7 +122,7 @@ public struct WidgetGaugeContentView: View {
 
     @ViewBuilder private func placeholderText(_ text: String?) -> some View {
         if let text {
-            Text(text)
+            Text(verbatim: text)
         } else {
             Text("00")
                 .redacted(reason: .placeholder)

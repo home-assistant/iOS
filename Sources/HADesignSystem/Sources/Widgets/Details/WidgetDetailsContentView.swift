@@ -29,7 +29,7 @@ public struct WidgetDetailsContentView: View {
         if family == .accessoryRectangular {
             VStack(alignment: .leading) {
                 if let upperText {
-                    Text(upperText)
+                    Text(verbatim: upperText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .fontWeight(.bold)
                 } else {
@@ -39,7 +39,7 @@ public struct WidgetDetailsContentView: View {
                         .redacted(reason: .placeholder)
                 }
                 if let lowerText {
-                    Text(lowerText)
+                    Text(verbatim: lowerText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     Text(verbatim: "Unknown lower")
@@ -47,13 +47,13 @@ public struct WidgetDetailsContentView: View {
                         .redacted(reason: .placeholder)
                 }
                 if let detailsText {
-                    Text(detailsText)
+                    Text(verbatim: detailsText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         } else {
             if upperText != nil || lowerText != nil {
-                Text((upperText ?? "") + (lowerText ?? ""))
+                Text(verbatim: (upperText ?? "") + (lowerText ?? ""))
             } else {
                 Text(verbatim: "Unknown details")
                     .redacted(reason: .placeholder)
