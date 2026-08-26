@@ -360,6 +360,17 @@ public enum WatchMirrorPushCoordinator {
     }
 
     private static func push(reason: Reason) {
+        // The debounce commonly fires after its trigger's own lifetime has ended — e.g. a background
+        // URLSession or WatchConnectivity wake — so the snapshot read and transfer hand-off run under
+        // a background task assertion, keeping the process alive instead of letting it be frozen
+        // mid-read holding the app-group SQLite file lock (0xdead10cc).
+        Current.backgroundTask(withName: BackgroundTask.watchMirrorPush.rawValue) { _ -> Promise<Void> in
+            performPush(reason: reason)
+            return .value(())
+        }.cauterize()
+    }
+
+    private static func performPush(reason: Reason) {
         // Consumed up front: whether the watch gets asked to re-render is decided per push, and a
         // failed one leaves the ask to the next push rather than firing against data that never landed.
         let refreshesComplications = pendingComplicationRefresh
