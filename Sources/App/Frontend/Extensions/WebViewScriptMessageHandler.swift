@@ -24,7 +24,8 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             return
         }
 
-        Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
+        let messageType = messageBody["type"] as? String ?? "unknown"
+        Current.Log.verbose("message \(message.name) type \(messageType) keys \(messageBody.count)")
 
         handle(messageName: message.name, messageBody: messageBody)
     }
