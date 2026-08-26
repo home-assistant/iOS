@@ -629,7 +629,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.value.option.more_info.search_commands" = "Søg i kommandoer";
 "gestures.value.option.more_info.search_devices" = "Søg i enheder";
 "gestures.value.option.more_info.search_entities" = "Søg i entiteter";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Gå til næste side";
 "gestures.value.option.next_server" = "Næste server";
 "gestures.value.option.none" = "Ingen";
@@ -643,7 +642,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "Åbn app-indstillinger";
 "gestures.value.option.show_sidebar" = "Vis sidepanel";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Kunne ikke tilgå database (GRDB), fejl: %@";
 "grdb.config.migration_error.failed_to_save" = "Kunne ikke gemme den nye konfiguration, fejl: %@";
 "ha_api.api_error.cant_build_url" = "Kan ikke oprette API-URL";

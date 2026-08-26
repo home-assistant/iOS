@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "Otsi käske";
 "gestures.value.option.more_info.search_devices" = "Otsi seadmeid";
 "gestures.value.option.more_info.search_entities" = "Otsi olemeid";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Mine järgmisele lehele";
 "gestures.value.option.next_server" = "Järgmine server";
 "gestures.value.option.none" = "Puudub";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "Serverite loend";
 "gestures.value.option.show_settings" = "Ava rakenduse seaded";
 "gestures.value.option.show_sidebar" = "Kuva külgriba";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Andmebaasile (GRDB) ei pääsenud juurde, tõrge: %@";
 "grdb.config.migration_error.failed_to_save" = "Uue konfiguratsiooni salvestamine nurjus, tõrge: %@";
 "ha_api.api_error.cant_build_url" = "API URL-i ei saa luua";

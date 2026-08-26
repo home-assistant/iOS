@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "搜尋命令";
 "gestures.value.option.more_info.search_devices" = "搜尋裝置";
 "gestures.value.option.more_info.search_entities" = "搜尋實體";
-"gestures.value.option.more_info.smart_back" = "返回上一頁，或在沒有頁面可返回時顯示側邊欄";
 "gestures.value.option.next_page" = "至下一頁";
 "gestures.value.option.next_server" = "下一個伺服器";
 "gestures.value.option.none" = "無";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "伺服器列表";
 "gestures.value.option.show_settings" = "開啟 App 設定";
 "gestures.value.option.show_sidebar" = "顯示側邊欄";
-"gestures.value.option.smart_back" = "智能返回";
 "grdb.config.migration_error.failed_access_grdb" = "存取資料庫 (GRDB) 失敗，錯誤：%@";
 "grdb.config.migration_error.failed_to_save" = "儲存新設定失敗、錯誤：%@";
 "ha_api.api_error.cant_build_url" = "無法建立 API URL";

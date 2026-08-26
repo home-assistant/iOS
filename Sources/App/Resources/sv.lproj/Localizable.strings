@@ -627,7 +627,6 @@
 "gestures.value.option.more_info.search_commands" = "Sök kommandon";
 "gestures.value.option.more_info.search_devices" = "Sök enheter";
 "gestures.value.option.more_info.search_entities" = "Sök entiteter";
-"gestures.value.option.more_info.smart_back" = "Går tillbaka till föregående sida, eller visar sidofältet om det inte finns någon sida att gå tillbaka till";
 "gestures.value.option.next_page" = "Gå till nästa sida";
 "gestures.value.option.next_server" = "Nästa server";
 "gestures.value.option.none" = "Ingen";
@@ -641,7 +640,6 @@
 "gestures.value.option.servers_list" = "Serverlista";
 "gestures.value.option.show_settings" = "Öppna appinställningar";
 "gestures.value.option.show_sidebar" = "Visa sidofält";
-"gestures.value.option.smart_back" = "Smart backning";
 "grdb.config.migration_error.failed_access_grdb" = "Det gick inte att komma åt databasen (GRDB), fel: %@";
 "grdb.config.migration_error.failed_to_save" = "Misslyckades med att spara ny konfiguration, fel: %@";
 "ha_api.api_error.cant_build_url" = "Kan inte skapa API-URL";
