@@ -279,7 +279,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         }
 
         guard let domain = magicItem.domain else {
-            // An entity whose domain isn't modelled here (one from a custom integration, say) still
+            // An entity whose domain isn't modeled here (one from a custom integration, say) still
             // has a more-info dialog, so open that instead of leaving the tile inert. Non-entity
             // items have no entity id to open.
             return magicItem.type == .entity ? moreInfoIntent() : .appIntent(.refresh)

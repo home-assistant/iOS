@@ -112,7 +112,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         // Every domain the prediction returns is rendered. Domains the widget can act on in place
         // (a toggle, a press, a scene) keep their in-widget action; everything else falls back to
         // `MagicItem.widgetInteractionType`'s more-info deeplink, which opens the entity in the app's
-        // web view — the same behaviour the custom widget already has for those domains.
+        // web view — the same behavior the custom widget already has for those domains.
         let magicItems = entities.map { entityId in
             MagicItem(
                 id: entityId,

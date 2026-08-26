@@ -353,7 +353,7 @@ struct MagicItemWidgetInteractionTests {
 
     /// Entities from custom integrations have domains this enum doesn't model; they still have a
     /// more-info dialog, so they get the same route as any other non-actionable entity.
-    @Test func unmodelledDomainEntityOpensMoreInfo() {
+    @Test func unmodeledDomainEntityOpensMoreInfo() {
         #expect(isMoreInfoRoute(interactionKind(forEntityId: "some_custom_integration.thing")))
     }
 
@@ -364,8 +364,8 @@ struct MagicItemWidgetInteractionTests {
     }
 
     /// An explicit action override is resolved before the domain, so it applies to entities whose
-    /// domain isn't modelled here too.
-    @Test func actionOverrideWinsOverUnmodelledDomain() {
+    /// domain isn't modeled here too.
+    @Test func actionOverrideWinsOverUnmodeledDomain() {
         let doNothing = MagicItem(
             id: "some_custom_integration.thing",
             serverId: "server-1",
