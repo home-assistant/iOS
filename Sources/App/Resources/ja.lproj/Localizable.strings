@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "検索コマンド";
 "gestures.value.option.more_info.search_devices" = "デバイスを検索";
 "gestures.value.option.more_info.search_entities" = "エンティティを検索";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "次のページへ";
 "gestures.value.option.next_server" = "次のサーバー";
 "gestures.value.option.none" = "なし";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "サーバーリスト";
 "gestures.value.option.show_settings" = "アプリの設定を開く";
 "gestures.value.option.show_sidebar" = "サイドバーを表示";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "データベース (GRDB) にアクセスできませんでした。エラー: %@";
 "grdb.config.migration_error.failed_to_save" = "新しい設定を保存できませんでした。エラー: %@";
 "ha_api.api_error.cant_build_url" = "API URLを構築できません";

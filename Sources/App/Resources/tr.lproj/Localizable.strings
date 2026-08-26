@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "Komutları Ara";
 "gestures.value.option.more_info.search_devices" = "Cihazları ara";
 "gestures.value.option.more_info.search_entities" = "Varlıkları ara";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Sonraki sayfaya git";
 "gestures.value.option.next_server" = "Sonraki sunucu";
 "gestures.value.option.none" = "Hiçbiri";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "Sunucu listesi";
 "gestures.value.option.show_settings" = "Uygulama ayarlarını aç";
 "gestures.value.option.show_sidebar" = "Kenar çubuğunu göster";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Veritabanına (GRDB) erişilemedi, hata: %@";
 "grdb.config.migration_error.failed_to_save" = "Yeni yapılandırma kaydedilemedi, hata: %@";
 "ha_api.api_error.cant_build_url" = "API URL'si oluşturulamaz";

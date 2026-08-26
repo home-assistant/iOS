@@ -629,7 +629,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.more_info.search_commands" = "Search commands";
 "gestures.value.option.more_info.search_devices" = "Search devices";
 "gestures.value.option.more_info.search_entities" = "Search entities";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Next server";
 "gestures.value.option.none" = "None";
@@ -643,7 +642,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "No es pot crear l'adreça URL de l'API";
