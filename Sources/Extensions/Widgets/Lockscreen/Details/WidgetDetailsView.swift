@@ -1,4 +1,5 @@
 import HAWatchComplications
+import Shared
 import SwiftUI
 import WidgetKit
 
@@ -13,38 +14,13 @@ struct WidgetDetailsView: View {
         // complication editor use, so a mirrored complication looks identical on the lock screen.
         if family == .accessoryRectangular, let model = entry.complicationModel {
             RectangularComplicationContentView(model: model)
-        } else if family == .accessoryRectangular {
-            VStack(alignment: .leading) {
-                if entry.upperText != nil {
-                    Text(entry.upperText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .fontWeight(.bold)
-                } else {
-                    Text("Unknown upper")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .fontWeight(.bold)
-                        .redacted(reason: .placeholder)
-                }
-                if entry.lowerText != nil {
-                    Text(entry.lowerText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
-                    Text("Unknown lower")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .redacted(reason: .placeholder)
-                }
-                if entry.detailsText != nil {
-                    Text(entry.detailsText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
         } else {
-            if entry.upperText != nil || entry.lowerText != nil {
-                Text((entry.upperText ?? "") + (entry.lowerText ?? ""))
-            } else {
-                Text("Unknown details")
-                    .redacted(reason: .placeholder)
-            }
+            WidgetDetailsContentView(
+                upperText: entry.upperText,
+                lowerText: entry.lowerText,
+                detailsText: entry.detailsText,
+                family: family
+            )
         }
     }
 }

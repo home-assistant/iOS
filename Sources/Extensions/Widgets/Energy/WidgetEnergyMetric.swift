@@ -179,3 +179,23 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
         return nil
     }
 }
+
+@available(iOS 17, *)
+extension WidgetEnergyMetric {
+    /// The drawing half of the metric, for the design system's energy components.
+    ///
+    /// `usesTotalLabel` picks the caption: the layouts wide enough to spell out what the figure
+    /// covers say "Electricity total" where the compact ones just say "Grid".
+    func designSystemModel(usesTotalLabel: Bool = false) -> WidgetEnergyStatModel {
+        .init(
+            id: id,
+            icon: icon,
+            value: value,
+            unit: unit,
+            label: usesTotalLabel ? kind.totalLabel : label,
+            direction: direction,
+            color: color,
+            accessorySymbol: kind.accessorySymbol
+        )
+    }
+}

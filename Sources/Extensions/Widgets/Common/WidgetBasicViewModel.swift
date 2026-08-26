@@ -2,6 +2,11 @@ import Foundation
 import Shared
 import SwiftUI
 
+/// A widget tile plus what a tap on it runs.
+///
+/// The drawing half lives in the design system as ``WidgetTileModel``; this adds the half that only
+/// the widget extension can act on — the intent or deep link behind the tile, and where it is in the
+/// confirmation dance.
 struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     init(
         id: String,
@@ -61,4 +66,21 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var widgetId: String?
     /// When one item confirmation is pending, the rest of the items should be blurred
     var disabled: Bool
+}
+
+extension WidgetBasicViewModel: WidgetTileRepresentable {
+    var tileModel: WidgetTileModel {
+        .init(
+            id: id,
+            title: title,
+            subtitle: subtitle,
+            icon: icon,
+            showIconBackground: showIconBackground,
+            textColor: textColor,
+            iconColor: iconColor,
+            backgroundColor: backgroundColor,
+            useCustomColors: useCustomColors,
+            disabled: disabled
+        )
+    }
 }
