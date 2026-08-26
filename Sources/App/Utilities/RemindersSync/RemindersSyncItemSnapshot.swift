@@ -32,9 +32,8 @@ struct RemindersSyncItemSnapshot: Equatable {
         self.isCompleted = todoItem.status == "completed"
         self.notes = Self.normalizedNotes(todoItem.description)
         if let raw = todoItem.dueRaw {
-            // `TodoListItem` doesn't parse every server datetime format, so fall back to parsing
-            // the raw string ourselves. An uncanonicalized string would never compare equal to
-            // the reminder's canonical one and cause an update on every sync.
+            // An uncanonicalized string would never compare equal to the reminder's canonical
+            // one and cause an update on every sync.
             if raw.contains("T"), let date = todoItem.due ?? Self.parseDueDateTime(raw) {
                 self.due = Self.canonicalDueString(from: date)
             } else {
@@ -102,56 +101,10 @@ struct RemindersSyncItemSnapshot: Equatable {
     }
 
     static func canonicalDueString(from date: Date) -> String {
-        DueDateFormatters.current.internetDateTime.string(from: date)
+        TodoListItem.canonicalDueString(from: date)
     }
 
     static func parseDueDateTime(_ string: String) -> Date? {
-        let formatters = DueDateFormatters.current
-        if let date = formatters.internetDateTime.date(from: string) {
-            return date
-        }
-        if let date = formatters.fractionalInternetDateTime.date(from: string) {
-            return date
-        }
-        // Datetime without timezone offset, interpreted in the current timezone
-        return formatters.localDateTime.date(from: string)
-    }
-
-    private final class DueDateFormatters {
-        let timeZone: TimeZone
-        let internetDateTime: ISO8601DateFormatter
-        let fractionalInternetDateTime: ISO8601DateFormatter
-        let localDateTime: DateFormatter
-
-        private static let lock = NSLock()
-        private static var cached = DueDateFormatters(timeZone: .current)
-
-        static var current: DueDateFormatters {
-            let timeZone = TimeZone.current
-            lock.lock()
-            defer { lock.unlock() }
-            if cached.timeZone != timeZone {
-                cached = DueDateFormatters(timeZone: timeZone)
-            }
-            return cached
-        }
-
-        init(timeZone: TimeZone) {
-            self.timeZone = timeZone
-            self.internetDateTime = with(ISO8601DateFormatter()) {
-                $0.formatOptions = [.withInternetDateTime]
-                $0.timeZone = timeZone
-            }
-            self.fractionalInternetDateTime = with(ISO8601DateFormatter()) {
-                $0.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-                $0.timeZone = timeZone
-            }
-            self.localDateTime = with(DateFormatter()) {
-                $0.calendar = Calendar(identifier: .gregorian)
-                $0.locale = Locale(identifier: "en_US_POSIX")
-                $0.timeZone = timeZone
-                $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            }
-        }
+        TodoListItem.parseDueDateTime(string)
     }
 }
