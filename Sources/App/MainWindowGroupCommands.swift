@@ -42,13 +42,18 @@ struct AppMenuBarCommands: Commands {
 ///
 /// UIKit re-evaluates the commands graph whenever it rebuilds the main menu — which on iOS also
 /// happens while enumerating keyboard shortcuts for key events. The menu tree is therefore built
-/// from a cache that `MainWindowGroupCommandsDataSource` fills off the main thread, and is skipped
-/// entirely on iPhone, where no menu bar exists to show it.
+/// from a cache that `DataSource` fills off the main thread, and is skipped entirely on iPhone,
+/// where no menu bar exists to show it.
 struct MainWindowGroupCommands: Commands {
-    @StateObject private var dataSource = MainWindowGroupCommandsDataSource()
+    /// The Entities menu only appears where a menu bar exists. On iPhone it would never be shown,
+    /// but UIKit would still build the whole tree during keyboard-shortcut lookup on every key
+    /// event, hanging the main thread on large setups.
+    private static let showsEntitiesMenu: Bool = Current.isCatalyst || UIDevice.current.userInterfaceIdiom == .pad
+
+    @StateObject private var dataSource = DataSource()
 
     var body: some Commands {
-        if MainWindowGroupCommandsDataSource.showsEntitiesMenu {
+        if Self.showsEntitiesMenu {
             CommandMenu(L10n.MainWindowGroupCommands.Entities.title) {
                 areasCommandMenu
             }
@@ -131,220 +136,215 @@ struct MainWindowGroupCommands: Commands {
     private func handleIncoming(url: URL) {
         Current.sceneManager.appCoordinator.done { IncomingURLHandler(coordinator: $0).handle(url: url) }
     }
-}
 
-private struct AreasCommandServer: Identifiable {
-    let id: String
-    let name: String
-    let floors: [AreasCommandFloor]
-}
+    // MARK: - Menu model
 
-private struct AreasCommandFloor: Identifiable {
-    let id: String
-    let name: String
-    let areas: [AreasCommandArea]
-}
+    private struct AreasCommandServer: Identifiable {
+        let id: String
+        let name: String
+        let floors: [AreasCommandFloor]
+    }
 
-private struct AreasCommandFloorKey: Hashable {
-    let id: String?
-    let name: String
-}
+    private struct AreasCommandFloor: Identifiable {
+        let id: String
+        let name: String
+        let areas: [AreasCommandArea]
+    }
 
-private struct AreasCommandArea: Identifiable {
-    let id: String
-    let name: String
-    let floorId: String?
-    let floorName: String?
-    let devices: [AreasCommandDevice]
-}
+    private struct AreasCommandFloorKey: Hashable {
+        let id: String?
+        let name: String
+    }
 
-private struct AreasCommandDevice: Identifiable {
-    let id: String
-    let name: String
-    let domains: [AreasCommandDomain]
-}
+    private struct AreasCommandArea: Identifiable {
+        let id: String
+        let name: String
+        let floorId: String?
+        let floorName: String?
+        let devices: [AreasCommandDevice]
+    }
 
-private struct AreasCommandDomain: Identifiable {
-    let id: String
-    let name: String
-    let entities: [AreasCommandEntity]
-}
+    private struct AreasCommandDevice: Identifiable {
+        let id: String
+        let name: String
+        let domains: [AreasCommandDomain]
+    }
 
-private struct AreasCommandEntity: Identifiable {
-    var id: String { entityId }
-    let entityId: String
-    let name: String
-}
+    private struct AreasCommandDomain: Identifiable {
+        let id: String
+        let name: String
+        let entities: [AreasCommandEntity]
+    }
 
-/// Loads the Entities menu tree off the main thread and caches it, so evaluating the commands
-/// body never touches the database.
-@MainActor
-private final class MainWindowGroupCommandsDataSource: ObservableObject {
-    /// The Entities menu only appears where a menu bar exists. On iPhone it would never be shown,
-    /// but UIKit would still build the whole tree during keyboard-shortcut lookup on every key
-    /// event, hanging the main thread on large setups.
-    static let showsEntitiesMenu: Bool = Current.isCatalyst || UIDevice.current.userInterfaceIdiom == .pad
+    private struct AreasCommandEntity: Identifiable {
+        var id: String { entityId }
+        let entityId: String
+        let name: String
+    }
 
-    @Published private(set) var servers: [AreasCommandServer] = []
+    // MARK: - Data source
 
-    private let notificationCenter: NotificationCenter
-    private var observer: NSObjectProtocol?
+    /// Loads the Entities menu tree off the main thread and caches it, so evaluating the commands
+    /// body never touches the database.
+    private final class DataSource: ObservableObject {
+        @Published private(set) var servers: [AreasCommandServer] = []
 
-    init(notificationCenter: NotificationCenter = .default) {
-        self.notificationCenter = notificationCenter
+        private let notificationCenter: NotificationCenter
+        private var observer: NSObjectProtocol?
 
-        guard Self.showsEntitiesMenu else { return }
+        init(notificationCenter: NotificationCenter = .default) {
+            self.notificationCenter = notificationCenter
 
-        self.observer = notificationCenter.addObserver(
-            forName: .appDatabaseUpdaterDidFinishRoutine,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor [weak self] in
+            guard MainWindowGroupCommands.showsEntitiesMenu else { return }
+
+            self.observer = notificationCenter.addObserver(
+                forName: .appDatabaseUpdaterDidFinishRoutine,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
                 self?.reload()
             }
+            reload()
         }
-        reload()
-    }
 
-    deinit {
-        if let observer {
-            notificationCenter.removeObserver(observer)
-        }
-    }
-
-    private func reload() {
-        Task.detached(priority: .utility) { [weak self] in
-            let servers = Self.loadServers()
-            await self?.apply(servers)
-        }
-    }
-
-    private func apply(_ servers: [AreasCommandServer]) {
-        self.servers = servers
-    }
-
-    private nonisolated static func loadServers() -> [AreasCommandServer] {
-        Current.servers.all.map { server in
-            let serverId = server.identifier.rawValue
-            let areas: [AppArea]
-            let entities: [EntityRegistryListForDisplay.Entity]
-            let devices: [AppDeviceRegistry]
-
-            do {
-                areas = try AppArea.fetchAreas(for: serverId)
-                entities = try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
-                devices = try AppDeviceRegistry.config(serverId: serverId)
-            } catch {
-                Current.Log
-                    .error("Failed to build Areas command menu for server \(serverId): \(error.localizedDescription)")
-                return AreasCommandServer(id: serverId, name: server.info.name, floors: [])
+        deinit {
+            if let observer {
+                notificationCenter.removeObserver(observer)
             }
+        }
 
-            let entitiesById = Dictionary(uniqueKeysWithValues: entities.map { ($0.entityId, $0) })
-            let devicesById = Dictionary(uniqueKeysWithValues: devices.map { ($0.deviceId, $0) })
-            let commandAreas = areas.map { area in
-                let areaEntities = area.entities.compactMap { entitiesById[$0] }
+        private func reload() {
+            Task { [weak self] in
+                let servers = await Task.detached(priority: .utility) { DataSource.loadServers() }.value
+                await self?.apply(servers)
+            }
+        }
 
-                return AreasCommandArea(
-                    id: area.areaId,
-                    name: area.name,
-                    floorId: area.floorId,
-                    floorName: area.floorName,
-                    devices: Self.devices(from: areaEntities, devicesById: devicesById)
+        @MainActor
+        private func apply(_ newServers: [AreasCommandServer]) {
+            servers = newServers
+        }
+
+        private static func loadServers() -> [AreasCommandServer] {
+            Current.servers.all.map { server in
+                let serverId = server.identifier.rawValue
+                let areas: [AppArea]
+                let entities: [EntityRegistryListForDisplay.Entity]
+                let devices: [AppDeviceRegistry]
+
+                do {
+                    areas = try AppArea.fetchAreas(for: serverId)
+                    entities = try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
+                    devices = try AppDeviceRegistry.config(serverId: serverId)
+                } catch {
+                    Current.Log
+                        .error("Failed to build Areas menu for server \(serverId): \(error.localizedDescription)")
+                    return AreasCommandServer(id: serverId, name: server.info.name, floors: [])
+                }
+
+                let entitiesById = Dictionary(uniqueKeysWithValues: entities.map { ($0.entityId, $0) })
+                let devicesById = Dictionary(uniqueKeysWithValues: devices.map { ($0.deviceId, $0) })
+                let commandAreas = areas.map { area in
+                    let areaEntities = area.entities.compactMap { entitiesById[$0] }
+
+                    return AreasCommandArea(
+                        id: area.areaId,
+                        name: area.name,
+                        floorId: area.floorId,
+                        floorName: area.floorName,
+                        devices: Self.devices(from: areaEntities, devicesById: devicesById)
+                    )
+                }
+
+                return AreasCommandServer(
+                    id: serverId,
+                    name: server.info.name,
+                    floors: Self.floors(from: commandAreas)
                 )
             }
-
-            return AreasCommandServer(
-                id: serverId,
-                name: server.info.name,
-                floors: Self.floors(from: commandAreas)
-            )
         }
-    }
 
-    private nonisolated static func floors(from areas: [AreasCommandArea]) -> [AreasCommandFloor] {
-        Dictionary(grouping: areas) { area in
-            AreasCommandFloorKey(id: area.floorId, name: area.floorName ?? L10n.MainWindowGroupCommands.Floor.empty)
-        }
-        .map { floor, areas in
-            AreasCommandFloor(id: floor.id ?? "no-floor", name: floor.name, areas: areas)
-        }
-        .sorted { lhs, rhs in
-            if lhs.id == "no-floor" { return false }
-            if rhs.id == "no-floor" { return true }
-            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
-        }
-    }
+        private static func floors(from areas: [AreasCommandArea]) -> [AreasCommandFloor] {
+            let noFloorName = L10n.MainWindowGroupCommands.Floor.empty
 
-    private nonisolated static func devices(
-        from entities: [EntityRegistryListForDisplay.Entity],
-        devicesById: [String: AppDeviceRegistry]
-    ) -> [AreasCommandDevice] {
-        var groups: [String: (name: String, entities: [EntityRegistryListForDisplay.Entity])] = [:]
-
-        for entity in entities {
-            let deviceId = entity.deviceId.flatMap { devicesById[$0]?.deviceId } ?? "other-entities"
-            let deviceName = entity.deviceId.flatMap { devicesById[$0]?.displayName } ?? L10n.MainWindowGroupCommands
-                .OtherEntities.title
-
-            if var group = groups[deviceId] {
-                group.entities.append(entity)
-                groups[deviceId] = group
-            } else {
-                groups[deviceId] = (deviceName, [entity])
+            return Dictionary(grouping: areas) { area in
+                AreasCommandFloorKey(id: area.floorId, name: area.floorName ?? noFloorName)
+            }
+            .map { floor, areas in
+                AreasCommandFloor(id: floor.id ?? "no-floor", name: floor.name, areas: areas)
+            }
+            .sorted { lhs, rhs in
+                if lhs.id == "no-floor" { return false }
+                if rhs.id == "no-floor" { return true }
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
             }
         }
 
-        return groups.map { deviceId, group in
-            AreasCommandDevice(
-                id: deviceId,
-                name: group.name,
-                domains: domains(from: group.entities)
-            )
-        }
-        .sorted { lhs, rhs in
-            if lhs.id == "other-entities" { return false }
-            if rhs.id == "other-entities" { return true }
-            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
-        }
-    }
+        private static func devices(
+            from entities: [EntityRegistryListForDisplay.Entity],
+            devicesById: [String: AppDeviceRegistry]
+        ) -> [AreasCommandDevice] {
+            let otherEntitiesName = L10n.MainWindowGroupCommands.OtherEntities.title
+            var groups: [String: (name: String, entities: [EntityRegistryListForDisplay.Entity])] = [:]
 
-    private nonisolated static func domains(
-        from entities: [EntityRegistryListForDisplay.Entity]
-    ) -> [AreasCommandDomain] {
-        Dictionary(grouping: entities, by: { domainName(for: $0.entityId) })
-            .map { domainName, entities in
-                AreasCommandDomain(
-                    id: domainName,
-                    name: localizedDomainName(for: domainName),
-                    entities: sortedEntities(entities.map(commandEntity(from:)))
+            for entity in entities {
+                let deviceId = entity.deviceId.flatMap { devicesById[$0]?.deviceId } ?? "other-entities"
+                let deviceName = entity.deviceId.flatMap { devicesById[$0]?.displayName } ?? otherEntitiesName
+
+                if var group = groups[deviceId] {
+                    group.entities.append(entity)
+                    groups[deviceId] = group
+                } else {
+                    groups[deviceId] = (deviceName, [entity])
+                }
+            }
+
+            return groups.map { deviceId, group in
+                AreasCommandDevice(
+                    id: deviceId,
+                    name: group.name,
+                    domains: Self.domains(from: group.entities)
                 )
             }
-            .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-    }
+            .sorted { lhs, rhs in
+                if lhs.id == "other-entities" { return false }
+                if rhs.id == "other-entities" { return true }
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+            }
+        }
 
-    private nonisolated static func sortedEntities(_ entities: [AreasCommandEntity]) -> [AreasCommandEntity] {
-        entities.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-    }
+        private static func domains(from entities: [EntityRegistryListForDisplay.Entity]) -> [AreasCommandDomain] {
+            Dictionary(grouping: entities, by: { domainName(for: $0.entityId) })
+                .map { domainName, entities in
+                    AreasCommandDomain(
+                        id: domainName,
+                        name: localizedDomainName(for: domainName),
+                        entities: sortedEntities(entities.map(commandEntity(from:)))
+                    )
+                }
+                .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        }
 
-    private nonisolated static func commandEntity(
-        from entity: EntityRegistryListForDisplay.Entity
-    ) -> AreasCommandEntity {
-        AreasCommandEntity(entityId: entity.entityId, name: entityName(for: entity))
-    }
+        private static func sortedEntities(_ entities: [AreasCommandEntity]) -> [AreasCommandEntity] {
+            entities.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        }
 
-    private nonisolated static func domainName(for entityId: String) -> String {
-        entityId.split(separator: ".", maxSplits: 1).first.map(String.init) ?? entityId
-    }
+        private static func commandEntity(from entity: EntityRegistryListForDisplay.Entity) -> AreasCommandEntity {
+            AreasCommandEntity(entityId: entity.entityId, name: entityName(for: entity))
+        }
 
-    private nonisolated static func localizedDomainName(for domainName: String) -> String {
-        guard let domain = Domain(rawValue: domainName) else { return domainName }
-        return domain.name
-    }
+        private static func domainName(for entityId: String) -> String {
+            entityId.split(separator: ".", maxSplits: 1).first.map(String.init) ?? entityId
+        }
 
-    private nonisolated static func entityName(for entity: EntityRegistryListForDisplay.Entity) -> String {
-        guard let name = entity.name, !name.isEmpty else { return entity.entityId }
-        return name
+        private static func localizedDomainName(for domainName: String) -> String {
+            guard let domain = Domain(rawValue: domainName) else { return domainName }
+            return domain.name
+        }
+
+        private static func entityName(for entity: EntityRegistryListForDisplay.Entity) -> String {
+            guard let name = entity.name, !name.isEmpty else { return entity.entityId }
+            return name
+        }
     }
 }
