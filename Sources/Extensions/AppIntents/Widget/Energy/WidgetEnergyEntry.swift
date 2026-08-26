@@ -99,3 +99,11 @@ struct WidgetEnergyEntry: TimelineEntry {
         return (gridConsumed ?? 0) - (gridReturned ?? 0)
     }
 }
+
+@available(iOS 17.0, *)
+extension WidgetEnergyEntry.ChartPoint {
+    /// The drawing half of the bucket, for the design system's energy chart.
+    var designSystemModel: WidgetEnergyChartPoint {
+        .init(date: date, grid: grid, solar: solar, gridReturned: gridReturned)
+    }
+}

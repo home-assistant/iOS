@@ -25,6 +25,16 @@ public struct ComponentsLibraryView: View {
                         Text(category.title)
                     }
                 }
+
+                // Widgets are components too, but they only make sense at the sizes the system gives
+                // them, so they get a screen that draws them at those sizes rather than a list row.
+                Section {
+                    NavigationLink {
+                        WidgetsGalleryView()
+                    } label: {
+                        Text("Widgets")
+                    }
+                }
             }
             .navigationTitle("Components")
         }

@@ -257,59 +257,27 @@ struct WidgetBasicContainerWrapperView: View {
     }
 
     var body: some View {
-        VStack {
-            if contents.isEmpty {
-                emptyViewGenerator()
-            } else {
-                content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
-            }
-            if showLastUpdate, !contents.isEmpty {
-                lastUpdateFooter
-            }
-        }
-        // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(.primaryBackground)
-    }
-
-    /// The last refresh time doubles as the reload control, matching the energy widget: tapping the
-    /// glyph or the time reloads this widget's timeline.
-    @ViewBuilder
-    private var lastUpdateFooter: some View {
-        if #available(iOS 17, *) {
-            HStack(spacing: DesignSystem.Spaces.half) {
-                if showServerName, let serverName {
-                    Text(verbatim: "\(serverName) ·")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-                WidgetRefreshButton(kind: widgetKind, date: Current.date())
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.horizontal, DesignSystem.Spaces.half)
-            .padding(.bottom, DesignSystem.Spaces.half)
-        }
-    }
-
-    @ViewBuilder
-    func content(for models: [WidgetBasicViewModel]) -> some View {
-        let modelsCount = models.count
-        let columnCount = WidgetFamilySizes.columns(family: family, modelCount: modelsCount)
-        let rows = Array(WidgetFamilySizes.rows(count: columnCount, models: models))
-        WidgetBasicView(
-            type: type,
-            rows: rows,
-            sizeStyle: WidgetFamilySizes.sizeStyle(
-                family: family,
-                modelsCount: modelsCount,
-                rowsCount: rows.count
-            )
+        let interaction = WidgetTileInteraction(type: type, family: family)
+        WidgetTileContainerView(
+            contents: contents,
+            family: family,
+            kind: type.tileKind,
+            serverName: showServerName ? serverName : nil,
+            logo: Image(.logo),
+            emptyView: emptyViewGenerator,
+            refreshControl: refreshControl,
+            tileContent: interaction.content
         )
     }
 
-    // This is all widgets that are on the lock screen
-    // Lock screen widgets are transparent and don't need a colored background
-    private static var transparentFamilies: [WidgetFamily] {
-        [.accessoryCircular, .accessoryRectangular]
+    /// The last refresh time doubles as the reload control, matching the energy widget: tapping the
+    /// glyph or the time reloads this widget's timeline. Only offered where App Intents exist.
+    private var refreshControl: (() -> AnyView)? {
+        guard showLastUpdate else { return nil }
+        if #available(iOS 17, *) {
+            let kind = widgetKind
+            return { AnyView(WidgetRefreshButton(kind: kind, date: Current.date())) }
+        }
+        return nil
     }
 }
