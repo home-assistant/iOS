@@ -629,7 +629,6 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "gestures.value.option.more_info.search_commands" = "Pesquisar comandos";
 "gestures.value.option.more_info.search_devices" = "Pesquisar dispositivos";
 "gestures.value.option.more_info.search_entities" = "Pesquisar entidades";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "Ir para a próxima página";
 "gestures.value.option.next_server" = "Próximo servidor";
 "gestures.value.option.none" = "Nenhum";
@@ -643,7 +642,6 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "gestures.value.option.servers_list" = "Lista de servidores";
 "gestures.value.option.show_settings" = "Abrir configurações do app";
 "gestures.value.option.show_sidebar" = "Mostrar barra lateral";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "Falha ao acessar o banco de dados (GRDB), erro: %@";
 "grdb.config.migration_error.failed_to_save" = "Falha ao salvar a nova configuração, erro: %@";
 "ha_api.api_error.cant_build_url" = "Não é possível criar a URL da API";
