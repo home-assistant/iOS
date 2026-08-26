@@ -364,11 +364,9 @@ public enum WatchMirrorPushCoordinator {
         // URLSession or WatchConnectivity wake — so the snapshot read and transfer hand-off run under
         // a background task assertion, keeping the process alive instead of letting it be frozen
         // mid-read holding the app-group SQLite file lock (0xdead10cc).
-        Current.backgroundTask(withName: BackgroundTask.watchMirrorPush.rawValue) { _ in
-            Promise<Void> { seal in
-                performPush(reason: reason)
-                seal.fulfill(())
-            }
+        Current.backgroundTask(withName: BackgroundTask.watchMirrorPush.rawValue) { _ -> Promise<Void> in
+            performPush(reason: reason)
+            return .value(())
         }.cauterize()
     }
 
