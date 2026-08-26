@@ -37,7 +37,7 @@ public struct WidgetCalendarEventRowView: View {
                 .fill(Color(hex: event.calendarColor))
                 .frame(width: 3)
             VStack(alignment: .leading, spacing: 1) {
-                Text(event.summary)
+                Text(verbatim: event.summary)
                     .font(DesignSystem.Font.caption.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)

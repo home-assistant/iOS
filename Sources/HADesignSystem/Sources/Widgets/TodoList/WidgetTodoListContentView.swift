@@ -104,7 +104,7 @@ public struct WidgetTodoListContentView: View {
                     .clipShape(.circle)
                 Spacer()
             } else {
-                Text(title)
+                Text(verbatim: title)
                     .font(DesignSystem.Font.title3.bold())
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
@@ -151,7 +151,7 @@ public struct WidgetTodoListContentView: View {
             ))
             itemContent(item, AnyView(
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
-                    Text(item.summary)
+                    Text(verbatim: item.summary)
                         .font(DesignSystem.Font.body)
                         .lineLimit(1)
                         .truncationMode(.tail)

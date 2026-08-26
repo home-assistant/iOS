@@ -34,7 +34,7 @@ public struct WidgetAssistSingleView: View {
                         Text(verbatim: title)
                             .font(.footnote.bold())
                             .foregroundColor(Color(uiColor: .label))
-                        Text(subtitle)
+                        Text(verbatim: subtitle)
                             .font(.footnote.weight(.light))
                             .lineLimit(2)
                             .fixedSize(horizontal: false, vertical: true)
