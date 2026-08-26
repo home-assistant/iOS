@@ -56,7 +56,7 @@ struct ListPickerContent {
     }
 
     func filtered(searchTerm: String) -> ListPickerContent {
-        let term = searchTerm.trimmingCharacters(in: .whitespaces)
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !term.isEmpty else { return self }
         let matchingSections: [Section] = sections.compactMap { section in
             if section.title.localizedStandardContains(term) {
@@ -158,7 +158,7 @@ struct ListPickerContentView: View {
     }
 
     private var trimmedSearchTerm: String {
-        searchTerm.trimmingCharacters(in: .whitespaces)
+        searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var filteredContent: ListPickerContent {
