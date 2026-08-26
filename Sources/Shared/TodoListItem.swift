@@ -49,26 +49,23 @@ public struct TodoListItem: HADataDecodable {
 
     /// Parses a `yyyy-MM-dd` due value into midnight in the current timezone.
     public static func parseDueDate(_ string: String) -> Date? {
-        DueDateFormatters.current.localDate.date(from: string)
+        DueDateFormatters.withCurrent { $0.localDate.date(from: string) }
     }
 
     /// Parses a due datetime, honouring the UTC offset the server sends. A value without an
     /// offset is a naive local wall clock time and is interpreted in the current timezone.
     public static func parseDueDateTime(_ string: String) -> Date? {
-        let formatters = DueDateFormatters.current
-        if let date = formatters.internetDateTime.date(from: string) {
-            return date
+        DueDateFormatters.withCurrent { formatters in
+            formatters.internetDateTime.date(from: string)
+                ?? formatters.fractionalInternetDateTime.date(from: string)
+                ?? formatters.localDateTime.date(from: string)
         }
-        if let date = formatters.fractionalInternetDateTime.date(from: string) {
-            return date
-        }
-        return formatters.localDateTime.date(from: string)
     }
 
     /// The canonical `due_datetime` representation: ISO8601 in the current timezone, offset
     /// included, so the server can never mistake it for a naive local time.
     public static func canonicalDueString(from date: Date) -> String {
-        DueDateFormatters.current.internetDateTime.string(from: date)
+        DueDateFormatters.withCurrent { $0.internetDateTime.string(from: date) }
     }
 
     /// Formatted due date string for display
@@ -96,14 +93,16 @@ public struct TodoListItem: HADataDecodable {
         private static let lock = NSLock()
         private static var cached = DueDateFormatters(timeZone: .current)
 
-        static var current: DueDateFormatters {
+        /// The formatters are shared and `DateFormatter` must not be used from two threads at
+        /// once, so callers get them for the duration of the call rather than by reference.
+        static func withCurrent<T>(_ body: (DueDateFormatters) -> T) -> T {
             let timeZone = TimeZone.current
             lock.lock()
             defer { lock.unlock() }
             if cached.timeZone != timeZone {
                 cached = DueDateFormatters(timeZone: timeZone)
             }
-            return cached
+            return body(cached)
         }
 
         init(timeZone: TimeZone) {
