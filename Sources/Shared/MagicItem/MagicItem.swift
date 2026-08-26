@@ -249,72 +249,78 @@ public struct MagicItem: Codable, Equatable, Hashable {
             )
         }
 
-        guard let domain = magicItem.domain else { return .appIntent(.refresh) }
-
-        var interactionType: WidgetInteractionType = .appIntent(.refresh)
-
+        // An explicit action override wins over whatever the item's domain would do by default.
+        // None of these branches need the domain, so they're resolved before it.
         if let magicItemAction = magicItem.action, magicItemAction != .default {
             switch magicItemAction {
             case .default:
                 // This block of code should not be reached, default should not be handled here
                 // Returning something to avoid compiler error
-                interactionType = .appIntent(.refresh)
+                return .appIntent(.refresh)
             case .moreInfoDialog:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
+                return moreInfoIntent()
             case .nothing:
-                interactionType = .appIntent(.refresh)
+                return .appIntent(.refresh)
             case let .navigate(path):
-                interactionType = navigateIntent(path: path)
+                return navigateIntent(path: path)
             case let .runScript(serverId, scriptId):
-                interactionType = .appIntent(.activate(
+                return .appIntent(.activate(
                     entityId: scriptId,
                     domain: Domain.script.rawValue,
                     serverId: serverId
                 ))
             case let .assist(serverId, pipelineId, startListening):
-                interactionType = assistIntent(
+                return assistIntent(
                     serverId: serverId,
                     pipelineId: pipelineId,
                     startListening: startListening
                 )
             }
-        } else if let mainAction = domain.mainAction {
-            switch mainAction {
-            case .press:
-                interactionType = .appIntent(.press(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .toggle, .trigger:
-                interactionType = .appIntent(.toggle(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .turnOn where domain == .scene || domain == .script:
-                interactionType = .appIntent(.activate(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            default:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            }
-        } else {
-            interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                entityId: magicItem.id,
-                serverId: magicItem.serverId
-            ))
         }
 
-        return interactionType
+        guard let domain = magicItem.domain else {
+            // An entity whose domain isn't modelled here (one from a custom integration, say) still
+            // has a more-info dialog, so open that instead of leaving the tile inert. Non-entity
+            // items have no entity id to open.
+            return magicItem.type == .entity ? moreInfoIntent() : .appIntent(.refresh)
+        }
+
+        // Domains without a single main action — sensors, media players, locks, anything read-only
+        // or too complex for one tap — open their more-info dialog in the web view instead.
+        guard let mainAction = domain.mainAction else {
+            return moreInfoIntent()
+        }
+
+        switch mainAction {
+        case .press:
+            return .appIntent(.press(
+                entityId: magicItem.id,
+                domain: domain.rawValue,
+                serverId: magicItem.serverId
+            ))
+        case .toggle, .trigger:
+            return .appIntent(.toggle(
+                entityId: magicItem.id,
+                domain: domain.rawValue,
+                serverId: magicItem.serverId
+            ))
+        case .turnOn where domain == .scene || domain == .script:
+            return .appIntent(.activate(
+                entityId: magicItem.id,
+                domain: domain.rawValue,
+                serverId: magicItem.serverId
+            ))
+        default:
+            return moreInfoIntent()
+        }
+    }
+
+    /// Opens this item's entity more-info dialog in the app's web view.
+    private func moreInfoIntent() -> WidgetInteractionType {
+        navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+            entityId: id,
+            serverId: serverId
+        ))
     }
 
     private func navigateIntent(path: String) -> WidgetInteractionType {
