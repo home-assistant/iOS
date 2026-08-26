@@ -124,6 +124,12 @@ final class SpotlightEntityIndexer: ServerObserver {
             try? await Task.sleep(for: Constants.coalescingDelay)
             guard !Task.isCancelled else { return }
             await self?.reindex(reason: reason)
+            // Clear the finished pass so a background transition doesn't mistake it for pending
+            // work and re-arm a reindex. Cancellation is re-checked because a newer schedule may
+            // have replaced the stored task while this one was indexing; both run on the main
+            // actor, so the check and the clear can't interleave with a replacement.
+            guard !Task.isCancelled else { return }
+            self?.reindexTask = nil
         }
     }
 
