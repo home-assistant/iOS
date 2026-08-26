@@ -277,7 +277,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
-                message: update.body,
+                message: nil,
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(
