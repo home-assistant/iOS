@@ -629,7 +629,6 @@
 "gestures.value.option.more_info.search_commands" = "搜索命令";
 "gestures.value.option.more_info.search_devices" = "搜索设备";
 "gestures.value.option.more_info.search_entities" = "搜索实体";
-"gestures.value.option.more_info.smart_back" = "Goes back to the previous page, or shows the sidebar when there is no page to go back to";
 "gestures.value.option.next_page" = "转至下一页";
 "gestures.value.option.next_server" = "下一个服务器";
 "gestures.value.option.none" = "无";
@@ -643,7 +642,6 @@
 "gestures.value.option.servers_list" = "服务器列表";
 "gestures.value.option.show_settings" = "打开应用设置";
 "gestures.value.option.show_sidebar" = "显示侧边栏";
-"gestures.value.option.smart_back" = "Smart back";
 "grdb.config.migration_error.failed_access_grdb" = "无法访问数据库 (GRDB) ，错误：%@";
 "grdb.config.migration_error.failed_to_save" = "无法保存新配置，错误：%@";
 "ha_api.api_error.cant_build_url" = "无法构建API URL";
