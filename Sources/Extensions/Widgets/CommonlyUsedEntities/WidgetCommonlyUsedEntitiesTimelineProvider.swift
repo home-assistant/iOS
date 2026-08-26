@@ -109,12 +109,11 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             }
         }
 
-        let filteredEntities = entities.filter { entityId in
-            guard let domain = Domain(entityId: entityId) else { return false }
-            return Domain.commonlyUsedWidgetSupported.contains(domain)
-        }
-
-        let magicItems = filteredEntities.map { entityId in
+        // Every domain the prediction returns is rendered. Domains the widget can act on in place
+        // (a toggle, a press, a scene) keep their in-widget action; everything else falls back to
+        // `MagicItem.widgetInteractionType`'s more-info deeplink, which opens the entity in the app's
+        // web view — the same behavior the custom widget already has for those domains.
+        let magicItems = entities.map { entityId in
             MagicItem(
                 id: entityId,
                 serverId: server.identifier.rawValue,

@@ -677,8 +677,7 @@ public extension Domain {
     static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
     /// Display order of the watch area screens' controllable entities, most commonly used domains
-    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
-    /// domain). Domains not listed sort last.
+    /// first, covering every watch-runnable domain. Domains not listed sort last.
     static let watchAreaControlsOrder: [Domain] = [
         .light,
         .switch,
@@ -704,16 +703,6 @@ public extension Domain {
         }
         return index
     }
-
-    static let commonlyUsedWidgetSupported: [Domain] = [
-        .light,
-        .switch,
-        .cover,
-        .fan,
-        .inputBoolean,
-        .humidifier,
-        .valve,
-    ]
 
     static let sensorWidgetSupported: [Domain] = [
         .sensor,
