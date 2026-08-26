@@ -22,32 +22,10 @@ public struct TodoListItem: HADataDecodable {
         self.description = try? data.decode("description") as String?
         self.dueRaw = try? data.decode("due") as String?
 
-        // Parse due date - can be date only (YYYY-MM-DD) or datetime (YYYY-MM-DDTHH:MM:SS+TZ)
         if let dueString = dueRaw {
-            if dueString.contains("T") {
-                // DateTime format - try ISO8601
-                let dateFormatter = ISO8601DateFormatter()
-                dateFormatter.formatOptions = [
-                    .withFullDate,
-                    .withTime,
-                    .withDashSeparatorInDate,
-                    .withColonSeparatorInTime,
-                ]
-                // Try with timezone first
-                if let date = dateFormatter.date(from: dueString) {
-                    self.due = date
-                } else {
-                    // Try with fractional seconds
-                    dateFormatter.formatOptions.insert(.withFractionalSeconds)
-                    self.due = dateFormatter.date(from: dueString)
-                }
-            } else {
-                // Date-only format (YYYY-MM-DD)
-                let dateOnlyFormatter = DateFormatter()
-                dateOnlyFormatter.dateFormat = "yyyy-MM-dd"
-                dateOnlyFormatter.timeZone = .current
-                self.due = dateOnlyFormatter.date(from: dueString)
-            }
+            self.due = dueString.contains("T")
+                ? Self.parseDueDateTime(dueString)
+                : Self.parseDueDate(dueString)
         } else {
             self.due = nil
         }
@@ -69,6 +47,30 @@ public struct TodoListItem: HADataDecodable {
         self.due = due
     }
 
+    /// Parses a `yyyy-MM-dd` due value into midnight in the current timezone.
+    public static func parseDueDate(_ string: String) -> Date? {
+        DueDateFormatters.current.localDate.date(from: string)
+    }
+
+    /// Parses a due datetime, honouring the UTC offset the server sends. A value without an
+    /// offset is a naive local wall clock time and is interpreted in the current timezone.
+    public static func parseDueDateTime(_ string: String) -> Date? {
+        let formatters = DueDateFormatters.current
+        if let date = formatters.internetDateTime.date(from: string) {
+            return date
+        }
+        if let date = formatters.fractionalInternetDateTime.date(from: string) {
+            return date
+        }
+        return formatters.localDateTime.date(from: string)
+    }
+
+    /// The canonical `due_datetime` representation: ISO8601 in the current timezone, offset
+    /// included, so the server can never mistake it for a naive local time.
+    public static func canonicalDueString(from date: Date) -> String {
+        DueDateFormatters.current.internetDateTime.string(from: date)
+    }
+
     /// Formatted due date string for display
     public var formattedDue: String? {
         guard let due else { return nil }
@@ -82,6 +84,52 @@ public struct TodoListItem: HADataDecodable {
             formatter.timeStyle = .none
         }
         return formatter.string(from: due)
+    }
+
+    private final class DueDateFormatters {
+        let timeZone: TimeZone
+        let internetDateTime: ISO8601DateFormatter
+        let fractionalInternetDateTime: ISO8601DateFormatter
+        let localDateTime: DateFormatter
+        let localDate: DateFormatter
+
+        private static let lock = NSLock()
+        private static var cached = DueDateFormatters(timeZone: .current)
+
+        static var current: DueDateFormatters {
+            let timeZone = TimeZone.current
+            lock.lock()
+            defer { lock.unlock() }
+            if cached.timeZone != timeZone {
+                cached = DueDateFormatters(timeZone: timeZone)
+            }
+            return cached
+        }
+
+        init(timeZone: TimeZone) {
+            self.timeZone = timeZone
+            let internetDateTime = ISO8601DateFormatter()
+            internetDateTime.formatOptions = [.withInternetDateTime]
+            internetDateTime.timeZone = timeZone
+            self.internetDateTime = internetDateTime
+
+            let fractionalInternetDateTime = ISO8601DateFormatter()
+            fractionalInternetDateTime.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            fractionalInternetDateTime.timeZone = timeZone
+            self.fractionalInternetDateTime = fractionalInternetDateTime
+
+            self.localDateTime = Self.fixedFormatter(format: "yyyy-MM-dd'T'HH:mm:ss", timeZone: timeZone)
+            self.localDate = Self.fixedFormatter(format: "yyyy-MM-dd", timeZone: timeZone)
+        }
+
+        private static func fixedFormatter(format: String, timeZone: TimeZone) -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.calendar = Calendar(identifier: .gregorian)
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = timeZone
+            formatter.dateFormat = format
+            return formatter
+        }
     }
 }
 
