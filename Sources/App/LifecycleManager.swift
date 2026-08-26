@@ -61,6 +61,14 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
+        // A background launch (location event, WatchConnectivity wake, background URLSession, …)
+        // never passes through didEnterBackground, so suspension would stay unarmed and any
+        // database access could be caught holding the app-group SQLite file lock when the process
+        // freezes (0xdead10cc). Catalyst is excluded like the rest of its lifecycle handling: it can
+        // report .background at launch without a foreground transition ever following to resume.
+        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+            AppDatabaseSuspension.suspend()
+        }
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
