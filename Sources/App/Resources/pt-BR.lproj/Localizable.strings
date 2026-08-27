@@ -2080,8 +2080,8 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.complications.builder.insert_token" = "Inserir";
 "watch.complications.builder.maximum" = "Máximo";
 "watch.complications.builder.minimum" = "Mínimo";
-"watch.complications.builder.move_token_left" = "Move left";
-"watch.complications.builder.move_token_right" = "Move right";
+"watch.complications.builder.move_token_left" = "Mover para a esquerda";
+"watch.complications.builder.move_token_right" = "Mover para a direita";
 "watch.complications.builder.name" = "Nome (opcional)";
 "watch.complications.builder.new_title" = "Nova complicação";
 "watch.complications.builder.precision" = "Casas decimais";
@@ -2089,8 +2089,8 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.complications.builder.preview" = "Pré-visualização";
 "watch.complications.builder.progress_bar_color" = "Cor da barra de progresso";
 "watch.complications.builder.remove_token" = "Remover %@";
-"watch.complications.builder.reorder_token" = "Reorder %@";
-"watch.complications.builder.reorder_tokens_hint" = "Drag a token onto another one to reorder them.";
+"watch.complications.builder.reorder_token" = "Reordenar %@";
+"watch.complications.builder.reorder_tokens_hint" = "Arraste um token sobre outro para reordená-los.";
 "watch.complications.builder.show" = "Mostrar";
 "watch.complications.builder.show_gauge" = "Mostrar como medidor / anel";
 "watch.complications.builder.show_icon" = "Mostrar ícone";
@@ -2288,7 +2288,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "watch.home.areas.section.sensors.title" = "Sensores";
 "watch.home.areas.title" = "Áreas";
 "watch.home.cancel_and_use_cache.title" = "Cancelar e usar cache";
-"watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.empty" = "Não há entidades compatíveis para este dispositivo.";
 "watch.home.loading.skip.title" = "Pular";
 "watch.home.run.confirmation.title" = "Tem certeza de que deseja executar \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "O estado atual da fechadura ainda não é conhecido, então a ação não foi enviada. Aguarde o estado carregar e tente novamente.";
@@ -2760,7 +2760,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.preview.custom.description" = "Crie seu próprio widget dentro do aplicativo e exiba-o aqui.";
 "widgets.preview.custom.title" = "Widget personalizado";
 "widgets.preview.empty.create.button" = "Criar widget";
-"widgets.refresh_title" = "Refresh widget";
+"widgets.refresh_title" = "Atualizar widget";
 "widgets.reload_widgets.app_intent.description" = "Recarregue todos os cronogramas dos widgets.";
 "widgets.reload_widgets.app_intent.title" = "Recarregar widgets";
 "widgets.scene.activate.title" = "Ativar cena";
