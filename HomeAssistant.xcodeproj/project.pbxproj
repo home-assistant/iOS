@@ -1182,7 +1182,7 @@
 				Local/SpeechTranscriber.swift,
 				Local/TTSVoicePickerView.swift,
 				MacWindow/AssistWindowView.swift,
-				Views/AssistMicAnimationView.swift,
+				Views/AssistVoiceOrbView.swift,
 				Views/AssistWavesAnimation.swift,
 			);
 			target = B6CC5D812159D10D00833E5D /* WatchApp */;

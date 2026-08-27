@@ -112,19 +112,22 @@ struct AssistView: View {
     }
 
     private var pipelinesPicker: some View {
-        VStack {
-            Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
-                ForEach(viewModel.pipelines, id: \.id) { pipeline in
-                    Text(pipeline.name)
-                        .font(.footnote)
-                        .tag(pipeline.id)
-                }
+        Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
+            ForEach(viewModel.pipelines, id: \.id) { pipeline in
+                Text(pipeline.name)
+                    .font(.footnote)
+                    .tag(pipeline.id)
             }
-            .pickerStyle(.menu)
-            .tint(.gray)
         }
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 25))
+        .pickerStyle(.menu)
+        .tint(.gray)
+        .modify { view in
+            if #available(iOS 26.0, *) {
+                view.glassEffect(.regular.interactive(), in: .capsule)
+            } else {
+                view.background(.regularMaterial, in: Capsule())
+            }
+        }
         .padding(.bottom)
     }
 
@@ -215,19 +218,16 @@ struct AssistView: View {
     private var bottomBar: some View {
         ZStack {
             inputTextView
-            microphoneIcon
+            recordingView
         }
         .frame(maxHeight: 80)
     }
 
     private var inputTextView: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            HATextField(placeholder: "", text: $viewModel.inputText)
+        HStack(spacing: DesignSystem.Spaces.one) {
+            TextField("", text: $viewModel.inputText)
                 .textFieldStyle(.plain)
                 .focused($isFirstResponder)
-                .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
-                .opacity(viewModel.isRecording ? 0 : 1)
-                .animation(.smooth, value: viewModel.isRecording)
                 .onSubmit {
                     viewModel.assistWithText()
                     if Current.isCatalyst {
@@ -240,24 +240,67 @@ struct AssistView: View {
                 assistSendTextButton
             }
         }
-        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignSystem.Spaces.one)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .modify { view in
+            if #available(iOS 26.0, *) {
+                view.glassEffect(.regular, in: .capsule)
+            } else {
+                view
+                    .background(.regularMaterial, in: Capsule())
+                    .overlay(Capsule().strokeBorder(.tileBorder, lineWidth: 1))
+            }
+        }
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.vertical)
         .padding(.bottom, horizontalSizeClass == .regular ? DesignSystem.Spaces.two : DesignSystem.Spaces.half)
-        .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
         .opacity(viewModel.isRecording ? 0 : 1)
+        .allowsHitTesting(!viewModel.isRecording)
+        .animation(.smooth, value: viewModel.isRecording)
     }
 
-    private var microphoneIcon: some View {
+    private var recordingView: some View {
+        ZStack {
+            Button {
+                feedbackGenerator.notificationOccurred(.warning)
+                viewModel.assistWithAudio()
+            } label: {
+                AssistVoiceOrbView(level: viewModel.audioLevel)
+            }
+            .buttonStyle(.plain)
+
+            HStack {
+                Spacer()
+                keyboardButton
+            }
+            .padding(.trailing, DesignSystem.Spaces.two)
+        }
+        .opacity(viewModel.isRecording ? 1 : 0)
+        .allowsHitTesting(viewModel.isRecording)
+        .animation(.smooth, value: viewModel.isRecording)
+    }
+
+    private var keyboardButton: some View {
         Button {
-            feedbackGenerator.notificationOccurred(.warning)
-            viewModel.assistWithAudio()
+            feedbackGenerator.notificationOccurred(.success)
+            viewModel.stopStreaming()
+            isFirstResponder = true
         } label: {
-            AssistMicAnimationView()
-                .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
+            Image(systemSymbol: .keyboard)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(.primary)
+                .frame(width: 44, height: 44)
         }
         .buttonStyle(.plain)
-        .opacity(viewModel.isRecording ? 1 : 0)
+        .modify { view in
+            if #available(iOS 26.0, *) {
+                view.glassEffect(.regular.interactive(), in: .circle)
+            } else {
+                view
+                    .background(.regularMaterial, in: Circle())
+                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: 1))
+            }
+        }
     }
 
     private var assistSendTextButton: some View {
@@ -267,11 +310,8 @@ struct AssistView: View {
             sendIcon
         })
         .buttonStyle(.plain)
-        .frame(maxWidth: viewModel.isRecording ? 0 : nil)
-        .opacity(viewModel.isRecording ? 0 : 1)
         .font(.system(size: 32))
         .tint(Color.haPrimary)
-        .animation(.smooth, value: viewModel.isRecording)
         .keyboardShortcut(.defaultAction)
     }
 
@@ -285,8 +325,6 @@ struct AssistView: View {
         .buttonStyle(.plain)
         .keyboardShortcut(.init("a"))
         .font(.system(size: iconSize.width))
-        .padding(.trailing)
-        .animation(.smooth, value: viewModel.isRecording)
     }
 
     private func assistMicButtonAction() {
@@ -358,4 +396,21 @@ struct AssistView: View {
             [.allCorners]
         }
     }
+}
+
+#Preview("Text mode") {
+    AssistView.build(server: ServerFixture.standard)
+}
+
+#Preview("Recording") {
+    let viewModel = AssistViewModel(
+        server: ServerFixture.standard,
+        audioRecorder: AudioRecorder(),
+        audioPlayer: AudioPlayer(),
+        assistService: AssistService(server: ServerFixture.standard),
+        autoStartRecording: false
+    )
+    viewModel.isRecording = true
+    viewModel.audioLevel = 0.6
+    return AssistView(viewModel: viewModel)
 }

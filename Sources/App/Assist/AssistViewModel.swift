@@ -17,6 +17,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @Published var inputText = ""
     @Published var isRecording = false
+    /// Normalized microphone input level (0...1) driving the voice orb while recording
+    @Published var audioLevel: Double = 0
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
@@ -256,6 +258,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
+        audioLevel = 0
 
         // Stop traditional audio recording
         audioRecorder.stopRecording()
@@ -294,6 +297,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         } else if focusInputOnAppear || Current.isCatalyst {
             focusInputOnAppear = false
             focusOnInput = true
+        }
+    }
+
+    private func updateAudioLevel(_ level: Float) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, isRecording else { return }
+            // Smooth the raw level so the orb pulses instead of jittering
+            audioLevel = audioLevel * 0.6 + Double(level) * 0.4
         }
     }
 
@@ -357,6 +368,10 @@ final class AssistViewModel: NSObject, ObservableObject {
             }
         }
 
+        transcriber.onAudioLevelUpdate = { [weak self] level in
+            self?.updateAudioLevel(level)
+        }
+
         transcriber.onListeningStateChange = { [weak self] listening in
             Task { @MainActor [weak self] in
                 guard let self, !listening else { return }
@@ -402,7 +417,12 @@ extension AssistViewModel: AudioRecorderDelegate {
     func didStopRecording() {
         DispatchQueue.main.async { [weak self] in
             self?.isRecording = false
+            self?.audioLevel = 0
         }
+    }
+
+    func didUpdateAudioLevel(_ level: Float) {
+        updateAudioLevel(level)
     }
 }
 

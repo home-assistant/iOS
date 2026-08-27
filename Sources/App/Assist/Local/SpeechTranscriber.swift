@@ -9,6 +9,8 @@ protocol SpeechTranscriberProtocol: AnyObject {
     var onTranscriptUpdate: ((String, Bool) -> Void)? { get set }
     var onError: ((Error) -> Void)? { get set }
     var onListeningStateChange: ((Bool) -> Void)? { get set }
+    /// Normalized microphone input level (0...1) emitted while listening, for UI feedback.
+    var onAudioLevelUpdate: ((Float) -> Void)? { get set }
     /// When false, the caller owns the audio session (e.g. CarPlay keeps a .playAndRecord
     /// session active for the whole conversation) and the transcriber must not reconfigure
     /// or deactivate it.
@@ -73,6 +75,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     /// Called when listening state changes
     public var onListeningStateChange: ((Bool) -> Void)?
+
+    /// Called with a normalized microphone input level (0...1) while listening
+    public var onAudioLevelUpdate: ((Float) -> Void)?
 
     /// Whether this transcriber configures and deactivates the shared audio session itself.
     public var managesAudioSession = true
@@ -217,8 +222,23 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
         // from a background thread.
         let capturedRequest = recognitionRequest
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
             capturedRequest.append(buffer)
+
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let frameCount = Int(buffer.frameLength)
+            guard frameCount > 0 else { return }
+            var sumOfSquares: Float = 0
+            for frame in 0 ..< frameCount {
+                sumOfSquares += channelData[frame] * channelData[frame]
+            }
+            let rms = sqrt(sumOfSquares / Float(frameCount))
+            let decibels = 20 * log10(max(rms, .leastNormalMagnitude))
+            // Map dB power (clamped at a -50dB floor) to 0...1 for the voice orb
+            let level = max(0, min(1, (decibels + 50) / 50))
+            Task { @MainActor in
+                self?.onAudioLevelUpdate?(level)
+            }
         }
 
         // Start recognition task

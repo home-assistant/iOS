@@ -15,6 +15,12 @@ protocol AudioRecorderDelegate: AnyObject {
     func didStartRecording(with sampleRate: Double)
     func didStopRecording()
     func didFailToRecord(error: Error)
+    /// Normalized microphone input level (0...1) emitted while recording, for UI feedback.
+    func didUpdateAudioLevel(_ level: Float)
+}
+
+extension AudioRecorderDelegate {
+    func didUpdateAudioLevel(_ level: Float) {}
 }
 
 enum AudioRecorderError: Error {
@@ -133,6 +139,12 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         guard let data = sampleBuffer.audioSamples() else {
             Current.Log.error("Failed to extract audio samples from CMSampleBuffer")
             return
+        }
+
+        if let averagePower = connection.audioChannels.first?.averagePowerLevel {
+            // Map dB power (clamped at a -50dB floor) to 0...1 for the voice orb
+            let level = max(0, min(1, (averagePower + 50) / 50))
+            delegate?.didUpdateAudioLevel(level)
         }
 
         delegate?.didOutputSample(data: data)
