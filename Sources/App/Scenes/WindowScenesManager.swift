@@ -5,11 +5,27 @@ import UIKit
 final class WindowScenesManager {
     static let shared = WindowScenesManager()
     private(set) var windowSizeObservers: [WindowSizeObserver] = []
+    /// macOS re-activates a window many times during its life. Re-applying the stored frame on every
+    /// activation would fight the user (and drift the window by the cascade inset), so each scene session
+    /// is restored only the first time it becomes active.
+    private var sessionsWithRestoredGeometry: Set<String> = []
 
-    func sceneDidBecomeActive(_ scene: UIWindowScene) {
-        guard scene.userActivity == nil else { return }
-        configureSceneSize(scene)
-        startObservingScene(scene)
+    /// Sizing a window while it is connecting, before it is on screen, avoids the visible jump of resizing one
+    /// the user can already see. The main window is sized on activation instead, since its own delegate may
+    /// still destroy the window while connecting ("Open Home Assistant UI in browser").
+    func sceneWillConnect(_ scene: UIWindowScene, activity: SceneActivity) {
+        guard sessionsWithRestoredGeometry.insert(scene.session.persistentIdentifier).inserted else { return }
+        configureSceneSize(scene, for: activity)
+    }
+
+    /// `activity` comes from the scene delegate that reported the activation, not from the scene itself: each
+    /// window kind has its own delegate, so the window a frame belongs to is never guessed from the user
+    /// activity or configuration name the scene happened to connect with.
+    func sceneDidBecomeActive(_ scene: UIWindowScene, activity: SceneActivity) {
+        if sessionsWithRestoredGeometry.insert(scene.session.persistentIdentifier).inserted {
+            configureSceneSize(scene, for: activity)
+        }
+        startObservingScene(scene, activity: activity)
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -17,11 +33,13 @@ final class WindowScenesManager {
     }
 
     func didDiscardScene(_ scene: UIScene) {
+        sessionsWithRestoredGeometry.remove(scene.session.persistentIdentifier)
         stopObservingScene(scene)
     }
 
-    private func startObservingScene(_ scene: UIWindowScene) {
-        let observer = WindowSizeObserver(windowScene: scene)
+    private func startObservingScene(_ scene: UIWindowScene, activity: SceneActivity) {
+        guard !windowSizeObservers.contains(where: { $0.observedScene == scene }) else { return }
+        let observer = WindowSizeObserver(windowScene: scene, activity: activity)
         windowSizeObservers.append(observer)
     }
 
@@ -62,26 +80,54 @@ final class WindowScenesManager {
         return adjustedFrame
     }
 
-    private func configureSceneSize(_ scene: UIWindowScene) {
-        // Check is scene has a restoring state before proceeding
-        guard #available(macCatalyst 16.0, *),
-              let preferredSystemFrame = ScenesWindowSizeConfig.defaultSceneLatestSystemFrame,
-              preferredSystemFrame != .zero else { return }
+    private func configureSceneSize(_ scene: UIWindowScene, for activity: SceneActivity) {
+        guard #available(macCatalyst 16.0, *) else { return }
 
         let screenSize = scene.screen.bounds.size
-        guard sceneFrameIsValid(preferredSystemFrame, screenSize: screenSize) else { return }
-
-        let numberOfConnectedScenes = UIApplication.shared.connectedScenes.count
-        let adjustedSystemFrame = adjustedSystemFrame(
-            preferredSystemFrame,
-            for: screenSize,
-            numberOfConnectedScenes: numberOfConnectedScenes
-        )
+        guard let systemFrame = systemFrame(for: activity, screenSize: screenSize) else { return }
 
         #if targetEnvironment(macCatalyst)
-        scene.requestGeometryUpdate(.Mac(systemFrame: adjustedSystemFrame)) { error in
+        Current.Log.info("Sizing \(activity.configurationName) window to \(systemFrame)")
+        scene.requestGeometryUpdate(.Mac(systemFrame: systemFrame)) { error in
             Current.Log.info(userInfo: ["Failed to request mac geometry": error.localizedDescription])
         }
         #endif
+    }
+
+    /// The frame a window should open at: the one the user last left it at, or the window kind's own default
+    /// when it has never been placed. Without a default, macOS opens a new window at the frame of the window
+    /// that was already frontmost, which is why the Assist window used to inherit the main window's geometry.
+    func systemFrame(for activity: SceneActivity, screenSize: CGSize) -> CGRect? {
+        if let savedSystemFrame = ScenesWindowSizeConfig.latestSystemFrame(for: activity),
+           savedSystemFrame != .zero,
+           sceneFrameIsValid(savedSystemFrame, screenSize: screenSize) {
+            return restoredSystemFrame(savedSystemFrame, for: activity, screenSize: screenSize)
+        }
+        guard let defaultSize = activity.defaultMacWindowSize else { return nil }
+        return centeredFrame(for: defaultSize, screenSize: screenSize)
+    }
+
+    /// Only the main window can have several instances open at once, so it is the only one that cascades.
+    /// A single-instance window (Assist) reopens exactly where the user left it.
+    private func restoredSystemFrame(
+        _ preferredSystemFrame: CGRect,
+        for activity: SceneActivity,
+        screenSize: CGSize
+    ) -> CGRect {
+        guard activity == .webView else { return preferredSystemFrame }
+        return adjustedSystemFrame(
+            preferredSystemFrame,
+            for: screenSize,
+            numberOfConnectedScenes: UIApplication.shared.connectedScenes.count
+        )
+    }
+
+    private func centeredFrame(for size: CGSize, screenSize: CGSize) -> CGRect {
+        .init(
+            x: (screenSize.width - size.width) / 2,
+            y: (screenSize.height - size.height) / 2,
+            width: size.width,
+            height: size.height
+        )
     }
 }
