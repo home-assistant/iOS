@@ -29,6 +29,13 @@ enum AudioRecorderError: Error {
 }
 
 final class AudioRecorder: NSObject, AudioRecorderProtocol {
+    private enum Constants {
+        /// Window of microphone average power (dBFS) mapped onto the 0...1 level. Kept narrow on purpose:
+        /// normal speech averages around -35...-18 dBFS, so a wider window leaves the orb barely moving.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+    }
+
     weak var delegate: AudioRecorderDelegate?
     var managesAudioSession = true
 
@@ -142,8 +149,8 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         }
 
         if let averagePower = connection.audioChannels.first?.averagePowerLevel {
-            // Map dB power (clamped at a -50dB floor) to 0...1 for the voice orb
-            let level = max(0, min(1, (averagePower + 50) / 50))
+            let range = Constants.powerCeiling - Constants.powerFloor
+            let level = max(0, min(1, (averagePower - Constants.powerFloor) / range))
             delegate?.didUpdateAudioLevel(level)
         }
 

@@ -934,6 +934,10 @@ public enum L10n {
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.tts_mute.toggle") }
       }
     }
+    public enum TextField {
+      /// Enter a request...
+      public static var placeholder: String { return L10n.tr("Localizable", "assist.text_field.placeholder") }
+    }
     public enum Watch {
       public enum MicButton {
         /// Tap to

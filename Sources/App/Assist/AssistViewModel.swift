@@ -5,6 +5,15 @@ import HAKit
 import Shared
 
 final class AssistViewModel: NSObject, ObservableObject {
+    private enum Constants {
+        /// The orb level rises fast so every syllable registers, and falls slower so it settles
+        /// instead of flickering between words.
+        static let audioLevelAttack: Double = 0.8
+        static let audioLevelRelease: Double = 0.25
+        /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
+        static let audioLevelCurve: Double = 0.65
+    }
+
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
     @Published var preferredPipelineId: String = "" {
@@ -303,8 +312,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func updateAudioLevel(_ level: Float) {
         DispatchQueue.main.async { [weak self] in
             guard let self, isRecording else { return }
-            // Smooth the raw level so the orb pulses instead of jittering
-            audioLevel = audioLevel * 0.6 + Double(level) * 0.4
+            let shaped = pow(Double(level), Constants.audioLevelCurve)
+            let smoothing = shaped > audioLevel ? Constants.audioLevelAttack : Constants.audioLevelRelease
+            audioLevel = audioLevel * (1 - smoothing) + shaped * smoothing
         }
     }
 

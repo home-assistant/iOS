@@ -9,22 +9,62 @@ struct AssistView: View {
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
+    @State private var bottomBarWidth: CGFloat = .zero
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    private enum Constants {
+        static let iconSize = CGSize(width: 28, height: 28)
+        static let iconColor: UIColor = .white
+        static let borderWidth: CGFloat = DesignSystem.Border.Width.default
 
-    private let iconSize: CGSize = .init(width: 28, height: 28)
-    private let iconColor: UIColor = .gray
+        static let macPipelinePickerMaxWidth: CGFloat = 200
+
+        static let bubbleCornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndMicro
+        static let pendingBubbleStroke = StrokeStyle(lineWidth: 1.5, dash: [5, 3])
+        static let infoBubbleBackgroundOpacity: Double = 0.5
+
+        static let listFadeHeight: CGFloat = 22
+
+        static let bottomBarMaxHeight: CGFloat = 80
+        /// Inset of everything in the bottom bar from the screen edges: input row, orb and keyboard
+        /// button all share it, so the bar reads as one row in both states.
+        static let barHorizontalPadding: CGFloat = DesignSystem.Spaces.three
+        /// How eagerly the text field and the action button glass shapes merge into one container.
+        static let inputRowGlassSpacing: CGFloat = DesignSystem.Spaces.two
+        /// Gap under the bottom bar, on top of the bottom safe area. Negative values reach into the
+        /// safe area, which is how the row sits closer to the screen edge than the inset alone allows.
+        static let inputRowBottomPadding: CGFloat = -DesignSystem.Spaces.one
+        static let inputFieldHeight: CGFloat = 40
+        static let inputActionButtonHeight: CGFloat = 40
+        /// Height of the input row, driven by its tallest element (the action button plus its padding).
+        /// The recording state claims the same height, so the orb lands on the mic button's line.
+        static let inputRowHeight: CGFloat = inputActionButtonHeight + DesignSystem.Spaces.oneAndHalf * 2
+        /// Distance from the bar's trailing edge to the centre of the input row's mic button: half the
+        /// button plus its own padding plus the row inset. The orb travels between there and the centre,
+        /// so the mic reads as one button sliding in and out of the middle.
+        static let micButtonCenterInsetFromTrailing: CGFloat = inputActionButtonHeight / 2
+            + DesignSystem.Spaces.oneAndHalf
+            + barHorizontalPadding
+        static let sendIconFontSize: CGFloat = 32
+        static let keyboardButtonSize: CGFloat = 44
+        static let keyboardIconFontSize: CGFloat = 18
+
+        static let recordingTransition: Animation = .smooth
+    }
+
     private let feedbackGenerator = UINotificationFeedbackGenerator()
 
     private let showCloseButton: Bool
+    /// Renders the pre-iOS 26 materials instead of Liquid Glass, so the legacy look stays previewable.
+    private let forcesLegacyAppearance: Bool
 
-    init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
+    init(viewModel: AssistViewModel, showCloseButton: Bool = true, forcesLegacyAppearance: Bool = false) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
+        self.forcesLegacyAppearance = forcesLegacyAppearance
     }
 
     var body: some View {
-        classicUI
+        content
             .onAppear {
                 assistSession.inProgress = true
                 viewModel.initialRoutine()
@@ -50,7 +90,7 @@ struct AssistView: View {
 
     // MARK: - Configuration Persistence
 
-    private var classicUI: some View {
+    private var content: some View {
         NavigationView {
             VStack(spacing: .zero) {
                 if !Current.isCatalyst {
@@ -105,7 +145,7 @@ struct AssistView: View {
         Button {
             showSettings = true
         } label: {
-            Image(systemSymbol: .gearshape)
+            Image(systemSymbol: .gearshapeFill)
         }
         .buttonStyle(.plain)
         .tint(Color(uiColor: .label))
@@ -122,7 +162,7 @@ struct AssistView: View {
         .pickerStyle(.menu)
         .tint(.gray)
         .modify { view in
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(.regular.interactive(), in: .capsule)
             } else {
                 view.background(.regularMaterial, in: Capsule())
@@ -147,7 +187,7 @@ struct AssistView: View {
                 Image(systemSymbol: .chevronUpChevronDown)
             }
         }
-        .frame(maxWidth: 200, alignment: .trailing)
+        .frame(maxWidth: Constants.macPipelinePickerMaxWidth, alignment: .trailing)
     }
 
     private var selectedPipelineName: String {
@@ -167,14 +207,14 @@ struct AssistView: View {
         .padding(DesignSystem.Spaces.one)
         .padding(.horizontal, DesignSystem.Spaces.one)
         .background(backgroundForChatItemType(item.itemType))
-        .roundedCorner(DesignSystem.CornerRadius.oneAndMicro, corners: roundedCornersForChatItemType(item.itemType))
+        .roundedCorner(Constants.bubbleCornerRadius, corners: roundedCornersForChatItemType(item.itemType))
         .overlay {
             if item.itemType == .pending {
                 RoundedCorner(
-                    radius: DesignSystem.CornerRadius.oneAndMicro,
+                    radius: Constants.bubbleCornerRadius,
                     corners: roundedCornersForChatItemType(item.itemType)
                 )
-                .stroke(Color.haPrimary, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+                .stroke(Color.haPrimary, style: Constants.pendingBubbleStroke)
             }
         }
         .foregroundColor(foregroundForChatItemType(item.itemType))
@@ -208,7 +248,7 @@ struct AssistView: View {
     private func linearGradientDivider(position: UnitPoint) -> some View {
         VStack {}
             .frame(maxWidth: .infinity)
-            .frame(height: 22)
+            .frame(height: Constants.listFadeHeight)
             .background(LinearGradient(colors: [
                 Color(uiColor: .systemBackground),
                 .clear,
@@ -220,43 +260,80 @@ struct AssistView: View {
             inputTextView
             recordingView
         }
-        .frame(maxHeight: 80)
+        .frame(maxHeight: Constants.bottomBarMaxHeight, alignment: .bottom)
+        .background {
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { bottomBarWidth = proxy.size.width }
+                    .onChange(of: proxy.size.width) { newValue in bottomBarWidth = newValue }
+            }
+        }
     }
 
     private var inputTextView: some View {
-        HStack(spacing: DesignSystem.Spaces.one) {
-            TextField("", text: $viewModel.inputText)
-                .textFieldStyle(.plain)
-                .focused($isFirstResponder)
-                .onSubmit {
-                    viewModel.assistWithText()
-                    if Current.isCatalyst {
-                        isFirstResponder = true
-                    }
+        HStack(spacing: DesignSystem.Spaces.two) {
+            inputTextField
+            inputActionButton
+        }
+        .modify { view in
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                GlassEffectContainer(spacing: Constants.inputRowGlassSpacing) {
+                    view
                 }
+            } else {
+                view
+            }
+        }
+        .padding(.horizontal, Constants.barHorizontalPadding)
+        .padding(.bottom, Constants.inputRowBottomPadding)
+        .opacity(viewModel.isRecording ? 0 : 1)
+        .allowsHitTesting(!viewModel.isRecording)
+        .animation(Constants.recordingTransition, value: viewModel.isRecording)
+    }
+
+    private var inputTextField: some View {
+        TextField(L10n.Assist.TextField.placeholder, text: $viewModel.inputText)
+            .textFieldStyle(.plain)
+            .focused($isFirstResponder)
+            .onSubmit {
+                viewModel.assistWithText()
+                if Current.isCatalyst {
+                    isFirstResponder = true
+                }
+            }
+            .frame(height: Constants.inputFieldHeight)
+            .padding(.vertical, DesignSystem.Spaces.one)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .modify { view in
+                if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                    view.glassEffect(.regular.interactive(), in: .capsule)
+                } else {
+                    view
+                        .background(.regularMaterial, in: Capsule())
+                        .overlay(Capsule().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
+                }
+            }
+    }
+
+    private var inputActionButton: some View {
+        Group {
             if viewModel.inputText.isEmpty {
                 assistMicButton
             } else {
                 assistSendTextButton
             }
         }
-        .padding(.vertical, DesignSystem.Spaces.one)
-        .padding(.horizontal, DesignSystem.Spaces.two)
+        .frame(height: Constants.inputActionButtonHeight)
+        .padding(DesignSystem.Spaces.oneAndHalf)
         .modify { view in
-            if #available(iOS 26.0, *) {
-                view.glassEffect(.regular, in: .capsule)
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                view.glassEffect(.regular.interactive().tint(.haPrimary), in: .circle)
             } else {
                 view
-                    .background(.regularMaterial, in: Capsule())
-                    .overlay(Capsule().strokeBorder(.tileBorder, lineWidth: 1))
+                    .background(.haPrimary, in: Circle())
+                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
             }
         }
-        .padding(.horizontal, DesignSystem.Spaces.two)
-        .padding(.vertical)
-        .padding(.bottom, horizontalSizeClass == .regular ? DesignSystem.Spaces.two : DesignSystem.Spaces.half)
-        .opacity(viewModel.isRecording ? 0 : 1)
-        .allowsHitTesting(!viewModel.isRecording)
-        .animation(.smooth, value: viewModel.isRecording)
     }
 
     private var recordingView: some View {
@@ -268,16 +345,27 @@ struct AssistView: View {
                 AssistVoiceOrbView(level: viewModel.audioLevel)
             }
             .buttonStyle(.plain)
+            .offset(x: viewModel.isRecording ? .zero : idleOrbOffsetX)
 
             HStack {
                 Spacer()
                 keyboardButton
             }
-            .padding(.trailing, DesignSystem.Spaces.two)
+            .padding(.trailing, Constants.barHorizontalPadding)
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: Constants.inputRowHeight)
+        .padding(.bottom, Constants.inputRowBottomPadding)
         .opacity(viewModel.isRecording ? 1 : 0)
         .allowsHitTesting(viewModel.isRecording)
-        .animation(.smooth, value: viewModel.isRecording)
+        .animation(Constants.recordingTransition, value: viewModel.isRecording)
+    }
+
+    /// Parks the orb over the input row's mic button while idle, so starting a recording slides it to
+    /// the centre of the bar and stopping one slides it back.
+    private var idleOrbOffsetX: CGFloat {
+        guard bottomBarWidth > Constants.micButtonCenterInsetFromTrailing * 2 else { return .zero }
+        return bottomBarWidth / 2 - Constants.micButtonCenterInsetFromTrailing
     }
 
     private var keyboardButton: some View {
@@ -287,18 +375,18 @@ struct AssistView: View {
             isFirstResponder = true
         } label: {
             Image(systemSymbol: .keyboard)
-                .font(.system(size: 18, weight: .medium))
+                .font(.system(size: Constants.keyboardIconFontSize, weight: .medium))
                 .foregroundStyle(.primary)
-                .frame(width: 44, height: 44)
+                .frame(width: Constants.keyboardButtonSize, height: Constants.keyboardButtonSize)
         }
         .buttonStyle(.plain)
         .modify { view in
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(.regular.interactive(), in: .circle)
             } else {
                 view
                     .background(.regularMaterial, in: Circle())
-                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: 1))
+                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
             }
         }
     }
@@ -310,7 +398,7 @@ struct AssistView: View {
             sendIcon
         })
         .buttonStyle(.plain)
-        .font(.system(size: 32))
+        .font(.system(size: Constants.sendIconFontSize))
         .tint(Color.haPrimary)
         .keyboardShortcut(.defaultAction)
     }
@@ -320,11 +408,14 @@ struct AssistView: View {
         Button(action: {
             assistMicButtonAction()
         }, label: {
-            Image(uiImage: MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor))
+            Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                ofSize: Constants.iconSize,
+                color: Constants.iconColor
+            ))
         })
         .buttonStyle(.plain)
         .keyboardShortcut(.init("a"))
-        .font(.system(size: iconSize.width))
+        .font(.system(size: Constants.iconSize.width))
     }
 
     private func assistMicButtonAction() {
@@ -335,7 +426,7 @@ struct AssistView: View {
     }
 
     private var sendIcon: some View {
-        Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor))
+        Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: Constants.iconSize, color: Constants.iconColor))
             .symbolRenderingMode(.palette)
             .foregroundStyle(.white, Color.haPrimary)
     }
@@ -349,7 +440,7 @@ struct AssistView: View {
         case .error:
             .red
         case .info:
-            .gray.opacity(0.5)
+            .gray.opacity(Constants.infoBubbleBackgroundOpacity)
         case .pending:
             .clear
         }
@@ -398,11 +489,7 @@ struct AssistView: View {
     }
 }
 
-#Preview("Text mode") {
-    AssistView.build(server: ServerFixture.standard)
-}
-
-#Preview("Recording") {
+private func previewRecordingViewModel() -> AssistViewModel {
     let viewModel = AssistViewModel(
         server: ServerFixture.standard,
         audioRecorder: AudioRecorder(),
@@ -412,5 +499,21 @@ struct AssistView: View {
     )
     viewModel.isRecording = true
     viewModel.audioLevel = 0.6
-    return AssistView(viewModel: viewModel)
+    return viewModel
+}
+
+#Preview("Text mode") {
+    AssistView.build(server: ServerFixture.standard)
+}
+
+#Preview("Text mode (legacy)") {
+    AssistView.build(server: ServerFixture.standard, forcesLegacyAppearance: true)
+}
+
+#Preview("Recording") {
+    AssistView(viewModel: previewRecordingViewModel())
+}
+
+#Preview("Recording (legacy)") {
+    AssistView(viewModel: previewRecordingViewModel(), forcesLegacyAppearance: true)
 }

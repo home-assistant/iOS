@@ -51,6 +51,13 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         case restricted
     }
 
+    private enum Constants {
+        /// Window of microphone RMS power (dBFS) mapped onto the 0...1 voice level. Matches
+        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+    }
+
     // MARK: - Public Properties
 
     /// The current transcribed text (updates in real-time)
@@ -234,8 +241,8 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             }
             let rms = sqrt(sumOfSquares / Float(frameCount))
             let decibels = 20 * log10(max(rms, .leastNormalMagnitude))
-            // Map dB power (clamped at a -50dB floor) to 0...1 for the voice orb
-            let level = max(0, min(1, (decibels + 50) / 50))
+            let range = Constants.powerCeiling - Constants.powerFloor
+            let level = max(0, min(1, (decibels - Constants.powerFloor) / range))
             Task { @MainActor in
                 self?.onAudioLevelUpdate?(level)
             }
