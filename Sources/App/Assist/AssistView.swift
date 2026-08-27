@@ -10,6 +10,7 @@ struct AssistView: View {
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
     @Namespace private var micGeometry
+    @Namespace private var settingsGeometry
 
     private enum Constants {
         static let iconSize = CGSize(width: 28, height: 28)
@@ -56,6 +57,8 @@ struct AssistView: View {
         /// Ties the input row's mic button and the recording orb together, so one turns into the other
         /// in place instead of cross-fading.
         static let micGeometryID = "assist-mic"
+        /// Grows the settings sheet out of the gear button instead of sliding it up from the bottom.
+        static let settingsGeometryID = "assist-settings"
         /// Lifts the orb clear of the keyboard button's line, so the two do not read as one row.
         static let orbVerticalOffset: CGFloat = -DesignSystem.Spaces.two
         static let sendIconFontSize: CGFloat = 32
@@ -121,6 +124,7 @@ struct AssistView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         if #available(iOS 26.0, *) {
                             settingsButton
+                                .matchedTransitionSource(id: Constants.settingsGeometryID, in: settingsGeometry)
                         }
                     }
                     #endif
@@ -134,6 +138,9 @@ struct AssistView: View {
                 .sheet(isPresented: $showSettings) {
                     if #available(iOS 26.0, *) {
                         AssistSettingsView()
+                            .navigationTransition(
+                                .zoom(sourceID: Constants.settingsGeometryID, in: settingsGeometry)
+                            )
                     }
                 }
         }
