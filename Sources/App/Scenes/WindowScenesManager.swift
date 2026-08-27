@@ -107,7 +107,8 @@ final class WindowScenesManager {
         return centeredFrame(for: defaultSize, screenSize: screenSize)
     }
 
-    /// Only the main window can have several instances open at once, so it is the only one that cascades.
+    /// Only the main window can have several instances open at once, so it is the only one that cascades, and
+    /// only its own windows count towards the inset: an open Assist window must not push the main window.
     /// A single-instance window (Assist) reopens exactly where the user left it.
     private func restoredSystemFrame(
         _ preferredSystemFrame: CGRect,
@@ -118,8 +119,14 @@ final class WindowScenesManager {
         return adjustedSystemFrame(
             preferredSystemFrame,
             for: screenSize,
-            numberOfConnectedScenes: UIApplication.shared.connectedScenes.count
+            numberOfConnectedScenes: numberOfConnectedScenes(for: activity)
         )
+    }
+
+    private func numberOfConnectedScenes(for activity: SceneActivity) -> Int {
+        UIApplication.shared.connectedScenes.filter { scene in
+            scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
+        }.count
     }
 
     private func centeredFrame(for size: CGSize, screenSize: CGSize) -> CGRect {
