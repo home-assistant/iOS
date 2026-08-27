@@ -13,7 +13,7 @@ struct WidgetOpenPage: Widget {
             content: { entry in
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
+                        AnyView(WidgetEmptyStateView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
                     contents: {
                         let showSubtitle = !entry.isPreview && Current.servers.all.count > 1

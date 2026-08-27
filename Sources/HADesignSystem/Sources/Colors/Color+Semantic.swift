@@ -37,6 +37,24 @@ public extension ShapeStyle where Self == Color {
             dark: srgb(0x00, 0x9A, 0xC7, opacity: 1)
         )
     }
+
+    /// The card a single widget tile sits on. Mirrors the app's `tileBackground` asset colour,
+    /// spelled out here because a widget extension has to draw it without the app's bundle.
+    static var widgetTileBackground: Color {
+        adaptive(
+            light: displayP3(0xFF, 0xFF, 0xFF, opacity: 1),
+            dark: displayP3(0x1C, 0x1B, 0x1B, opacity: 1)
+        )
+    }
+
+    /// The surface behind a whole widget, which the tiles sit on top of. Mirrors the app's
+    /// `primaryBackground` asset colour, for the same reason.
+    static var widgetPrimaryBackground: Color {
+        adaptive(
+            light: displayP3(0xFA, 0xFA, 0xFA, opacity: 1),
+            dark: displayP3(0x11, 0x10, 0x10, opacity: 1)
+        )
+    }
 }
 
 private func srgb(_ red: Double, _ green: Double, _ blue: Double, opacity: Double) -> Color {

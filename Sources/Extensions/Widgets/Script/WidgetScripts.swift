@@ -13,7 +13,7 @@ struct WidgetScripts: Widget {
         ) { timelineEntry in
             WidgetBasicContainerView(
                 emptyViewGenerator: {
-                    AnyView(WidgetEmptyView(message: L10n.Widgets.Scripts.notConfigured))
+                    AnyView(WidgetEmptyStateView(message: L10n.Widgets.Scripts.notConfigured))
                 },
                 contents: timelineEntry.scripts.map { script in
                     WidgetBasicViewModel(

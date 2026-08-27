@@ -60,30 +60,18 @@ struct WidgetEnergyEntry: TimelineEntry {
             self.gridReturned = gridReturned
         }
 
-        /// How the bucket's flows split between what the home used and what left the property,
-        /// following the order the energy dashboard applies (`computeConsumptionData` in the
-        /// frontend's `src/data/energy.ts`): generation covers the export first, then the home's own
-        /// demand, and the grid covers whatever demand is left.
-        ///
-        /// Batteries are deliberately absent from the order. The widget only resolves grid and solar
-        /// sources from the energy preferences, so there is no charge or discharge to place in it.
-        private var split: (solar: Double, grid: Double) {
-            // Everything the home used this bucket: what came in, less what went back out.
-            let usedTotal = max(grid + solar - gridReturned, 0)
-            let generationLeftAfterExport = max(solar - gridReturned, 0)
-            let solarUsed = min(usedTotal, generationLeftAfterExport)
-            return (solarUsed, min(usedTotal - solarUsed, grid))
-        }
-
         /// The share of this bucket's generation the home used itself. The chart paints this over
         /// the consumption bar and draws the exported remainder below the axis, so plotting raw
         /// generation would count everything that was exported twice.
-        var solarUsed: Double { split.solar }
+        ///
+        /// Worked out by the design system's chart point, which is what actually renders, so there
+        /// is one implementation of the split rather than two that can drift apart.
+        var solarUsed: Double { designSystemModel.solarUsed }
 
         /// The share of this bucket's grid import the home used itself. Below the raw import
         /// whenever some of it left again — energy that only passed through was never demand, and
         /// counting it would push the bar above what the home actually consumed.
-        var gridUsed: Double { split.grid }
+        var gridUsed: Double { designSystemModel.gridUsed }
     }
 
     /// Whether the server reported anything for the period. Live power is deliberately excluded: it
@@ -97,5 +85,13 @@ struct WidgetEnergyEntry: TimelineEntry {
     var gridNet: Double? {
         guard gridConsumed != nil || gridReturned != nil else { return nil }
         return (gridConsumed ?? 0) - (gridReturned ?? 0)
+    }
+}
+
+@available(iOS 17.0, *)
+extension WidgetEnergyEntry.ChartPoint {
+    /// The drawing half of the bucket, for the design system's energy chart.
+    var designSystemModel: WidgetEnergyChartPoint {
+        .init(date: date, grid: grid, solar: solar, gridReturned: gridReturned)
     }
 }

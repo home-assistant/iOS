@@ -255,7 +255,8 @@ struct WidgetCreationView: View {
                 family: widgetFamilyPreview(),
                 modelsCount: modelsCount,
                 rowsCount: rows.count
-            )
+            ),
+            family: widgetFamilyPreview()
         )
         .environment(\.widgetFamily, widgetFamilyPreview())
     }
