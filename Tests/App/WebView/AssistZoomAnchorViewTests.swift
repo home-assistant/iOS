@@ -13,13 +13,16 @@ final class AssistZoomAnchorViewTests: XCTestCase {
         let anchor = AssistZoomAnchorView.install(in: viewController.view)
         viewController.view.layoutIfNeeded()
 
+        // Measured against the view's own safe area: the simulator adds device insets of its own on top of
+        // the ones set above.
+        let safeArea = viewController.view.safeAreaInsets
         XCTAssertEqual(anchor.frame.size, AssistZoomAnchorView.size)
         XCTAssertEqual(
             anchor.frame.maxX,
-            viewController.view.bounds.maxX - AssistZoomAnchorView.trailingInset,
+            viewController.view.bounds.maxX - safeArea.right - AssistZoomAnchorView.trailingInset,
             accuracy: 0.5
         )
-        XCTAssertEqual(anchor.frame.minY, 59 + AssistZoomAnchorView.topInset, accuracy: 0.5)
+        XCTAssertEqual(anchor.frame.minY, safeArea.top + AssistZoomAnchorView.topInset, accuracy: 0.5)
     }
 
     @MainActor func testTouchesOverTheAnchorReachTheViewBehindIt() {
