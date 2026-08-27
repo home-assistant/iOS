@@ -7,6 +7,7 @@ class ConnectivityWrapperTests: XCTestCase {
     private var previousRefreshNetworkInformation: (() async -> Void)!
     private var previousPerformNetworkStateFetch: (() async -> NetworkState)!
     private var previousNetworkFetchTimeout: TimeInterval!
+    private var previousSimpleNetworkType: (() -> NetworkType)!
 
     override func setUp() {
         super.setUp()
@@ -15,6 +16,7 @@ class ConnectivityWrapperTests: XCTestCase {
         previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
         previousPerformNetworkStateFetch = Current.connectivity.performNetworkStateFetch
         previousNetworkFetchTimeout = Current.connectivity.networkFetchTimeout
+        previousSimpleNetworkType = Current.connectivity.simpleNetworkType
     }
 
     override func tearDown() {
@@ -23,6 +25,7 @@ class ConnectivityWrapperTests: XCTestCase {
         Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
         Current.connectivity.performNetworkStateFetch = previousPerformNetworkStateFetch
         Current.connectivity.networkFetchTimeout = previousNetworkFetchTimeout
+        Current.connectivity.simpleNetworkType = previousSimpleNetworkType
         super.tearDown()
     }
 
@@ -120,6 +123,57 @@ class ConnectivityWrapperTests: XCTestCase {
         // The fetch that lost the race must be dropped entirely, not applied after the fact.
         try await Task.sleep(nanoseconds: 1_000_000_000)
         XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "cached-ssid")
+    }
+
+    func testPathUpdateMovingToAnotherWiFiNetworkPostsConnectivityChange() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "home", bssid: "home-bssid") }
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "hotspot", bssid: "hotspot-bssid") }
+        let expectation = expectation(
+            forNotification: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        await fulfillment(of: [expectation], timeout: 1)
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "hotspot")
+    }
+
+    func testPathUpdateOnTheSameNetworkDoesNotPostConnectivityChange() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "home", bssid: "home-bssid") }
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        let expectation = expectation(
+            forNotification: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+        expectation.isInverted = true
+
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        await fulfillment(of: [expectation], timeout: 0.5)
+    }
+
+    func testPathUpdateChangingNetworkTypePostsConnectivityChange() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "home") }
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        Current.connectivity.simpleNetworkType = { .cellular }
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let expectation = expectation(
+            forNotification: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        await fulfillment(of: [expectation], timeout: 1)
+        XCTAssertNil(Current.connectivity.lastKnownNetworkState().ssid)
     }
 
     func testFetchThatCompletesUpdatesLastKnownState() async {

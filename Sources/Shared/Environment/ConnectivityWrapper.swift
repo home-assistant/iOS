@@ -64,6 +64,9 @@ public class ConnectivityWrapper {
     private let stateLock = NSLock()
     private var cachedNetworkState = NetworkState()
 
+    private let notificationLock = NSLock()
+    private var lastNotifiedNetworkType: NetworkType?
+
     public func updateLastKnownNetworkState(_ state: NetworkState) {
         stateLock.lock()
         defer { stateLock.unlock() }
@@ -245,16 +248,38 @@ public class ConnectivityWrapper {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: NetworkReachability.didChangeNotification,
+            selector: #selector(networkPathDidUpdate(_:)),
+            name: NetworkReachability.pathDidUpdateNotification,
             object: nil
         )
         #endif
     }
 
-    @objc private func connectivityDidChange(_ note: Notification) {
+    @objc private func networkPathDidUpdate(_ note: Notification) {
         Task { [weak self] in
-            await self?.refreshNetworkInformation()
+            await self?.handleNetworkPathUpdate()
         }
+    }
+
+    /// Refreshes network information for a path update and posts the connectivity-changed notification
+    /// when the network type or the Wi-Fi network the device is on actually changed.
+    ///
+    /// Moving straight from one Wi-Fi network to another keeps the network type at `.wifi`, so the path
+    /// update is the only signal that the cached SSID (and with it the internal/external URL decision)
+    /// no longer describes the network the device is on.
+    func handleNetworkPathUpdate() async {
+        let previousState = lastKnownNetworkState()
+        await refreshNetworkInformation()
+        let currentState = lastKnownNetworkState()
+        let networkType = simpleNetworkType()
+
+        notificationLock.lock()
+        let didChange = currentState != previousState || networkType != lastNotifiedNetworkType
+        lastNotifiedNetworkType = networkType
+        notificationLock.unlock()
+
+        guard didChange else { return }
+
+        NotificationCenter.default.post(name: connectivityDidChangeNotification(), object: nil)
     }
 }
