@@ -22,6 +22,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     var statusBarView: UIView?
+    /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
+    var assistZoomAnchorView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
@@ -280,6 +282,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.uiDelegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
+
+        // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
+        // so the button underneath keeps working.
+        assistZoomAnchorView = AssistZoomAnchorView.install(in: view)
 
         NotificationCenter.default.addObserver(
             self,
