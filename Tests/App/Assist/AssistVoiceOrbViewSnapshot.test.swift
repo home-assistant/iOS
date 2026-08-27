@@ -18,8 +18,8 @@ struct AssistVoiceOrbViewSnapshotTests {
 
         assertLightDarkSnapshots(
             of: view,
-            // The orb is blurs and Liquid Glass, which the render server draws: a layer-based capture
-            // comes back with only the microphone glyph on a transparent background.
+            // The orb is drawn from blurs and Liquid Glass, which the render server composites: a
+            // layer-based capture comes back with only the microphone glyph on a transparent background.
             drawHierarchyInKeyWindow: true,
             layout: .fixed(width: Self.size, height: Self.size),
             named: "level-\(Int(level * 100))"

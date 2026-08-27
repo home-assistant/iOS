@@ -23,21 +23,14 @@ struct AssistVoiceOrbView: View {
             }
         }
 
-        /// The design system's `cyan50`-style tokens cannot be used here: `BaseColors` spells them as
-        /// `Color(hex: "0xAARRGGBB")`, a form `Color(hex:)` rejects, so each one silently resolves to
-        /// `.clear`. These are the same palette values, written in a form that survives.
-        static func srgb(_ red: Double, _ green: Double, _ blue: Double) -> Color {
-            Color(.sRGB, red: red / 255, green: green / 255, blue: blue / 255, opacity: 1)
-        }
-
         /// Dark mode takes the deep end of the palette, where the white microphone glyph still reads
         /// against the blend of the three: the light blobs are the brightest thing on a dark screen and
         /// swallow the glyph. The spread between the darkest and the brightest is kept wide, or the orb
         /// flattens into one dull disc once the colours come down.
         static let blobs: [Blob] = [
-            .init(lightColor: .cyan, darkColor: srgb(0x07, 0x80, 0x98), speed: 1.6, phase: 0),
-            .init(lightColor: .haPrimary, darkColor: srgb(0x00, 0x70, 0x93), speed: -2.1, phase: 2.1),
-            .init(lightColor: .teal, darkColor: srgb(0x01, 0x4C, 0x5B), speed: 2.7, phase: 4.2),
+            .init(lightColor: .cyan, darkColor: .cyan50, speed: 1.6, phase: 0),
+            .init(lightColor: .haPrimary, darkColor: .brand30, speed: -2.1, phase: 2.1),
+            .init(lightColor: .teal, darkColor: .cyan30, speed: 2.7, phase: 4.2),
         ]
 
         /// What the orb has to tell apart from the screen behind it, which is white in light mode and
@@ -62,7 +55,7 @@ struct AssistVoiceOrbView: View {
             /// orb's own fill and glass tint pull back instead, since in dark mode they are what buries
             /// the microphone glyph.
             static let dark = Appearance(
-                activityCircleColor: srgb(0x37, 0xC8, 0xFD),
+                activityCircleColor: .brand60,
                 activityCircleOpacity: 0.35,
                 orbBackgroundOpacity: 0.25,
                 orbGlassTintOpacity: 0.3,
