@@ -1178,6 +1178,8 @@
 				AssistViewModel.swift,
 				Audio/AudioRecorder.swift,
 				"Audio/CMSampleBuffer+AudioSamples.swift",
+				Local/OnDeviceVoice.swift,
+				Local/OnDeviceVoiceCatalog.swift,
 				Local/SpeechSynthesizer.swift,
 				Local/SpeechTranscriber.swift,
 				Local/TTSVoicePickerView.swift,
