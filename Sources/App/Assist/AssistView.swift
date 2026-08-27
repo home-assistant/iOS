@@ -19,7 +19,6 @@ struct AssistView: View {
         static let sendImage = MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor)
         static let borderWidth: CGFloat = DesignSystem.Border.Width.default
 
-        static let macPipelinePickerMaxWidth: CGFloat = 200
         static let pipelinePickerSize: CGFloat = 32
         static let pipelinePickerBackgroundOpacity: Double = 0.15
 
@@ -45,6 +44,9 @@ struct AssistView: View {
         /// Gap under the bottom bar, on top of the bottom safe area. Negative values reach into the
         /// safe area, which is how the row sits closer to the screen edge than the inset alone allows.
         static let inputRowBottomPadding: CGFloat = -DesignSystem.Spaces.one
+        /// A window has no bottom safe area to reach into, so the negative inset above would run the
+        /// row off the bottom edge.
+        static let inputRowBottomPaddingMac: CGFloat = DesignSystem.Spaces.two
         /// With the keyboard up the bar sits on its top edge instead of floating over the safe area,
         /// so it tightens against the screen sides and lifts clear of the keyboard.
         static let barHorizontalPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.oneAndHalf
@@ -131,12 +133,6 @@ struct AssistView: View {
                         }
                     }
                     #endif
-
-                    #if targetEnvironment(macCatalyst)
-                    ToolbarItem(placement: .topBarTrailing) {
-                        macPicker
-                    }
-                    #endif
                 }
                 .sheet(isPresented: $showSettings) {
                     if #available(iOS 26.0, *) {
@@ -172,17 +168,24 @@ struct AssistView: View {
     }
 
     /// A single pipeline is not a choice, so the circle only appears when there is something to
-    /// switch to. Mac keeps its own picker in the toolbar.
+    /// switch to.
     private var showsPipelinePicker: Bool {
-        viewModel.pipelines.count > 1 && !Current.isCatalyst
+        viewModel.pipelines.count > 1
     }
 
     private var pipelinesPicker: some View {
         Menu {
-            Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
-                ForEach(viewModel.pipelines, id: \.id) { pipeline in
-                    Text(pipeline.name)
-                        .tag(pipeline.id)
+            // Buttons rather than a Picker: Catalyst renders a menu Picker as a submenu, which costs a
+            // second click to reach the pipelines.
+            ForEach(viewModel.pipelines, id: \.id) { pipeline in
+                Button {
+                    viewModel.preferredPipelineId = pipeline.id
+                } label: {
+                    if pipeline.id == viewModel.preferredPipelineId {
+                        Label(pipeline.name, systemSymbol: .checkmark)
+                    } else {
+                        Text(pipeline.name)
+                    }
                 }
             }
         } label: {
@@ -201,25 +204,6 @@ struct AssistView: View {
         .accessibilityValue(selectedPipelineName)
     }
 
-    private var macPicker: some View {
-        Menu {
-            Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
-                ForEach(viewModel.pipelines, id: \.id) { pipeline in
-                    Text(pipeline.name)
-                        .tag(pipeline.id)
-                }
-            }
-        } label: {
-            HStack(spacing: DesignSystem.Spaces.half) {
-                Text(selectedPipelineName)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Image(systemSymbol: .chevronUpChevronDown)
-            }
-        }
-        .frame(maxWidth: Constants.macPipelinePickerMaxWidth, alignment: .trailing)
-    }
-
     /// The keyboard pins the bar to its top edge, where the floating insets read as too loose. On Mac
     /// the field keeps focus with no keyboard on screen, so the bar stays as it is.
     private var isKeyboardVisible: Bool {
@@ -231,7 +215,10 @@ struct AssistView: View {
     }
 
     private var barBottomPadding: CGFloat {
-        isKeyboardVisible ? Constants.inputRowBottomPaddingKeyboardOpen : Constants.inputRowBottomPadding
+        if Current.isCatalyst {
+            return Constants.inputRowBottomPaddingMac
+        }
+        return isKeyboardVisible ? Constants.inputRowBottomPaddingKeyboardOpen : Constants.inputRowBottomPadding
     }
 
     private var selectedPipelineName: String {
