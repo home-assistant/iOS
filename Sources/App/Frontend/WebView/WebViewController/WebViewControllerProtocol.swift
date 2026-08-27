@@ -5,6 +5,9 @@ protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
+    /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
+    /// frontend isn't on screen to zoom out of, in which case Assist is presented without a zoom.
+    var assistZoomAnchorView: UIView? { get }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
