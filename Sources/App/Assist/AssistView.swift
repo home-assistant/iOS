@@ -401,7 +401,7 @@ struct AssistView: View {
         .frame(height: Constants.inputFieldHeight)
         .padding(.vertical, DesignSystem.Spaces.one)
         // The circle carries its own visual inset, so it sits closer to the capsule's edge than text.
-        .padding(.leading, showsPipelinePicker ? DesignSystem.Spaces.two : DesignSystem.Spaces.two)
+        .padding(.leading, showsPipelinePicker ? DesignSystem.Spaces.oneAndHalf : DesignSystem.Spaces.two)
         .padding(.trailing, DesignSystem.Spaces.two)
         // Simultaneous, so a plain tap still lands in the text field.
         .simultaneousGesture(
