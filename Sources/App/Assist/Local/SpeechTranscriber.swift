@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 import Foundation
 import Speech
@@ -9,6 +10,8 @@ protocol SpeechTranscriberProtocol: AnyObject {
     var onTranscriptUpdate: ((String, Bool) -> Void)? { get set }
     var onError: ((Error) -> Void)? { get set }
     var onListeningStateChange: ((Bool) -> Void)? { get set }
+    /// Normalized microphone input level (0...1) emitted while listening, for UI feedback.
+    var onAudioLevelUpdate: ((Float) -> Void)? { get set }
     /// When false, the caller owns the audio session (e.g. CarPlay keeps a .playAndRecord
     /// session active for the whole conversation) and the transcriber must not reconfigure
     /// or deactivate it.
@@ -49,6 +52,16 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         case restricted
     }
 
+    private enum Constants {
+        /// Window of microphone RMS power (dBFS) mapped onto the 0...1 voice level. Matches
+        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+        /// The tap runs on a real-time audio thread and fires far faster than a screen refresh, so
+        /// levels leave it at about 30 Hz instead of once per buffer.
+        static let levelInterval: TimeInterval = 1.0 / 30
+    }
+
     // MARK: - Public Properties
 
     /// The current transcribed text (updates in real-time)
@@ -73,6 +86,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     /// Called when listening state changes
     public var onListeningStateChange: ((Bool) -> Void)?
+
+    /// Called with a normalized microphone input level (0...1) while listening
+    public var onAudioLevelUpdate: ((Float) -> Void)?
 
     /// Whether this transcriber configures and deactivates the shared audio session itself.
     public var managesAudioSession = true
@@ -215,10 +231,28 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
-        // from a background thread.
+        // from a background thread. The level's rate limit is held the same way, and the tap calls
+        // back serially, so it needs no further synchronisation.
         let capturedRequest = recognitionRequest
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+        var lastLevelEmission: TimeInterval = .zero
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
             capturedRequest.append(buffer)
+
+            let now = ProcessInfo.processInfo.systemUptime
+            guard now - lastLevelEmission >= Constants.levelInterval else { return }
+            lastLevelEmission = now
+
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let frameCount = vDSP_Length(buffer.frameLength)
+            guard frameCount > 0 else { return }
+            var meanSquare: Float = 0
+            vDSP_measqv(channelData, 1, &meanSquare, frameCount)
+            let decibels = 20 * log10(max(sqrt(meanSquare), .leastNormalMagnitude))
+            let range = Constants.powerCeiling - Constants.powerFloor
+            let level = max(0, min(1, (decibels - Constants.powerFloor) / range))
+            Task { @MainActor in
+                self?.onAudioLevelUpdate?(level)
+            }
         }
 
         // Start recognition task
