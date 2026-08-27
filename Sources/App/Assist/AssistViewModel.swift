@@ -45,6 +45,10 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     private var voiceInitiatedRequest = false
+    /// How far back through the sent requests the user has walked, newest first; nil while they are
+    /// still on their own draft.
+    private var requestHistoryOffset: Int?
+    private var draftBeforeRequestHistory: String?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -116,6 +120,54 @@ final class AssistViewModel: NSObject, ObservableObject {
         ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
+        resetRequestHistoryWalk()
+    }
+
+    /// The requests already sent, newest first, for walking back through them like a terminal's
+    /// command history.
+    private var sentRequests: [String] {
+        chatItems.filter { $0.itemType == .input }.map(\.content).reversed()
+    }
+
+    /// Puts the previous sent request in the input, keeping the user's own draft to come back to.
+    /// - Returns: whether there was an earlier request to show.
+    @MainActor @discardableResult func recallPreviousRequest() -> Bool {
+        let requests = sentRequests
+        guard !requests.isEmpty else { return false }
+
+        let offset: Int
+        if let requestHistoryOffset {
+            guard requestHistoryOffset + 1 < requests.count else { return false }
+            offset = requestHistoryOffset + 1
+        } else {
+            draftBeforeRequestHistory = inputText
+            offset = 0
+        }
+        requestHistoryOffset = offset
+        inputText = requests[offset]
+        return true
+    }
+
+    /// Walks back towards the newest request, and past it to the draft the user was writing.
+    /// - Returns: whether there was anything later to show.
+    @MainActor @discardableResult func recallNextRequest() -> Bool {
+        guard let requestHistoryOffset else { return false }
+
+        guard requestHistoryOffset > 0 else {
+            inputText = draftBeforeRequestHistory ?? ""
+            resetRequestHistoryWalk()
+            return true
+        }
+
+        let offset = requestHistoryOffset - 1
+        self.requestHistoryOffset = offset
+        inputText = sentRequests[offset]
+        return true
+    }
+
+    private func resetRequestHistoryWalk() {
+        requestHistoryOffset = nil
+        draftBeforeRequestHistory = nil
     }
 
     @MainActor func assistWithTextExpectingTTS() {

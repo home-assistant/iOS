@@ -60,65 +60,68 @@ struct AssistVoiceOrbView: View {
 
     var body: some View {
         TimelineView(.animation) { context in
-            let time = context.date.timeIntervalSinceReferenceDate
-            ZStack {
-                Circle()
-                    .fill(Color.haPrimary.opacity(Constants.activityCircleOpacity))
-                    .frame(width: Constants.activityCircleSize, height: Constants.activityCircleSize)
-                    .scaleEffect(Constants.activityCircleScale + level * Constants.activityCircleScalePerLevel)
-
-                ZStack {
-                    ForEach(Array(Constants.blobs.enumerated()), id: \.offset) { _, blob in
-                        let offsetAmplitude = Constants.blobOffset + level * Constants.blobOffsetPerLevel
-                        Circle()
-                            .fill(blob.color)
-                            .frame(width: Constants.blobSize, height: Constants.blobSize)
-                            .offset(
-                                x: cos(time * blob.speed + blob.phase) * offsetAmplitude,
-                                y: sin(
-                                    time * blob.speed * Constants.blobVerticalSpeedRatio + blob.phase
-                                ) * offsetAmplitude
-                            )
-                            .blur(radius: Constants.blobBlurRadius)
-                    }
-                }
-                .frame(width: Constants.orbSize, height: Constants.orbSize)
-                .clipShape(Circle())
-                .modify { view in
-                    if #available(iOS 26.0, *), !forcesLegacyAppearance {
-                        view.glassEffect(
-                            .regular.tint(Color.haPrimary.opacity(Constants.orbGlassTintOpacity)),
-                            in: .circle
-                        )
-                    } else {
-                        view
-                            .background(Circle().fill(Color.haPrimary.opacity(Constants.orbBackgroundOpacity)))
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(
-                                        LinearGradient(
-                                            colors: [
-                                                .white.opacity(Constants.orbBorderStartOpacity),
-                                                .white.opacity(Constants.orbBorderEndOpacity),
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: Constants.orbBorderWidth
-                                    )
-                            )
-                    }
-                }
-                .scaleEffect(1 + level * Constants.orbScalePerLevel)
-
-                Image(uiImage: Constants.microphoneImage)
-                    .opacity(Constants.microphoneOpacity)
-                    .scaleEffect(1 + level * Constants.orbScalePerLevel)
-            }
-            .frame(width: Constants.orbSize, height: Constants.orbSize)
+            orb(at: context.date.timeIntervalSinceReferenceDate)
         }
         .animation(Constants.levelAnimation, value: level)
         .accessibilityLabel(L10n.Assist.Button.Listening.title)
+    }
+
+    private func orb(at time: TimeInterval) -> some View {
+        ZStack {
+            Circle()
+                .fill(Color.haPrimary.opacity(Constants.activityCircleOpacity))
+                .frame(width: Constants.activityCircleSize, height: Constants.activityCircleSize)
+                .scaleEffect(Constants.activityCircleScale + level * Constants.activityCircleScalePerLevel)
+
+            ZStack {
+                ForEach(Array(Constants.blobs.enumerated()), id: \.offset) { _, blob in
+                    let offsetAmplitude = Constants.blobOffset + level * Constants.blobOffsetPerLevel
+                    Circle()
+                        .fill(blob.color)
+                        .frame(width: Constants.blobSize, height: Constants.blobSize)
+                        .offset(
+                            x: cos(time * blob.speed + blob.phase) * offsetAmplitude,
+                            y: sin(
+                                time * blob.speed * Constants.blobVerticalSpeedRatio + blob.phase
+                            ) * offsetAmplitude
+                        )
+                        .blur(radius: Constants.blobBlurRadius)
+                }
+            }
+            .frame(width: Constants.orbSize, height: Constants.orbSize)
+            .clipShape(Circle())
+            .modify { view in
+                if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                    view.glassEffect(
+                        .regular.tint(Color.haPrimary.opacity(Constants.orbGlassTintOpacity)),
+                        in: .circle
+                    )
+                } else {
+                    view
+                        .background(Circle().fill(Color.haPrimary.opacity(Constants.orbBackgroundOpacity)))
+                        .overlay(
+                            Circle()
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [
+                                            .white.opacity(Constants.orbBorderStartOpacity),
+                                            .white.opacity(Constants.orbBorderEndOpacity),
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: Constants.orbBorderWidth
+                                )
+                        )
+                }
+            }
+            .scaleEffect(1 + level * Constants.orbScalePerLevel)
+
+            Image(uiImage: Constants.microphoneImage)
+                .opacity(Constants.microphoneOpacity)
+                .scaleEffect(1 + level * Constants.orbScalePerLevel)
+        }
+        .frame(width: Constants.orbSize, height: Constants.orbSize)
     }
 }
 

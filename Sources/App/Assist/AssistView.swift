@@ -65,6 +65,9 @@ struct AssistView: View {
         static let keyboardButtonSize: CGFloat = 44
         static let keyboardIconFontSize: CGFloat = 18
 
+        /// How far a drag over the input has to travel before it counts as walking the request history.
+        static let requestHistorySwipeDistance: CGFloat = 20
+
         static let recordingTransition: Animation = .smooth
         static let keyboardTransition: Animation = .smooth
     }
@@ -333,6 +336,15 @@ struct AssistView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.immediately)
+        .modify { view in
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                // Softens the conversation as it runs under the navigation bar.
+                view.scrollEdgeEffectStyle(.soft, for: .top)
+            } else {
+                view
+            }
+        }
         .safeAreaInset(edge: .bottom) {
             bottomBar
         }
@@ -389,8 +401,20 @@ struct AssistView: View {
         .frame(height: Constants.inputFieldHeight)
         .padding(.vertical, DesignSystem.Spaces.one)
         // The circle carries its own visual inset, so it sits closer to the capsule's edge than text.
-        .padding(.leading, showsPipelinePicker ? DesignSystem.Spaces.one : DesignSystem.Spaces.two)
+        .padding(.leading, showsPipelinePicker ? DesignSystem.Spaces.two : DesignSystem.Spaces.two)
         .padding(.trailing, DesignSystem.Spaces.two)
+        // Simultaneous, so a plain tap still lands in the text field.
+        .simultaneousGesture(
+            DragGesture(minimumDistance: Constants.requestHistorySwipeDistance)
+                .onEnded { drag in
+                    guard abs(drag.translation.height) > abs(drag.translation.width) else { return }
+                    if drag.translation.height < .zero {
+                        viewModel.recallPreviousRequest()
+                    } else {
+                        viewModel.recallNextRequest()
+                    }
+                }
+        )
         .modify { view in
             if #available(iOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(.regular.interactive(), in: .capsule)
@@ -410,6 +434,19 @@ struct AssistView: View {
                 viewModel.assistWithText()
                 if Current.isCatalyst {
                     isFirstResponder = true
+                }
+            }
+            .modify { view in
+                if #available(iOS 17.0, *) {
+                    view
+                        .onKeyPress(.upArrow) {
+                            viewModel.recallPreviousRequest() ? .handled : .ignored
+                        }
+                        .onKeyPress(.downArrow) {
+                            viewModel.recallNextRequest() ? .handled : .ignored
+                        }
+                } else {
+                    view
                 }
             }
     }
@@ -638,23 +675,6 @@ private let previewPipelines: [Pipeline] = [
     .init(id: "local", name: "Local voice assistant"),
 ]
 
-#Preview("Multiple pipelines") {
-    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, pipelines: previewPipelines))
-}
-
-#Preview("Multiple pipelines (legacy)") {
-    AssistView(
-        viewModel: previewViewModel(chatItems: previewChatItems, pipelines: previewPipelines),
-        forcesLegacyAppearance: true
-    )
-}
-
-#Preview("Single pipeline") {
-    AssistView(
-        viewModel: previewViewModel(chatItems: previewChatItems, pipelines: [previewPipelines[0]])
-    )
-}
-
 #Preview("Text mode") {
     AssistView.build(server: ServerFixture.standard)
 }
@@ -671,12 +691,18 @@ private let previewPipelines: [Pipeline] = [
     AssistView(viewModel: previewViewModel(chatItems: previewChatItems), forcesLegacyAppearance: true)
 }
 
-#Preview("Chat while recording") {
-    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, isRecording: true))
+#Preview("Multiple pipelines") {
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, pipelines: previewPipelines))
+}
+
+#Preview("Single pipeline") {
+    AssistView(
+        viewModel: previewViewModel(chatItems: previewChatItems, pipelines: [previewPipelines[0]])
+    )
 }
 
 #Preview("Recording") {
-    AssistView(viewModel: previewViewModel(isRecording: true))
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, isRecording: true))
 }
 
 #Preview("Recording (legacy)") {
