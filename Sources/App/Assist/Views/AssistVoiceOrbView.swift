@@ -8,22 +8,66 @@ struct AssistVoiceOrbView: View {
     /// Renders the pre-iOS 26 fill and border instead of Liquid Glass, so the legacy look stays
     /// previewable alongside the current one.
     var forcesLegacyAppearance = false
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.assistOrbFixedTime) private var fixedTime
 
     private enum Constants {
         struct Blob {
-            let color: Color
+            let lightColor: Color
+            let darkColor: Color
             let speed: Double
             let phase: Double
+
+            func color(for colorScheme: ColorScheme) -> Color {
+                colorScheme == .dark ? darkColor : lightColor
+            }
         }
 
+        /// Dark mode takes the deep end of the palette, where the white microphone glyph still reads
+        /// against the blend of the three: the light blobs are the brightest thing on a dark screen and
+        /// swallow the glyph. The spread between the darkest and the brightest is kept wide, or the orb
+        /// flattens into one dull disc once the colours come down.
         static let blobs: [Blob] = [
-            .init(color: .cyan, speed: 1.6, phase: 0),
-            .init(color: .haPrimary, speed: -2.1, phase: 2.1),
-            .init(color: .teal, speed: 2.7, phase: 4.2),
+            .init(lightColor: .cyan, darkColor: .cyan50, speed: 1.6, phase: 0),
+            .init(lightColor: .haPrimary, darkColor: .brand30, speed: -2.1, phase: 2.1),
+            .init(lightColor: .teal, darkColor: .cyan30, speed: 2.7, phase: 4.2),
         ]
 
+        /// What the orb has to tell apart from the screen behind it, which is white in light mode and
+        /// near black in dark mode, so these values cannot be shared between the two.
+        struct Appearance {
+            let activityCircleColor: Color
+            let activityCircleOpacity: Double
+            let orbBackgroundOpacity: Double
+            let orbGlassTintOpacity: Double
+            let microphoneOpacity: Double
+
+            static let light = Appearance(
+                activityCircleColor: .haPrimary,
+                activityCircleOpacity: 0.25,
+                orbBackgroundOpacity: 0.35,
+                orbGlassTintOpacity: 0.5,
+                microphoneOpacity: 0.9
+            )
+
+            /// `haPrimary` at a quarter opacity is all but black against a dark background, so the
+            /// activity circle switches to a light blue and leans on it harder to stay visible. The
+            /// orb's own fill and glass tint pull back instead, since in dark mode they are what buries
+            /// the microphone glyph.
+            static let dark = Appearance(
+                activityCircleColor: .brand60,
+                activityCircleOpacity: 0.35,
+                orbBackgroundOpacity: 0.25,
+                orbGlassTintOpacity: 0.3,
+                microphoneOpacity: 1
+            )
+
+            static func matching(_ colorScheme: ColorScheme) -> Appearance {
+                colorScheme == .dark ? .dark : .light
+            }
+        }
+
         static let activityCircleSize: CGFloat = 64
-        static let activityCircleOpacity: Double = 0.25
         /// Hidden behind the orb at silence and growing when talking, so the size change is the thing
         /// the user notices. The per-level factor is capped by the room between the orb's centre and
         /// the bottom of the screen: at 0.6 the loudest ring is 102pt wide and still lands on screen.
@@ -31,8 +75,6 @@ struct AssistVoiceOrbView: View {
         static let activityCircleScalePerLevel: CGFloat = 0.6
 
         static let orbSize: CGFloat = 64
-        static let orbBackgroundOpacity: Double = 0.35
-        static let orbGlassTintOpacity: Double = 0.5
         static let orbScalePerLevel: CGFloat = 0.25
         static let orbBorderStartOpacity: Double = 0.55
         static let orbBorderEndOpacity: Double = 0.08
@@ -46,7 +88,6 @@ struct AssistVoiceOrbView: View {
         static let blobVerticalSpeedRatio: Double = 0.8
 
         static let microphoneIconSize = CGSize(width: 30, height: 30)
-        static let microphoneOpacity: Double = 0.9
         /// Drawing the glyph is a text render into a bitmap, and the body below runs on every frame
         /// of the animation timeline, so it is rasterized once here instead.
         static let microphoneImage = MaterialDesignIcons.microphoneIcon.image(
@@ -58,17 +99,25 @@ struct AssistVoiceOrbView: View {
     }
 
     var body: some View {
-        TimelineView(.animation) { context in
-            orb(at: context.date.timeIntervalSinceReferenceDate)
+        Group {
+            if let fixedTime {
+                orb(at: fixedTime)
+            } else {
+                TimelineView(.animation) { context in
+                    orb(at: context.date.timeIntervalSinceReferenceDate)
+                }
+            }
         }
         .animation(Constants.levelAnimation, value: level)
         .accessibilityLabel(L10n.Assist.Button.Listening.title)
     }
 
     private func orb(at time: TimeInterval) -> some View {
-        ZStack {
+        let appearance = Constants.Appearance.matching(colorScheme)
+
+        return ZStack {
             Circle()
-                .fill(Color.haPrimary.opacity(Constants.activityCircleOpacity))
+                .fill(appearance.activityCircleColor.opacity(appearance.activityCircleOpacity))
                 .frame(width: Constants.activityCircleSize, height: Constants.activityCircleSize)
                 .scaleEffect(Constants.activityCircleScale + level * Constants.activityCircleScalePerLevel)
 
@@ -76,7 +125,7 @@ struct AssistVoiceOrbView: View {
                 ForEach(Array(Constants.blobs.enumerated()), id: \.offset) { _, blob in
                     let offsetAmplitude = Constants.blobOffset + level * Constants.blobOffsetPerLevel
                     Circle()
-                        .fill(blob.color)
+                        .fill(blob.color(for: colorScheme))
                         .frame(width: Constants.blobSize, height: Constants.blobSize)
                         .offset(
                             x: cos(time * blob.speed + blob.phase) * offsetAmplitude,
@@ -92,12 +141,12 @@ struct AssistVoiceOrbView: View {
             .modify { view in
                 if #available(iOS 26.0, *), !forcesLegacyAppearance {
                     view.glassEffect(
-                        .regular.tint(Color.haPrimary.opacity(Constants.orbGlassTintOpacity)),
+                        .regular.tint(Color.haPrimary.opacity(appearance.orbGlassTintOpacity)),
                         in: .circle
                     )
                 } else {
                     view
-                        .background(Circle().fill(Color.haPrimary.opacity(Constants.orbBackgroundOpacity)))
+                        .background(Circle().fill(Color.haPrimary.opacity(appearance.orbBackgroundOpacity)))
                         .overlay(
                             Circle()
                                 .strokeBorder(
@@ -117,7 +166,7 @@ struct AssistVoiceOrbView: View {
             .scaleEffect(1 + level * Constants.orbScalePerLevel)
 
             Image(uiImage: Constants.microphoneImage)
-                .opacity(Constants.microphoneOpacity)
+                .opacity(appearance.microphoneOpacity)
                 .scaleEffect(1 + level * Constants.orbScalePerLevel)
         }
         .frame(width: Constants.orbSize, height: Constants.orbSize)
@@ -134,6 +183,17 @@ struct AssistVoiceOrbView: View {
     .background(Color(uiColor: .systemBackground))
 }
 
+#Preview("Dark") {
+    VStack(spacing: DesignSystem.Spaces.six) {
+        AssistVoiceOrbView(level: 0)
+        AssistVoiceOrbView(level: 0.5)
+        AssistVoiceOrbView(level: 1)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(uiColor: .systemBackground))
+    .preferredColorScheme(.dark)
+}
+
 #Preview("Legacy") {
     VStack(spacing: DesignSystem.Spaces.six) {
         AssistVoiceOrbView(level: 0, forcesLegacyAppearance: true)
@@ -142,4 +202,15 @@ struct AssistVoiceOrbView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color(uiColor: .systemBackground))
+}
+
+#Preview("Legacy dark") {
+    VStack(spacing: DesignSystem.Spaces.six) {
+        AssistVoiceOrbView(level: 0, forcesLegacyAppearance: true)
+        AssistVoiceOrbView(level: 0.5, forcesLegacyAppearance: true)
+        AssistVoiceOrbView(level: 1, forcesLegacyAppearance: true)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(uiColor: .systemBackground))
+    .preferredColorScheme(.dark)
 }
