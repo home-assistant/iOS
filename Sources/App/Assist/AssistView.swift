@@ -19,6 +19,13 @@ struct AssistView: View {
         static let borderWidth: CGFloat = DesignSystem.Border.Width.default
 
         static let macPipelinePickerMaxWidth: CGFloat = 200
+        static let pipelinePickerSize: CGFloat = 32
+        static let pipelinePickerBackgroundOpacity: Double = 0.15
+
+        /// The scroll view itself runs edge to edge, under the navigation bar and the input row; these
+        /// inset the conversation inside it.
+        static let chatListHorizontalPadding: CGFloat = DesignSystem.Spaces.two
+        static let chatListVerticalPadding: CGFloat = DesignSystem.Spaces.two
 
         static let bubbleCornerRadius: CGFloat = 14
         static let bubbleVerticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
@@ -100,40 +107,35 @@ struct AssistView: View {
 
     private var content: some View {
         NavigationView {
-            VStack(spacing: .zero) {
-                if !Current.isCatalyst {
-                    pipelinesPicker
-                }
-                chatList
-            }
-            .navigationTitle("Assist")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if showCloseButton {
-                        closeButton
+            chatList
+                .navigationTitle("Assist")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        if showCloseButton {
+                            closeButton
+                        }
                     }
-                }
 
-                #if !targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .topBarTrailing) {
+                    #if !targetEnvironment(macCatalyst)
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if #available(iOS 26.0, *) {
+                            settingsButton
+                        }
+                    }
+                    #endif
+
+                    #if targetEnvironment(macCatalyst)
+                    ToolbarItem(placement: .topBarTrailing) {
+                        macPicker
+                    }
+                    #endif
+                }
+                .sheet(isPresented: $showSettings) {
                     if #available(iOS 26.0, *) {
-                        settingsButton
+                        AssistSettingsView()
                     }
                 }
-                #endif
-
-                #if targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .topBarTrailing) {
-                    macPicker
-                }
-                #endif
-            }
-            .sheet(isPresented: $showSettings) {
-                if #available(iOS 26.0, *) {
-                    AssistSettingsView()
-                }
-            }
         }
         .navigationViewStyle(.stack)
     }
@@ -159,24 +161,32 @@ struct AssistView: View {
         .tint(Color(uiColor: .label))
     }
 
+    /// A single pipeline is not a choice, so the circle only appears when there is something to
+    /// switch to. Mac keeps its own picker in the toolbar.
+    private var showsPipelinePicker: Bool {
+        viewModel.pipelines.count > 1 && !Current.isCatalyst
+    }
+
     private var pipelinesPicker: some View {
-        Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
-            ForEach(viewModel.pipelines, id: \.id) { pipeline in
-                Text(pipeline.name)
-                    .font(.footnote)
-                    .tag(pipeline.id)
+        Menu {
+            Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
+                ForEach(viewModel.pipelines, id: \.id) { pipeline in
+                    Text(pipeline.name)
+                        .tag(pipeline.id)
+                }
             }
+        } label: {
+            Text(selectedPipelineInitial)
+                .font(DesignSystem.Font.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.haPrimary)
+                .frame(width: Constants.pipelinePickerSize, height: Constants.pipelinePickerSize)
+                .background(
+                    Circle().fill(Color.haPrimary.opacity(Constants.pipelinePickerBackgroundOpacity))
+                )
         }
-        .pickerStyle(.menu)
-        .tint(.gray)
-        .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
-                view.glassEffect(.regular.interactive(), in: .capsule)
-            } else {
-                view.background(.regularMaterial, in: Capsule())
-            }
-        }
-        .padding(.bottom)
+        .buttonStyle(.plain)
+        .accessibilityLabel(L10n.Assist.PipelinesPicker.title)
     }
 
     private var macPicker: some View {
@@ -215,6 +225,12 @@ struct AssistView: View {
     private var selectedPipelineName: String {
         viewModel.pipelines.first { $0.id == viewModel.preferredPipelineId }?.name
             ?? L10n.Assist.PipelinesPicker.title
+    }
+
+    /// Stands in for an icon in the picker circle, so the selected pipeline is recognisable without
+    /// spelling its whole name out.
+    private var selectedPipelineInitial: String {
+        selectedPipelineName.prefix(1).uppercased()
     }
 
     private func makeChatBubble(item: AssistChatItem) -> some View {
@@ -303,7 +319,8 @@ struct AssistView: View {
                             .padding(.bottom)
                     }
                 }
-                .padding()
+                .padding(.vertical, Constants.chatListVerticalPadding)
+                .padding(.horizontal, Constants.chatListHorizontalPadding)
                 .onChange(of: viewModel.chatItems) { _ in
                     proxy.scrollTo(viewModel.chatItems.last?.id)
                 }
@@ -337,7 +354,7 @@ struct AssistView: View {
 
     private var inputTextView: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
-            inputTextField
+            inputFieldContainer
             inputActionButton
         }
         .modify { view in
@@ -355,6 +372,29 @@ struct AssistView: View {
         .allowsHitTesting(!viewModel.isRecording)
     }
 
+    private var inputFieldContainer: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            if showsPipelinePicker {
+                pipelinesPicker
+            }
+            inputTextField
+        }
+        .frame(height: Constants.inputFieldHeight)
+        .padding(.vertical, DesignSystem.Spaces.one)
+        // The circle carries its own visual inset, so it sits closer to the capsule's edge than text.
+        .padding(.leading, showsPipelinePicker ? DesignSystem.Spaces.one : DesignSystem.Spaces.two)
+        .padding(.trailing, DesignSystem.Spaces.two)
+        .modify { view in
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                view.glassEffect(.regular.interactive(), in: .capsule)
+            } else {
+                view
+                    .background(.regularMaterial, in: Capsule())
+                    .overlay(Capsule().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
+            }
+        }
+    }
+
     private var inputTextField: some View {
         TextField(L10n.Assist.TextField.placeholder, text: $viewModel.inputText)
             .textFieldStyle(.plain)
@@ -363,18 +403,6 @@ struct AssistView: View {
                 viewModel.assistWithText()
                 if Current.isCatalyst {
                     isFirstResponder = true
-                }
-            }
-            .frame(height: Constants.inputFieldHeight)
-            .padding(.vertical, DesignSystem.Spaces.one)
-            .padding(.horizontal, DesignSystem.Spaces.two)
-            .modify { view in
-                if #available(iOS 26.0, *), !forcesLegacyAppearance {
-                    view.glassEffect(.regular.interactive(), in: .capsule)
-                } else {
-                    view
-                        .background(.regularMaterial, in: Capsule())
-                        .overlay(Capsule().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
                 }
             }
     }
@@ -563,7 +591,11 @@ struct AssistView: View {
     }
 }
 
-private func previewViewModel(chatItems: [AssistChatItem] = [], isRecording: Bool = false) -> AssistViewModel {
+private func previewViewModel(
+    chatItems: [AssistChatItem] = [],
+    pipelines: [Pipeline] = [],
+    isRecording: Bool = false
+) -> AssistViewModel {
     let viewModel = AssistViewModel(
         server: ServerFixture.standard,
         audioRecorder: AudioRecorder(),
@@ -572,6 +604,8 @@ private func previewViewModel(chatItems: [AssistChatItem] = [], isRecording: Boo
         autoStartRecording: false
     )
     viewModel.chatItems = chatItems
+    viewModel.pipelines = pipelines
+    viewModel.preferredPipelineId = pipelines.first?.id ?? ""
     if isRecording {
         viewModel.isRecording = true
         viewModel.audioLevel = 0.6
@@ -590,6 +624,29 @@ private let previewChatItems: [AssistChatItem] = [
     .init(content: "Set the thermostat to 20", itemType: .pending),
     .init(content: "", itemType: .typing),
 ]
+
+private let previewPipelines: [Pipeline] = [
+    .init(id: "home-assistant", name: "Home Assistant"),
+    .init(id: "openai", name: "OpenAI conversation"),
+    .init(id: "local", name: "Local voice assistant"),
+]
+
+#Preview("Multiple pipelines") {
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, pipelines: previewPipelines))
+}
+
+#Preview("Multiple pipelines (legacy)") {
+    AssistView(
+        viewModel: previewViewModel(chatItems: previewChatItems, pipelines: previewPipelines),
+        forcesLegacyAppearance: true
+    )
+}
+
+#Preview("Single pipeline") {
+    AssistView(
+        viewModel: previewViewModel(chatItems: previewChatItems, pipelines: [previewPipelines[0]])
+    )
+}
 
 #Preview("Text mode") {
     AssistView.build(server: ServerFixture.standard)
