@@ -12,9 +12,20 @@ public enum WidgetCalendarSampleData {
     /// The frontend calendar palette's first three colours.
     private static let colors = ["#4269d0", "#f4bd4a", "#ff725c"]
 
-    public static let events: [WidgetCalendarEventModel] = {
+    /// The calendar the sample events are built in, and the one anything drawing them should use.
+    ///
+    /// Pinned to UTC and `en_US_POSIX`: the events are laid out around a fixed UTC instant, so
+    /// rendering them against the device's calendar would put them on a different day — and label
+    /// them differently — depending on where the renderer happens to be.
+    public static let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC") ?? .current
+        calendar.locale = Locale(identifier: "en_US_POSIX")
+        return calendar
+    }()
+
+    public static let events: [WidgetCalendarEventModel] = {
+        let calendar = Self.calendar
         let today = calendar.startOfDay(for: referenceDate)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
         let dayAfter = calendar.date(byAdding: .day, value: 2, to: today) ?? today

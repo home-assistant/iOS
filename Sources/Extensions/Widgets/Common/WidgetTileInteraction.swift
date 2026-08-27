@@ -126,7 +126,9 @@ struct WidgetTileInteraction {
             },
             confirm: { label in
                 if let confirmationURL {
-                    return AnyView(Link(destination: confirmationURL) { label })
+                    // Same as the unconfirmed path: without the token `IncomingURLHandler` drops the
+                    // `server` parameter and opens server selection instead of the widget's server.
+                    return AnyView(Link(destination: confirmationURL.withWidgetAuthenticity()) { label })
                 } else if let confirmationIntent {
                     return AnyView(Button(intent: confirmationIntent) { label })
                 } else {

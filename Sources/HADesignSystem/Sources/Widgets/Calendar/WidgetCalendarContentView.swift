@@ -251,7 +251,7 @@ public struct WidgetCalendarContentView: View {
         events: Array(WidgetCalendarSampleData.events.prefix(3)),
         calendarCount: 3,
         showsCalendarName: true,
-        calendar: .current,
+        calendar: WidgetCalendarSampleData.calendar,
         family: .systemMedium,
         strings: .preview
     )
@@ -265,7 +265,7 @@ public struct WidgetCalendarContentView: View {
         events: [],
         calendarCount: 0,
         showsCalendarName: false,
-        calendar: .current,
+        calendar: WidgetCalendarSampleData.calendar,
         family: .systemMedium,
         strings: .preview
     )

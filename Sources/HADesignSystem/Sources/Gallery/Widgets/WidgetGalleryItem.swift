@@ -130,7 +130,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
             events: Array(WidgetCalendarSampleData.events.prefix(WidgetTileLayout.calendarSize(for: family))),
             calendarCount: 3,
             showsCalendarName: family != .systemSmall,
-            calendar: .current,
+            calendar: WidgetCalendarSampleData.calendar,
             family: family,
             strings: .preview,
             refreshControl: { AnyView(WidgetRefreshLabel(date: WidgetCalendarSampleData.referenceDate)) }

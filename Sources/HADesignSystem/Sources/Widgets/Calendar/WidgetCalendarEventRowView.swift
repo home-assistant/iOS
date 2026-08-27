@@ -70,7 +70,7 @@ public struct WidgetCalendarEventRowView: View {
                 referenceDate: WidgetCalendarSampleData.referenceDate,
                 showsDay: true,
                 showsCalendarName: true,
-                calendar: .current,
+                calendar: WidgetCalendarSampleData.calendar,
                 strings: .preview
             )
         }
