@@ -46,8 +46,13 @@ struct AssistVoiceOrbView: View {
         static let blobVerticalSpeedRatio: Double = 0.8
 
         static let microphoneIconSize = CGSize(width: 30, height: 30)
-        static let microphoneFontSize: CGFloat = 22
         static let microphoneOpacity: Double = 0.9
+        /// Drawing the glyph is a text render into a bitmap, and the body below runs on every frame
+        /// of the animation timeline, so it is rasterized once here instead.
+        static let microphoneImage = MaterialDesignIcons.microphoneIcon.image(
+            ofSize: microphoneIconSize,
+            color: .white
+        )
 
         static let levelAnimation: Animation = .easeOut(duration: 0.1)
     }
@@ -95,13 +100,9 @@ struct AssistVoiceOrbView: View {
                 )
                 .scaleEffect(1 + level * Constants.orbScalePerLevel)
 
-                Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
-                    ofSize: Constants.microphoneIconSize,
-                    color: .white
-                ))
-                .font(.system(size: Constants.microphoneFontSize, weight: .medium))
-                .foregroundStyle(.white.opacity(Constants.microphoneOpacity))
-                .scaleEffect(1 + level * Constants.orbScalePerLevel)
+                Image(uiImage: Constants.microphoneImage)
+                    .opacity(Constants.microphoneOpacity)
+                    .scaleEffect(1 + level * Constants.orbScalePerLevel)
             }
             .frame(width: Constants.size, height: Constants.size)
         }

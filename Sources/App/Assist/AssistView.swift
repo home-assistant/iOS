@@ -14,6 +14,8 @@ struct AssistView: View {
     private enum Constants {
         static let iconSize = CGSize(width: 28, height: 28)
         static let iconColor: UIColor = .white
+        static let microphoneImage = MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor)
+        static let sendImage = MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor)
         static let borderWidth: CGFloat = DesignSystem.Border.Width.default
 
         static let macPipelinePickerMaxWidth: CGFloat = 200
@@ -408,10 +410,7 @@ struct AssistView: View {
         Button(action: {
             assistMicButtonAction()
         }, label: {
-            Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
-                ofSize: Constants.iconSize,
-                color: Constants.iconColor
-            ))
+            Image(uiImage: Constants.microphoneImage)
         })
         .buttonStyle(.plain)
         .keyboardShortcut(.init("a"))
@@ -426,7 +425,7 @@ struct AssistView: View {
     }
 
     private var sendIcon: some View {
-        Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: Constants.iconSize, color: Constants.iconColor))
+        Image(uiImage: Constants.sendImage)
             .symbolRenderingMode(.palette)
             .foregroundStyle(.white, Color.haPrimary)
     }

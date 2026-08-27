@@ -42,6 +42,12 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
 
+    /// Everything that touches the capture session runs here. Configuring one blocks: `init` alone
+    /// makes a synchronous XPC call to LaunchServices, and `startRunning`/`stopRunning` wait on the
+    /// media server, which is enough to hang the main thread for hundreds of milliseconds. A serial
+    /// queue also keeps a stop from overtaking the start it belongs to.
+    private let sessionQueue = DispatchQueue(label: "assist-audio-recorder-session", qos: .userInitiated)
+
     override init() {
         super.init()
         registerForRecordingNotifications()
@@ -52,21 +58,25 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     func startRecording() {
-        setupAudioRecorder()
-        guard let captureSession else { return }
-        DispatchQueue.global().async { [weak self] in
-            if let audioSampleRate = self?.audioSampleRate {
-                captureSession.startRunning()
-                self?.delegate?.didStartRecording(with: audioSampleRate)
-            } else {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            setupAudioRecorder()
+            // A failed setup has already told the delegate why.
+            guard let captureSession else { return }
+            guard let audioSampleRate else {
                 Current.Log.error("No sample rate available to start recording")
+                return
             }
+            captureSession.startRunning()
+            delegate?.didStartRecording(with: audioSampleRate)
         }
     }
 
     func stopRecording() {
-        captureSession?.stopRunning()
-        delegate?.didStopRecording()
+        sessionQueue.async { [weak self] in
+            self?.captureSession?.stopRunning()
+            self?.delegate?.didStopRecording()
+        }
     }
 
     private func setupAudioRecorder() {
