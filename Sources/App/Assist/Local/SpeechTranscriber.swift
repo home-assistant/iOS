@@ -105,6 +105,12 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     private let finalGracePeriod: TimeInterval = 0.5
     private var didReportFinalTranscript = false
 
+    /// Result of the last `supportedLocales()` probe, kept for the lifetime of the process.
+    private static var cachedSupportedLocales: [Locale]?
+    /// The probe currently running, so concurrent callers share one pass instead of each
+    /// paying for their own.
+    private static var supportedLocalesProbe: Task<[Locale], Never>?
+
     // kAFAssistantErrorDomain error codes that indicate a normal session cancellation
     // (internal Apple speech service domain, not publicly declared in the SDK)
     private let kAFAssistantErrorDomain = "kAFAssistantErrorDomain"
@@ -299,10 +305,31 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         }
     }
 
-    /// Get list of locales that support on-device speech recognition.
-    /// Nonisolated so non-main-actor callers (e.g. CarPlay settings) can read it; the
-    /// underlying Speech framework APIs are not main-actor-bound.
-    public nonisolated static var supportedLocales: [Locale] {
+    /// The locales that support on-device speech recognition.
+    ///
+    /// Working this out instantiates one `SFSpeechRecognizer` per locale the system knows about,
+    /// and every `supportsOnDeviceRecognition` read is a synchronous XPC round trip to the speech
+    /// daemon — close to a second in total on a phone in Low Power Mode. The probe therefore runs
+    /// off the main thread and its result is cached for the lifetime of the process, so a
+    /// dictation language installed while the app runs only shows up after a relaunch. Never build
+    /// this list from a view body or any other main-thread path.
+    public static func supportedLocales() async -> [Locale] {
+        if let cached = cachedSupportedLocales {
+            return cached
+        }
+        if let runningProbe = supportedLocalesProbe {
+            return await runningProbe.value
+        }
+
+        let probe = Task.detached(priority: .userInitiated) { Self.probeSupportedLocales() }
+        supportedLocalesProbe = probe
+        let locales = await probe.value
+        cachedSupportedLocales = locales
+        supportedLocalesProbe = nil
+        return locales
+    }
+
+    private nonisolated static func probeSupportedLocales() -> [Locale] {
         SFSpeechRecognizer.supportedLocales()
             .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
             .sorted { $0.identifier < $1.identifier }
