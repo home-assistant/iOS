@@ -158,6 +158,25 @@ class ConnectivityWrapperTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 0.5)
     }
 
+    func testPathUpdateNotifiesEvenWhenAnotherRefreshCachedTheNewNetworkFirst() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "home") }
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        // Another caller, e.g. a webhook send, refreshed the cache to the new network first.
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "hotspot") }
+        Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "hotspot"))
+
+        let expectation = expectation(
+            forNotification: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        await fulfillment(of: [expectation], timeout: 1)
+    }
+
     func testPathUpdateChangingNetworkTypePostsConnectivityChange() async {
         Current.connectivity.simpleNetworkType = { .wifi }
         Current.connectivity.currentNetworkState = { NetworkState(ssid: "home") }

@@ -66,6 +66,9 @@ public class ConnectivityWrapper {
 
     private let notificationLock = NSLock()
     private var lastNotifiedNetworkType: NetworkType?
+    private var lastNotifiedNetworkState: NetworkState?
+
+    private var pathUpdateTask: Task<Void, Never>?
 
     public func updateLastKnownNetworkState(_ state: NetworkState) {
         stateLock.lock()
@@ -256,7 +259,13 @@ public class ConnectivityWrapper {
     }
 
     @objc private func networkPathDidUpdate(_ note: Notification) {
-        Task { [weak self] in
+        // Path updates are posted on the main thread, so chaining onto the previous one here needs no
+        // further synchronization. Chaining keeps a burst of updates during a transition in order: a
+        // fetch can stay suspended for the length of the fetch timeout, and a newer one finishing first
+        // would otherwise be overwritten by an older, staler result.
+        let previousTask = pathUpdateTask
+        pathUpdateTask = Task { [weak self] in
+            await previousTask?.value
             await self?.handleNetworkPathUpdate()
         }
     }
@@ -268,13 +277,16 @@ public class ConnectivityWrapper {
     /// update is the only signal that the cached SSID (and with it the internal/external URL decision)
     /// no longer describes the network the device is on.
     func handleNetworkPathUpdate() async {
-        let previousState = lastKnownNetworkState()
         await refreshNetworkInformation()
-        let currentState = lastKnownNetworkState()
+        let networkState = lastKnownNetworkState()
         let networkType = simpleNetworkType()
 
+        // Compared against what was last notified rather than against the cache as it was before the
+        // refresh: any other caller refreshing in the meantime would otherwise make the two equal and
+        // swallow the notification for a network that did change.
         notificationLock.lock()
-        let didChange = currentState != previousState || networkType != lastNotifiedNetworkType
+        let didChange = networkState != lastNotifiedNetworkState || networkType != lastNotifiedNetworkType
+        lastNotifiedNetworkState = networkState
         lastNotifiedNetworkType = networkType
         notificationLock.unlock()
 
