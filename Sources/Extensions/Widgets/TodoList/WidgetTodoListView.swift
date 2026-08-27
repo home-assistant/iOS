@@ -150,3 +150,63 @@ struct WidgetTodoListView: View {
         return String(first).uppercased() + text.dropFirst()
     }
 }
+
+@available(iOS 17, *)
+private enum WidgetTodoListPreviewSample {
+    /// A mix of the three row shapes: no due date, one still to come, and one already past — which
+    /// is the only one drawn in orange.
+    static func items(now: Date = Date()) -> [TodoListItem] {
+        [
+            .init(summary: "Coffee beans", uid: "preview-0", status: "needs_action", description: nil),
+            .init(
+                summary: "Book a table",
+                uid: "preview-1",
+                status: "needs_action",
+                description: nil,
+                dueRaw: "2026-01-01",
+                due: now.addingTimeInterval(24 * 60 * 60)
+            ),
+            .init(
+                summary: "Water the plants",
+                uid: "preview-2",
+                status: "needs_action",
+                description: nil,
+                dueRaw: "2026-01-01",
+                due: now.addingTimeInterval(-24 * 60 * 60)
+            ),
+        ]
+    }
+
+    static func entry(family: WidgetFamily, configured: Bool = true) -> WidgetTodoListEntry {
+        WidgetTodoListEntry(
+            date: Date(),
+            serverId: "preview-server",
+            listId: configured ? "preview-list" : "",
+            listTitle: "Groceries",
+            items: configured ? items() : [],
+            family: family
+        )
+    }
+}
+
+@available(iOS 17, *)
+#Preview("Medium", as: .systemMedium, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemMedium)
+})
+
+@available(iOS 17, *)
+#Preview("Small", as: .systemSmall, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemSmall)
+})
+
+// No list picked yet: the prompt rather than the list.
+@available(iOS 17, *)
+#Preview("Not configured", as: .systemMedium, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemMedium, configured: false)
+})
