@@ -280,6 +280,11 @@ public class ConnectivityWrapper {
 
         guard didChange else { return }
 
-        NotificationCenter.default.post(name: connectivityDidChangeNotification(), object: nil)
+        // Observers update SwiftUI state directly in `onReceive`, so the notification has to arrive on
+        // the main thread rather than on whichever thread the refresh finished on.
+        let notificationName = connectivityDidChangeNotification()
+        await MainActor.run {
+            NotificationCenter.default.post(name: notificationName, object: nil)
+        }
     }
 }
