@@ -1182,6 +1182,7 @@
 				Local/OnDeviceVoiceCatalog.swift,
 				Local/SpeechSynthesizer.swift,
 				Local/SpeechTranscriber.swift,
+				Local/SupportedSpeechLocales.swift,
 				Local/TTSVoicePickerView.swift,
 				MacWindow/AssistWindowView.swift,
 				Views/AssistVoiceOrbView.swift,

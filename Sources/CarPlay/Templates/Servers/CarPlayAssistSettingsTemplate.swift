@@ -78,7 +78,7 @@ final class CarPlayAssistSettingsTemplate {
         guard configuration.enableOnDeviceSTT else { return }
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let supportedIdentifiers = await SpeechTranscriber.supportedLocales().map(\.identifier)
+            let supportedIdentifiers = await SupportedSpeechLocales.shared.locales().map(\.identifier)
             // Re-read the configuration: the toggle can flip again while the probe runs.
             guard configuration.enableOnDeviceSTT,
                   !supportedIdentifiers.contains(configuration.onDeviceSTTLocaleIdentifier ?? "") else { return }
@@ -110,7 +110,7 @@ final class CarPlayAssistSettingsTemplate {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let selectedIdentifier = configuration.onDeviceSTTLocaleIdentifier
-            let locales = await SpeechTranscriber.supportedLocales()
+            let locales = await SupportedSpeechLocales.shared.locales()
             let items = locales.map { locale in
                 let item = CPListItem(
                     text: localeDisplayName(locale.identifier) ?? locale.identifier,

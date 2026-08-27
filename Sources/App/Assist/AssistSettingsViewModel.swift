@@ -29,8 +29,9 @@ final class AssistSettingsViewModel: ObservableObject {
     /// Probing the on-device speech locales blocks its caller for close to a second, so the list is
     /// filled in asynchronously instead of being read while the settings view builds.
     func loadSupportedSTTLocales() async {
+        // On-device transcription is an iOS 17 feature, so older versions never show the list.
         guard #available(iOS 17.0, *) else { return }
-        supportedSTTLocales = await SpeechTranscriber.supportedLocales()
+        supportedSTTLocales = await SupportedSpeechLocales.shared.locales()
         selectDefaultSTTLocaleIfNeeded()
     }
 

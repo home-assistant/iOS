@@ -18,7 +18,8 @@ enum OnDeviceVoiceCatalog {
 
     /// The installed voice with the given identifier, or `nil` when it is no longer installed.
     static func voice(withIdentifier identifier: String) async -> OnDeviceVoice? {
-        let allVoices = await voices()
-        return allVoices.first { $0.identifier == identifier }
+        await Task.detached(priority: .userInitiated) {
+            AVSpeechSynthesisVoice(identifier: identifier).map(OnDeviceVoice.init)
+        }.value
     }
 }
