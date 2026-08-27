@@ -838,6 +838,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "assist.carplay.tap_to_record.title") }
       }
     }
+    public enum Chat {
+      public enum Menu {
+        /// Edit
+        public static var edit: String { return L10n.tr("Localizable", "assist.chat.menu.edit") }
+        /// Replay
+        public static var replay: String { return L10n.tr("Localizable", "assist.chat.menu.replay") }
+      }
+    }
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }

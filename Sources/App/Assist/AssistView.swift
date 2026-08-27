@@ -9,7 +9,7 @@ struct AssistView: View {
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
-    @State private var bottomBarWidth: CGFloat = .zero
+    @Namespace private var micGeometry
 
     private enum Constants {
         static let iconSize = CGSize(width: 28, height: 28)
@@ -20,7 +20,9 @@ struct AssistView: View {
 
         static let macPipelinePickerMaxWidth: CGFloat = 200
 
-        static let bubbleCornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndMicro
+        static let bubbleCornerRadius: CGFloat = 14
+        static let bubbleVerticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
+        static let bubbleHorizontalPadding: CGFloat = DesignSystem.Spaces.two
         static let pendingBubbleStroke = StrokeStyle(lineWidth: 1.5, dash: [5, 3])
         static let infoBubbleBackgroundOpacity: Double = 0.5
 
@@ -35,22 +37,26 @@ struct AssistView: View {
         /// Gap under the bottom bar, on top of the bottom safe area. Negative values reach into the
         /// safe area, which is how the row sits closer to the screen edge than the inset alone allows.
         static let inputRowBottomPadding: CGFloat = -DesignSystem.Spaces.one
+        /// With the keyboard up the bar sits on its top edge instead of floating over the safe area,
+        /// so it tightens against the screen sides and lifts clear of the keyboard.
+        static let barHorizontalPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.oneAndHalf
+        static let inputRowBottomPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.one
         static let inputFieldHeight: CGFloat = 40
         static let inputActionButtonHeight: CGFloat = 40
         /// Height of the input row, driven by its tallest element (the action button plus its padding).
         /// The recording state claims the same height, so the orb lands on the mic button's line.
         static let inputRowHeight: CGFloat = inputActionButtonHeight + DesignSystem.Spaces.oneAndHalf * 2
-        /// Distance from the bar's trailing edge to the centre of the input row's mic button: half the
-        /// button plus its own padding plus the row inset. The orb travels between there and the centre,
-        /// so the mic reads as one button sliding in and out of the middle.
-        static let micButtonCenterInsetFromTrailing: CGFloat = inputActionButtonHeight / 2
-            + DesignSystem.Spaces.oneAndHalf
-            + barHorizontalPadding
+        /// Ties the input row's mic button and the recording orb together, so one turns into the other
+        /// in place instead of cross-fading.
+        static let micGeometryID = "assist-mic"
+        /// Lifts the orb clear of the keyboard button's line, so the two do not read as one row.
+        static let orbVerticalOffset: CGFloat = -DesignSystem.Spaces.two
         static let sendIconFontSize: CGFloat = 32
         static let keyboardButtonSize: CGFloat = 44
         static let keyboardIconFontSize: CGFloat = 18
 
         static let recordingTransition: Animation = .smooth
+        static let keyboardTransition: Animation = .smooth
     }
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -192,6 +198,20 @@ struct AssistView: View {
         .frame(maxWidth: Constants.macPipelinePickerMaxWidth, alignment: .trailing)
     }
 
+    /// The keyboard pins the bar to its top edge, where the floating insets read as too loose. On Mac
+    /// the field keeps focus with no keyboard on screen, so the bar stays as it is.
+    private var isKeyboardVisible: Bool {
+        isFirstResponder && !Current.isCatalyst
+    }
+
+    private var barHorizontalPadding: CGFloat {
+        isKeyboardVisible ? Constants.barHorizontalPaddingKeyboardOpen : Constants.barHorizontalPadding
+    }
+
+    private var barBottomPadding: CGFloat {
+        isKeyboardVisible ? Constants.inputRowBottomPaddingKeyboardOpen : Constants.inputRowBottomPadding
+    }
+
     private var selectedPipelineName: String {
         viewModel.pipelines.first { $0.id == viewModel.preferredPipelineId }?.name
             ?? L10n.Assist.PipelinesPicker.title
@@ -206,10 +226,26 @@ struct AssistView: View {
                 Text(item.markdown)
             }
         }
-        .padding(DesignSystem.Spaces.one)
-        .padding(.horizontal, DesignSystem.Spaces.one)
-        .background(backgroundForChatItemType(item.itemType))
-        .roundedCorner(Constants.bubbleCornerRadius, corners: roundedCornersForChatItemType(item.itemType))
+        .padding(.vertical, Constants.bubbleVerticalPadding)
+        .padding(.horizontal, Constants.bubbleHorizontalPadding)
+        .modify { view in
+            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                view.glassEffect(
+                    .regular.tint(glassTintForChatItemType(item.itemType)),
+                    in: RoundedCorner(
+                        radius: Constants.bubbleCornerRadius,
+                        corners: roundedCornersForChatItemType(item.itemType)
+                    )
+                )
+            } else {
+                view
+                    .background(backgroundForChatItemType(item.itemType))
+                    .roundedCorner(
+                        Constants.bubbleCornerRadius,
+                        corners: roundedCornersForChatItemType(item.itemType)
+                    )
+            }
+        }
         .overlay {
             if item.itemType == .pending {
                 RoundedCorner(
@@ -223,6 +259,38 @@ struct AssistView: View {
         .tint(tintForChatItemType(item.itemType))
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
         .textSelection(.enabled)
+        .modify { view in
+            if item.itemType == .input {
+                view.contextMenu { chatBubbleMenu(for: item) }
+            } else {
+                view
+            }
+        }
+    }
+
+    /// Offered on the requests the user made, so one can be copied, corrected and sent again, or
+    /// simply run a second time.
+    @ViewBuilder
+    private func chatBubbleMenu(for item: AssistChatItem) -> some View {
+        Button {
+            UIPasteboard.general.string = item.content
+        } label: {
+            Label(L10n.copyLabel, systemSymbol: .docOnDoc)
+        }
+
+        Button {
+            viewModel.inputText = item.content
+            isFirstResponder = true
+        } label: {
+            Label(L10n.Assist.Chat.Menu.edit, systemSymbol: .pencil)
+        }
+
+        Button {
+            viewModel.inputText = item.content
+            viewModel.assistWithText()
+        } label: {
+            Label(L10n.Assist.Chat.Menu.replay, systemSymbol: .arrowClockwise)
+        }
     }
 
     private var chatList: some View {
@@ -263,13 +331,8 @@ struct AssistView: View {
             recordingView
         }
         .frame(maxHeight: Constants.bottomBarMaxHeight, alignment: .bottom)
-        .background {
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear { bottomBarWidth = proxy.size.width }
-                    .onChange(of: proxy.size.width) { newValue in bottomBarWidth = newValue }
-            }
-        }
+        .animation(Constants.recordingTransition, value: viewModel.isRecording)
+        .animation(Constants.keyboardTransition, value: isKeyboardVisible)
     }
 
     private var inputTextView: some View {
@@ -286,11 +349,10 @@ struct AssistView: View {
                 view
             }
         }
-        .padding(.horizontal, Constants.barHorizontalPadding)
-        .padding(.bottom, Constants.inputRowBottomPadding)
+        .padding(.horizontal, barHorizontalPadding)
+        .padding(.bottom, barBottomPadding)
         .opacity(viewModel.isRecording ? 0 : 1)
         .allowsHitTesting(!viewModel.isRecording)
-        .animation(Constants.recordingTransition, value: viewModel.isRecording)
     }
 
     private var inputTextField: some View {
@@ -317,57 +379,59 @@ struct AssistView: View {
             }
     }
 
+    @ViewBuilder
     private var inputActionButton: some View {
-        Group {
-            if viewModel.inputText.isEmpty {
-                assistMicButton
-            } else {
-                assistSendTextButton
+        if !viewModel.isRecording {
+            Group {
+                if viewModel.inputText.isEmpty {
+                    assistMicButton
+                } else {
+                    assistSendTextButton
+                }
             }
-        }
-        .frame(height: Constants.inputActionButtonHeight)
-        .padding(DesignSystem.Spaces.oneAndHalf)
-        .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
-                view.glassEffect(.regular.interactive().tint(.haPrimary), in: .circle)
-            } else {
-                view
-                    .background(.haPrimary, in: Circle())
-                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
+            .frame(height: Constants.inputActionButtonHeight)
+            .padding(DesignSystem.Spaces.oneAndHalf)
+            .modify { view in
+                if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                    view.glassEffect(.regular.interactive().tint(.haPrimary), in: .circle)
+                } else {
+                    view
+                        .background(.haPrimary, in: Circle())
+                        .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
+                }
             }
+            .matchedGeometryEffect(id: Constants.micGeometryID, in: micGeometry)
         }
     }
 
     private var recordingView: some View {
         ZStack {
-            Button {
-                feedbackGenerator.notificationOccurred(.warning)
-                viewModel.assistWithAudio()
-            } label: {
-                AssistVoiceOrbView(level: viewModel.audioLevel)
+            if viewModel.isRecording {
+                Button {
+                    feedbackGenerator.notificationOccurred(.warning)
+                    viewModel.assistWithAudio()
+                } label: {
+                    AssistVoiceOrbView(
+                        level: viewModel.audioLevel,
+                        forcesLegacyAppearance: forcesLegacyAppearance
+                    )
+                }
+                .buttonStyle(.plain)
+                .matchedGeometryEffect(id: Constants.micGeometryID, in: micGeometry)
+                .offset(y: Constants.orbVerticalOffset)
             }
-            .buttonStyle(.plain)
-            .offset(x: viewModel.isRecording ? .zero : idleOrbOffsetX)
 
             HStack {
                 Spacer()
                 keyboardButton
             }
-            .padding(.trailing, Constants.barHorizontalPadding)
+            .padding(.trailing, barHorizontalPadding)
+            .opacity(viewModel.isRecording ? 1 : 0)
+            .allowsHitTesting(viewModel.isRecording)
         }
         .frame(maxWidth: .infinity)
         .frame(height: Constants.inputRowHeight)
-        .padding(.bottom, Constants.inputRowBottomPadding)
-        .opacity(viewModel.isRecording ? 1 : 0)
-        .allowsHitTesting(viewModel.isRecording)
-        .animation(Constants.recordingTransition, value: viewModel.isRecording)
-    }
-
-    /// Parks the orb over the input row's mic button while idle, so starting a recording slides it to
-    /// the centre of the bar and stopping one slides it back.
-    private var idleOrbOffsetX: CGFloat {
-        guard bottomBarWidth > Constants.micButtonCenterInsetFromTrailing * 2 else { return .zero }
-        return bottomBarWidth / 2 - Constants.micButtonCenterInsetFromTrailing
+        .padding(.bottom, barBottomPadding)
     }
 
     private var keyboardButton: some View {
@@ -445,6 +509,17 @@ struct AssistView: View {
         }
     }
 
+    /// `nil` leaves the glass untinted, which is what the pending bubble wants: it is drawn by its
+    /// dashed border alone.
+    private func glassTintForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color? {
+        switch itemType {
+        case .pending:
+            nil
+        default:
+            backgroundForChatItemType(itemType)
+        }
+    }
+
     private func foregroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input, .error:
@@ -488,7 +563,7 @@ struct AssistView: View {
     }
 }
 
-private func previewRecordingViewModel() -> AssistViewModel {
+private func previewViewModel(chatItems: [AssistChatItem] = [], isRecording: Bool = false) -> AssistViewModel {
     let viewModel = AssistViewModel(
         server: ServerFixture.standard,
         audioRecorder: AudioRecorder(),
@@ -496,10 +571,25 @@ private func previewRecordingViewModel() -> AssistViewModel {
         assistService: AssistService(server: ServerFixture.standard),
         autoStartRecording: false
     )
-    viewModel.isRecording = true
-    viewModel.audioLevel = 0.6
+    viewModel.chatItems = chatItems
+    if isRecording {
+        viewModel.isRecording = true
+        viewModel.audioLevel = 0.6
+    }
     return viewModel
 }
+
+/// One bubble of every type, so a single preview covers each background, corner set and alignment.
+private let previewChatItems: [AssistChatItem] = [
+    .init(content: "Turn off the kitchen lights", itemType: .input),
+    .init(content: "Turned off **2 lights** in the kitchen.", itemType: .output),
+    .init(content: "Pipeline switched to Home Assistant", itemType: .info),
+    .init(content: "What is the temperature in the living room?", itemType: .input),
+    .init(content: "It is 21.5 degrees, and the heating is off.", itemType: .output),
+    .init(content: "Could not reach the server", itemType: .error),
+    .init(content: "Set the thermostat to 20", itemType: .pending),
+    .init(content: "", itemType: .typing),
+]
 
 #Preview("Text mode") {
     AssistView.build(server: ServerFixture.standard)
@@ -509,10 +599,22 @@ private func previewRecordingViewModel() -> AssistViewModel {
     AssistView.build(server: ServerFixture.standard, forcesLegacyAppearance: true)
 }
 
+#Preview("Chat") {
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems))
+}
+
+#Preview("Chat (legacy)") {
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems), forcesLegacyAppearance: true)
+}
+
+#Preview("Chat while recording") {
+    AssistView(viewModel: previewViewModel(chatItems: previewChatItems, isRecording: true))
+}
+
 #Preview("Recording") {
-    AssistView(viewModel: previewRecordingViewModel())
+    AssistView(viewModel: previewViewModel(isRecording: true))
 }
 
 #Preview("Recording (legacy)") {
-    AssistView(viewModel: previewRecordingViewModel(), forcesLegacyAppearance: true)
+    AssistView(viewModel: previewViewModel(isRecording: true), forcesLegacyAppearance: true)
 }

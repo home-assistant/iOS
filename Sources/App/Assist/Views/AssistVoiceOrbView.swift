@@ -6,6 +6,9 @@ import SwiftUI
 /// orb that grows and shrinks with the microphone input level (0...1), no glow or shadow involved.
 struct AssistVoiceOrbView: View {
     let level: Double
+    /// Renders the pre-iOS 26 fill and border instead of Liquid Glass, so the legacy look stays
+    /// previewable alongside the current one.
+    var forcesLegacyAppearance = false
 
     private enum Constants {
         struct Blob {
@@ -20,9 +23,6 @@ struct AssistVoiceOrbView: View {
             .init(color: .teal, speed: 2.7, phase: 4.2),
         ]
 
-        /// Footprint reserved for the orb, so a loud level never resizes the surrounding layout.
-        static let size: CGFloat = 140
-
         static let activityCircleSize: CGFloat = 64
         static let activityCircleOpacity: Double = 0.25
         /// Hidden behind the orb at silence and growing when talking, so the size change is the thing
@@ -33,6 +33,7 @@ struct AssistVoiceOrbView: View {
 
         static let orbSize: CGFloat = 64
         static let orbBackgroundOpacity: Double = 0.35
+        static let orbGlassTintOpacity: Double = 0.5
         static let orbScalePerLevel: CGFloat = 0.25
         static let orbBorderStartOpacity: Double = 0.55
         static let orbBorderEndOpacity: Double = 0.08
@@ -82,29 +83,39 @@ struct AssistVoiceOrbView: View {
                     }
                 }
                 .frame(width: Constants.orbSize, height: Constants.orbSize)
-                .background(Circle().fill(Color.haPrimary.opacity(Constants.orbBackgroundOpacity)))
                 .clipShape(Circle())
-                .overlay(
-                    Circle()
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    .white.opacity(Constants.orbBorderStartOpacity),
-                                    .white.opacity(Constants.orbBorderEndOpacity),
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: Constants.orbBorderWidth
+                .modify { view in
+                    if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                        view.glassEffect(
+                            .regular.tint(Color.haPrimary.opacity(Constants.orbGlassTintOpacity)),
+                            in: .circle
                         )
-                )
+                    } else {
+                        view
+                            .background(Circle().fill(Color.haPrimary.opacity(Constants.orbBackgroundOpacity)))
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(
+                                        LinearGradient(
+                                            colors: [
+                                                .white.opacity(Constants.orbBorderStartOpacity),
+                                                .white.opacity(Constants.orbBorderEndOpacity),
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: Constants.orbBorderWidth
+                                    )
+                            )
+                    }
+                }
                 .scaleEffect(1 + level * Constants.orbScalePerLevel)
 
                 Image(uiImage: Constants.microphoneImage)
                     .opacity(Constants.microphoneOpacity)
                     .scaleEffect(1 + level * Constants.orbScalePerLevel)
             }
-            .frame(width: Constants.size, height: Constants.size)
+            .frame(width: Constants.orbSize, height: Constants.orbSize)
         }
         .animation(Constants.levelAnimation, value: level)
         .accessibilityLabel(L10n.Assist.Button.Listening.title)
@@ -116,6 +127,16 @@ struct AssistVoiceOrbView: View {
         AssistVoiceOrbView(level: 0)
         AssistVoiceOrbView(level: 0.5)
         AssistVoiceOrbView(level: 1)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(uiColor: .systemBackground))
+}
+
+#Preview("Legacy") {
+    VStack(spacing: DesignSystem.Spaces.six) {
+        AssistVoiceOrbView(level: 0, forcesLegacyAppearance: true)
+        AssistVoiceOrbView(level: 0.5, forcesLegacyAppearance: true)
+        AssistVoiceOrbView(level: 1, forcesLegacyAppearance: true)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color(uiColor: .systemBackground))
