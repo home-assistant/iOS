@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 import Foundation
 import Speech
@@ -56,6 +57,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range.
         static let powerFloor: Float = -45
         static let powerCeiling: Float = -15
+        /// The tap runs on a real-time audio thread and fires far faster than a screen refresh, so
+        /// levels leave it at about 30 Hz instead of once per buffer.
+        static let levelInterval: TimeInterval = 1.0 / 30
     }
 
     // MARK: - Public Properties
@@ -227,20 +231,23 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
-        // from a background thread.
+        // from a background thread. The level's rate limit is held the same way, and the tap calls
+        // back serially, so it needs no further synchronisation.
         let capturedRequest = recognitionRequest
+        var lastLevelEmission: TimeInterval = .zero
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
             capturedRequest.append(buffer)
 
+            let now = ProcessInfo.processInfo.systemUptime
+            guard now - lastLevelEmission >= Constants.levelInterval else { return }
+            lastLevelEmission = now
+
             guard let channelData = buffer.floatChannelData?[0] else { return }
-            let frameCount = Int(buffer.frameLength)
+            let frameCount = vDSP_Length(buffer.frameLength)
             guard frameCount > 0 else { return }
-            var sumOfSquares: Float = 0
-            for frame in 0 ..< frameCount {
-                sumOfSquares += channelData[frame] * channelData[frame]
-            }
-            let rms = sqrt(sumOfSquares / Float(frameCount))
-            let decibels = 20 * log10(max(rms, .leastNormalMagnitude))
+            var meanSquare: Float = 0
+            vDSP_measqv(channelData, 1, &meanSquare, frameCount)
+            let decibels = 20 * log10(max(sqrt(meanSquare), .leastNormalMagnitude))
             let range = Constants.powerCeiling - Constants.powerFloor
             let level = max(0, min(1, (decibels - Constants.powerFloor) / range))
             Task { @MainActor in

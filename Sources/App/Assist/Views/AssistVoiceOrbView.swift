@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 

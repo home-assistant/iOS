@@ -34,6 +34,9 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         /// normal speech averages around -35...-18 dBFS, so a wider window leaves the orb barely moving.
         static let powerFloor: Float = -45
         static let powerCeiling: Float = -15
+        /// Buffers arrive far faster than a screen refresh, and every level costs the main thread a
+        /// published change, so they are emitted at about 30 Hz instead of once per buffer.
+        static let levelInterval: TimeInterval = 1.0 / 30
     }
 
     weak var delegate: AudioRecorderDelegate?
@@ -41,6 +44,8 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
 
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
+    /// Only ever read and written on the sample buffer delegate's own queue.
+    private var lastLevelEmission: TimeInterval = .zero
 
     /// Everything that touches the capture session runs here. Configuring one blocks: `init` alone
     /// makes a synchronous XPC call to LaunchServices, and `startRunning`/`stopRunning` wait on the
@@ -158,7 +163,10 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
             return
         }
 
-        if let averagePower = connection.audioChannels.first?.averagePowerLevel {
+        let now = ProcessInfo.processInfo.systemUptime
+        if now - lastLevelEmission >= Constants.levelInterval,
+           let averagePower = connection.audioChannels.first?.averagePowerLevel {
+            lastLevelEmission = now
             let range = Constants.powerCeiling - Constants.powerFloor
             let level = max(0, min(1, (averagePower - Constants.powerFloor) / range))
             delegate?.didUpdateAudioLevel(level)

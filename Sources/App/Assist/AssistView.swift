@@ -197,6 +197,8 @@ struct AssistView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(L10n.Assist.PipelinesPicker.title)
+        // The circle only shows an initial, so name the selected pipeline for VoiceOver.
+        .accessibilityValue(selectedPipelineName)
     }
 
     private var macPicker: some View {
