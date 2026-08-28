@@ -62,14 +62,14 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/WidgetLockScreenAccessorySnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetAccessoryIconViewTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetGallerySnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetsSnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetTileIconSizeSnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetTileTapBehaviorSnapshotTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetTileSizeStyleTests \
-            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
+            -only-testing:Tests-App/WidgetLockScreenAccessorySnapshotTests \
+            -only-testing:Tests-App/WidgetAccessoryIconViewTests \
+            -only-testing:Tests-App/WidgetGallerySnapshotTests \
+            -only-testing:Tests-App/WidgetsSnapshotTests \
+            -only-testing:Tests-App/WidgetTileIconSizeSnapshotTests \
+            -only-testing:Tests-App/WidgetTileTapBehaviorSnapshotTests \
+            -only-testing:Tests-App/WidgetTileSizeStyleTests \
+            -only-testing:Tests-App/WidgetCalendarSnapshotTests \
             COMPILER_INDEX_STORE_ENABLE=NO > xcodebuild.log 2>&1
           status=$?
           grep -E "error:|failed|✘|Recorded|does not match|Test Suite.*(passed|failed)" \
