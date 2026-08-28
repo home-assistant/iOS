@@ -104,6 +104,52 @@ struct MagicItemWidgetInteractionTests {
         )))
     }
 
+    /// The frontend's "toggle" runs the entity's domain action; a domain without one — a sensor —
+    /// has nothing to toggle, so the item keeps the behavior it would have had anyway.
+    @Test func toggleActionRunsTheDomainActionOrFallsBack() {
+        var light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        light.tapAction = .toggle
+        #expect(light.widgetTapInteractionType == .appIntent(.toggle(
+            entityId: "light.kitchen",
+            domain: "light",
+            serverId: "1"
+        )))
+
+        var sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
+        sensor.action = .toggle
+        #expect(Self.opensMoreInfo(sensor.widgetInteractionType, entityId: "sensor.temperature"))
+        #expect(!sensor.controlsEntityFromWidget)
+    }
+
+    /// A `url` action opens exactly what was typed, and an address typed without a scheme still
+    /// reaches the web rather than leaving the tile dead.
+    @Test func urlActionOpensTheTypedAddress() {
+        var item = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        item.tapAction = .url("https://www.home-assistant.io/docs")
+        #expect(item.widgetTapInteractionType == .widgetURL(URL(string: "https://www.home-assistant.io/docs")!))
+
+        item.tapAction = .url("www.home-assistant.io/docs")
+        #expect(item.widgetTapInteractionType == .widgetURL(URL(string: "https://www.home-assistant.io/docs")!))
+
+        // Nothing typed yet: the tile refreshes instead of pointing nowhere.
+        item.tapAction = .url("")
+        #expect(item.widgetTapInteractionType == .appIntent(.refresh))
+    }
+
+    /// "Perform action" calls the chosen `domain.service` where the tile stands, so its icon keeps
+    /// its control background.
+    @Test func performActionCallsTheChosenAction() {
+        var item = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        item.action = .performAction("1", "light.turn_on", "{\"brightness\": 120}")
+
+        #expect(item.widgetInteractionType == .appIntent(.performAction(
+            serverId: "1",
+            actionId: "light.turn_on",
+            payload: "{\"brightness\": 120}"
+        )))
+        #expect(item.controlsEntityFromWidget)
+    }
+
     private static func opensMoreInfo(_ interactionType: WidgetInteractionType, entityId: String) -> Bool {
         guard case let .widgetURL(url) = interactionType else { return false }
         return url.absoluteString.contains("\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)")

@@ -3183,9 +3183,33 @@ public enum L10n {
         /// Navigation path
         public static var title: String { return L10n.tr("Localizable", "magic_item.action.navigation_path.title") }
       }
+      public enum PerformAction {
+        /// Action
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.perform_action.title") }
+        public enum Payload {
+          /// JSON data sent with the action.
+          public static var footer: String { return L10n.tr("Localizable", "magic_item.action.perform_action.payload.footer") }
+          /// {}
+          public static var placeholder: String { return L10n.tr("Localizable", "magic_item.action.perform_action.payload.placeholder") }
+          /// Action data
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.perform_action.payload.title") }
+        }
+        public enum Picker {
+          /// No actions available
+          public static var empty: String { return L10n.tr("Localizable", "magic_item.action.perform_action.picker.empty") }
+          /// Select action
+          public static var placeholder: String { return L10n.tr("Localizable", "magic_item.action.perform_action.picker.placeholder") }
+        }
+      }
       public enum Script {
         /// Script
         public static var title: String { return L10n.tr("Localizable", "magic_item.action.script.title") }
+      }
+      public enum Url {
+        /// e.g. https://www.home-assistant.io
+        public static var placeholder: String { return L10n.tr("Localizable", "magic_item.action.url.placeholder") }
+        /// URL
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.url.title") }
       }
     }
     public enum AssistPrompt {
@@ -8412,8 +8436,14 @@ public enum L10n {
         public static var navigate: String { return L10n.tr("Localizable", "widgets.action.name.navigate") }
         /// Nothing
         public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
+        /// Perform action
+        public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
+        /// Toggle
+        public static var toggle: String { return L10n.tr("Localizable", "widgets.action.name.toggle") }
+        /// URL
+        public static var url: String { return L10n.tr("Localizable", "widgets.action.name.url") }
       }
     }
     public enum Actions {
@@ -8730,6 +8760,12 @@ public enum L10n {
         public static var body: String { return L10n.tr("Localizable", "widgets.custom.intent_activate_failed.body") }
         /// Failed to 'activate' entity
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_activate_failed.title") }
+      }
+      public enum IntentPerformActionFailed {
+        /// Please try again
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.intent_perform_action_failed.body") }
+        /// Failed to perform action
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_perform_action_failed.title") }
       }
       public enum IntentPressFailed {
         /// Please try again

@@ -183,6 +183,12 @@ struct WidgetTileInteraction {
                 intent.entityId = entityId
                 intent.serverId = serverId
                 return intent
+            case let .performAction(serverId, actionId, payload):
+                let intent = CustomWidgetPerformActionAppIntent()
+                intent.serverId = serverId
+                intent.actionId = actionId
+                intent.payload = payload
+                return intent
             }
         }
     }

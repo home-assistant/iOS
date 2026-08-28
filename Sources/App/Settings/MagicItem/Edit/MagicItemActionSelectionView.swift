@@ -1,8 +1,8 @@
 import Shared
 import SwiftUI
 
-/// One behavior picker and whatever the picked behavior still needs to know: a navigation path, an
-/// Assist pipeline, or a script.
+/// One behavior picker and whatever the picked behavior still needs to know: a navigation path, a
+/// URL, an action and its data, an Assist pipeline, or a script.
 ///
 /// A widget tile has two of these — what a tap on the tile does, and what a tap on its icon does —
 /// so the rows are laid out for a `Section` the caller owns rather than bringing their own.
@@ -14,10 +14,14 @@ struct MagicItemActionSelectionView: View {
     /// than rendering a picker with nothing in it.
     @State private var loaded = false
     @State private var navigationPath = ""
+    @State private var urlPath = ""
     @State private var pipelineServerId: String?
     @State private var pipelineId: String?
     @State private var startListening = true
     @State private var script: HAAppEntity?
+    @State private var performActionServerId: String?
+    @State private var performActionId: String?
+    @State private var performActionPayload = ""
 
     private var selected: ItemAction {
         action ?? .default
@@ -56,6 +60,52 @@ struct MagicItemActionSelectionView: View {
                     .onChange(of: navigationPath) { newValue in
                         action = .navigate(newValue)
                     }
+            }
+        }
+        if loaded, selected.id == ItemAction.url("").id {
+            HStack {
+                Text(verbatim: L10n.MagicItem.Action.Url.title)
+                TextField(L10n.MagicItem.Action.Url.placeholder, text: $urlPath)
+                    .multilineTextAlignment(.trailing)
+                    .keyboardType(.URL)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: urlPath) { newValue in
+                        action = .url(newValue)
+                    }
+            }
+        }
+        if loaded, selected.id == ItemAction.performAction("", "", "").id {
+            HStack {
+                Text(verbatim: L10n.MagicItem.Action.PerformAction.title)
+                ServerActionPicker(
+                    selectedServerId: $performActionServerId,
+                    selectedActionId: $performActionId
+                )
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .onChange(of: performActionServerId) { _ in
+                    updatePerformAction()
+                }
+                .onChange(of: performActionId) { _ in
+                    updatePerformAction()
+                }
+            }
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                Text(verbatim: L10n.MagicItem.Action.PerformAction.Payload.title)
+                TextField(
+                    L10n.MagicItem.Action.PerformAction.Payload.placeholder,
+                    text: $performActionPayload,
+                    axis: .vertical
+                )
+                .font(.system(.body, design: .monospaced))
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+                .onChange(of: performActionPayload) { _ in
+                    updatePerformAction()
+                }
+                Text(verbatim: L10n.MagicItem.Action.PerformAction.Payload.footer)
+                    .font(DesignSystem.Font.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
         if loaded, selected.id == ItemAction.assist("", "", false).id {
@@ -101,11 +151,15 @@ struct MagicItemActionSelectionView: View {
         switch itemAction {
         case .navigate:
             return .navigate(navigationPath)
+        case .url:
+            return .url(urlPath)
+        case .performAction:
+            return .performAction(performActionServerId ?? "", performActionId ?? "", performActionPayload)
         case .assist:
             return .assist(pipelineServerId ?? "", pipelineId ?? "", startListening)
         case .runScript:
             return .runScript(script?.serverId ?? "", script?.entityId ?? "")
-        case .default, .moreInfoDialog, .nothing:
+        case .default, .moreInfoDialog, .toggle, .nothing:
             return itemAction
         }
     }
@@ -115,10 +169,21 @@ struct MagicItemActionSelectionView: View {
         action = .assist(pipelineServerId, pipelineId, startListening)
     }
 
+    private func updatePerformAction() {
+        guard let performActionServerId, let performActionId else { return }
+        action = .performAction(performActionServerId, performActionId, performActionPayload)
+    }
+
     private func prefill() {
         switch selected {
         case let .navigate(path):
             navigationPath = path
+        case let .url(urlString):
+            urlPath = urlString
+        case let .performAction(serverId, actionId, payload):
+            performActionServerId = serverId
+            performActionId = actionId
+            performActionPayload = payload
         case let .runScript(serverId, scriptId):
             do {
                 script = try HAAppEntity.config().first(where: { entity in
@@ -132,7 +197,7 @@ struct MagicItemActionSelectionView: View {
             pipelineServerId = serverId
             self.pipelineId = pipelineId
             self.startListening = startListening
-        case .default, .nothing, .moreInfoDialog:
+        case .default, .nothing, .moreInfoDialog, .toggle:
             break
         }
     }
