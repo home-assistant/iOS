@@ -32,9 +32,9 @@ struct MagicItemCustomizationViewTests {
         )
     }
 
-    /// "Perform action" needs two things a name can't carry: which `domain.service` to call, and the
-    /// data to send with it. With no server reachable the picker falls back to the stored action id,
-    /// which is exactly what the screen shows before the servers answer.
+    /// "Perform action" needs two things a name can't carry: which action to call, and the data to
+    /// send with it. With no server reachable the picker reads the stored id as a name — never the
+    /// raw `domain.service` pair — which is what the screen shows before the servers answer.
     @Test func widgetShowsThePerformActionRows() {
         var item = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         item.action = .performAction("1", "light.turn_on", "{\"brightness_pct\": 60}")

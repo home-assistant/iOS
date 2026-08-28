@@ -30,6 +30,12 @@ struct ServerActionPicker: View {
                 Text(verbatim: L10n.MagicItem.Action.PerformAction.Picker.placeholder)
             }
         })
+        // A saved item arrives with nothing but the action's id, and the name lives on the server,
+        // so the servers are asked as soon as the row appears rather than only when the sheet opens.
+        .onAppear {
+            guard selectedActionId != nil else { return }
+            fetchActions()
+        }
         .sheet(isPresented: $showList) {
             NavigationView {
                 ServerActionPickerList(
@@ -57,14 +63,24 @@ struct ServerActionPicker: View {
         }
     }
 
-    /// The name to show on the picker's own row. Until the servers answer there is nothing to look
-    /// the id up in, so the stored `domain.service` stands in for it.
+    /// The name to show on the picker's own row — never the `domain.service` pair, which means
+    /// nothing to most people.
+    ///
+    /// Until the servers answer there is nothing to look the id up in, so the id is read the way
+    /// the server itself would name an action it has no translation for: its service, spelled out.
     private func displayName(for actionId: String) -> String {
         let definition = groups
             .first(where: { $0.id == selectedServerId })?
             .actions
             .first(where: { $0.actionId == actionId })
-        return definition?.displayName ?? actionId
+        return definition?.displayName ?? Self.derivedName(from: actionId)
+    }
+
+    /// `light.turn_on` reads as "Turn on", matching what `IntentActionDefinition` falls back to
+    /// when the server offers no name of its own.
+    private static func derivedName(from actionId: String) -> String {
+        let service = actionId.split(separator: ".", maxSplits: 1).last.map { String($0) } ?? actionId
+        return service.replacingOccurrences(of: "_", with: " ").capitalizedFirst
     }
 
     /// Loads every server's actions. Each server is asked on its own so one unreachable server
