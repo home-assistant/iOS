@@ -73,16 +73,26 @@ public struct WidgetTileButtonView: View {
     private var icon: some View {
         VStack {
             Text(verbatim: model.icon.unicode)
-                .font(sizeStyle.iconFont)
+                .font(sizeStyle.iconFont(withBackground: model.showIconBackground))
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
                 // The glyph is a private-use character in the icon font, so VoiceOver has nothing
                 // to say about it. The tile is named by its title instead.
                 .accessibilityHidden(true)
         }
+        // The slot stays the same size either way, so tiles line up whether or not their icon has
+        // a background. Only the circle behind a background icon needs clipping — a bare glyph is
+        // drawn larger and would be cut off by it.
         .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
-        .background(model.showIconBackground ? model.iconColor.opacity(0.3) : Color.clear)
-        .clipShape(Circle())
+        .modify { view in
+            if model.showIconBackground {
+                view
+                    .background(model.iconColor.opacity(0.3))
+                    .clipShape(Circle())
+            } else {
+                view
+            }
+        }
     }
 
     /// The icon as its own control. Splitting the tile makes the icon reachable on its own, so it
