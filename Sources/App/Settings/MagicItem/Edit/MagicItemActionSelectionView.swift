@@ -168,9 +168,10 @@ struct MagicItemActionSelectionView: View {
         action = .assist(pipelineServerId, pipelineId, startListening)
     }
 
+    /// Written even before an action is picked, so data typed first survives the trip back — the
+    /// same half-filled state `hydrated(_:)` already stores the moment the behavior is chosen.
     private func updatePerformAction() {
-        guard let performActionId else { return }
-        action = .performAction(serverId, performActionId, performActionPayload)
+        action = .performAction(serverId, performActionId ?? "", performActionPayload)
     }
 
     private func prefill() {
