@@ -347,6 +347,7 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.entityDisplayName.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.iconName.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.iconColor.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.textColor.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeAttribute.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.valueAttribute.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.valuePrecision.rawValue, .integer)

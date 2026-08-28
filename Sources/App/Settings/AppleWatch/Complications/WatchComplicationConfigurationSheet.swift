@@ -419,7 +419,10 @@ struct WatchComplicationConfigurationSheet: View {
             get: { viewModel.config.textColor(for: currentFamily)
                 .map { Color(uiColor: UIColor(hex: $0)) } ?? Self.defaultTextColor
             },
-            set: { value in updateOptions { $0.textColor = UIColor(value).hexString(true) } }
+            // Config-wide, not per-size (like the icon color): writing only the selected size left
+            // every other size drawing the face default — the color picked on circular never reached
+            // the corner slot the complication was actually sitting in.
+            set: { value in viewModel.config.setTextColor(UIColor(value).hexString(true)) }
         )
     }
 

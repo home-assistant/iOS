@@ -89,14 +89,22 @@ struct CornerComplicationView: View {
     private func bezelLabel(_ complication: WatchWidgetComplicationSnapshot) -> some View {
         if let fraction = complication.fraction(for: family) {
             Gauge(value: fraction) {
-                Text(arcText(complication))
+                arcLabel(complication)
             }
             .tint(complication.tintColor(for: family))
         } else {
-            Text(arcText(complication))
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
+            arcLabel(complication)
         }
+    }
+
+    /// The arc's text, colored like the corner's own. Whichever half of the complication the corner
+    /// isn't already showing ends up here — for an icon-led corner that is the value itself — so
+    /// leaving it uncolored made the configured color apply or not depending on the layout.
+    private func arcLabel(_ complication: WatchWidgetComplicationSnapshot) -> some View {
+        Text(arcText(complication))
+            .minimumScaleFactor(0.5)
+            .lineLimit(1)
+            .foregroundStyle(complication.textColor(for: family) ?? .primary)
     }
 
     /// What rides the arc: whatever the corner isn't already showing. When the icon takes the corner the
