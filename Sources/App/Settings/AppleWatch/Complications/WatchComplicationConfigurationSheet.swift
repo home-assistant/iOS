@@ -346,6 +346,11 @@ struct WatchComplicationConfigurationSheet: View {
 
     // MARK: - Bindings
 
+    /// What the text color pickers show for a complication that sets none: the white every render
+    /// surface falls back to on the black watch face (see `ComplicationRenderContext.textColor`), so
+    /// the picker and the face never disagree about the default.
+    private static let defaultTextColor: Color = .white
+
     private func updateOptions(_ mutate: (inout WatchComplicationConfig.FamilyOptions) -> Void) {
         var options = viewModel.config.options(for: currentFamily)
         mutate(&options)
@@ -401,11 +406,18 @@ struct WatchComplicationConfigurationSheet: View {
         )
     }
 
-    /// Text/value color; defaults to primary when unset.
+    /// Text/value color; an unset color shows as the white the complication actually draws on the
+    /// black watch face.
+    ///
+    /// Not `.primary`: it has no static `cgColor`, so the color well can't show it and falls back to
+    /// its own default swatch — which read as a color the complication would render (it never did),
+    /// while the face kept drawing white. `.primary` would be wrong here anyway: the picker sits in
+    /// the iPhone's light/dark UI, where it resolves to black, and the complication is drawn on the
+    /// watch's black face, where it resolves to white.
     private var textColorBinding: Binding<Color> {
         Binding(
             get: { viewModel.config.textColor(for: currentFamily)
-                .map { Color(uiColor: UIColor(hex: $0)) } ?? .primary
+                .map { Color(uiColor: UIColor(hex: $0)) } ?? Self.defaultTextColor
             },
             set: { value in updateOptions { $0.textColor = UIColor(value).hexString(true) } }
         )
@@ -418,7 +430,7 @@ struct WatchComplicationConfigurationSheet: View {
             get: {
                 let hex = viewModel.config.slotColor(.bottomText, for: currentFamily)
                     ?? viewModel.config.textColor(for: currentFamily)
-                return hex.map { Color(uiColor: UIColor(hex: $0)) } ?? .primary
+                return hex.map { Color(uiColor: UIColor(hex: $0)) } ?? Self.defaultTextColor
             },
             set: { value in
                 var slot = viewModel.config.slotConfig(.bottomText, for: currentFamily) ?? ComplicationSlotConfig()
