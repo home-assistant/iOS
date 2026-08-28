@@ -94,7 +94,7 @@ struct CustomWidgetsListView: View {
         ForEach(viewModel.widgets, id: \.id) { widget in
             HStack {
                 NavigationLink {
-                    WidgetCreationView(needsNavigationController: false, widget: widget) {
+                    WidgetCreationView(widget: widget) {
                         viewModel.loadWidgets()
                     }
                 } label: {
