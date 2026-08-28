@@ -7,6 +7,12 @@ protocol WatchAudioRecorderDelegate: AnyObject {
     func didStopRecording()
     func didFinishRecording(audioURL: URL, audioSampleRate: Double)
     func didFailRecording(error: Error)
+    /// Normalized microphone input level (0...1) emitted while recording, for UI feedback.
+    func didUpdateAudioLevel(_ level: Float)
+}
+
+extension WatchAudioRecorderDelegate {
+    func didUpdateAudioLevel(_ level: Float) {}
 }
 
 protocol WatchAudioRecorderProtocol: ObservableObject {
@@ -16,10 +22,22 @@ protocol WatchAudioRecorderProtocol: ObservableObject {
 }
 
 final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
+    private enum Constants {
+        /// Window of microphone average power (dBFS) mapped onto the 0...1 level, the same one the
+        /// phone's orb uses: normal speech averages around -35...-18 dBFS, so a wider window leaves
+        /// the orb barely moving.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+        /// The meter now drives the voice orb as well as the silence check, so it is read at about
+        /// 20 Hz — often enough for the orb to follow speech, cheap enough for the watch.
+        static let meteringInterval: TimeInterval = 1.0 / 20
+    }
+
     private var audioRecorder: AVAudioRecorder?
     private var audioSampleRate: Double?
     weak var delegate: WatchAudioRecorderDelegate?
 
+    private var meteringTimer: Timer?
     private var silenceTimer: Timer?
     private let silenceThreshold: TimeInterval = 3.0
     private let silenceLevel: Float = -50.0
@@ -70,6 +88,8 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     func stopRecording() {
         audioRecorder?.stop()
         audioRecorder = nil
+        meteringTimer?.invalidate()
+        meteringTimer = nil
         silenceTimer?.invalidate()
         silenceTimer = nil
         delegate?.didStopRecording()
@@ -81,22 +101,25 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     }
 
     private func startMonitoringAudioLevels() {
-        silenceTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            guard let self, let audioRecorder, audioRecorder.isRecording else { return }
-            audioRecorder.updateMeters()
+        meteringTimer?.invalidate()
+        meteringTimer = Timer
+            .scheduledTimer(withTimeInterval: Constants.meteringInterval, repeats: true) { [weak self] _ in
+                guard let self, let audioRecorder, audioRecorder.isRecording else { return }
+                audioRecorder.updateMeters()
 
-            let averagePower = audioRecorder.averagePower(forChannel: 0)
-            #if DEBUG
-            print("Average power channel 0: \(audioRecorder.averagePower(forChannel: 0))")
-            #endif
-            if averagePower < silenceLevel {
-                silenceTimer?.invalidate()
+                let averagePower = audioRecorder.averagePower(forChannel: 0)
+                let range = Constants.powerCeiling - Constants.powerFloor
+                delegate?.didUpdateAudioLevel(max(0, min(1, (averagePower - Constants.powerFloor) / range)))
+
+                // The first drop into silence starts the countdown that ends the recording. Metering
+                // carries on through it — it is what the voice orb is drawn from — so the countdown is
+                // tracked by its own timer rather than by replacing this one.
+                guard averagePower < silenceLevel, silenceTimer == nil else { return }
                 silenceTimer = Timer
                     .scheduledTimer(withTimeInterval: silenceThreshold, repeats: false) { [weak self] _ in
                         self?.stopRecording()
                     }
             }
-        }
     }
 }
 
