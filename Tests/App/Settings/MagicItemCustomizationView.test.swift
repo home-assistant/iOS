@@ -11,15 +11,8 @@ import Testing
 /// there is still only one thing to tap.
 @MainActor
 struct MagicItemCustomizationViewTests {
-    init() {
-        Current.magicItemProvider = { MagicItemCustomizationMagicItemProvider() }
-    }
-
     @Test func widgetOffersTapAndIconTapBehaviors() {
-        assertLightDarkSnapshots(
-            of: view(context: .widget, item: .init(id: "light.kitchen", serverId: "1", type: .entity)),
-            drawHierarchyInKeyWindow: true
-        )
+        assertSnapshots(context: .widget, item: .init(id: "light.kitchen", serverId: "1", type: .entity))
     }
 
     /// The behavior that needs more than a name — a navigation path — brings its own row along, for
@@ -28,24 +21,43 @@ struct MagicItemCustomizationViewTests {
         var item = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         item.tapAction = .navigate("/lovelace/0")
         item.action = .moreInfoDialog
-        assertLightDarkSnapshots(
-            of: view(context: .widget, item: item),
-            drawHierarchyInKeyWindow: true
-        )
+        assertSnapshots(context: .widget, item: item)
     }
 
     /// An app icon shortcut is a single action — there is no tile, so there is no second half.
     @Test func appIconShortcutKeepsASingleBehavior() {
-        assertLightDarkSnapshots(
-            of: view(context: .appIconShortcut, item: .init(id: "script.morning", serverId: "1", type: .script)),
-            drawHierarchyInKeyWindow: true
+        assertSnapshots(
+            context: .appIconShortcut,
+            item: .init(id: "script.morning", serverId: "1", type: .script)
         )
     }
 
-    private func view(context: MagicItemAddView.Context, item: MagicItem) -> some View {
-        NavigationView {
-            MagicItemCustomizationView(mode: .edit, context: context, item: item) { _ in }
-        }
+    /// `Current` is a shared global, so the mocked provider is put back as soon as the snapshot is
+    /// taken — left in place it would follow whichever suite runs next.
+    private func assertSnapshots(
+        context: MagicItemAddView.Context,
+        item: MagicItem,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let previousProvider = Current.magicItemProvider
+        Current.magicItemProvider = { MagicItemCustomizationMagicItemProvider() }
+        defer { Current.magicItemProvider = previousProvider }
+
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                MagicItemCustomizationView(mode: .edit, context: context, item: item) { _ in }
+            },
+            drawHierarchyInKeyWindow: true,
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
+        )
     }
 }
 
