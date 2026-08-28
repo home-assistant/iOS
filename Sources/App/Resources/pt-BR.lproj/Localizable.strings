@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Processando...";
 "assist.carplay.responding.title" = "Respondendo...";
 "assist.carplay.tap_to_record.title" = "Toque para gravar";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Configurações do Assist";
 "assist.settings.tts_mute.footer" = "Quando habilitado, o Assist não reproduzirá respostas em áudio mesmo que o pipeline tenha conversão de texto em fala configurada. Você ainda verá as respostas em texto.";
 "assist.settings.tts_mute.toggle" = "Silenciar respostas de voz";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Toque para";
 "assist.watch.not_reachable.title" = "O Assist requer conectividade com o iPhone. Seu iPhone está inacessível no momento.";
 "assist.watch.volume.title" = "Controle de volume";

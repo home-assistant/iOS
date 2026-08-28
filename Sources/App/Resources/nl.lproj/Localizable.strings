@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Bezig met verwerken...";
 "assist.carplay.responding.title" = "Reageren...";
 "assist.carplay.tap_to_record.title" = "Tik om op te nemen";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Assist-pijplijnen konden niet worden verkregen. Controleer je pijplijnconfiguratie.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pijplijn";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assist-instellingen";
 "assist.settings.tts_mute.footer" = "Als deze optie is ingeschakeld, speelt Assist geen audiorespons af, zelfs niet als de pijplijn tekst-naar-spraak heeft geconfigureerd. Je zult nog steeds tekstreacties te zien krijgen.";
 "assist.settings.tts_mute.toggle" = "Spraakreacties dempen";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
 "assist.watch.volume.title" = "Volumeregeling";

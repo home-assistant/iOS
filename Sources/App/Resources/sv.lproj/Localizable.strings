@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Bearbetar...";
 "assist.carplay.responding.title" = "Svarar...";
 "assist.carplay.tap_to_record.title" = "Tryck för att spela in";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assist-inställningar";
 "assist.settings.tts_mute.footer" = "När funktionen är aktiverad kommer Assist inte att spela upp ljudsvar, även om text-till-tal-funktionen är konfigurerad i pipelinen. Du kommer fortfarande att se textsvaren.";
 "assist.settings.tts_mute.toggle" = "Stäng av röstsvar";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
 "assist.watch.volume.title" = "Volymkontroll";

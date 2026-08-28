@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "処理中...";
 "assist.carplay.responding.title" = "応答中...";
 "assist.carplay.tap_to_record.title" = "タップして録画";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";
 "assist.modern_ui.header.title" = "アシスト";
 "assist.modern_ui.pipeline.label" = "パイプライン";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "アシスト設定";
 "assist.settings.tts_mute.footer" = "アシストを有効にすると、パイプラインでテキスト読み上げが設定されていても、音声応答は再生されません。テキストによる応答は引き続き表示されます。";
 "assist.settings.tts_mute.toggle" = "音声応答をミュート";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "タップして";
 "assist.watch.not_reachable.title" = "アシストには iPhone の接続が必要です。現在、iPhone にアクセスできません。";
 "assist.watch.volume.title" = "音量調節";

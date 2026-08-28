@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "處理中...";
 "assist.carplay.responding.title" = "回應中...";
 "assist.carplay.tap_to_record.title" = "點擊錄製";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
 "assist.modern_ui.header.title" = "助理";
 "assist.modern_ui.pipeline.label" = "助理設定";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "助理設定";
 "assist.settings.tts_mute.footer" = "啟用後，即使助理設定已設定為文字轉語音、助理也不會以語音回應。仍然可以看到文字回應。";
 "assist.settings.tts_mute.toggle" = "靜音語音回應";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
 "assist.watch.volume.title" = "音量控制";

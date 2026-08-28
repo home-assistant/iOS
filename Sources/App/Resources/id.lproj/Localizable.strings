@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Processing...";
 "assist.carplay.responding.title" = "Responding...";
 "assist.carplay.tap_to_record.title" = "Tap to record";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Nonaktifkan respons suara";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Ketuk untuk";
 "assist.watch.not_reachable.title" = "Assist memerlukan konektivitas iPhone. iPhone Anda saat ini tidak dapat dijangkau.";
 "assist.watch.volume.title" = "Pengatur volume";
