@@ -39,22 +39,42 @@ public struct RectangularProgressView: View {
     let maxLabel: String?
     let valueLabel: String?
     let tint: Color
+    /// The complication's configured text color, or nil to pick automatically for contrast against
+    /// the pill. The value rides the bar rather than sitting in the text stack, so it is the one text
+    /// slot that would otherwise ignore the color the user set for it.
+    let valueColor: Color?
 
-    public init(fraction: Double, minLabel: String?, maxLabel: String?, valueLabel: String?, tint: Color) {
+    public init(
+        fraction: Double,
+        minLabel: String?,
+        maxLabel: String?,
+        valueLabel: String?,
+        tint: Color,
+        valueColor: Color? = nil
+    ) {
         self.fraction = fraction
         self.minLabel = minLabel
         self.maxLabel = maxLabel
         self.valueLabel = valueLabel
         self.tint = tint
+        self.valueColor = valueColor
     }
 
     @Environment(\.widgetRenderingMode) private var renderingMode
 
-    /// Full color: black on light tints, white on dark ones. In accented (tinted) mode the pill fill
-    /// is placed in the accent group and the text is left in the default group, so the system renders
-    /// them in two distinct tint shades; the explicit color is ignored there.
+    /// Full color: the complication's own text color when it has one, else black on light tints and
+    /// white on dark ones. In accented (tinted) mode the pill fill is placed in the accent group and
+    /// the text is left in the default group, so the system renders them in two distinct tint shades;
+    /// the explicit color is ignored there.
     private var valueTextColor: Color {
         guard renderingMode == .fullColor else { return .white }
+        return Self.valueLabelColor(configured: valueColor, tint: tint)
+    }
+
+    /// The pill label's color in full color: the configured text color wins, otherwise the shade that
+    /// reads best on the tint. Pure and static so the choice is testable without rendering a face.
+    public static func valueLabelColor(configured: Color?, tint: Color) -> Color {
+        if let configured { return configured }
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
         return (Luminance.red * r + Luminance.green * g + Luminance.blue * b) > Luminance.lightThreshold
@@ -146,6 +166,21 @@ public struct RectangularProgressView: View {
     RectangularProgressView(fraction: 0.68, minLabel: "0", maxLabel: "100", valueLabel: "68", tint: .green)
         .frame(width: 180)
         .padding()
+}
+
+// The complication's own text color applies to the value riding the bar, not just the text stack.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Custom value color") {
+    RectangularProgressView(
+        fraction: 0.68,
+        minLabel: "0",
+        maxLabel: "100",
+        valueLabel: "68",
+        tint: .green,
+        valueColor: .yellow
+    )
+    .frame(width: 180)
+    .padding()
 }
 
 // Fraction edge cases: the thumb stays inside the bar at the extremes, and out-of-range values clamp.
