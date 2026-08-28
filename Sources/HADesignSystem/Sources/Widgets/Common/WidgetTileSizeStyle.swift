@@ -37,21 +37,34 @@ public enum WidgetTileSizeStyle: CaseIterable, Sendable {
         }
     }
 
-    public var iconFont: Font {
-        let size: CGFloat
+    /// How much larger a glyph is drawn when it has no background behind it: with no circle to sit
+    /// inside, the icon has the whole slot to itself and reads too small at the regular size.
+    public static let iconScaleWithoutBackground: CGFloat = 1.5
 
+    public var iconSize: CGFloat {
         switch self {
         case .single:
-            size = 32
+            return 32
         case .expanded:
-            size = 28
+            return 28
         case .regular, .compact:
-            size = 20
+            return 20
         case .compressed:
-            size = 15
+            return 15
         }
+    }
 
-        return .custom(MaterialDesignIcons.familyName, size: size)
+    /// The size a glyph is drawn at, which depends on whether it has a circle behind it.
+    public func iconSize(withBackground: Bool) -> CGFloat {
+        withBackground ? iconSize : iconSize * Self.iconScaleWithoutBackground
+    }
+
+    public var iconFont: Font {
+        iconFont(withBackground: true)
+    }
+
+    public func iconFont(withBackground: Bool) -> Font {
+        .custom(MaterialDesignIcons.familyName, size: iconSize(withBackground: withBackground))
     }
 
     /// Icon circle background size

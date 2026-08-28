@@ -234,6 +234,7 @@ public enum DatabaseTables {
         case entityDisplayName
         case iconName
         case iconColor
+        case textColor
         case gaugeAttribute
         case valueAttribute
         case valuePrecision

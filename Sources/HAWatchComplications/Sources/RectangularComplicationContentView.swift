@@ -60,7 +60,11 @@ public struct RectangularComplicationContentView: View {
                         minLabel: model.minLabel,
                         maxLabel: model.maxLabel,
                         valueLabel: model.showsValue ? model.valueText : nil,
-                        tint: model.tint
+                        tint: model.tint,
+                        // The value moves into the bar's thumb here, so it has to carry the text color
+                        // with it — otherwise the one slot the user picks a color *for* is the only
+                        // one that ignores it.
+                        valueColor: model.textColor
                     )
                 } else if model.showsValue, !model.valueText.isEmpty {
                     Text(model.valueText)
