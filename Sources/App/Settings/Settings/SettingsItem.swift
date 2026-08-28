@@ -155,7 +155,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
         case .carPlay:
-            CarPlayConfigurationView(needsNavigationController: false)
+            CarPlayConfigurationView()
         case .complications:
             SettingsComplicationsView()
         case .help:
