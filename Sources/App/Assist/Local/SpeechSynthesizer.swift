@@ -50,6 +50,10 @@ final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynt
                 // whatever the last recording left behind — `.measurement` after on-device STT,
                 // which the framework documents as lowering the output playback level.
                 let audioSession = AVAudioSession.sharedInstance()
+                // Deactivated first for the same reason as the other Assist audio components: the
+                // recording that produced this response leaves the session active, and switching
+                // category and mode underneath it can fail.
+                try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
                 try audioSession.setCategory(.playback, mode: .default)
                 try audioSession.setActive(true)
             } catch {

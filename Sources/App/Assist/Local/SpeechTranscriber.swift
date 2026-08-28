@@ -212,8 +212,15 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             // afterwards and is what makes on-device TTS play back quietly. Matching `AudioRecorder`'s
             // category and mode keeps the orb behaving the same whichever transcription path is used.
             // `.duckOthers` is only valid on the playback categories, so it is not passed here either.
+            // Deactivated first, like `AudioRecorder` and `AudioPlayer` do, so the category is not
+            // switched underneath a session another Assist component left active. A failure here is
+            // not fatal: the category still has to be set, or recording starts on whatever the last
+            // playback left behind.
+            try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
             try audioSession.setCategory(.record, mode: .default)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+            // No `.notifyOthersOnDeactivation` here: the framework documents that option as valid
+            // only when deactivating.
+            try audioSession.setActive(true)
         }
 
         // Create audio engine
