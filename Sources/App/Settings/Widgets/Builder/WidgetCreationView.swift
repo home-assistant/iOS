@@ -13,20 +13,20 @@ struct WidgetCreationView: View {
     /// normally pushed (from the custom widgets list), and nesting a navigation container inside a
     /// pushed destination leaves it blank and pops it straight back out. Only a modal presentation,
     /// which has no surrounding stack to inherit, opts in.
-    private let needsNavigationController: Bool
+    private let needsNavigationStack: Bool
 
     init(
-        needsNavigationController: Bool = false,
+        needsNavigationStack: Bool = false,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
-        self.needsNavigationController = needsNavigationController
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }
 
     var body: some View {
-        if needsNavigationController {
+        if needsNavigationStack {
             NavigationStack {
                 content
             }

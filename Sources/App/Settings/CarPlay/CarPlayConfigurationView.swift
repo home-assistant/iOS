@@ -20,15 +20,15 @@ struct CarPlayConfigurationView: View {
     /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
     /// leaves it blank and pops it straight back out. Only a modal presentation, which has no
     /// surrounding stack to inherit, opts in.
-    private let needsNavigationController: Bool
+    private let needsNavigationStack: Bool
 
-    init(needsNavigationController: Bool = false, viewModel: CarPlayConfigurationViewModel? = nil) {
-        self.needsNavigationController = needsNavigationController
+    init(needsNavigationStack: Bool = false, viewModel: CarPlayConfigurationViewModel? = nil) {
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: viewModel ?? CarPlayConfigurationViewModel())
     }
 
     var body: some View {
-        if needsNavigationController {
+        if needsNavigationStack {
             NavigationStack {
                 content
             }
