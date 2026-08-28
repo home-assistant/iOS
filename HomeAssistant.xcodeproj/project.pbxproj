@@ -808,6 +808,7 @@
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
 				Widgets/Custom/AppIntents/CustomWidgetActivateAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetIntentHelper.swift,
+				Widgets/Custom/AppIntents/CustomWidgetPerformActionAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetPressButtonAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetToggleAppIntent.swift,
 				Widgets/Custom/AppIntents/ResetAllCustomWidgetConfirmationAppIntent.swift,
