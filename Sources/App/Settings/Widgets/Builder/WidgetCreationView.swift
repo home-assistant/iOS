@@ -9,10 +9,14 @@ struct WidgetCreationView: View {
     @StateObject private var viewModel: WidgetCreationViewModel
     private let dismissAction: () -> Void
 
+    /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
+    /// normally pushed (from the custom widgets list), and nesting a navigation container inside a
+    /// pushed destination leaves it blank and pops it straight back out. Only a modal presentation,
+    /// which has no surrounding stack to inherit, opts in.
     private let needsNavigationController: Bool
 
     init(
-        needsNavigationController: Bool = true,
+        needsNavigationController: Bool = false,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
@@ -26,7 +30,6 @@ struct WidgetCreationView: View {
             NavigationStack {
                 content
             }
-            .navigationViewStyle(.stack)
         } else {
             content
         }
@@ -271,10 +274,7 @@ struct WidgetCreationView: View {
 }
 
 #Preview {
-    NavigationView {
-        VStack {}
-            .sheet(isPresented: .constant(true)) {
-                WidgetCreationView {}
-            }
+    NavigationStack {
+        WidgetCreationView {}
     }
 }

@@ -134,7 +134,7 @@ final class EntityAddToHandler {
             serverId: webViewController.server.identifier.rawValue,
             type: .entity
         ))
-        let carPlaySettingsView = CarPlayConfigurationView(viewModel: viewModel)
+        let carPlaySettingsView = CarPlayConfigurationView(needsNavigationController: true, viewModel: viewModel)
         webViewController.presentOverlayController(
             controller: carPlaySettingsView.embeddedInHostingController(),
             animated: true
@@ -329,7 +329,7 @@ final class EntityAddToHandler {
             }
 
             // Open the widget creation view to let user see and further customize
-            let widgetCreationView = WidgetCreationView(widget: updatedWidget) {
+            let widgetCreationView = WidgetCreationView(needsNavigationController: true, widget: updatedWidget) {
                 // Reload widgets after changes
             }
             let hostingController = widgetCreationView
@@ -361,7 +361,7 @@ final class EntityAddToHandler {
             items: [newItem]
         )
 
-        let widgetCreationView = WidgetCreationView(widget: newWidget) {
+        let widgetCreationView = WidgetCreationView(needsNavigationController: true, widget: newWidget) {
             // Reload widgets after changes
         }
 

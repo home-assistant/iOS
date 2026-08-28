@@ -16,9 +16,13 @@ struct CarPlayConfigurationView: View {
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
+    /// Whether the screen brings its own `NavigationStack`. It defaults to off because the screen is
+    /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
+    /// leaves it blank and pops it straight back out. Only a modal presentation, which has no
+    /// surrounding stack to inherit, opts in.
     private let needsNavigationController: Bool
 
-    init(needsNavigationController: Bool = true, viewModel: CarPlayConfigurationViewModel? = nil) {
+    init(needsNavigationController: Bool = false, viewModel: CarPlayConfigurationViewModel? = nil) {
         self.needsNavigationController = needsNavigationController
         self._viewModel = .init(wrappedValue: viewModel ?? CarPlayConfigurationViewModel())
     }
@@ -373,7 +377,9 @@ struct CarPlayConfigurationView: View {
 }
 
 #Preview {
-    CarPlayConfigurationView()
+    NavigationStack {
+        CarPlayConfigurationView()
+    }
 }
 
 extension CarPlayConfigurationView: SettingsScreenSearchable {
