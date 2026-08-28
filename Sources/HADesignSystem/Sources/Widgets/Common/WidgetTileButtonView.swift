@@ -76,10 +76,22 @@ public struct WidgetTileButtonView: View {
                 .font(sizeStyle.iconFont)
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
+                // The glyph is a private-use character in the icon font, so VoiceOver has nothing
+                // to say about it. The tile is named by its title instead.
+                .accessibilityHidden(true)
         }
         .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
         .background(model.showIconBackground ? model.iconColor.opacity(0.3) : Color.clear)
         .clipShape(Circle())
+    }
+
+    /// The icon as its own control. Splitting the tile makes the icon reachable on its own, so it
+    /// has to carry the tile's name — the title it used to be announced with lives in the other
+    /// half now.
+    private var iconAsControl: some View {
+        icon
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: model.title))
     }
 
     @ViewBuilder
@@ -90,7 +102,7 @@ public struct WidgetTileButtonView: View {
             // pixel. A hidden view takes no taps, which leaves each control exactly its own half.
             regions.body(AnyView(card(iconHidden: true)))
                 .overlay {
-                    layout(icon: AnyView(regions.icon(AnyView(icon))), contentHidden: true)
+                    layout(icon: AnyView(regions.icon(AnyView(iconAsControl))), contentHidden: true)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
         } else {
