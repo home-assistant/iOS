@@ -54,7 +54,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     private enum Constants {
         /// Window of microphone RMS power (dBFS) mapped onto the 0...1 voice level. Matches
-        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range.
+        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range. It assumes the
+        /// session's input dynamics processing is on, which is why `startListening` avoids
+        /// `.measurement` mode.
         static let powerFloor: Float = -45
         static let powerCeiling: Float = -15
         /// The tap runs on a real-time audio thread and fires far faster than a screen refresh, so
@@ -200,11 +202,39 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         errorMessage = nil
         onListeningStateChange?(true)
 
+        // Past this point the transcriber counts as listening, so every failure has to unwind
+        // through `stopListening()`. Leaving `isListening` set would make the *next* start report a
+        // stale stop to the caller while it is still setting the new session up.
+        do {
+            try startRecognition(with: speechRecognizer)
+        } catch {
+            stopListening()
+            throw error
+        }
+    }
+
+    /// Configures the audio session, engine and recognition task for a session the caller has
+    /// already marked as listening, and which it unwinds if this throws.
+    private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
         // Configure audio session
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+            // `.default` rather than `.measurement`, which the framework documents as disabling the
+            // dynamics processing on input *and* output. On input that is the gain the level window
+            // below is calibrated against, so the orb sits still; and because the mode is a separate
+            // session property that `setCategory(.playback)` does not reset, it stays on the session
+            // afterwards and is what makes on-device TTS play back quietly. Matching `AudioRecorder`'s
+            // category and mode keeps the orb behaving the same whichever transcription path is used.
+            // `.duckOthers` is only valid on the playback categories, so it is not passed here either.
+            // Deactivated first, like `AudioRecorder` and `AudioPlayer` do, so the category is not
+            // switched underneath a session another Assist component left active. A failure here is
+            // not fatal: the category still has to be set, or recording starts on whatever the last
+            // playback left behind.
+            try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            try audioSession.setCategory(.record, mode: .default)
+            // No `.notifyOthersOnDeactivation` here: the framework documents that option as valid
+            // only when deactivating.
+            try audioSession.setActive(true)
         }
 
         // Create audio engine
@@ -262,12 +292,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             }
         }
 
-        // Start audio engine — clean up on failure so isListening/audio session stay consistent
+        // Start audio engine
         audioEngine.prepare()
         do {
             try audioEngine.start()
         } catch {
-            stopListening()
             throw TranscriberError.audioEngineError
         }
     }
