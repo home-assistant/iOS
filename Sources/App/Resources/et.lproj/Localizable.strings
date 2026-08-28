@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Töötlemine...";
 "assist.carplay.responding.title" = "Vastamine...";
 "assist.carplay.tap_to_record.title" = "Puuduta salvestamiseks";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Voog";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assisti sätted";
 "assist.settings.tts_mute.footer" = "Kui see on lubatud, ei esita Assist helivastuseid isegi siis, kui voos on tekstist kõneks teisendamine seadistatud. Tekstvastuseid näed ikkagi.";
 "assist.settings.tts_mute.toggle" = "Vaigista häälvastused";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Puuduta, et";
 "assist.watch.not_reachable.title" = "Assist nõuab iPhone'i ühenduvust.  iPhone pole praegu kättesaadav.";
 "assist.watch.volume.title" = "Helitugevuse reguleerimine";

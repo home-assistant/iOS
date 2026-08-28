@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "처리 중...";
 "assist.carplay.responding.title" = "응답 중...";
 "assist.carplay.tap_to_record.title" = "녹음하려면 탭하세요.";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Assist 파이프라인을 얻지 못했습니다. 파이프라인 구성을 확인하세요.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "파이프라인";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assist 설정";
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.volume.title" = "음량 조절";

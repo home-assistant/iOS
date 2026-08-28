@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Feldolgozás...";
 "assist.carplay.responding.title" = "Válaszadás...";
 "assist.carplay.tap_to_record.title" = "Érintse meg a felvételhez";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.modern_ui.header.title" = "Asszisztens";
 "assist.modern_ui.pipeline.label" = "Folyamat";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Asszisztens beállítások";
 "assist.settings.tts_mute.footer" = "Ha engedélyezve van, az Assist nem játszik le hangválaszokat, még akkor sem, ha a folyamat szöveg-beszéd funkcióval van konfigurálva. A szöveges válaszokat továbbra is látni fogja.";
 "assist.settings.tts_mute.toggle" = "Hangválaszok elnémítása";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Koppintson ide";
 "assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";
 "assist.watch.volume.title" = "Hangerőszabályzó";

@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Processing...";
 "assist.carplay.responding.title" = "Responding...";
 "assist.carplay.tap_to_record.title" = "Нажмите для записи";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Не удалось получить пайплайны Assist, пожалуйста, проверьте ваши настройки пайплайнов.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Обработчик";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Настройки Assist";
 "assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Отключение голосовых ответов";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
 "assist.watch.volume.title" = "Громкость";

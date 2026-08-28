@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "正在处理...";
 "assist.carplay.responding.title" = "正在回应……";
 "assist.carplay.tap_to_record.title" = "点击录制";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.modern_ui.header.title" = "语音助手";
 "assist.modern_ui.pipeline.label" = "管道";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "语音助手设置";
 "assist.settings.tts_mute.footer" = "启用此功能后，即使管道已配置文本转语音功能，语音助手也不会播放语音答复。您仍然可以看到文本答复。";
 "assist.settings.tts_mute.toggle" = "语音答复静音";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
 "assist.watch.volume.title" = "音量控制";

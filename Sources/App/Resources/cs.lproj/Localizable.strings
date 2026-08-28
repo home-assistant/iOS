@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Zpracovávání...";
 "assist.carplay.responding.title" = "Odpovídání...";
 "assist.carplay.tap_to_record.title" = "Klepněte po nahrání";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Nastavení Assist";
 "assist.settings.tts_mute.footer" = "Pokud je tato povoleno, Assist nepřehrává zvukové odpovědi, a to ani v případě, že je v kanálu nastaven převod textu na řeč. Textové odpovědi se však budou zobrazovat i nadále.";
 "assist.settings.tts_mute.toggle" = "Ztlumit hlasové odpovědi";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";

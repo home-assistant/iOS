@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "Επεξεργασία...";
 "assist.carplay.responding.title" = "Απάντηση...";
 "assist.carplay.tap_to_record.title" = "Πατήστε για καταγραφή";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Ρυθμίσεις Assist";
 "assist.settings.tts_mute.footer" = "Οταν είναι ενεργοποιημένο, το Assist δεν θα αναπαράγει απαντήσεις ήχου, ακόμη και αν το pipeline έχει διαμορφωμένη τη μετατροπή κειμένου σε ομιλία. Θα εξακολουθείτε να βλέπετε απαντήσεις κειμένου.";
 "assist.settings.tts_mute.toggle" = "Σίγαση φωνητικών απαντήσεων";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
 "assist.watch.volume.title" = "Ελεγχος έντασης";

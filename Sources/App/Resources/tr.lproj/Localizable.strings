@@ -208,6 +208,8 @@
 "assist.carplay.processing.title" = "İşleniyor...";
 "assist.carplay.responding.title" = "Yanıt veriliyor...";
 "assist.carplay.tap_to_record.title" = "Kaydetmek için dokunun";
+"assist.chat.menu.edit" = "Edit";
+"assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "İş akışı";
@@ -238,6 +240,7 @@
 "assist.settings.title" = "Assist A";
 "assist.settings.tts_mute.footer" = "Etkinleştirildiğinde, işlem hattında metinden sese dönüştürme yapılandırılmış olsa bile Assist sesli yanıtları oynatmaz. Yine de metin yanıtlarını göreceksiniz.";
 "assist.settings.tts_mute.toggle" = "Sesli yanıtları sessize al";
+"assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";
 "assist.watch.volume.title" = "Ses seviyesi kontrolü";
