@@ -54,7 +54,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     private enum Constants {
         /// Window of microphone RMS power (dBFS) mapped onto the 0...1 voice level. Matches
-        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range.
+        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range. It assumes the
+        /// session's input dynamics processing is on, which is why `startListening` avoids
+        /// `.measurement` mode.
         static let powerFloor: Float = -45
         static let powerCeiling: Float = -15
         /// The tap runs on a real-time audio thread and fires far faster than a screen refresh, so
@@ -203,7 +205,14 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // Configure audio session
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+            // `.default` rather than `.measurement`, which the framework documents as disabling the
+            // dynamics processing on input *and* output. On input that is the gain the level window
+            // below is calibrated against, so the orb sits still; and because the mode is a separate
+            // session property that `setCategory(.playback)` does not reset, it stays on the session
+            // afterwards and is what makes on-device TTS play back quietly. Matching `AudioRecorder`'s
+            // category and mode keeps the orb behaving the same whichever transcription path is used.
+            // `.duckOthers` is only valid on the playback categories, so it is not passed here either.
+            try audioSession.setCategory(.record, mode: .default)
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         }
 

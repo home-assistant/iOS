@@ -45,7 +45,13 @@ final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynt
         utterance.voice = voice
         if managesAudioSession {
             do {
-                try AVAudioSession.sharedInstance().setCategory(.playback)
+                // The mode has to be named explicitly: it is a session property of its own that
+                // `setCategory(.playback)` leaves alone, so without this the utterance inherits
+                // whatever the last recording left behind — `.measurement` after on-device STT,
+                // which the framework documents as lowering the output playback level.
+                let audioSession = AVAudioSession.sharedInstance()
+                try audioSession.setCategory(.playback, mode: .default)
+                try audioSession.setActive(true)
             } catch {
                 Current.Log.error("Failed to set audio session category for speech synthesis: \(error)")
             }
