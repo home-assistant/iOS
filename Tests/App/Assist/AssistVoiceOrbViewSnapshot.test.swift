@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import SharedTesting
 import SwiftUI
 import Testing
@@ -23,7 +24,11 @@ struct AssistVoiceOrbViewSnapshotTests {
     /// is a small part of the screen. What this test pins is the dark palette the orb picks.
     @available(iOS 18, *)
     @MainActor @Test(arguments: [0.0, 0.5, 1.0]) func snapshots(level: Double) {
-        let view = AssistVoiceOrbView(level: level, forcesLegacyAppearance: true)
+        let view = AssistVoiceOrbView(
+            level: level,
+            accessibilityLabel: L10n.Assist.Button.Listening.title,
+            forcesLegacyAppearance: true
+        )
             .frame(width: Self.size, height: Self.size)
             .background(Color(uiColor: .systemBackground))
             .environment(\.assistOrbFixedTime, Self.fixedTime)
