@@ -202,6 +202,20 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         errorMessage = nil
         onListeningStateChange?(true)
 
+        // Past this point the transcriber counts as listening, so every failure has to unwind
+        // through `stopListening()`. Leaving `isListening` set would make the *next* start report a
+        // stale stop to the caller while it is still setting the new session up.
+        do {
+            try startRecognition(with: speechRecognizer)
+        } catch {
+            stopListening()
+            throw error
+        }
+    }
+
+    /// Configures the audio session, engine and recognition task for a session the caller has
+    /// already marked as listening, and which it unwinds if this throws.
+    private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
         // Configure audio session
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
@@ -278,12 +292,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             }
         }
 
-        // Start audio engine — clean up on failure so isListening/audio session stay consistent
+        // Start audio engine
         audioEngine.prepare()
         do {
             try audioEngine.start()
         } catch {
-            stopListening()
             throw TranscriberError.audioEngineError
         }
     }
