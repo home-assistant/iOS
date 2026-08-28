@@ -167,11 +167,13 @@ struct MagicItemCustomizationView: View {
                 if context == .widget {
                     MagicItemActionSelectionView(
                         title: L10n.MagicItem.Action.tapBehavior,
+                        serverId: viewModel.item.serverId,
                         action: $viewModel.item.tapAction
                     )
                 }
                 MagicItemActionSelectionView(
                     title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
+                    serverId: viewModel.item.serverId,
                     action: $viewModel.item.action
                 )
             } header: {

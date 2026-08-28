@@ -265,7 +265,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             return interaction
         }
 
-        guard let domain = magicItem.domain else {
+        guard magicItem.domain != nil else {
             // An entity whose domain isn't modeled here (one from a custom integration, say) still
             // has a more-info dialog, so open that instead of leaving the tile inert. Non-entity
             // items have no entity id to open.
@@ -274,32 +274,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
 
         // Domains without a single main action — sensors, media players, locks, anything read-only
         // or too complex for one tap — open their more-info dialog in the web view instead.
-        guard let mainAction = domain.mainAction else {
-            return moreInfoIntent()
-        }
-
-        switch mainAction {
-        case .press:
-            return .appIntent(.press(
-                entityId: magicItem.id,
-                domain: domain.rawValue,
-                serverId: magicItem.serverId
-            ))
-        case .toggle, .trigger:
-            return .appIntent(.toggle(
-                entityId: magicItem.id,
-                domain: domain.rawValue,
-                serverId: magicItem.serverId
-            ))
-        case .turnOn where domain == .scene || domain == .script:
-            return .appIntent(.activate(
-                entityId: magicItem.id,
-                domain: domain.rawValue,
-                serverId: magicItem.serverId
-            ))
-        default:
-            return moreInfoIntent()
-        }
+        return mainActionIntent() ?? moreInfoIntent()
     }
 
     /// What tapping a widget tile outside its icon does.
@@ -331,8 +306,9 @@ public struct MagicItem: Codable, Equatable, Hashable {
         [.entity, .script, .scene].contains(type)
     }
 
-    /// The interaction an explicitly chosen action performs. `nil` for `.default`, which leaves the
-    /// choice to whatever the caller falls back on.
+    /// The interaction an explicitly chosen action performs. `nil` for `.default`, and for a
+    /// `.toggle` the item's domain can't perform — both leave the choice to whatever the caller
+    /// falls back on.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
         case .default:
@@ -341,8 +317,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
             return moreInfoIntent()
         case .nothing:
             return .appIntent(.refresh)
+        case .toggle:
+            return mainActionIntent()
         case let .navigate(path):
             return navigateIntent(path: path)
+        case let .url(urlString):
+            return urlIntent(urlString)
+        case let .performAction(serverId, actionId, payload):
+            return .appIntent(.performAction(
+                serverId: serverId,
+                actionId: actionId,
+                payload: payload
+            ))
         case let .runScript(serverId, scriptId):
             return .appIntent(.activate(
                 entityId: scriptId,
@@ -356,6 +342,32 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 startListening: startListening
             )
         }
+    }
+
+    /// The intent that runs the item's domain main action — toggling a light, pressing a button,
+    /// activating a scene. `nil` for a domain that has no single main action (a sensor), or whose
+    /// action needs more than one tap can express (a lock, which is state-aware).
+    private func mainActionIntent() -> WidgetInteractionType? {
+        guard let domain, let mainAction = domain.mainAction else { return nil }
+        switch mainAction {
+        case .press:
+            return .appIntent(.press(entityId: id, domain: domain.rawValue, serverId: serverId))
+        case .toggle, .trigger:
+            return .appIntent(.toggle(entityId: id, domain: domain.rawValue, serverId: serverId))
+        case .turnOn where domain == .scene || domain == .script:
+            return .appIntent(.activate(entityId: id, domain: domain.rawValue, serverId: serverId))
+        default:
+            return nil
+        }
+    }
+
+    /// Opens whatever the user typed. Nothing to open — an empty or unusable address — leaves the
+    /// tile refreshing rather than pointing nowhere.
+    private func urlIntent(_ urlString: String) -> WidgetInteractionType {
+        guard let url = ItemAction.resolvedURL(from: urlString) else {
+            return .appIntent(.refresh)
+        }
+        return .widgetURL(url)
     }
 
     /// Opens this item's entity more-info dialog in the app's web view.
@@ -407,11 +419,21 @@ public enum MagicItemError: Error {
     case unknownDomain
 }
 
+/// What tapping a magic item runs, mirroring the tap actions the frontend's tile card offers.
+///
+/// Every case is persisted through `MagicItem`'s `Codable` conformance, so the case names and the
+/// order of their associated values are storage format — renaming either drops existing
+/// configurations back to `.default`.
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
+    /// Listed in the frontend's own order, with `runScript` — which the frontend has no equivalent
+    /// for — next to the action it resembles most.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
+        .toggle,
         .navigate(""),
+        .url(""),
+        .performAction("", "", ""),
         .runScript("", ""),
         .assist("", "", false),
         .nothing,
@@ -419,7 +441,17 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 
     case `default`
     case moreInfoDialog
+    /// Runs the entity's domain main action (`light.toggle`, `button.press`, `scene.turn_on`…).
+    /// Only domains that have one can do this — see `Domain.mainAction` — so for anything else the
+    /// item falls back to the behavior it would have had without an override.
+    case toggle
     case navigate(_ navigationPath: String)
+    /// Opens an arbitrary URL, the frontend's `url` action (`url_path`). An `https://` link opens in
+    /// the browser; the app's own `homeassistant://` deep links are handled in-app.
+    case url(_ url: String)
+    /// Calls `domain.service` with a JSON payload — the frontend's `perform-action`. `actionId` is
+    /// the `domain.service` pair, `payload` the JSON object sent as the action's data.
+    case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
     case nothing
@@ -430,8 +462,14 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return "default"
         case .moreInfoDialog:
             return "moreInfoDialog"
+        case .toggle:
+            return "toggle"
         case .navigate:
             return "navigate"
+        case .url:
+            return "url"
+        case .performAction:
+            return "performAction"
         case .runScript:
             return "runScript"
         case .assist:
@@ -447,8 +485,14 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return L10n.Widgets.Action.Name.default
         case .moreInfoDialog:
             return L10n.Widgets.Action.Name.moreInfoDialog
+        case .toggle:
+            return L10n.Widgets.Action.Name.toggle
         case .navigate:
             return L10n.Widgets.Action.Name.navigate
+        case .url:
+            return L10n.Widgets.Action.Name.url
+        case .performAction:
+            return L10n.Widgets.Action.Name.performAction
         case .runScript:
             return L10n.Widgets.Action.Name.runScript
         case .assist:
@@ -456,6 +500,19 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         case .nothing:
             return L10n.Widgets.Action.Name.nothing
         }
+    }
+
+    /// The URL a `.url` action opens, `nil` when there is nothing to open.
+    ///
+    /// A typed address usually omits its scheme ("example.com/page") and nothing can open it
+    /// without one, so the web's default is assumed rather than leaving the action dead.
+    public static func resolvedURL(from urlString: String) -> URL? {
+        let trimmed = urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let url = URL(string: trimmed), url.scheme != nil {
+            return url
+        }
+        return URL(string: "https://\(trimmed)")
     }
 }
 

@@ -109,6 +109,10 @@ public enum AppConstants {
         }
     }
 
+    /// Every scheme the app answers to — the release one and the debug build's. A URL carrying one
+    /// of these is handled inside the app; anything else lives somewhere on the web.
+    public static let deeplinkSchemes: Set<String> = ["homeassistant", "homeassistant-dev"]
+
     /// Roots a scheme-less, slash-less navigation path (`map/0` → `/map/0`) so an HA path that is
     /// missing its leading slash still resolves in the frontend. Anything already rooted, or that
     /// carries a scheme — `https://`, `mailto:`, or the app's own `homeassistant://` deep links —
