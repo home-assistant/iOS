@@ -1,0 +1,110 @@
+name: Widget Snapshots (temporary)
+
+# TEMPORARY: records and verifies the widget snapshot references while the lock screen accessory
+# work is in flight. Snapshot references can only be produced on a macOS runner, so this workflow
+# runs the widget suites, commits any reference image it had to record, and uploads the failure
+# diffs. Delete it once the change is merged.
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      record:
+        description: Re-record every widget snapshot, not only the missing ones
+        type: boolean
+        default: false
+  push:
+    branches:
+      - claude/lock-screen-circular-widgets-r5mp7c
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+
+concurrency:
+  group: temp-widget-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  snapshots:
+    # The commit this workflow pushes back must not start the workflow again.
+    if: ${{ !contains(github.event.head_commit.message, '[skip snapshots]') }}
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Run widget tests
+        id: tests
+        continue-on-error: true
+        env:
+          # A missing reference is recorded and reported as a failure, which is what fills in the
+          # images for new tests. `record` re-records the ones that already exist too.
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record && 'all' || 'missing' }}
+        run: |
+          set +e
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:HomeAssistant-Tests-App/WidgetLockScreenAccessorySnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetAccessoryIconViewTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetGallerySnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetsSnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetTileIconSizeSnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetTileTapBehaviorSnapshotTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetTileSizeStyleTests \
+            -only-testing:HomeAssistant-Tests-App/WidgetCalendarSnapshotTests \
+            COMPILER_INDEX_STORE_ENABLE=NO > xcodebuild.log 2>&1
+          status=$?
+          grep -E "error:|failed|✘|Recorded|does not match|Test Suite.*(passed|failed)" \
+            xcodebuild.log | tail -n 120
+          exit $status
+
+      - name: Commit recorded references
+        id: commit
+        run: |
+          git add -A 'Tests/Widgets/__Snapshots__'
+          if git diff --cached --quiet; then
+            echo "recorded=false" >> "$GITHUB_OUTPUT"
+            echo "No reference image changed."
+          else
+            echo "recorded=true" >> "$GITHUB_OUTPUT"
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Record widget snapshot references [skip snapshots]'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload: snapshots and diffs"
+        if: ${{ always() }}
+        with:
+          name: widget-snapshots
+          path: |
+            Tests/Widgets/__Snapshots__
+            xcodebuild.log
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+
+      # Recording a missing reference fails the run that recorded it; the commit above is what
+      # makes the next run pass. Any other failure has to stay red.
+      - name: Report test result
+        if: ${{ steps.tests.outcome == 'failure' && steps.commit.outputs.recorded != 'true' }}
+        run: |
+          echo "Widget tests failed without recording anything new." >&2
+          exit 1

@@ -8,6 +8,10 @@ import WidgetKit
 public struct WidgetEnergyAccessoryRectangularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
+    /// Glyphs are drawn as images here: see ``WidgetAccessoryIconView`` for why the lock screen
+    /// cannot draw them as text in the icon font.
+    private static let iconSize: CGFloat = 12
+
     private let stats: [WidgetEnergyStatModel]
     private let periodTitle: String
     /// What to say when there is nothing to report — which is where "not configured" and "no data"
@@ -46,8 +50,7 @@ public struct WidgetEnergyAccessoryRectangularContentView: View {
 
     private func row(for stat: WidgetEnergyStatModel) -> some View {
         HStack(spacing: DesignSystem.Spaces.half) {
-            Text(verbatim: stat.icon.unicode)
-                .font(.custom(MaterialDesignIcons.familyName, size: 12))
+            WidgetAccessoryIconView(icon: stat.icon, size: Self.iconSize)
             Text(verbatim: stat.value)
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
             if let unit = stat.unit {

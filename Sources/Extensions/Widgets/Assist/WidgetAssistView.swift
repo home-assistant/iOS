@@ -41,7 +41,7 @@ struct WidgetAssistView: View {
     }
 
     private var accessoryCircular: some View {
-        WidgetCircularIconView(icon: MaterialDesignIcons.messageProcessingOutlineIcon, logo: Image(.logo))
+        WidgetCircularIconView(icon: MaterialDesignIcons.messageProcessingOutlineIcon)
     }
 
     /// One tile per configured pipeline, each deep linking straight into its own Assist

@@ -22,16 +22,6 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
         WidgetCustomConstants.expiration
     }
 
-    func makePlaceholder(in context: Context) -> WidgetCustomEntry {
-        .init(
-            date: .now,
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
-            showLastUpdateTime: false,
-            showStates: false
-        )
-    }
-
     func makePreviewEntry(in context: Context) -> WidgetCustomEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))

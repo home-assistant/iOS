@@ -14,7 +14,6 @@ public struct WidgetTileButtonView: View {
     public let sizeStyle: WidgetTileSizeStyle
     public let family: WidgetFamily
     public let tinted: Bool
-    public let logo: Image?
     /// Splits the tile into an icon control and a body control. `nil` leaves it whole, for the tiles
     /// whose icon and body would run the same thing anyway.
     public let regions: WidgetTileRegions?
@@ -24,26 +23,27 @@ public struct WidgetTileButtonView: View {
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         tinted: Bool,
-        logo: Image? = nil,
         regions: WidgetTileRegions? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
-        self.logo = logo
         self.regions = regions
     }
+
+    /// The inline family draws its icon at the size the system leaves for one, next to the title.
+    private static let inlineIconSize: CGFloat = 12
 
     public var body: some View {
         switch family {
         case .accessoryCircular, .accessoryRectangular:
-            WidgetCircularIconView(icon: model.icon, logo: logo)
+            WidgetCircularIconView(icon: model.icon)
         case .accessoryInline:
             Label {
                 Text(verbatim: model.title)
             } icon: {
-                Image(uiImage: model.icon.image(ofSize: .init(width: 10, height: 10), color: .white))
+                WidgetAccessoryIconView(icon: model.icon, size: Self.inlineIconSize)
             }
         default:
             tileView

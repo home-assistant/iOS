@@ -111,8 +111,7 @@ struct WidgetTileInteraction {
             sizeStyle: sizeStyle,
             family: family,
             kind: type.tileKind,
-            tinted: false,
-            logo: Image(.logo)
+            tinted: false
         )
     }
 
