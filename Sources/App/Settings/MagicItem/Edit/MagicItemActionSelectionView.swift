@@ -8,6 +8,9 @@ import SwiftUI
 /// so the rows are laid out for a `Section` the caller owns rather than bringing their own.
 struct MagicItemActionSelectionView: View {
     let title: String
+    /// The server the item belongs to. A "perform action" behavior runs against it, so it is the
+    /// only server whose actions the picker offers.
+    let serverId: String
     @Binding var action: ItemAction?
 
     /// Prefilling reads the database for the chosen script, so the extra rows wait for it rather
@@ -19,7 +22,6 @@ struct MagicItemActionSelectionView: View {
     @State private var pipelineId: String?
     @State private var startListening = true
     @State private var script: HAAppEntity?
-    @State private var performActionServerId: String?
     @State private var performActionId: String?
     @State private var performActionPayload = ""
 
@@ -79,13 +81,10 @@ struct MagicItemActionSelectionView: View {
             HStack {
                 Text(verbatim: L10n.MagicItem.Action.PerformAction.title)
                 ServerActionPicker(
-                    selectedServerId: $performActionServerId,
+                    serverId: serverId,
                     selectedActionId: $performActionId
                 )
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                .onChange(of: performActionServerId) { _ in
-                    updatePerformAction()
-                }
                 .onChange(of: performActionId) { _ in
                     updatePerformAction()
                 }
@@ -154,7 +153,7 @@ struct MagicItemActionSelectionView: View {
         case .url:
             return .url(urlPath)
         case .performAction:
-            return .performAction(performActionServerId ?? "", performActionId ?? "", performActionPayload)
+            return .performAction(serverId, performActionId ?? "", performActionPayload)
         case .assist:
             return .assist(pipelineServerId ?? "", pipelineId ?? "", startListening)
         case .runScript:
@@ -170,8 +169,8 @@ struct MagicItemActionSelectionView: View {
     }
 
     private func updatePerformAction() {
-        guard let performActionServerId, let performActionId else { return }
-        action = .performAction(performActionServerId, performActionId, performActionPayload)
+        guard let performActionId else { return }
+        action = .performAction(serverId, performActionId, performActionPayload)
     }
 
     private func prefill() {
@@ -180,21 +179,20 @@ struct MagicItemActionSelectionView: View {
             navigationPath = path
         case let .url(urlString):
             urlPath = urlString
-        case let .performAction(serverId, actionId, payload):
-            performActionServerId = serverId
+        case let .performAction(_, actionId, payload):
             performActionId = actionId
             performActionPayload = payload
-        case let .runScript(serverId, scriptId):
+        case let .runScript(scriptServerId, scriptId):
             do {
                 script = try HAAppEntity.config().first(where: { entity in
-                    entity.serverId == serverId && entity.entityId == scriptId
+                    entity.serverId == scriptServerId && entity.entityId == scriptId
                 })
             } catch {
                 Current.Log
                     .error("Failed to prefill script entity in magic item customization: \(error.localizedDescription)")
             }
-        case let .assist(serverId, pipelineId, startListening):
-            pipelineServerId = serverId
+        case let .assist(assistServerId, pipelineId, startListening):
+            pipelineServerId = assistServerId
             self.pipelineId = pipelineId
             self.startListening = startListening
         case .default, .nothing, .moreInfoDialog, .toggle:
@@ -208,10 +206,12 @@ struct MagicItemActionSelectionView: View {
         Section(L10n.MagicItem.action) {
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.tapBehavior,
+                serverId: "1",
                 action: .constant(.default)
             )
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.iconTapBehavior,
+                serverId: "1",
                 action: .constant(.navigate("/lovelace/0"))
             )
         }
