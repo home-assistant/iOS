@@ -88,10 +88,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     func stopRecording() {
         audioRecorder?.stop()
         audioRecorder = nil
-        meteringTimer?.invalidate()
-        meteringTimer = nil
-        silenceTimer?.invalidate()
-        silenceTimer = nil
+        stopMonitoringAudioLevels()
         delegate?.didStopRecording()
     }
 
@@ -103,8 +100,19 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private func startMonitoringAudioLevels() {
         meteringTimer?.invalidate()
         meteringTimer = Timer
-            .scheduledTimer(withTimeInterval: Constants.meteringInterval, repeats: true) { [weak self] _ in
-                guard let self, let audioRecorder, audioRecorder.isRecording else { return }
+            .scheduledTimer(withTimeInterval: Constants.meteringInterval, repeats: true) { [weak self] timer in
+                guard let self else {
+                    timer.invalidate()
+                    return
+                }
+                // A recording can end without going through `stopRecording()`: this monitoring starts a
+                // second after the recorder does, so a stop in between lands first, and an interruption
+                // ends the recording on its own. Returning would leave the timer firing 20 times a second
+                // for as long as the app lives, so it is torn down here instead.
+                guard let audioRecorder, audioRecorder.isRecording else {
+                    stopMonitoringAudioLevels()
+                    return
+                }
                 audioRecorder.updateMeters()
 
                 let averagePower = audioRecorder.averagePower(forChannel: 0)
@@ -120,6 +128,13 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
                         self?.stopRecording()
                     }
             }
+    }
+
+    private func stopMonitoringAudioLevels() {
+        meteringTimer?.invalidate()
+        meteringTimer = nil
+        silenceTimer?.invalidate()
+        silenceTimer = nil
     }
 }
 
