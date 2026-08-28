@@ -52,7 +52,7 @@ struct WidgetCommonlyUsedEntities: Widget {
         }
     }
 
-    private func modelsForWidget(
+    func modelsForWidget(
         items: [MagicItem],
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetEntityState],
@@ -91,7 +91,12 @@ struct WidgetCommonlyUsedEntities: Widget {
                 }
             }()
 
-            let interactionType = magicItem.widgetInteractionType
+            // The icon controls the entity and the rest of the tile opens it, the way the
+            // frontend's tile card behaves. An entity the widget can't act on has both halves
+            // opening it, so there is nothing to split and the tile stays a single control.
+            let iconInteractionType = magicItem.widgetInteractionType
+            let tapInteractionType = magicItem.widgetTapInteractionType
+            let isSplit = iconInteractionType != tapInteractionType
             let areaName = infoProvider.getAreaName(for: magicItem)
             let subtitle: String? = {
                 if let areaName, let state = state?.value {
@@ -104,9 +109,10 @@ struct WidgetCommonlyUsedEntities: Widget {
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: subtitle,
-                interactionType: interactionType,
+                interactionType: isSplit ? tapInteractionType : iconInteractionType,
+                iconInteractionType: isSplit ? iconInteractionType : nil,
                 icon: icon,
-                showIconBackground: true,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: Color(uiColor: .label),
                 iconColor: iconColor,
                 backgroundColor: Color.tileBackground,

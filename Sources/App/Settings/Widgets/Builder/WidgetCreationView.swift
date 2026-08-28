@@ -206,16 +206,6 @@ struct WidgetCreationView: View {
             let textColor = Color(hex: magicItem.customization?.textColor)
             let iconColor = Color(hex: magicItem.customization?.iconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
-            let interactionType = magicItem.widgetInteractionType
-            let showIconBackground = {
-                switch interactionType {
-                case .widgetURL:
-                    return true
-                case let .appIntent(widgetIntentType):
-                    return widgetIntentType != .refresh
-                }
-            }()
-
             let icon: MaterialDesignIcons = {
                 if let info {
                     return magicItem.icon(info: info)
@@ -238,7 +228,7 @@ struct WidgetCreationView: View {
                 subtitle: nil,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
-                showIconBackground: showIconBackground,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: textColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor,

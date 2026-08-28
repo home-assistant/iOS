@@ -31,6 +31,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             && type == other.type
             && customization == other.customization
             && action == other.action
+            && tapAction == other.tapAction
             && displayText == other.displayText
             && assistPrompt == other.assistPrompt
             && assistPipelineId == other.assistPipelineId
@@ -42,7 +43,12 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var serverId: String
     public let type: ItemType
     public var customization: Customization?
+    /// What the item's icon runs when tapped. On a widget tile the icon is the entity's own
+    /// control, so this is the action the tile performs in place.
     public var action: ItemAction?
+    /// What a tap anywhere on the tile other than its icon runs, mirroring the frontend tile card's
+    /// `tap_action`: by default the entity's more-info dialog, while the icon keeps the control.
+    public var tapAction: ItemAction?
     public var displayText: String?
     public var assistPrompt: String?
     public var assistPipelineId: String?
@@ -61,6 +67,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         hasher.combine(type)
         hasher.combine(customization)
         hasher.combine(action)
+        hasher.combine(tapAction)
         hasher.combine(displayText)
         hasher.combine(assistPrompt)
         hasher.combine(assistPipelineId)
@@ -95,6 +102,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type: ItemType,
         customization: Customization? = .init(),
         action: ItemAction? = .default,
+        tapAction: ItemAction? = .default,
         displayText: String? = nil,
         assistPrompt: String? = nil,
         assistPipelineId: String? = nil,
@@ -105,6 +113,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         self.type = type
         self.customization = customization
         self.action = action
+        self.tapAction = tapAction
         self.displayText = displayText
         self.assistPrompt = assistPrompt
         self.assistPipelineId = assistPipelineId
@@ -238,6 +247,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         displayText ?? info.name
     }
 
+    /// What tapping the item — or, on a split widget tile, its icon — does.
     public var widgetInteractionType: WidgetInteractionType {
         let magicItem = self
 
@@ -251,31 +261,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
 
         // An explicit action override wins over whatever the item's domain would do by default.
         // None of these branches need the domain, so they're resolved before it.
-        if let magicItemAction = magicItem.action, magicItemAction != .default {
-            switch magicItemAction {
-            case .default:
-                // This block of code should not be reached, default should not be handled here
-                // Returning something to avoid compiler error
-                return .appIntent(.refresh)
-            case .moreInfoDialog:
-                return moreInfoIntent()
-            case .nothing:
-                return .appIntent(.refresh)
-            case let .navigate(path):
-                return navigateIntent(path: path)
-            case let .runScript(serverId, scriptId):
-                return .appIntent(.activate(
-                    entityId: scriptId,
-                    domain: Domain.script.rawValue,
-                    serverId: serverId
-                ))
-            case let .assist(serverId, pipelineId, startListening):
-                return assistIntent(
-                    serverId: serverId,
-                    pipelineId: pipelineId,
-                    startListening: startListening
-                )
-            }
+        if let magicItemAction = magicItem.action, let interaction = interactionType(for: magicItemAction) {
+            return interaction
         }
 
         guard let domain = magicItem.domain else {
@@ -312,6 +299,62 @@ public struct MagicItem: Codable, Equatable, Hashable {
             ))
         default:
             return moreInfoIntent()
+        }
+    }
+
+    /// What tapping a widget tile outside its icon does.
+    ///
+    /// Mirrors the frontend's tile card: the icon carries the entity's control and the rest of the
+    /// card opens the entity. Items with no entity behind them — an Assist pipeline or prompt, a
+    /// folder — have no more-info dialog to open, so the whole tile keeps the icon's action.
+    public var widgetTapInteractionType: WidgetInteractionType {
+        if let tapAction, let interaction = interactionType(for: tapAction) {
+            return interaction
+        }
+        return hasMoreInfoDialog ? moreInfoIntent() : widgetInteractionType
+    }
+
+    /// Whether tapping the item's icon on a widget controls the entity where it stands, rather than
+    /// opening the app. Tiles that only open the app draw their icon without a background, the way
+    /// the frontend leaves an uncontrollable entity's icon plain.
+    public var controlsEntityFromWidget: Bool {
+        switch widgetInteractionType {
+        case .widgetURL:
+            return false
+        case let .appIntent(intentType):
+            return intentType != .refresh
+        }
+    }
+
+    /// Whether the item stands for an entity, and so has a more-info dialog to open.
+    public var hasMoreInfoDialog: Bool {
+        [.entity, .script, .scene].contains(type)
+    }
+
+    /// The interaction an explicitly chosen action performs. `nil` for `.default`, which leaves the
+    /// choice to whatever the caller falls back on.
+    private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
+        switch action {
+        case .default:
+            return nil
+        case .moreInfoDialog:
+            return moreInfoIntent()
+        case .nothing:
+            return .appIntent(.refresh)
+        case let .navigate(path):
+            return navigateIntent(path: path)
+        case let .runScript(serverId, scriptId):
+            return .appIntent(.activate(
+                entityId: scriptId,
+                domain: Domain.script.rawValue,
+                serverId: serverId
+            ))
+        case let .assist(serverId, pipelineId, startListening):
+            return assistIntent(
+                serverId: serverId,
+                pipelineId: pipelineId,
+                startListening: startListening
+            )
         }
     }
 

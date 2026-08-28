@@ -3153,8 +3153,14 @@ public enum L10n {
     /// Save
     public static var edit: String { return L10n.tr("Localizable", "magic_item.edit") }
     public enum Action {
+      /// Tapping the icon runs the icon tap behavior; tapping anywhere else on the tile runs the tap behavior.
+      public static var footer: String { return L10n.tr("Localizable", "magic_item.action.footer") }
+      /// Icon tap behavior
+      public static var iconTapBehavior: String { return L10n.tr("Localizable", "magic_item.action.icon_tap_behavior") }
       /// On tap
       public static var onTap: String { return L10n.tr("Localizable", "magic_item.action.on_tap") }
+      /// Tap behavior
+      public static var tapBehavior: String { return L10n.tr("Localizable", "magic_item.action.tap_behavior") }
       public enum Assist {
         /// Assist
         public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.title") }

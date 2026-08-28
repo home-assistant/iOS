@@ -18,7 +18,8 @@ struct WidgetBasicView: View {
             family: family,
             kind: type.tileKind,
             logo: Image(.logo),
-            tileContent: interaction.content
+            tileContent: interaction.content,
+            tileRegions: interaction.regions
         )
     }
 }

@@ -13,6 +13,9 @@ import WidgetKit
 public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     /// Wraps a tile's rendered content in the control that runs it.
     public typealias TileContent = (Item, WidgetTileSizeStyle, AnyView) -> AnyView
+    /// Splits a tile into its own icon and body controls. Returning `nil` leaves the tile whole, to
+    /// be wrapped by ``TileContent`` as usual.
+    public typealias TileRegions = (Item) -> WidgetTileRegions?
 
     /// Maximum tile height used for compact layouts in non-small widget families.
     /// This value was measured to keep a single row tile (icon + title + subtitle)
@@ -27,6 +30,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     private let kind: WidgetTileKind
     private let logo: Image?
     private let tileContent: TileContent
+    private let tileRegions: TileRegions
 
     public init(
         rows: [[Item]],
@@ -34,7 +38,8 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         family: WidgetFamily,
         kind: WidgetTileKind,
         logo: Image? = nil,
-        tileContent: @escaping TileContent = { _, _, tile in tile }
+        tileContent: @escaping TileContent = { _, _, tile in tile },
+        tileRegions: @escaping TileRegions = { _ in nil }
     ) {
         self.rows = rows
         self.sizeStyle = sizeStyle
@@ -42,6 +47,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         self.kind = kind
         self.logo = logo
         self.tileContent = tileContent
+        self.tileRegions = tileRegions
     }
 
     public var body: some View {
@@ -76,7 +82,8 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             sizeStyle: sizeStyle,
             family: family,
             kind: kind,
-            logo: logo
+            logo: logo,
+            regions: tileRegions(item)
         )
     }
 }

@@ -15,19 +15,24 @@ public struct WidgetTileButtonView: View {
     public let family: WidgetFamily
     public let tinted: Bool
     public let logo: Image?
+    /// Splits the tile into an icon control and a body control. `nil` leaves it whole, for the tiles
+    /// whose icon and body would run the same thing anyway.
+    public let regions: WidgetTileRegions?
 
     public init(
         model: WidgetTileModel,
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         tinted: Bool,
-        logo: Image? = nil
+        logo: Image? = nil,
+        regions: WidgetTileRegions? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
         self.logo = logo
+        self.regions = regions
     }
 
     public var body: some View {
@@ -71,32 +76,76 @@ public struct WidgetTileButtonView: View {
                 .font(sizeStyle.iconFont)
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
+                // The glyph is a private-use character in the icon font, so VoiceOver has nothing
+                // to say about it. The tile is named by its title instead.
+                .accessibilityHidden(true)
         }
         .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
         .background(model.showIconBackground ? model.iconColor.opacity(0.3) : Color.clear)
         .clipShape(Circle())
     }
 
+    /// The icon as its own control. Splitting the tile makes the icon reachable on its own, so it
+    /// has to carry the tile's name — the title it used to be announced with lives in the other
+    /// half now.
+    private var iconAsControl: some View {
+        icon
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: model.title))
+    }
+
+    @ViewBuilder
     private var tileView: some View {
+        if let regions {
+            // Both halves are the same layout drawn twice — the card with its icon hidden, and the
+            // icon alone laid over it — so splitting the tile in two cannot move anything by a
+            // pixel. A hidden view takes no taps, which leaves each control exactly its own half.
+            regions.body(AnyView(card(iconHidden: true)))
+                .overlay {
+                    layout(icon: AnyView(regions.icon(AnyView(iconAsControl))), contentHidden: true)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+        } else {
+            card(iconHidden: false)
+        }
+    }
+
+    private func card(iconHidden: Bool) -> some View {
+        layout(
+            icon: iconHidden ? AnyView(icon.hidden()) : AnyView(icon),
+            contentHidden: false
+        )
+        .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
+    }
+
+    /// The tile's arrangement, with either half able to drop out so the other can be drawn on its
+    /// own without the two copies ever disagreeing about where anything sits.
+    private func layout(icon iconView: AnyView, contentHidden: Bool) -> some View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
                 case .regular, .compact, .compressed:
                     HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
-                        icon
-                        VStack(alignment: .leading, spacing: .zero) {
-                            text
-                            subtext
+                        iconView
+                        content(hidden: contentHidden) {
+                            VStack(alignment: .leading, spacing: .zero) {
+                                text
+                                subtext
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
-                        icon
+                        iconView
                         Spacer()
-                        text
-                        subtext
+                        content(hidden: contentHidden) {
+                            VStack(alignment: .leading, spacing: 0) {
+                                text
+                                subtext
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
@@ -111,7 +160,15 @@ public struct WidgetTileButtonView: View {
                 }
             }
         }
-        .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
+    }
+
+    @ViewBuilder
+    private func content(hidden: Bool, @ViewBuilder _ view: () -> some View) -> some View {
+        if hidden {
+            view().hidden()
+        } else {
+            view()
+        }
     }
 }
 

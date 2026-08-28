@@ -266,7 +266,8 @@ struct WidgetBasicContainerWrapperView: View {
             logo: Image(.logo),
             emptyView: emptyViewGenerator,
             refreshControl: refreshControl,
-            tileContent: interaction.content
+            tileContent: interaction.content,
+            tileRegions: interaction.regions
         )
     }
 
