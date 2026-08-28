@@ -9,11 +9,6 @@ import WidgetKit
 public struct WidgetEnergyAccessoryCircularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
-    /// Glyphs are drawn as images here: see ``WidgetAccessoryIconView`` for why the lock screen
-    /// cannot draw them as text in the icon font.
-    private static let iconSize: CGFloat = 13
-    private static let emptyIconSize: CGFloat = 20
-
     private let stat: WidgetEnergyStatModel?
 
     public init(stat: WidgetEnergyStatModel?) {
@@ -32,7 +27,8 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
     private var content: some View {
         if let stat {
             VStack(spacing: 0) {
-                WidgetAccessoryIconView(icon: stat.icon, size: Self.iconSize)
+                Text(verbatim: stat.icon.unicode)
+                    .font(.custom(MaterialDesignIcons.familyName, size: 13))
                 Text(verbatim: stat.value)
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                 if let unit = stat.unit {
@@ -46,7 +42,8 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
             .padding(DesignSystem.Spaces.half)
             .foregroundStyle(WidgetEnergyPalette.accessoryColor(stat.color, mode: renderingMode))
         } else {
-            WidgetAccessoryIconView(icon: .solarPowerIcon, size: Self.emptyIconSize)
+            Text(verbatim: MaterialDesignIcons.solarPowerIcon.unicode)
+                .font(.custom(MaterialDesignIcons.familyName, size: 20))
                 .foregroundStyle(.secondary)
         }
     }
