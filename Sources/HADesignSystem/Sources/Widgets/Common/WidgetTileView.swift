@@ -23,6 +23,9 @@ public struct WidgetTileView: View {
     /// it to `false` instead.
     public let tinted: Bool?
     public let logo: Image?
+    /// Splits an action tile into an icon control and a body control. Only ``WidgetTileKind/button``
+    /// tiles can be split — a reading has nothing to control.
+    public let regions: WidgetTileRegions?
 
     public init(
         model: WidgetTileModel,
@@ -30,7 +33,8 @@ public struct WidgetTileView: View {
         family: WidgetFamily,
         kind: WidgetTileKind,
         tinted: Bool? = nil,
-        logo: Image? = nil
+        logo: Image? = nil,
+        regions: WidgetTileRegions? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
@@ -38,6 +42,7 @@ public struct WidgetTileView: View {
         self.kind = kind
         self.tinted = tinted
         self.logo = logo
+        self.regions = regions
     }
 
     public var body: some View {
@@ -50,7 +55,8 @@ public struct WidgetTileView: View {
                     sizeStyle: sizeStyle,
                     family: family,
                     tinted: isTinted,
-                    logo: logo
+                    logo: logo,
+                    regions: regions
                 )
             case .sensor:
                 WidgetTileSensorView(

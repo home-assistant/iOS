@@ -13,6 +13,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         title: String,
         subtitle: String?,
         interactionType: WidgetInteractionType,
+        iconInteractionType: WidgetInteractionType? = nil,
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
@@ -28,6 +29,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.title = title
         self.subtitle = subtitle
         self.interactionType = interactionType
+        self.iconInteractionType = iconInteractionType
         self.textColor = textColor
         self.icon = icon
         self.showIconBackground = showIconBackground
@@ -45,6 +47,9 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var title: String
     var subtitle: String?
     var interactionType: WidgetInteractionType
+    /// What tapping the tile's icon runs, when the icon is a control of its own and `interactionType`
+    /// belongs to the rest of the tile. `nil` keeps the tile whole — one control, one tap.
+    var iconInteractionType: WidgetInteractionType?
 
     var icon: MaterialDesignIcons
     /// When item has no tap icon, icon background is hidden

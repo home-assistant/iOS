@@ -17,6 +17,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     /// The reload control, when the widget offers one. `nil` leaves the footer off entirely.
     private let refreshControl: (() -> AnyView)?
     private let tileContent: WidgetTileGridView<Item>.TileContent
+    private let tileRegions: WidgetTileGridView<Item>.TileRegions
 
     public init(
         contents: [Item],
@@ -26,7 +27,8 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         logo: Image? = nil,
         emptyView: @escaping () -> AnyView = { AnyView(EmptyView()) },
         refreshControl: (() -> AnyView)? = nil,
-        tileContent: @escaping WidgetTileGridView<Item>.TileContent = { _, _, tile in tile }
+        tileContent: @escaping WidgetTileGridView<Item>.TileContent = { _, _, tile in tile },
+        tileRegions: @escaping WidgetTileGridView<Item>.TileRegions = { _ in nil }
     ) {
         self.contents = contents
         self.family = family
@@ -36,6 +38,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         self.emptyView = emptyView
         self.refreshControl = refreshControl
         self.tileContent = tileContent
+        self.tileRegions = tileRegions
     }
 
     public var body: some View {
@@ -66,7 +69,8 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
             family: family,
             kind: kind,
             logo: logo,
-            tileContent: tileContent
+            tileContent: tileContent,
+            tileRegions: tileRegions
         )
     }
 
