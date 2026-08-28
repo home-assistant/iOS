@@ -65,9 +65,14 @@ public struct WidgetTileSensorView: View {
     private var icon: some View {
         VStack {
             Text(verbatim: model.icon.unicode)
-                .font(sizeStyle.iconFont)
+                // A reading's icon never sits in a circle, so it follows the same rule as a bare
+                // icon on an action tile and is drawn half as large again.
+                .font(sizeStyle.iconFont(withBackground: false))
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
+                // The glyph is a private-use character in the icon font, so VoiceOver has nothing
+                // to say about it. The tile is named by its title instead.
+                .accessibilityHidden(true)
         }
     }
 
