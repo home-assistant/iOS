@@ -107,6 +107,20 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     private let finalGracePeriod: TimeInterval = 0.5
     private var didReportFinalTranscript = false
 
+    /// Bumped by every `stopListening()`. A setup still running when it fires belongs to the session
+    /// that was stopped, so it unwinds the engine it just built instead of publishing it over the
+    /// state that stop has already reset.
+    private var sessionGeneration = 0
+
+    /// Everything that touches the audio session, the audio engine or the recognizer's on-device
+    /// support runs here. All of it blocks: `setCategory`/`setActive` and
+    /// `supportsOnDeviceRecognition` are synchronous XPC round trips to the audio and speech
+    /// daemons, and `AVAudioEngine.start()`/`stop()` wait on the media server. Run from the main
+    /// thread they cost the runloop around 300ms every time Assist starts listening, which the
+    /// system reports as a hang; `AudioRecorder` keeps its capture session off the main thread for
+    /// the same reason. Serial, so a stop can never overtake the start it belongs to.
+    private let sessionQueue = DispatchQueue(label: "assist-speech-transcriber-session", qos: .userInitiated)
+
     // kAFAssistantErrorDomain error codes that indicate a normal session cancellation
     // (internal Apple speech service domain, not publicly declared in the SDK)
     private let kAFAssistantErrorDomain = "kAFAssistantErrorDomain"
@@ -206,18 +220,74 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // through `stopListening()`. Leaving `isListening` set would make the *next* start report a
         // stale stop to the caller while it is still setting the new session up.
         do {
-            try startRecognition(with: speechRecognizer)
+            try await startRecognition(with: speechRecognizer)
         } catch {
             stopListening()
             throw error
         }
     }
 
+    /// The audio session, engine and recognition task built for one listening session. Assembled on
+    /// `sessionQueue`, then either published to the transcriber or torn down again.
+    private struct RecognitionSession {
+        let engine: AVAudioEngine
+        let request: SFSpeechAudioBufferRecognitionRequest
+        let task: SFSpeechRecognitionTask
+    }
+
     /// Configures the audio session, engine and recognition task for a session the caller has
-    /// already marked as listening, and which it unwinds if this throws.
-    private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
-        // Configure audio session
-        if managesAudioSession {
+    /// already marked as listening, and which it unwinds if this throws. The blocking part runs on
+    /// `sessionQueue` and only its result is published back here.
+    private func startRecognition(with speechRecognizer: SFSpeechRecognizer) async throws {
+        let generation = sessionGeneration
+        let configuresAudioSession = managesAudioSession
+
+        // Both callbacks reach the transcriber's own closures through `self` when they fire rather
+        // than capturing them by value, so a caller that reassigns them mid-session still gets them.
+        let onLevel: (Float) -> Void = { [weak self] level in
+            Task { @MainActor in self?.onAudioLevelUpdate?(level) }
+        }
+        let onResult: (SFSpeechRecognitionResult?, Error?) -> Void = { [weak self] result, error in
+            Task { @MainActor in self?.handleRecognitionResult(result, error: error) }
+        }
+
+        let session = try await onSessionQueue {
+            try Self.makeRecognitionSession(
+                recognizer: speechRecognizer,
+                configuresAudioSession: configuresAudioSession,
+                onLevel: onLevel,
+                onResult: onResult
+            )
+        }
+
+        // `stopListening()` stays synchronous, so it can land while the engine is still starting up.
+        // The session it stopped is this one: publish nothing and unwind what was just built, or the
+        // microphone would stay open with no reference left to close it.
+        guard generation == sessionGeneration else {
+            tearDown(
+                engine: session.engine,
+                request: session.request,
+                task: session.task,
+                deactivatesAudioSession: configuresAudioSession
+            )
+            return
+        }
+
+        audioEngine = session.engine
+        recognitionRequest = session.request
+        recognitionTask = session.task
+    }
+
+    /// Builds one listening session. Every call in here blocks, so it only ever runs on
+    /// `sessionQueue`, which is also why it takes everything it needs as arguments instead of
+    /// reading the transcriber's main-actor state.
+    private nonisolated static func makeRecognitionSession(
+        recognizer: SFSpeechRecognizer,
+        configuresAudioSession: Bool,
+        onLevel: @escaping (Float) -> Void,
+        onResult: @escaping (SFSpeechRecognitionResult?, Error?) -> Void
+    ) throws -> RecognitionSession {
+        if configuresAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
             // `.default` rather than `.measurement`, which the framework documents as disabling the
             // dynamics processing on input *and* output. On input that is the gain the level window
@@ -237,36 +307,25 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             try audioSession.setActive(true)
         }
 
-        // Create audio engine
-        audioEngine = AVAudioEngine()
-        guard let audioEngine else {
-            throw TranscriberError.audioEngineError
-        }
-
-        // Create recognition request
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest else {
-            throw TranscriberError.audioEngineError
-        }
-
-        recognitionRequest.shouldReportPartialResults = true
-        recognitionRequest.addsPunctuation = true
-        guard speechRecognizer.supportsOnDeviceRecognition else {
+        guard recognizer.supportsOnDeviceRecognition else {
             throw TranscriberError.notAvailable
         }
-        recognitionRequest.requiresOnDeviceRecognition = true
 
-        // Get input node
-        let inputNode = audioEngine.inputNode
+        let request = SFSpeechAudioBufferRecognitionRequest()
+        request.shouldReportPartialResults = true
+        request.addsPunctuation = true
+        request.requiresOnDeviceRecognition = true
+
+        let engine = AVAudioEngine()
+        let inputNode = engine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
-        // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
-        // from a background thread. The level's rate limit is held the same way, and the tap calls
-        // back serially, so it needs no further synchronisation.
-        let capturedRequest = recognitionRequest
+        // The tap runs on a real-time audio thread, so it holds the request directly instead of
+        // reaching for a @MainActor property, and keeps the level's rate limit in the closure. Taps
+        // call back serially, so neither needs further synchronisation.
         var lastLevelEmission: TimeInterval = .zero
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
-            capturedRequest.append(buffer)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+            request.append(buffer)
 
             let now = ProcessInfo.processInfo.systemUptime
             guard now - lastLevelEmission >= Constants.levelInterval else { return }
@@ -279,25 +338,57 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             vDSP_measqv(channelData, 1, &meanSquare, frameCount)
             let decibels = 20 * log10(max(sqrt(meanSquare), .leastNormalMagnitude))
             let range = Constants.powerCeiling - Constants.powerFloor
-            let level = max(0, min(1, (decibels - Constants.powerFloor) / range))
-            Task { @MainActor in
-                self?.onAudioLevelUpdate?(level)
-            }
+            onLevel(max(0, min(1, (decibels - Constants.powerFloor) / range)))
         }
 
-        // Start recognition task
-        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { [weak self] result, error in
-            Task { @MainActor in
-                self?.handleRecognitionResult(result, error: error)
-            }
-        }
+        let task = recognizer.recognitionTask(with: request, resultHandler: onResult)
 
-        // Start audio engine
-        audioEngine.prepare()
+        engine.prepare()
         do {
-            try audioEngine.start()
+            try engine.start()
         } catch {
+            // Nothing has been handed back yet, so this failure has to release the microphone, the
+            // recognizer and the session itself.
+            inputNode.removeTap(onBus: 0)
+            request.endAudio()
+            task.cancel()
+            if configuresAudioSession {
+                try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            }
             throw TranscriberError.audioEngineError
+        }
+
+        return RecognitionSession(engine: engine, request: request, task: task)
+    }
+
+    /// Runs blocking audio work on `sessionQueue`, suspending the main actor instead of blocking it.
+    private func onSessionQueue<T>(_ work: @escaping () throws -> T) async throws -> T {
+        let queue = sessionQueue
+        return try await withCheckedThrowingContinuation { continuation in
+            queue.async {
+                continuation.resume(with: Result(catching: work))
+            }
+        }
+    }
+
+    /// Releases the microphone, the recognizer and — when this transcriber owns it — the audio
+    /// session. Dispatched rather than run inline because stopping the engine and deactivating the
+    /// session block on the media and audio daemons exactly like starting them does. The queue is
+    /// serial, so this always lands behind the setup it is unwinding.
+    private func tearDown(
+        engine: AVAudioEngine?,
+        request: SFSpeechAudioBufferRecognitionRequest?,
+        task: SFSpeechRecognitionTask?,
+        deactivatesAudioSession: Bool
+    ) {
+        sessionQueue.async {
+            engine?.stop()
+            engine?.inputNode.removeTap(onBus: 0)
+            request?.endAudio()
+            task?.cancel()
+            if deactivatesAudioSession {
+                try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            }
         }
     }
 
@@ -305,23 +396,28 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     public func stopListening() {
         let wasListening = isListening
 
+        // Marks any setup still in flight as belonging to the session being stopped.
+        sessionGeneration &+= 1
+
         silenceDetectionTask?.cancel()
         silenceDetectionTask = nil
 
-        audioEngine?.stop()
-        audioEngine?.inputNode.removeTap(onBus: 0)
-        recognitionRequest?.endAudio()
-        recognitionTask?.cancel()
+        let engine = audioEngine
+        let request = recognitionRequest
+        let task = recognitionTask
+        let deactivatesAudioSession = managesAudioSession
 
         audioEngine = nil
         recognitionRequest = nil
         recognitionTask = nil
         isListening = false
 
-        // Deactivate audio session
-        if managesAudioSession {
-            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        }
+        tearDown(
+            engine: engine,
+            request: request,
+            task: task,
+            deactivatesAudioSession: deactivatesAudioSession
+        )
 
         if wasListening {
             onListeningStateChange?(false)
