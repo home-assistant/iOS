@@ -790,6 +790,7 @@
 				Widgets/Common/WidgetTileInteraction.swift,
 				Widgets/Common/WidgetTimelineProviderSupport.swift,
 				Widgets/Common/WidgetType.swift,
+				"Widgets/Common/WidgetsKind+TileCapacity.swift",
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntitiesTimelineProvider.swift,
 				Widgets/Controls/Cover/CoverIntent.swift,

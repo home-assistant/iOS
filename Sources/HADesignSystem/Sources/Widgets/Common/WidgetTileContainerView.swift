@@ -11,6 +11,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     private let contents: [Item]
     private let family: WidgetFamily
     private let kind: WidgetTileKind
+    private let capacity: WidgetTileCapacity
     private let serverName: String?
     private let emptyView: () -> AnyView
     /// The reload control, when the widget offers one. `nil` leaves the footer off entirely.
@@ -22,6 +23,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         contents: [Item],
         family: WidgetFamily,
         kind: WidgetTileKind,
+        capacity: WidgetTileCapacity = .packed,
         serverName: String? = nil,
         emptyView: @escaping () -> AnyView = { AnyView(EmptyView()) },
         refreshControl: (() -> AnyView)? = nil,
@@ -31,6 +33,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         self.contents = contents
         self.family = family
         self.kind = kind
+        self.capacity = capacity
         self.serverName = serverName
         self.emptyView = emptyView
         self.refreshControl = refreshControl
@@ -79,8 +82,8 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     }
 
     private var grid: some View {
-        let visible = Array(contents.prefix(WidgetTileLayout.size(for: family)))
-        let rows = WidgetTileLayout.rows(for: family, models: visible)
+        let visible = Array(contents.prefix(WidgetTileLayout.size(for: family, capacity: capacity)))
+        let rows = WidgetTileLayout.rows(for: family, models: visible, capacity: capacity)
         return WidgetTileGridView(
             rows: rows,
             sizeStyle: WidgetTileLayout.sizeStyle(

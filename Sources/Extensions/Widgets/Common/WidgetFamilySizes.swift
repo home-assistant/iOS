@@ -9,8 +9,8 @@ import WidgetKit
 /// widgets agree on them. This is the widget extension's door onto that, plus the one piece that
 /// can't move: App Intents' compile-time collection size.
 enum WidgetFamilySizes {
-    static func size(for family: WidgetFamily) -> Int {
-        WidgetTileLayout.size(for: family)
+    static func size(for family: WidgetFamily, capacity: WidgetTileCapacity = .packed) -> Int {
+        WidgetTileLayout.size(for: family, capacity: capacity)
     }
 
     /// How many events the calendar widget lists.
