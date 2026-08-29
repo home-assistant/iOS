@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// An indeterminate spinner. The SwiftUI counterpart of the frontend's `ha-spinner`, which was
+/// `ha-circular-progress` before it.
 public struct HAProgressView: View {
     private enum Constants {
         static let rotationDuration: TimeInterval = 1
@@ -134,4 +136,8 @@ public struct HAProgressView: View {
     NavigationView {
         HAProgressView(style: .extraLarge)
     }
+}
+
+extension HAProgressView: FrontendComponent {
+    public static var frontendComponentName: String { "ha-spinner" }
 }

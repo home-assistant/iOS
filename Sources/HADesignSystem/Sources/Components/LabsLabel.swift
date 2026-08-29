@@ -2,6 +2,10 @@
 import HAIconic
 import SwiftUI
 
+/// The badge marking a feature as experimental, with a link to report issues with it.
+///
+/// Frontend counterpart: none. This is the companion app's own Labs programme, not something the
+/// web frontend shows.
 public struct LabsLabel: View {
     @Environment(\.openURL) private var openURL
     @State private var showInfo = false

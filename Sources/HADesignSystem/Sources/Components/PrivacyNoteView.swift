@@ -1,7 +1,10 @@
 #if !os(watchOS)
 import SwiftUI
 
-/// View used to display and highlight privacy related information
+/// View used to display and highlight privacy related information.
+///
+/// Frontend counterpart: none. Privacy disclosures for sensors, location and notifications are the
+/// companion app's obligation, not the web frontend's.
 public struct PrivacyNoteView: View {
     @State private var startPoint: UnitPoint = .topLeading
     @State private var endPoint: UnitPoint = .bottomTrailing

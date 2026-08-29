@@ -18,6 +18,14 @@ public struct HAButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
     @State private var isHovering = false
 
+    /// The resting fill. Defaults to the brand colour; `HAProgressButton` swaps it for the success
+    /// and error colours so the whole button carries the result, as `ha-progress-button` does.
+    private let fill: Color
+
+    public init(fill: Color = .haPrimary) {
+        self.fill = fill
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
@@ -49,14 +57,14 @@ public struct HAButtonStyle: ButtonStyle {
         }
 
         if isPressed {
-            return Color.haPrimary.opacity(HAButtonStylesConstants.highlightedOpacity)
+            return fill.opacity(HAButtonStylesConstants.highlightedOpacity)
         }
 
         if isHovering {
-            return Color.haPrimary.opacity(HAButtonStylesConstants.hoverOpacity)
+            return fill.opacity(HAButtonStylesConstants.hoverOpacity)
         }
 
-        return Color.haPrimary
+        return fill
     }
 
     private func scaleForState(isPressed: Bool, isHovering: Bool) -> CGFloat {
@@ -263,6 +271,12 @@ public extension ButtonStyle where Self == HAButtonStyle {
     static var primaryButton: HAButtonStyle {
         HAButtonStyle()
     }
+
+    /// The primary button in a colour other than the brand's, for a button whose fill is carrying
+    /// state rather than emphasis.
+    static func primaryButton(fill: Color) -> HAButtonStyle {
+        HAButtonStyle(fill: fill)
+    }
 }
 
 public extension ButtonStyle where Self == HAWarningButtonStyle {
@@ -378,4 +392,8 @@ private struct HAButtonHoverEffectModifier: ViewModifier {
 
         return 1.0
     }
+}
+
+extension HAButtonStyle: FrontendComponent {
+    public static var frontendComponentName: String { "ha-button" }
 }

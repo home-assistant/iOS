@@ -1646,11 +1646,65 @@ public enum L10n {
   }
 
   public enum Component {
+    /// More information
+    public static var moreInformation: String { return L10n.tr("Localizable", "component.more_information") }
+    public enum AbsoluteTime {
+      /// Never
+      public static var never: String { return L10n.tr("Localizable", "component.absolute_time.never") }
+    }
+    public enum Alert {
+      /// Dismiss alert
+      public static var dismiss: String { return L10n.tr("Localizable", "component.alert.dismiss") }
+    }
+    public enum Calendar {
+      /// All day
+      public static var allDay: String { return L10n.tr("Localizable", "component.calendar.all_day") }
+    }
+    public enum Chip {
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "component.chip.remove") }
+    }
     public enum CollapsibleView {
       /// Collapse
       public static var collapse: String { return L10n.tr("Localizable", "component.collapsible_view.collapse") }
       /// Expand
       public static var expand: String { return L10n.tr("Localizable", "component.collapsible_view.expand") }
+    }
+    public enum Distribution {
+      /// Show less
+      public static var showLess: String { return L10n.tr("Localizable", "component.distribution.show_less") }
+      /// Show more
+      public static var showMore: String { return L10n.tr("Localizable", "component.distribution.show_more") }
+    }
+    public enum EnergyPeriod {
+      /// Compare with previous period
+      public static var compare: String { return L10n.tr("Localizable", "component.energy_period.compare") }
+      /// Next period
+      public static var next: String { return L10n.tr("Localizable", "component.energy_period.next") }
+      /// Previous period
+      public static var previous: String { return L10n.tr("Localizable", "component.energy_period.previous") }
+    }
+    public enum QrCode {
+      /// Could not generate the QR code
+      public static var failed: String { return L10n.tr("Localizable", "component.qr_code.failed") }
+      /// QR code
+      public static var label: String { return L10n.tr("Localizable", "component.qr_code.label") }
+    }
+    public enum QrScanner {
+      /// Enter the code manually
+      public static var manualInput: String { return L10n.tr("Localizable", "component.qr_scanner.manual_input") }
+      /// Retry
+      public static var retry: String { return L10n.tr("Localizable", "component.qr_scanner.retry") }
+      /// Submit
+      public static var submit: String { return L10n.tr("Localizable", "component.qr_scanner.submit") }
+    }
+    public enum TimeInput {
+      /// Clear
+      public static var clear: String { return L10n.tr("Localizable", "component.time_input.clear") }
+    }
+    public enum Tip {
+      /// Tip
+      public static var `prefix`: String { return L10n.tr("Localizable", "component.tip.prefix") }
     }
   }
 

@@ -177,6 +177,23 @@ public class AppEnvironment {
             $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
             $0.privacyLabel = L10n.privacyLabel
             $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+            $0.tipPrefix = L10n.Component.Tip.prefix
+            $0.dismissAlert = L10n.Component.Alert.dismiss
+            $0.removeChip = L10n.Component.Chip.remove
+            $0.previousPeriod = L10n.Component.EnergyPeriod.previous
+            $0.nextPeriod = L10n.Component.EnergyPeriod.next
+            $0.compareWithPreviousPeriod = L10n.Component.EnergyPeriod.compare
+            $0.moreInformation = L10n.Component.moreInformation
+            $0.clearValue = L10n.Component.TimeInput.clear
+            $0.never = L10n.Component.AbsoluteTime.never
+            $0.qrCode = L10n.Component.QrCode.label
+            $0.qrCodeFailed = L10n.Component.QrCode.failed
+            $0.retry = L10n.Component.QrScanner.retry
+            $0.enterCodeManually = L10n.Component.QrScanner.manualInput
+            $0.submit = L10n.Component.QrScanner.submit
+            $0.allDay = L10n.Component.Calendar.allDay
+            $0.showMore = L10n.Component.Distribution.showMore
+            $0.showLess = L10n.Component.Distribution.showLess
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 

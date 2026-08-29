@@ -1,6 +1,11 @@
 #if !os(watchOS)
 import SwiftUI
 
+/// The close button of a presented modal, which dismisses it by default.
+///
+/// Frontend counterpart: the `ha-icon-button` in `ha-dialog-header`'s leading slot. Ported as a
+/// button of its own here because SwiftUI dismissal goes through the environment rather than
+/// through the dialog element.
 public struct ModalCloseButton: View {
     @Environment(\.dismiss) private var dismiss
     private let alternativeAction: (() -> Void)?
@@ -37,4 +42,9 @@ public struct ModalCloseButton: View {
         /* no-op */
     })
 }
+
+extension ModalCloseButton: FrontendComponent {
+    public static var frontendComponentName: String { "ha-icon-button" }
+}
+
 #endif
