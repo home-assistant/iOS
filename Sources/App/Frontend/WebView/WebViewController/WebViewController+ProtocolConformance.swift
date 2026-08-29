@@ -83,6 +83,23 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
+    /// A back/forward navigation can restore a previous document from WebKit's page cache rather than
+    /// loading it again. WebKit still reports that as a full navigation, which restarts the stand-by loader,
+    /// but the restored page is the same living frontend instance that already announced `frontend/loaded` --
+    /// and the frontend fires that exactly once per page load, so it never announces itself again. Without
+    /// this, the loader covers a perfectly working frontend until the app is killed. The restore is proof
+    /// enough that the frontend is loaded, as long as it was connected when the page was cached.
+    func handleFrontendRestoredFromPageCache() {
+        guard connectionState.isReadyForDisplay else {
+            // The frontend wasn't usable when this page was cached, so let the regular connection-status
+            // flow decide: it reports `connected` or shows the empty state as it settles.
+            Current.Log.info("Frontend restored from page cache while \(connectionState.rawValue), ignoring")
+            return
+        }
+        Current.Log.info("Frontend restored from page cache, treating it as loaded")
+        updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
+    }
+
     /// A hard reload (`reload()`/`refresh()`) tears down the frontend and its websocket, so mark disconnected
     /// and arm the grace timer until the frontend reports `.connected` again.
     func markDisconnectedForHardReload() {

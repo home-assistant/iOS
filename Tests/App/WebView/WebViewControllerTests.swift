@@ -79,6 +79,35 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNotNil(sut.emptyStateTimer)
     }
 
+    /// Going back to a page WebKit kept in its page cache restarts the stand-by loader, but the restored
+    /// frontend already fired its one and only `frontend/loaded` and never fires it again, so the restore
+    /// itself has to report the frontend as loaded or the loader covers a working page forever.
+    func testFrontendRestoredFromPageCacheReportsLoadedWhileTheFrontendIsUsable() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .connected
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertEqual(overlayState.connectionState, .loaded)
+    }
+
+    func testFrontendRestoredFromPageCacheIsIgnoredWhileTheFrontendIsNotUsable() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .authInvalid
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .unknown)
+    }
+
     func testShowEmptyStatePublishesContentWithErrorDetailsButtonWhenLatestLoadErrorExists() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()

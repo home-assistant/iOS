@@ -72,6 +72,14 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockExternalMessageHandler.handleExternalMessageParams?["id"] as? Int, 1)
     }
 
+    @MainActor func testFrontendRestoredIsForwardedToTheController() {
+        sut.isAppInBackground = { false }
+
+        sut.handle(messageName: "frontendRestored", messageBody: ["type": "frontend/restored"])
+
+        XCTAssertTrue(mockWebViewController.handleFrontendRestoredFromPageCacheCalled)
+    }
+
     /// Logging out only invalidates the credentials: the server has to stay registered so everything
     /// configured against it survives, with the user asked to log in again.
     @MainActor func testRevokeExternalAuthKeepsServerAndAsksToLogInAgain() {

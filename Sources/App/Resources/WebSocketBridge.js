@@ -82,3 +82,15 @@ waitForHassConnection().then(({ conn }) => {
     // this should be moved to an event bus
     window.addEventListener('settheme', notifyThemeColors);
 });
+
+// A back/forward navigation can restore this document from WebKit's page cache instead of loading it
+// again. Nothing re-runs when that happens -- neither this script nor the frontend's bootstrap -- so the
+// frontend never announces `frontend/loaded` a second time and the app would keep its stand-by loader up
+// over a page that is already alive. `pageshow` with `persisted` set is the only signal that the restore
+// happened.
+window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) {
+        return;
+    }
+    window.webkit?.messageHandlers?.frontendRestored?.postMessage({ type: 'frontend/restored' });
+});
