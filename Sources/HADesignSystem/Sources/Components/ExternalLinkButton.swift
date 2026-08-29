@@ -3,6 +3,10 @@ import HAIconic
 import SFSafeSymbols
 import SwiftUI
 
+/// A button that opens a URL outside the app, marked with an open-in-new glyph.
+///
+/// Frontend counterpart: none as a single element — the frontend writes an `ha-button` with
+/// `mdiOpenInNew` at each call site. This is that composition, named.
 public struct ExternalLinkButton: View {
     let icon: Image
     let title: String

@@ -7,6 +7,9 @@ import SwiftUI
 ///
 /// Place it in an `.overlay` covering the area the panel may float over — it fills that space and
 /// anchors the panel within it.
+///
+/// Frontend counterpart: none. Picture-in-picture dragging is a native affordance with no element
+/// behind it in the web frontend.
 public struct FloatingPanel<Content: View>: View {
     public enum Corner: CaseIterable {
         case topLeading

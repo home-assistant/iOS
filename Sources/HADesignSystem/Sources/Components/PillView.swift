@@ -1,6 +1,10 @@
 #if !os(watchOS)
 import SwiftUI
 
+/// A small rounded label that reads as selected or not.
+///
+/// Frontend counterpart: none directly. The frontend's chip family is ported as ``HAAssistChip``,
+/// ``HAFilterChip`` and ``HAInputChip``; this predates them and is what the app's own screens use.
 public struct PillView: View {
     private let selected: Bool
     private let text: String

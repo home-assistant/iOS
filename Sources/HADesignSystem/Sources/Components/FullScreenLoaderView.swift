@@ -7,6 +7,9 @@ import SwiftUI
 /// a translucent blur that keeps the content visible behind it, with a logo and the branded spinner
 /// centered. The whole view blurs in on appear. After `controlsRevealDelay` seconds, escape hatches
 /// fade in: a settings button (top leading) and a retry button (bottom).
+///
+/// Frontend counterpart: none. This covers the web frontend while it loads, so by definition
+/// nothing in the frontend can draw it — it is the companion app's own launch state.
 public struct FullScreenLoaderView: View {
     let logo: Image
     let retryTitle: String

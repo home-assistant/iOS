@@ -336,34 +336,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 }
 
-// MARK: - Material Design Icons Image
-
-struct MaterialDesignIconsImage: View {
-    let icon: MaterialDesignIcons
-    let size: CGFloat
-
-    /// Rendered glyph bitmaps keyed by icon and size. Rendering goes through CoreText into a bitmap
-    /// context, which is too slow to repeat for ~20 rows on every settings list body evaluation.
-    /// The image is displayed as a template (only its alpha channel matters), so the cache doesn't
-    /// need to vary by color or light/dark appearance.
-    private static let renderedImageCache = NSCache<NSString, UIImage>()
-
-    var body: some View {
-        Image(uiImage: Self.image(for: icon, size: size))
-            .renderingMode(.template)
-    }
-
-    private static func image(for icon: MaterialDesignIcons, size: CGFloat) -> UIImage {
-        let cacheKey = "\(icon.unicode)-\(size)" as NSString
-        if let cached = renderedImageCache.object(forKey: cacheKey) {
-            return cached
-        }
-        let image = icon.image(ofSize: CGSize(width: size, height: size), color: .label)
-        renderedImageCache.setObject(image, forKey: cacheKey)
-        return image
-    }
-}
-
 // MARK: - Wrapper Views for UIKit Controllers
 
 struct SettingsNotificationsView: View {
