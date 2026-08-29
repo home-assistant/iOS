@@ -38,6 +38,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var handleExternalAuthFailureCalled = false
     var lastExternalAuthFailure: Error?
     var handleExternalAuthFailureExpectation: XCTestExpectation?
+    var handleFrontendRestoredFromPageCacheCalled = false
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
@@ -100,6 +101,10 @@ final class MockWebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
+    }
+
+    func handleFrontendRestoredFromPageCache() {
+        handleFrontendRestoredFromPageCacheCalled = true
     }
 
     func handleExternalAuthFailure(error: Error) {
