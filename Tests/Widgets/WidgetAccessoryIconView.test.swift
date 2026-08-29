@@ -38,16 +38,22 @@ struct WidgetAccessoryIconViewTests {
         let width = cgImage.width
         let height = cgImage.height
         var pixels = [UInt8](repeating: 0, count: width * height * 4)
-        guard let context = CGContext(
-            data: &pixels,
-            width: width,
-            height: height,
-            bitsPerComponent: 8,
-            bytesPerRow: width * 4,
-            space: CGColorSpaceCreateDeviceRGB(),
-            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-        ) else { return 0 }
-        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        // The context keeps the pointer and writes through it when it draws, so the drawing has to
+        // happen while the buffer is borrowed — passing `&pixels` would leave it dangling.
+        let drawn = pixels.withUnsafeMutableBytes { buffer in
+            guard let baseAddress = buffer.baseAddress, let context = CGContext(
+                data: baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width * 4,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else { return false }
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+            return true
+        }
+        guard drawn else { return 0 }
 
         var inked = 0
         for alpha in stride(from: 3, to: pixels.count, by: 4) where pixels[alpha] > 0 {
