@@ -474,6 +474,7 @@ struct AssistView: View {
                 } label: {
                     AssistVoiceOrbView(
                         level: viewModel.audioLevel,
+                        accessibilityLabel: L10n.Assist.Button.Listening.title,
                         forcesLegacyAppearance: forcesLegacyAppearance
                     )
                 }

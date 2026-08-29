@@ -13,5 +13,8 @@ public enum WidgetIntentType: Hashable, Encodable {
     case activate(entityId: String, domain: String, serverId: String)
     /// Button
     case press(entityId: String, domain: String, serverId: String)
+    /// A `domain.service` call with a JSON payload — the frontend's "perform action". `actionId` is
+    /// the `domain.service` pair and `payload` the JSON object sent as the action's data.
+    case performAction(serverId: String, actionId: String, payload: String)
     case refresh
 }

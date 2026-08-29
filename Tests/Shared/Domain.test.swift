@@ -318,6 +318,7 @@ struct MagicItemWidgetInteractionTests {
         case .press: return "press"
         case .activate: return "activate"
         case .script: return "script"
+        case .performAction: return "performAction"
         case .refresh: return "refresh"
         }
     }
