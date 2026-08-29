@@ -11,9 +11,6 @@ struct WatchAssistView: View {
         static let micButtonProgressHeight: CGFloat = 40
         static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
         static let micRecordingTextFontSize: CGFloat = 11
-        static let emptyStateImageWidth: CGFloat = 70
-        static let emptyStateImageHeight: CGFloat = 70
-        static let emptyStateImageOpacity: Double = 0.5
         static let progressViewScale: CGFloat = 2
     }
 
@@ -225,12 +222,8 @@ struct WatchAssistView: View {
             ScrollView {
                 // Using LazyVStack instead of List to avoid List minimum row height
                 LazyVStack(spacing: DesignSystem.Spaces.one) {
-                    LabsLabel()
                     ForEach(viewModel.chatItems, id: \.id) { item in
                         ChatBubbleView(item: item)
-                    }
-                    if viewModel.chatItems.isEmpty {
-                        emptyState
                     }
                 }
                 .frame(maxHeight: .infinity)
@@ -244,23 +237,6 @@ struct WatchAssistView: View {
             }
         }
         .frame(maxHeight: .infinity)
-    }
-
-    private var emptyState: some View {
-        HStack {
-            Spacer()
-            Image(uiImage: Asset.casitaDark.image)
-                .resizable()
-                .frame(
-                    width: Constants.emptyStateImageWidth,
-                    height: Constants.emptyStateImageHeight,
-                    alignment: .center
-                )
-                .aspectRatio(contentMode: .fit)
-                .opacity(Constants.emptyStateImageOpacity)
-            Spacer()
-        }
-        .listRowBackground(Color.clear)
     }
 }
 
