@@ -5,8 +5,9 @@ import SwiftUI
 /// A slice of an ``HASunburstChart``, and the slices nested inside it.
 ///
 /// A segment's own `value` is what it is worth in its parent's ring. Children need not add up to it:
-/// the layout apportions them within whatever span their parent got, so a partial breakdown draws
-/// as a partial inner ring rather than distorting the outer one.
+/// they share whatever span their parent got, in proportion to each other. So a breakdown that is
+/// short of its parent still fills the parent's wedge rather than leaving a gap — what it cannot do
+/// is spill past the parent and distort the ring outside it.
 ///
 /// Frontend counterpart: the data `chart/ha-sunburst-chart` is handed, rather than an element of
 /// its own.

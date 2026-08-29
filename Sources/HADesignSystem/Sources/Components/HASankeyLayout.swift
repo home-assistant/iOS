@@ -49,7 +49,15 @@ public struct HASankeyLayout {
         // it sits. The busiest column sets the scale and therefore fills the height.
         let tallestColumnTotal = columns.map { $0.value.reduce(0) { $0 + $1.value } }.max() ?? 0
         let mostNodesInAColumn = columns.map(\.value.count).max() ?? 1
+        // The gaps can exceed the height the caller gave us — many nodes in a short chart — which
+        // would make the scale negative and emit boxes and ribbons with negative heights. There is
+        // no sensible diagram at that size, so draw nothing rather than something invalid.
         let availableHeight = size.height - Self.nodeGap * CGFloat(mostNodesInAColumn - 1)
+        guard availableHeight > 0 else {
+            boxes = []
+            ribbons = []
+            return
+        }
         let scale = tallestColumnTotal > 0 ? availableHeight / tallestColumnTotal : 0
 
         let columnSpacing = columns.count > 1

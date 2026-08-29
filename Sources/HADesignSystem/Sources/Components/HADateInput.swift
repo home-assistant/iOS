@@ -61,13 +61,7 @@ public struct HADateInput: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Button {
-                isPickerPresented = true
-            } label: {
-                field
-            }
-            .buttonStyle(.plain)
-            .disabled(disabled)
+            field
             if let helper {
                 Text(helper)
                     .font(.system(size: 12))
@@ -81,7 +75,45 @@ public struct HADateInput: View {
         }
     }
 
+    /// The clear button is a *sibling* of the button that opens the picker, not a child of its
+    /// label. Nested inside it, a tap on Clear would also present the picker, and VoiceOver would
+    /// see a button containing another button.
     private var field: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            Button {
+                isPickerPresented = true
+            } label: {
+                pickerLabel
+            }
+            .buttonStyle(.plain)
+            .disabled(disabled)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(optional: label)
+            .accessibilityValue(Text(formattedValue))
+            if showsClearButton {
+                Button {
+                    value = nil
+                } label: {
+                    MaterialDesignIconsImage(icon: .closeIcon, size: 18)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(HADesignSystemEnvironment.current.strings.clearValue))
+            }
+        }
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .frame(height: Self.fieldHeight)
+        .frame(maxWidth: .infinity)
+        .background(Color.haNeutralQuietFill)
+        .clipShape(TopRoundedRectangle(cornerRadius: DesignSystem.CornerRadius.half))
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.haDivider)
+                .frame(height: DesignSystem.Border.Width.default)
+        }
+    }
+
+    private var pickerLabel: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
             VStack(alignment: .leading, spacing: .zero) {
                 if let label {
@@ -94,39 +126,21 @@ public struct HADateInput: View {
                     .foregroundStyle(Color.primary)
             }
             Spacer(minLength: DesignSystem.Spaces.one)
-            if showsClearButton {
-                Button {
-                    value = nil
-                } label: {
-                    MaterialDesignIconsImage(icon: .closeIcon, size: 18)
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text(HADesignSystemEnvironment.current.strings.clearValue))
-            }
             MaterialDesignIconsImage(icon: .calendarIcon, size: 20)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, DesignSystem.Spaces.two)
-        .frame(height: Self.fieldHeight)
         .frame(maxWidth: .infinity)
-        .background(Color.haNeutralQuietFill)
-        .clipShape(TopRoundedRectangle(cornerRadius: DesignSystem.CornerRadius.half))
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(Color.haDivider)
-                .frame(height: DesignSystem.Border.Width.default)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(label ?? ""))
-        .accessibilityValue(Text(formattedValue))
+        .contentShape(Rectangle())
     }
 
     /// `DatePicker` has no empty state, so an unset field opens on today — the same thing the
     /// frontend's dialog does with no value.
+    ///
+    /// Today is clamped into the allowed range first: a field that only accepts future dates would
+    /// otherwise hand `DatePicker` a selection outside the range it was given.
     private var calendarSheet: some View {
         let selection = Binding(
-            get: { value ?? Date() },
+            get: { (value ?? Date()).clamped(to: dateRange) },
             set: { value = $0 }
         )
         return DatePicker(
@@ -159,6 +173,12 @@ public struct HADateInput: View {
         )
     }
     .padding()
+}
+
+private extension Date {
+    func clamped(to range: ClosedRange<Date>) -> Date {
+        Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
+    }
 }
 
 extension HADateInput: FrontendComponent {

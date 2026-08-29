@@ -53,15 +53,22 @@ public struct HADistributionCard: View {
         segments.isEmpty
     }
 
+    /// Only labelled segments reach the legend, so the limit has to be applied to those rather than
+    /// to every segment: counting bar-only segments would drop labelled entries from the collapsed
+    /// legend and could offer a Show more button that reveals nothing.
+    private var legendSegments: [HABarSegment] {
+        segments.filter { $0.label != nil }
+    }
+
     private var canCollapse: Bool {
-        segments.count > Self.collapsedLegendLimit
+        legendSegments.count > Self.collapsedLegendLimit
     }
 
     private var shownSegments: [HABarSegment] {
         guard canCollapse, !isExpanded else {
-            return segments
+            return legendSegments
         }
-        return Array(segments.prefix(Self.collapsedLegendLimit))
+        return Array(legendSegments.prefix(Self.collapsedLegendLimit))
     }
 
     public var body: some View {
@@ -95,7 +102,7 @@ public struct HADistributionCard: View {
     /// obvious move.
     private var legend: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
-            ForEach(shownSegments.filter { $0.label != nil }) { segment in
+            ForEach(shownSegments) { segment in
                 let isHidden = hiddenSegmentIDs.contains(segment.id)
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Circle()

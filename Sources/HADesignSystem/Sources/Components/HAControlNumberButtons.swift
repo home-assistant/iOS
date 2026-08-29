@@ -56,7 +56,7 @@ public struct HAControlNumberButtons: View {
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.5 : 1)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Text(label ?? ""))
+        .accessibilityLabel(optional: label)
     }
 
     private func button(

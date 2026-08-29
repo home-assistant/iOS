@@ -46,7 +46,10 @@ struct HAMarkdownParserTests {
 
     @Test func numbersBecomeAnOrderedList() {
         #expect(HAMarkdownParser.parse("1. First\n2. Second") == [
-            .list(ordered: true, items: [.init(text: "First"), .init(text: "Second")]),
+            .list(ordered: true, items: [
+                .init(text: "First", ordered: true),
+                .init(text: "Second", ordered: true),
+            ]),
         ])
     }
 
@@ -56,6 +59,18 @@ struct HAMarkdownParserTests {
             .list(ordered: false, items: [
                 .init(indent: 0, text: "Top"),
                 .init(indent: 1, text: "Nested"),
+            ]),
+        ])
+    }
+
+    /// A bullet nested under a numbered item is a bullet. Taking the list's kind from its first
+    /// line would renumber it as the parent's next entry — "1. Parent" then "2. Child".
+    @Test func aNestedBulletKeepsItsOwnMarkerKind() {
+        let blocks = HAMarkdownParser.parse("1. Parent\n  - Child")
+        #expect(blocks == [
+            .list(ordered: true, items: [
+                .init(indent: 0, text: "Parent", ordered: true),
+                .init(indent: 1, text: "Child", ordered: false),
             ]),
         ])
     }

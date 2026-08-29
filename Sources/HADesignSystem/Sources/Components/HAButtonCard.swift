@@ -54,7 +54,7 @@ public struct HAButtonCard: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text(name ?? ""))
+        .accessibilityLabel(optional: name)
     }
 }
 

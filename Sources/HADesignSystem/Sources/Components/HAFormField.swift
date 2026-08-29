@@ -4,8 +4,10 @@ import SwiftUI
 /// A control with its label beside it, and optional helper text underneath. Covers the frontend's
 /// `ha-formfield` and `ha-input-helper-text`, which are always used together.
 ///
-/// The whole row is the tap target, not just the control: tapping the label of a checkbox should
-/// toggle it, which is what a form field is for.
+/// Layout only: it places the label beside the control and the helper text beneath, and does not
+/// forward taps on the label to the control. Widening the hit target that way needs the control's
+/// own binding, which this does not have — a caller wanting it should put the label inside a
+/// `Toggle` rather than beside one.
 public struct HAFormField<Control: View>: View {
     private let label: String
     private let helperText: String?

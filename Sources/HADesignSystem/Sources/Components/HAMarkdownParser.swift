@@ -196,6 +196,7 @@ public enum HAMarkdownParser {
             items.append(HAMarkdownListItem(
                 indent: leading / indentWidth,
                 text: text.trimmingCharacters(in: .whitespaces),
+                ordered: marker.ordered,
                 checked: checked
             ))
             index += 1

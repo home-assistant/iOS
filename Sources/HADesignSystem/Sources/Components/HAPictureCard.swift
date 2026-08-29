@@ -60,12 +60,15 @@ public struct HAPictureCard<Footer: View>: View {
                         .background(.black.opacity(0.4))
                     }
                 }
+                // The picture and its caption are one element and one tap target; the footer is
+                // not. It holds the glance buttons, and combining them in would collapse every
+                // entity chip into the card and leave none of them focusable.
+                .contentShape(Rectangle())
+                .onTapGesture { onTap?() }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(optional: name)
                 .overlay(alignment: .bottom) { footer }
         }
-        .contentShape(Rectangle())
-        .onTapGesture { onTap?() }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(name ?? ""))
     }
 }
 

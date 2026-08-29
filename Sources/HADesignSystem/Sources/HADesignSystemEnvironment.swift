@@ -58,6 +58,20 @@ public struct HADesignSystemEnvironment {
         public var showMore = "Show more"
         /// Collapses `HADistributionCard`'s legend again.
         public var showLess = "Show less"
+        /// Accessibility label for `HAMediaControlCard`'s previous-track button.
+        public var previousTrack = "Previous"
+        /// Accessibility label for `HAMediaControlCard`'s next-track button.
+        public var nextTrack = "Next"
+        /// Accessibility label for `HAMediaControlCard`'s transport button while stopped.
+        public var play = "Play"
+        /// Accessibility label for `HAMediaControlCard`'s transport button while playing.
+        public var pause = "Pause"
+        /// Accessibility label for `HAAlarmPanelCard`'s delete key.
+        public var deleteDigit = "Delete"
+        /// Named accessibility action raising `HAHSColorPicker`'s saturation.
+        public var moreSaturation = "More saturation"
+        /// Named accessibility action lowering `HAHSColorPicker`'s saturation.
+        public var lessSaturation = "Less saturation"
 
         public init() {}
     }

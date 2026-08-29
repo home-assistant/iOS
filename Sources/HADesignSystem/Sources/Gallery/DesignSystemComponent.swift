@@ -146,7 +146,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .sheetCloseButton: SheetCloseButton.frontendComponentName
         case .textField: HATextField.frontendComponentName
         case .card: nil
-        case .bottomSheet: nil
+        case .bottomSheet: AppleLikeBottomSheet<AnyView>.frontendComponentName
         case .floatingPanel: nil
         case .progressView: HAProgressView.frontendComponentName
         case .fullScreenLoader: nil

@@ -72,7 +72,10 @@ public struct HACalendarCard: View {
 
     private var weekdayHeader: some View {
         HStack(spacing: .zero) {
-            ForEach(orderedWeekdaySymbols, id: \.self) { symbol in
+            // Identified by position, not by the symbol: `veryShortWeekdaySymbols` repeats itself in
+            // plenty of locales — English has two "S" and two "T" — so `id: \.self` would hand
+            // `ForEach` duplicate identities and let SwiftUI reuse or drop header cells.
+            ForEach(Array(orderedWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                 Text(symbol)
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)

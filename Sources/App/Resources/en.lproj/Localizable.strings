@@ -466,6 +466,13 @@
 "component.calendar.all_day" = "All day";
 "component.distribution.show_more" = "Show more";
 "component.distribution.show_less" = "Show less";
+"component.media_control.previous" = "Previous";
+"component.media_control.next" = "Next";
+"component.media_control.play" = "Play";
+"component.media_control.pause" = "Pause";
+"component.alarm_panel.delete" = "Delete";
+"component.color_picker.more_saturation" = "More saturation";
+"component.color_picker.less_saturation" = "Less saturation";
 "component.absolute_time.never" = "Never";
 "connection.active_url_type.toast.external" = "Using the external URL.";
 "connection.active_url_type.toast.internal" = "Using the internal URL.";

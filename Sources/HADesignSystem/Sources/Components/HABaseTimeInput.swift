@@ -120,7 +120,7 @@ public struct HABaseTimeInput: View {
         }
         .opacity(disabled ? 0.5 : 1)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Text(label ?? ""))
+        .accessibilityLabel(optional: label)
     }
 
     private var fields: some View {

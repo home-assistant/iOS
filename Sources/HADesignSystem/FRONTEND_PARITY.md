@@ -215,8 +215,9 @@ drawing for the same reason the slider scales are — a diagram of plausible sha
 or not the flows add up.
 
 Also done: `chart/ha-sunburst-chart`, whose angles are in `HASunburstLayout` — children divide their
-parent's wedge rather than the whole circle, and need not add up to it, so a partial breakdown draws
-as a partial inner ring instead of distorting the ring outside it.
+parent's wedge rather than the whole circle, sharing it in proportion to each other. A breakdown
+short of its parent therefore fills the parent's wedge rather than leaving a gap; what it cannot do
+is spill past the parent and distort the ring outside it.
 
 Also done: `hui-energy-sources-table-card` as `HAEnergySourcesTable`, and
 `hui-energy-date-selection-card` as `HAEnergyPeriodSelector` — the card holds nothing but

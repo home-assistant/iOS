@@ -156,22 +156,33 @@ public struct HAMediaControlCard: View {
     }
 
     private var controls: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
+        let strings = HADesignSystemEnvironment.current.strings
+        return HStack(spacing: DesignSystem.Spaces.two) {
             if let onPrevious {
-                control(.skipPreviousIcon, action: onPrevious)
+                control(.skipPreviousIcon, label: strings.previousTrack, action: onPrevious)
             }
             if let onPlayPause {
-                control(isPlaying ? .pauseIcon : .playIcon, action: onPlayPause, size: Self.playControlSize)
+                control(
+                    isPlaying ? .pauseIcon : .playIcon,
+                    // The label follows the icon, so VoiceOver says what the button will *do*
+                    // rather than what the player is currently doing.
+                    label: isPlaying ? strings.pause : strings.play,
+                    action: onPlayPause,
+                    size: Self.playControlSize
+                )
             }
             if let onNext {
-                control(.skipNextIcon, action: onNext)
+                control(.skipNextIcon, label: strings.nextTrack, action: onNext)
             }
             Spacer(minLength: .zero)
         }
     }
 
+    /// Icon-only, so each carries its own label: without one VoiceOver announces three
+    /// indistinguishable "Button"s and there is no way to tell previous from next.
     private func control(
         _ icon: MaterialDesignIcons,
+        label: String,
         action: @escaping () -> Void,
         size: CGFloat = HAMediaControlCard.controlSize
     ) -> some View {
@@ -179,6 +190,7 @@ public struct HAMediaControlCard: View {
             MaterialDesignIconsImage(icon: icon, size: size)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(label))
     }
 
     private func progressBar(_ progress: Double) -> some View {

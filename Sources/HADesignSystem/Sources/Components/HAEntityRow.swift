@@ -36,30 +36,37 @@ public struct HAEntityRow<Trailing: View>: View {
 
     public var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
-            if let icon {
-                MaterialDesignIconsImage(icon: icon, size: 24)
-                    .foregroundStyle(color)
-                    .frame(width: 24)
-            }
-            VStack(alignment: .leading, spacing: .zero) {
-                Text(name)
-                    .font(DesignSystem.Font.body)
-                    .lineLimit(1)
-                if let secondary {
-                    Text(secondary)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+            // The identity of the row — icon, name, state — is one element and carries the row's
+            // own tap. `trailing` stays outside it: that is where the row's control goes, and
+            // merging a toggle or slider into the row would leave VoiceOver unable to separate the
+            // row from the control or to operate the control at all.
+            HStack(spacing: DesignSystem.Spaces.two) {
+                if let icon {
+                    MaterialDesignIconsImage(icon: icon, size: 24)
+                        .foregroundStyle(color)
+                        .frame(width: 24)
                 }
+                VStack(alignment: .leading, spacing: .zero) {
+                    Text(name)
+                        .font(DesignSystem.Font.body)
+                        .lineLimit(1)
+                    if let secondary {
+                        Text(secondary)
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                Spacer(minLength: DesignSystem.Spaces.one)
             }
-            Spacer(minLength: DesignSystem.Spaces.one)
+            .contentShape(Rectangle())
+            .onTapGesture { onTap?() }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(onTap == nil ? [] : .isButton)
             trailing
         }
         // The row is as tall as a touch target even when its trailing control is only text.
         .frame(minHeight: 40)
-        .contentShape(Rectangle())
-        .onTapGesture { onTap?() }
-        .accessibilityElement(children: .combine)
     }
 }
 

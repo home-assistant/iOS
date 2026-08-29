@@ -13,6 +13,9 @@ public struct HAControlCircularSlider: View {
     private let diameter: CGFloat
     private let trackColor: Color
     private let activeColor: Color
+    /// Names the dial for VoiceOver. Without it the value is announced with no indication of what
+    /// it sets — "21" could be the temperature or the humidity.
+    private let label: String?
     @Binding private var low: Double
     @Binding private var high: Double
     private let isDual: Bool
@@ -30,7 +33,8 @@ public struct HAControlCircularSlider: View {
         isDisabled: Bool = false,
         diameter: CGFloat = 200,
         trackColor: Color = .haDisabled,
-        activeColor: Color = .haPrimary
+        activeColor: Color = .haPrimary,
+        label: String? = nil
     ) {
         _low = value
         _high = value
@@ -41,6 +45,7 @@ public struct HAControlCircularSlider: View {
         self.diameter = diameter
         self.trackColor = trackColor
         self.activeColor = activeColor
+        self.label = label
     }
 
     /// A dial with a low and a high target, for a thermostat in heat/cool mode.
@@ -52,7 +57,8 @@ public struct HAControlCircularSlider: View {
         isDisabled: Bool = false,
         diameter: CGFloat = 200,
         trackColor: Color = .haDisabled,
-        activeColor: Color = .haPrimary
+        activeColor: Color = .haPrimary,
+        label: String? = nil
     ) {
         _low = low
         _high = high
@@ -63,6 +69,7 @@ public struct HAControlCircularSlider: View {
         self.diameter = diameter
         self.trackColor = trackColor
         self.activeColor = activeColor
+        self.label = label
     }
 
     /// A trim starts at three o'clock; rotating by this puts the sweep's start at the lower left,
@@ -95,13 +102,66 @@ public struct HAControlCircularSlider: View {
         }
         .frame(width: diameter, height: diameter)
         .opacity(isDisabled ? 0.5 : 1)
+        .contentShape(Circle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { drag in
+                    guard !isDisabled else { return }
+                    setTarget(towards: drag.location)
+                }
+        )
         .accessibilityElement()
+        .accessibilityLabel(optional: label)
         .accessibilityValue(
             Text(
                 isDual ? "\(scale.stepped(low).formatted())–\(scale.stepped(high).formatted())"
                     : scale.stepped(low).formatted()
             )
         )
+        // Without this the dial is announced as a value VoiceOver cannot change — which, for the
+        // thermostat and humidifier cards, means the target can be heard but never set.
+        .accessibilityAdjustableAction { direction in
+            guard !isDisabled else { return }
+            let delta = direction == .increment ? scale.step : -scale.step
+            if isDual {
+                high = scale.boundedHigh(high + delta, low: low)
+            } else {
+                low = scale.stepped(scale.boundedLow(low + delta, high: nil))
+                high = low
+            }
+        }
+    }
+
+    /// Turns a touch into a target: the angle from the dial's centre becomes a percentage along the
+    /// sweep, which the scale turns back into a value.
+    ///
+    /// In dual mode the handle that moves is whichever is already nearer, so dragging near the low
+    /// end never drags the high one across it.
+    private func setTarget(towards location: CGPoint) {
+        let centre = CGPoint(x: diameter / 2, y: diameter / 2)
+        let radians = atan2(location.y - centre.y, location.x - centre.x)
+        var degrees = radians * 180 / .pi - Self.startAngle
+        while degrees < 0 {
+            degrees += 360
+        }
+        // Past the end of the sweep is the 90° gap at the bottom; a touch there is not on the
+        // track at all, so snap it to whichever end it is closest to rather than wrapping around.
+        guard degrees <= HACircularSliderScale.sweepDegrees + 45 else {
+            return
+        }
+        let percentage = Swift.min(degrees / HACircularSliderScale.sweepDegrees, 1)
+        let value = scale.value(atPercentage: percentage)
+
+        guard isDual else {
+            low = scale.stepped(value)
+            high = low
+            return
+        }
+        if abs(value - low) <= abs(value - high) {
+            low = scale.boundedLow(value, high: high)
+        } else {
+            high = scale.boundedHigh(value, low: low)
+        }
     }
 
     private func ring(from: Double, to: Double, color: Color) -> some View {

@@ -34,7 +34,12 @@ public struct HAEntitiesCard<Content: View>: View {
                         }
                         Spacer(minLength: DesignSystem.Spaces.one)
                         if let headerToggle {
-                            Toggle("", isOn: headerToggle).labelsHidden()
+                            // Labelled with the card's title even though the label is hidden:
+                            // `labelsHidden` only stops it being drawn, and an empty string would
+                            // leave VoiceOver with an unnamed switch.
+                            Toggle(title ?? "", isOn: headerToggle)
+                                .labelsHidden()
+                                .accessibilityLabel(optional: title)
                         }
                     }
                     .padding(.bottom, DesignSystem.Spaces.one)

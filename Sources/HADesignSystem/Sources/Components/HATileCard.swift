@@ -80,16 +80,20 @@ public struct HATileCard<Features: View>: View {
                 // minimum when the height proposal is zero, which would cap the vertical tile —
                 // taller than 56pt by construction — and leave its content hanging out of the card.
                 .frame(minHeight: vertical ? nil : Self.rowHeight)
+                // The tap target and the combined accessibility element cover the icon and info
+                // only. `features` holds interactive controls — sliders, selects, buttons — and
+                // combining them into the tile would leave them unfocusable and put the tile's
+                // button trait in competition with theirs.
+                .contentShape(Rectangle())
+                .onTapGesture { onTap?() }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(onTap == nil ? [] : .isButton)
                 features
                     .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
                     .padding(.bottom, DesignSystem.Spaces.oneAndHalf)
             }
             .frame(maxWidth: .infinity)
         }
-        .contentShape(Rectangle())
-        .onTapGesture { onTap?() }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(onTap == nil ? [] : .isButton)
     }
 }
 

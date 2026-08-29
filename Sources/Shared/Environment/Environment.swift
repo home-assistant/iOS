@@ -194,6 +194,13 @@ public class AppEnvironment {
             $0.allDay = L10n.Component.Calendar.allDay
             $0.showMore = L10n.Component.Distribution.showMore
             $0.showLess = L10n.Component.Distribution.showLess
+            $0.previousTrack = L10n.Component.MediaControl.previous
+            $0.nextTrack = L10n.Component.MediaControl.next
+            $0.play = L10n.Component.MediaControl.play
+            $0.pause = L10n.Component.MediaControl.pause
+            $0.deleteDigit = L10n.Component.AlarmPanel.delete
+            $0.moreSaturation = L10n.Component.ColorPicker.moreSaturation
+            $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 

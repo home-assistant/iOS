@@ -80,7 +80,12 @@ public struct HAAnalogClock: View {
         }
         .frame(width: diameter, height: diameter)
         .accessibilityElement()
-        .accessibilityLabel(Text(date.formatted(date: .omitted, time: .shortened)))
+        // Spelled out in the injected zone, like the hands are. The shorthand formatter uses the
+        // process zone, so a dial rendered for another zone would be read out as a different time
+        // from the one it is showing.
+        .accessibilityLabel(Text(date.formatted(
+            Date.FormatStyle(date: .omitted, time: .shortened, timeZone: timeZone)
+        )))
     }
 
     // MARK: - Dial

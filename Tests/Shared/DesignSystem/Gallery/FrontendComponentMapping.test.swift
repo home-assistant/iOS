@@ -12,7 +12,6 @@ struct FrontendComponentMappingTests {
     /// mapping fails this test, so a genuinely new port cannot quietly arrive unmapped.
     private static let appNative: Set<DesignSystemComponent> = [
         .card,
-        .bottomSheet,
         .floatingPanel,
         .fullScreenLoader,
         .pill,

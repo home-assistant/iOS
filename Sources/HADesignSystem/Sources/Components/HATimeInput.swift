@@ -63,7 +63,8 @@ public struct HATimeInput: View {
             disabled: disabled,
             format: resolvedFormat,
             enableSecond: enableSecond,
-            clearable: clearable
+            clearable: clearable,
+            onClear: onClear
         )
     }
 }

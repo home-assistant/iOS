@@ -33,7 +33,13 @@ public struct HAFadedView<Content: View>: View {
             .fixedSize(horizontal: false, vertical: true)
             .background(
                 GeometryReader { proxy in
-                    Color.clear.onAppear { contentHeight = proxy.size.height }
+                    // Tracked on every change, not just `onAppear`: the content's height moves with
+                    // the available width, the Dynamic Type size and the content itself, and a
+                    // height measured once would keep fading text that now fits — or stop fading
+                    // text that has since overflowed.
+                    Color.clear
+                        .onAppear { contentHeight = proxy.size.height }
+                        .onChange(of: proxy.size.height) { contentHeight = $0 }
                 }
             )
             .frame(maxHeight: shouldFade ? fadedHeight : nil, alignment: .top)

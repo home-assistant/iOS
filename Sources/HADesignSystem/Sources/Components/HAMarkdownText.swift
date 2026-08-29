@@ -66,7 +66,9 @@ public struct HAMarkdownText: View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 HStack(alignment: .firstTextBaseline, spacing: DesignSystem.Spaces.one) {
-                    marker(for: item, position: index, ordered: ordered)
+                    // Numbered from the item's own marker and counted within its own level, so a
+                    // bullet nested under "1." stays a bullet and the next numbered item is "2.".
+                    marker(for: item, position: Self.number(of: item, at: index, in: items))
                     Text(Self.inline(item.text))
                         .font(DesignSystem.Font.body)
                         .fixedSize(horizontal: false, vertical: true)
@@ -77,8 +79,24 @@ public struct HAMarkdownText: View {
         }
     }
 
+    /// An ordered item's number counts only the ordered items at its own indent since the last time
+    /// that level restarted — otherwise a nested bullet would push the numbering along with it.
+    private static func number(of item: HAMarkdownListItem, at index: Int, in items: [HAMarkdownListItem]) -> Int {
+        var count = 0
+        for earlier in items[..<index].reversed() {
+            if earlier.indent < item.indent {
+                break
+            }
+            if earlier.indent == item.indent, earlier.ordered {
+                count += 1
+            }
+        }
+        return count
+    }
+
     @ViewBuilder
-    private func marker(for item: HAMarkdownListItem, position: Int, ordered: Bool) -> some View {
+    private func marker(for item: HAMarkdownListItem, position: Int) -> some View {
+        let ordered = item.ordered
         if let checked = item.checked {
             // A GFM task list renders as checkboxes rather than bullets, and they are not
             // interactive here for the same reason they are not in the frontend: the source of

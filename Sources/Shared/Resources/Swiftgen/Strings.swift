@@ -1652,6 +1652,10 @@ public enum L10n {
       /// Never
       public static var never: String { return L10n.tr("Localizable", "component.absolute_time.never") }
     }
+    public enum AlarmPanel {
+      /// Delete
+      public static var delete: String { return L10n.tr("Localizable", "component.alarm_panel.delete") }
+    }
     public enum Alert {
       /// Dismiss alert
       public static var dismiss: String { return L10n.tr("Localizable", "component.alert.dismiss") }
@@ -1670,6 +1674,12 @@ public enum L10n {
       /// Expand
       public static var expand: String { return L10n.tr("Localizable", "component.collapsible_view.expand") }
     }
+    public enum ColorPicker {
+      /// Less saturation
+      public static var lessSaturation: String { return L10n.tr("Localizable", "component.color_picker.less_saturation") }
+      /// More saturation
+      public static var moreSaturation: String { return L10n.tr("Localizable", "component.color_picker.more_saturation") }
+    }
     public enum Distribution {
       /// Show less
       public static var showLess: String { return L10n.tr("Localizable", "component.distribution.show_less") }
@@ -1683,6 +1693,16 @@ public enum L10n {
       public static var next: String { return L10n.tr("Localizable", "component.energy_period.next") }
       /// Previous period
       public static var previous: String { return L10n.tr("Localizable", "component.energy_period.previous") }
+    }
+    public enum MediaControl {
+      /// Next
+      public static var next: String { return L10n.tr("Localizable", "component.media_control.next") }
+      /// Pause
+      public static var pause: String { return L10n.tr("Localizable", "component.media_control.pause") }
+      /// Play
+      public static var play: String { return L10n.tr("Localizable", "component.media_control.play") }
+      /// Previous
+      public static var previous: String { return L10n.tr("Localizable", "component.media_control.previous") }
     }
     public enum QrCode {
       /// Could not generate the QR code

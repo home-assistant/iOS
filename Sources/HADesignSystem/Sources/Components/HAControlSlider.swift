@@ -99,7 +99,7 @@ public struct HAControlSlider: View {
         .clipShape(RoundedRectangle(cornerRadius: Self.cornerRadius))
         .opacity(isDisabled ? 0.5 : 1)
         .accessibilityElement()
-        .accessibilityLabel(Text(label ?? ""))
+        .accessibilityLabel(optional: label)
         .accessibilityValue(Text("\(scale.stepped(value).formatted())"))
         .accessibilityAdjustableAction { direction in
             guard !isDisabled else { return }

@@ -30,6 +30,10 @@ public struct HAHSColorPicker: View {
     }
 
     private static let cursorDiameter: CGFloat = 24
+    /// Coarse enough that a swipe moves between recognisably different colours rather than needing
+    /// dozens of them to cross the wheel.
+    private static let hueStep: Double = 15
+    private static let saturationStep: Double = 0.1
 
     /// The full hue circle as discrete stops. `AngularGradient` interpolates between them, so a
     /// stop every 30° is enough to read as continuous while keeping the primaries where they belong.
@@ -85,6 +89,22 @@ public struct HAHSColorPicker: View {
         .opacity(isDisabled ? 0.5 : 1)
         .accessibilityElement()
         .accessibilityValue(Text("\(Int(hue))°, \(Int(saturation * 100))%"))
+        // The wheel has two dimensions and VoiceOver's adjustable action has one, so hue — the
+        // dimension the control exists for — is what the swipe changes, and saturation gets named
+        // actions. Without either, the colour can be heard but never altered.
+        .accessibilityAdjustableAction { direction in
+            guard !isDisabled else { return }
+            let delta: Double = direction == .increment ? Self.hueStep : -Self.hueStep
+            hue = (hue + delta + 360).truncatingRemainder(dividingBy: 360)
+        }
+        .accessibilityAction(named: Text(HADesignSystemEnvironment.current.strings.moreSaturation)) {
+            guard !isDisabled else { return }
+            saturation = Swift.min(saturation + Self.saturationStep, 1)
+        }
+        .accessibilityAction(named: Text(HADesignSystemEnvironment.current.strings.lessSaturation)) {
+            guard !isDisabled else { return }
+            saturation = Swift.max(saturation - Self.saturationStep, 0)
+        }
     }
 }
 

@@ -29,13 +29,32 @@ public struct HAHistoryTimeline: View {
         self.rowHeight = rowHeight
     }
 
+    /// The instant every row is measured from, so a position along a band means the same time on
+    /// each of them.
+    private var timelineStart: Date? {
+        rows.flatMap(\.segments).map(\.start).min()
+    }
+
     /// Every row is measured against the same span, so bands line up vertically and a gap in one
     /// entity's history reads against its neighbours.
     private var totalDuration: TimeInterval {
-        let starts = rows.flatMap(\.segments).map(\.start)
         let ends = rows.flatMap(\.segments).map(\.end)
-        guard let first = starts.min(), let last = ends.max() else { return 0 }
+        guard let first = timelineStart, let last = ends.max() else { return 0 }
         return Swift.max(0, last.timeIntervalSince(first))
+    }
+
+    /// Where a band starts, as a fraction of the shared span.
+    ///
+    /// Bands are placed from this rather than packed one after another: a row whose history begins
+    /// late, or has a gap in the middle, would otherwise slide left and stop lining up with its
+    /// neighbours — which is the one thing a timeline has to get right.
+    private func fractionalOffset(of segment: HATimelineSegment) -> Double {
+        guard let timelineStart, totalDuration > 0 else { return 0 }
+        return segment.start.timeIntervalSince(timelineStart) / totalDuration
+    }
+
+    private func fractionalWidth(of segment: HATimelineSegment) -> Double {
+        totalDuration > 0 ? segment.duration / totalDuration : 0
     }
 
     public var body: some View {
@@ -46,15 +65,12 @@ public struct HAHistoryTimeline: View {
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
                     GeometryReader { proxy in
-                        HStack(spacing: .zero) {
+                        ZStack(alignment: .leading) {
                             ForEach(row.segments) { segment in
                                 Rectangle()
                                     .fill(segment.color)
-                                    .frame(
-                                        width: totalDuration > 0
-                                            ? proxy.size.width * (segment.duration / totalDuration)
-                                            : 0
-                                    )
+                                    .frame(width: proxy.size.width * fractionalWidth(of: segment))
+                                    .offset(x: proxy.size.width * fractionalOffset(of: segment))
                                     .accessibilityLabel(Text(segment.label))
                             }
                         }

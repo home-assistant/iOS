@@ -34,7 +34,10 @@ public struct HAAlarmPanelCard: View {
     }
 
     /// Three columns of digits with a zero centred under them, as a phone keypad is.
-    private static let keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", ""]
+    /// The trailing slot is a delete key, as the frontend's keypad has: every other key only
+    /// appends, so without it a mistyped digit can only be undone by abandoning the card.
+    private static let deleteKey = "\u{232B}"
+    private static let keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", deleteKey]
 
     public var body: some View {
         HACard {
@@ -63,10 +66,17 @@ public struct HAAlarmPanelCard: View {
                         spacing: DesignSystem.Spaces.one
                     ) {
                         ForEach(Array(Self.keys.enumerated()), id: \.offset) { _, key in
-                            // The blanks either side of the zero keep it centred without a bespoke
-                            // layout; they are spacers, not buttons.
+                            // The blank left of the zero keeps it centred without a bespoke layout;
+                            // it is a spacer, not a button.
                             if key.isEmpty {
                                 Color.clear.frame(height: 44)
+                            } else if key == Self.deleteKey {
+                                Button(key) { _ = code.popLast() }
+                                    .buttonStyle(.neutralButton)
+                                    .disabled(code.isEmpty)
+                                    .accessibilityLabel(
+                                        Text(HADesignSystemEnvironment.current.strings.deleteDigit)
+                                    )
                             } else {
                                 Button(key) { code += key }
                                     .buttonStyle(.neutralButton)

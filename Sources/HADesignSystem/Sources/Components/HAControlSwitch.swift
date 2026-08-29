@@ -92,7 +92,7 @@ public struct HAControlSwitch: View {
             withAnimation(DesignSystem.Animation.easeInOutFaster) { isOn.toggle() }
         }
         .accessibilityElement()
-        .accessibilityLabel(Text(label ?? ""))
+        .accessibilityLabel(optional: label)
         // `.isToggle` is iOS 17; the package targets 16, and a button trait plus an on/off value
         // reads the same way to VoiceOver on both.
         .accessibilityAddTraits(.isButton)
