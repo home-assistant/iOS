@@ -41,17 +41,21 @@ public struct HAAreaCard: View {
     public var body: some View {
         HACard {
             VStack(alignment: .leading, spacing: .zero) {
-                header
-                footer
+                // The card's own tap covers the picture and the summary only. Wrapping the whole
+                // card would put a button around the control buttons: tapping a light would also
+                // open the area, and VoiceOver would see buttons nested inside a button.
+                VStack(alignment: .leading, spacing: .zero) {
+                    header
+                    summary
+                }
+                .contentShape(Rectangle())
+                .onTapGesture { onTap?() }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text(name))
+                .accessibilityAddTraits(onTap == nil ? [] : .isButton)
+                controlsRow
             }
         }
-        .modify { view in
-            if let onTap {
-                Button(action: onTap) { view }.buttonStyle(.plain)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(name))
     }
 
     /// The picture with the alert badges over it, or — with no picture — the area's icon on a quiet
@@ -101,7 +105,7 @@ public struct HAAreaCard: View {
         .clipShape(Capsule())
     }
 
-    private var footer: some View {
+    private var summary: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             Text(name)
                 .font(DesignSystem.Font.title3)
@@ -112,16 +116,25 @@ public struct HAAreaCard: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            if !controls.isEmpty {
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    ForEach(controls) { control in
-                        controlButton(control)
-                    }
-                    Spacer(minLength: .zero)
-                }
-            }
         }
-        .padding(DesignSystem.Spaces.two)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.top, DesignSystem.Spaces.two)
+        .padding(.bottom, controls.isEmpty ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
+    }
+
+    @ViewBuilder
+    private var controlsRow: some View {
+        if !controls.isEmpty {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                ForEach(controls) { control in
+                    controlButton(control)
+                }
+                Spacer(minLength: .zero)
+            }
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.bottom, DesignSystem.Spaces.two)
+        }
     }
 
     private func controlButton(_ control: HAAreaCardControl) -> some View {
