@@ -97,6 +97,7 @@ public struct HASparkline: View {
 
 extension HASparkline: FrontendComponent {
     public static var frontendComponentName: String { "hui-graph-base" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

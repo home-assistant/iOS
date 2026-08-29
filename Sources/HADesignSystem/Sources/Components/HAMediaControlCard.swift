@@ -241,5 +241,6 @@ public struct HAMediaControlCard: View {
 
 extension HAMediaControlCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-media-control-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 #endif

@@ -54,6 +54,7 @@ private let sampleBars: [HAStatisticsBar] = (0 ..< 5).map { day in
 
 extension HAStatisticsGraphCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-statistics-graph-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -241,6 +241,7 @@ public struct HAMarkdownText: View {
 
 extension HAMarkdownText: FrontendComponent {
     public static var frontendComponentName: String { "ha-markdown" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

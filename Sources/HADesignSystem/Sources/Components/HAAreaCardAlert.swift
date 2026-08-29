@@ -23,6 +23,7 @@ public struct HAAreaCardAlert: Identifiable, Sendable {
 
 extension HAAreaCardAlert: FrontendComponent {
     public static var frontendComponentName: String { "hui-area-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

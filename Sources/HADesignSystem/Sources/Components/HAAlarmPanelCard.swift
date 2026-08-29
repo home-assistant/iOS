@@ -114,6 +114,7 @@ public struct HAAlarmPanelCard: View {
 
 extension HAAlarmPanelCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-alarm-panel-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

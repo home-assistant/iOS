@@ -74,6 +74,7 @@ public struct HATreeIndicator: View {
 
 extension HATreeIndicator: FrontendComponent {
     public static var frontendComponentName: String { "ha-tree-indicator" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

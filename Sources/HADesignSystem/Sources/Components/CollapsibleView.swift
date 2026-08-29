@@ -120,6 +120,7 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
 
 extension CollapsibleView: FrontendComponent {
     public static var frontendComponentName: String { "ha-expansion-panel" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

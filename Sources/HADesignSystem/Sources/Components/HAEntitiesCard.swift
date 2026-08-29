@@ -74,6 +74,7 @@ public struct HAEntitiesCard<Content: View>: View {
 
 extension HAEntitiesCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-entities-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

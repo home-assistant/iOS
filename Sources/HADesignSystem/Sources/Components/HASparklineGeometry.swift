@@ -67,6 +67,7 @@ public enum HASparklineGeometry {
 
 extension HASparklineGeometry: FrontendComponent {
     public static var frontendComponentName: String { "hui-graph-base" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

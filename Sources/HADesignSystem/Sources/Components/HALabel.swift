@@ -84,6 +84,7 @@ private extension Color {
 
 extension HALabel: FrontendComponent {
     public static var frontendComponentName: String { "ha-label" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -88,4 +88,5 @@ public extension HATimeComponents {
 
 extension HATimeComponents: FrontendComponent {
     public static var frontendComponentName: String { "ha-base-time-input" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

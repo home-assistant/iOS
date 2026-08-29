@@ -83,6 +83,7 @@ public struct HAFormField<Control: View>: View {
 
 extension HAFormField: FrontendComponent {
     public static var frontendComponentName: String { "ha-formfield" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

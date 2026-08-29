@@ -79,6 +79,7 @@ public extension HAHeadingCard where Badges == EmptyView {
 
 extension HAHeadingCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-heading-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

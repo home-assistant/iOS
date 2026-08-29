@@ -79,6 +79,7 @@ public struct HAFadedView<Content: View>: View {
 
 extension HAFadedView: FrontendComponent {
     public static var frontendComponentName: String { "ha-faded" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

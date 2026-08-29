@@ -28,6 +28,7 @@ public struct HATimelineSegment: Identifiable, Sendable {
 
 extension HATimelineSegment: FrontendComponent {
     public static var frontendComponentName: String { "state-history-chart-timeline" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

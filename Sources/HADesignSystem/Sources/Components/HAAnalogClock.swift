@@ -200,6 +200,7 @@ private let sampleTime = Date(timeIntervalSince1970: 1_787_998_177)
 
 extension HAAnalogClock: FrontendComponent {
     public static var frontendComponentName: String { "hui-clock-card-analog" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

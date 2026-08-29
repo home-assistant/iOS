@@ -30,6 +30,7 @@ public struct SheetCloseButton: View {
 
 extension SheetCloseButton: FrontendComponent {
     public static var frontendComponentName: String { "ha-icon-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

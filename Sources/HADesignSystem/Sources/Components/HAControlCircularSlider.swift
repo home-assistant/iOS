@@ -218,6 +218,7 @@ public struct HAControlCircularSlider: View {
 
 extension HAControlCircularSlider: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-circular-slider" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

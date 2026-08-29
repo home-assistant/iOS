@@ -106,6 +106,7 @@ public struct HAMarqueeText: View {
 
 extension HAMarqueeText: FrontendComponent {
     public static var frontendComponentName: String { "ha-marquee-text" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

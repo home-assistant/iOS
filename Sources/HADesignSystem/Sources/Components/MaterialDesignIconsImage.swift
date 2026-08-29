@@ -63,6 +63,7 @@ public struct MaterialDesignIconsImage: View {
 
 extension MaterialDesignIconsImage: FrontendComponent {
     public static var frontendComponentName: String { "ha-svg-icon" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

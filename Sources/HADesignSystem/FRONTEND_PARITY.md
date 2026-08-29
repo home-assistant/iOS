@@ -354,8 +354,23 @@ rather than repeating it, so an element name has one home. Generic view types ar
 
 The property is computed, not stored — generic types cannot have stored statics.
 
+Each conformance also records **when it was last reconciled** — `frontendComponentVersion`, the date
+of the `home-assistant/frontend` commit it was checked against. A port is only ever correct as of
+some frontend state, and without recording which, "is this still faithful?" can only be answered by
+re-reading the element. With it, the frontend's own history answers it: anything touching `ha-tip`
+after that component's date is a change the port has not seen.
+
+Dated rather than numbered because the frontend releases by date and its `package.json` carries a
+placeholder version. **Bump it when you reconcile a component against the frontend again — not when
+you merely edit it.** A refactor that never opened the frontend has not made the port any newer, and
+a date that drifts on unrelated edits is worse than none.
+
+It is deliberately not defaulted. A default would let a new component silently inherit a date nobody
+checked, which is the one thing it exists to prevent.
+
 `FrontendComponentMappingTests` keeps it honest: every gallery case must either name an element or be
-listed as app-native, so a new port cannot quietly arrive unmapped.
+listed as app-native, so a new port cannot quietly arrive unmapped. Name and date must both be
+present or both absent, the date must parse as `yyyy-MM-dd`, and it may not be in the future.
 
 ## What the re-comparison found
 

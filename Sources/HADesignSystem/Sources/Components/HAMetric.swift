@@ -64,6 +64,7 @@ public struct HAMetric: View {
 
 extension HAMetric: FrontendComponent {
     public static var frontendComponentName: String { "ha-metric" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

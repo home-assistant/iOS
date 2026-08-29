@@ -142,6 +142,7 @@ private let sampleEnergyGroups = [
 
 extension HAEnergySourcesTable: FrontendComponent {
     public static var frontendComponentName: String { "hui-energy-sources-table-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

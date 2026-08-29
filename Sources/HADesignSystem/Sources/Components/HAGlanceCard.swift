@@ -86,6 +86,7 @@ private let sampleGlanceItems = [
 
 extension HAGlanceCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-glance-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -22,12 +22,16 @@ public struct ComponentsLibraryView: View {
                             } header: {
                                 Text(component.title)
                             } footer: {
-                                // The frontend element this was ported from, so the gallery can be
-                                // read beside `design.home-assistant.io` without going via the
-                                // source. Absent for the app's own components, which have none.
+                                // The frontend element this was ported from and when it was last
+                                // reconciled, so the gallery can be read beside
+                                // `design.home-assistant.io` without going via the source. Absent
+                                // for the app's own components, which have neither.
                                 if let element = component.frontendComponentName {
-                                    Text(element)
-                                        .font(.system(.caption, design: .monospaced))
+                                    Text(
+                                        component.frontendComponentVersion
+                                            .map { "\(element) · \($0)" } ?? element
+                                    )
+                                    .font(.system(.caption, design: .monospaced))
                                 }
                             }
                         }

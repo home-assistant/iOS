@@ -56,4 +56,5 @@ public struct HASliderScale: Equatable, Sendable {
 
 extension HASliderScale: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-slider" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

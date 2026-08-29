@@ -37,6 +37,7 @@ public enum HAAlertType: String, CaseIterable, Identifiable, Sendable {
 
 extension HAAlertType: FrontendComponent {
     public static var frontendComponentName: String { "ha-alert" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

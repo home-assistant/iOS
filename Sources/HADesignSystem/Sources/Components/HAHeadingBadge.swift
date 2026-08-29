@@ -58,6 +58,7 @@ public struct HAHeadingBadge: View {
 
 extension HAHeadingBadge: FrontendComponent {
     public static var frontendComponentName: String { "ha-heading-badge" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -201,6 +201,7 @@ public extension HAThermostatCard where Features == EmptyView {
 
 extension HAThermostatCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-thermostat-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

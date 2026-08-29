@@ -1,3 +1,4 @@
+import Foundation
 @testable import HADesignSystem
 import Testing
 
@@ -53,6 +54,40 @@ struct FrontendComponentMappingTests {
         let isElement = name.hasPrefix("ha-") || name.hasPrefix("hui-")
         let isChartModule = name.hasPrefix("state-history-chart-") || name == "statistics-chart"
         #expect(isElement || isChartModule, "\(name) is neither an ha-/hui- element nor a chart module")
+    }
+
+    /// A port is only correct as of some frontend state, so every mapped component records which.
+    /// A component that names an element but no date would claim a fidelity nobody can check.
+    @Test(arguments: DesignSystemComponent.allCases)
+    func everyMappedComponentRecordsWhenItWasLastReconciled(component: DesignSystemComponent) {
+        #expect(
+            (component.frontendComponentName == nil) == (component.frontendComponentVersion == nil),
+            "\(component.rawValue) has one of name/version but not the other"
+        )
+    }
+
+    /// Dates are compared and sorted, not just displayed, so the format has to hold. An unparseable
+    /// or future date would make "is this port stale?" unanswerable in the one place that answers it.
+    @Test(arguments: DesignSystemComponent.allCases)
+    func reconciliationDatesAreRealAndNotInTheFuture(component: DesignSystemComponent) {
+        guard let version = component.frontendComponentVersion else {
+            return
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+
+        let date = formatter.date(from: version)
+        #expect(date != nil, "\(component.rawValue) has \(version), which is not a yyyy-MM-dd date")
+        // A day's slack, because the recording machine and the frontend checkout need not agree on
+        // the current date to the hour.
+        if let date {
+            #expect(
+                date < Date().addingTimeInterval(86400),
+                "\(component.rawValue) claims to have been reconciled in the future: \(version)"
+            )
+        }
     }
 
     /// Several components legitimately share an element — a card and the model it renders, a control

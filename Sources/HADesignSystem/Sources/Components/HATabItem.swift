@@ -17,6 +17,7 @@ public struct HATabItem: Identifiable {
 
 extension HATabItem: FrontendComponent {
     public static var frontendComponentName: String { "ha-tab" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

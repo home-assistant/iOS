@@ -67,6 +67,7 @@ public struct HATileInfo: View {
 
 extension HATileInfo: FrontendComponent {
     public static var frontendComponentName: String { "ha-tile-info" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

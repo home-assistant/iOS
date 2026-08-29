@@ -218,6 +218,7 @@ public struct HAControlSlider: View {
 
 extension HAControlSlider: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-slider" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

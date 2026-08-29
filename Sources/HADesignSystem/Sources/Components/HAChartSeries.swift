@@ -38,6 +38,7 @@ public struct HAChartSeries: Identifiable {
 
 extension HAChartSeries: FrontendComponent {
     public static var frontendComponentName: String { "state-history-chart-line" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -247,6 +247,125 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         }
     }
 
+    /// When each component was last reconciled with the frontend — see
+    /// ``FrontendComponent/frontendComponentVersion``. `nil` for the app's own components,
+    /// which have no frontend to be reconciled with.
+    public var frontendComponentVersion: String? {
+        switch self {
+        case .primaryButton: HAButtonStyle.frontendComponentVersion
+        case .secondaryButton: HAButtonStyle.frontendComponentVersion
+        case .outlinedButton: HAButtonStyle.frontendComponentVersion
+        case .neutralButton: HAButtonStyle.frontendComponentVersion
+        case .negativeButton: HAButtonStyle.frontendComponentVersion
+        case .secondaryNegativeButton: HAButtonStyle.frontendComponentVersion
+        case .criticalButton: HAButtonStyle.frontendComponentVersion
+        case .linkButton: HAButtonStyle.frontendComponentVersion
+        case .textButton: TextButton.frontendComponentVersion
+        case .closeButton: CloseButton.frontendComponentVersion
+        case .sheetCloseButton: SheetCloseButton.frontendComponentVersion
+        case .textField: HATextField.frontendComponentVersion
+        case .card: nil
+        case .bottomSheet: AppleLikeBottomSheet<AnyView>.frontendComponentVersion
+        case .floatingPanel: nil
+        case .progressView: HAProgressView.frontendComponentVersion
+        case .fullScreenLoader: nil
+        case .pill: nil
+        case .alert: HAAlertView<AnyView, AnyView>.frontendComponentVersion
+        case .bar: HABar.frontendComponentVersion
+        case .metric: HAMetric.frontendComponentVersion
+        case .emptyState: HAEmptyStateView<AnyView>.frontendComponentVersion
+        case .sectionTitle: HASectionTitle.frontendComponentVersion
+        case .tip: HATipView.frontendComponentVersion
+        case .label: HALabel.frontendComponentVersion
+        case .bigNumber: HABigNumber.frontendComponentVersion
+        case .treeIndicator: HATreeIndicator.frontendComponentVersion
+        case .badge: HABadge<AnyView>.frontendComponentVersion
+        case .segmentedBar: HASegmentedBar.frontendComponentVersion
+        case .settingsRow: HASettingsRow<AnyView, AnyView>.frontendComponentVersion
+        case .marqueeText: HAMarqueeText.frontendComponentVersion
+        case .faded: HAFadedView<AnyView>.frontendComponentVersion
+        case .progressRing: HAProgressRing.frontendComponentVersion
+        case .collapsible: CollapsibleView<AnyView, AnyView>.frontendComponentVersion
+        case .assistChip: HAAssistChip.frontendComponentVersion
+        case .filterChip: HAFilterChip.frontendComponentVersion
+        case .inputChip: HAInputChip.frontendComponentVersion
+        case .buttonToggleGroup: HAButtonToggleGroup.frontendComponentVersion
+        case .iconButtonToggle: HAIconButtonToggle.frontendComponentVersion
+        case .progressButton: HAProgressButton.frontendComponentVersion
+        case .controlSlider: HAControlSlider.frontendComponentVersion
+        case .controlSwitch: HAControlSwitch.frontendComponentVersion
+        case .controlButton: HAControlButton.frontendComponentVersion
+        case .controlButtonGroup: HAControlButtonGroup<AnyView>.frontendComponentVersion
+        case .gauge: HAGauge.frontendComponentVersion
+        case .controlSelect: HAControlSelect.frontendComponentVersion
+        case .controlNumberButtons: HAControlNumberButtons.frontendComponentVersion
+        case .controlCircularSlider: HAControlCircularSlider.frontendComponentVersion
+        case .selectBox: HASelectBox.frontendComponentVersion
+        case .haCard: HACard<AnyView>.frontendComponentVersion
+        case .tileIcon: HATileIcon<AnyView>.frontendComponentVersion
+        case .tileBadge: HATileBadge.frontendComponentVersion
+        case .tileInfo: HATileInfo.frontendComponentVersion
+        case .tileCard: HATileCard<AnyView>.frontendComponentVersion
+        case .entityCard: HAEntityCard.frontendComponentVersion
+        case .buttonCard: HAButtonCard.frontendComponentVersion
+        case .glanceCard: HAGlanceCard.frontendComponentVersion
+        case .gaugeCard: HAGaugeCard.frontendComponentVersion
+        case .markdownCard: HAMarkdownCard.frontendComponentVersion
+        case .headingCard: HAHeadingCard<AnyView>.frontendComponentVersion
+        case .clockCard: HAClockCard.frontendComponentVersion
+        case .thermostatCard: HAThermostatCard<AnyView>.frontendComponentVersion
+        case .todoListCard: HATodoListCard.frontendComponentVersion
+        case .weatherForecastCard: HAWeatherForecastCard.frontendComponentVersion
+        case .pictureCard: HAPictureCard<AnyView>.frontendComponentVersion
+        case .alarmPanelCard: HAAlarmPanelCard.frontendComponentVersion
+        case .tabGroup: HATabGroup.frontendComponentVersion
+        case .iconButtonGroup: HAIconButtonGroup<AnyView>.frontendComponentVersion
+        case .statisticCard: HAStatisticCard.frontendComponentVersion
+        case .humidifierCard: HAHumidifierCard<AnyView>.frontendComponentVersion
+        case .pictureGlanceCard: HAPictureGlanceCard.frontendComponentVersion
+        case .historyChart: HAHistoryChart.frontendComponentVersion
+        case .historyTimeline: HAHistoryTimeline.frontendComponentVersion
+        case .historyGraphCard: HAHistoryGraphCard.frontendComponentVersion
+        case .statisticsChart: HAStatisticsChart.frontendComponentVersion
+        case .statisticsGraphCard: HAStatisticsGraphCard.frontendComponentVersion
+        case .energyDistributionCard: HAEnergyDistributionCard.frontendComponentVersion
+        case .toast: HAToast.frontendComponentVersion
+        case .progressBar: HAProgressBar.frontendComponentVersion
+        case .labelBadge: HALabelBadge.frontendComponentVersion
+        case .hsColorPicker: HAHSColorPicker.frontendComponentVersion
+        case .formField: HAFormField<AnyView>.frontendComponentVersion
+        case .headingBadge: HAHeadingBadge.frontendComponentVersion
+        case .dialogHeader: HADialogHeader<AnyView>.frontendComponentVersion
+        case .relativeTime: HARelativeTime.frontendComponentVersion
+        case .sankeyChart: HASankeyChart.frontendComponentVersion
+        case .sunburstChart: HASunburstChart.frontendComponentVersion
+        case .energySourcesTable: HAEnergySourcesTable.frontendComponentVersion
+        case .energyPeriodSelector: HAEnergyPeriodSelector.frontendComponentVersion
+        case .entityRow: HAEntityRow<AnyView>.frontendComponentVersion
+        case .entitiesCard: HAEntitiesCard<AnyView>.frontendComponentVersion
+        case .lightCard: HALightCard.frontendComponentVersion
+        case .baseTimeInput: HABaseTimeInput.frontendComponentVersion
+        case .timeInput: HATimeInput.frontendComponentVersion
+        case .durationInput: HADurationInput.frontendComponentVersion
+        case .dateInput: HADateInput.frontendComponentVersion
+        case .absoluteTime: HAAbsoluteTime.frontendComponentVersion
+        case .markdownText: HAMarkdownText.frontendComponentVersion
+        case .qrCode: HAQRCode.frontendComponentVersion
+        case .qrScanner: HAQRScanner.frontendComponentVersion
+        case .sparkline: HASparkline.frontendComponentVersion
+        case .analogClock: HAAnalogClock.frontendComponentVersion
+        case .errorCard: HAErrorCard.frontendComponentVersion
+        case .sensorCard: HASensorCard.frontendComponentVersion
+        case .logbookCard: HALogbookCard.frontendComponentVersion
+        case .mediaControlCard: HAMediaControlCard.frontendComponentVersion
+        case .plantStatusCard: HAPlantStatusCard.frontendComponentVersion
+        case .calendarCard: HACalendarCard.frontendComponentVersion
+        case .areaCard: HAAreaCard.frontendComponentVersion
+        case .distributionCard: HADistributionCard.frontendComponentVersion
+        case .assistVoiceOrb: nil
+        }
+    }
+
     public var id: String { rawValue }
 
     public var title: String {

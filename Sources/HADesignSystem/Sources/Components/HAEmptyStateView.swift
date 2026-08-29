@@ -77,6 +77,7 @@ public extension HAEmptyStateView where Actions == EmptyView {
 
 extension HAEmptyStateView: FrontendComponent {
     public static var frontendComponentName: String { "ha-empty-state" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

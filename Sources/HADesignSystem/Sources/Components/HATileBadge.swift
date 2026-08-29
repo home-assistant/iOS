@@ -33,6 +33,7 @@ public struct HATileBadge: View {
 
 extension HATileBadge: FrontendComponent {
     public static var frontendComponentName: String { "ha-tile-badge" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

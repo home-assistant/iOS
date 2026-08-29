@@ -116,6 +116,7 @@ private func sampleSegment(_ startHour: Double, _ endHour: Double, _ label: Stri
 
 extension HAHistoryTimeline: FrontendComponent {
     public static var frontendComponentName: String { "state-history-chart-timeline" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

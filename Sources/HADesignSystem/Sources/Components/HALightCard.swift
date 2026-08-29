@@ -78,6 +78,7 @@ public struct HALightCard: View {
 
 extension HALightCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-light-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

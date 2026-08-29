@@ -284,4 +284,5 @@ public enum HAMarkdownParser {
 
 extension HAMarkdownParser: FrontendComponent {
     public static var frontendComponentName: String { "ha-markdown" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

@@ -119,6 +119,7 @@ public struct HAHSColorPicker: View {
 
 extension HAHSColorPicker: FrontendComponent {
     public static var frontendComponentName: String { "ha-hs-color-picker" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

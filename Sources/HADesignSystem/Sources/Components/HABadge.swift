@@ -110,6 +110,7 @@ public extension HABadge where Content == Text {
 
 extension HABadge: FrontendComponent {
     public static var frontendComponentName: String { "ha-badge" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

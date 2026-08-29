@@ -213,6 +213,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
 
 extension AppleLikeBottomSheet: FrontendComponent {
     public static var frontendComponentName: String { "ha-bottom-sheet" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

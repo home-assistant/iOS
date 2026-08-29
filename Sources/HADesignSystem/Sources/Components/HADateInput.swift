@@ -183,6 +183,7 @@ private extension Date {
 
 extension HADateInput: FrontendComponent {
     public static var frontendComponentName: String { "ha-date-input" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

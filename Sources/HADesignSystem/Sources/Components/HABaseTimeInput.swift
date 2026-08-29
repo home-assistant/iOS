@@ -266,6 +266,7 @@ private extension String {
 
 extension HABaseTimeInput: FrontendComponent {
     public static var frontendComponentName: String { "ha-base-time-input" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

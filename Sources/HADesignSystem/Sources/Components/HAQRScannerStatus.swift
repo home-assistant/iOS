@@ -22,4 +22,5 @@ public enum HAQRScannerStatus: Equatable, Sendable {
 
 extension HAQRScannerStatus: FrontendComponent {
     public static var frontendComponentName: String { "ha-qr-scanner" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

@@ -89,6 +89,7 @@ public struct HATimeInput: View {
 
 extension HATimeInput: FrontendComponent {
     public static var frontendComponentName: String { "ha-time-input" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

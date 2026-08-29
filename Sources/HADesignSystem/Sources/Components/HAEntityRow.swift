@@ -127,6 +127,7 @@ public extension HAEntityRow where Trailing == Button<Text> {
 
 extension HAEntityRow: FrontendComponent {
     public static var frontendComponentName: String { "hui-simple-entity-row" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -31,4 +31,5 @@ public struct HATodoItem: Identifiable, Equatable, Sendable {
 
 extension HATodoItem: FrontendComponent {
     public static var frontendComponentName: String { "hui-todo-list-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

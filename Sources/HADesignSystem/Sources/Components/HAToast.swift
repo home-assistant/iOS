@@ -51,6 +51,7 @@ public struct HAToast: View {
 
 extension HAToast: FrontendComponent {
     public static var frontendComponentName: String { "ha-toast" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

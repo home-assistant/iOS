@@ -48,6 +48,7 @@ public struct HAMarkdownCard: View {
 
 extension HAMarkdownCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-markdown-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

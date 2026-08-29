@@ -62,6 +62,7 @@ private let sampleNow = Date(timeIntervalSince1970: 1_787_996_467)
 
 extension HARelativeTime: FrontendComponent {
     public static var frontendComponentName: String { "ha-relative-time" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

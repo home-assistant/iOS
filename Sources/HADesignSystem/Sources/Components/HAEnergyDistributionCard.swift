@@ -86,6 +86,7 @@ public struct HAEnergyDistributionCard: View {
 
 extension HAEnergyDistributionCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-energy-distribution-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

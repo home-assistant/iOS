@@ -32,6 +32,7 @@ public struct HAPlantAttribute: Identifiable, Sendable {
 
 extension HAPlantAttribute: FrontendComponent {
     public static var frontendComponentName: String { "hui-plant-status-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

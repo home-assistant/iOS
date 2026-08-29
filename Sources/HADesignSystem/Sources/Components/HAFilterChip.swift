@@ -59,6 +59,7 @@ public struct HAFilterChip: View {
 
 extension HAFilterChip: FrontendComponent {
     public static var frontendComponentName: String { "ha-filter-chip" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

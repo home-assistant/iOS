@@ -103,6 +103,7 @@ public extension HAPictureCard where Footer == EmptyView {
 
 extension HAPictureCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-picture-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

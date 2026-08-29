@@ -27,6 +27,7 @@ public struct HAWeatherForecastEntry: Identifiable, Sendable {
 
 extension HAWeatherForecastEntry: FrontendComponent {
     public static var frontendComponentName: String { "hui-weather-forecast-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

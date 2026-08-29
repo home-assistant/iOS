@@ -96,6 +96,7 @@ public struct HAButtonToggleGroup: View {
 
 extension HAButtonToggleGroup: FrontendComponent {
     public static var frontendComponentName: String { "ha-button-toggle-group" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

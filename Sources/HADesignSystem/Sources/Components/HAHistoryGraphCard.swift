@@ -78,6 +78,7 @@ private let sampleGraphStart = Date(timeIntervalSince1970: 1_787_961_600)
 
 extension HAHistoryGraphCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-history-graph-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

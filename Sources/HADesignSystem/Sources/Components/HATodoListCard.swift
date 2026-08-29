@@ -88,6 +88,7 @@ private let sampleTodoItems = [
 
 extension HATodoListCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-todo-list-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

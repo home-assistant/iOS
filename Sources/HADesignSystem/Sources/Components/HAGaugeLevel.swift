@@ -18,4 +18,5 @@ public struct HAGaugeLevel: Identifiable, Equatable, Sendable {
 
 extension HAGaugeLevel: FrontendComponent {
     public static var frontendComponentName: String { "ha-gauge" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

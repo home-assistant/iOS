@@ -50,6 +50,7 @@ public struct HAControlButton: View {
 
 extension HAControlButton: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

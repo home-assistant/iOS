@@ -162,6 +162,7 @@ public struct HAGauge: View {
 
 extension HAGauge: FrontendComponent {
     public static var frontendComponentName: String { "ha-gauge" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

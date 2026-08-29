@@ -143,6 +143,7 @@ public extension HASettingsRow where Prefix == EmptyView {
 
 extension HASettingsRow: FrontendComponent {
     public static var frontendComponentName: String { "ha-settings-row" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

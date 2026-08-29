@@ -220,6 +220,7 @@ private let sampleDay = Date(timeIntervalSince1970: 1_787_996_467)
 
 extension HACalendarCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-calendar-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

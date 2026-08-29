@@ -158,6 +158,7 @@ private let sampleNow = Date(timeIntervalSince1970: 1_787_996_467)
 
 extension HALogbookCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-logbook-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -103,6 +103,7 @@ private let samplePeriods = [
 
 extension HAEnergyPeriodSelector: FrontendComponent {
     public static var frontendComponentName: String { "hui-energy-period-selector" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

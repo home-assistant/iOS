@@ -80,6 +80,7 @@ public struct HAAssistChip: View {
 
 extension HAAssistChip: FrontendComponent {
     public static var frontendComponentName: String { "ha-assist-chip" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

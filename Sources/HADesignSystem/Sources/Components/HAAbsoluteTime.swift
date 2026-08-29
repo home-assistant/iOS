@@ -68,6 +68,7 @@ private let sampleNow = Date(timeIntervalSince1970: 1_787_996_467)
 
 extension HAAbsoluteTime: FrontendComponent {
     public static var frontendComponentName: String { "ha-absolute-time" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

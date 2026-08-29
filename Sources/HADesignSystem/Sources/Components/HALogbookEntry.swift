@@ -37,6 +37,7 @@ public struct HALogbookEntry: Identifiable, Sendable {
 
 extension HALogbookEntry: FrontendComponent {
     public static var frontendComponentName: String { "ha-logbook-entry" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -23,6 +23,7 @@ public struct HASankeyNode: Identifiable, Equatable {
 
 extension HASankeyNode: FrontendComponent {
     public static var frontendComponentName: String { "ha-sankey-chart" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

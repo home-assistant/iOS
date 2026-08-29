@@ -56,6 +56,7 @@ public struct HAProgressBar: View {
 
 extension HAProgressBar: FrontendComponent {
     public static var frontendComponentName: String { "ha-progress-bar" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

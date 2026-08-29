@@ -75,6 +75,7 @@ public extension HADialogHeader where Actions == EmptyView {
 
 extension HADialogHeader: FrontendComponent {
     public static var frontendComponentName: String { "ha-dialog-header" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

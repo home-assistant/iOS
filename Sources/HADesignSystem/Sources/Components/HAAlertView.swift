@@ -165,6 +165,7 @@ public extension HAAlertView where Content == Text, Action == EmptyView {
 
 extension HAAlertView: FrontendComponent {
     public static var frontendComponentName: String { "ha-alert" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

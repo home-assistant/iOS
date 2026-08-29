@@ -60,4 +60,5 @@ public struct HACircularSliderScale: Equatable, Sendable {
 
 extension HACircularSliderScale: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-circular-slider" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

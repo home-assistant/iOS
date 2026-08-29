@@ -20,4 +20,5 @@ public enum HAMarkdownBlock: Equatable, Sendable {
 
 extension HAMarkdownBlock: FrontendComponent {
     public static var frontendComponentName: String { "ha-markdown" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

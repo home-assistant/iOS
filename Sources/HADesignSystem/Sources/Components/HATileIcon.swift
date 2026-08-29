@@ -70,6 +70,7 @@ public extension HATileIcon where Badge == EmptyView {
 
 extension HATileIcon: FrontendComponent {
     public static var frontendComponentName: String { "ha-tile-icon" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

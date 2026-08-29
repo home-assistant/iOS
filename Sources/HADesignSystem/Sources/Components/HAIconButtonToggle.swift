@@ -69,6 +69,7 @@ public struct HAIconButtonToggle: View {
 
 extension HAIconButtonToggle: FrontendComponent {
     public static var frontendComponentName: String { "ha-icon-button-toggle" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

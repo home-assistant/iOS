@@ -26,6 +26,7 @@ public extension ToggleStyle where Self == BrandedSwitchToggleStyle {
 
 extension BrandedSwitchToggleStyle: FrontendComponent {
     public static var frontendComponentName: String { "ha-switch" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

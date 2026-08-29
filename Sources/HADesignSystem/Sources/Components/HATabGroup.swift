@@ -81,6 +81,7 @@ private let sampleTabs = [
 
 extension HATabGroup: FrontendComponent {
     public static var frontendComponentName: String { "ha-tab-group" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

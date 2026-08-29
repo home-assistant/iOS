@@ -112,6 +112,7 @@ public struct HASelectBox: View {
 
 extension HASelectBox: FrontendComponent {
     public static var frontendComponentName: String { "ha-select-box" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -73,6 +73,7 @@ public struct HAPictureGlanceCard: View {
 
 extension HAPictureGlanceCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-picture-glance-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

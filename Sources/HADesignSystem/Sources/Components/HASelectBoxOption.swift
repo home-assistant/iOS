@@ -29,6 +29,7 @@ public struct HASelectBoxOption: Identifiable {
 
 extension HASelectBoxOption: FrontendComponent {
     public static var frontendComponentName: String { "ha-select-box" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

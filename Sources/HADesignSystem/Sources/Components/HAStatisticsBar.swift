@@ -33,6 +33,7 @@ public struct HAStatisticsBar: Identifiable {
 
 extension HAStatisticsBar: FrontendComponent {
     public static var frontendComponentName: String { "statistics-chart" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

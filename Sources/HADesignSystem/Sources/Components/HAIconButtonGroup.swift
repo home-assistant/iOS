@@ -35,6 +35,7 @@ public struct HAIconButtonGroup<Content: View>: View {
 
 extension HAIconButtonGroup: FrontendComponent {
     public static var frontendComponentName: String { "ha-icon-button-group" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

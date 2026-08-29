@@ -125,6 +125,7 @@ public struct HADurationInput: View {
 
 extension HADurationInput: FrontendComponent {
     public static var frontendComponentName: String { "ha-duration-input" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

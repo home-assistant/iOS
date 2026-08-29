@@ -34,4 +34,5 @@ public struct HACalendarCardEvent: Identifiable, Sendable {
 
 extension HACalendarCardEvent: FrontendComponent {
     public static var frontendComponentName: String { "hui-calendar-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

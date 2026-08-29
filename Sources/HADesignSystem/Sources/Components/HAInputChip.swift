@@ -67,6 +67,7 @@ public struct HAInputChip: View {
 
 extension HAInputChip: FrontendComponent {
     public static var frontendComponentName: String { "ha-input-chip" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

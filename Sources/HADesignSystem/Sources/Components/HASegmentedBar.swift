@@ -129,6 +129,7 @@ private let sampleSegments = [
 
 extension HASegmentedBar: FrontendComponent {
     public static var frontendComponentName: String { "ha-segmented-bar" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

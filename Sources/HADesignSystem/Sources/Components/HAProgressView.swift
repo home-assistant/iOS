@@ -140,4 +140,5 @@ public struct HAProgressView: View {
 
 extension HAProgressView: FrontendComponent {
     public static var frontendComponentName: String { "ha-spinner" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

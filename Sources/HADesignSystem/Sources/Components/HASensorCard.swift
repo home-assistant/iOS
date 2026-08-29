@@ -104,6 +104,7 @@ public struct HASensorCard: View {
 
 extension HASensorCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-sensor-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

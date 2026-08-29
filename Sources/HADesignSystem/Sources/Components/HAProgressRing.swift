@@ -83,6 +83,7 @@ private extension Double {
 
 extension HAProgressRing: FrontendComponent {
     public static var frontendComponentName: String { "ha-progress-ring" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

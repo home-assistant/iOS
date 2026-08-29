@@ -67,6 +67,7 @@ public struct HAStatisticCard: View {
 
 extension HAStatisticCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-statistic-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

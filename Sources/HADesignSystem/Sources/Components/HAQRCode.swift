@@ -151,6 +151,7 @@ public struct HAQRCode: View {
 
 extension HAQRCode: FrontendComponent {
     public static var frontendComponentName: String { "ha-qr-code" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

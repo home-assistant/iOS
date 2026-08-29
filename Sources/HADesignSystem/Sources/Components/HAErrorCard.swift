@@ -80,6 +80,7 @@ public struct HAErrorCard: View {
 
 extension HAErrorCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-error-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

@@ -94,6 +94,7 @@ public struct HAControlNumberButtons: View {
 
 extension HAControlNumberButtons: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-number-buttons" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

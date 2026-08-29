@@ -48,6 +48,7 @@ public struct HATipView: View {
 
 extension HATipView: FrontendComponent {
     public static var frontendComponentName: String { "ha-tip" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

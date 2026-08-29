@@ -73,6 +73,7 @@ public struct ModalReusableButton: View {
 
 extension ModalReusableButton: FrontendComponent {
     public static var frontendComponentName: String { "ha-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

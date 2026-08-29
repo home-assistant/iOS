@@ -111,6 +111,7 @@ private let sampleClockDate = Date(timeIntervalSince1970: 1_787_996_467)
 
 extension HAClockCard: FrontendComponent {
     public static var frontendComponentName: String { "hui-clock-card" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
 
 #endif

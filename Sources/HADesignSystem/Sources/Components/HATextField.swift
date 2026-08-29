@@ -46,4 +46,5 @@ public struct HATextField: View {
 
 extension HATextField: FrontendComponent {
     public static var frontendComponentName: String { "ha-textfield" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
