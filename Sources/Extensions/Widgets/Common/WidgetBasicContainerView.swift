@@ -263,7 +263,6 @@ struct WidgetBasicContainerWrapperView: View {
             family: family,
             kind: type.tileKind,
             serverName: showServerName ? serverName : nil,
-            logo: Image(.logo),
             emptyView: emptyViewGenerator,
             refreshControl: refreshControl,
             tileContent: interaction.content,

@@ -11,31 +11,31 @@ public struct WidgetTileSensorView: View {
     public let sizeStyle: WidgetTileSizeStyle
     public let family: WidgetFamily
     public let tinted: Bool
-    public let logo: Image?
 
     public init(
         model: WidgetTileModel,
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
-        tinted: Bool,
-        logo: Image? = nil
+        tinted: Bool
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
-        self.logo = logo
     }
+
+    /// The inline family draws its icon at the size the system leaves for one, next to the reading.
+    private static let inlineIconSize: CGFloat = 12
 
     public var body: some View {
         switch family {
         case .accessoryCircular, .accessoryRectangular:
-            WidgetCircularIconView(icon: model.icon, logo: logo)
+            WidgetCircularIconView(icon: model.icon)
         case .accessoryInline:
             Label {
                 Text(verbatim: model.title)
             } icon: {
-                Image(uiImage: model.icon.image(ofSize: .init(width: 10, height: 10), color: .white))
+                WidgetAccessoryIconView(icon: model.icon, size: Self.inlineIconSize)
             }
         default:
             tileView

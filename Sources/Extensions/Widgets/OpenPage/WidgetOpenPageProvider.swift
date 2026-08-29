@@ -16,23 +16,10 @@ struct WidgetOpenPageProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetOpenPageEntry
     typealias Intent = WidgetOpenPageAppIntent
 
+    /// The gallery renders this, redacted, until the snapshot below arrives — so it is the same
+    /// mock, and the card never flips from one shape to another as it loads.
     func placeholder(in context: Context) -> WidgetOpenPageEntry {
-        let count = WidgetFamilySizes.size(for: context.family)
-        let pages = stride(from: 0, to: count, by: 1).map { idx in
-            PageAppEntity(
-                id: "redacted\(idx)",
-                panel: .init(
-                    icon: MaterialDesignIcons.bedEmptyIcon.name,
-                    title: "Redacted Text",
-                    path: "redacted\(idx)",
-                    component: "",
-                    showInSidebar: true
-                ),
-                serverId: ""
-            )
-        }
-
-        return .init(pages: pages)
+        previewEntry(in: context)
     }
 
     private func panels(for context: Context, updating existing: [PageAppEntity]) -> [PageAppEntity] {

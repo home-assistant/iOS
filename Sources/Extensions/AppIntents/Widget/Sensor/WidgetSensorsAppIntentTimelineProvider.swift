@@ -81,15 +81,10 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same mock, and
+    /// the card never flips from a column of "?" to readings as it loads.
     func placeholder(in context: Context) -> WidgetSensorsEntry {
-        let count = WidgetFamilySizes.size(for: context.family)
-        let sensors = stride(from: 0, to: count, by: 1).map { index in
-            WidgetSensorsEntry.SensorData(id: String(index), key: "?", value: "?")
-        }
-
-        return WidgetSensorsEntry(
-            sensorData: sensors
-        )
+        Self.previewSample(in: context)
     }
 
     private func entry(for configuration: WidgetSensorsAppIntent, in context: Context) async throws -> Entry {

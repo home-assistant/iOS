@@ -22,7 +22,6 @@ public struct WidgetTileView: View {
     /// `nil` follows the widget's rendering mode. The layouts that predate accented rendering pin
     /// it to `false` instead.
     public let tinted: Bool?
-    public let logo: Image?
     /// Splits an action tile into an icon control and a body control. Only ``WidgetTileKind/button``
     /// tiles can be split — a reading has nothing to control.
     public let regions: WidgetTileRegions?
@@ -33,7 +32,6 @@ public struct WidgetTileView: View {
         family: WidgetFamily,
         kind: WidgetTileKind,
         tinted: Bool? = nil,
-        logo: Image? = nil,
         regions: WidgetTileRegions? = nil
     ) {
         self.model = model
@@ -41,7 +39,6 @@ public struct WidgetTileView: View {
         self.family = family
         self.kind = kind
         self.tinted = tinted
-        self.logo = logo
         self.regions = regions
     }
 
@@ -55,7 +52,6 @@ public struct WidgetTileView: View {
                     sizeStyle: sizeStyle,
                     family: family,
                     tinted: isTinted,
-                    logo: logo,
                     regions: regions
                 )
             case .sensor:
@@ -63,8 +59,7 @@ public struct WidgetTileView: View {
                     model: model,
                     sizeStyle: sizeStyle,
                     family: family,
-                    tinted: isTinted,
-                    logo: logo
+                    tinted: isTinted
                 )
             }
         }
