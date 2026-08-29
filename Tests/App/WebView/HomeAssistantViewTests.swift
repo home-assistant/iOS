@@ -140,6 +140,60 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.isFullScreenLoaderVisible)
     }
 
+    /// A page restored from WebKit's page cache never re-announces `frontend/loaded`, and external-bus
+    /// messages that land while the app is backgrounded are dropped outright. Both leave the loader with no
+    /// signal at all, so once the navigation itself has finished it has to give up rather than cover a
+    /// working frontend forever.
+    func testWatchdogDismissesStandbyLoaderWhenTheFrontendNeverReportsAfterLoading() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertFalse(sut.isFullScreenLoaderVisible)
+        XCTAssertFalse(sut.shouldShowStandByView)
+    }
+
+    func testWatchdogLeavesStandbyViewUpWhenAnEmptyStateIsShowing() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+        overlayState.emptyState = emptyStateContent()
+
+        try? await Task.sleep(for: .milliseconds(120))
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+        XCTAssertTrue(sut.isFullScreenLoaderVisible)
+    }
+
+    /// A navigation that is still in flight has not failed yet: the watchdog only counts down once the
+    /// document itself has finished, so a slow load keeps the loader rather than exposing a blank web view.
+    func testWatchdogDoesNotDismissStandbyLoaderWhileTheNavigationIsStillRunning() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+
+        overlayState.isLoading = true
+
+        try? await Task.sleep(for: .milliseconds(120))
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+        XCTAssertTrue(sut.isFullScreenLoaderVisible)
+    }
+
     func testForceDismissHidesStandbyLoaderRegardlessOfConnectionState() {
         let overlayState = WebFrontendOverlayState()
         let sut = HomeAssistantViewModel(
@@ -184,6 +238,33 @@ final class HomeAssistantViewTests: XCTestCase {
         Server.fake { info in
             info.version = version
         }
+    }
+
+    private func emptyStateContent() -> WebFrontendOverlayState.EmptyStateContent {
+        .init(
+            style: .disconnected,
+            server: Server.fake(),
+            showsErrorDetailsButton: false,
+            availableReauthURLTypes: [],
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: {},
+            reauthAction: { _ in },
+            dismissAction: {}
+        )
+    }
+
+    private func waitUntil(
+        _ condition: @escaping () -> Bool,
+        timeout: TimeInterval = 2,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async {
+        let deadline = Date(timeIntervalSinceNow: timeout)
+        while !condition(), Date() < deadline {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(condition(), "condition not met within \(timeout)s", file: file, line: line)
     }
 }
 
