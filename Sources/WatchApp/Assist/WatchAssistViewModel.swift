@@ -8,6 +8,15 @@ struct WatchPipeline {
 }
 
 final class WatchAssistViewModel: ObservableObject {
+    private enum Constants {
+        /// The orb level rises fast so every syllable registers, and falls slower so it settles
+        /// instead of flickering between words.
+        static let audioLevelAttack: Double = 0.8
+        static let audioLevelRelease: Double = 0.25
+        /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
+        static let audioLevelCurve: Double = 0.65
+    }
+
     enum State {
         case idle
         case recording
@@ -17,6 +26,8 @@ final class WatchAssistViewModel: ObservableObject {
 
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
+    /// Normalized microphone input level (0...1) driving the voice orb while recording
+    @Published var audioLevel: Double = 0
     @Published var showChatLoader = false
     private var timer: Timer?
 
@@ -193,6 +204,16 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     func didStopRecording() {
         runInMainThread { [weak self] in
             self?.state = .waitingForPipelineResponse
+            self?.audioLevel = 0
+        }
+    }
+
+    func didUpdateAudioLevel(_ level: Float) {
+        runInMainThread { [weak self] in
+            guard let self, state == .recording else { return }
+            let shaped = pow(Double(level), Constants.audioLevelCurve)
+            let smoothing = shaped > audioLevel ? Constants.audioLevelAttack : Constants.audioLevelRelease
+            audioLevel = audioLevel * (1 - smoothing) + shaped * smoothing
         }
     }
 
@@ -209,6 +230,7 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
         appendChatItem(.init(content: error.localizedDescription, itemType: .error))
         runInMainThread { [weak self] in
             self?.state = .idle
+            self?.audioLevel = 0
         }
     }
 }

@@ -21,6 +21,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case progressView
     case fullScreenLoader
     case pill
+    case assistVoiceOrb
 
     public var id: String { rawValue }
 
@@ -44,6 +45,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .progressView: "Progress View"
         case .fullScreenLoader: "Full Screen Loader"
         case .pill: "Pill"
+        case .assistVoiceOrb: "Assist Voice Orb"
         }
     }
 
@@ -58,7 +60,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             .inputs
         case .card, .bottomSheet, .floatingPanel:
             .containers
-        case .progressView, .fullScreenLoader, .pill:
+        case .progressView, .fullScreenLoader, .pill, .assistVoiceOrb:
             .indicators
         }
     }
@@ -109,6 +111,12 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             HStack(spacing: DesignSystem.Spaces.one) {
                 PillView(text: "Selected", selected: true)
                 PillView(text: "Normal", selected: false)
+            }
+        case .assistVoiceOrb:
+            HStack(spacing: DesignSystem.Spaces.four) {
+                AssistVoiceOrbView(level: 0, accessibilityLabel: "Listening")
+                AssistVoiceOrbView(level: 0.5, accessibilityLabel: "Listening")
+                AssistVoiceOrbView(level: 1, accessibilityLabel: "Listening")
             }
         }
     }
