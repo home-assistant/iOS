@@ -33,8 +33,10 @@ struct WidgetAssistProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetAssistEntry
     typealias Intent = WidgetAssistAppIntent
 
+    /// The gallery renders this, redacted, until the snapshot below arrives — so it is the same
+    /// mock, and the card never flips from one shape to another as it loads.
     func placeholder(in context: Context) -> WidgetAssistEntry {
-        .init()
+        previewEntry(in: context)
     }
 
     /// Mocked entry for the widget gallery — see `WidgetPreviewSample`. "Home Assistant" is the

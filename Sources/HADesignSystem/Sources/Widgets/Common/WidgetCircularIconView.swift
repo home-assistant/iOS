@@ -1,38 +1,44 @@
 #if !os(watchOS)
 import HAIconic
 import SwiftUI
+import WidgetKit
 
-/// The lock screen's circular accessory: one Material Design glyph over the Home Assistant mark,
-/// on the system's dimmed circular background.
+/// The lock screen's circular accessory: one Material Design glyph on the system's accessory
+/// background, filling the slot the family gives it.
+///
+/// The glyph is drawn through ``WidgetAccessoryIconView`` rather than as text in the icon font,
+/// which is what makes it appear on a real lock screen at all, and the background is the system's
+/// own so the accessory sits on the lock screen like every other circular widget instead of on a
+/// colour of ours.
 public struct WidgetCircularIconView: View {
-    private let icon: MaterialDesignIcons
-    private let logo: Image?
+    /// The glyph's share of the accessory's diameter. Apple's circular accessories keep their
+    /// figure around half the circle, which leaves the ring of breathing room the lock screen
+    /// expects — and the slot is 72–76pt depending on the device, so the glyph is sized from what
+    /// the family actually hands over rather than pinned to one number.
+    private static let iconScale: CGFloat = 0.5
 
-    /// - Parameters:
-    ///   - icon: the glyph the accessory stands for.
-    ///   - logo: the small mark under the glyph. The design system ships no assets of its own, so
-    ///     the app hands its own logo in; `nil` leaves the glyph on its own.
-    public init(icon: MaterialDesignIcons, logo: Image? = nil) {
+    private let icon: MaterialDesignIcons
+
+    /// - Parameter icon: the glyph the accessory stands for.
+    public init(icon: MaterialDesignIcons) {
         self.icon = icon
-        self.logo = logo
     }
 
     public var body: some View {
-        VStack(spacing: 2) {
-            Text(verbatim: icon.unicode)
-                .font(.custom(MaterialDesignIcons.familyName, size: 24))
-                .foregroundStyle(.primary)
-                .minimumScaleFactor(0.5)
-            if let logo {
-                logo
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 10, height: 10)
+        GeometryReader { proxy in
+            let diameter = min(proxy.size.width, proxy.size.height)
+            ZStack {
+                AccessoryWidgetBackground()
+                WidgetAccessoryIconView(icon: icon, size: (diameter * Self.iconScale).rounded())
+                    .foregroundStyle(.primary)
+                    // The glyph is the widget's identity, not a reading of the user's, and a
+                    // circular accessory has nothing else in it — redacted away, it leaves the
+                    // widget picker showing a blank disc.
+                    .unredacted()
             }
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            .clipShape(Circle())
         }
-        .padding()
-        .background(Color(uiColor: .secondarySystemBackground))
-        .clipShape(Circle())
     }
 }
 
@@ -42,5 +48,6 @@ public struct WidgetCircularIconView: View {
         WidgetCircularIconView(icon: .coffeeIcon)
         WidgetCircularIconView(icon: .lightbulbIcon)
     }
+    .frame(height: 76)
 }
 #endif

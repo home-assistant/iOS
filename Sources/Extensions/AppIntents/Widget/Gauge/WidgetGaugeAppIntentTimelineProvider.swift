@@ -26,8 +26,18 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     static func previewSample(for configuration: WidgetGaugeAppIntent) -> WidgetGaugeEntry {
-        .init(
+        previewSample(
             gaugeType: configuration.gaugeType,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    static func previewSample(
+        gaugeType: GaugeTypeAppEnum = .normal,
+        showConfirmationNotification: Bool = true
+    ) -> WidgetGaugeEntry {
+        .init(
+            gaugeType: gaugeType,
             value: 0.67,
             valueLabel: "67%",
             label: nil,
@@ -35,7 +45,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             max: "100",
             runScript: false,
             script: nil,
-            showConfirmationNotification: configuration.showConfirmationNotification
+            showConfirmationNotification: showConfirmationNotification
         )
     }
 
@@ -64,13 +74,10 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same sample,
+    /// and the arc never flips from a row of "?" to a reading as it loads.
     func placeholder(in context: Context) -> WidgetGaugeEntry {
-        .init(
-            gaugeType: .normal,
-            value: 0.5,
-            valueLabel: "?", min: "?", max: "?",
-            runScript: false, script: nil, showConfirmationNotification: true
-        )
+        Self.previewSample()
     }
 
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {

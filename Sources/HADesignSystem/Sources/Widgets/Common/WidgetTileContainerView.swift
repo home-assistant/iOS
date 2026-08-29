@@ -12,7 +12,6 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     private let family: WidgetFamily
     private let kind: WidgetTileKind
     private let serverName: String?
-    private let logo: Image?
     private let emptyView: () -> AnyView
     /// The reload control, when the widget offers one. `nil` leaves the footer off entirely.
     private let refreshControl: (() -> AnyView)?
@@ -24,7 +23,6 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         family: WidgetFamily,
         kind: WidgetTileKind,
         serverName: String? = nil,
-        logo: Image? = nil,
         emptyView: @escaping () -> AnyView = { AnyView(EmptyView()) },
         refreshControl: (() -> AnyView)? = nil,
         tileContent: @escaping WidgetTileGridView<Item>.TileContent = { _, _, tile in tile },
@@ -34,7 +32,6 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         self.family = family
         self.kind = kind
         self.serverName = serverName
-        self.logo = logo
         self.emptyView = emptyView
         self.refreshControl = refreshControl
         self.tileContent = tileContent
@@ -44,16 +41,41 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     public var body: some View {
         VStack {
             if contents.isEmpty {
-                emptyView()
+                empty
             } else {
                 grid
             }
-            if let refreshControl, !contents.isEmpty {
+            // A lock screen accessory has no room for a footer, and nothing to reload from there.
+            if let refreshControl, !contents.isEmpty, !isAccessory {
                 footer(refreshControl)
             }
         }
+        // The lock screen draws its accessories over the wallpaper, so a background of ours there
+        // would paint over the slot the system means to keep translucent — the circular accessory
+        // brings its own `AccessoryWidgetBackground`.
         // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(.widgetPrimaryBackground)
+        .widgetBackground(isAccessory ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.widgetPrimaryBackground))
+    }
+
+    /// Whether the family lives on the lock screen, where the system draws everything over the
+    /// wallpaper on its own background rather than on a card of ours.
+    private var isAccessory: Bool {
+        switch family {
+        case .accessoryCircular, .accessoryRectangular, .accessoryInline: return true
+        default: return false
+        }
+    }
+
+    /// Nothing to show. The lock screen has no room for the widget's own wording, so it falls back
+    /// to the brand glyph — a circular accessory drawn with a line of clipped text reads as broken,
+    /// where the mark reads as "this is the Home Assistant widget, and it is empty".
+    @ViewBuilder
+    private var empty: some View {
+        if family == .accessoryCircular {
+            WidgetCircularIconView(icon: .homeAssistantIcon)
+        } else {
+            emptyView()
+        }
     }
 
     private var grid: some View {
@@ -68,7 +90,6 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
             ),
             family: family,
             kind: kind,
-            logo: logo,
             tileContent: tileContent,
             tileRegions: tileRegions
         )

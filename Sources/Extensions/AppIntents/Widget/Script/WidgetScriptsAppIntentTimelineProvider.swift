@@ -32,6 +32,10 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     /// Mocked scripts for the widget gallery — see `WidgetPreviewSample`. The suggestion pass below
     /// reads every server's scripts out of the database, which the picker has no use for.
     static func previewSample(for configuration: WidgetScriptsAppIntent, in context: Context) -> Entry {
+        previewSample(in: context, showConfirmationDialog: configuration.showConfirmationDialog)
+    }
+
+    static func previewSample(in context: Context, showConfirmationDialog: Bool) -> Entry {
         let scripts = (0 ..< WidgetFamilySizes.sizeForPreview(for: context.family))
             .map { index in
                 WidgetScriptsEntry.ScriptServer(
@@ -47,7 +51,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             date: Date(),
             scripts: scripts,
             showServerName: false,
-            showConfirmationDialog: configuration.showConfirmationDialog
+            showConfirmationDialog: showConfirmationDialog
         )
     }
 
@@ -135,19 +139,10 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same mock, and
+    /// the card never flips from one shape to another as it loads.
     func placeholder(in context: Context) -> Entry {
-        .init(
-            date: Date(),
-            scripts: [.init(
-                id: "1",
-                entityId: "1",
-                serverId: "1",
-                serverName: "Home",
-                name: L10n.Widgets.Scripts.title,
-                icon: ""
-            )],
-            showServerName: true, showConfirmationDialog: true
-        )
+        Self.previewSample(in: context, showConfirmationDialog: true)
     }
 
     private func showServerName() -> Bool {

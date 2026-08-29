@@ -25,18 +25,6 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
-    func makePlaceholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
-        .init(
-            date: .now,
-            items: [],
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
-            showLastUpdateTime: false,
-            showStates: false,
-            serverName: nil
-        )
-    }
-
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))

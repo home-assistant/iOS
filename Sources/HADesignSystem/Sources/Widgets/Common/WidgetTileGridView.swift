@@ -28,7 +28,6 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     private let sizeStyle: WidgetTileSizeStyle
     private let family: WidgetFamily
     private let kind: WidgetTileKind
-    private let logo: Image?
     private let tileContent: TileContent
     private let tileRegions: TileRegions
 
@@ -37,7 +36,6 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         kind: WidgetTileKind,
-        logo: Image? = nil,
         tileContent: @escaping TileContent = { _, _, tile in tile },
         tileRegions: @escaping TileRegions = { _ in nil }
     ) {
@@ -45,7 +43,6 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         self.sizeStyle = sizeStyle
         self.family = family
         self.kind = kind
-        self.logo = logo
         self.tileContent = tileContent
         self.tileRegions = tileRegions
     }
@@ -82,7 +79,6 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             sizeStyle: sizeStyle,
             family: family,
             kind: kind,
-            logo: logo,
             regions: tileRegions(item)
         )
     }
