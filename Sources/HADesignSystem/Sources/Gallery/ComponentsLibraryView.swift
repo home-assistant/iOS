@@ -1,6 +1,11 @@
 #if !os(watchOS)
 import SwiftUI
 
+/// Browsable index of every component, grouped by category.
+///
+/// Frontend counterpart: the frontend's own `gallery/` package, published at
+/// `design.home-assistant.io`. This is that gallery for the native components, and the pages there
+/// are what each port was checked against.
 public struct ComponentsLibraryView: View {
     public init() {}
 
@@ -10,14 +15,21 @@ public struct ComponentsLibraryView: View {
                 NavigationLink {
                     List {
                         ForEach(DesignSystemComponent.allCases.filter { $0.category == category }) { component in
-                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                            Section {
+                                ComponentVariantsView(component: component)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.vertical, DesignSystem.Spaces.half)
+                            } header: {
                                 Text(component.title)
-                                    .font(DesignSystem.Font.subheadline)
-                                    .foregroundStyle(.secondary)
-                                component.preview
+                            } footer: {
+                                // The frontend element this was ported from, so the gallery can be
+                                // read beside `design.home-assistant.io` without going via the
+                                // source. Absent for the app's own components, which have none.
+                                if let element = component.frontendComponentName {
+                                    Text(element)
+                                        .font(.system(.caption, design: .monospaced))
+                                }
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, DesignSystem.Spaces.half)
                         }
                     }
                 } label: {
