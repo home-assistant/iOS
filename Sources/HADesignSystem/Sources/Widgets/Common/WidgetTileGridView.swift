@@ -55,9 +55,9 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     public var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
         VStack(alignment: .leading, spacing: spacing) {
-            ForEach(Array(rows.enumerated()), id: \.offset) { rowIndex, column in
+            ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
-                    ForEach(Array(column.enumerated()), id: \.element) { itemIndex, item in
+                    ForEach(Array(column.enumerated()), id: \.element.id) { itemIndex, item in
                         tileContent(item, sizeStyle, AnyView(tile(for: item)))
                             .environment(\.widgetTileCorners, corners(row: rowIndex, item: itemIndex, in: column))
                             .frame(maxHeight: maxTileHeight)
