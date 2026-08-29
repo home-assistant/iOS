@@ -6,6 +6,7 @@ import SwiftUI
 /// the frontend's `hui-todo-list-card`.
 public struct HATodoListCard: View {
     @Environment(\.locale) private var locale
+    @Environment(\.timeZone) private var timeZone
     private let title: String?
     private let items: [HATodoItem]
     private let hidesCompleted: Bool
@@ -48,9 +49,15 @@ public struct HATodoListCard: View {
                                     .foregroundStyle(.secondary)
                             }
                             if let dueDate = item.dueDate {
-                                Text(dueDate.formatted(Date.FormatStyle(locale: locale).day().month(.abbreviated)))
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(.secondary)
+                                // Formatted in the environment's zone: a due date stored at midnight UTC is a
+                                // different calendar day either side of it, so the process zone
+                                // would show the wrong day and make snapshots machine-dependent.
+                                Text(dueDate.formatted(
+                                    Date.FormatStyle(locale: locale, timeZone: timeZone)
+                                        .day().month(.abbreviated)
+                                ))
+                                .font(.system(size: 12))
+                                .foregroundStyle(.secondary)
                             }
                         }
                         Spacer(minLength: .zero)
@@ -60,6 +67,7 @@ public struct HATodoListCard: View {
                     .onTapGesture { onToggle?(item) }
                     .accessibilityElement(children: .combine)
                     .accessibilityAddTraits(item.isCompleted ? .isSelected : [])
+                    .accessibilityAddTraits(onToggle == nil ? [] : .isButton)
                 }
             }
             .padding(.horizontal, DesignSystem.Spaces.two)

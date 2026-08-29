@@ -70,6 +70,7 @@ public struct HAEntityCard: View {
         .contentShape(Rectangle())
         .onTapGesture { onTap?() }
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(onTap == nil ? [] : .isButton)
     }
 }
 

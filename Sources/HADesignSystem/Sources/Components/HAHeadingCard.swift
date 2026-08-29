@@ -49,7 +49,7 @@ public struct HAHeadingCard<Badges: View>: View {
         .padding(.vertical, DesignSystem.Spaces.one)
         .contentShape(Rectangle())
         .onTapGesture { onTap?() }
-        .accessibilityAddTraits(.isHeader)
+        .accessibilityAddTraits(onTap == nil ? .isHeader : [.isHeader, .isButton])
     }
 }
 

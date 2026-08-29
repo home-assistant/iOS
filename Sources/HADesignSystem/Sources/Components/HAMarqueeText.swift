@@ -68,7 +68,9 @@ public struct HAMarqueeText: View {
         // How far the text has to travel for its trailing edge to come flush with the container's.
         // Zero when the text already fits, which is what keeps short labels still.
         let maxOffset = max(0, textWidth - containerWidth)
-        guard maxOffset > 0, scrolls, !reduceMotion else {
+        // `speed` is public input; at zero the duration below is infinite and at a negative
+        // value it runs backwards, so neither is a scroll worth starting.
+        guard maxOffset > 0, speed > 0, scrolls, !reduceMotion else {
             offset = 0
             return
         }

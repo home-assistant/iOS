@@ -56,7 +56,11 @@ public struct HAProgressRing: View {
             .accessibilityElement()
             .accessibilityValue(Text(value.clampedToUnitInterval, format: .percent.precision(.fractionLength(0))))
         } else {
+            // Framed to the ring's own size. The spinner styles are the app's, not this ring's, and
+            // the nearest one to `.tiny` measures 24pt — so without this, switching a tiny ring from
+            // determinate to indeterminate would grow the layout by 8pt.
             HAProgressView(style: spinnerStyle)
+                .frame(width: size.rawValue, height: size.rawValue)
         }
     }
 }

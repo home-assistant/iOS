@@ -47,8 +47,8 @@ struct HAMarkdownParserTests {
     @Test func numbersBecomeAnOrderedList() {
         #expect(HAMarkdownParser.parse("1. First\n2. Second") == [
             .list(ordered: true, items: [
-                .init(text: "First", ordered: true),
-                .init(text: "Second", ordered: true),
+                .init(text: "First", number: 1),
+                .init(text: "Second", number: 2),
             ]),
         ])
     }
@@ -63,14 +63,33 @@ struct HAMarkdownParserTests {
         ])
     }
 
+    /// `5. Fifth` is valid GFM and starts the list at five; renumbering from one would contradict
+    /// the source.
+    @Test func anOrderedListKeepsTheOrdinalItWasWrittenWith() {
+        #expect(HAMarkdownParser.parse("5. Fifth\n6. Sixth") == [
+            .list(ordered: true, items: [
+                .init(text: "Fifth", number: 5),
+                .init(text: "Sixth", number: 6),
+            ]),
+        ])
+    }
+
+    /// A four-backtick fence is closed only by four or more; a three-backtick line inside it is
+    /// code, which is how a Markdown sample containing a fence is written.
+    @Test func aLongerFenceIsNotClosedByAShorterOne() {
+        #expect(HAMarkdownParser.parse("````\n```\nstill code\n````") == [
+            .codeBlock(language: nil, code: "```\nstill code"),
+        ])
+    }
+
     /// A bullet nested under a numbered item is a bullet. Taking the list's kind from its first
     /// line would renumber it as the parent's next entry — "1. Parent" then "2. Child".
     @Test func aNestedBulletKeepsItsOwnMarkerKind() {
         let blocks = HAMarkdownParser.parse("1. Parent\n  - Child")
         #expect(blocks == [
             .list(ordered: true, items: [
-                .init(indent: 0, text: "Parent", ordered: true),
-                .init(indent: 1, text: "Child", ordered: false),
+                .init(indent: 0, text: "Parent", number: 1),
+                .init(indent: 1, text: "Child"),
             ]),
         ])
     }

@@ -100,13 +100,29 @@ public enum HAMarkdownParser {
 
     // MARK: - Code
 
-    /// Returns the fence's characters when the line opens a fenced block, so the closing fence can
-    /// be required to match — a ``` block may legitimately contain ~~~ and vice versa.
+    /// The whole opening run when the line opens a fenced block — the character *and* how many of
+    /// them.
+    ///
+    /// Both matter. A ``` block may legitimately contain ~~~ and vice versa, and GFM closes a fence
+    /// only on a run of the same character at least as long: inside a four-backtick block, a
+    /// three-backtick line is code, not the end of it.
     private static func codeFence(_ trimmed: String) -> String? {
-        for marker in ["```", "~~~"] where trimmed.hasPrefix(marker) {
-            return marker
+        for character in ["`", "~"] {
+            let run = trimmed.prefix { String($0) == character }
+            if run.count >= 3 {
+                return String(run)
+            }
         }
         return nil
+    }
+
+    /// A fence closes on a run of the same character at least as long as the one that opened it.
+    private static func closesFence(_ line: String, opening fence: String) -> Bool {
+        guard let character = fence.first else {
+            return false
+        }
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        return trimmed.prefix { $0 == character }.count >= fence.count
     }
 
     private static func parseCodeBlock(
@@ -119,7 +135,7 @@ public enum HAMarkdownParser {
         var body: [String] = []
         var index = start + 1
         while index < lines.count {
-            if lines[index].trimmingCharacters(in: .whitespaces).hasPrefix(fence) {
+            if closesFence(lines[index], opening: fence) {
                 index += 1
                 break
             }
@@ -155,19 +171,21 @@ public enum HAMarkdownParser {
     // MARK: - Lists
 
     /// The marker and the text after it, when the line starts a list item.
-    private static func listMarker(_ trimmed: String) -> (ordered: Bool, text: String)? {
+    private static func listMarker(_ trimmed: String) -> (number: Int?, text: String)? {
         for marker in ["- ", "* ", "+ "] where trimmed.hasPrefix(marker) {
-            return (false, String(trimmed.dropFirst(marker.count)))
+            return (nil, String(trimmed.dropFirst(marker.count)))
         }
         let digits = trimmed.prefix(while: \.isNumber)
-        guard !digits.isEmpty else {
+        guard !digits.isEmpty, let number = Int(digits) else {
             return nil
         }
         let rest = trimmed.dropFirst(digits.count)
         guard rest.hasPrefix(". ") || rest.hasPrefix(") ") else {
             return nil
         }
-        return (true, String(rest.dropFirst(2)))
+        // The ordinal is kept, not just the fact that there was one: `5. Fifth` is valid GFM and
+        // renumbering it from 1 would contradict the source.
+        return (number, String(rest.dropFirst(2)))
     }
 
     private static func parseList(_ lines: [String], from start: Int) -> (HAMarkdownBlock, Int) {
@@ -175,7 +193,7 @@ public enum HAMarkdownParser {
         var index = start
         // The list's kind is set by its first item; a bullet appearing under a numbered list is a
         // nested list in CommonMark, and flattening it here keeps one block rather than three.
-        let ordered = listMarker(lines[start].trimmingCharacters(in: .whitespaces))?.ordered ?? false
+        let ordered = listMarker(lines[start].trimmingCharacters(in: .whitespaces))?.number != nil
 
         while index < lines.count {
             let line = lines[index]
@@ -196,7 +214,7 @@ public enum HAMarkdownParser {
             items.append(HAMarkdownListItem(
                 indent: leading / indentWidth,
                 text: text.trimmingCharacters(in: .whitespaces),
-                ordered: marker.ordered,
+                number: marker.number,
                 checked: checked
             ))
             index += 1

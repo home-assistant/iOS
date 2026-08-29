@@ -473,6 +473,8 @@
 "component.alarm_panel.delete" = "Delete";
 "component.color_picker.more_saturation" = "More saturation";
 "component.color_picker.less_saturation" = "Less saturation";
+"component.circular_slider.adjust_lower" = "Adjust lower target";
+"component.circular_slider.adjust_upper" = "Adjust upper target";
 "component.absolute_time.never" = "Never";
 "connection.active_url_type.toast.external" = "Using the external URL.";
 "connection.active_url_type.toast.internal" = "Using the internal URL.";

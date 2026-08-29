@@ -31,11 +31,24 @@ public struct HAInputChip: View {
 
     public var body: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
-            if let icon {
-                MaterialDesignIconsImage(icon: icon, size: 18)
+            // The chip's own action is a Button around its label, not a gesture on the container
+            // that also owns the remove button: as a gesture the two compete, and assistive
+            // technology gets no named control for the primary action at all.
+            Button {
+                action?()
+            } label: {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    if let icon {
+                        MaterialDesignIconsImage(icon: icon, size: 18)
+                    }
+                    Text(label)
+                        .lineLimit(1)
+                }
+                .contentShape(Rectangle())
             }
-            Text(label)
-                .lineLimit(1)
+            .buttonStyle(.plain)
+            .disabled(action == nil)
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
             if let onRemove {
                 Button(action: onRemove) {
                     Image(systemSymbol: .xmark)
@@ -50,8 +63,6 @@ public struct HAInputChip: View {
             background: isSelected ? Color(uiColor: .label).opacity(0.15) : .clear,
             showsOutline: !isSelected
         )
-        .contentShape(Rectangle())
-        .onTapGesture { action?() }
     }
 }
 

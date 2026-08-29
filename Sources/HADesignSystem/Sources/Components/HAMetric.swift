@@ -18,7 +18,9 @@ public struct HAMetric: View {
         self.value = value
     }
 
-    /// The frontend rounds to one decimal *before* comparing, so a reading of 85.04 stays green.
+    /// The frontend rounds to one decimal *before* comparing, so the band a reading falls in is the
+    /// band of the number shown. A reading of 85.04 displays as 85.0 and stays amber; 85.05 displays
+    /// as 85.1 and tips into red. Comparing the unrounded value would show 85.0 in red.
     private var roundedValue: Double {
         (value * 10).rounded() / 10
     }

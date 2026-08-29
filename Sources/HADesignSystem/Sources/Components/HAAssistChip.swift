@@ -64,6 +64,7 @@ public struct HAAssistChip: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 }
 

@@ -86,7 +86,7 @@ public struct HAAlertView<Content: View, Action: View>: View {
         .padding(DesignSystem.Spaces.one)
         .background(alertType.color.opacity(0.12))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.half))
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
     }
 }
 

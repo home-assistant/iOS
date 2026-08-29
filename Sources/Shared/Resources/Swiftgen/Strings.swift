@@ -1668,6 +1668,12 @@ public enum L10n {
       /// Remove
       public static var remove: String { return L10n.tr("Localizable", "component.chip.remove") }
     }
+    public enum CircularSlider {
+      /// Adjust lower target
+      public static var adjustLower: String { return L10n.tr("Localizable", "component.circular_slider.adjust_lower") }
+      /// Adjust upper target
+      public static var adjustUpper: String { return L10n.tr("Localizable", "component.circular_slider.adjust_upper") }
+    }
     public enum CollapsibleView {
       /// Collapse
       public static var collapse: String { return L10n.tr("Localizable", "component.collapsible_view.collapse") }

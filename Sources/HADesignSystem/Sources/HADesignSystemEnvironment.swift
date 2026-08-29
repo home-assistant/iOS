@@ -72,6 +72,10 @@ public struct HADesignSystemEnvironment {
         public var moreSaturation = "More saturation"
         /// Named accessibility action lowering `HAHSColorPicker`'s saturation.
         public var lessSaturation = "Less saturation"
+        /// Named accessibility action selecting a dual dial's lower target.
+        public var adjustLowerTarget = "Adjust lower target"
+        /// Named accessibility action selecting a dual dial's upper target.
+        public var adjustUpperTarget = "Adjust upper target"
 
         public init() {}
     }

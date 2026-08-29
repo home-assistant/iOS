@@ -16,6 +16,8 @@ public struct HAControlCircularSlider: View {
     /// Names the dial for VoiceOver. Without it the value is announced with no indication of what
     /// it sets — "21" could be the temperature or the humidity.
     private let label: String?
+    /// Which target a dual dial's adjustable action moves. Ignored by a single-target dial.
+    @State private var adjustsLowerTarget = false
     @Binding private var low: Double
     @Binding private var high: Double
     private let isDual: Bool
@@ -122,13 +124,29 @@ public struct HAControlCircularSlider: View {
         // thermostat and humidifier cards, means the target can be heard but never set.
         .accessibilityAdjustableAction { direction in
             guard !isDisabled else { return }
-            let delta = direction == .increment ? scale.step : -scale.step
-            if isDual {
-                high = scale.boundedHigh(high + delta, low: low)
-            } else {
-                low = scale.stepped(scale.boundedLow(low + delta, high: nil))
-                high = low
-            }
+            adjust(by: direction == .increment ? scale.step : -scale.step)
+        }
+        // A dual dial has two targets and one adjustable action, so the swipe moves whichever
+        // handle these actions have selected. Without them the lower target could be heard but
+        // never changed.
+        .accessibilityAction(named: Text(HADesignSystemEnvironment.current.strings.adjustLowerTarget)) {
+            adjustsLowerTarget = true
+        }
+        .accessibilityAction(named: Text(HADesignSystemEnvironment.current.strings.adjustUpperTarget)) {
+            adjustsLowerTarget = false
+        }
+    }
+
+    private func adjust(by delta: Double) {
+        guard isDual else {
+            low = scale.stepped(scale.boundedLow(low + delta, high: nil))
+            high = low
+            return
+        }
+        if adjustsLowerTarget {
+            low = scale.boundedLow(scale.stepped(low + delta), high: high)
+        } else {
+            high = scale.boundedHigh(scale.stepped(high + delta), low: low)
         }
     }
 
@@ -157,10 +175,13 @@ public struct HAControlCircularSlider: View {
             high = low
             return
         }
+        // Snapped before bounding, the order the scale documents: bounding a raw value would let a
+        // dial with a half-degree step write arbitrary fractions of one.
+        let snapped = scale.stepped(value)
         if abs(value - low) <= abs(value - high) {
-            low = scale.boundedLow(value, high: high)
+            low = scale.boundedLow(snapped, high: high)
         } else {
-            high = scale.boundedHigh(value, low: low)
+            high = scale.boundedHigh(snapped, low: low)
         }
     }
 

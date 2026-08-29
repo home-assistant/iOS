@@ -62,7 +62,10 @@ public struct HALightCard: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { onTap?() }
-        .accessibilityElement(children: .combine)
+        // `.contain` rather than `.combine`: the card holds a More information button, and
+        // combining swallows it into the card so it can never be focused on its own.
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Text(name))
     }
 }
 

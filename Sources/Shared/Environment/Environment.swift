@@ -201,6 +201,8 @@ public class AppEnvironment {
             $0.deleteDigit = L10n.Component.AlarmPanel.delete
             $0.moreSaturation = L10n.Component.ColorPicker.moreSaturation
             $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
+            $0.adjustLowerTarget = L10n.Component.CircularSlider.adjustLower
+            $0.adjustUpperTarget = L10n.Component.CircularSlider.adjustUpper
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 

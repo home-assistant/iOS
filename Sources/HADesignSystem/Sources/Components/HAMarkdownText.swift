@@ -79,19 +79,26 @@ public struct HAMarkdownText: View {
         }
     }
 
-    /// An ordered item's number counts only the ordered items at its own indent since the last time
-    /// that level restarted — otherwise a nested bullet would push the numbering along with it.
+    /// An ordered item's number comes from its own marker, so a list written `5.`, `6.` reads that
+    /// way rather than being renumbered from one.
+    ///
+    /// Items are only counted when the source repeats the same ordinal — the common `1.`, `1.`, `1.`
+    /// shorthand, which GFM renumbers. Counting is per indent level, so a nested bullet never pushes
+    /// its parent's numbering along.
     private static func number(of item: HAMarkdownListItem, at index: Int, in items: [HAMarkdownListItem]) -> Int {
-        var count = 0
+        guard let number = item.number else {
+            return 0
+        }
+        var repeats = 0
         for earlier in items[..<index].reversed() {
             if earlier.indent < item.indent {
                 break
             }
-            if earlier.indent == item.indent, earlier.ordered {
-                count += 1
+            if earlier.indent == item.indent, earlier.number == number {
+                repeats += 1
             }
         }
-        return count
+        return number + repeats - 1
     }
 
     @ViewBuilder
@@ -107,7 +114,7 @@ public struct HAMarkdownText: View {
             )
             .foregroundStyle(checked ? Color.haPrimary : .secondary)
         } else if ordered {
-            Text("\(position + 1).")
+            Text("\(position).")
                 .font(DesignSystem.Font.body)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()

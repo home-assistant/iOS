@@ -154,8 +154,20 @@ public struct HACalendarCard: View {
 
     // MARK: - Events
 
+    /// Every event *overlapping* the day, not only those starting on it: an overnight or multi-day
+    /// event belongs on each day it covers, and matching on `start` alone would drop it from every
+    /// day after the first.
     private func events(on day: Date) -> [HACalendarCardEvent] {
-        events.filter { workingCalendar.isDate($0.start, inSameDayAs: day) }
+        guard let dayInterval = workingCalendar.dateInterval(of: .day, for: day) else {
+            return []
+        }
+        return events.filter { event in
+            // A zero-length event has no interval to intersect, so it is placed by its start.
+            guard event.end > event.start else {
+                return workingCalendar.isDate(event.start, inSameDayAs: day)
+            }
+            return event.start < dayInterval.end && event.end > dayInterval.start
+        }
     }
 
     private var selectedDayEvents: [HACalendarCardEvent] {
