@@ -108,13 +108,9 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
             #endif
         }
 
+    /// These previews are drawn as `.custom`, so they go all the way to the packed count.
     private static func maxTiles(for familySize: WidgetFamily) -> Int {
-        switch familySize {
-        case .systemSmall: 3
-        case .systemMedium: 6
-        case .systemLarge: 12
-        default: 12
-        }
+        WidgetFamilySizes.size(for: familySize, capacity: .packed)
     }
 
     private static func configurations(for familySize: WidgetFamily)
@@ -262,6 +258,7 @@ struct WidgetBasicContainerWrapperView: View {
             contents: contents,
             family: family,
             kind: type.tileKind,
+            capacity: widgetKind.tileCapacity,
             serverName: showServerName ? serverName : nil,
             emptyView: emptyViewGenerator,
             refreshControl: refreshControl,

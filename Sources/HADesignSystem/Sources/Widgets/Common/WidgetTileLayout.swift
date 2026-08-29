@@ -8,18 +8,36 @@ import WidgetKit
 /// where the layout it implies is decided, so every widget built out of tiles fills the same family
 /// the same way.
 public enum WidgetTileLayout {
-    // ATTENTION: Unfortunately these sizes below can't be set dynamically to widgets
-    // consider this as the source of truth
-    public static func size(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 3
-        case .systemMedium: return 6
-        case .systemLarge: return 12
-        case .systemExtraLarge, .systemExtraLargePortrait: return 20
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
+    /// ATTENTION: Unfortunately these sizes below can't be set dynamically to widgets,
+    /// consider this as the source of truth.
+    ///
+    /// The `.tile` counts stop where `compressedBreakpoint(for:)` does, so a widget filled to its
+    /// maximum still draws entity tiles rather than a compressed grid. Only the commonly-used
+    /// widget asks for that — it fills itself, so it is the one that has to stay legible unattended.
+    public static func size(for family: WidgetFamily, capacity: WidgetTileCapacity = .packed) -> Int {
+        switch capacity {
+        case .tile:
+            switch family {
+            case .systemSmall: return 2
+            case .systemMedium: return 4
+            case .systemLarge: return 10
+            case .systemExtraLarge, .systemExtraLargePortrait: return 20
+            case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+                return 1
+            @unknown default:
+                return 1
+            }
+        case .packed:
+            switch family {
+            case .systemSmall: return 3
+            case .systemMedium: return 6
+            case .systemLarge: return 12
+            case .systemExtraLarge, .systemExtraLargePortrait: return 20
+            case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+                return 1
+            @unknown default:
+                return 1
+            }
         }
     }
 
@@ -57,15 +75,7 @@ public enum WidgetTileLayout {
     // While previewing we want to display tile card style (with padding and border)
     // To do that we can't display the maximum amount of items otherwise we will show 'compressed' size style
     public static func sizeForPreview(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return size(for: family) - 1
-        case .systemMedium, .systemLarge: return size(for: family) - 2
-        case .systemExtraLarge, .systemExtraLargePortrait: return 20
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+        size(for: family, capacity: .tile)
     }
 
     /// More than this number: show compact (icon left, text right) version
@@ -159,8 +169,12 @@ public enum WidgetTileLayout {
     }
 
     /// The tiles a family can hold, arranged into the rows it draws them in.
-    public static func rows<Model>(for family: WidgetFamily, models: [Model]) -> [[Model]] {
-        let capped = Array(models.prefix(size(for: family)))
+    public static func rows<Model>(
+        for family: WidgetFamily,
+        models: [Model],
+        capacity: WidgetTileCapacity = .packed
+    ) -> [[Model]] {
+        let capped = Array(models.prefix(size(for: family, capacity: capacity)))
         return Array(rows(count: columns(family: family, modelCount: capped.count), models: capped))
     }
 }
