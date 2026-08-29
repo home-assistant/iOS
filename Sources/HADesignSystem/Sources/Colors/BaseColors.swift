@@ -1,6 +1,11 @@
 import Foundation
 import SwiftUI
 
+/// The raw colour ramps, before any of them means anything.
+///
+/// Frontend counterpart: the palette in `common/color/color.globals.ts`. Semantic names built on
+/// top of these — what is a warning, what is a divider — live in `Color+Semantic.swift`, mirroring
+/// the frontend's own split between palette and role.
 public extension Color {
     // Blue
     static var blue05 = Color(hex: "#000F35")

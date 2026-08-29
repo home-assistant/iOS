@@ -109,7 +109,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             )
         }
 
-        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family)))
+        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family, capacity: .tile)))
     }
 
     private func entitiesState(

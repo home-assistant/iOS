@@ -1,6 +1,10 @@
 import SFSafeSymbols
 import SwiftUI
 
+/// A single-line text field with a clear button.
+///
+/// Frontend counterpart: `ha-textfield` and its outlined variant `ha-outlined-field`, both of which
+/// wrap a Material text field. This draws the outlined one.
 public struct HATextField: View {
     let placeholder: String
     @Binding var text: String
@@ -38,4 +42,9 @@ public struct HATextField: View {
         HATextField(placeholder: "Placeholder", text: .constant("https://bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com"))
     }
     .padding()
+}
+
+extension HATextField: FrontendComponent {
+    public static var frontendComponentName: String { "ha-textfield" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }
