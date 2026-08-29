@@ -79,6 +79,52 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNotNil(sut.emptyStateTimer)
     }
 
+    /// Going back to a page WebKit kept in its page cache restarts the stand-by loader, but the restored
+    /// frontend already fired its one and only `frontend/loaded` and never fires it again, so the restore
+    /// itself has to report the frontend as loaded or the loader covers a working page forever.
+    func testFrontendRestoredFromPageCacheReportsLoaded() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .connected
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertEqual(overlayState.connectionState, .loaded)
+    }
+
+    /// `connectionState` belongs to the page the user navigated away to, not to the restored one, so a
+    /// connection lost while they were elsewhere must not suppress the restore.
+    func testFrontendRestoredFromPageCacheReportsLoadedEvenAfterTheInterimPageDisconnected() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertEqual(overlayState.connectionState, .loaded)
+    }
+
+    /// Credentials the server rejected stay rejected across a restore, so the re-authentication empty
+    /// state has to survive it.
+    func testFrontendRestoredFromPageCacheIsIgnoredWhileAuthenticationIsInvalid() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .authInvalid
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .unknown)
+    }
+
     func testShowEmptyStatePublishesContentWithErrorDetailsButtonWhenLatestLoadErrorExists() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()

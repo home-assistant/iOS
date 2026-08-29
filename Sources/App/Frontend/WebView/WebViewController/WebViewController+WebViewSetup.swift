@@ -13,6 +13,7 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
         userContentController.add(safeScriptMessageHandler, name: "logError")
+        userContentController.add(safeScriptMessageHandler, name: "frontendRestored")
         return userContentController
     }
 
