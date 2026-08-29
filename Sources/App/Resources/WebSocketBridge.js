@@ -87,10 +87,14 @@ waitForHassConnection().then(({ conn }) => {
 // again. Nothing re-runs when that happens -- neither this script nor the frontend's bootstrap -- so the
 // frontend never announces `frontend/loaded` a second time and the app would keep its stand-by loader up
 // over a page that is already alive. `pageshow` with `persisted` set is the only signal that the restore
-// happened.
+// happened, and this document's own `hassConnection` is the only thing that knows whether its frontend
+// ever came up. That promise is already settled by the time we get here, so it resolves right away or
+// never -- a page cached mid-load stays silent and the app keeps waiting for it, as it should.
 window.addEventListener('pageshow', (event) => {
-    if (!event.persisted) {
+    if (!event.persisted || !window.hassConnection) {
         return;
     }
-    window.webkit?.messageHandlers?.frontendRestored?.postMessage({ type: 'frontend/restored' });
+    window.hassConnection.then(() => {
+        window.webkit?.messageHandlers?.frontendRestored?.postMessage({ type: 'frontend/restored' });
+    }).catch(() => {});
 });
