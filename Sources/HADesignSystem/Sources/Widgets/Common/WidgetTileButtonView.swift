@@ -50,13 +50,28 @@ public struct WidgetTileButtonView: View {
         }
     }
 
+    /// How far the area and the state may shrink before they start truncating.
+    ///
+    /// Only those two: they are the lines that carry a room or an entity state that is often longer
+    /// than the tile is wide, and they are already the smaller type, so a little scaling reads as
+    /// the line fitting rather than as a third text size on the tile. The name keeps its size.
+    private static let secondaryMinimumScale: CGFloat = 0.8
+
+    /// Whether this tile draws its area: only when it has one, and only at a size with room for a
+    /// third line of text.
+    private var showsArea: Bool {
+        model.area != nil && sizeStyle.showsAreaLine
+    }
+
     private var text: some View {
         Text(verbatim: model.title)
             .font(sizeStyle.textFont)
             .fontWeight(.semibold)
             .multilineTextAlignment(.leading)
             .foregroundStyle(model.useCustomColors ? model.textColor : Color(uiColor: .label))
-            .lineLimit(2)
+            // Three lines is the tile's budget, and the name takes whatever the area and the
+            // state leave of it — so a tile whose widget hides states still wraps to two lines.
+            .lineLimit(showsArea && model.subtitle != nil ? 1 : 2)
     }
 
     @ViewBuilder
@@ -66,7 +81,30 @@ public struct WidgetTileButtonView: View {
                 .font(sizeStyle.subtextFont)
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
                 .lineLimit(1)
-                .truncationMode(.middle)
+                .minimumScaleFactor(Self.secondaryMinimumScale)
+                .truncationMode(.tail)
+        }
+    }
+
+    @ViewBuilder
+    private var areaText: some View {
+        if showsArea, let area = model.area {
+            Text(verbatim: area)
+                .font(sizeStyle.subtextFont)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .lineLimit(1)
+                .minimumScaleFactor(Self.secondaryMinimumScale)
+                .truncationMode(.tail)
+        }
+    }
+
+    /// Area, name, state — stacked the way the Home app stacks them, so each one truncates on its
+    /// own line instead of being squeezed off the end of a line it shares.
+    private var textStack: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            areaText
+            text
+            subtext
         }
     }
 
@@ -138,11 +176,8 @@ public struct WidgetTileButtonView: View {
                     HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
                         iconView
                         content(hidden: contentHidden) {
-                            VStack(alignment: .leading, spacing: .zero) {
-                                text
-                                subtext
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            textStack
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                     .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
@@ -151,10 +186,7 @@ public struct WidgetTileButtonView: View {
                         iconView
                         Spacer()
                         content(hidden: contentHidden) {
-                            VStack(alignment: .leading, spacing: 0) {
-                                text
-                                subtext
-                            }
+                            textStack
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -184,7 +216,7 @@ public struct WidgetTileButtonView: View {
 
 #Preview {
     WidgetTileButtonView(
-        model: .init(id: "1", title: "Kitchen light", subtitle: "On", icon: .lightbulbIcon),
+        model: .init(id: "1", title: "Kitchen light", subtitle: "On", area: "Kitchen", icon: .lightbulbIcon),
         sizeStyle: .single,
         family: .systemSmall,
         tinted: false

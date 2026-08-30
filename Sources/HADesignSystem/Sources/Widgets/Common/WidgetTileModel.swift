@@ -13,6 +13,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
         id: String,
         title: String,
         subtitle: String? = nil,
+        area: String? = nil,
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
@@ -24,6 +25,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
         self.id = id
         self.title = title
         self.subtitle = subtitle
+        self.area = area
         self.icon = icon
         self.showIconBackground = showIconBackground
         self.textColor = textColor
@@ -36,6 +38,11 @@ public struct WidgetTileModel: Identifiable, Hashable {
     public var id: String
     public var title: String
     public var subtitle: String?
+    /// The area the entity belongs to.
+    ///
+    /// Drawn as its own line above ``title``, the way Apple's Home tiles stack room, name and
+    /// state, so none of the three has to share a line with the others and truncate the rest away.
+    public var area: String?
     public var icon: MaterialDesignIcons
     /// When item has no tap icon, icon background is hidden
     public var showIconBackground: Bool

@@ -141,6 +141,7 @@ struct WidgetCustom: Widget {
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: state?.value,
+                area: infoProvider.getAreaName(for: magicItem),
                 interactionType: interactionType,
                 iconInteractionType: isSplit ? iconInteractionType : nil,
                 icon: icon,

@@ -31,4 +31,12 @@ struct WidgetTileSizeStyleTests {
             #expect(sizeStyle.iconSize(withBackground: false) <= sizeStyle.iconCircleSize.height)
         }
     }
+
+    /// Every size but the compressed one has room for the area above the name; compressed has
+    /// already given up its padding and border, so the third line is what goes next.
+    @Test func onlyTheCompressedSizeDropsTheAreaLine() {
+        for sizeStyle in WidgetTileSizeStyle.allCases {
+            #expect(sizeStyle.showsAreaLine == (sizeStyle != .compressed))
+        }
+    }
 }
