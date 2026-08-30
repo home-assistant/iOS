@@ -28,6 +28,9 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     private let sizeStyle: WidgetTileSizeStyle
     private let family: WidgetFamily
     private let kind: WidgetTileKind
+    /// Whether the grid is what sits against the widget's bottom edge. `false` when something else
+    /// is below it — the reload footer — which is what pushes the last row off that edge.
+    private let reachesBottomEdge: Bool
     private let tileContent: TileContent
     private let tileRegions: TileRegions
 
@@ -36,6 +39,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         kind: WidgetTileKind,
+        reachesBottomEdge: Bool = true,
         tileContent: @escaping TileContent = { _, _, tile in tile },
         tileRegions: @escaping TileRegions = { _ in nil }
     ) {
@@ -43,6 +47,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         self.sizeStyle = sizeStyle
         self.family = family
         self.kind = kind
+        self.reachesBottomEdge = reachesBottomEdge
         self.tileContent = tileContent
         self.tileRegions = tileRegions
     }
@@ -50,15 +55,16 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     public var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
         VStack(alignment: .leading, spacing: spacing) {
-            ForEach(rows, id: \.self) { column in
+            ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
-                    ForEach(column) { item in
+                    ForEach(Array(column.enumerated()), id: \.element.id) { itemIndex, item in
                         tileContent(item, sizeStyle, AnyView(tile(for: item)))
+                            .environment(\.widgetTileCorners, corners(row: rowIndex, item: itemIndex, in: column))
                             .frame(maxHeight: maxTileHeight)
                             .frame(maxWidth: .infinity)
                     }
                     // Constraint item to single column
-                    if column.count == 1, family != .systemSmall, sizeStyle == .compact {
+                    if hasTrailingSpacer(column) {
                         Spacer()
                             .frame(maxWidth: .infinity)
                     }
@@ -71,6 +77,33 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
 
     private var maxTileHeight: CGFloat? {
         (sizeStyle == .compact && family != .systemSmall) ? Self.maxTileHeightWhenCompact : nil
+    }
+
+    /// Which of the widget's corners this tile is the one sitting in, if any: the ends of the first
+    /// row take the top two, the ends of the last row take the bottom two — but only when the grid
+    /// is what reaches the widget's bottom edge rather than a footer below it.
+    ///
+    /// None of them when the grid is compressed: with no padding to hold a tile off the edge, the
+    /// widget's own clip already rounds the corners it reaches, so there is nothing left to widen.
+    private func corners(row: Int, item: Int, in tiles: [Item]) -> WidgetTileCorners {
+        guard sizeStyle != .compressed else { return [] }
+        // A row padded out with a spacer stops short of the widget's trailing edge.
+        let isLeading = item == .zero
+        let isTrailing = item == tiles.count - 1 && !hasTrailingSpacer(tiles)
+        var corners: WidgetTileCorners = []
+        if row == .zero {
+            if isLeading { corners.insert(.topLeading) }
+            if isTrailing { corners.insert(.topTrailing) }
+        }
+        if row == rows.count - 1, reachesBottomEdge {
+            if isLeading { corners.insert(.bottomLeading) }
+            if isTrailing { corners.insert(.bottomTrailing) }
+        }
+        return corners
+    }
+
+    private func hasTrailingSpacer(_ tiles: [Item]) -> Bool {
+        tiles.count == 1 && family != .systemSmall && sizeStyle == .compact
     }
 
     private func tile(for item: Item) -> some View {

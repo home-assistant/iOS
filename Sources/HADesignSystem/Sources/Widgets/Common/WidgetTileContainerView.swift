@@ -93,6 +93,8 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
             ),
             family: family,
             kind: kind,
+            // The footer, when there is one, is what sits against the widget's bottom edge.
+            reachesBottomEdge: refreshControl == nil,
             tileContent: tileContent,
             tileRegions: tileRegions
         )
