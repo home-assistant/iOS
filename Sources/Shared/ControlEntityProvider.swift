@@ -176,19 +176,7 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        let result = await withCheckedContinuation { continuation in
-            connection.send(.init(
-                type: .rest(.get, "states/\(entityId)"),
-                shouldRetry: true
-            )) { result in
-                continuation.resume(returning: result)
-            }
-        }
-
-        guard let data = try? result.get() else {
-            if case let .failure(error) = result {
-                Current.Log.error("Failed to get state: \(error)")
-            }
+        guard let data = await sendStateRequest(connection: connection, entityId: entityId) else {
             return nil
         }
 
@@ -215,6 +203,103 @@ public final class ControlEntityProvider {
             attributes: attributes,
             unitOfMeasurement: unitOfMeasurement
         )
+    }
+
+    /// Sends the `/states/<entity>` request in a way that honors task cancellation.
+    ///
+    /// HAKit drops a cancelled request's completion handler without calling it, and logs-and-discards
+    /// a response whose invocation is no longer active, so a bare `withCheckedContinuation` around
+    /// `send` can be left unresumed forever. Callers that bound how long they are willing to wait —
+    /// the widgets fetch every tile's state against a deadline — would hang on that instead of giving
+    /// up, which is worse than the slow request they were guarding against.
+    private func sendStateRequest(connection: HAConnection, entityId: String) async -> HAData? {
+        let request = PendingStateRequest()
+
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { (continuation: CheckedContinuation<HAData?, Never>) in
+                let token = connection.send(.init(
+                    type: .rest(.get, "states/\(entityId)"),
+                    shouldRetry: true
+                )) { result in
+                    switch result {
+                    case let .success(data):
+                        request.finish(with: data)
+                    case let .failure(error):
+                        Current.Log.error("Failed to get state: \(error)")
+                        request.finish(with: nil)
+                    }
+                }
+
+                request.adopt(continuation: continuation, token: token)
+            }
+        } onCancel: {
+            request.cancel()
+        }
+    }
+
+    /// Shared one-shot ownership of a state request's continuation, so exactly one of HAKit's
+    /// completion handler and the cancellation handler resumes it — whichever gets there first.
+    private final class PendingStateRequest: @unchecked Sendable {
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<HAData?, Never>?
+        private var token: HACancellable?
+        /// Whether the request has already been settled, by completing or by being cancelled.
+        /// `earlyResult` is only meaningful once this is true, which is what lets it stay a single
+        /// optional: a settled request with no result is a cancelled or failed one.
+        private var isSettled = false
+        /// A result that landed before `adopt` ran, which `send` is free to do by calling back
+        /// synchronously.
+        private var earlyResult: HAData?
+
+        /// Takes ownership of the continuation and the in-flight request, resuming straight away if
+        /// the request already settled while it was being handed over.
+        func adopt(continuation: CheckedContinuation<HAData?, Never>, token: HACancellable) {
+            lock.lock()
+            guard !isSettled else {
+                let result = earlyResult
+                lock.unlock()
+                token.cancel()
+                continuation.resume(returning: result)
+                return
+            }
+            self.continuation = continuation
+            self.token = token
+            lock.unlock()
+        }
+
+        func finish(with data: HAData?) {
+            lock.lock()
+            guard !isSettled else {
+                lock.unlock()
+                return
+            }
+            isSettled = true
+            guard let continuation else {
+                earlyResult = data
+                lock.unlock()
+                return
+            }
+            self.continuation = nil
+            token = nil
+            lock.unlock()
+            continuation.resume(returning: data)
+        }
+
+        func cancel() {
+            lock.lock()
+            guard !isSettled else {
+                lock.unlock()
+                return
+            }
+            isSettled = true
+            let continuation = continuation
+            let token = token
+            self.continuation = nil
+            self.token = nil
+            lock.unlock()
+            token?.cancel()
+            continuation?.resume(returning: nil)
+        }
     }
 
     private func buildState(
