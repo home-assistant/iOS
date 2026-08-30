@@ -69,9 +69,9 @@ public struct WidgetTileButtonView: View {
             .fontWeight(.semibold)
             .multilineTextAlignment(.leading)
             .foregroundStyle(model.useCustomColors ? model.textColor : Color(uiColor: .label))
-            // The name gets the second line only when it is the only thing above the state; with an
-            // area line as well, three lines is the tile's budget.
-            .lineLimit(showsArea ? 1 : 2)
+            // Three lines is the tile's budget, and the name takes whatever the area and the
+            // state leave of it — so a tile whose widget hides states still wraps to two lines.
+            .lineLimit(showsArea && model.subtitle != nil ? 1 : 2)
     }
 
     @ViewBuilder

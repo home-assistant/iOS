@@ -38,8 +38,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
     public var id: String
     public var title: String
     public var subtitle: String?
-    /// The context the entity sits in — its area, and whatever else the widget wants above the
-    /// name, such as the server when more than one is configured.
+    /// The area the entity belongs to.
     ///
     /// Drawn as its own line above ``title``, the way Apple's Home tiles stack room, name and
     /// state, so none of the three has to share a line with the others and truncate the rest away.

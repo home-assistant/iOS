@@ -22,6 +22,17 @@ struct WidgetTileAreaLineSnapshotTests {
         assertTiles(models: WidgetTileSampleData.longActions, family: .systemMedium)
     }
 
+    /// A widget with its states hidden leaves the tile an area and a name, so the name takes the
+    /// line the state would have used rather than the tile losing it.
+    @MainActor @Test func tilesWithAreaAndNoState() {
+        let models = WidgetTileSampleData.longActions.map { model in
+            var model = model
+            model.subtitle = nil
+            return model
+        }
+        assertTiles(models: models, family: .systemMedium)
+    }
+
     /// Two tiles fill a medium widget as expanded cards — icon above the text rather than beside it.
     @MainActor @Test func expandedTilesWithLongText() {
         assertTiles(models: Array(WidgetTileSampleData.longActions.prefix(2)), family: .systemMedium)

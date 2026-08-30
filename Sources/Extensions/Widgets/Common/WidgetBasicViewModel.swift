@@ -48,7 +48,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     var title: String
     var subtitle: String?
-    /// The context line above the name — the entity's area. See ``WidgetTileModel/area``.
+    /// The area the entity belongs to, drawn above the name. See ``WidgetTileModel/area``.
     var area: String?
     var interactionType: WidgetInteractionType
     /// What tapping the tile's icon runs, when the icon is a control of its own and `interactionType`
