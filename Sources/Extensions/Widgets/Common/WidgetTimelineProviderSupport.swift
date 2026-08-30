@@ -40,6 +40,8 @@ struct WidgetEntitiesStateCache: Codable {
 @available(iOS 17, *)
 protocol WidgetSingleEntryTimelineProvider: AppIntentTimelineProvider {
     var expiration: Measurement<UnitDuration> { get }
+    /// What the widget shows before it has an entry. Defaults to the gallery mock, which is what
+    /// the system redacts and draws while a real entry is on its way.
     func makePlaceholder(in context: Context) -> Entry
     /// Mocked entry for the widget gallery. See `WidgetPreviewSample` for why previews never read
     /// real data.
@@ -50,6 +52,13 @@ protocol WidgetSingleEntryTimelineProvider: AppIntentTimelineProvider {
 
 @available(iOS 17, *)
 extension WidgetSingleEntryTimelineProvider {
+    /// The gallery renders the placeholder, redacted, until the snapshot arrives. Serving the same
+    /// mock keeps the card from flipping from one shape to another as it loads, and keeps the
+    /// placeholder as free of real data — and of the reads that fetch it — as the preview.
+    func makePlaceholder(in context: Context) -> Entry {
+        makePreviewEntry(in: context)
+    }
+
     func placeholder(in context: Context) -> Entry {
         makePlaceholder(in: context)
     }

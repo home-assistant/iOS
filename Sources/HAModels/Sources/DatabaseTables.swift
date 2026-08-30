@@ -36,6 +36,12 @@ public enum GRDBDatabaseTable: String {
     case remindersSyncConfig
     case remindersSyncItemLink
     case remindersSyncHistoryEntry
+    // Focus names the user pairs with an iOS Focus Filter
+    case focusName
+    // Calendar entities mirrored from Home Assistant
+    case HACalendar = "hACalendar"
+    // Events cached from the calendars above, so a fetch failure can fall back to them
+    case HACalendarEvent = "hACalendarEvent"
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -52,6 +58,7 @@ public enum DatabaseTables {
         case icon
         case rawDeviceClass
         case entityCategory
+        case isHidden
         case resolvedIcon
     }
 
@@ -197,6 +204,7 @@ public enum DatabaseTables {
         case muteTTS
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
+        case startMode
     }
 
     public enum AllowedTag: String, CaseIterable {
@@ -226,6 +234,7 @@ public enum DatabaseTables {
         case entityDisplayName
         case iconName
         case iconColor
+        case textColor
         case gaugeAttribute
         case valueAttribute
         case valuePrecision
@@ -361,5 +370,40 @@ public enum DatabaseTables {
         case success
         case error
         case details
+    }
+
+    // Focus names paired with an iOS Focus Filter. Column names must match `FocusName`'s stored
+    // properties.
+    public enum FocusName: String, CaseIterable {
+        case id
+        case name
+    }
+
+    // Cached calendar events. Column names must match `HACalendarEventRecord`'s stored properties.
+    public enum HACalendarEvent: String, CaseIterable {
+        case id
+        case serverId
+        case calendarEntityId
+        case uid
+        case recurrenceId
+        case summary
+        case start
+        case end
+        case isAllDay
+        case eventDescription
+        case location
+        case rrule
+    }
+
+    // Calendar entities mirrored from Home Assistant. Column names must match `HACalendar`'s stored
+    // properties.
+    public enum HACalendar: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case name
+        case backgroundColor
+        case supportedFeatures
+        case sortOrder
     }
 }

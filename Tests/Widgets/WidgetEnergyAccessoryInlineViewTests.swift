@@ -27,14 +27,37 @@ struct WidgetEnergyAccessoryInlineViewTests {
         #expect(WidgetEnergyAccessoryInlineView.text(for: []).isEmpty)
     }
 
+    @available(iOS 17, *)
     @Test func emptyStateDistinguishesUnconfiguredFromMissingData() {
         #expect(
-            WidgetEnergyStyle.emptyStateText(isConfigured: false, loadFailed: false)
+            WidgetEnergyStyle.emptyStateText(for: WidgetEnergyEntry(isConfigured: false))
                 == L10n.Widgets.Energy.notConfigured
         )
         // A load failure against a server we never confirmed has an energy dashboard is still a
         // data problem, not a setup problem.
-        #expect(WidgetEnergyStyle.emptyStateText(isConfigured: false, loadFailed: true) == L10n.Widgets.Energy.noData)
-        #expect(WidgetEnergyStyle.emptyStateText(isConfigured: true, loadFailed: false) == L10n.Widgets.Energy.noData)
+        #expect(
+            WidgetEnergyStyle.emptyStateText(for: WidgetEnergyEntry(isConfigured: false, loadFailed: true))
+                == L10n.Widgets.Energy.noData
+        )
+        #expect(
+            WidgetEnergyStyle.emptyStateText(for: WidgetEnergyEntry(isConfigured: true))
+                == L10n.Widgets.Energy.noData
+        )
+    }
+
+    /// No active URL is neither a missing dashboard nor missing data: the app has nowhere to load
+    /// from, so the copy points at the URL configuration instead.
+    @available(iOS 17, *)
+    @Test func emptyStateReportsMissingConnectionAheadOfEverythingElse() {
+        #expect(
+            WidgetEnergyStyle.emptyStateText(for: WidgetEnergyEntry(isConfigured: false, noConnection: true))
+                == L10n.Widgets.Energy.noConnection
+        )
+        // Even when a load was also flagged as failed, the connection is the actionable problem.
+        #expect(
+            WidgetEnergyStyle.emptyStateText(
+                for: WidgetEnergyEntry(isConfigured: false, loadFailed: true, noConnection: true)
+            ) == L10n.Widgets.Energy.noConnection
+        )
     }
 }

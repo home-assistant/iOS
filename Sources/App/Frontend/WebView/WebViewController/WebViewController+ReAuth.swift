@@ -17,6 +17,22 @@ extension WebViewController: OnboardingStateObserver {
 }
 
 extension WebViewController {
+    /// Puts the web view into the logged-out state after the user signed out from the frontend. The
+    /// server stays registered — only its credentials are gone — so the way back in is logging in
+    /// again, the same flow a revoked token goes through.
+    func showLoggedOutState() {
+        Current.Log.info("User logged out of server \(server.identifier.rawValue), asking to log in again")
+
+        didLogOut = true
+        // The flag only stops attempts that have yet to start; one already running would still
+        // navigate into the server when it resolves the URL it was awaiting.
+        cancelActiveURLLoading()
+        connectionState = .authInvalid
+        overlayState?.connectionState = .authInvalid
+        load(request: URLRequest(url: URL(string: "about:blank")!))
+        showEmptyState()
+    }
+
     func performReauthentication(using urlType: ConnectionInfo.URLType) {
         let connectionInfo = server.info.connection
 
@@ -87,6 +103,7 @@ extension WebViewController {
             }
         }
 
+        didLogOut = false
         connectionState = .unknown
 
         if let api = Current.api(for: server) {

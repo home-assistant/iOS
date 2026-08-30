@@ -48,7 +48,10 @@ public class HomeAssistantAPI {
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
     public let tokenManager: TokenManager
-    public var server: Server
+    /// Fixed for the lifetime of the API: the token manager, the websocket's connection-info and
+    /// token closures and the request adapters all capture this instance at init, so swapping it
+    /// afterwards would only change what this property reports. Build a new API instead.
+    public let server: Server
     public internal(set) var connection: HAConnection
 
     private var rejectedReconnectAttempts = 0
@@ -233,6 +236,9 @@ public class HomeAssistantAPI {
         var headers = configuration.httpAdditionalHeaders ?? [:]
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
+
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
 
         return Alamofire.Session(
             configuration: configuration,
@@ -1032,10 +1038,19 @@ public class HomeAssistantAPI {
         case appOpened
         case programmatic
 
+        /// Only explicitly user-initiated updates may show the temporary full-accuracy prompt;
+        /// app-open updates run on every foreground, where a recurring system prompt would be intrusive.
         var allowsTemporaryAccess: Bool {
             switch self {
-            case .userRequested, .appOpened: return true
-            case .programmatic: return false
+            case .userRequested: return true
+            case .appOpened, .programmatic: return false
+            }
+        }
+
+        var locationUpdateTrigger: LocationUpdateTrigger {
+            switch self {
+            case .appOpened: return .Launch
+            case .userRequested, .programmatic: return .Manual
             }
         }
     }
@@ -1070,16 +1085,18 @@ public class HomeAssistantAPI {
                     }
                 }
             }.then { () -> Promise<Void> in
+                let trigger = type.locationUpdateTrigger
+
                 func updateWithoutLocation() -> Promise<Void> {
-                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: .Manual) })
+                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: trigger) })
                 }
 
                 if Current.settingsStore.isLocationEnabled(for: applicationState) {
                     return firstly {
-                        Current.location.oneShotLocation(.Manual, nil)
+                        Current.location.oneShotLocation(trigger, nil)
                     }.then { location in
                         when(fulfilled: Current.apis.map { api in
-                            api.SubmitLocation(updateType: .Manual, location: location, zone: nil)
+                            api.SubmitLocation(updateType: trigger, location: location, zone: nil)
                         }).asVoid()
                     }.recover { error -> Promise<Void> in
                         if error is CLError || error is OneShotError {

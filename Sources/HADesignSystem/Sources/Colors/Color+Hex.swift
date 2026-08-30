@@ -2,6 +2,10 @@ import Foundation
 import SwiftUI
 import UIKit
 
+/// Builds a colour from the hex notation the palette is written in.
+///
+/// Frontend counterpart: none needed — CSS takes hex directly. This exists so the ported palette can
+/// be transcribed from `color.globals.ts` unchanged, and diffed against it.
 public extension Color {
     init(hex: String) {
         var hex = hex

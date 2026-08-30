@@ -68,6 +68,7 @@ struct ComplicationsRootView: View {
         .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
             viewModel.load()
         }
+        .listTopContentMargin()
     }
 
     private var header: some View {

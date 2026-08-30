@@ -178,21 +178,21 @@ extension WebViewController {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        let style: UIAlertController.Style = {
-            switch webView.traitCollection.userInterfaceIdiom {
-            case .carPlay, .phone, .tv:
-                return .actionSheet
-            case .mac:
-                return .alert
-            case .pad, .unspecified, .vision:
-                // without a touch to tell us where, an action sheet in the middle of the screen isn't great
-                return .alert
-            @unknown default:
-                return .alert
-            }
-        }()
+        // Without a touch to tell us where, an action sheet in the middle of a wide window isn't great:
+        // compact widths get the bottom action sheet, everything else a centered alert.
+        let style: UIAlertController.Style = webView.traitCollection.horizontalSizeClass == .compact
+            ? .actionSheet
+            : .alert
 
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: style)
+
+        // iPad presents an unanchored action sheet as a popover and traps without location information,
+        // even in a compact-width window — anchor it to the web view, arrowless, as a backstop.
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = webView
+            popover.sourceRect = CGRect(x: webView.bounds.midX, y: webView.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
 
         alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
             completionHandler(true)

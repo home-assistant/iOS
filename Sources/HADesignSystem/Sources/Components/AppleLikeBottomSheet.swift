@@ -11,8 +11,14 @@ private enum AppleLikeBottomSheetConstants {
     static let closebuttonSize: CGFloat = 30
 }
 
+/// A sheet that rises from the bottom of the screen, drawn the way iOS draws one.
+///
+/// Frontend counterpart: `ha-bottom-sheet` and `ha-resizable-bottom-sheet`. Those exist because the
+/// web has no sheet of its own; this deliberately follows the platform's idiom rather than their
+/// styling, which is why it is named for the platform and not for them.
 public struct AppleLikeBottomSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Used for appear and disappear bottom sheet animation
     @State private var displayBottomSheet = false
     private let title: String?
@@ -119,7 +125,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var maxWidth: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if horizontalSizeClass == .compact {
             .infinity
         } else {
             400
@@ -128,7 +134,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
 
     private var perfectCornerRadius: CGFloat {
         let cornerRadius: CGFloat = {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if horizontalSizeClass == .compact {
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
             } else {
                 return 50
@@ -204,4 +210,10 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         trailing: DesignSystem.Spaces.two
     ), state: .constant(.initial), willDismiss: {})
 }
+
+extension AppleLikeBottomSheet: FrontendComponent {
+    public static var frontendComponentName: String { "ha-bottom-sheet" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
+}
+
 #endif

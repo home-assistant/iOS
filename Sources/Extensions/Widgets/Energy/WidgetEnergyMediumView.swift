@@ -8,68 +8,33 @@ struct WidgetEnergyMediumView: View {
     let entry: WidgetEnergyEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
-                if entry.source.showsSolar, let solar = entry.solarGenerated {
-                    WidgetEnergyStatView(
-                        icon: .solarPowerIcon,
-                        value: WidgetEnergyStyle.energy(solar),
-                        unit: WidgetEnergyStyle.energyUnit,
-                        label: L10n.Widgets.Energy.solar,
-                        direction: .up,
-                        color: WidgetEnergyStyle.solar
-                    )
-                }
-
-                if entry.source.showsGrid, let net = entry.gridNet {
-                    WidgetEnergyStatView(
-                        icon: .transmissionTowerIcon,
-                        value: WidgetEnergyStyle.energy(net),
-                        unit: WidgetEnergyStyle.energyUnit,
-                        label: L10n.Widgets.Energy.electricityTotal,
-                        direction: net >= 0 ? .up : .down,
-                        color: WidgetEnergyStyle.consumption
-                    )
-                }
-
-                Spacer(minLength: 0)
-
-                topTrailingAccessory
-            }
-
-            if !entry.chartPoints.isEmpty {
-                WidgetEnergyChartView(points: entry.chartPoints, source: entry.source, period: entry.period)
-                    .frame(maxHeight: .infinity)
-            } else {
-                Spacer(minLength: 0)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(DesignSystem.Spaces.two)
-        .widgetBackground(WidgetEnergyStyle.background)
+        // Only the series the server actually reports: a blank figure beside a real one reads as a
+        // broken series rather than as one this home simply doesn't have. Placeholders come back
+        // when nothing is reported at all, so a period that has only just begun keeps the layout's
+        // shape instead of collapsing to a bare chart. Totals rather than live power: these families
+        // summarise the whole period, and the gallery placeholder entry carries live power too.
+        let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry, figure: .totals)
+        let periodTitle = String(localized: entry.period.displayTitle)
+        WidgetEnergyMediumContentView(
+            stats: metrics.map { $0.designSystemModel(usesTotalLabel: true) },
+            costText: costText,
+            periodTitle: periodTitle,
+            date: entry.date,
+            chartPoints: entry.chartPoints.map(\.designSystemModel),
+            showsGrid: entry.source.showsGrid,
+            showsSolar: entry.source.showsSolar,
+            isDaily: entry.period.chartUsesDailyBuckets,
+            dayStride: entry.period.chartDayStride,
+            periodRange: entry.period.dateRange(now: entry.date),
+            periodControl: WidgetEnergyControls.period(periodTitle),
+            refreshControl: WidgetEnergyControls.refresh(entry.date)
+        )
     }
 
-    /// Shows the period cost when available; otherwise falls back to the Home Assistant logo.
-    @ViewBuilder
-    private var topTrailingAccessory: some View {
-        if entry.source.showsGrid, let cost = entry.cost {
-            HStack(spacing: 4) {
-                Text(verbatim: WidgetEnergyStyle.cost(cost, code: entry.currencyCode))
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(WidgetEnergyStyle.primaryText)
-                Image(
-                    uiImage: MaterialDesignIcons.transmissionTowerIcon
-                        .image(ofSize: .init(width: 16, height: 16), color: .white)
-                        .withRenderingMode(.alwaysTemplate)
-                )
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            }
-        } else {
-            Image(.logo)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-        }
+    /// The period's cost, when there is a grid series for it to describe and a figure to show.
+    private var costText: String? {
+        guard entry.source.showsGrid, let cost = entry.cost else { return nil }
+        return WidgetEnergyStyle.cost(cost, code: entry.currencyCode)
     }
 }
 
@@ -77,21 +42,27 @@ struct WidgetEnergyMediumView: View {
 #Preview(as: .systemMedium) {
     WidgetEnergy()
 } timeline: {
+    let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+    let points = WidgetEnergyChartSample.day(startingAt: dayStart)
+    let totals = WidgetEnergyChartSample.totals(of: points)
+
     WidgetEnergyEntry(
         isConfigured: true,
-        gridConsumed: 6.2,
-        gridReturned: 10.5,
-        solarGenerated: 12.4,
+        gridConsumed: totals.gridConsumed,
+        gridReturned: totals.gridReturned,
+        solarGenerated: totals.solarGenerated,
         cost: -0.49,
         currencyCode: "EUR",
-        chartPoints: (0 ..< 24).map { hour in
-            let h = Double(hour)
-            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6),
-                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            )
-        }
+        chartPoints: points
     )
+    // A home with solar but no grid statistics: the grid figure is dropped, not blanked, and with
+    // nothing exported on screen the chart plots the full generation.
+    WidgetEnergyEntry(
+        period: .today,
+        isConfigured: true,
+        solarGenerated: totals.solarGenerated,
+        chartPoints: points.map { .init(date: $0.date, grid: 0, solar: $0.solar) }
+    )
+    // Early in the day, before any statistics exist.
+    WidgetEnergyEntry(period: .today, isConfigured: true)
 }

@@ -135,6 +135,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        if #available(iOS 18.0, *) {
+            SpotlightEntityIndexer.shared.start()
+        }
 
         return true
     }
@@ -274,7 +277,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
-                message: update.body,
+                message: nil,
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(

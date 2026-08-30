@@ -25,7 +25,8 @@ struct WidgetCommonlyUsedEntities: Widget {
                     type: .custom,
                     showLastUpdate: timelineEntry.showLastUpdateTime,
                     showServerName: timelineEntry.serverName != nil,
-                    serverName: timelineEntry.serverName
+                    serverName: timelineEntry.serverName,
+                    widgetKind: .commonlyUsedEntities
                 )
             } else {
                 emptyView
@@ -51,7 +52,7 @@ struct WidgetCommonlyUsedEntities: Widget {
         }
     }
 
-    private func modelsForWidget(
+    func modelsForWidget(
         items: [MagicItem],
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetEntityState],
@@ -90,22 +91,24 @@ struct WidgetCommonlyUsedEntities: Widget {
                 }
             }()
 
-            let interactionType = magicItem.widgetInteractionType
+            // The icon controls the entity and the rest of the tile opens it, the way the
+            // frontend's tile card behaves. An entity the widget can't act on has both halves
+            // opening it, so there is nothing to split and the tile stays a single control.
+            let iconInteractionType = magicItem.widgetInteractionType
+            let tapInteractionType = magicItem.widgetTapInteractionType
+            let isSplit = iconInteractionType != tapInteractionType
+            // Area above the name and state below it, the way the Home app stacks a tile: one
+            // line each, so a long area no longer pushes the state off the end of a shared line.
             let areaName = infoProvider.getAreaName(for: magicItem)
-            let subtitle: String? = {
-                if let areaName, let state = state?.value {
-                    return state + " · " + areaName
-                } else {
-                    return state?.value
-                }
-            }()
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
-                subtitle: subtitle,
-                interactionType: interactionType,
+                subtitle: state?.value,
+                area: areaName,
+                interactionType: isSplit ? tapInteractionType : iconInteractionType,
+                iconInteractionType: isSplit ? iconInteractionType : nil,
                 icon: icon,
-                showIconBackground: true,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: Color(uiColor: .label),
                 subtitleColor: state?.valueColor,
                 iconColor: iconColor,

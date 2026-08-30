@@ -5,6 +5,15 @@ import HAKit
 import Shared
 
 final class AssistViewModel: NSObject, ObservableObject {
+    private enum Constants {
+        /// The orb level rises fast so every syllable registers, and falls slower so it settles
+        /// instead of flickering between words.
+        static let audioLevelAttack: Double = 0.8
+        static let audioLevelRelease: Double = 0.25
+        /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
+        static let audioLevelCurve: Double = 0.65
+    }
+
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
     @Published var preferredPipelineId: String = "" {
@@ -17,6 +26,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @Published var inputText = ""
     @Published var isRecording = false
+    /// Normalized microphone input level (0...1) driving the voice orb while recording
+    @Published var audioLevel: Double = 0
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
@@ -27,12 +38,17 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
+    private(set) var focusInputOnAppear: Bool
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     private var voiceInitiatedRequest = false
+    /// How far back through the sent requests the user has walked, newest first; nil while they are
+    /// still on their own draft.
+    private var requestHistoryOffset: Int?
+    private var draftBeforeRequestHistory: String?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -44,6 +60,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
         autoStartRecording: Bool,
+        focusInputOnAppear: Bool = false,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) {
@@ -53,6 +70,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
+        self.focusInputOnAppear = focusInputOnAppear
         self.speechTranscriber = speechTranscriber
         self.speechSynthesizer = speechSynthesizer
         self.configuration = AssistConfiguration.config
@@ -102,6 +120,54 @@ final class AssistViewModel: NSObject, ObservableObject {
         ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
+        resetRequestHistoryWalk()
+    }
+
+    /// The requests already sent, newest first, for walking back through them like a terminal's
+    /// command history.
+    private var sentRequests: [String] {
+        chatItems.filter { $0.itemType == .input }.map(\.content).reversed()
+    }
+
+    /// Puts the previous sent request in the input, keeping the user's own draft to come back to.
+    /// - Returns: whether there was an earlier request to show.
+    @MainActor @discardableResult func recallPreviousRequest() -> Bool {
+        let requests = sentRequests
+        guard !requests.isEmpty else { return false }
+
+        let offset: Int
+        if let requestHistoryOffset {
+            guard requestHistoryOffset + 1 < requests.count else { return false }
+            offset = requestHistoryOffset + 1
+        } else {
+            draftBeforeRequestHistory = inputText
+            offset = 0
+        }
+        requestHistoryOffset = offset
+        inputText = requests[offset]
+        return true
+    }
+
+    /// Walks back towards the newest request, and past it to the draft the user was writing.
+    /// - Returns: whether there was anything later to show.
+    @MainActor @discardableResult func recallNextRequest() -> Bool {
+        guard let requestHistoryOffset else { return false }
+
+        guard requestHistoryOffset > 0 else {
+            inputText = draftBeforeRequestHistory ?? ""
+            resetRequestHistoryWalk()
+            return true
+        }
+
+        let offset = requestHistoryOffset - 1
+        self.requestHistoryOffset = offset
+        inputText = sentRequests[offset]
+        return true
+    }
+
+    private func resetRequestHistoryWalk() {
+        requestHistoryOffset = nil
+        draftBeforeRequestHistory = nil
     }
 
     @MainActor func assistWithTextExpectingTTS() {
@@ -253,6 +319,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
+        audioLevel = 0
 
         // Stop traditional audio recording
         audioRecorder.stopRecording()
@@ -286,9 +353,20 @@ final class AssistViewModel: NSObject, ObservableObject {
         if autoStartRecording {
             Current.Log.info("Auto start recording triggered in Assist")
             autoStartRecording = false
+            focusInputOnAppear = false
             assistWithAudio()
-        } else if Current.isCatalyst {
+        } else if focusInputOnAppear || Current.isCatalyst {
+            focusInputOnAppear = false
             focusOnInput = true
+        }
+    }
+
+    private func updateAudioLevel(_ level: Float) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, isRecording else { return }
+            let shaped = pow(Double(level), Constants.audioLevelCurve)
+            let smoothing = shaped > audioLevel ? Constants.audioLevelAttack : Constants.audioLevelRelease
+            audioLevel = audioLevel * (1 - smoothing) + shaped * smoothing
         }
     }
 
@@ -352,6 +430,10 @@ final class AssistViewModel: NSObject, ObservableObject {
             }
         }
 
+        transcriber.onAudioLevelUpdate = { [weak self] level in
+            self?.updateAudioLevel(level)
+        }
+
         transcriber.onListeningStateChange = { [weak self] listening in
             Task { @MainActor [weak self] in
                 guard let self, !listening else { return }
@@ -397,7 +479,12 @@ extension AssistViewModel: AudioRecorderDelegate {
     func didStopRecording() {
         DispatchQueue.main.async { [weak self] in
             self?.isRecording = false
+            self?.audioLevel = 0
         }
+    }
+
+    func didUpdateAudioLevel(_ level: Float) {
+        updateAudioLevel(level)
     }
 }
 
@@ -460,6 +547,7 @@ extension AssistViewModel: AssistSessionDelegate {
             }
             preferredPipelineId = context.pipelineId
             autoStartRecording = context.autoStartRecording
+            focusInputOnAppear = context.focusInputOnAppear
             initialRoutine()
         }
     }

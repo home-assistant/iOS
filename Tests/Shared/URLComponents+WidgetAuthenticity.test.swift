@@ -44,6 +44,38 @@ class URLComponentsWidgetAuthenticityTests: XCTestCase {
         }
     }
 
+    func testInsertTwiceAddsSingleAuthenticityItem() throws {
+        for urlString in [
+            "homeassistant://navigate/good",
+            "homeassistant://assist?serverId=1&pipelineId=2&startListening=true",
+        ] {
+            var components = try XCTUnwrap(URLComponents(string: urlString))
+            components.insertWidgetAuthenticity()
+            components.insertWidgetAuthenticity()
+            XCTAssertTrue(components.popWidgetAuthenticity())
+            XCTAssertEqual(components.string, urlString)
+
+            let url = try XCTUnwrap(URL(string: urlString))
+                .withWidgetAuthenticity()
+                .withWidgetAuthenticity()
+            var urlComponents = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: true))
+            XCTAssertTrue(urlComponents.popWidgetAuthenticity())
+            XCTAssertEqual(urlComponents.string, urlString)
+        }
+    }
+
+    /// A magic item's `url` action points wherever the user typed, so the token must not ride along
+    /// to a third party — only the app's own deep links are stamped.
+    func testExternalURLIsNotStamped() throws {
+        for urlString in [
+            "https://www.home-assistant.io/docs",
+            "mailto:someone@example.com",
+        ] {
+            let url = try XCTUnwrap(URL(string: urlString))
+            XCTAssertEqual(url.withWidgetAuthenticity().absoluteString, urlString)
+        }
+    }
+
     func testInsertServer() throws {
         let servers = FakeServerManager(initial: 1)
         let server = servers.all[0]

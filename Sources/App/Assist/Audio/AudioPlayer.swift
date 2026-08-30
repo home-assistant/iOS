@@ -34,7 +34,10 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
             Current.Log.error("Failed to deactivate audio session before playback: \(error.localizedDescription)")
         }
         do {
-            try audioSession.setCategory(.playback)
+            // Naming the mode matters as much as the category here: it survives a category change on
+            // its own, so a preceding on-device transcription would otherwise leave `.measurement`
+            // in place and play the response back quietly.
+            try audioSession.setCategory(.playback, mode: .default)
         } catch {
             Current.Log.error("Failed to set playback category for audio player: \(error.localizedDescription)")
         }

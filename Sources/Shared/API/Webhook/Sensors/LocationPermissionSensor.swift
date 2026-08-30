@@ -9,10 +9,18 @@ public class LocationPermissionSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        let sensor = WebhookSensor(name: "Location permission", uniqueID: WebhookSensorId.locationPermission.rawValue)
-        sensor.State = CLLocationManager().authorizationStatus.description
-        sensor.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
-        return .value([sensor])
+        // Sensor updates run on the main queue and reading the authorization status performs
+        // synchronous XPC to locationd, which hangs the main thread when the daemon is slow
+        // (field hang), so read it on a background queue.
+        DispatchQueue.global(qos: .userInitiated).async(.promise) {
+            let sensor = WebhookSensor(
+                name: "Location permission",
+                uniqueID: WebhookSensorId.locationPermission.rawValue
+            )
+            sensor.State = Current.location.permissionStatus().description
+            sensor.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
+            return [sensor]
+        }
     }
 }
 

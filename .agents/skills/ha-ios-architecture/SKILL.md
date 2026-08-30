@@ -103,6 +103,10 @@ Current.servers = FakeServerManager()
 
 **Never assign to `Current.*` properties outside of test code.** This is enforced by a custom SwiftLint rule that will fail CI. In production code, only _read_ from `Current`.
 
+### Beta-Only Features
+
+`Current.isTestFlight` is the only supported way to limit a feature to beta builds — no bespoke flags, build settings, or `#if` branches. Every gate must be paired with a draft PR that removes it; see the `ha-ios-workflow-ci` skill for the procedure.
+
 ## Additional Resources
 
 - [Home Assistant Developer Docs (Apple)](https://developers.home-assistant.io/docs/apple/)

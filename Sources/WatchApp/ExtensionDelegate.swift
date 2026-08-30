@@ -12,9 +12,18 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
-    fileprivate var watchConnectivityWatchdogTimer: Timer?
+    fileprivate var watchConnectivityWatchdogTimer: DispatchSourceTimer?
+
+    /// The deadlines below have to be able to complete a task while the main thread is blocked, so
+    /// they run on their own queue rather than on the main run loop.
+    private static let watchdogQueue = DispatchQueue(label: "background-task-watchdog", qos: .utility)
+
+    private let pendingConnectivityTasksLock = NSLock()
+    private var pendingConnectivityTasks: [WKWatchConnectivityRefreshBackgroundTask] = []
 
     private var immediateCommunicatorService: ImmediateCommunicatorService?
+    /// Held for the app's lifetime — see `observeLegacyComplicationRenders`.
+    private var legacyComplicationRenderToken: NSObjectProtocol?
 
     override init() {
         (self.watchConnectivityBackgroundPromise, self.watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
@@ -27,6 +36,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // Perform any final initialization of your application.
 
         Current.Log.verbose("didFinishLaunching")
+
+        // A background cold launch (background refresh, WCSession delivery) never fires
+        // `applicationDidEnterBackground`, so without this the suspension machinery stays disarmed
+        // and every database access runs unprotected — GRDB work still in flight when the process
+        // freezes was the remaining 0xdead10cc crash cluster. Arming it here routes those accesses
+        // through the expiring-activity protection; a later foreground transition resumes as usual.
+        if WKApplication.shared().applicationState == .background {
+            AppDatabaseSuspension.suspend()
+        }
 
         // Import any legacy Realm data into GRDB before anything reads it
         RealmToGRDBMigration.migrateIfNeeded()
@@ -46,6 +64,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         setupWatchCommunicator()
         WatchWidgetComplicationSnapshotStore.update()
+        observeLegacyComplicationRenders()
 
         // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
         // connection info doesn't carry the override across launches/syncs).
@@ -53,6 +72,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
+
+        if WKApplication.shared().applicationState != .background {
+            applyStagedDatabaseMirrors()
+        }
     }
 
     func applicationDidBecomeActive() {
@@ -79,6 +102,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     func applicationWillEnterForeground() {
         AppDatabaseSuspension.resume()
+        applyStagedDatabaseMirrors()
     }
 
     func applicationDidEnterBackground() {
@@ -139,24 +163,35 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 // wall-clock budget: 15s when warm, 25s when cold-launched for the refresh
                 // (CSLHandleBackgroundRefreshAction transgression). The refresh work below talks
                 // to the network with timeouts larger than that budget, so completing "when done"
-                // isn't enough — always complete at a hard deadline, even mid-work. Both paths run
-                // on the main queue (PromiseKit's default), so the flag needs no synchronization.
+                // isn't enough — always complete at a hard deadline, even mid-work.
+                let completionLock = NSLock()
                 var didComplete = false
-                let completeTask = {
-                    guard !didComplete else { return }
+                let completeTask = { () -> Bool in
+                    completionLock.lock()
+                    let alreadyCompleted = didComplete
                     didComplete = true
+                    completionLock.unlock()
+                    guard !alreadyCompleted else { return false }
                     backgroundTask.setTaskCompletedWithSnapshot(false)
+                    return true
                 }
 
                 // Schedule the next refresh up front so a deadline hit can't skip it.
                 Current.backgroundRefreshScheduler.schedule().cauterize()
 
-                after(seconds: 10).done {
-                    if !didComplete {
-                        Current.Log.info("completing background refresh task at deadline; work still running")
+                applyStagedDatabaseMirrors()
+
+                let deadline = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                deadline.schedule(deadline: .now() + 10)
+                deadline.setEventHandler {
+                    if completeTask() {
+                        Current.Log.info("completed background refresh task at deadline; work still running")
                     }
-                    completeTask()
+                    // Also releases the handler's reference back to the source, which is what keeps
+                    // the timer alive when the refresh work never finishes.
+                    deadline.cancel()
                 }
+                deadline.resume()
 
                 firstly {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
@@ -171,7 +206,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                         }
                     }
                 }.ensure {
-                    completeTask()
+                    deadline.cancel()
+                    _ = completeTask()
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
@@ -290,39 +326,58 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
+        pendingConnectivityTasksLock.lock()
+        pendingConnectivityTasks.append(task)
+        pendingConnectivityTasksLock.unlock()
+
         DispatchQueue.main.async { [self] in
             guard Communicator.shared.hasPendingDataToBeReceived else {
                 // nothing else to be received
-                task.setTaskCompletedWithSnapshot(false)
+                completePendingConnectivityTasks()
                 return
             }
 
             // wait for it to send the next set of data
-            watchConnectivityBackgroundPromise.done {
-                task.setTaskCompletedWithSnapshot(false)
+            watchConnectivityBackgroundPromise.done { [weak self] in
+                self?.completePendingConnectivityTasks()
             }
 
-            if watchConnectivityWatchdogTimer == nil || watchConnectivityWatchdogTimer?.isValid == false {
+            if watchConnectivityWatchdogTimer == nil {
                 // 10s should be more than enough time, and the system timer's at 15s (last tested watchOS 7)
-                let timer = Timer.scheduledTimer(
-                    withTimeInterval: 10.0,
-                    repeats: true
-                ) { [weak self] _ in
+                let timer = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                timer.schedule(deadline: .now() + 10, repeating: 10)
+                timer.setEventHandler { [weak self] in
                     // we endeavor to not need this timer, but apple's api is so difficult to micromanage
                     // that it's just safer to guess and check every few seconds
                     Current.Log.info("ending background task due to our own watchdog timer")
                     // Force: data can stay "pending" indefinitely (e.g. a wedged file transfer), and
                     // holding the task past ~15s gets the app killed (CSLHandleBackgroundWCSessionAction
                     // transgression). The system delivers a new task when the data actually arrives.
+                    self?.completePendingConnectivityTasks()
                     self?.endWatchConnectivityBackgroundTaskIfNecessary(force: true)
                 }
+                timer.resume()
 
-                watchConnectivityBackgroundPromise.done {
-                    timer.invalidate()
+                watchConnectivityBackgroundPromise.done { [weak self] in
+                    timer.cancel()
+                    self?.watchConnectivityWatchdogTimer = nil
                 }
 
                 watchConnectivityWatchdogTimer = timer
             }
+        }
+    }
+
+    /// Completes every WatchConnectivity task still open. Safe to call off the main queue, which is
+    /// what lets the watchdog end them while the main thread is blocked.
+    private func completePendingConnectivityTasks() {
+        pendingConnectivityTasksLock.lock()
+        let tasks = pendingConnectivityTasks
+        pendingConnectivityTasks.removeAll()
+        pendingConnectivityTasksLock.unlock()
+
+        for task in tasks {
+            task.setTaskCompletedWithSnapshot(false)
         }
     }
 
@@ -337,10 +392,60 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
     }
 
+    /// Serial queue the pushed-mirror decompress + decode runs on: the payload is a full reference
+    /// mirror (hundreds of KB of plist), far too slow for the main queue the blob observation
+    /// arrives on — decoding there at launch was a watchdog-kill crash cluster. Serial so burst
+    /// deliveries decode in arrival order.
+    private static let pushedMirrorQueue = DispatchQueue(label: "pushed-mirror-decode", qos: .utility)
+
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        // The decompress + decode + write costs more CPU than the WatchConnectivity background
+        // action's 2 second allowance, and that allowance covers the whole process — running it on
+        // another queue doesn't help. Backgrounded, the payload is staged and applied from a
+        // background refresh, whose budget is large enough for it.
+        guard WKApplication.shared().applicationState != .background else {
+            PushedMirrorStagingStore.store(data: data, metadata: metadata)
+            Current.backgroundRefreshScheduler
+                .schedule(preferredDate: Current.date().addingTimeInterval(1))
+                .cauterize()
+            return
+        }
+
+        Self.pushedMirrorQueue.async { [weak self] in
+            self?.decodeAndApplyPushedDatabaseMirror(data, metadata: metadata)
+        }
+    }
+
+    private func applyStagedDatabaseMirrors() {
+        guard PushedMirrorStagingStore.hasStagedMirrors else { return }
+        Self.pushedMirrorQueue.async { [weak self] in
+            // Taking the entries removes them, so bail out before that when there is nothing left
+            // to apply them with — otherwise a staged mirror is dropped unread.
+            guard let self else { return }
+            for entry in PushedMirrorStagingStore.takeAll() {
+                decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
+            }
+        }
+    }
+
+    private func decodeAndApplyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        var data = data
+        // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
+        if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
+            do {
+                data = try WatchDatabaseMirror.decompress(data)
+            } catch {
+                Current.Log.error("Failed to decompress pushed watch database mirror: \(error)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Failed to decompress pushed watch database mirror (\(data.count) bytes): \(error)",
+                    type: .database
+                ))
+                return
+            }
+        }
         let mirror: WatchDatabaseMirror
         do {
             mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
@@ -356,11 +461,20 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
             do {
                 try mirror.apply()
-                // The push carries the phone's digests in the transfer metadata; storing them keeps
-                // the next interactive delta sync accurate instead of re-fetching everything.
-                if let digests = metadata?[WatchDatabaseMirror.digestsKey] as? [String: String] {
-                    WatchUserDefaults.shared.databaseMirrorDigests = digests
-                }
+                // The push carries the phone's digests in the transfer metadata; storing them for
+                // the tables this push actually carried keeps the next interactive delta sync
+                // accurate instead of re-fetching everything (or wrongly assuming it has data a
+                // delta push omitted).
+                WatchUserDefaults.shared.mergeDatabaseMirrorDigests(
+                    metadata?[WatchDatabaseMirror.digestsKey] as? [String: String],
+                    carrying: mirror.carriedDigestKeys
+                )
+                // The mirror also carries the servers. Applied here, inside the protected window,
+                // for two reasons: restoring writes the Keychain mirror back through GRDB, and doing
+                // it from the main-queue completion below blocked the main thread behind the burst
+                // of mirror writes (the watch's watchdog-kill crash cluster) against a database the
+                // expired activity may already have re-suspended.
+                WatchServerSync.applyMirroredServersAndWait(mirror.servers)
                 Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
                 Current.clientEventStore.addEvent(.init(
                     text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
@@ -378,14 +492,26 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 return false
             }
         } completion: { [weak self] in
-            // The mirror also carries the servers; keep them in step with the reference tables.
-            WatchServerSync.applyMirroredServers(mirror.servers)
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
             // The mirror is now the only complication delivery path, so it also reloads the ClockKit
             // timelines (previously done when the application context arrived).
             self?.updateComplications()
+        }
+    }
+
+    /// Rebuild the WidgetKit snapshots whenever freshly rendered legacy complication templates land in
+    /// the database. `WebhookResponseUpdateComplications` writes them from `Shared`, which can't reach
+    /// the snapshot store in this target, so it announces the write and this picks it up — without it
+    /// the new text sits in the database until the next periodic refresh happens to rebuild.
+    private func observeLegacyComplicationRenders() {
+        legacyComplicationRenderToken = NotificationCenter.default.addObserver(
+            forName: WatchComplication.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchWidgetComplicationSnapshotStore.update()
         }
     }
 

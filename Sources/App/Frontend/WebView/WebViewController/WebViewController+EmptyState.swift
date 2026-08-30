@@ -7,11 +7,16 @@ import UIKit
 
 extension WebViewController {
     func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {
+        // A deliberate log out lands in the same authentication-less state as a revoked token, so it is
+        // resolved first: the copy has to read as "log back in", not "your session expired".
+        if didLogOut {
+            return .loggedOut
+        }
         switch connectionState {
         case .authInvalid:
-            .unauthenticated
+            return .unauthenticated
         case .connected, .loaded, .disconnected, .unknown:
-            .disconnected
+            return .disconnected
         }
     }
 
@@ -32,8 +37,9 @@ extension WebViewController {
     }
 
     /// Swaps the disconnected empty state for the in-flight variant (and greets) when flight
-    /// detection confirms the user is on a plane. Detection is async (Wi-Fi SSID + one-shot GPS),
-    /// so the regular disconnected state shows first and upgrades in place.
+    /// detection confirms the user is on a plane. Detection is async (Wi-Fi SSID, cabin pressure,
+    /// then GPS, which offline can take tens of seconds), so the regular disconnected state shows
+    /// first and upgrades in place.
     private func upgradeEmptyStateForFlightIfNeeded() {
         guard Current.settingsStore.flightGreetingsEnabled,
               emptyStateStyle(for: connectionState) == .disconnected else { return }

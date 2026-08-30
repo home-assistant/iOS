@@ -16,7 +16,12 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
     var scanImprovCalled = false
     var stopImprovScanIfNeededCalled = false
     var showAssistCalled = false
-    var showAssistParams: (server: Shared.Server, pipeline: String, autoStartRecording: Bool)?
+    var showAssistParams: (
+        server: Shared.Server,
+        pipeline: String,
+        autoStartRecording: Bool,
+        focusInputOnAppear: Bool
+    )?
 
     var sendExternalBusReturnValue: PromiseKit.Promise<Void> = PromiseKit.Promise.value(())
 
@@ -45,8 +50,8 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
         stopImprovScanIfNeededCalled = true
     }
 
-    func showAssist(server: Shared.Server, pipeline: String, autoStartRecording: Bool) {
+    func showAssist(server: Shared.Server, pipeline: String, autoStartRecording: Bool, focusInputOnAppear: Bool) {
         showAssistCalled = true
-        showAssistParams = (server, pipeline, autoStartRecording)
+        showAssistParams = (server, pipeline, autoStartRecording, focusInputOnAppear)
     }
 }

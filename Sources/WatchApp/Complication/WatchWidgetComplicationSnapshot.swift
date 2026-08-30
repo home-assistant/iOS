@@ -252,9 +252,10 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             String(Int(value.rounded()))
         }
 
-        // The name rendered on the face — the entity's name for the entity kind. The complication's
-        // own `name` only labels it in the gallery menu (`menuName` below uses `displayName`).
-        let name = config.faceName
+        // The name rendered on the face — the entity's name, or the rendered display-name template
+        // for the template kind. The complication's own `name` never renders: it only labels the
+        // complication in the gallery menu (`menuName` below uses `displayName`).
+        let name = config.kind == .customTemplate ? valueText : config.faceName
 
         // Slot resolution. Entity formulas resolve fully on-device from the fetched state (template
         // rendering is an admin-only server operation); template-kind formulas may reference extra
@@ -299,18 +300,17 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 showBottomText: config.isSlotVisible(.bottomText, for: family)
             )
         }
-        // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
-        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
-        let iconData = config.iconName
-            .map { MaterialDesignIcons(serversideValueNamed: $0).image(ofSize: iconRenderSize, color: color) }?
-            .pngData()
+        let iconData = Self.iconData(config: config, iconColorHex: iconColorHex)
 
+        // Template kind resolves name and value to the same rendered text; joining both would
+        // render it twice on the legacy inline line.
+        let inlineParts = name == valueText ? [valueText] : [name, valueText]
         let snapshot = WatchWidgetComplicationSnapshot(
             id: config.id,
             family: "",
             title: valueText.isEmpty ? name : valueText,
             subtitle: name,
-            inlineText: [name, valueText].filter { !$0.isEmpty }.joined(separator: " "),
+            inlineText: inlineParts.filter { !$0.isEmpty }.joined(separator: " "),
             fraction: fraction(for: config.widgetFamily),
             tint: config.tint(for: config.widgetFamily),
             iconData: iconData,
@@ -339,6 +339,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             showName: !render.title.isEmpty,
             showIcon: iconData != nil,
             gaugeStyle: render.gaugeStyle,
+            minLabel: render.minLabel,
+            maxLabel: render.maxLabel,
             textColor: render.textColor,
             bottomTextColor: render.bottomTextColor,
             title: render.title,
@@ -351,6 +353,25 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var inlineOptions = options
         inlineOptions.title = render.inlineText
         inlineOptions.showName = !render.inlineText.isEmpty
+        // The corner and circular families lead with the complication's content and caption it after,
+        // rather than heading it with a label, so their two areas land the other way round (see
+        // `LegacyComplicationRender.ContentLed`).
+        let contentLedOptions = PerFamily(
+            fraction: render.fraction,
+            tint: render.tint,
+            showValue: !render.contentLed.value.isEmpty,
+            showName: !render.contentLed.title.isEmpty,
+            showIcon: iconData != nil,
+            gaugeStyle: render.gaugeStyle,
+            minLabel: render.minLabel,
+            maxLabel: render.maxLabel,
+            textColor: render.contentLed.textColor,
+            bottomTextColor: render.bottomTextColor,
+            title: render.contentLed.title,
+            value: render.contentLed.value,
+            bottomText: render.bottomText,
+            showBottomText: !render.bottomText.isEmpty
+        )
 
         self.init(
             id: complication.identifier,
@@ -366,9 +387,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             // Spelled out rather than aliased to `Family`: `WatchComplication.Family` is the legacy
             // ClockKit family, and the two reading alike in one initializer invites a mix-up.
             perFamily: [
-                WatchComplicationConfig.Family.circular.rawValue: options,
+                WatchComplicationConfig.Family.circular.rawValue: contentLedOptions,
                 WatchComplicationConfig.Family.rectangular.rawValue: options,
-                WatchComplicationConfig.Family.corner.rawValue: options,
+                WatchComplicationConfig.Family.corner.rawValue: contentLedOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
             menuName: complication.displayName
@@ -401,6 +422,21 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             // No icon payload: the widget extension renders its bundled Assist symbol via the fallback path.
             iconData: nil
         )
+    }
+
+    /// Rasterizes a modern config's icon for the snapshot payload. Icon names may be server-side
+    /// values (e.g. "mdi:home"); normalized before lookup. A config without an icon of its own still
+    /// gets the shared placeholder glyph, so turning "Show icon" on renders something before the user
+    /// picks one. Skipped entirely when no size shows the icon — no point rasterizing a payload
+    /// nothing renders.
+    private static func iconData(config: WatchComplicationConfig, iconColorHex: String?) -> Data? {
+        let familyShowsIcon = WatchComplicationConfig.Family.allCases
+            .contains { config.isSlotVisible(.icon, for: $0) }
+        guard familyShowsIcon else { return nil }
+        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
+        let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
+            ?? ComplicationRenderContext.placeholderIcon
+        return icon.image(ofSize: iconRenderSize, color: color).pngData()
     }
 
     /// Rasterizes a legacy complication's Material Design icon for the snapshot payload.

@@ -197,7 +197,7 @@ public class SensorContainer {
             return sensors
         }
 
-        setLastUpdate(.init(sensors: generatedSensors.map { [lastSentSensors] new in
+        setLastUpdate(.init(sensors: generatedSensors.map { [lastSentSensors, weak self] new in
             // doesn't store the sent values, that happens when the network request ends
             // this is just what's presented to the user, so we always have the latest version
             let ignoringExisting: Bool
@@ -210,12 +210,17 @@ public class SensorContainer {
                 ignoringExisting = false
             }
 
+            // Read once for the whole sort: asking the store per comparison turns one update into
+            // hundreds of app group defaults reads, which is enough to hang the main thread.
+            let enabledUniqueIDs = self?.enablement.enabledUniqueIDs() ?? []
+
             return lastSentSensors.mutate { lastSentSensors -> AnyCollection<WebhookSensor> in
                 lastSentSensors.combine(with: new, ignoringExisting: ignoringExisting)
                 return lastSentSensors.sensors
-            }.sorted(by: { [weak self] lhs, rhs in
-                guard let self else { return true }
-                switch (isEnabled(sensor: lhs), isEnabled(sensor: rhs)) {
+            }.sorted(by: { lhs, rhs in
+                let isLhsEnabled = lhs.UniqueID.map { enabledUniqueIDs.contains($0) } ?? false
+                let isRhsEnabled = rhs.UniqueID.map { enabledUniqueIDs.contains($0) } ?? false
+                switch (isLhsEnabled, isRhsEnabled) {
                 case (true, true): return lhs < rhs
                 case (false, false): return lhs < rhs
                 case (true, false): return true

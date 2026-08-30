@@ -13,8 +13,14 @@ struct SensorRow: View {
                     .foregroundColor(isEnabled ? .accentColor : .secondary)
             }
             VStack(alignment: .leading) {
-                Text(sensor.Name ?? L10n.unknownLabel)
-                    .foregroundColor(isEnabled ? .primary : .secondary)
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Text(sensor.Name ?? L10n.unknownLabel)
+                        .foregroundColor(isEnabled ? .primary : .secondary)
+                    // The focus name sensor is a Labs feature, so the row says so next to its name.
+                    if sensor.UniqueID == WebhookSensorId.focusName.rawValue {
+                        LabsLabel()
+                    }
+                }
                 if isEnabled {
                     Text(sensor.StateDescription ?? L10n.unknownLabel)
                         .foregroundColor(.secondary)

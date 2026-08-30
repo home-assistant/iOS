@@ -35,6 +35,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         case entities
         case devices
         case areas
+        case calendars
 
         var localizedDescription: String {
             switch self {
@@ -44,6 +45,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.devices
             case .areas:
                 return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.areas
+            case .calendars:
+                return L10n.Settings.ConnectionSection.UpdateDatabase.Progress.calendars
             }
         }
     }
@@ -202,8 +205,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         // Seed the cached foreground state on the main thread. `didBecomeActiveNotification`
         // won't re-fire if the app is already active when the observer is registered.
+        //
+        // `.inactive` counts as foreground here on purpose. The scene stays `.inactive` for a
+        // second or two after launch, and the launch-time update is enqueued inside that window —
+        // seeding from `applicationState == .active` (what `Current.isForegroundApp()` reports) made
+        // `isUpdateCancelled()` true, so that update was dropped and nothing re-triggered it: the
+        // database stayed empty until the user forced a refresh. Only a backgrounded app should
+        // cancel; `enterBackground` and `willResignActive` still clear the flag from there on.
         DispatchQueue.main.async { [weak self] in
-            self?.setForeground(Current.isForegroundApp())
+            let state = Current.application?().applicationState
+            self?.setForeground(state != nil && state != .background)
         }
     }
 
@@ -307,7 +318,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     /// Performs an update for a single specific server.
     private func performSingleServerUpdate(server: Server) async {
-        guard !isUpdateCancelled() else { return }
+        guard !isUpdateCancelled() else {
+            Current.Log.verbose(
+                "Dropping queued update for server \(server.info.name) - cancelled (foreground: \(isForeground))"
+            )
+            return
+        }
         // Read the effective force as late as possible — immediately before the throttle decision —
         // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
         let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
@@ -362,7 +378,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// directly without a per-entity registry lookup. The `/states` fetch itself still happens first
     /// (Step 1); only the database write is deferred.
     private func updateServer(server: Server, showProgress: Bool) async {
-        guard !isUpdateCancelled() else { return }
+        // Logged because this is otherwise a completely silent no-op: on a cold launch the cached
+        // foreground state can still be false (the scene is `.inactive` until it activates), so an
+        // update enqueued during launch returns here without writing or logging anything, and the
+        // database looks like the fetch failed rather than never having run.
+        guard !isUpdateCancelled() else {
+            Current.Log.verbose(
+                "Skipping database update for server \(server.info.name) - cancelled (foreground: \(isForeground))"
+            )
+            return
+        }
 
         var didFinish = false
         defer {
@@ -429,6 +454,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         do {
             let timer = ProfilingTimer("Step 5 (Areas)")
             await updateAreasDatabase(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 6: Calendars, derived from the states fetched in Step 1 (no extra round-trip).
+        // Must run after Step 2 so the registry is available to resolve display names and hidden
+        // calendars, matching the frontend's `getCalendars`.
+        if let fetchedEntities {
+            await presentProgressToast(.calendars, server: server, showProgress: showProgress)
+            let timer = ProfilingTimer("Step 6 (Calendars)")
+            await Current.calendarsModel().updateModel(fetchedEntities, server: server)
             timer.end()
         }
 
@@ -835,11 +871,15 @@ private struct ProfilingTimer {
     init(_ label: String) {
         self.label = label
         self.startTime = CFAbsoluteTimeGetCurrent()
-        Current.Log.info("🔍 [Profiling] \(label)")
+        #if DEBUG
+        Current.Log.debug("🔍 [Profiling] \(label)")
+        #endif
     }
 
     func end() {
+        #if DEBUG
         let duration = CFAbsoluteTimeGetCurrent() - startTime
-        Current.Log.info("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
+        Current.Log.debug("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
+        #endif
     }
 }

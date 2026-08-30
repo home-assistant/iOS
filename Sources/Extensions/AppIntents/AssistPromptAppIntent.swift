@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
+@available(watchOS 9.4, *)
 struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
     // Carries over shortcuts built with the deprecated SiriKit AssistIntent
     static let intentClassName = "AssistIntent"
@@ -35,72 +36,11 @@ struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
             ).localizedDescription)
         }
 
-        let result = try await AssistPromptRunner(server: server).assist(
+        let result = try await AppIntentServerAPI.assist(
+            server: server,
             prompt: prompt,
             pipelineId: pipeline.pipelineId
         )
         return .result(value: result)
-    }
-}
-
-private final class AssistPromptRunner: NSObject, AssistServiceDelegate {
-    private let server: Server
-    private var assistService: AssistService?
-    private var continuation: CheckedContinuation<String, Error>?
-
-    init(server: Server) {
-        self.server = server
-        super.init()
-    }
-
-    func assist(prompt: String, pipelineId: String?) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
-            let assistService = AssistService(server: server)
-            assistService.delegate = self
-            self.assistService = assistService
-            assistService.assist(source: .text(input: prompt, pipelineId: pipelineId, expectTTS: false))
-        }
-    }
-
-    func didReceiveStreamResponseChunk(_ content: String) {
-        /* no-op */
-    }
-
-    func didReceiveEvent(_ event: AssistEvent) {
-        /* no-op */
-    }
-
-    func didReceiveSttContent(_ content: String) {
-        /* no-op */
-    }
-
-    func didReceiveIntentEndContent(_ content: String) {
-        resume(with: .success(content))
-    }
-
-    func didReceiveGreenLightForAudioInput() {
-        /* no-op */
-    }
-
-    func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        /* no-op */
-    }
-
-    func didReceiveError(code: String, message: String) {
-        resume(with: .failure(ShortcutAppIntentError("\(code) - \(message)")))
-    }
-
-    private func resume(with result: Swift.Result<String, Error>) {
-        guard let continuation else { return }
-        self.continuation = nil
-        assistService = nil
-
-        switch result {
-        case let .success(value):
-            continuation.resume(returning: value)
-        case let .failure(error):
-            continuation.resume(throwing: error)
-        }
     }
 }

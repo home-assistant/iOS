@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -27,6 +28,16 @@ struct SensorDetailView: View {
                 }
                 if let icon = viewModel.icon {
                     SensorDetailLabelRowView(attribute: L10n.SettingsSensors.Detail.icon, value: icon)
+                }
+            }
+
+            if viewModel.showsFocusConfiguration {
+                Section {
+                    NavigationLink {
+                        FocusSettingsView()
+                    } label: {
+                        Label(L10n.SettingsSensors.Detail.configureFocusNames, systemSymbol: .gearshape)
+                    }
                 }
             }
 

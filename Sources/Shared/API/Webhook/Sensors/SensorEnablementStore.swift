@@ -49,6 +49,13 @@ public final class SensorEnablementStore {
         return enabledSensorIDs.contains(uniqueID)
     }
 
+    /// The whole selection in a single read, for callers that would otherwise ask about many sensors
+    /// in a row: every `isEnabled(uniqueID:)` re-reads the allowlist out of the app group defaults.
+    public func enabledUniqueIDs() -> Set<String> {
+        prepareIfNeeded()
+        return enabledSensorIDs
+    }
+
     /// - Returns: whether the stored selection actually changed.
     @discardableResult
     public func setEnabled(_ value: Bool, forUniqueID uniqueID: String) -> Bool {

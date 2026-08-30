@@ -64,6 +64,12 @@ public class ConnectivityWrapper {
     private let stateLock = NSLock()
     private var cachedNetworkState = NetworkState()
 
+    private let notificationLock = NSLock()
+    private var lastNotifiedNetworkType: NetworkType?
+    private var lastNotifiedNetworkState: NetworkState?
+
+    private var pathUpdateTask: Task<Void, Never>?
+
     public func updateLastKnownNetworkState(_ state: NetworkState) {
         stateLock.lock()
         defer { stateLock.unlock() }
@@ -245,16 +251,52 @@ public class ConnectivityWrapper {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: NetworkReachability.didChangeNotification,
+            selector: #selector(networkPathDidUpdate(_:)),
+            name: NetworkReachability.pathDidUpdateNotification,
             object: nil
         )
         #endif
     }
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        Task { [weak self] in
-            await self?.refreshNetworkInformation()
+    @objc private func networkPathDidUpdate(_ note: Notification) {
+        // Path updates are posted on the main thread, so chaining onto the previous one here needs no
+        // further synchronization. Chaining keeps a burst of updates during a transition in order: a
+        // fetch can stay suspended for the length of the fetch timeout, and a newer one finishing first
+        // would otherwise be overwritten by an older, staler result.
+        let previousTask = pathUpdateTask
+        pathUpdateTask = Task { [weak self] in
+            await previousTask?.value
+            await self?.handleNetworkPathUpdate()
+        }
+    }
+
+    /// Refreshes network information for a path update and posts the connectivity-changed notification
+    /// when the network type or the Wi-Fi network the device is on actually changed.
+    ///
+    /// Moving straight from one Wi-Fi network to another keeps the network type at `.wifi`, so the path
+    /// update is the only signal that the cached SSID (and with it the internal/external URL decision)
+    /// no longer describes the network the device is on.
+    func handleNetworkPathUpdate() async {
+        await refreshNetworkInformation()
+        let networkState = lastKnownNetworkState()
+        let networkType = simpleNetworkType()
+
+        // Compared against what was last notified rather than against the cache as it was before the
+        // refresh: any other caller refreshing in the meantime would otherwise make the two equal and
+        // swallow the notification for a network that did change.
+        notificationLock.lock()
+        let didChange = networkState != lastNotifiedNetworkState || networkType != lastNotifiedNetworkType
+        lastNotifiedNetworkState = networkState
+        lastNotifiedNetworkType = networkType
+        notificationLock.unlock()
+
+        guard didChange else { return }
+
+        // Observers update SwiftUI state directly in `onReceive`, so the notification has to arrive on
+        // the main thread rather than on whichever thread the refresh finished on.
+        let notificationName = connectivityDidChangeNotification()
+        await MainActor.run {
+            NotificationCenter.default.post(name: notificationName, object: nil)
         }
     }
 }

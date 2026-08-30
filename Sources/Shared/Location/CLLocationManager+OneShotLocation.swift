@@ -188,7 +188,8 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
     init(
         locationManager: CLLocationManager,
-        timeout: Guarantee<Void>
+        timeout: Guarantee<Void>,
+        cachedLocationExecutor: ((@escaping () -> Void) -> Void)? = nil
     ) {
         precondition(Thread.isMainThread)
 
@@ -220,11 +221,33 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
             self?.checkPotentialLocations(outOfTime: true)
         }
 
-        if let cachedLocation = locationManager.location {
-            let authorization: CLAccuracyAuthorization = locationManager.accuracyAuthorization
-            let potentialLocation = PotentialLocation(location: cachedLocation, accuracyAuthorization: authorization)
-            potentialLocations.append(potentialLocation)
+        // Reading `location`/`accuracyAuthorization` performs synchronous XPC to locationd and
+        // hangs the main thread when the daemon is slow (field hang), so seed the cached
+        // location from a background queue and hop back to the main thread to record it.
+        let executor = cachedLocationExecutor ?? { work in
+            DispatchQueue.global(qos: .userInitiated).async(execute: work)
         }
+        executor { [weak self] in
+            guard let cachedLocation = locationManager.location else { return }
+            let authorization: CLAccuracyAuthorization = locationManager.accuracyAuthorization
+            if Thread.isMainThread {
+                self?.seed(cachedLocation: cachedLocation, accuracyAuthorization: authorization)
+            } else {
+                DispatchQueue.main.async {
+                    self?.seed(cachedLocation: cachedLocation, accuracyAuthorization: authorization)
+                }
+            }
+        }
+    }
+
+    private func seed(cachedLocation: CLLocation, accuracyAuthorization: CLAccuracyAuthorization) {
+        precondition(Thread.isMainThread)
+
+        guard !promise.isResolved else { return }
+        potentialLocations.append(PotentialLocation(
+            location: cachedLocation,
+            accuracyAuthorization: accuracyAuthorization
+        ))
     }
 
     private func checkPotentialLocations(outOfTime: Bool) {

@@ -1,3 +1,4 @@
+import CoreSpotlight
 import PromiseKit
 import Shared
 import SwiftUI
@@ -14,6 +15,7 @@ struct HAApp: App {
                 .toastOverlay()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
+                .onContinueUserActivity(CSSearchableItemActionType) { handleIncoming(userActivity: $0) }
                 // SwiftUI copy of the launch screen; hides the system-splash → first-screen hand-off by
                 // morphing the splash logo into the first screen's logo before fading out.
                 .overlay { LaunchSplashOverlayView(state: .shared) }
@@ -60,11 +62,17 @@ struct HAApp: App {
     /// Routes deep links (`homeassistant://…`) and universal / NFC web links into `IncomingURLHandler` once
     /// the app coordinator is available — replacing the deleted `WebViewSceneDelegate`'s
     /// `scene(_:openURLContexts:)` / `scene(_:continue:)` under the SwiftUI lifecycle.
+    @MainActor
     private func handleIncoming(url: URL) {
+        // Synchronously, before waiting on the coordinator: the link names where to land, so
+        // location-based home switching must not fire for the activation it is opening.
+        LocationBasedServerSwitcher.shared.deepLinkWillOpen()
         Current.sceneManager.appCoordinator.done { IncomingURLHandler(coordinator: $0).handle(url: url) }
     }
 
+    @MainActor
     private func handleIncoming(userActivity: NSUserActivity) {
+        LocationBasedServerSwitcher.shared.deepLinkWillOpen()
         Current.sceneManager.appCoordinator.done {
             IncomingURLHandler(coordinator: $0).handle(userActivity: userActivity)
         }

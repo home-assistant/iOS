@@ -5,11 +5,11 @@ import WatchKit
 #endif
 
 public class WatchBackgroundRefreshScheduler {
-    public func schedule() -> Guarantee<Void> {
+    public func schedule(preferredDate: Date? = nil) -> Guarantee<Void> {
         #if os(watchOS)
         let (promise, seal) = Guarantee<Void>.pending()
 
-        let date = nextFireDate()
+        let date = preferredDate ?? nextFireDate()
 
         WKExtension.shared().scheduleBackgroundRefresh(
             withPreferredDate: date,

@@ -76,7 +76,7 @@
 "component::demo::entity::sensor::thermostat_mode::state::away" = "poza domem";
 "component::device_tracker::entity_component::_::state::home" = "w domu";
 "component::device_tracker::entity_component::_::state::not_home" = "poza domem";
-"component::device_tracker::title" = "Śledzenie urządzeń";
+"component::device_tracker::title" = "Lokalizator";
 "component::ecoforest::entity::sensor::status::state::off" = "wyłączono";
 "component::ecoforest::entity::sensor::status::state::on" = "włączono";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "tryb czuwania";

@@ -12,6 +12,7 @@ struct SettingsServersView: View {
             }
         }
         .navigationTitle(L10n.Settings.ConnectionSection.servers)
+        .listTopContentMargin()
     }
 }
 

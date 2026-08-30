@@ -20,7 +20,7 @@ struct WidgetCustom: Widget {
                     infoProvider: timelineEntry.magicItemInfoProvider,
                     states: timelineEntry.entitiesState,
                     showStates: timelineEntry.showStates
-                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime)
+                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime, widgetKind: .custom)
             } else {
                 emptyView
                     .widgetBackground(Color.clear)
@@ -45,7 +45,7 @@ struct WidgetCustom: Widget {
         }
     }
 
-    private func modelsForWidget(
+    func modelsForWidget(
         _ widget: CustomWidget?,
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetEntityState],
@@ -116,7 +116,13 @@ struct WidgetCustom: Widget {
                 }
             }()
 
-            let interactionType = magicItem.widgetInteractionType
+            // The icon is the entity's control and the rest of the tile opens it, the way the
+            // frontend's tile card behaves. When both halves would run the same thing there is
+            // nothing to split, and the tile stays a single control.
+            let iconInteractionType = magicItem.widgetInteractionType
+            let tapInteractionType = magicItem.widgetTapInteractionType
+            let isSplit = iconInteractionType != tapInteractionType
+            let interactionType = isSplit ? tapInteractionType : iconInteractionType
             Current.Log.verbose(
                 """
                 WidgetCustom: generated item model, widgetId: \(widget.id), itemId: \(magicItem.id), \
@@ -131,22 +137,15 @@ struct WidgetCustom: Widget {
                 ), interactionType: \(String(describing: interactionType))
                 """
             )
-            let showIconBackground = {
-                switch interactionType {
-                case .widgetURL:
-                    return true
-                case let .appIntent(widgetIntentType):
-                    return widgetIntentType != .refresh
-                }
-            }()
-
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: state?.value,
+                area: infoProvider.getAreaName(for: magicItem),
                 interactionType: interactionType,
+                iconInteractionType: isSplit ? iconInteractionType : nil,
                 icon: icon,
-                showIconBackground: showIconBackground,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: textColor ?? Color(uiColor: .label),
                 subtitleColor: state?.valueColor,
                 iconColor: iconColor,

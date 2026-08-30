@@ -31,6 +31,35 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(style, .disconnected)
     }
 
+    /// A deliberate log out has to read as "log back in", not as the expired session the same
+    /// authentication-less connection state means everywhere else.
+    func testEmptyStateStyleUsesLoggedOutVariantAfterLogOut() {
+        let sut = makeSUT()
+        sut.didLogOut = true
+
+        XCTAssertEqual(sut.emptyStateStyle(for: .authInvalid), .loggedOut)
+        XCTAssertEqual(sut.emptyStateStyle(for: .disconnected), .loggedOut)
+    }
+
+    /// Logging out keeps the server registered, so the way back in is the empty state asking for a
+    /// log in rather than the app switching to another server or dropping this one.
+    func testShowLoggedOutStateKeepsServerAndPublishesLoggedOutEmptyState() {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        // Entering the logged-out state parks the web view on a blank page, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.showLoggedOutState()
+
+        XCTAssertTrue(sut.didLogOut)
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .loggedOut)
+        XCTAssertEqual(overlayState.emptyState?.server.identifier, server.identifier)
+    }
+
     func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
         let sut = makeSUT()
         sut.connectionState = .authInvalid
@@ -48,6 +77,52 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertEqual(sut.connectionState, .disconnected)
         XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    /// Going back to a page WebKit kept in its page cache restarts the stand-by loader, but the restored
+    /// frontend already fired its one and only `frontend/loaded` and never fires it again, so the restore
+    /// itself has to report the frontend as loaded or the loader covers a working page forever.
+    func testFrontendRestoredFromPageCacheReportsLoaded() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .connected
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertEqual(overlayState.connectionState, .loaded)
+    }
+
+    /// `connectionState` belongs to the page the user navigated away to, not to the restored one, so a
+    /// connection lost while they were elsewhere must not suppress the restore.
+    func testFrontendRestoredFromPageCacheReportsLoadedEvenAfterTheInterimPageDisconnected() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .loaded)
+        XCTAssertEqual(overlayState.connectionState, .loaded)
+    }
+
+    /// Credentials the server rejected stay rejected across a restore, so the re-authentication empty
+    /// state has to survive it.
+    func testFrontendRestoredFromPageCacheIsIgnoredWhileAuthenticationIsInvalid() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .authInvalid
+        overlayState.connectionState = .unknown
+
+        sut.handleFrontendRestoredFromPageCache()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .unknown)
     }
 
     func testShowEmptyStatePublishesContentWithErrorDetailsButtonWhenLatestLoadErrorExists() {
@@ -578,6 +653,60 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
         XCTAssertNil(sut.loadActiveURLTask)
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    /// The blank page behind the logged-out empty state reads as the wrong URL, so without this the
+    /// next trigger — a settings sheet closing, the app coming back to the foreground, the token
+    /// update the log out itself writes — would navigate back into the server the user just left.
+    func testLoadActiveURLDoesNothingAfterLogOut() {
+        let sut = makeSUT()
+        sut.didLogOut = true
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    /// The cache-clean check is asynchronous, so a log out can land between the two halves of an
+    /// attempt that already passed the guard on the way in.
+    func testLoadActiveURLDoesNothingWhenLogOutLandsDuringCacheCleanCheck() {
+        let sut = makeSUT()
+        websiteDataStoreHandler.completesFrontendAssetCacheCleanImmediately = false
+        sut.loadActiveURLIfNeeded()
+
+        sut.didLogOut = true
+        websiteDataStoreHandler.invokePendingFrontendAssetCacheCompletion(didClean: true)
+
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    func testShowLoggedOutStateCancelsInFlightActiveURLAttempt() {
+        let sut = makeSUT()
+        let inFlight = neverFinishingTask()
+        sut.loadActiveURLTask = inFlight
+        sut.loadActiveURLTaskStartDate = Current.date()
+
+        sut.showLoggedOutState()
+
+        XCTAssertTrue(inFlight.isCancelled)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    func testLoadActiveURLResumesOnceLoggedBackIn() {
+        let sut = makeSUT()
+        sut.didLogOut = true
+        sut.loadActiveURLIfNeeded()
+
+        sut.didLogOut = false
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 1)
+        XCTAssertNotNil(sut.loadActiveURLTask)
+        sut.loadActiveURLTask?.cancel()
     }
 
     func testLoadActiveURLWaitsForFrontendAssetCacheCleanCheckBeforeLoading() async {

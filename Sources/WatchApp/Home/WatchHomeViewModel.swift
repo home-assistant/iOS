@@ -379,6 +379,9 @@ final class WatchHomeViewModel: ObservableObject {
     /// Digests issued with the sync-start reply; stored as the new baseline only after the mirror
     /// actually applies, so a failed sync keeps requesting the same tables.
     private var syncResponseDigests: [String: String]?
+    /// Whether the sync-start reply flagged the payload as compressed. Trusted over the requested
+    /// version: an older phone ignores the version and serves a plain (uncompressed) payload.
+    private var syncResponseCompressed = false
     /// How many chunk requests may be outstanding at once. Overlapping requests hide the
     /// per-message round-trip latency that made the sync strictly serial (one full round trip per
     /// 30 KB chunk).
@@ -393,10 +396,29 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         resetSyncState()
-        // Echo the digests from the last applied mirror so the phone can omit unchanged tables.
-        var content: [String: Any] = [:]
-        if let digests = WatchUserDefaults.shared.databaseMirrorDigests {
-            content[WatchDatabaseMirror.digestsKey] = digests
+        // Advertise the highest mirror version this build understands; the phone answers with the
+        // matching snapshot fidelity (an older phone ignores the key and serves the legacy slice).
+        var content: [String: Any] = [
+            WatchDatabaseMirror.versionKey: WatchDatabaseMirror.fullReferenceVersion,
+        ]
+        // Echo the digests from the last applied mirror so the phone can omit unchanged tables —
+        // minus any table that is empty here, which the phone would otherwise keep omitting forever
+        // (see `digestKeysForEmptyLocalTables`). Pruning is persisted so the repair sticks even if
+        // this sync fails.
+        if var digests = WatchUserDefaults.shared.databaseMirrorDigests {
+            let emptyTables = WatchDatabaseMirror.digestKeysForEmptyLocalTables()
+                .filter { digests[$0] != nil }
+            if !emptyTables.isEmpty {
+                Current.Log
+                    .info("Re-requesting mirrored tables that are empty locally: \(emptyTables.sorted())")
+                for key in emptyTables {
+                    digests[key] = nil
+                }
+                WatchUserDefaults.shared.databaseMirrorDigests = digests
+            }
+            if !digests.isEmpty {
+                content[WatchDatabaseMirror.digestsKey] = digests
+            }
         }
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchDatabaseMirror.rawValue,
@@ -441,6 +463,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncChunks = [:]
         syncNextIndexToRequest = 0
         syncResponseDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
+        syncResponseCompressed = message.content[WatchDatabaseMirror.compressedKey] as? Bool ?? false
         Current.clientEventStore.addEvent(.init(
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
             type: .database
@@ -510,35 +533,66 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func finishDatabaseSync() {
         let chunks = syncChunks
-        let data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
         let responseDigests = syncResponseDigests
+        let isCompressed = syncResponseCompressed
         resetSyncState()
-        let mirror: WatchDatabaseMirror
-        do {
-            mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
-        } catch {
-            failSync(L10n.Watch.Sync.Error.data, detail: "decode failed (\(data.count) bytes): \(error)")
-            return
+        // Assembling, decompressing and decoding the payload — and the apply's full table rewrite —
+        // are real work with the full-reference mirror, so they run off the main actor; only state
+        // updates and the follow-up config pull hop back.
+        Task.detached(priority: .userInitiated) { [weak self] in
+            var data = chunks.keys.sorted().compactMap { chunks[$0] }.reduce(Data(), +)
+            if isCompressed {
+                do {
+                    data = try WatchDatabaseMirror.decompress(data)
+                } catch {
+                    await self?.failSync(
+                        L10n.Watch.Sync.Error.data,
+                        detail: "decompress failed (\(data.count) bytes): \(error)"
+                    )
+                    return
+                }
+            }
+            let mirror: WatchDatabaseMirror
+            do {
+                mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
+            } catch {
+                await self?.failSync(
+                    L10n.Watch.Sync.Error.data,
+                    detail: "decode failed (\(data.count) bytes): \(error)"
+                )
+                return
+            }
+            do {
+                try mirror.apply()
+                // Only a successfully applied mirror advances the delta-sync baseline, and only for
+                // the tables it actually carried — see `mergeDatabaseMirrorDigests`.
+                WatchUserDefaults.shared.mergeDatabaseMirrorDigests(
+                    responseDigests,
+                    carrying: mirror.carriedDigestKeys
+                )
+                Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Apple Watch database sync applied (\(data.count) bytes)",
+                    type: .database
+                ))
+            } catch {
+                await self?.failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
+                return
+            }
+            await self?.finishAppliedDatabaseSync(mirror: mirror)
         }
-        do {
-            try mirror.apply()
-            // Only a successfully applied mirror advances the delta-sync baseline.
-            WatchUserDefaults.shared.databaseMirrorDigests = responseDigests
-            Current.Log.info("Applied watch database mirror (\(data.count) bytes)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Apple Watch database sync applied (\(data.count) bytes)",
-                type: .database
-            ))
-            // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
-            // serversConfigSync exchange kicked off at the start of the reload).
-            WatchServerSync.applyMirroredServers(mirror.servers)
-            // The mirror carries complications too — rebuild widget snapshots now so a reload is another
-            // chance to obtain them if the background context push hasn't delivered them yet.
-            WatchWidgetComplicationSnapshotStore.update()
-        } catch {
-            failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
-            return
-        }
+    }
+
+    /// Main-actor tail of a successfully applied mirror: kick off the server refresh (applied on
+    /// its own queue), widget snapshots and the follow-up config pull.
+    @MainActor
+    private func finishAppliedDatabaseSync(mirror: WatchDatabaseMirror) {
+        // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
+        // serversConfigSync exchange kicked off at the start of the reload).
+        WatchServerSync.applyMirroredServers(mirror.servers)
+        // The mirror carries complications too — rebuild widget snapshots now so a reload is another
+        // chance to obtain them if the background context push hasn't delivered them yet.
+        WatchWidgetComplicationSnapshotStore.update()
         // Reference tables are fresh — now pull the watch config and render everything from the DB.
         setLoadingStatus(L10n.Watch.Home.Sync.syncing)
         pullWatchConfig()
@@ -574,6 +628,7 @@ final class WatchHomeViewModel: ObservableObject {
         syncChunks = [:]
         syncNextIndexToRequest = 0
         syncResponseDigests = nil
+        syncResponseCompressed = false
         syncProgress = nil
     }
 
@@ -659,9 +714,13 @@ final class WatchHomeViewModel: ObservableObject {
     private func updateAreasMode(config: WatchConfig, entitiesPerServer: [String: [HAAppEntity]]) {
         Self.areasModeQueue.async { [weak self] in
             let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
-            let watchEntityIdsByServer = entitiesPerServer.mapValues { entities in
-                let watchEntities = entities.filter { allowedDomains.contains($0.domain) && $0.entityCategory == nil }
-                return Set(watchEntities.map(\.entityId))
+            let watchEntityIdsByServer = entitiesPerServer.reduce(into: [String: Set<String>]()) { result, pair in
+                let (serverId, entities) = pair
+                let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
+                let watchEntities = entities.filter {
+                    $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded)
+                }
+                result[serverId] = Set(watchEntities.map(\.entityId))
             }
             let mode = WatchHomeAreasMode.compute(
                 areas: (try? AppArea.fetchAllAreas()) ?? [],
@@ -671,6 +730,20 @@ final class WatchHomeViewModel: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 self?.areasMode = mode
             }
+        }
+    }
+
+    /// Whether the home screen actually renders area content — the inline area rows or the grouped
+    /// "Areas" navigation row. The empty state text is suppressed when this is true: with no
+    /// configured items the screen still has the areas to browse, so it isn't empty.
+    var showsAreasContent: Bool {
+        switch areasMode {
+        case .hidden:
+            return false
+        case let .inline(areas):
+            return !areas.isEmpty
+        case .grouped:
+            return groupedAreasDestination() != nil
         }
     }
 

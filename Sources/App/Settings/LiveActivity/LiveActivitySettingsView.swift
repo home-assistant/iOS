@@ -89,6 +89,7 @@ struct LiveActivitySettingsView: View {
             }
         }
         .task { await loadActivities() }
+        .listTopContentMargin()
     }
 
     private func syncActivities() {

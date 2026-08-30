@@ -23,8 +23,9 @@ final class WebFrontendOverlayState: ObservableObject {
     /// Catalyst (where the native status-bar view handles it).
     @Published var statusBarColor: UIColor?
 
-    /// Data + actions to render `WebViewEmptyStateView` as a SwiftUI overlay. Built by `WebViewController`,
-    /// which owns the connection state and the actions (retry / settings / error details / re-auth).
+    /// Data + actions to render the empty state as a SwiftUI overlay in `HomeAssistantStandByView`. Built by
+    /// `WebViewController`, which owns the connection state and the actions (retry / settings / error
+    /// details / re-auth).
     struct EmptyStateContent {
         let style: WebViewEmptyStateStyle
         let server: Server

@@ -22,6 +22,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     var statusBarView: UIView?
+    /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
+    var assistZoomAnchorView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
@@ -40,6 +42,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     var connectionState: FrontEndConnectionState = .unknown
+
+    /// Set when the user signed out from the frontend. The server stays registered, so the empty state
+    /// asks for a log in rather than reporting an expired session, until re-authentication succeeds.
+    var didLogOut = false
 
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
@@ -277,6 +283,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         setupWebViewConstraints(statusBarView: statusBarView)
 
+        // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
+        // so the button underneath keeps working.
+        assistZoomAnchorView = AssistZoomAnchorView.install(in: view)
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateWebViewSettingsForNotification),
@@ -324,6 +334,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        }
+
+        // The strip depends on the horizontal size class, which changes with window resizes and
+        // foldables folding/unfolding — not just once per device.
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            updateThemedStatusBar()
         }
     }
 

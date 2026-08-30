@@ -3,18 +3,6 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Drives app Settings presentation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
-/// so that toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear Settings down with the
-/// container it would otherwise be presented from. Settings requested by the frontend external bus is pushed
-/// onto the container's navigation stack; every other entry point (gestures, empty state, …) uses a sheet.
-/// On Catalyst it opens in its own scene.
-final class AppSettingsPresenter: ObservableObject {
-    static let shared = AppSettingsPresenter()
-    @Published var isSheetPresented = false
-    @Published var isPushPresented = false
-    private init() {}
-}
-
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
@@ -42,21 +30,19 @@ struct ContainerView: View {
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
-            coordinator.onShowSettings = { pushOntoNavigationStack in
-                if pushOntoNavigationStack, UIDevice.current.userInterfaceIdiom == .phone {
+            coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
+                // Pushing lands on `ConditionalContainerView`'s compact-only navigation stack, so the
+                // decision reads the same size class it does — from the window, at presentation time.
+                let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
+                if pushOntoNavigationStack, sizeClass == .compact {
                     AppSettingsPresenter.shared.isPushPresented = true
                 } else {
-                    AppSettingsPresenter.shared.isSheetPresented = true
+                    AppSettingsPresenter.shared.presentSettings()
                 }
             }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
             coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
-            coordinator.onSelectServer = { prompt, includeSettings in
-                viewModel.presentServerSelect(prompt: prompt, includeSettings: includeSettings) {
-                    coordinator.completeServerSelection($0)
-                }
-            }
             Current.sceneManager.registerAppCoordinator(coordinator)
             fadeOutLaunchSplashIfNeeded(for: state.screen)
         }
@@ -78,10 +64,6 @@ struct ContainerView: View {
                         .presentationDetents([.medium, .large])
                     #endif
                 }
-            case let .serverSelect(prompt, includeSettings, onSelect):
-                ServerSelectView(prompt: prompt, includeSettings: includeSettings, selectAction: onSelect)
-                    .presentationDetents([.medium, .large])
-                    .presentationBackground(Color(uiColor: .systemBackground))
             }
         }
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in

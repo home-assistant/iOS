@@ -1,48 +1,31 @@
 import AppIntents
 import Foundation
+import Shared
 import WidgetKit
 
+/// How many tiles each widget family holds, and how they are laid out.
+///
+/// The numbers themselves live in the design system's `WidgetTileLayout`, so the gallery and the
+/// widgets agree on them. This is the widget extension's door onto that, plus the one piece that
+/// can't move: App Intents' compile-time collection size.
 enum WidgetFamilySizes {
-    // ATTENTION: Unfortunately these sizes below can't be set dynamically to widgets
-    // consider this as the source of truth
-    static func size(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 3
-        case .systemMedium: return 6
-        case .systemLarge: return 12
-        case .systemExtraLarge, .systemExtraLargePortrait: return 20
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+    static func size(for family: WidgetFamily, capacity: WidgetTileCapacity = .packed) -> Int {
+        WidgetTileLayout.size(for: family, capacity: capacity)
+    }
+
+    /// How many events the calendar widget lists.
+    static func calendarSize(for family: WidgetFamily) -> Int {
+        WidgetTileLayout.calendarSize(for: family)
     }
 
     static func todoListSize(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 3
-        case .systemMedium: return 3
-        case .systemLarge: return 6
-        case .systemExtraLarge, .systemExtraLargePortrait: return 12
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+        WidgetTileLayout.todoListSize(for: family)
     }
 
     // While previewing we want to display tile card style (with padding and border)
     // To do that we can't display the maximum amount of items otherwise we will show 'compressed' size style
     static func sizeForPreview(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return WidgetFamilySizes.size(for: family) - 1
-        case .systemMedium, .systemLarge: return WidgetFamilySizes.size(for: family) - 2
-        case .systemExtraLarge, .systemExtraLargePortrait: return 20
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+        WidgetTileLayout.sizeForPreview(for: family)
     }
 
     @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
@@ -62,91 +45,23 @@ enum WidgetFamilySizes {
 
     /// More than this number: show compact (icon left, text right) version
     static func compactSizeBreakpoint(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 0
-        case .systemMedium: return 2
-        case .systemLarge: return 4
-        case .systemExtraLarge, .systemExtraLargePortrait: return 3
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+        WidgetTileLayout.compactSizeBreakpoint(for: family)
     }
 
     /// More than this number: remove padding and border to save space
     static func compressedBreakpoint(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 2
-        case .systemMedium: return 4
-        case .systemLarge: return 10
-        case .systemExtraLarge, .systemExtraLargePortrait: return 20
-        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
+        WidgetTileLayout.compressedBreakpoint(for: family)
     }
 
     static func columns(family: WidgetFamily, modelCount: Int) -> Int {
-        switch family {
-        case .accessoryCircular, .accessoryInline, .accessoryRectangular:
-            return 1
-        case .systemSmall: return 1
-        case .systemMedium: return 2
-        case .systemLarge:
-            if modelCount <= 2 {
-                // 2 'landscape' actions looks better than 2 'portrait'
-                return 1
-            } else {
-                return 2
-            }
-        case .systemExtraLarge, .systemExtraLargePortrait:
-            if modelCount <= 4 {
-                return 1
-            } else if modelCount <= 15 {
-                // note this is 15 and not 16 - divisibility by 3 here
-                return 3
-            } else {
-                return 4
-            }
-        @unknown default: return 2
-        }
+        WidgetTileLayout.columns(family: family, modelCount: modelCount)
     }
 
-    static func sizeStyle(family: WidgetFamily, modelsCount: Int, rowsCount: Int) -> WidgetBasicSizeStyle {
-        if modelsCount == 1 {
-            return .single
-        }
-
-        let compactBreakpoint = WidgetFamilySizes.compactSizeBreakpoint(for: family)
-        let compressedBreakpoint = WidgetFamilySizes.compressedBreakpoint(for: family)
-
-        let compact = modelsCount > compactBreakpoint
-        let compressed = modelsCount > compressedBreakpoint
-
-        let compactRowCount = compactBreakpoint / WidgetFamilySizes.columns(
-            family: family,
-            modelCount: compactBreakpoint
-        )
-
-        if compressed {
-            return .compressed
-        } else if compact {
-            return .compact
-        } else if compactRowCount >= rowsCount {
-            return .expanded
-        } else {
-            return .regular
-        }
+    static func sizeStyle(family: WidgetFamily, modelsCount: Int, rowsCount: Int) -> WidgetTileSizeStyle {
+        WidgetTileLayout.sizeStyle(family: family, modelsCount: modelsCount, rowsCount: rowsCount)
     }
 
     static func rows(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
-        var perActionIterator = models.makeIterator()
-        return AnyIterator { () -> [WidgetBasicViewModel]? in
-            let column = stride(from: 0, to: count, by: 1)
-                .compactMap { _ in perActionIterator.next() }
-            return column.isEmpty == false ? column : nil
-        }
+        WidgetTileLayout.rows(count: count, models: models)
     }
 }

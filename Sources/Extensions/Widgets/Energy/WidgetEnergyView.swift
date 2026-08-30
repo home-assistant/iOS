@@ -20,7 +20,11 @@ struct WidgetEnergyView: View {
         case .accessoryInline:
             WidgetEnergyAccessoryInlineView(entry: entry)
         default:
-            if !entry.isConfigured || !hasData {
+            // A configured entry always draws its layout, even with nothing to show yet: the figures
+            // and the chart come back empty rather than being replaced by prose. Only an entry the
+            // widget can't read at all — no server URL to reach, no dashboard, or a failed load —
+            // falls back to the message.
+            if !entry.isConfigured || entry.loadFailed || entry.noConnection {
                 emptyView
             } else if family == .systemSmall {
                 WidgetEnergySmallView(entry: entry)
@@ -30,35 +34,27 @@ struct WidgetEnergyView: View {
         }
     }
 
-    /// Whether any home screen layout has something to draw. Without this the medium and large
-    /// families fall through to a card holding nothing but the logo, where the small family at
-    /// least says "no data".
-    private var hasData: Bool {
-        !WidgetEnergyMetric.metrics(for: entry).isEmpty || !entry.chartPoints.isEmpty
+    private var emptyView: some View {
+        WidgetEnergyEmptyContentView(
+            message: WidgetEnergyStyle.emptyStateText(for: entry),
+            retryControl: retryControl
+        )
     }
 
-    private var emptyView: some View {
-        // Mirrors `emptyStateText`: a missing energy dashboard is the one empty state a reload
-        // can't fix, so it's also the one that doesn't offer the button.
-        let canRetry = entry.isConfigured || entry.loadFailed
-        return VStack(spacing: DesignSystem.Spaces.one) {
-            Text(WidgetEnergyStyle.emptyStateText(isConfigured: entry.isConfigured, loadFailed: entry.loadFailed))
-                .font(.footnote)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            if canRetry {
+    /// A missing energy dashboard is the one empty state a reload can't fix, so it's also the one
+    /// that doesn't offer the button. An unreachable server does get it: the URL configuration, or
+    /// the network, may have been sorted out since the entry was built.
+    private var retryControl: WidgetEnergyEmptyContentView.ControlContent? {
+        guard entry.loadFailed || entry.noConnection else { return nil }
+        return { label in
+            AnyView(
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
-                    Image(systemSymbol: .arrowClockwiseCircle)
-                        .foregroundStyle(.secondary)
-                        .font(DesignSystem.Font.title)
+                    label
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(L10n.Widgets.Energy.refreshTitle)
-            }
+            )
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .widgetBackground(WidgetEnergyStyle.background)
     }
 }
 
@@ -68,6 +64,11 @@ struct WidgetEnergyView: View {
 } timeline: {
     WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
+    // No URL to reach the server with: the URL configuration message, with a retry.
+    WidgetEnergyEntry(period: .today, isConfigured: false, noConnection: true)
+    // Configured but the statistics request failed: the message, with a retry.
+    WidgetEnergyEntry(period: .today, isConfigured: true, loadFailed: true)
+    // Configured but nothing reported yet: empty figures, not prose.
     WidgetEnergyEntry(period: .today, isConfigured: true)
 }
 
@@ -75,6 +76,8 @@ struct WidgetEnergyView: View {
 #Preview("Empty medium", as: .systemMedium) {
     WidgetEnergy()
 } timeline: {
+    WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, loadFailed: true)
+    WidgetEnergyEntry(period: .today, isConfigured: false, noConnection: true)
     WidgetEnergyEntry(period: .today, isConfigured: true)
 }

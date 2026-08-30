@@ -66,6 +66,15 @@ struct DeeplinkView: View {
                     }
                 }
             }
+            .modify { view in
+                if #available(iOS 17.0, *) {
+                    view
+                        .listSectionSpacing(.zero)
+                        .contentMargins(.top, 0)
+                } else {
+                    view
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 Button {
                     viewModel.copyToClipboard()
@@ -91,6 +100,11 @@ struct DeeplinkView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    DeeplinkView(viewModel: DeeplinkViewModel(entityId: "light.mesa_de_jantar", serverName: "Home"))
+    Color.clear
+        .sheet(isPresented: .constant(true)) {
+            DeeplinkView(viewModel: DeeplinkViewModel(entityId: "light.mesa_de_jantar", serverName: "Home"))
+                .presentationDetents([.medium, .large])
+        }
 }

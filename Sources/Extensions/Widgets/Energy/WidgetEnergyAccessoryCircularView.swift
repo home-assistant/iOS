@@ -7,8 +7,6 @@ import WidgetKit
 /// otherwise the grid flow.
 @available(iOS 17, *)
 struct WidgetEnergyAccessoryCircularView: View {
-    @Environment(\.widgetRenderingMode) private var renderingMode
-
     let entry: WidgetEnergyEntry
 
     private var metric: WidgetEnergyMetric? {
@@ -16,36 +14,7 @@ struct WidgetEnergyAccessoryCircularView: View {
     }
 
     var body: some View {
-        ZStack {
-            AccessoryWidgetBackground()
-            content
-        }
-        .widgetBackground(Color.clear)
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        if let metric {
-            VStack(spacing: 0) {
-                Text(verbatim: metric.icon.unicode)
-                    .font(.custom(MaterialDesignIcons.familyName, size: 13))
-                Text(verbatim: metric.value)
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                if let unit = metric.unit {
-                    Text(verbatim: unit)
-                        .font(.system(size: 9))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .lineLimit(1)
-            .minimumScaleFactor(0.5)
-            .padding(DesignSystem.Spaces.half)
-            .foregroundStyle(WidgetEnergyStyle.accessoryColor(metric.color, mode: renderingMode))
-        } else {
-            Text(verbatim: MaterialDesignIcons.solarPowerIcon.unicode)
-                .font(.custom(MaterialDesignIcons.familyName, size: 20))
-                .foregroundStyle(.secondary)
-        }
+        WidgetEnergyAccessoryCircularContentView(stat: metric?.designSystemModel())
     }
 }
 

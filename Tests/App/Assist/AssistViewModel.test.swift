@@ -20,6 +20,7 @@ final class AssistViewModelTests: XCTestCase {
 
     private func makeSut(
         autoStartRecording: Bool = false,
+        focusInputOnAppear: Bool = false,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) -> AssistViewModel {
@@ -29,6 +30,7 @@ final class AssistViewModelTests: XCTestCase {
             audioPlayer: mockAudioPlayer,
             assistService: mockAssistService,
             autoStartRecording: autoStartRecording,
+            focusInputOnAppear: focusInputOnAppear,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer
         )
@@ -52,6 +54,29 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
         XCTAssertFalse(sut.autoStartRecording)
         XCTAssertEqual(sut.inputText, "")
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testOnAppearFocusInput() async throws {
+        sut = makeSut(focusInputOnAppear: true)
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+        XCTAssertFalse(sut.focusInputOnAppear)
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testOnAppearAutoStartRecordingIgnoresFocusInput() async throws {
+        sut = makeSut(autoStartRecording: true, focusInputOnAppear: true)
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
 
@@ -421,6 +446,79 @@ final class AssistViewModelTests: XCTestCase {
         sut.onDisappear()
 
         XCTAssertTrue(mockSynthesizer.stopCalled)
+    }
+
+    // MARK: - Request history
+
+    @MainActor
+    func testRecallPreviousRequest_withNoHistory_doesNothing() {
+        sut.inputText = "draft"
+
+        XCTAssertFalse(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "draft")
+    }
+
+    @MainActor
+    func testRecallPreviousRequest_walksBackwardsAndStopsAtTheOldest() {
+        send("first")
+        send("second")
+
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "second")
+
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "first")
+
+        XCTAssertFalse(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "first")
+    }
+
+    @MainActor
+    func testRecallNextRequest_walksForwardsAndRestoresTheDraft() {
+        send("first")
+        send("second")
+        sut.inputText = "half typed"
+
+        sut.recallPreviousRequest()
+        sut.recallPreviousRequest()
+        XCTAssertEqual(sut.inputText, "first")
+
+        XCTAssertTrue(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "second")
+
+        XCTAssertTrue(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "half typed")
+
+        XCTAssertFalse(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "half typed")
+    }
+
+    @MainActor
+    func testRecallNextRequest_withoutWalkingBackFirst_doesNothing() {
+        send("first")
+        sut.inputText = "draft"
+
+        XCTAssertFalse(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "draft")
+    }
+
+    @MainActor
+    func testSendingARequest_startsTheHistoryWalkOver() {
+        send("first")
+        sut.recallPreviousRequest()
+        XCTAssertEqual(sut.inputText, "first")
+
+        send("second")
+
+        // Walking again starts from the newest request rather than continuing where it left off.
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "second")
+    }
+
+    @MainActor
+    private func send(_ text: String) {
+        sut.inputText = text
+        sut.assistWithText()
     }
 
     @MainActor

@@ -81,15 +81,10 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same mock, and
+    /// the card never flips from a column of "?" to readings as it loads.
     func placeholder(in context: Context) -> WidgetSensorsEntry {
-        let count = WidgetFamilySizes.size(for: context.family)
-        let sensors = stride(from: 0, to: count, by: 1).map { index in
-            WidgetSensorsEntry.SensorData(id: String(index), key: "?", value: "?")
-        }
-
-        return WidgetSensorsEntry(
-            sensorData: sensors
-        )
+        Self.previewSample(in: context)
     }
 
     private func entry(for configuration: WidgetSensorsAppIntent, in context: Context) async throws -> Entry {
@@ -120,7 +115,9 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
-            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon().name
+            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon().name,
+            entityId: sensor.entityId,
+            serverId: sensor.serverId
         )
     }
 
@@ -151,6 +148,10 @@ struct WidgetSensorsEntry: TimelineEntry {
         var value: String
         var unitOfMeasurement: String?
         var icon: String?
+        /// Placeholder and gallery samples have no real entity behind them, so they carry no
+        /// identifiers and the tile falls back to a non-navigating interaction.
+        var entityId: String?
+        var serverId: String?
     }
 }
 

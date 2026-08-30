@@ -34,82 +34,61 @@ struct WidgetTodoListView: View {
     let isEmpty: Bool
 
     var body: some View {
-        if isEmpty {
-            emptyStateView
-        } else {
-            contentView
-        }
-    }
-
-    private var emptyStateView: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Image(systemSymbol: .checklistChecked)
-                .font(.system(size: 32))
-                .foregroundStyle(.haPrimary)
-            Text(verbatim: L10n.Widgets.TodoList.title)
-                .font(DesignSystem.Font.callout.bold())
-            Text(verbatim: L10n.Widgets.TodoList.selectList)
-                .font(DesignSystem.Font.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var contentView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            headerView
-            itemsListView
-            Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .overlay(alignment: .bottomTrailing) {
-            if widgetFamily != .systemSmall {
-                Image(.logo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 20, height: 20)
-                    .padding(DesignSystem.Spaces.half)
-            }
-        }
-    }
-
-    private var headerView: some View {
-        HStack {
-            if widgetFamily == .systemSmall {
-                Text(verbatim: title.first.map(String.init) ?? "")
-                    .padding(DesignSystem.Spaces.one)
-                    .background(Color(uiColor: .tertiarySystemFill))
-                    .foregroundStyle(Color(uiColor: .tertiaryLabel))
-                    .clipShape(.circle)
-                Spacer()
-            } else {
-                Text(title)
-                    .font(DesignSystem.Font.title3.bold())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-            }
-            HStack(spacing: DesignSystem.Spaces.half) {
-                Button(intent: TodoListRefreshAppIntent()) {
-                    Image(systemSymbol: .arrowClockwiseCircle)
-                        .foregroundStyle(.secondary)
-                        .font(DesignSystem.Font.title)
-                }
-                .buttonStyle(.plain)
-                if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
-                    Link(destination: addItemURL.withWidgetAuthenticity()) {
-                        Image(systemSymbol: .plusCircleFill)
-                            .foregroundStyle(.haPrimary)
-                            .font(DesignSystem.Font.title)
+        WidgetTodoListContentView(
+            title: title,
+            items: items.map(designSystemModel(for:)),
+            isConfigured: !isEmpty,
+            family: widgetFamily,
+            strings: .init(
+                title: L10n.Widgets.TodoList.title,
+                selectList: L10n.Widgets.TodoList.selectList,
+                allDone: L10n.Widgets.TodoList.allDone
+            ),
+            logo: Image(.logo),
+            refreshControl: { label in
+                AnyView(
+                    Button(intent: TodoListRefreshAppIntent()) {
+                        label
                     }
-                } else {
-                    Image(systemSymbol: .plusCircleFill)
-                        .foregroundStyle(.haPrimary)
-                        .font(DesignSystem.Font.title)
+                    .buttonStyle(.plain)
+                )
+            },
+            addControl: { label in
+                guard let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) else {
+                    return AnyView(label)
                 }
+                return AnyView(Link(destination: addItemURL.withWidgetAuthenticity()) { label })
+            },
+            completeControl: { item, control in
+                AnyView(
+                    Button(intent: TodoItemCompleteAppIntent(
+                        serverId: serverId,
+                        listId: listId,
+                        itemId: item.id
+                    )) {
+                        control
+                    }
+                    .buttonStyle(.plain)
+                )
+            },
+            itemContent: { _, content in
+                guard let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) else {
+                    return AnyView(EmptyView())
+                }
+                return AnyView(Link(destination: openListURL.withWidgetAuthenticity()) { content })
             }
-        }
-        .padding(.bottom, DesignSystem.Spaces.half)
+        )
+    }
+
+    /// The drawing half of an item: what it says and, in words, when it is due.
+    private func designSystemModel(for item: TodoListItem) -> WidgetTodoItemModel {
+        let due = dueDisplay(for: item)
+        return .init(
+            id: item.uid,
+            summary: item.summary,
+            dueText: due?.text,
+            isOverdue: due?.isPastDateOnly ?? false
+        )
     }
 
     struct DueDisplay {
@@ -170,56 +149,64 @@ struct WidgetTodoListView: View {
         guard let first = text.first else { return text }
         return String(first).uppercased() + text.dropFirst()
     }
+}
 
-    private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            if items.isEmpty {
-                Text(verbatim: L10n.Widgets.TodoList.allDone)
-                    .font(DesignSystem.Font.body)
-                    .foregroundStyle(.secondary)
-                    .frame(height: 40)
-            } else {
-                ForEach(items, id: \.uid) { item in
-                    HStack(alignment: .top) {
-                        Button(intent: TodoItemCompleteAppIntent(
-                            serverId: serverId,
-                            listId: listId,
-                            itemId: item.uid
-                        )) {
-                            Image(systemSymbol: .circle)
-                                .font(DesignSystem.Font.title3)
-                                .foregroundStyle(.haPrimary)
-                                .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
-                        }
-                        .buttonStyle(.plain)
-                        if let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
-                            Link(destination: openListURL.withWidgetAuthenticity()) {
-                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
-                                    Text(item.summary)
-                                        .font(DesignSystem.Font.body)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                    if let dueDisplay = dueDisplay(for: item) {
-                                        HStack(spacing: DesignSystem.Spaces.half) {
-                                            Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                                ofSize: .init(width: 12, height: 12),
-                                                color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
-                                                    .secondaryLabel
-                                            ))
-                                            Text(dueDisplay.text)
-                                                .font(DesignSystem.Font.caption2)
-                                                .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
-                                                .lineLimit(1)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .topLeading)
-                }
-            }
-        }
+@available(iOS 17, *)
+private enum WidgetTodoListPreviewSample {
+    /// A mix of the three row shapes: no due date, one still to come, and one already past — which
+    /// is the only one drawn in orange.
+    static func items(now: Date = Date()) -> [TodoListItem] {
+        [
+            .init(summary: "Coffee beans", uid: "preview-0", status: "needs_action", description: nil),
+            .init(
+                summary: "Book a table",
+                uid: "preview-1",
+                status: "needs_action",
+                description: nil,
+                dueRaw: "2026-01-01",
+                due: now.addingTimeInterval(24 * 60 * 60)
+            ),
+            .init(
+                summary: "Water the plants",
+                uid: "preview-2",
+                status: "needs_action",
+                description: nil,
+                dueRaw: "2026-01-01",
+                due: now.addingTimeInterval(-24 * 60 * 60)
+            ),
+        ]
+    }
+
+    static func entry(family: WidgetFamily, configured: Bool = true) -> WidgetTodoListEntry {
+        WidgetTodoListEntry(
+            date: Date(),
+            serverId: "preview-server",
+            listId: configured ? "preview-list" : "",
+            listTitle: "Groceries",
+            items: configured ? items() : [],
+            family: family
+        )
     }
 }
+
+@available(iOS 17, *)
+#Preview("Medium", as: .systemMedium, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemMedium)
+})
+
+@available(iOS 17, *)
+#Preview("Small", as: .systemSmall, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemSmall)
+})
+
+// No list picked yet: the prompt rather than the list.
+@available(iOS 17, *)
+#Preview("Not configured", as: .systemMedium, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListPreviewSample.entry(family: .systemMedium, configured: false)
+})

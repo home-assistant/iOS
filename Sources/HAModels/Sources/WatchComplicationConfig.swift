@@ -46,6 +46,11 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public var entityDisplayName: String?
     public var iconName: String?
     public var iconColor: String?
+    /// Hex color for the complication's text. Global (not per-size), like `iconColor`: a color is a
+    /// property of the complication, not of one of its sizes. A `FamilyOptions.textColor` still
+    /// overrides it for its own size, so configs saved while the color was per-size only render
+    /// unchanged.
+    public var textColor: String?
     /// Attribute used for a gauge/ring value; `nil` uses the entity state. Only meaningful when numeric.
     public var gaugeAttribute: String?
     /// Attribute whose value is shown as the complication's text (and used as the gauge basis when no
@@ -110,7 +115,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var tint: String?
         /// Raw value of `GaugeStyle`; nil defaults to `.open`. Only meaningful for circular.
         public var gaugeStyle: String?
-        /// Hex color for the value/text; nil uses the default (primary) color.
+        /// Per-size override for the complication's text color; nil falls back to the config-wide
+        /// `textColor`. Only configs saved while the color was per-size only still carry one — the
+        /// editor writes the config-wide color now.
         public var textColor: String?
         /// Per-slot customization, keyed by `ComplicationSlot.rawValue`. A missing slot (or a nil
         /// field inside one) falls back to the legacy flags above and the slot defaults, so configs
@@ -150,7 +157,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
-        case entityId, entityDisplayName, iconName, iconColor
+        case entityId, entityDisplayName, iconName, iconColor, textColor
         case gaugeAttribute, valueAttribute, valuePrecision, unitOverride, gaugeMin, gaugeMax
         case showValue, showUnit, showWhenInactive, showMin, showMax
         case customTextTemplate, customGaugeTemplate, sortOrder, families, isCustomized
@@ -167,6 +174,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         entityDisplayName: String? = nil,
         iconName: String? = nil,
         iconColor: String? = nil,
+        textColor: String? = nil,
         gaugeAttribute: String? = nil,
         valueAttribute: String? = nil,
         valuePrecision: Int? = nil,
@@ -196,6 +204,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.entityDisplayName = entityDisplayName
         self.iconName = iconName
         self.iconColor = iconColor
+        self.textColor = textColor
         self.gaugeAttribute = gaugeAttribute
         self.valueAttribute = valueAttribute
         self.valuePrecision = valuePrecision
@@ -233,7 +242,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// The templates count too: a template-only color setup used to read as "off", hiding the very
     /// template fields that were driving the complication's colors.
     public func usesCustomColors() -> Bool {
-        if iconColor != nil { return true }
+        if iconColor != nil || textColor != nil { return true }
         if families?.values.contains(where: { $0.tint != nil || $0.textColor != nil }) == true { return true }
         return [customGaugeColorTemplate, customIconColorTemplate, customTextColorTemplate]
             .contains { !($0 ?? "").isEmpty }
@@ -243,6 +252,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// keep tinting the complication (and would read back as the toggle being on).
     public mutating func clearCustomColors() {
         iconColor = nil
+        textColor = nil
         customGaugeColorTemplate = nil
         customIconColorTemplate = nil
         customTextColorTemplate = nil
@@ -258,15 +268,16 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         name ?? entityDisplayName ?? entityId ?? "Complication"
     }
 
-    /// The name rendered on the complication face — what the `{name}` formula token resolves to.
-    /// Entity complications always show the entity's name here: the complication's own `name` only
-    /// labels it in the iOS list and the watch gallery (see `displayName`). Template complications
-    /// have no entity, so the complication name stands in — via `displayName`, so a missing name
-    /// still renders its non-empty "Complication" fallback instead of a blank title.
+    /// The static part of the name rendered on the complication face — what the `{name}` formula
+    /// token resolves to. Entity complications show the entity's name. The complication's own
+    /// `name` NEVER renders on the face: it only labels the config in the iOS list and the watch
+    /// gallery (see `displayName`). Template complications resolve their on-face text from the
+    /// rendered "Display name" template instead, so their static face name is empty and every
+    /// render surface substitutes the rendered result.
     public var faceName: String {
         switch kind {
         case .entity: return entityDisplayName ?? entityId ?? ""
-        case .customTemplate: return displayName
+        case .customTemplate: return ""
         }
     }
 
@@ -385,9 +396,25 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         families?[family.rawValue]?.tint ?? iconColor
     }
 
-    /// The value/text color for a family, or nil to use the default (primary) color.
+    /// The value/text color for a family, or nil to use the default (primary) color: the per-size
+    /// override when a config still carries one, else the complication's own color.
+    ///
+    /// The fallback is the point. Without it a color picked while one size was selected left every
+    /// other size drawing the face default — set the color on circular, add the complication to a
+    /// corner slot, and it rendered white.
     public func textColor(for family: Family) -> String? {
-        families?[family.rawValue]?.textColor
+        families?[family.rawValue]?.textColor ?? textColor
+    }
+
+    /// Sets the complication's text color, dropping the per-size overrides an older config may
+    /// carry — one left behind would keep that size on its old color and make the picker a lie again.
+    public mutating func setTextColor(_ hex: String?) {
+        textColor = hex
+        families = families?.mapValues { options in
+            var options = options
+            options.textColor = nil
+            return options
+        }
     }
 
     /// A slot's per-slot text color override (hex), or nil to fall back to the family's text color.
@@ -451,6 +478,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// The default content per slot. Entity kind uses only on-device tokens — never a template
     /// (server-side rendering is admin-only); template kind routes the value through the config's
     /// text template. Subtitle/bottom text defaults only matter once the user shows those slots.
+    ///
+    /// Template complications render exactly one text — the display-name template, in the value
+    /// slot — so their title/subtitle default to empty: the `{name}` token resolves to the same
+    /// rendered text, and defaulting the title to it would duplicate the value right above itself
+    /// (while the pre-fix behavior rendered the list-only complication name, which never belongs
+    /// on the face).
     public func defaultFormula(for slot: ComplicationSlot, family: Family) -> ComplicationFormula {
         let valuePart: ComplicationFormula.Part = kind == .customTemplate
             ? .template(customTextTemplate ?? "")
@@ -459,6 +492,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case .icon:
             return ComplicationFormula(parts: [])
         case .title where family == .inline:
+            // Template kind: name and value both resolve to the rendered display-name template, so
+            // the single value part stands in for either legacy flag being on.
+            if kind == .customTemplate {
+                let showsLine = showsName(for: .inline) || showsValue(for: .inline)
+                return ComplicationFormula(parts: showsLine ? [valuePart] : [])
+            }
             // Inline joined name and value per the legacy flags, so name-only / value-only
             // combinations keep rendering exactly as before.
             var parts: [ComplicationFormula.Part] = []
@@ -468,10 +507,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
                 parts.append(valuePart)
             }
             return ComplicationFormula(parts: parts)
-        case .title:
-            return ComplicationFormula(parts: [.entityName])
-        case .subtitle:
-            return ComplicationFormula(parts: [.entityName])
+        case .title, .subtitle:
+            return ComplicationFormula(parts: kind == .customTemplate ? [] : [.entityName])
         case .value, .bottomText:
             return ComplicationFormula(parts: [valuePart])
         }

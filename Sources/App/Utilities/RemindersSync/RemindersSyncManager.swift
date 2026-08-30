@@ -150,9 +150,12 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// The user's Reminders lists, for the configuration picker.
-    func reminderLists() -> [EKCalendar] {
-        eventStore.calendars(for: .reminder)
-            .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+    func reminderLists() async -> [EKCalendar] {
+        let store = eventStore
+        return await Self.eventStoreAccess {
+            store.calendars(for: .reminder)
+                .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        }
     }
 
     func syncNow() {
@@ -232,6 +235,34 @@ final class RemindersSyncManager: ObservableObject {
         }
     }
 
+    /// Runs a synchronous `EKEventStore` operation on a background thread instead of the main
+    /// actor. Store-level calls like `calendar(withIdentifier:)`, `calendars(for:)` and
+    /// `commit()` are synchronous XPC round-trips to the Reminders daemon; on a cold launch the
+    /// first of them additionally waits for the daemon connection to come up, which blocked the
+    /// main thread for over a second (UIKit-runloop hang reports with the whole hang inside
+    /// `-[EKEventStore calendarWithIdentifier:]`).
+    ///
+    /// `EKEventStore` itself is thread-safe, and the `EKCalendar`/`EKReminder` objects involved
+    /// are never used from two threads at once: the caller awaits the detached task, then uses
+    /// the result back on the main actor — the same serialized handoff that
+    /// `fetchReminders(matching:)` already performs with its internally-fetched reminders.
+    /// EventKit types aren't `Sendable`, so the closure and result cross the task boundary in an
+    /// `@unchecked Sendable` box; the strictly serialized handoff is what makes that safe.
+    private nonisolated static func eventStoreAccess<T>(
+        _ access: @escaping () -> T
+    ) async -> T {
+        let boxedAccess = UncheckedSendableBox(value: access)
+        return await Task.detached {
+            UncheckedSendableBox(value: boxedAccess.value())
+        }.value.value
+    }
+
+    /// See `eventStoreAccess`: transfers one non-`Sendable` value across a task boundary where
+    /// access is strictly serialized by the surrounding `await`.
+    private struct UncheckedSendableBox<Value>: @unchecked Sendable {
+        let value: Value
+    }
+
     /// Runs synchronous GRDB access on a background thread instead of the main actor. The
     /// 0xdead10cc termination this sync used to hit showed the main thread blocked in a commit's
     /// `fsync`: it couldn't service the `didEnterBackground` notification that suspends GRDB and
@@ -246,6 +277,34 @@ final class RemindersSyncManager: ObservableObject {
         _ access: @escaping @Sendable () -> T
     ) async -> T {
         await Task.detached { access() }.value
+    }
+
+    /// Snapshotting every todo item and stored link is pure value work, and running it on the main
+    /// actor alongside the rest of the sync is what froze the UI on a large list. `EKReminder`
+    /// snapshots deliberately stay on the actor: EventKit objects aren't safe to read off-thread.
+    private nonisolated static func planInputs(
+        todoItems: [TodoListItem],
+        storedLinks: [RemindersSyncItemLink],
+        features: TodoListEntityFeature?
+    ) async -> ([String: RemindersSyncItemSnapshot], [RemindersSyncPlanner.LinkState]) {
+        // Detached rather than relying on `nonisolated async` hopping executors on its own, which is
+        // a rule that has changed between language modes. `databaseAccess` above does the same.
+        await Task.detached {
+            let todoSnapshots = Dictionary(
+                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            let links = storedLinks
+                .map(RemindersSyncPlanner.LinkState.init(link:))
+                .map { link in
+                    RemindersSyncPlanner.LinkState(
+                        todoItemUid: link.todoItemUid,
+                        reminderId: link.reminderId,
+                        snapshot: link.snapshot.trimmed(to: features)
+                    )
+                }
+            return (todoSnapshots, links)
+        }.value
     }
 
     /// Counterpart to `LifecycleManager`'s suspend-on-background: after the sync touches the
@@ -263,7 +322,11 @@ final class RemindersSyncManager: ObservableObject {
             Current.Log.error("Reminders sync skipped, no server/API for \(config.serverId)")
             return
         }
-        guard let calendar = eventStore.calendar(withIdentifier: config.reminderListId) else {
+        // Resolved off the main thread: this is the sync's first EventKit call, and cold-launch
+        // daemon startup made it hang the main thread (see `eventStoreAccess`).
+        let store = eventStore
+        let listId = config.reminderListId
+        guard let calendar = await Self.eventStoreAccess({ store.calendar(withIdentifier: listId) }) else {
             Current.Log.error("Reminders sync skipped, list \(config.reminderListName) no longer exists")
             return
         }
@@ -273,25 +336,18 @@ final class RemindersSyncManager: ObservableObject {
             let features = await todoListFeatures(server: server, entityId: config.todoEntityId)
             let todoItems = try await fetchTodoItems(api: api, listId: config.todoEntityId)
             let reminders = await fetchReminders(in: calendar)
-            let todoSnapshots = Dictionary(
-                todoItems.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0).trimmed(to: features)) },
-                uniquingKeysWith: { first, _ in first }
-            )
             let remindersById = Dictionary(
                 reminders.map { ($0.calendarItemIdentifier, $0) },
                 uniquingKeysWith: { first, _ in first }
             )
 
             let configId = config.id
-            let links = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
-                .map(RemindersSyncPlanner.LinkState.init(link:))
-                .map { link in
-                    RemindersSyncPlanner.LinkState(
-                        todoItemUid: link.todoItemUid,
-                        reminderId: link.reminderId,
-                        snapshot: link.snapshot.trimmed(to: features)
-                    )
-                }
+            let storedLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
+            let (todoSnapshots, links) = await Self.planInputs(
+                todoItems: todoItems,
+                storedLinks: storedLinks,
+                features: features
+            )
             details = try await applyPlan(
                 config: config,
                 api: api,
@@ -378,7 +434,11 @@ final class RemindersSyncManager: ObservableObject {
         }
 
         if needsCommit {
-            try eventStore.commit()
+            // Saves and removals above only stage changes (`commit: false`); this is the XPC
+            // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
+            // spelled out because PromiseKit's `Result<T>` shadows it in this file.
+            let store = eventStore
+            try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
         }
 
         if !createdTodoItemReminderIds.isEmpty {

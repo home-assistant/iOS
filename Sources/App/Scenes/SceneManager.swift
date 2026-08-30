@@ -34,6 +34,17 @@ enum OpenSource {
         case .deeplink: return L10n.Alerts.OpenUrlFromDeepLink.message(urlString)
         }
     }
+
+    /// The copy shown above the server picker when the URL arrived without a server to open it on. The URL
+    /// stays out of the sentence so the picker can show it as a pill.
+    func serverSelectPrompt(with urlString: String) -> ServerSelectPrompt {
+        switch self {
+        case .notification:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromNotification.selectServer, link: urlString)
+        case .deeplink:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromDeepLink.selectServer, link: urlString)
+        }
+    }
 }
 
 protocol AppCoordinator: AnyObject {
@@ -50,7 +61,10 @@ protocol AppCoordinator: AnyObject {
     /// Unlike `open(server:)`, activating the already-active server is not a no-op: the frontend is sent
     /// back to the Home Assistant root, so re-activating a server always recovers from a stuck screen.
     func activate(server: Server)
-    func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void)
+    /// Asks the user which server an action applies to, using the Settings sheet's compact server picker.
+    /// `zoomsFromStandBy` is only set by the stand-by view's server pill, the one entry point the sheet has
+    /// something to zoom out of; everywhere else the sheet slides up as usual.
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void)
     func presentInvitation(url: URL?)
     func setup()
     func open(
@@ -81,6 +95,11 @@ extension AppCoordinator {
 
     func showSettings() {
         showSettings(pushOntoNavigationStack: false)
+    }
+
+    /// The picker as every entry point but the stand-by pill wants it: sliding up, not zooming.
+    func selectServer(prompt: ServerSelectPrompt?, completion: @escaping (Server) -> Void) {
+        selectServer(prompt: prompt, zoomsFromStandBy: false, completion: completion)
     }
 
     /// Convenience matching the old default arguments (`skipConfirm`/`avoidUnnecessaryReload` = false).

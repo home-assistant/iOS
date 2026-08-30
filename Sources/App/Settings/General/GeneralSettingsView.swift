@@ -49,6 +49,7 @@ struct GeneralSettingsView: View {
             }
         }
         .id(redrawHelper)
+        .listTopContentMargin()
     }
 
     @ViewBuilder

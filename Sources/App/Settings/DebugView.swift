@@ -7,6 +7,7 @@ import XCGLogger
 
 struct DebugView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showShareSheet = false
     @State private var logsURL: URL?
@@ -175,6 +176,7 @@ struct DebugView: View {
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
         }
+        .listTopContentMargin()
     }
 
     private func forceAppRestartAfterKeychainDeletion() {
@@ -365,6 +367,15 @@ struct DebugView: View {
                 )
             }
 
+            NavigationLink {
+                CalendarsDebugServerListView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .calendar),
+                    title: L10n.Settings.Debugging.Calendars.title
+                )
+            }
+
             #if DEBUG
             NavigationLink {
                 KeychainExplorerView()
@@ -479,7 +490,7 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
-            if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
+            if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar
                 }, set: { newValue in

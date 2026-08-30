@@ -25,7 +25,7 @@ extension WebViewController {
             return
         }
 
-        if Current.location.permissionStatus == .notDetermined, connection.hasNonHTTPSURLOptions {
+        if Current.location.permissionStatus() == .notDetermined, connection.hasNonHTTPSURLOptions {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
         } else if connection.connectionAccessSecurityLevel == .undefined {

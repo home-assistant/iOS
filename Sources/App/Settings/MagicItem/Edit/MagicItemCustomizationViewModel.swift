@@ -6,17 +6,6 @@ final class MagicItemCustomizationViewModel: ObservableObject {
     @Published var item: MagicItem
     @Published var info: MagicItem.Info?
 
-    // Navigation action data
-    @Published var navigationPathAction = ""
-
-    // Assist action data
-    @Published var selectedPipelineId: String?
-    @Published var selectedServerIdForPipeline: String?
-    @Published var startListeningAssistAction = true
-
-    // Run script action data
-    @Published var selectedEntity: HAAppEntity?
-
     private let itemProvider = Current.magicItemProvider()
 
     init(item: MagicItem) {

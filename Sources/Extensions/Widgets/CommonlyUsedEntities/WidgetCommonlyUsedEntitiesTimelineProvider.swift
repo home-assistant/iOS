@@ -25,18 +25,6 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
-    func makePlaceholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
-        .init(
-            date: .now,
-            items: [],
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
-            showLastUpdateTime: false,
-            showStates: false,
-            serverName: nil
-        )
-    }
-
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -109,12 +97,11 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             }
         }
 
-        let filteredEntities = entities.filter { entityId in
-            guard let domain = Domain(entityId: entityId) else { return false }
-            return Domain.commonlyUsedWidgetSupported.contains(domain)
-        }
-
-        let magicItems = filteredEntities.map { entityId in
+        // Every domain the prediction returns is rendered. Domains the widget can act on in place
+        // (a toggle, a press, a scene) keep their in-widget action; everything else falls back to
+        // `MagicItem.widgetInteractionType`'s more-info deeplink, which opens the entity in the app's
+        // web view — the same behavior the custom widget already has for those domains.
+        let magicItems = entities.map { entityId in
             MagicItem(
                 id: entityId,
                 serverId: server.identifier.rawValue,
@@ -122,7 +109,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             )
         }
 
-        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family)))
+        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family, capacity: .tile)))
     }
 
     private func entitiesState(

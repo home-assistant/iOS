@@ -5,6 +5,9 @@ protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
+    /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
+    /// frontend isn't on screen to zoom out of, in which case Assist cross-dissolves in instead.
+    var assistZoomAnchorView: UIView? { get }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
@@ -16,7 +19,9 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
     func updateFrontendConnectionState(state: String)
+    func handleFrontendRestoredFromPageCache()
     func handleExternalAuthFailure(error: Error)
+    func showLoggedOutState()
     func navigateToPath(path: String)
     func showBanner(request: BannerRequest)
     func hideBanner(id: String)
@@ -27,6 +32,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func openDebug()
     func goBack()
     func goForward()
+    func openInBrowser()
     func styleUI()
     func styleUI(publishesThemedStatusBar: Bool)
 }

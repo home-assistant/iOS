@@ -11,16 +11,13 @@ struct WidgetAssist: Widget {
             intent: WidgetAssistAppIntent.self,
             provider: WidgetAssistProvider(),
             content: { entry in
-                Group {
-                    if #available(iOS 18.0, *) {
-                        WidgetAssistViewTintedWrapper(entry: entry)
-                            .widgetBackground(Color.clear)
-                    } else {
-                        WidgetAssistView(entry: entry, tinted: false)
-                            .widgetBackground(Color.clear)
-                    }
+                // Widget background and tap destinations are family dependent,
+                // so `WidgetAssistView` applies them per branch.
+                if #available(iOS 18.0, *) {
+                    WidgetAssistViewTintedWrapper(entry: entry)
+                } else {
+                    WidgetAssistView(entry: entry, tinted: false)
                 }
-                .widgetURL(entry.widgetURL)
             }
         )
         .contentMarginsDisabledIfAvailable()
@@ -31,6 +28,6 @@ struct WidgetAssist: Widget {
     }
 
     private var supportedFamilies: [WidgetFamily] {
-        [.systemSmall, .accessoryCircular]
+        [.systemSmall, .systemMedium, .accessoryCircular]
     }
 }

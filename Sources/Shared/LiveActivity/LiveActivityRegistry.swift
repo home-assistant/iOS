@@ -79,6 +79,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Confirmed, running Live Activities keyed by tag.
     private var entries: [String: Entry] = [:]
 
+    /// Tags we already warned the user about being unable to report a push token for. Keeps a
+    /// retried token report (ActivityKit re-issues tokens) from re-alerting for the same activity.
+    private var unreachableWarnedTags: Set<String> = []
+
     // MARK: - Init
 
     public init() {}
@@ -123,6 +127,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     private func remove(id: String) -> Entry? {
         let entry = entries.removeValue(forKey: id)
         entry?.observationTask.cancel()
+        unreachableWarnedTags.remove(id)
         return entry
     }
 
@@ -510,6 +515,16 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.warning("LiveActivityRegistry: no servers configured, skipping token report for tag \(tag)")
             return
         }
+        let reachableServers = await Self.serversWithResolvableWebhookURL(targetServers)
+        guard !reachableServers.isEmpty else {
+            // Without a token Core can never push an update, so the activity would sit on the Lock
+            // Screen frozen on its opening state with nothing explaining why. Tell the user instead.
+            Current.Log.error(
+                "LiveActivityRegistry: no active URL for any target server, cannot report token for tag \(tag)"
+            )
+            notifyTokenReportUnreachable(tag: tag)
+            return
+        }
         let expiresAt = Current.date()
             .addingTimeInterval(Self.pushTokenTimeToLive)
             .timeIntervalSince1970.rounded(.down)
@@ -521,7 +536,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "expires_at": expiresAt,
             ]
         )
-        for server in targetServers {
+        for server in reachableServers {
             // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
             // resource timeout) across connectivity changes even if the app is suspended or
             // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
@@ -529,6 +544,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             // starts, so it should not be best-effort like sendEphemeral.
             Current.webhooks.sendPassive(server: server, request: request).cauterize()
         }
+        unreachableWarnedTags.remove(tag)
         rememberReportedTokenTag(tag)
     }
 
@@ -548,6 +564,30 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.warning("LiveActivityRegistry: no server matches the activity origin; reporting token to all")
         }
         return allServers
+    }
+
+    /// The subset of `servers` whose webhook URL resolves right now. A server with no usable URL
+    /// (connection security level rules it out, or the internal URL can't be picked because
+    /// location permission isn't "Always") makes the webhook fail with `noActiveURL`, so the token
+    /// never reaches Core.
+    static func serversWithResolvableWebhookURL(_ servers: [Server]) async -> [Server] {
+        // Refresh once for the whole set: `Server.webhookURL()` refreshes on every call, so asking it
+        // per server would repeat the same SSID lookup for each configured server.
+        await Current.connectivity.refreshNetworkInformation()
+        return servers.filter { $0.webhookURLUsingLastKnownNetworkState() != nil }
+    }
+
+    /// Tell the user, through an ordinary local notification, that this Live Activity won't receive
+    /// updates. Sent at most once per tag while the process lives; a later successful token report
+    /// clears the tag so a recurrence warns again.
+    private func notifyTokenReportUnreachable(tag: String) {
+        guard unreachableWarnedTags.insert(tag).inserted else { return }
+        Current.notificationDispatcher.send(.init(
+            id: .liveActivityTokenUnreachable,
+            title: L10n.LiveActivity.TokenUnreachable.title,
+            body: L10n.LiveActivity.TokenUnreachable.body,
+            sound: .default
+        ))
     }
 
     /// Notify HA servers that the Live Activity was dismissed or ended externally.

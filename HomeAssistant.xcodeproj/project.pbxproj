@@ -90,16 +90,14 @@
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
 		42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42164BB8301320720077A903 /* ComplicationFormula.test.swift */; };
-		42165CDB3013242D0077A903 /* LocationBasedServerSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */; };
-		42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62BA82D8A3AC5002C0001 /* SwiftUI.framework */; };
 		423FB77D2FFFDFDF000CB8FD /* Extensions-WatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */; };
 		4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
-		424D4161300F75B7001998ED /* GreetingsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D4160300F75B7001998ED /* GreetingsSettingsView.swift */; };
 		4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
 		4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
@@ -167,7 +165,6 @@
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
-		42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */; };
 		42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */; };
 		42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */; };
 		42C11A0531AC500011AABB05 /* VacuumCapabilities.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */; };
@@ -178,27 +175,13 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42D14C49301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C48301BAF950058088E /* HAWatchComplications */; };
-		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
 		42D14C4B301BAFA10058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4A301BAFA10058088E /* HAWatchComplications */; };
 		42D14C4D301BAFAC0058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C4C301BAFAC0058088E /* HAWatchComplications */; };
-		42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */; };
 		42D14C7B301BBAF50058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C7A301BBAF50058088E /* HAWatchComplications */; };
 		42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C90301BAF950058088E /* HAWatchComplications */; };
-		42D14C99301BC37A0058088E /* CircularComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */; };
-		42D14C9B301BC3840058088E /* InlineComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */; };
-		42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */; };
-		42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */; };
-		42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */; };
-		42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */; };
+		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
+		42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
-		42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */; };
-		42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */; };
-		42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */; };
-		42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */; };
-		42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */; };
-		42DF97B430066D95003B7FA1 /* JinjaTemplateEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */; };
-		42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */; };
-		42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
@@ -215,6 +198,7 @@
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
 		42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */; };
 		42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */; };
+		42F1C0153140B00011AABB15 /* TokenManagerRevocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */; };
 		42F1C0323140B00011AACC02 /* ConnectivityWrapper.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */; };
 		42F384052FB49C9500390AFC /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42F384042FB49C9500390AFC /* DebugSwift */; };
 		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
@@ -628,13 +612,11 @@
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
-		42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.swift; sourceTree = "<group>"; };
-		42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBasedServerSwitcher.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
 		423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-WatchWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBehindServerManagerKeychain.test.swift; sourceTree = "<group>"; };
 		4245DC022EBA42C3005E0E04 /* AreasService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
-		424D4160300F75B7001998ED /* GreetingsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingsSettingsView.swift; sourceTree = "<group>"; };
 		4254C4C92D103ABB00245021 /* ExternalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLink.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
@@ -650,28 +632,13 @@
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
-		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateControlState.test.swift; sourceTree = "<group>"; };
 		42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumCapabilities.test.swift; sourceTree = "<group>"; };
 		42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacuumAreaMapping.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
-		42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularComplicationSnapshot.test.swift; sourceTree = "<group>"; };
-		42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineComplicationSnapshot.test.swift; sourceTree = "<group>"; };
-		42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerComplicationSnapshot.test.swift; sourceTree = "<group>"; };
-		42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InFlightWiFiSSIDs.swift; sourceTree = "<group>"; };
-		42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.swift; sourceTree = "<group>"; };
-		42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightGreetingManager.swift; sourceTree = "<group>"; };
-		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
-		42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.swift; sourceTree = "<group>"; };
-		42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaSyntaxHighlighter.swift; sourceTree = "<group>"; };
-		42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTextEditor.swift; sourceTree = "<group>"; };
-		42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaAutocompleteProvider.test.swift; sourceTree = "<group>"; };
-		42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateEditorSheet.swift; sourceTree = "<group>"; };
-		42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateButton.swift; sourceTree = "<group>"; };
-		42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntitySuggestionsView.swift; sourceTree = "<group>"; };
+		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
@@ -681,6 +648,7 @@
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
 		42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAPITokenFetchFailure.test.swift; sourceTree = "<group>"; };
 		42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerAccessTokenRejection.test.swift; sourceTree = "<group>"; };
+		42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerRevocation.test.swift; sourceTree = "<group>"; };
 		42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityWrapper.test.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
@@ -752,15 +720,21 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				/Localized/Intents/Resources/AppIntentVocabulary.plist,
+				AppIntents/Assist/AssistPipelineEntity.swift,
+				AppIntents/Assist/AssistPipelineEntityQuery.swift,
 				AppIntents/AssistPromptAppIntent.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
+				AppIntents/IntentActionEntityQuery.swift,
 				AppIntents/IntentCameraEntity.swift,
+				AppIntents/IntentCameraEntityQuery.swift,
 				AppIntents/IntentServerAppEntitiy.swift,
 				AppIntents/OpenAppSettingsAppIntent.swift,
 				AppIntents/PerformActionAppIntent.swift,
 				AppIntents/RenderTemplateAppIntent.swift,
+				AppIntents/Script/IntentScriptAppEntityQuery.swift,
+				AppIntents/Script/IntentScriptEntity.swift,
 				AppIntents/Script/ScriptAppIntent.swift,
 				AppIntents/Sensor/IntentSensorsAppEntity.swift,
 				AppIntents/ShortcutAppIntentSupport.swift,
@@ -774,6 +748,7 @@
 				AppIntents/Widget/Details/WidgetDetailsAttributeAppEntity.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntent.swift,
 				AppIntents/Widget/Energy/WidgetEnergyAppIntentTimelineProvider.swift,
+				AppIntents/Widget/Energy/WidgetEnergyChartSample.swift,
 				AppIntents/Widget/Energy/WidgetEnergyEntry.swift,
 				AppIntents/Widget/Energy/WidgetEnergyPeriod.swift,
 				AppIntents/Widget/Energy/WidgetEnergySource.swift,
@@ -788,25 +763,36 @@
 				AppIntents/Widget/WidgetEntityAttributes.swift,
 				Widgets/Assist/AssistAppIntent.swift,
 				Widgets/Assist/Control/ControlAssistValueProvider.swift,
-				Widgets/Common/TileCardStyleModifier.swift,
-				Widgets/Common/WidgetBackground.swift,
-				Widgets/Common/WidgetBasicButtonView.swift,
+				Widgets/Calendar/WidgetCalendar.swift,
+				Widgets/Calendar/WidgetCalendarAppEntity.swift,
+				Widgets/Calendar/WidgetCalendarAppEntityQuery.swift,
+				Widgets/Calendar/WidgetCalendarAppIntent.swift,
+				Widgets/Calendar/WidgetCalendarAppIntentTimelineProvider.swift,
+				Widgets/Calendar/WidgetCalendarEntry.swift,
+				Widgets/Calendar/WidgetCalendarEvent.swift,
+				Widgets/Calendar/WidgetCalendarFormatter.swift,
+				Widgets/Calendar/WidgetCalendarPreviewSample.swift,
+				Widgets/Calendar/WidgetCalendarRefreshAppIntent.swift,
+				Widgets/Calendar/WidgetCalendarRefreshButton.swift,
+				Widgets/Calendar/WidgetCalendarView.swift,
 				Widgets/Common/WidgetBasicContainerView.swift,
-				Widgets/Common/WidgetBasicSensorView.swift,
-				Widgets/Common/WidgetBasicSizeStyle.swift,
 				Widgets/Common/WidgetBasicView.swift,
 				Widgets/Common/WidgetBasicViewModel.swift,
-				Widgets/Common/WidgetBasicViewProtocol.swift,
-				Widgets/Common/WidgetBasicViewTintedWrapper.swift,
 				Widgets/Common/WidgetCarPlayLocation.swift,
-				Widgets/Common/WidgetCircularView.swift,
 				Widgets/Common/WidgetContentMargin.swift,
 				"Widgets/Common/WidgetFamily+AppPreview.swift",
 				Widgets/Common/WidgetFamilySizes.swift,
 				Widgets/Common/WidgetPreviewMagicItemProvider.swift,
 				Widgets/Common/WidgetPreviewSample.swift,
 				Widgets/Common/WidgetPreviewSampleEntity.swift,
+				Widgets/Common/WidgetRefreshAppIntent.swift,
+				Widgets/Common/WidgetRefreshButton.swift,
+				Widgets/Common/WidgetTileInteraction.swift,
 				Widgets/Common/WidgetTimelineProviderSupport.swift,
+				Widgets/Common/WidgetType.swift,
+				"Widgets/Common/WidgetsKind+TileCapacity.swift",
+				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,
+				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntitiesTimelineProvider.swift,
 				Widgets/Controls/Cover/CoverIntent.swift,
 				Widgets/Controls/Cover/IntentCoverEntity.swift,
 				Widgets/Controls/Fan/FanIntent.swift,
@@ -823,6 +809,7 @@
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
 				Widgets/Custom/AppIntents/CustomWidgetActivateAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetIntentHelper.swift,
+				Widgets/Custom/AppIntents/CustomWidgetPerformActionAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetPressButtonAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetToggleAppIntent.swift,
 				Widgets/Custom/AppIntents/ResetAllCustomWidgetConfirmationAppIntent.swift,
@@ -833,20 +820,20 @@
 				Widgets/Energy/WidgetEnergyAccessoryCircularView.swift,
 				Widgets/Energy/WidgetEnergyAccessoryInlineView.swift,
 				Widgets/Energy/WidgetEnergyAccessoryRectangularView.swift,
-				Widgets/Energy/WidgetEnergyChartView.swift,
+				Widgets/Energy/WidgetEnergyControls.swift,
 				Widgets/Energy/WidgetEnergyMediumView.swift,
 				Widgets/Energy/WidgetEnergyMetric.swift,
 				Widgets/Energy/WidgetEnergyRefreshAppIntent.swift,
 				Widgets/Energy/WidgetEnergySmallView.swift,
-				Widgets/Energy/WidgetEnergyStatView.swift,
 				Widgets/Energy/WidgetEnergyStyle.swift,
 				Widgets/Energy/WidgetEnergyView.swift,
 				Widgets/HAAppEntityAppIntentEntity.swift,
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
+				Widgets/LiveActivity/HACompactTrailingView.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
-				Widgets/Lockscreen/Gauge/GaugeArcView.swift,
+				"Widgets/Lockscreen/Gauge/GaugeTypeAppEnum+DesignSystem.swift",
 				Widgets/Lockscreen/Gauge/WidgetGauge.swift,
 				Widgets/Lockscreen/Gauge/WidgetGaugeView.swift,
 				Widgets/OpenPage/Control/ControlOpenPage.swift,
@@ -1023,6 +1010,34 @@
 			);
 			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
 		};
+		42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/Assist/AssistPipelineEntity.swift,
+				AppIntents/Assist/AssistPipelineEntityQuery.swift,
+				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/FireEventAppIntent.swift,
+				AppIntents/GetCameraSnapshotAppIntent.swift,
+				AppIntents/IntentActionEntity.swift,
+				AppIntents/IntentActionEntityQuery.swift,
+				AppIntents/IntentCameraEntity.swift,
+				AppIntents/IntentCameraEntityQuery.swift,
+				AppIntents/IntentServerAppEntitiy.swift,
+				AppIntents/OpenAppSettingsAppIntent.swift,
+				AppIntents/PerformActionAppIntent.swift,
+				AppIntents/RenderTemplateAppIntent.swift,
+				AppIntents/Script/IntentScriptAppEntityQuery.swift,
+				AppIntents/Script/IntentScriptEntity.swift,
+				AppIntents/Script/ScriptAppIntent.swift,
+				AppIntents/ShortcutAppIntentSupport.swift,
+				AppIntents/UpdateLocationAppIntent.swift,
+				AppIntents/UpdateSensorsAppIntent.swift,
+				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
+				Widgets/Assist/AssistAppIntent.swift,
+				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
+			);
+			target = B6CC5D812159D10D00833E5D /* WatchApp */;
+		};
 		42EDBB533002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1161,16 +1176,19 @@
 				AssistSession.swift,
 				AssistSettingsView.swift,
 				AssistSettingsViewModel.swift,
+				"AssistStartMode+App.swift",
 				AssistView.swift,
 				"AssistView+Build.swift",
 				AssistViewModel.swift,
 				Audio/AudioRecorder.swift,
 				"Audio/CMSampleBuffer+AudioSamples.swift",
+				Local/OnDeviceVoice.swift,
+				Local/OnDeviceVoiceCatalog.swift,
 				Local/SpeechSynthesizer.swift,
 				Local/SpeechTranscriber.swift,
+				Local/SupportedSpeechLocales.swift,
 				Local/TTSVoicePickerView.swift,
 				MacWindow/AssistWindowView.swift,
-				Views/AssistMicAnimationView.swift,
 				Views/AssistWavesAnimation.swift,
 			);
 			target = B6CC5D812159D10D00833E5D /* WatchApp */;
@@ -1288,12 +1306,27 @@
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
+				AppleWatch/Complications/WatchComplicationConfigurationSheet.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchAddItemDestination.swift,
 				AppleWatch/HomeCustomization/WatchAddItemMenu.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationView.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationViewModel.swift,
+				Calendars/CalendarDebugView.swift,
+				Calendars/CalendarDebugViewModel.swift,
+				Calendars/CalendarEventDeleteScopeAppEnum.swift,
+				Calendars/CalendarEventRepeatAppEnum.swift,
+				Calendars/CalendarsDebugListView.swift,
+				Calendars/CalendarsDebugListViewModel.swift,
+				Calendars/CalendarsDebugServerListView.swift,
+				Calendars/CreateCalendarEventAppIntent.swift,
+				Calendars/DeleteCalendarEventAppIntent.swift,
+				Calendars/GetCalendarEventsAppIntent.swift,
+				Calendars/HACalendarAppEntity.swift,
+				Calendars/HACalendarAppEntityQuery.swift,
+				Calendars/HACalendarEventAppEntity.swift,
+				Calendars/HACalendarEventAppEntityQuery.swift,
 				CarPlay/CarPlayAddItemDestination.swift,
 				CarPlay/CarPlayAddItemMenu.swift,
 				CarPlay/CarPlayConfigurationView.swift,
@@ -1330,6 +1363,12 @@
 				EntityPicker/EntityPicker.swift,
 				EntityPicker/EntityPickerViewModel.swift,
 				EntityPicker/EntityRowView.swift,
+				Focus/FocusHowItWorksView.swift,
+				Focus/FocusNameAppEntity.swift,
+				Focus/FocusNameAppEntityQuery.swift,
+				Focus/FocusNameFocusFilterAppIntent.swift,
+				Focus/FocusSettingsView.swift,
+				Focus/FocusSettingsViewModel.swift,
 				General/GeneralSettingsTemplateEditor.swift,
 				General/GeneralSettingsView.swift,
 				Gestures/AppleLikeListTopRowHeader.swift,
@@ -1361,8 +1400,12 @@
 				MagicItem/Add/MagicItemAddViewModel.swift,
 				MagicItem/AssistPipelinePicker.swift,
 				MagicItem/Edit/IconPicker.swift,
+				MagicItem/Edit/MagicItemActionSelectionView.swift,
 				MagicItem/Edit/MagicItemCustomizationView.swift,
 				MagicItem/Edit/MagicItemCustomizationViewModel.swift,
+				MagicItem/ServerActionPicker.swift,
+				MagicItem/ServerActionPickerList.swift,
+				MagicItem/ServerActionRowView.swift,
 				"MagicItem+ServerSanitizing.swift",
 				NFC/AllowedTagsView.swift,
 				NFC/iOSTagManager.swift,
@@ -1454,12 +1497,27 @@
 				AppleWatch/Complications/TemplatePreviewSection.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditView.swift,
 				AppleWatch/Complications/WatchComplicationBuilderEditViewModel.swift,
+				AppleWatch/Complications/WatchComplicationConfigurationSheet.swift,
 				AppleWatch/HomeCustomization/FolderDetailView.swift,
 				AppleWatch/HomeCustomization/FolderEditView.swift,
 				AppleWatch/HomeCustomization/WatchAddItemDestination.swift,
 				AppleWatch/HomeCustomization/WatchAddItemMenu.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationView.swift,
 				AppleWatch/HomeCustomization/WatchConfigurationViewModel.swift,
+				Calendars/CalendarDebugView.swift,
+				Calendars/CalendarDebugViewModel.swift,
+				Calendars/CalendarEventDeleteScopeAppEnum.swift,
+				Calendars/CalendarEventRepeatAppEnum.swift,
+				Calendars/CalendarsDebugListView.swift,
+				Calendars/CalendarsDebugListViewModel.swift,
+				Calendars/CalendarsDebugServerListView.swift,
+				Calendars/CreateCalendarEventAppIntent.swift,
+				Calendars/DeleteCalendarEventAppIntent.swift,
+				Calendars/GetCalendarEventsAppIntent.swift,
+				Calendars/HACalendarAppEntity.swift,
+				Calendars/HACalendarAppEntityQuery.swift,
+				Calendars/HACalendarEventAppEntity.swift,
+				Calendars/HACalendarEventAppEntityQuery.swift,
 				CarPlay/CarPlayAddItemDestination.swift,
 				CarPlay/CarPlayAddItemMenu.swift,
 				CarPlay/CarPlayConfigurationView.swift,
@@ -1496,6 +1554,12 @@
 				EntityPicker/EntityPicker.swift,
 				EntityPicker/EntityPickerViewModel.swift,
 				EntityPicker/EntityRowView.swift,
+				Focus/FocusHowItWorksView.swift,
+				Focus/FocusNameAppEntity.swift,
+				Focus/FocusNameAppEntityQuery.swift,
+				Focus/FocusNameFocusFilterAppIntent.swift,
+				Focus/FocusSettingsView.swift,
+				Focus/FocusSettingsViewModel.swift,
 				General/GeneralSettingsTemplateEditor.swift,
 				General/GeneralSettingsView.swift,
 				Gestures/AppleLikeListTopRowHeader.swift,
@@ -1527,8 +1591,12 @@
 				MagicItem/Add/MagicItemAddViewModel.swift,
 				MagicItem/AssistPipelinePicker.swift,
 				MagicItem/Edit/IconPicker.swift,
+				MagicItem/Edit/MagicItemActionSelectionView.swift,
 				MagicItem/Edit/MagicItemCustomizationView.swift,
 				MagicItem/Edit/MagicItemCustomizationViewModel.swift,
+				MagicItem/ServerActionPicker.swift,
+				MagicItem/ServerActionPickerList.swift,
+				MagicItem/ServerActionRowView.swift,
 				"MagicItem+ServerSanitizing.swift",
 				NFC/AllowedTagsView.swift,
 				NFC/iOSTagManager.swift,
@@ -1621,6 +1689,8 @@
 				EntityFuzzySearch/FuzzySearcher.swift,
 				EntityFuzzySearch/FuzzyTextNormalizer.swift,
 				Environment.swift,
+				FocusFilterWrapper.swift,
+				FocusReport.swift,
 				FocusStatusWrapper.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
@@ -1732,6 +1802,10 @@
 			membershipExceptions = (
 				__Snapshots__/AboutView.test/testUI.dark.png,
 				__Snapshots__/AboutView.test/testUI.light.png,
+				__Snapshots__/GesturesSetupView.test/testActionsPickerSearchingUI.dark.png,
+				__Snapshots__/GesturesSetupView.test/testActionsPickerSearchingUI.light.png,
+				__Snapshots__/GesturesSetupView.test/testActionsPickerUI.dark.png,
+				__Snapshots__/GesturesSetupView.test/testActionsPickerUI.light.png,
 				__Snapshots__/GesturesSetupView.test/testUI.dark.png,
 				__Snapshots__/GesturesSetupView.test/testUI.light.png,
 				__Snapshots__/PrivacyView.test/testUI.dark.png,
@@ -1754,10 +1828,198 @@
 				Components/__Snapshots__/HAButtonStyles.test/testAppButtonStyles.light.png,
 				Components/__Snapshots__/HATextField.test/testSnapshot.dark.png,
 				Components/__Snapshots__/HATextField.test/testSnapshot.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.light.png,
 				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.dark.png,
 				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.light.png,
 				Components/__Snapshots__/ListPickerTests/testLitPickerUI.dark.png,
 				Components/__Snapshots__/ListPickerTests/testLitPickerUI.light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alarmPanelCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alarmPanelCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alert-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alert-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.assistChip-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.assistChip-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.badge-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.badge-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bar-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bar-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bigNumber-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bigNumber-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bottomSheet-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.bottomSheet-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.buttonCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.buttonCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.buttonToggleGroup-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.buttonToggleGroup-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.card-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.card-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.clockCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.clockCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.closeButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.closeButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.collapsible-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.collapsible-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlButtonGroup-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlButtonGroup-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlCircularSlider-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlCircularSlider-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlNumberButtons-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlNumberButtons-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSelect-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSelect-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSlider-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSlider-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSwitch-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.controlSwitch-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.criticalButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.criticalButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.dialogHeader-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.dialogHeader-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.emptyState-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.emptyState-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energyDistributionCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energyDistributionCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energyPeriodSelector-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energyPeriodSelector-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energySourcesTable-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.energySourcesTable-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entitiesCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entitiesCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entityCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entityCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entityRow-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.entityRow-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.faded-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.faded-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.filterChip-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.filterChip-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.floatingPanel-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.floatingPanel-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.formField-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.formField-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.fullScreenLoader-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.fullScreenLoader-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.gauge-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.gauge-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.gaugeCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.gaugeCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.glanceCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.glanceCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.haCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.haCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.headingBadge-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.headingBadge-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.headingCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.headingCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyChart-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyChart-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyGraphCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyGraphCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyTimeline-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.historyTimeline-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.hsColorPicker-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.hsColorPicker-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.humidifierCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.humidifierCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.iconButtonGroup-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.iconButtonGroup-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.iconButtonToggle-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.iconButtonToggle-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.inputChip-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.inputChip-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.label-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.label-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.labelBadge-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.labelBadge-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.lightCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.lightCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.linkButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.linkButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.markdownCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.markdownCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.marqueeText-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.marqueeText-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.metric-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.metric-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.negativeButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.negativeButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.neutralButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.neutralButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.outlinedButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.outlinedButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pictureCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pictureCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pictureGlanceCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pictureGlanceCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pill-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.pill-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.primaryButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.primaryButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressBar-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressBar-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressRing-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressRing-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressView-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.progressView-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.relativeTime-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.relativeTime-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sankeyChart-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sankeyChart-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.secondaryButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.secondaryButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.secondaryNegativeButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.secondaryNegativeButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sectionTitle-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sectionTitle-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.segmentedBar-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.segmentedBar-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.selectBox-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.selectBox-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.settingsRow-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.settingsRow-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sheetCloseButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sheetCloseButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticsChart-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticsChart-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticsGraphCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.statisticsGraphCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sunburstChart-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.sunburstChart-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tabGroup-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tabGroup-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.textButton-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.textButton-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.textField-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.textField-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.thermostatCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.thermostatCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileBadge-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileBadge-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileIcon-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileIcon-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileInfo-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tileInfo-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tip-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.tip-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.toast-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.toast-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.todoListCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.todoListCard-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.treeIndicator-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.treeIndicator-light.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.weatherForecastCard-dark.png,
+				Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.weatherForecastCard-light.png,
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
 		};
@@ -1771,6 +2033,18 @@
 		42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNextDaySnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNextDaySnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNoEventsSnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNoEventsSnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNotConfiguredSnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNotConfiguredSnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumSnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumSnapshot.light.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemSmallSnapshot.dark.png,
+				__Snapshots__/WidgetCalendarSnapshot.test/systemSmallSnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSingleLabelSnapshot.dark.png,
@@ -1949,6 +2223,53 @@
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
 		};
+		42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.capacity-ring.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.full-fraction.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-and-value-no-name.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-no-gauge.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-value-name-open.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.long-value.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.no-gauge.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.no-min-max.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-and-name-no-icon.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-only.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.zero-fraction.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.full-fraction.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-block-sparkline.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-name-value-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.name-only-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-no-gauge.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.zero-fraction.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.long-line.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.name-and-value.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.name-only.png",
+				"__Snapshots__/InlineComplicationSnapshot.test/inlineComplicationVariants.value-only.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.all-slots-no-min-max.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.all-slots.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.custom-text-color.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.full-fraction.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.icon-name-gauge.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.long-text.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-icon.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-name.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.text-only.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.value-as-text.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.zero-fraction.png",
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.accented.png,
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.fullColor.png,
+				__Snapshots__/RectangularComplicationSnapshot.test/renderingModeVariants.vibrant.png,
+			);
+			target = B657A8FB1CA646EB00121384 /* Tests-App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -1959,15 +2280,22 @@
 		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
 		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
 		42479B4630013FE300F7FCD3 /* WatchApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42479B7630013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchApp; sourceTree = "<group>"; };
-		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
+		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		4283E0D53004DCF4004D1061 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283E1713004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1723004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1733004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1743004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1753004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1763004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (gallery.ckcomplication, ); path = Resources; sourceTree = "<group>"; };
 		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
 		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
+		42DF4EE5302CACB600589E49 /* FlightGreetings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FlightGreetings; sourceTree = "<group>"; };
+		42DF4EF6302CACC200589E49 /* Templating */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Templating; sourceTree = "<group>"; };
+		42DF4F00302CACC600589E49 /* Templating */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Templating; sourceTree = "<group>"; };
+		42DF4F03302CACD000589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
+		42DF4F06302CACD400589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
+		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
 		42EDB6453002FB9A0051FC9B /* CarPlay */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CarPlay; sourceTree = "<group>"; };
@@ -2351,7 +2679,7 @@
 				B657A8FF1CA646EB00121384 /* App */,
 				D03D894320E0BC1800D4F28D /* Shared */,
 				B657A90A1CA646EB00121384 /* UI */,
-				42D14C45301BAD2E0058088E /* WatchComplications */,
+				42DF4F8E302CADA700589E49 /* WatchComplications */,
 				42D14C6E301BB6330058088E /* WatchAppTests */,
 			);
 			path = Tests;
@@ -2382,67 +2710,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		42165CD93013242D0077A903 /* ServerSwitching */ = {
-			isa = PBXGroup;
-			children = (
-				42165CDA3013242D0077A903 /* LocationBasedServerSwitcher.swift */,
-			);
-			path = ServerSwitching;
-			sourceTree = "<group>";
-		};
-		42165CDE301324980077A903 /* ServerSwitching */ = {
-			isa = PBXGroup;
-			children = (
-				42165CDF301324980077A903 /* LocationBasedServerSwitcher.test.swift */,
-			);
-			path = ServerSwitching;
-			sourceTree = "<group>";
-		};
-		42D14C45301BAD2E0058088E /* WatchComplications */ = {
-			isa = PBXGroup;
-			children = (
-				42D14C46301BAD2E0058088E /* RectangularComplicationSnapshot.test.swift */,
-				42D14C98301BC37A0058088E /* CircularComplicationSnapshot.test.swift */,
-				42D14C9A301BC3840058088E /* InlineComplicationSnapshot.test.swift */,
-				42D14C9C301BC38E0058088E /* CornerComplicationSnapshot.test.swift */,
-			);
-			path = WatchComplications;
-			sourceTree = "<group>";
-		};
-		42D6FDD1300F71E800D4BEB9 /* FlightGreetings */ = {
-			isa = PBXGroup;
-			children = (
-				42D6FDD2300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift */,
-				42D6FDD4300F71F600D4BEB9 /* FlightDetector.swift */,
-				42D6FDD6300F720600D4BEB9 /* FlightGreetingManager.swift */,
-				424D4160300F75B7001998ED /* GreetingsSettingsView.swift */,
-			);
-			path = FlightGreetings;
-			sourceTree = "<group>";
-		};
-		42DF194F30065055003B7FA1 /* Templating */ = {
-			isa = PBXGroup;
-			children = (
-				42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */,
-				42DF195230065071003B7FA1 /* JinjaAutocompleteProvider.swift */,
-				42DF1954300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift */,
-				42DF1958300650C7003B7FA1 /* JinjaTextEditor.swift */,
-				42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */,
-				42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */,
-				42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */,
-				42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */,
-			);
-			path = Templating;
-			sourceTree = "<group>";
-		};
-		42DF97B0300669B9003B7FA1 /* Templating */ = {
-			isa = PBXGroup;
-			children = (
-				42DF97B1300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift */,
-			);
-			path = Templating;
-			sourceTree = "<group>";
-		};
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -2470,9 +2737,9 @@
 				42EDE943300315A50051FC9B /* LifecycleManager.swift */,
 				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
-				42DF194F30065055003B7FA1 /* Templating */,
-				42D6FDD1300F71E800D4BEB9 /* FlightGreetings */,
-				42165CD93013242D0077A903 /* ServerSwitching */,
+				42DF4EF6302CACC200589E49 /* Templating */,
+				42DF4EE5302CACB600589E49 /* FlightGreetings */,
+				42DF4F03302CACD000589E49 /* ServerSwitching */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2535,6 +2802,7 @@
 				42EDBB773002FBBE0051FC9B /* Kiosk */,
 				42EDBB663002FBBE0051FC9B /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
+				42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				42EDBB963002FBBE0051FC9B /* Additions */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
@@ -2542,6 +2810,7 @@
 				42EDBB893002FBBE0051FC9B /* Auth */,
 				42EDBB7B3002FBBE0051FC9B /* CarPlay */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
+				42CE0001300000000051FC9B /* Container */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				119C786625CF845800D41734 /* LocalizedStrings.test.swift */,
 				42EDBB743002FBBE0051FC9B /* MagicItem */,
@@ -2559,8 +2828,8 @@
 				42EDBBCD3002FBC90051FC9B /* WebView */,
 				42EDBBB63002FBC90051FC9B /* Widgets */,
 				42EDBBAD3002FBC90051FC9B /* ZoneManager */,
-				42DF97B0300669B9003B7FA1 /* Templating */,
-				42165CDE301324980077A903 /* ServerSwitching */,
+				42DF4F00302CACC600589E49 /* Templating */,
+				42DF4F06302CACD400589E49 /* ServerSwitching */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2671,6 +2940,7 @@
 				42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */,
 				42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */,
 				42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */,
+				42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */,
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 				42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */,
 				480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */,
@@ -2688,6 +2958,7 @@
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
 				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
+				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2993,6 +3264,9 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4283E0D53004DCF4004D1061 /* Resources */,
+				42DF4EE5302CACB600589E49 /* FlightGreetings */,
+				42DF4EF6302CACC200589E49 /* Templating */,
+				42DF4F03302CACD000589E49 /* ServerSwitching */,
 				42EDB6203002FB9A0051FC9B /* Improv */,
 				42EDB6453002FB9A0051FC9B /* CarPlay */,
 				42EDB66D3002FB9A0051FC9B /* Thread */,
@@ -3053,7 +3327,11 @@
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
+				42CE0001300000000051FC9B /* Container */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
+				42DF4F00302CACC600589E49 /* Templating */,
+				42DF4F06302CACD400589E49 /* ServerSwitching */,
+				42DF4F8E302CADA700589E49 /* WatchComplications */,
 				42EDBB633002FBA70051FC9B /* Mocks */,
 				42EDBB663002FBBE0051FC9B /* EntityPicker */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
@@ -3995,25 +4273,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42165CDB3013242D0077A903 /* LocationBasedServerSwitcher.swift in Sources */,
 				42EDEB10300315A50051FC9B /* AppDelegate.swift in Sources */,
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
-				42DF1959300650C7003B7FA1 /* JinjaTextEditor.swift in Sources */,
-				42DF195330065071003B7FA1 /* JinjaAutocompleteProvider.swift in Sources */,
-				42DF195130065055003B7FA1 /* JinjaTemplateSuggestion.swift in Sources */,
-				42DF1955300650A9003B7FA1 /* JinjaSyntaxHighlighter.swift in Sources */,
-				42D6FDD7300F720600D4BEB9 /* FlightGreetingManager.swift in Sources */,
-				42D6FDD3300F71E800D4BEB9 /* InFlightWiFiSSIDs.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
-				42D6FDD5300F71F600D4BEB9 /* FlightDetector.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
-				42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
-				424D4161300F75B7001998ED /* GreetingsSettingsView.swift in Sources */,
-				42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */,
-				42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */,
-				42DF97B430066D95003B7FA1 /* JinjaTemplateEditorSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4021,15 +4286,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42DF97B2300669B9003B7FA1 /* JinjaAutocompleteProvider.test.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
-				42165CE0301324980077A903 /* LocationBasedServerSwitcher.test.swift in Sources */,
-				42D14C4E301BAFC80058088E /* RectangularComplicationSnapshot.test.swift in Sources */,
+				42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
-				42D14C99301BC37A0058088E /* CircularComplicationSnapshot.test.swift in Sources */,
-				42D14C9D301BC38E0058088E /* CornerComplicationSnapshot.test.swift in Sources */,
-				42D14C9B301BC3840058088E /* InlineComplicationSnapshot.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4149,7 +4409,9 @@
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
 				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
+				424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */,
 				42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */,
+				42F1C0153140B00011AABB15 /* TokenManagerRevocation.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
@@ -6032,11 +6294,6 @@
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
 			productName = HAWatchComplications;
 		};
-		42D14CA0301BAF950058088E /* HAWatchComplications */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
-			productName = HAWatchComplications;
-		};
 		42D14C4A301BAFA10058088E /* HAWatchComplications */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
@@ -6053,6 +6310,11 @@
 			productName = HAWatchComplications;
 		};
 		42D14C90301BAF950058088E /* HAWatchComplications */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
+			productName = HAWatchComplications;
+		};
+		42D14CA0301BAF950058088E /* HAWatchComplications */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42D14C47301BAF720058088E /* XCLocalSwiftPackageReference "Sources/HAWatchComplications" */;
 			productName = HAWatchComplications;

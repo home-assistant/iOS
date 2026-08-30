@@ -1,4 +1,3 @@
-import AVFoundation
 import CarPlay
 import Foundation
 import Shared
@@ -10,6 +9,11 @@ final class CarPlayAssistSettingsTemplate {
     private weak var interfaceController: CPInterfaceController?
     private weak var template: CPListTemplate?
 
+    /// Name of the selected text-to-speech voice. Resolving an identifier waits on the
+    /// TextToSpeech daemon, which is far too slow to do while building the list, so the row shows
+    /// this cached value and `loadSelectedVoiceDisplayName()` refreshes it in the background.
+    private var selectedVoiceDisplayName = L10n.Assist.Settings.OnDeviceTts.defaultVoice
+
     private var configuration: AssistConfiguration {
         AssistConfiguration.config
     }
@@ -19,6 +23,7 @@ final class CarPlayAssistSettingsTemplate {
         let template = CPListTemplate(title: L10n.Assist.Settings.title, sections: [])
         self.template = template
         template.updateSections(makeSections())
+        loadSelectedVoiceDisplayName()
         interfaceController?.pushTemplate(template, animated: true, completion: nil)
     }
 
@@ -57,19 +62,28 @@ final class CarPlayAssistSettingsTemplate {
         )
         item.accessoryType = .none
         item.handler = { [weak self] _, completion in
-            self?.updateConfiguration { configuration in
-                configuration.enableOnDeviceSTT.toggle()
-                guard configuration.enableOnDeviceSTT else { return }
-                // Same behavior as the in-app settings: default to a supported locale when
-                // the current one is unset or not supported for on-device recognition.
-                let supportedIdentifiers = SpeechTranscriber.supportedLocales.map(\.identifier)
-                if !supportedIdentifiers.contains(configuration.onDeviceSTTLocaleIdentifier ?? "") {
-                    configuration.onDeviceSTTLocaleIdentifier = supportedIdentifiers.first
-                }
-            }
+            self?.updateConfiguration { $0.enableOnDeviceSTT.toggle() }
+            self?.selectDefaultSTTLocaleIfNeeded()
             completion()
         }
         return item
+    }
+
+    /// Same behavior as the in-app settings: default to a supported locale when the current one is
+    /// unset or not supported for on-device recognition. Determining the supported locales blocks
+    /// its caller for close to a second, so it happens off the main thread and the list refreshes
+    /// once the answer arrives.
+    @available(iOS 17.0, *)
+    private func selectDefaultSTTLocaleIfNeeded() {
+        guard configuration.enableOnDeviceSTT else { return }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let supportedIdentifiers = await SupportedSpeechLocales.shared.locales().map(\.identifier)
+            // Re-read the configuration: the toggle can flip again while the probe runs.
+            guard configuration.enableOnDeviceSTT,
+                  !supportedIdentifiers.contains(configuration.onDeviceSTTLocaleIdentifier ?? "") else { return }
+            updateConfiguration { $0.onDeviceSTTLocaleIdentifier = supportedIdentifiers.first }
+        }
     }
 
     @available(iOS 17.0, *)
@@ -89,23 +103,30 @@ final class CarPlayAssistSettingsTemplate {
     @available(iOS 17.0, *)
     private func presentSTTLanguageSelection() {
         let selectionTemplate = CPListTemplate(title: L10n.Assist.Settings.OnDeviceStt.language, sections: [])
-        let selectedIdentifier = configuration.onDeviceSTTLocaleIdentifier
-        let items = SpeechTranscriber.supportedLocales.map { locale in
-            let item = CPListItem(
-                text: localeDisplayName(locale.identifier) ?? locale.identifier,
-                detailText: nil,
-                image: locale.identifier == selectedIdentifier ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
-            )
-            item.accessoryType = .none
-            item.handler = { [weak self] _, completion in
-                self?.updateConfiguration { $0.onDeviceSTTLocaleIdentifier = locale.identifier }
-                self?.interfaceController?.popTemplate(animated: true, completion: nil)
-                completion()
-            }
-            return item
-        }
-        selectionTemplate.updateSections([CPListSection(items: items)])
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+
+        // Pushed empty on purpose: the supported locales come from a probe that would otherwise
+        // hang the main thread while the template is built.
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let selectedIdentifier = configuration.onDeviceSTTLocaleIdentifier
+            let locales = await SupportedSpeechLocales.shared.locales()
+            let items = locales.map { locale in
+                let item = CPListItem(
+                    text: localeDisplayName(locale.identifier) ?? locale.identifier,
+                    detailText: nil,
+                    image: locale.identifier == selectedIdentifier ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+                )
+                item.accessoryType = .none
+                item.handler = { [weak self] _, completion in
+                    self?.updateConfiguration { $0.onDeviceSTTLocaleIdentifier = locale.identifier }
+                    self?.interfaceController?.popTemplate(animated: true, completion: nil)
+                    completion()
+                }
+                return item
+            }
+            selectionTemplate.updateSections([CPListSection(items: items)])
+        }
     }
 
     private var onDeviceTTSItem: CPListItem {
@@ -135,57 +156,75 @@ final class CarPlayAssistSettingsTemplate {
         return item
     }
 
-    private var selectedVoiceDisplayName: String {
-        guard let identifier = configuration.onDeviceTTSVoiceIdentifier,
-              let voice = AVSpeechSynthesisVoice(identifier: identifier) else {
-            return L10n.Assist.Settings.OnDeviceTts.defaultVoice
+    private func loadSelectedVoiceDisplayName() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let name: String
+            if let identifier = configuration.onDeviceTTSVoiceIdentifier {
+                let voice = await OnDeviceVoiceCatalog.voice(withIdentifier: identifier)
+                name = voice?.name ?? L10n.Assist.Settings.OnDeviceTts.defaultVoice
+            } else {
+                name = L10n.Assist.Settings.OnDeviceTts.defaultVoice
+            }
+            guard name != selectedVoiceDisplayName else { return }
+            selectedVoiceDisplayName = name
+            reload()
         }
-        return voice.name
     }
 
     private func presentTTSVoiceSelection() {
         let selectionTemplate = CPListTemplate(title: L10n.Assist.Settings.OnDeviceTts.voice, sections: [])
-        let selectedIdentifier = configuration.onDeviceTTSVoiceIdentifier
+        interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
 
-        let defaultItem = CPListItem(
-            text: L10n.Assist.Settings.OnDeviceTts.defaultVoice,
-            detailText: nil,
-            image: selectedIdentifier == nil ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
-        )
-        defaultItem.accessoryType = .none
-        defaultItem.handler = { [weak self] _, completion in
-            self?.updateConfiguration { $0.onDeviceTTSVoiceIdentifier = nil }
-            self?.interfaceController?.popTemplate(animated: true, completion: nil)
-            completion()
-        }
+        // Pushed empty on purpose: reading the installed voices waits on the TextToSpeech daemon
+        // and would hang the main thread while the template is built.
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let selectedIdentifier = configuration.onDeviceTTSVoiceIdentifier
 
-        let items = [defaultItem] + selectableVoices(selectedIdentifier: selectedIdentifier).map { voice in
-            let item = CPListItem(
-                text: voice.name,
-                detailText: localeDisplayName(voice.language),
-                image: voice.identifier == selectedIdentifier ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+            let defaultItem = CPListItem(
+                text: L10n.Assist.Settings.OnDeviceTts.defaultVoice,
+                detailText: nil,
+                image: selectedIdentifier == nil ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
             )
-            item.accessoryType = .none
-            item.handler = { [weak self] _, completion in
-                self?.updateConfiguration { $0.onDeviceTTSVoiceIdentifier = voice.identifier }
+            defaultItem.accessoryType = .none
+            defaultItem.handler = { [weak self] _, completion in
+                self?.selectedVoiceDisplayName = L10n.Assist.Settings.OnDeviceTts.defaultVoice
+                self?.updateConfiguration { $0.onDeviceTTSVoiceIdentifier = nil }
                 self?.interfaceController?.popTemplate(animated: true, completion: nil)
                 completion()
             }
-            return item
+
+            let voices = await selectableVoices(selectedIdentifier: selectedIdentifier)
+            let items = [defaultItem] + voices.map { voice in
+                let item = CPListItem(
+                    text: voice.name,
+                    detailText: localeDisplayName(voice.language),
+                    image: voice.identifier == selectedIdentifier ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+                )
+                item.accessoryType = .none
+                item.handler = { [weak self] _, completion in
+                    self?.selectedVoiceDisplayName = voice.name
+                    self?.updateConfiguration { $0.onDeviceTTSVoiceIdentifier = voice.identifier }
+                    self?.interfaceController?.popTemplate(animated: true, completion: nil)
+                    completion()
+                }
+                return item
+            }
+            selectionTemplate.updateSections([CPListSection(items: items)])
         }
-        selectionTemplate.updateSections([CPListSection(items: items)])
-        interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 
     /// The full voice catalog is too long for a driver-facing list, so the car offers the
     /// voices matching the device language (plus the currently selected voice); the complete
     /// searchable catalog stays available in the in-app settings.
-    private func selectableVoices(selectedIdentifier: String?) -> [AVSpeechSynthesisVoice] {
+    private func selectableVoices(selectedIdentifier: String?) async -> [OnDeviceVoice] {
         let languageCode = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
-        var voices = AVSpeechSynthesisVoice.speechVoices().filter { $0.language.hasPrefix(languageCode) }
+        let allVoices = await OnDeviceVoiceCatalog.voices()
+        var voices = allVoices.filter { $0.language.hasPrefix(languageCode) }
         if let selectedIdentifier,
            !voices.contains(where: { $0.identifier == selectedIdentifier }),
-           let selectedVoice = AVSpeechSynthesisVoice(identifier: selectedIdentifier) {
+           let selectedVoice = allVoices.first(where: { $0.identifier == selectedIdentifier }) {
             voices.append(selectedVoice)
         }
         return voices.sorted { $0.name < $1.name }

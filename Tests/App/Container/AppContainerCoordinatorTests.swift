@@ -23,6 +23,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
     override func tearDown() {
         AppSettingsPresenter.shared.isSheetPresented = false
         AppSettingsPresenter.shared.isPushPresented = false
+        AppSettingsPresenter.shared.sheetDismissed()
         super.tearDown()
     }
 
@@ -103,13 +104,17 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
     func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() {
         AppSettingsPresenter.shared.isSheetPresented = true
-        var settingsSheetWasClearedBeforePresenting: Bool?
-        coordinator.onSelectServer = { _, _ in
-            settingsSheetWasClearedBeforePresenting = !AppSettingsPresenter.shared.isSheetPresented
-        }
 
-        coordinator.selectServer(prompt: nil, includeSettings: false) { _ in }
+        coordinator.selectServer(prompt: nil) { _ in }
 
-        XCTAssertEqual(settingsSheetWasClearedBeforePresenting, true)
+        // The picker is the settings sheet itself, so what is on screen goes away synchronously and the
+        // picker takes its place a runloop later.
+        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
+
+        let presented = expectation(description: "picker presented")
+        DispatchQueue.main.async { presented.fulfill() }
+        wait(for: [presented], timeout: 5)
+
+        XCTAssertTrue(AppSettingsPresenter.shared.isSheetPresented)
     }
 }

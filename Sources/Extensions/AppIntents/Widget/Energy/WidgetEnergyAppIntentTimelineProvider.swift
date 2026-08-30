@@ -11,16 +11,20 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     static let expiration: Measurement<UnitDuration> = .init(value: 15, unit: .minutes)
 
     func placeholder(in context: Context) -> WidgetEnergyEntry {
-        WidgetEnergyEntry(
+        // The headline figures are the sample day's own totals, so the gallery card doesn't quote
+        // numbers the chart beneath it contradicts.
+        let points = WidgetEnergyChartSample.day(startingAt: Calendar.current.startOfDay(for: Current.date()))
+        let totals = WidgetEnergyChartSample.totals(of: points)
+        return WidgetEnergyEntry(
             isConfigured: true,
-            gridConsumed: 6.2,
-            gridReturned: 10.5,
-            solarGenerated: 12.4,
+            gridConsumed: totals.gridConsumed,
+            gridReturned: totals.gridReturned,
+            solarGenerated: totals.solarGenerated,
             cost: -0.49,
             currencyCode: "EUR",
             livePowerGrid: -250,
             livePowerSolar: 250,
-            chartPoints: Self.placeholderChart()
+            chartPoints: points
         )
     }
 
@@ -53,10 +57,23 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     // MARK: - Entry building
 
     private func entry(for configuration: WidgetEnergyAppIntent, in context: Context) async throws -> Entry {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first,
-              let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("Energy widget: no API for server (selected id: \(configuration.server.id))")
+        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Energy widget: no server available (selected id: \(configuration.server.id))")
             return WidgetEnergyEntry(period: configuration.period, isConfigured: false, loadFailed: true)
+        }
+
+        // Without an active URL there is nowhere to load from — an internal-only URL off the home
+        // network, or a configuration that never resolves. The network information is refreshed
+        // first so a widget waking up on a different network isn't judged on a stale evaluation.
+        guard await server.activeURL() != nil, let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("Energy widget: no active URL for server \(server.identifier.rawValue)")
+            return WidgetEnergyEntry(
+                period: configuration.period,
+                source: configuration.source,
+                serverName: server.info.name,
+                isConfigured: false,
+                noConnection: true
+            )
         }
 
         // Tapping the widget opens the server's energy dashboard.
@@ -88,37 +105,39 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         let info: EnergyInfo? = await send(.energyInfo(), on: connection)
         let gridSources = prefs.energySources.filter { $0.type == "grid" }
         let solarSources = prefs.energySources.filter { $0.type == "solar" }
-
-        let gridImportIds = gridSources.compactMap(\.statEnergyFrom)
-        let gridExportIds = gridSources.compactMap(\.statEnergyTo)
-        let solarIds = solarSources.compactMap(\.statEnergyFrom)
-        let costIds = costStatIds(gridSources: gridSources, info: info)
-
-        let range = configuration.period.dateRange(now: Current.date())
-        let statIds = Array(Set(gridImportIds + gridExportIds + solarIds + costIds))
-
-        var entry = WidgetEnergyEntry(
-            period: configuration.period,
-            source: configuration.source,
-            serverName: server.info.name,
-            widgetURL: widgetURL,
-            isConfigured: true
+        let costIds = Self.costStatIds(gridSources: gridSources, info: info)
+        let ids = StatisticIds(
+            gridImport: gridSources.compactMap(\.statEnergyFrom),
+            gridExport: gridSources.compactMap(\.statEnergyTo),
+            solar: solarSources.compactMap(\.statEnergyFrom),
+            cost: costIds.cost,
+            compensation: costIds.compensation
         )
 
-        if !statIds.isEmpty, let stats: EnergyStatistics = await send(
-            .statisticsDuringPeriod(
-                startTime: range.start,
-                endTime: range.end,
-                statisticIds: statIds,
-                period: configuration.period.statisticsPeriod
-            ),
-            on: connection
-        ) {
-            entry.gridConsumed = sumTotals(ids: gridImportIds, in: stats)
-            entry.gridReturned = sumTotals(ids: gridExportIds, in: stats)
-            entry.solarGenerated = sumTotals(ids: solarIds, in: stats)
-            entry.cost = sumTotals(ids: costIds, in: stats)
-            entry.chartPoints = chartPoints(importIds: gridImportIds, solarIds: solarIds, in: stats)
+        var entry = await entryWithStatistics(
+            for: configuration.period,
+            ids: ids,
+            on: connection,
+            base: WidgetEnergyEntry(
+                period: configuration.period,
+                source: configuration.source,
+                serverName: server.info.name,
+                widgetURL: widgetURL,
+                isConfigured: true
+            )
+        )
+
+        // Early in the morning "today" is usually empty only because the day just began, so summarise
+        // the day before rather than showing a blank card until the first statistics land. A failed
+        // load is not an empty day, so it never falls back — it reports the failure instead.
+        if !entry.hasStatistics, !entry.loadFailed,
+           let fallback = configuration.period.emptyDataFallback(now: Current.date()) {
+            var fallbackEntry = entry
+            fallbackEntry.period = fallback
+            fallbackEntry = await entryWithStatistics(for: fallback, ids: ids, on: connection, base: fallbackEntry)
+            if fallbackEntry.hasStatistics {
+                entry = fallbackEntry
+            }
         }
 
         entry.currencyCode = entry.cost == nil ? nil : await fetchCurrency(on: connection)
@@ -134,52 +153,135 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     // MARK: - Statistics helpers
 
-    private func costStatIds(gridSources: [EnergySource], info: EnergyInfo?) -> [String] {
-        var ids: [String] = []
-        for source in gridSources {
-            if let cost = source.statCost ?? source.statEnergyFrom.flatMap({ info?.costSensors[$0] }) {
-                ids.append(cost)
-            }
-            if let compensation = source.statCompensation ?? source.statEnergyTo.flatMap({ info?.costSensors[$0] }) {
-                ids.append(compensation)
-            }
-        }
-        return ids
+    /// The statistic ids the energy dashboard preferences resolve to, grouped by the series each one
+    /// feeds. They don't depend on the period, so a fallback query reuses them as they are.
+    private struct StatisticIds {
+        let gridImport: [String]
+        let gridExport: [String]
+        let solar: [String]
+        /// What the period's grid imports cost.
+        let cost: [String]
+        /// What the period's grid exports earned back. Counted up as a positive amount like every
+        /// other statistic, so it is subtracted from `cost` rather than summed with it.
+        let compensation: [String]
+
+        var all: [String] { Array(Set(gridImport + gridExport + solar + cost + compensation)) }
     }
 
-    private func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
+    /// Queries the statistics for one window and returns the entry filled with its totals and chart.
+    /// A failed request comes back flagged as such, so the widget can offer a retry instead of
+    /// passing the outage off as a period with nothing in it.
+    private func entryWithStatistics(
+        for period: WidgetEnergyPeriod,
+        ids: StatisticIds,
+        on connection: HAConnection,
+        base: WidgetEnergyEntry
+    ) async -> WidgetEnergyEntry {
+        let statIds = ids.all
+        guard !statIds.isEmpty else { return base }
+        let range = period.dateRange(now: Current.date())
+        guard let stats: EnergyStatistics = await send(
+            .statisticsDuringPeriod(
+                startTime: range.start,
+                endTime: range.end,
+                statisticIds: statIds,
+                period: period.statisticsPeriod
+            ),
+            on: connection
+        ) else {
+            var entry = base
+            entry.loadFailed = true
+            return entry
+        }
+
+        var entry = base
+        entry.gridConsumed = Self.sumTotals(ids: ids.gridImport, in: stats)
+        entry.gridReturned = Self.sumTotals(ids: ids.gridExport, in: stats)
+        entry.solarGenerated = Self.sumTotals(ids: ids.solar, in: stats)
+        entry.cost = Self.netCost(cost: ids.cost, compensation: ids.compensation, in: stats)
+        entry.chartPoints = Self.chartPoints(
+            importIds: ids.gridImport,
+            exportIds: ids.gridExport,
+            solarIds: ids.solar,
+            in: stats
+        )
+        return entry
+    }
+
+    /// The grid sources' monetary statistic ids, split by direction: what importing costs, and what
+    /// exporting earns back. They have to stay apart — the two are netted off against each other,
+    /// and a single list would silently add the earnings to the bill.
+    static func costStatIds(
+        gridSources: [EnergySource],
+        info: EnergyInfo?
+    ) -> (cost: [String], compensation: [String]) {
+        var cost: [String] = []
+        var compensation: [String] = []
+        for source in gridSources {
+            if let id = source.statCost ?? source.statEnergyFrom.flatMap({ info?.costSensors[$0] }) {
+                cost.append(id)
+            }
+            if let id = source.statCompensation ?? source.statEnergyTo.flatMap({ info?.costSensors[$0] }) {
+                compensation.append(id)
+            }
+        }
+        return (cost, compensation)
+    }
+
+    /// What the period cost overall: the grid imports' bill less what the exports earned back, the
+    /// same netting the energy dashboard's totals table does. Compensation statistics count upward
+    /// like any other, so summing them in would grow the bill with every kWh returned instead of
+    /// shrinking it. Nil when the dashboard tracks no money at all; a home that earns more than it
+    /// spends legitimately comes back negative.
+    static func netCost(cost: [String], compensation: [String], in stats: EnergyStatistics) -> Double? {
+        let spent = sumTotals(ids: cost, in: stats)
+        let earned = sumTotals(ids: compensation, in: stats)
+        guard spent != nil || earned != nil else { return nil }
+        return (spent ?? 0) - (earned ?? 0)
+    }
+
+    private static func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
         let present = ids.filter { stats.byStatId[$0] != nil }
         guard !present.isEmpty else { return nil }
         return present.reduce(0) { $0 + (stats.totalChange(for: $1) ?? 0) }
     }
 
-    /// Builds the chart series: grid consumption and solar generation, both clamped to ≥ 0 and
-    /// stacked as positive bars, keyed per statistics bucket.
-    private func chartPoints(
+    /// Builds the chart series per statistics bucket: grid consumption, solar generation and energy
+    /// returned to the grid. All three are clamped to ≥ 0 — they are magnitudes, and the chart is
+    /// what decides which side of the axis each one is drawn on.
+    ///
+    /// Static and internal so the aggregation can be exercised directly: it is the step that decides
+    /// what the graph plots, and it has no seam through the live provider.
+    static func chartPoints(
         importIds: [String],
+        exportIds: [String],
         solarIds: [String],
         in stats: EnergyStatistics
     ) -> [WidgetEnergyEntry.ChartPoint] {
-        var gridByStart: [Date: Double] = [:]
-        var solarByStart: [Date: Double] = [:]
-        for id in importIds {
-            for bucket in stats.byStatId[id] ?? [] {
-                gridByStart[bucket.start, default: 0] += (bucket.change ?? 0)
-            }
-        }
-        for id in solarIds {
-            for bucket in stats.byStatId[id] ?? [] {
-                solarByStart[bucket.start, default: 0] += (bucket.change ?? 0)
-            }
-        }
-        let dates = Set(gridByStart.keys).union(solarByStart.keys).sorted()
+        let gridByStart = bucketTotals(ids: importIds, in: stats)
+        let returnedByStart = bucketTotals(ids: exportIds, in: stats)
+        let solarByStart = bucketTotals(ids: solarIds, in: stats)
+        let dates = Set(gridByStart.keys).union(solarByStart.keys).union(returnedByStart.keys).sorted()
         return dates.map { date in
             WidgetEnergyEntry.ChartPoint(
                 date: date,
                 grid: max(gridByStart[date] ?? 0, 0),
-                solar: max(solarByStart[date] ?? 0, 0)
+                solar: max(solarByStart[date] ?? 0, 0),
+                gridReturned: max(returnedByStart[date] ?? 0, 0)
             )
         }
+    }
+
+    /// Sums the given statistics' change per bucket start, merging the ids that feed one series —
+    /// a home can have several grid meters, and the graph plots their combined flow.
+    private static func bucketTotals(ids: [String], in stats: EnergyStatistics) -> [Date: Double] {
+        var totals: [Date: Double] = [:]
+        for id in ids {
+            for bucket in stats.byStatId[id] ?? [] {
+                totals[bucket.start, default: 0] += (bucket.change ?? 0)
+            }
+        }
+        return totals
     }
 
     // MARK: - Live power
@@ -268,21 +370,6 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
                     continuation.resume(returning: nil)
                 }
             }
-        }
-    }
-
-    private static func placeholderChart() -> [WidgetEnergyEntry.ChartPoint] {
-        let dayStart = Calendar.current.startOfDay(for: Current.date())
-        return (0 ..< 24).map { hour in
-            // Grid consumption peaks morning and evening; solar peaks midday.
-            let h = Double(hour)
-            let grid = 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6)
-            let solar = h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: grid,
-                solar: solar
-            )
         }
     }
 }

@@ -61,6 +61,14 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
+        // A background launch (location event, WatchConnectivity wake, background URLSession, …)
+        // never passes through didEnterBackground, so suspension would stay unarmed and any
+        // database access could be caught holding the app-group SQLite file lock when the process
+        // freezes (0xdead10cc). Catalyst is excluded like the rest of its lifecycle handling: it can
+        // report .background at launch without a foreground transition ever following to resume.
+        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+            AppDatabaseSuspension.suspend()
+        }
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
@@ -97,6 +105,7 @@ class LifecycleManager {
 
     @objc private func didEnterBackground() {
         isActive = false
+        needsAppOpenLocationUpdate = true
         AppDatabaseSuspension.suspend()
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
@@ -132,6 +141,24 @@ class LifecycleManager {
             })
         }.cauterize()
         refreshNetworkInformation()
+        sendLocationUpdateForAppOpenIfNeeded()
+    }
+
+    /// Tracks whether the next `didBecomeActive` counts as opening the app (cold launch or return from
+    /// the background). Reactivations inside a foreground session — dismissing a system alert or the
+    /// app switcher — don't pass through `didEnterBackground`, so they don't re-arm this.
+    private var needsAppOpenLocationUpdate = true
+
+    private func sendLocationUpdateForAppOpenIfNeeded() {
+        guard needsAppOpenLocationUpdate else { return }
+        needsAppOpenLocationUpdate = false
+
+        HomeAssistantAPI.manuallyUpdate(
+            applicationState: UIApplication.shared.applicationState,
+            type: .appOpened
+        ).catch { error in
+            Current.Log.error("failed to update location on app open: \(error)")
+        }
     }
 
     private func refreshNetworkInformation() {

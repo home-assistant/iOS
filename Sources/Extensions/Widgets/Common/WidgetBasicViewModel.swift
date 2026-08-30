@@ -2,12 +2,19 @@ import Foundation
 import Shared
 import SwiftUI
 
+/// A widget tile plus what a tap on it runs.
+///
+/// The drawing half lives in the design system as ``WidgetTileModel``; this adds the half that only
+/// the widget extension can act on — the intent or deep link behind the tile, and where it is in the
+/// confirmation dance.
 struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     init(
         id: String,
         title: String,
         subtitle: String?,
+        area: String? = nil,
         interactionType: WidgetInteractionType,
+        iconInteractionType: WidgetInteractionType? = nil,
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
@@ -23,7 +30,9 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.id = id
         self.title = title
         self.subtitle = subtitle
+        self.area = area
         self.interactionType = interactionType
+        self.iconInteractionType = iconInteractionType
         self.textColor = textColor
         self.subtitleColor = subtitleColor
         self.icon = icon
@@ -41,7 +50,12 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     var title: String
     var subtitle: String?
+    /// The area the entity belongs to, drawn above the name. See ``WidgetTileModel/area``.
+    var area: String?
     var interactionType: WidgetInteractionType
+    /// What tapping the tile's icon runs, when the icon is a control of its own and `interactionType`
+    /// belongs to the rest of the tile. `nil` keeps the tile whole — one control, one tap.
+    var iconInteractionType: WidgetInteractionType?
 
     var icon: MaterialDesignIcons
     /// When item has no tap icon, icon background is hidden
@@ -64,4 +78,23 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var widgetId: String?
     /// When one item confirmation is pending, the rest of the items should be blurred
     var disabled: Bool
+}
+
+extension WidgetBasicViewModel: WidgetTileRepresentable {
+    var tileModel: WidgetTileModel {
+        .init(
+            id: id,
+            title: title,
+            subtitle: subtitle,
+            area: area,
+            icon: icon,
+            showIconBackground: showIconBackground,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            iconColor: iconColor,
+            backgroundColor: backgroundColor,
+            useCustomColors: useCustomColors,
+            disabled: disabled
+        )
+    }
 }

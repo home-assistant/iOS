@@ -155,7 +155,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
         case .carPlay:
-            CarPlayConfigurationView(needsNavigationController: false)
+            CarPlayConfigurationView()
         case .complications:
             SettingsComplicationsView()
         case .help:
@@ -198,9 +198,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .liveActivities:
             return Self.canShowLiveActivities
-        case .remindersSync:
-            // Labs feature, limited to TestFlight builds while it matures.
-            return Current.isTestFlight
         case .macToolbar:
             // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
             return Current.isCatalyst
@@ -317,7 +314,10 @@ enum SettingsItem: String, Hashable, CaseIterable {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
         if Current.isDebug {
             return true
-        } else if case .paired = Communicator.shared.currentWatchState {
+        } else if case .paired = Communicator.shared.lastKnownWatchState {
+            // The cached state, not `currentWatchState`: `isVisible` runs on the main thread for
+            // every settings list evaluation, and the live getters synchronously wait on WCSession's
+            // internal operation queue, which can stall while the session is busy.
             return true
         }
         return false
@@ -333,18 +333,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         #else
         return false
         #endif
-    }
-}
-
-// MARK: - Material Design Icons Image
-
-struct MaterialDesignIconsImage: View {
-    let icon: MaterialDesignIcons
-    let size: CGFloat
-
-    var body: some View {
-        Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
-            .renderingMode(.template)
     }
 }
 
