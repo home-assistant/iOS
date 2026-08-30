@@ -52,8 +52,7 @@ final class WatchLockControlsViewModel: ObservableObject {
     }
 
     /// Same live-icon rule as the home row: locks have a state-dependent icon, so render from the
-    /// entity unless the user explicitly picked a custom icon. The color codes the state (locked
-    /// vs. unlocked vs. jammed) through the shared entity color provider.
+    /// entity unless the user explicitly picked a custom icon.
     var icon: MaterialDesignIcons {
         if let entity, itemInfo.customization?.iconIsCustomized != true {
             return entity.getMDI()
@@ -61,9 +60,12 @@ final class WatchLockControlsViewModel: ObservableObject {
         return item.icon(info: itemInfo)
     }
 
+    /// The color follows the entity's state whichever icon is drawn, so a custom icon still shows
+    /// whether the thing is on. Only a custom *color* overrides it, and only while active.
     var iconColor: UIColor {
-        if let entity, itemInfo.customization?.iconIsCustomized != true {
-            return entity.stateIconColor() ?? .white
+        if let entity {
+            let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+            return entity.stateIconColor(customColor: customColor) ?? .white
         }
         if let hex = itemInfo.customization?.iconColor {
             return UIColor(hex: hex)
