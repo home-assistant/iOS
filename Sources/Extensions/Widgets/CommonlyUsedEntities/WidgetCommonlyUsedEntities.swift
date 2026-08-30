@@ -110,6 +110,7 @@ struct WidgetCommonlyUsedEntities: Widget {
                 icon: icon,
                 showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: Color(uiColor: .label),
+                subtitleColor: state?.valueColor,
                 iconColor: iconColor,
                 backgroundColor: Color.tileBackground,
                 useCustomColors: false,

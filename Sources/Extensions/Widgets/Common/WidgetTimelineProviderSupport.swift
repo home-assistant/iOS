@@ -1,3 +1,4 @@
+import HAKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -6,10 +7,28 @@ struct WidgetEntityState: Codable {
     let value: String
     let domainState: Domain.State?
     let hexColor: String?
+    let valueColorHex: String?
+
+    init(
+        value: String,
+        domainState: Domain.State?,
+        hexColor: String?,
+        valueColorHex: String? = nil
+    ) {
+        self.value = value
+        self.domainState = domainState
+        self.hexColor = hexColor
+        self.valueColorHex = valueColorHex
+    }
 
     var color: Color? {
         guard let hexColor else { return nil }
         return Color(hex: hexColor)
+    }
+
+    var valueColor: Color? {
+        guard let valueColorHex else { return nil }
+        return Color(hex: valueColorHex)
     }
 }
 
@@ -77,6 +96,20 @@ enum WidgetMagicItemInfoProvider {
     }
 }
 
+enum WidgetStateValueColoring {
+    static let negativeStateColorHex = "#F44336"
+
+    static func colorHex(numericValue: Double?, colorNegativeNumericStates: Bool) -> String? {
+        guard colorNegativeNumericStates,
+              let numericValue,
+              numericValue.isFinite,
+              numericValue < 0 else {
+            return nil
+        }
+        return negativeStateColorHex
+    }
+}
+
 @available(iOS 17, *)
 struct WidgetEntityStateProvider {
     let logPrefix: String
@@ -107,6 +140,14 @@ struct WidgetEntityStateProvider {
 
         Current.Log.verbose("\(logPrefix) widget has no valid cache, fetching states")
 
+        var colorNegativeNumericStatesByServer: [String: Bool] = [:]
+        for serverId in Set(items.map(\.serverId)) {
+            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+                continue
+            }
+            colorNegativeNumericStatesByServer[serverId] = await shouldColorNegativeNumericStates(for: server)
+        }
+
         var states: [MagicItem: WidgetEntityState] = [:]
 
         for item in items where itemFilter(item) {
@@ -123,7 +164,11 @@ struct WidgetEntityStateProvider {
                 states[item] = .init(
                     value: value,
                     domainState: state.domainState,
-                    hexColor: state.color?.hex()
+                    hexColor: state.color?.hex(),
+                    valueColorHex: WidgetStateValueColoring.colorHex(
+                        numericValue: state.numericValue,
+                        colorNegativeNumericStates: colorNegativeNumericStatesByServer[serverId] == true
+                    )
                 )
             } else {
                 Current.Log.error(
@@ -134,6 +179,28 @@ struct WidgetEntityStateProvider {
 
         writeCache(states)
         return states
+    }
+
+    private func shouldColorNegativeNumericStates(for server: Server) async -> Bool {
+        guard let connection = Current.api(for: server)?.connection else {
+            return false
+        }
+
+        let result: Result<HAData, HAError> = await withCheckedContinuation { continuation in
+            connection.send(.init(
+                type: .webSocket("frontend/get_user_data"),
+                data: ["key": "core"]
+            )) { result in
+                continuation.resume(returning: result)
+            }
+        }
+
+        guard case let .success(data) = result,
+              let coreUserData: [String: Any] = try? data.decode("value") else {
+            return false
+        }
+
+        return coreUserData["colorNegativeNumericStates"] as? Bool == true
     }
 
     private func readCache() -> WidgetEntitiesStateCache? {

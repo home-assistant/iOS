@@ -17,6 +17,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
+        subtitleColor: Color? = nil,
         iconColor: Color = Color.haPrimary,
         backgroundColor: Color = .widgetTileBackground,
         useCustomColors: Bool = false,
@@ -29,6 +30,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
         self.icon = icon
         self.showIconBackground = showIconBackground
         self.textColor = textColor
+        self.subtitleColor = subtitleColor
         self.iconColor = iconColor
         self.backgroundColor = backgroundColor
         self.useCustomColors = useCustomColors
@@ -48,6 +50,7 @@ public struct WidgetTileModel: Identifiable, Hashable {
     public var showIconBackground: Bool
     public var backgroundColor: Color
     public var textColor: Color
+    public var subtitleColor: Color?
     public var iconColor: Color
     public var useCustomColors: Bool
     /// When one item confirmation is pending, the rest of the items should be blurred

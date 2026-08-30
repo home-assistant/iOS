@@ -18,6 +18,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
+        subtitleColor: Color? = nil,
         iconColor: Color = Color.haPrimary,
         backgroundColor: Color = .tileBackground,
         useCustomColors: Bool = false,
@@ -33,6 +34,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.interactionType = interactionType
         self.iconInteractionType = iconInteractionType
         self.textColor = textColor
+        self.subtitleColor = subtitleColor
         self.icon = icon
         self.showIconBackground = showIconBackground
         self.iconColor = iconColor
@@ -61,6 +63,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     var backgroundColor: Color
     var textColor: Color
+    var subtitleColor: Color?
     var iconColor: Color
     var useCustomColors: Bool
 
@@ -87,6 +90,7 @@ extension WidgetBasicViewModel: WidgetTileRepresentable {
             icon: icon,
             showIconBackground: showIconBackground,
             textColor: textColor,
+            subtitleColor: subtitleColor,
             iconColor: iconColor,
             backgroundColor: backgroundColor,
             useCustomColors: useCustomColors,

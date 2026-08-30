@@ -79,7 +79,7 @@ public struct WidgetTileButtonView: View {
         if let subtitle = model.subtitle {
             Text(verbatim: subtitle)
                 .font(sizeStyle.subtextFont)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .foregroundStyle(model.subtitleColor ?? Color(uiColor: .secondaryLabel))
                 .lineLimit(1)
                 .minimumScaleFactor(Self.secondaryMinimumScale)
                 .truncationMode(.tail)
