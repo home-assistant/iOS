@@ -4,15 +4,21 @@ import Foundation
 import SwiftUI
 
 /// Energy bar chart mirroring the Home Assistant frontend energy graph. Each bucket draws one bar
-/// for everything the home consumed (blue), with the share its own solar covered painted over the
-/// bottom of it (orange) — so a bar the sun covered entirely reads as solid orange. Energy returned
-/// to the grid (purple) hangs below the axis. Buckets are hourly for single-day periods and daily
-/// for week/month; the y-axis (kWh) sits on the trailing edge.
+/// for everything the home consumed, stacked in the dashboard's own order — solar (orange) at the
+/// bottom, then the battery's discharge (teal), then the grid (blue) — so a bar the sun covered
+/// entirely reads as solid orange. Below the axis hang the flows that left the home: battery
+/// charging (pink) nearest the axis, energy returned to the grid (purple) beyond it. Buckets are
+/// hourly for single-day periods and daily for week/month; the y-axis (kWh) sits on the trailing
+/// edge.
+///
+/// Gas is deliberately absent. It is metered in m³ as often as in kWh, so the dashboard gives it a
+/// card of its own rather than a series on this one; the widget shows it as a figure instead.
 @available(iOS 17, *)
 public struct WidgetEnergyChartView: View {
     private let points: [WidgetEnergyChartPoint]
     private let showsGrid: Bool
     private let showsSolar: Bool
+    private let showsBattery: Bool
     /// Daily buckets (week/month) render one bar per day; single-day periods render hourly bars.
     private let isDaily: Bool
     /// How many days apart the x-axis labels sit, once the buckets are daily.
@@ -25,6 +31,7 @@ public struct WidgetEnergyChartView: View {
         points: [WidgetEnergyChartPoint],
         showsGrid: Bool = true,
         showsSolar: Bool = true,
+        showsBattery: Bool = false,
         isDaily: Bool = false,
         dayStride: Int = 1,
         periodRange: (start: Date, end: Date)
@@ -32,6 +39,7 @@ public struct WidgetEnergyChartView: View {
         self.points = points
         self.showsGrid = showsGrid
         self.showsSolar = showsSolar
+        self.showsBattery = showsBattery
         self.isDaily = isDaily
         self.dayStride = dayStride
         self.periodRange = periodRange
@@ -40,6 +48,8 @@ public struct WidgetEnergyChartView: View {
     private static let gridFlow = "grid"
     private static let solarFlow = "solar"
     private static let returnedFlow = "returned"
+    private static let batteryOutFlow = "batteryOut"
+    private static let batteryInFlow = "batteryIn"
 
     /// One bar of a bucket, given an explicit span rather than left to the chart's own stacking.
     /// Stacking would butt the two consumption series end to end — two rounded segments pushing
@@ -60,49 +70,69 @@ public struct WidgetEnergyChartView: View {
         var baselineHalf: Double { (start + end) / 2 }
     }
 
-    /// The full height of each bucket's bar: everything the home consumed, drawn from the grid and
-    /// from its own solar. Painted first and in one piece, so the solar share can overlay its lower
-    /// part instead of being stacked on top of it.
-    ///
-    /// Both halves are the used shares rather than the raw meter readings. A bucket that imported
-    /// and exported at once only demanded the difference, and the dashboard's graph plots that
-    /// difference — plotting the raw import would stand the bar above what the home ever used.
-    private var consumptionSegments: [FlowSegment] {
-        guard showsGrid else { return [] }
-        return segments(flow: Self.gridFlow) { point in
-            (0, point.gridUsed + (showsSolar ? point.solarUsed : 0))
-        }
+    /// One layer of the bar, from the axis outwards.
+    private struct Layer {
+        let flow: String
+        let value: (WidgetEnergyChartPoint) -> Double
     }
 
-    /// The solar share of what the home used, overlaying the bar above. When generation covered
-    /// everything the home consumed, it covers the bar completely and no blue is left showing.
+    /// What the home consumed, innermost layer first: its own solar, then the battery's discharge,
+    /// then the grid — the dashboard's stack order, read from the axis up.
     ///
-    /// With the grid hidden there is no consumption bar to overlay and no exported share on screen
-    /// to take off it, so the bars simply show the full generation.
-    private var solarSegments: [FlowSegment] {
-        guard showsSolar else { return [] }
-        return segments(flow: Self.solarFlow) { point in
-            (0, showsGrid ? point.solarUsed : point.solar)
-        }
+    /// Every layer is a used share rather than a raw meter reading. A bucket that imported and
+    /// exported at once, or charged the battery while drawing, only demanded the difference, and the
+    /// dashboard's graph plots that difference — plotting the raw import would stand the bar above
+    /// what the home ever used.
+    ///
+    /// The exception is a chart showing generation on its own: with neither grid nor battery on
+    /// screen there is no bar to be a share of, and nothing visible for the exported part to have
+    /// gone to, so solar simply plots its full output.
+    private var positiveLayers: [Layer] {
+        let solarIsAlone = !showsGrid && !showsBattery
+        return [
+            showsSolar ? Layer(flow: Self.solarFlow) { solarIsAlone ? $0.solar : $0.solarUsed } : nil,
+            showsBattery ? Layer(flow: Self.batteryOutFlow) { $0.batteryUsed } : nil,
+            showsGrid ? Layer(flow: Self.gridFlow) { $0.gridUsed } : nil,
+        ].compactMap { $0 }
     }
 
-    /// Energy sent back to the grid, hanging below the axis. It belongs to the grid series, so it
+    /// What left the home, innermost layer first: charge going into the battery sits against the
+    /// axis, energy returned to the grid hangs below it. Each belongs to its own series, so it
     /// disappears along with it.
-    private var returnedSegments: [FlowSegment] {
-        guard showsGrid else { return [] }
-        return segments(flow: Self.returnedFlow) { point in (-point.gridReturned, 0) }
+    private var negativeLayers: [Layer] {
+        [
+            showsBattery ? Layer(flow: Self.batteryInFlow) { $0.batteryCharged } : nil,
+            showsGrid ? Layer(flow: Self.returnedFlow) { $0.gridReturned } : nil,
+        ].compactMap { $0 }
     }
 
-    /// Turns one span per bucket into bars, dropping the empty ones: a zero-height bar would still
-    /// draw its corner radius as a sliver sitting on the axis.
-    private func segments(
-        flow: String,
-        span: (WidgetEnergyChartPoint) -> (start: Double, end: Double)
-    ) -> [FlowSegment] {
-        points.compactMap { point in
-            let span = span(point)
-            guard span.start != span.end else { return nil }
-            return FlowSegment(date: point.date, start: span.start, end: span.end, flow: flow)
+    /// Turns a stack of layers into bars, each one spanning the axis to the top of its own layer.
+    ///
+    /// Whole spans rather than abutting ones, and ordered outermost first, because the bars carry a
+    /// corner radius: a stack of abutting segments would round every internal boundary into a pair
+    /// of facing notches. Painting the tallest first and letting each shorter layer cover the lower
+    /// part of it leaves one rounded cap per boundary, which is the dashboard's look. It also keeps
+    /// every segment with one end on the zero axis, which is what lets ``FlowSegment/baselineHalf``
+    /// square off the end that meets it.
+    ///
+    /// Empty spans are dropped: a zero-height bar would still draw its corner radius as a sliver
+    /// sitting on the axis.
+    private func segments(stacking layers: [Layer], sign: Double) -> [FlowSegment] {
+        points.flatMap { point -> [FlowSegment] in
+            var cumulative = 0.0
+            let tops = layers.map { layer -> Double in
+                cumulative += max(layer.value(point), 0)
+                return cumulative
+            }
+            return Array(zip(layers, tops)).reversed().compactMap { layer, top in
+                guard top > 0 else { return nil }
+                return FlowSegment(
+                    date: point.date,
+                    start: min(0, sign * top),
+                    end: max(0, sign * top),
+                    flow: layer.flow
+                )
+            }
         }
     }
 
@@ -125,12 +155,11 @@ public struct WidgetEnergyChartView: View {
 
     public var body: some View {
         // Resolved once: the empty check and the bars would otherwise rebuild them twice. Order
-        // matters — later marks paint over earlier ones, which is what puts solar over consumption.
-        let consumption = consumptionSegments
-        let solar = solarSegments
-        let returned = returnedSegments
+        // matters — later marks paint over earlier ones, which is what stacks each side of the axis.
+        let used = segments(stacking: positiveLayers, sign: 1)
+        let exported = segments(stacking: negativeLayers, sign: -1)
         Chart {
-            ForEach(consumption + solar + returned) { segment in
+            ForEach(used + exported) { segment in
                 BarMark(
                     x: .value("Time", segment.date, unit: isDaily ? .day : .hour),
                     yStart: .value("Energy", segment.start),
@@ -152,7 +181,7 @@ public struct WidgetEnergyChartView: View {
                 .cornerRadius(0)
             }
 
-            if consumption.isEmpty, solar.isEmpty, returned.isEmpty {
+            if used.isEmpty, exported.isEmpty {
                 // Nothing to plot: an invisible bar still gives the y-axis a domain, so the empty
                 // chart draws both axes instead of a bare grid.
                 BarMark(
@@ -166,6 +195,8 @@ public struct WidgetEnergyChartView: View {
             Self.solarFlow: WidgetEnergyPalette.solar,
             Self.gridFlow: WidgetEnergyPalette.consumption,
             Self.returnedFlow: WidgetEnergyPalette.gridReturn,
+            Self.batteryOutFlow: WidgetEnergyPalette.batteryOut,
+            Self.batteryInFlow: WidgetEnergyPalette.batteryIn,
         ])
         .chartLegend(.hidden)
         .chartXScale(domain: xDomain)

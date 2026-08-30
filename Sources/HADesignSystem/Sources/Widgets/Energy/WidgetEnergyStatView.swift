@@ -12,7 +12,9 @@ public struct WidgetEnergyStatView: View {
     public let label: String
     public let direction: WidgetEnergyDirection
     public let color: Color
-    public var valueFont: Font = .system(size: 20, weight: .bold, design: .rounded)
+    /// How tightly the figure is drawn. Sizes the caption and icon alongside the value, so a
+    /// crowded card shrinks as a whole rather than leaving an 11pt label under a 14pt number.
+    public var density: WidgetEnergyStatDensity = .regular
 
     public init(
         icon: MaterialDesignIcons,
@@ -21,7 +23,7 @@ public struct WidgetEnergyStatView: View {
         label: String,
         direction: WidgetEnergyDirection,
         color: Color,
-        valueFont: Font = .system(size: 20, weight: .bold, design: .rounded)
+        density: WidgetEnergyStatDensity = .regular
     ) {
         self.icon = icon
         self.value = value
@@ -29,12 +31,12 @@ public struct WidgetEnergyStatView: View {
         self.label = label
         self.direction = direction
         self.color = color
-        self.valueFont = valueFont
+        self.density = density
     }
 
     public init(
         model: WidgetEnergyStatModel,
-        valueFont: Font = .system(size: 20, weight: .bold, design: .rounded)
+        density: WidgetEnergyStatDensity = .regular
     ) {
         self.init(
             icon: model.icon,
@@ -43,7 +45,7 @@ public struct WidgetEnergyStatView: View {
             label: model.label,
             direction: model.direction,
             color: model.color,
-            valueFont: valueFont
+            density: density
         )
     }
 
@@ -52,16 +54,20 @@ public struct WidgetEnergyStatView: View {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 if let symbol = direction.symbol {
                     Image(systemSymbol: symbol)
-                        .font(valueFont)
+                        .font(density.valueFont)
                         .foregroundStyle(color)
                 }
                 Text(verbatim: value)
-                    .font(valueFont)
+                    .font(density.valueFont)
                     .foregroundStyle(color)
                 if let unit {
                     Text(verbatim: unit)
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: density.unitSize, weight: .medium))
                         .foregroundStyle(WidgetEnergyPalette.secondaryText)
+                        // Scales further than the figure it qualifies. The unit is the part that has
+                        // to give when a row is tight — "kWh" stays legible small in a way a headline
+                        // number doesn't, and shrinking it is what keeps the number at full size.
+                        .minimumScaleFactor(0.4)
                 }
             }
             .lineLimit(1)
@@ -69,37 +75,49 @@ public struct WidgetEnergyStatView: View {
 
             HStack(spacing: 4) {
                 Image(
-                    uiImage: icon.image(ofSize: .init(width: 12, height: 12), color: .white)
+                    uiImage: icon
+                        .image(ofSize: .init(width: density.iconSize, height: density.iconSize), color: .white)
                         .withRenderingMode(.alwaysTemplate)
                 )
                 .foregroundStyle(WidgetEnergyPalette.secondaryText)
                 Text(verbatim: label)
-                    .font(.system(size: 11))
+                    .font(.system(size: density.labelSize))
                     .foregroundStyle(WidgetEnergyPalette.secondaryText)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
         }
     }
 }
 
+@available(iOS 17, *)
 #Preview {
-    HStack {
-        WidgetEnergyStatView(
-            icon: .solarPowerIcon,
-            value: "12,4",
-            unit: WidgetEnergyPalette.energyUnit,
-            label: "Solar",
-            direction: .up,
-            color: WidgetEnergyPalette.solar
-        )
-        WidgetEnergyStatView(
-            icon: .transmissionTowerIcon,
-            value: "6,2",
-            unit: WidgetEnergyPalette.energyUnit,
-            label: "Grid",
-            direction: .down,
-            color: WidgetEnergyPalette.consumption
-        )
+    VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+        HStack {
+            WidgetEnergyStatView(
+                icon: .solarPowerIcon,
+                value: "12,4",
+                unit: WidgetEnergyPalette.energyUnit,
+                label: "Solar",
+                direction: .up,
+                color: WidgetEnergyPalette.solar
+            )
+            WidgetEnergyStatView(
+                icon: .transmissionTowerIcon,
+                value: "6,2",
+                unit: WidgetEnergyPalette.energyUnit,
+                label: "Grid",
+                direction: .down,
+                color: WidgetEnergyPalette.consumption
+            )
+        }
+
+        // The four-source home, at the density a single row has to draw it.
+        HStack(spacing: WidgetEnergyStatDensity.dense.spacing) {
+            ForEach(WidgetEnergySampleData.allSourceStats) { stat in
+                WidgetEnergyStatView(model: stat, density: .dense)
+            }
+        }
     }
     .padding()
     .background(WidgetEnergyPalette.background)

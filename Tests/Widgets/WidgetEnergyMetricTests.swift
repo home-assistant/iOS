@@ -14,7 +14,7 @@ struct WidgetEnergyMetricTests {
         )
         let metrics = WidgetEnergyMetric.metrics(for: entry)
 
-        #expect(metrics.map(\.kind) == [.solar, .grid])
+        #expect(metrics.map(\.kind) == [.grid, .solar])
         #expect(metrics.allSatisfy { $0.unit == WidgetEnergyStyle.energyUnit })
         // Net grid is -4.3 kWh (more returned than consumed), so both series point up.
         #expect(metrics.map(\.direction) == [.up, .up])
@@ -31,11 +31,12 @@ struct WidgetEnergyMetricTests {
         )
         let metrics = WidgetEnergyMetric.metrics(for: entry)
 
-        #expect(metrics.map(\.kind) == [.solar, .grid])
-        #expect(metrics[0].unit == UnitPower.kilowatts.symbol)
-        #expect(metrics[1].unit == UnitPower.watts.symbol)
+        #expect(metrics.map(\.kind) == [.grid, .solar])
+        // 250 W of grid draw stays in watts; 1450 W of generation scales up to kilowatts.
+        #expect(metrics[0].unit == UnitPower.watts.symbol)
+        #expect(metrics[1].unit == UnitPower.kilowatts.symbol)
         // Positive live grid power means energy is being drawn from the grid.
-        #expect(metrics[1].direction == .down)
+        #expect(metrics[0].direction == .down)
     }
 
     @available(iOS 17, *)
@@ -67,7 +68,7 @@ struct WidgetEnergyMetricTests {
         let entry = WidgetEnergyEntry(isConfigured: true)
         let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry)
 
-        #expect(metrics.map(\.kind) == [.solar, .grid])
+        #expect(metrics.map(\.kind) == [.grid, .solar])
         #expect(metrics.allSatisfy { $0.value == WidgetEnergyStyle.emptyValue })
         #expect(metrics.allSatisfy { $0.unit == WidgetEnergyStyle.energyUnit })
         // Nothing to point at, so no arrows.
@@ -101,7 +102,7 @@ struct WidgetEnergyMetricTests {
         )
         let metrics = WidgetEnergyMetric.metrics(for: entry, figure: .totals)
 
-        #expect(metrics.map(\.kind) == [.solar, .grid])
+        #expect(metrics.map(\.kind) == [.grid, .solar])
         #expect(metrics.allSatisfy { $0.unit == WidgetEnergyStyle.energyUnit })
     }
 
@@ -121,7 +122,7 @@ struct WidgetEnergyMetricTests {
         let entry = WidgetEnergyEntry(isConfigured: true, livePowerGrid: 250, livePowerSolar: 1450)
         let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry, figure: .totals)
 
-        #expect(metrics.map(\.kind) == [.solar, .grid])
+        #expect(metrics.map(\.kind) == [.grid, .solar])
         #expect(metrics.allSatisfy { $0.value == WidgetEnergyStyle.emptyValue })
     }
 }
