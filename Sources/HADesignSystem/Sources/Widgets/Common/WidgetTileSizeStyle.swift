@@ -37,6 +37,14 @@ public enum WidgetTileSizeStyle: CaseIterable, Sendable {
         }
     }
 
+    /// Whether a tile drawn at this size has room for the area line above its name.
+    ///
+    /// A compressed tile has already given up its padding and its border to fit; a third line of
+    /// text is the next thing to go, so the name and the state keep the room they have.
+    public var showsAreaLine: Bool {
+        self != .compressed
+    }
+
     /// How much larger a glyph is drawn when it has no background behind it: with no circle to sit
     /// inside, the icon has the whole slot to itself and reads too small at the regular size.
     public static let iconScaleWithoutBackground: CGFloat = 1.5

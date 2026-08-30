@@ -8,19 +8,57 @@ import WidgetKit
 /// still looks like a widget rather than a grid of "Title 1".
 public enum WidgetTileSampleData {
     /// Actions, the way a custom or scripts widget lists them.
+    ///
+    /// Entities carry the area they belong to; scenes and scripts have none, which is what makes
+    /// the mix worth previewing — both shapes of tile appear side by side in the same grid.
     public static let actions: [WidgetTileModel] = [
         .init(id: "action-0", title: "Good morning", subtitle: "Scene", icon: .weatherSunsetUpIcon),
-        .init(id: "action-1", title: "Kitchen light", subtitle: "On", icon: .lightbulbIcon),
-        .init(id: "action-2", title: "Front door", subtitle: "Locked", icon: .lockIcon),
-        .init(id: "action-3", title: "Vacuum", subtitle: "Docked", icon: .robotVacuumIcon),
+        .init(id: "action-1", title: "Kitchen light", subtitle: "On", area: "Kitchen", icon: .lightbulbIcon),
+        .init(id: "action-2", title: "Front door", subtitle: "Locked", area: "Entrance", icon: .lockIcon),
+        .init(id: "action-3", title: "Vacuum", subtitle: "Docked", area: "Living room", icon: .robotVacuumIcon),
         .init(id: "action-4", title: "Movie night", subtitle: "Script", icon: .movieOpenIcon),
         .init(id: "action-5", title: "Away", subtitle: "Scene", icon: .exitRunIcon),
-        .init(id: "action-6", title: "Fan", subtitle: "Off", icon: .fanIcon),
-        .init(id: "action-7", title: "Garage", subtitle: "Closed", icon: .garageIcon),
+        .init(id: "action-6", title: "Fan", subtitle: "Off", area: "Bedroom", icon: .fanIcon),
+        .init(id: "action-7", title: "Garage", subtitle: "Closed", area: "Garage", icon: .garageIcon),
         .init(id: "action-8", title: "Coffee", subtitle: "Script", icon: .coffeeIcon),
-        .init(id: "action-9", title: "Blinds", subtitle: "Open", icon: .blindsHorizontalIcon),
-        .init(id: "action-10", title: "Doorbell", subtitle: "Idle", icon: .bellIcon),
+        .init(id: "action-9", title: "Blinds", subtitle: "Open", area: "Office", icon: .blindsHorizontalIcon),
+        .init(id: "action-10", title: "Doorbell", subtitle: "Idle", area: "Entrance", icon: .bellIcon),
         .init(id: "action-11", title: "Bedtime", subtitle: "Script", icon: .weatherNightIcon),
+    ]
+
+    /// Tiles whose area, name and state are all longer than the tile is wide.
+    ///
+    /// Each line truncates on its own, so the state is still readable however long the name and the
+    /// area are — which is the whole point of stacking them, and what these are here to prove.
+    public static let longActions: [WidgetTileModel] = [
+        .init(
+            id: "long-0",
+            title: "Front door smart lock",
+            subtitle: "Unlocked by Home Assistant",
+            area: "Entrance hall and staircase",
+            icon: .lockIcon
+        ),
+        .init(
+            id: "long-1",
+            title: "Living room ceiling light",
+            subtitle: "On · 80 % brightness",
+            area: "Living room",
+            icon: .lightbulbIcon
+        ),
+        .init(
+            id: "long-2",
+            title: "Robot vacuum cleaner",
+            subtitle: "Returning to dock",
+            area: "Ground floor",
+            icon: .robotVacuumIcon
+        ),
+        .init(
+            id: "long-3",
+            title: "Bedroom air conditioning",
+            subtitle: "Cooling to 21 °C",
+            area: "Main bedroom",
+            icon: .airConditionerIcon
+        ),
     ]
 
     /// Readings, the way a sensors widget lists them.

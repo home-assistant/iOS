@@ -97,18 +97,14 @@ struct WidgetCommonlyUsedEntities: Widget {
             let iconInteractionType = magicItem.widgetInteractionType
             let tapInteractionType = magicItem.widgetTapInteractionType
             let isSplit = iconInteractionType != tapInteractionType
+            // Area above the name and state below it, the way the Home app stacks a tile: one
+            // line each, so a long area no longer pushes the state off the end of a shared line.
             let areaName = infoProvider.getAreaName(for: magicItem)
-            let subtitle: String? = {
-                if let areaName, let state = state?.value {
-                    return state + " · " + areaName
-                } else {
-                    return state?.value
-                }
-            }()
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
-                subtitle: subtitle,
+                subtitle: state?.value,
+                area: areaName,
                 interactionType: isSplit ? tapInteractionType : iconInteractionType,
                 iconInteractionType: isSplit ? iconInteractionType : nil,
                 icon: icon,
