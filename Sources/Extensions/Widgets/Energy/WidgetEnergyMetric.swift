@@ -59,6 +59,18 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             }
         }
 
+        /// The series a source preference leads with, whether or not the server reports it yet.
+        /// `metrics(for:)` can only answer that once there is data; a layout with room for one
+        /// figure needs it before then, to show the right icon while waiting.
+        static func headline(for source: WidgetEnergySource) -> Kind {
+            switch source {
+            case .auto, .consumption: .grid
+            case .solar: .solar
+            case .battery: .battery
+            case .gas: .gas
+            }
+        }
+
         /// SF Symbol stand-in for `icon`, used by the inline accessory where the system renders a
         /// single symbol next to the text and the Material Design font is unavailable.
         var accessorySymbol: SFSymbol {

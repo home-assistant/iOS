@@ -14,7 +14,12 @@ struct WidgetEnergyAccessoryCircularView: View {
     }
 
     var body: some View {
-        WidgetEnergyAccessoryCircularContentView(stat: metric?.designSystemModel())
+        // The stand-in follows the widget's own configuration rather than defaulting to the grid:
+        // an accessory narrowed to solar should wait on a sun, not a pylon.
+        WidgetEnergyAccessoryCircularContentView(
+            stat: metric?.designSystemModel(),
+            placeholderIcon: WidgetEnergyMetric.Kind.headline(for: entry.source).icon
+        )
     }
 }
 

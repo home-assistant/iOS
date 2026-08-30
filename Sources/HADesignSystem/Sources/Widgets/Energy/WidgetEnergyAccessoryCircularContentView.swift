@@ -11,9 +11,13 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
     private let stat: WidgetEnergyStatModel?
+    /// Icon for the accessory with nothing to report yet. Supplied by the caller because which
+    /// series this accessory would have shown is the widget's configuration, not the drawing's.
+    private let placeholderIcon: MaterialDesignIcons
 
-    public init(stat: WidgetEnergyStatModel?) {
+    public init(stat: WidgetEnergyStatModel?, placeholderIcon: MaterialDesignIcons = .transmissionTowerIcon) {
         self.stat = stat
+        self.placeholderIcon = placeholderIcon
     }
 
     public var body: some View {
@@ -45,7 +49,7 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
         } else {
             // The headline series' own icon, so an accessory with nothing to report still says what
             // it would have been reporting.
-            Text(verbatim: MaterialDesignIcons.transmissionTowerIcon.unicode)
+            Text(verbatim: placeholderIcon.unicode)
                 .font(.custom(MaterialDesignIcons.familyName, size: 20))
                 .foregroundStyle(.secondary)
         }

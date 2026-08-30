@@ -253,6 +253,18 @@ struct WidgetEnergyBatteryTests {
         #expect(WidgetEnergyMetric.metrics(for: entry).map(\.kind) == [.grid])
     }
 
+    /// The circular accessory has room for one figure and shows a stand-in icon until data lands,
+    /// so the icon has to follow the widget's own configuration. Defaulting it to the grid would
+    /// leave a solar-only accessory waiting behind a pylon.
+    @available(iOS 17, *)
+    @Test func theHeadlineSeriesFollowsTheSourcePreference() {
+        #expect(WidgetEnergyMetric.Kind.headline(for: .auto) == .grid)
+        #expect(WidgetEnergyMetric.Kind.headline(for: .consumption) == .grid)
+        #expect(WidgetEnergyMetric.Kind.headline(for: .solar) == .solar)
+        #expect(WidgetEnergyMetric.Kind.headline(for: .battery) == .battery)
+        #expect(WidgetEnergyMetric.Kind.headline(for: .gas) == .gas)
+    }
+
     /// Narrowing the widget to one source drops every other series, battery included.
     @available(iOS 17, *)
     @Test func theSourcePreferenceSelectsWhichSeriesAppear() {
