@@ -107,6 +107,7 @@ struct WidgetCommonlyUsedEntities: Widget {
                 icon: icon,
                 showIconBackground: true,
                 textColor: Color(uiColor: .label),
+                subtitleColor: state?.valueColor,
                 iconColor: iconColor,
                 backgroundColor: Color.tileBackground,
                 useCustomColors: false,

@@ -148,6 +148,7 @@ struct WidgetCustom: Widget {
                 icon: icon,
                 showIconBackground: showIconBackground,
                 textColor: textColor ?? Color(uiColor: .label),
+                subtitleColor: state?.valueColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.tileBackground,
                 useCustomColors: useCustomColors,

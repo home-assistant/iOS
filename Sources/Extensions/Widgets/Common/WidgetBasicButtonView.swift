@@ -46,7 +46,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
         if let subtitle = model.subtitle {
             Text(verbatim: subtitle)
                 .font(sizeStyle.subtextFont)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .foregroundStyle(model.subtitleColor ?? Color(uiColor: .secondaryLabel))
                 .lineLimit(1)
                 .truncationMode(.middle)
         }
