@@ -243,17 +243,20 @@ public final class ControlEntityProvider {
         private let lock = NSLock()
         private var continuation: CheckedContinuation<HAData?, Never>?
         private var token: HACancellable?
+        /// Whether the request has already been settled, by completing or by being cancelled.
+        /// `earlyResult` is only meaningful once this is true, which is what lets it stay a single
+        /// optional: a settled request with no result is a cancelled or failed one.
         private var isSettled = false
         /// A result that landed before `adopt` ran, which `send` is free to do by calling back
         /// synchronously.
-        private var earlyResult: HAData??
+        private var earlyResult: HAData?
 
         /// Takes ownership of the continuation and the in-flight request, resuming straight away if
         /// the request already settled while it was being handed over.
         func adopt(continuation: CheckedContinuation<HAData?, Never>, token: HACancellable) {
             lock.lock()
             guard !isSettled else {
-                let result = earlyResult ?? nil
+                let result = earlyResult
                 lock.unlock()
                 token.cancel()
                 continuation.resume(returning: result)
@@ -272,7 +275,7 @@ public final class ControlEntityProvider {
             }
             isSettled = true
             guard let continuation else {
-                earlyResult = .some(data)
+                earlyResult = data
                 lock.unlock()
                 return
             }
