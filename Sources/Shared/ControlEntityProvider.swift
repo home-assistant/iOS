@@ -17,13 +17,33 @@ public final class ControlEntityProvider {
         public let value: String
         public let unitOfMeasurement: String?
         public let domainState: Domain.State?
-        public let color: Color?
+        /// The raw, lowercased entity state. `value` is formatted for display (precision, unit,
+        /// device-class wording), so anything that keys off the state itself — the frontend's icon
+        /// color palette — needs the original.
+        public let rawState: String
+        /// The raw `device_class` attribute, which that palette also keys off.
+        public let deviceClass: String?
+        /// The light's own color, already contrast-adjusted, when it reports one.
+        public let liveColor: Color?
+        /// For a `group`, the domain all of its members share, whose palette the group borrows.
+        public let groupMemberDomain: String?
 
-        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?, color: Color? = nil) {
+        public init(
+            value: String,
+            unitOfMeasurement: String?,
+            domainState: Domain.State?,
+            rawState: String = "",
+            deviceClass: String? = nil,
+            liveColor: Color? = nil,
+            groupMemberDomain: String? = nil
+        ) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
             self.domainState = domainState
-            self.color = color
+            self.rawState = rawState
+            self.deviceClass = deviceClass
+            self.liveColor = liveColor
+            self.groupMemberDomain = groupMemberDomain
         }
     }
 
@@ -177,93 +197,69 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        var stateValue = (state["state"] as? String) ?? "N/A"
-        stateValue = StatePrecision.adjustPrecision(
+        let rawStateValue = (state["state"] as? String) ?? "N/A"
+        var stateValue = StatePrecision.adjustPrecision(
             serverId: server.identifier.rawValue,
             entityId: entityId,
-            stateValue: stateValue
+            stateValue: rawStateValue
         )
         stateValue = stateValue.capitalizedFirst
 
         let attributes = state["attributes"] as? [String: Any]
-        let colorAttributes = parseColorAttributes(from: attributes)
         let unitOfMeasurement = attributes?["unit_of_measurement"] as? String
 
         return buildState(
             entityId: entityId,
+            rawStateValue: rawStateValue.lowercased(),
             stateValue: stateValue,
             attributes: attributes,
-            colorAttributes: colorAttributes,
             unitOfMeasurement: unitOfMeasurement
         )
     }
 
-    private func parseColorAttributes(from attributes: [String: Any]?) -> (
-        colorMode: String?,
-        rgbColor: [Int]?,
-        hsColor: [Double]?
-    ) {
-        EntityColorAttributesParser.parse(from: attributes)
-    }
-
     private func buildState(
         entityId: String,
+        rawStateValue: String,
         stateValue: String,
         attributes: [String: Any]?,
-        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?),
         unitOfMeasurement: String?
     ) -> State {
         let domain = Domain(entityId: entityId)
         let domainState = Domain.State(rawValue: stateValue.lowercased())
+        let rawDomain = entityId.components(separatedBy: ".").first ?? ""
+        let colorAttributes = EntityColorAttributesParser.parse(from: attributes)
 
-        if let deviceClass = extractDeviceClass(from: attributes),
+        // The color is left to the view layer to resolve from these ingredients rather than baked
+        // in here: the widgets cache this state, and a resolved color would be flattened to a
+        // single appearance instead of following the current color scheme.
+        let liveColor = EntityIconColorProvider.liveColor(
+            domain: rawDomain,
+            rgbColor: colorAttributes.rgbColor,
+            hsColor: colorAttributes.hsColor
+        )
+        let deviceClass = attributes?["device_class"] as? String
+        let groupMemberDomain = rawDomain == Domain.group.rawValue
+            ? EntityIconColorProvider.groupMemberDomain(attributes: attributes)
+            : nil
+
+        var value = stateValue
+        var unit = unitOfMeasurement
+        if let deviceClass = deviceClass.flatMap(DeviceClass.init(rawValue:)),
            let domainState,
            unitOfMeasurement == nil,
            let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
-            let computedColor = computeIconColor(
-                entityId: entityId,
-                stateValue: stateValue,
-                colorAttributes: colorAttributes
-            )
-            return .init(
-                value: stateForDeviceClass,
-                unitOfMeasurement: nil,
-                domainState: domainState,
-                color: computedColor
-            )
-        } else {
-            let computedColor = computeIconColor(
-                entityId: entityId,
-                stateValue: stateValue,
-                colorAttributes: colorAttributes
-            )
-            return .init(
-                value: stateValue,
-                unitOfMeasurement: unitOfMeasurement,
-                domainState: domainState,
-                color: computedColor
-            )
+            value = stateForDeviceClass
+            unit = nil
         }
-    }
 
-    private func extractDeviceClass(from attributes: [String: Any]?) -> DeviceClass? {
-        guard let rawDeviceClass = attributes?["device_class"] as? String else {
-            return nil
-        }
-        return DeviceClass(rawValue: rawDeviceClass)
-    }
-
-    private func computeIconColor(
-        entityId: String,
-        stateValue: String,
-        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?)
-    ) -> Color? {
-        EntityIconColorProvider.iconColor(
-            domain: Domain(entityId: entityId) ?? .switch,
-            state: stateValue.lowercased(),
-            colorMode: colorAttributes.colorMode,
-            rgbColor: colorAttributes.rgbColor,
-            hsColor: colorAttributes.hsColor
+        return .init(
+            value: value,
+            unitOfMeasurement: unit,
+            domainState: domainState,
+            rawState: rawStateValue,
+            deviceClass: deviceClass,
+            liveColor: liveColor,
+            groupMemberDomain: groupMemberDomain
         )
     }
 }

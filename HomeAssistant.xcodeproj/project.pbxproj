@@ -72,6 +72,7 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
+		42AA0008300100010001AAA1 /* EntityIconColorProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0007300100010001AAA1 /* EntityIconColorProvider.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -116,6 +117,10 @@
 		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		4286A2EF2F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
+		42AA0005300100010001AAA1 /* EntityStateColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0004300100010001AAA1 /* EntityStateColor.swift */; };
+		42AA0006300100010001AAA1 /* EntityStateColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0004300100010001AAA1 /* EntityStateColor.swift */; };
+		42AA0002300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
+		42AA0003300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
 		4286A2F02F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
 		42886D162FFE5C12004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D152FFE5C12004EB33B /* Sodium */; };
 		42886D182FFE5C19004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D172FFE5C19004EB33B /* Sodium */; };
@@ -613,6 +618,8 @@
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
+		42AA0004300100010001AAA1 /* EntityStateColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateColor.swift; sourceTree = "<group>"; };
+		42AA0001300100010001AAA1 /* EntityStateActive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateActive.swift; sourceTree = "<group>"; };
 		423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-WatchWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBehindServerManagerKeychain.test.swift; sourceTree = "<group>"; };
 		4245DC022EBA42C3005E0E04 /* AreasService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.swift; sourceTree = "<group>"; };
@@ -689,6 +696,7 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
+		42AA0007300100010001AAA1 /* EntityIconColorProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.test.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2852,6 +2860,8 @@
 				42EDBE083002FC020051FC9B /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
+				42AA0004300100010001AAA1 /* EntityStateColor.swift */,
+				42AA0001300100010001AAA1 /* EntityStateActive.swift */,
 				42EDBE4E3002FC020051FC9B /* Models */,
 				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				42EDBE1F3002FC020051FC9B /* Database */,
@@ -2951,6 +2961,7 @@
 				42AB77012FBD10010051FC9B /* SettingsStoreRestoreLastURL.test.swift */,
 				42EEEFE42E2792B20080E973 /* Service.test.swift */,
 				DA5459C05BEB77340680D8C6 /* Domain.test.swift */,
+				42AA0007300100010001AAA1 /* EntityIconColorProvider.test.swift */,
 				42C11A0031AC500011AABB00 /* ClimateControlState.test.swift */,
 				42C11A0431AC500011AABB04 /* VacuumCapabilities.test.swift */,
 				42C11A0631AC500011AABB06 /* VacuumAreaMapping.test.swift */,
@@ -4319,6 +4330,8 @@
 				4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
 				4286A2F02F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
+				42AA0005300100010001AAA1 /* EntityStateColor.swift in Sources */,
+				42AA0002300100010001AAA1 /* EntityStateActive.swift in Sources */,
 				42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */,
 				42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */,
 				4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */,
@@ -4352,6 +4365,8 @@
 				42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */,
 				428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
 				4286A2EF2F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
+				42AA0006300100010001AAA1 /* EntityStateColor.swift in Sources */,
+				42AA0003300100010001AAA1 /* EntityStateActive.swift in Sources */,
 				42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */,
 				42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */,
 				4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */,
@@ -4395,6 +4410,7 @@
 				1165707C2702BAF5003906A7 /* DiskCache.test.swift in Sources */,
 				42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */,
 				17200629C6080FA329C8F802 /* Domain.test.swift in Sources */,
+				42AA0008300100010001AAA1 /* EntityIconColorProvider.test.swift in Sources */,
 				42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */,
 				42C11A0531AC500011AABB05 /* VacuumCapabilities.test.swift in Sources */,
 				42C11A0731AC500011AABB07 /* VacuumAreaMapping.test.swift in Sources */,

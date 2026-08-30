@@ -5,11 +5,27 @@ import WidgetKit
 struct WidgetEntityState: Codable {
     let value: String
     let domainState: Domain.State?
-    let hexColor: String?
+    /// The raw, lowercased entity state and its device class, kept so the icon color can be
+    /// resolved at render time — the frontend's palette keys off both, and resolving here would
+    /// freeze the color to whatever appearance the timeline provider happened to run under.
+    let rawState: String
+    let deviceClass: String?
+    /// Hex of the light's own color, when it reports one.
+    let liveColorHex: String?
+    /// For a `group`, the domain all of its members share.
+    let groupMemberDomain: String?
 
-    var color: Color? {
-        guard let hexColor else { return nil }
-        return Color(hex: hexColor)
+    /// The icon color home-assistant/frontend gives this entity, or `customColor` when the user
+    /// picked one — which, as in the tile card, only applies while the entity is active.
+    func iconColor(domain: Domain?, customColor: Color? = nil) -> Color {
+        EntityIconColorProvider.iconColor(
+            domain: domain?.rawValue ?? "",
+            deviceClass: deviceClass,
+            state: rawState,
+            liveColor: liveColorHex.map { Color(hex: $0) },
+            groupMemberDomain: groupMemberDomain,
+            customColor: customColor
+        )
     }
 }
 
@@ -123,7 +139,10 @@ struct WidgetEntityStateProvider {
                 states[item] = .init(
                     value: value,
                     domainState: state.domainState,
-                    hexColor: state.color?.hex()
+                    rawState: state.rawState,
+                    deviceClass: state.deviceClass,
+                    liveColorHex: state.liveColor?.hex(),
+                    groupMemberDomain: state.groupMemberDomain
                 )
             } else {
                 Current.Log.error(

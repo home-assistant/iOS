@@ -28,14 +28,21 @@ enum WidgetPreviewSample {
         entity(id: "fan.preview", name: CoreStrings.componentFanTitle, domain: .fan, state: .off),
         entity(id: "lock.preview", name: CoreStrings.componentLockTitle, domain: .lock, state: .locked),
         entity(id: "scene.preview", name: CoreStrings.componentSceneTitle, domain: .scene, state: nil),
-        entity(id: "script.preview", name: CoreStrings.componentScriptTitle, domain: .script, state: nil),
+        entity(
+            id: "script.preview",
+            name: CoreStrings.componentScriptTitle,
+            domain: .script,
+            state: nil,
+            rawState: Domain.State.off.rawValue
+        ),
         entity(
             id: "sensor.preview",
             name: L10n.Climate.Control.Temperature.title,
             domain: .sensor,
             state: nil,
             iconName: MaterialDesignIcons.thermometerIcon.name,
-            stateValue: temperatureValue
+            stateValue: temperatureValue,
+            rawState: "21.5"
         ),
     ]
 
@@ -78,13 +85,16 @@ enum WidgetPreviewSample {
         return states
     }
 
+    /// - Parameter rawState: the state the tile is colored from, for the samples whose displayed
+    ///   value isn't one of the `Domain.State` cases (a sensor reading, a script's last run).
     private static func entity(
         id: String,
         name: String,
         domain: Domain,
         state: Domain.State?,
         iconName: String? = nil,
-        stateValue: String? = nil
+        stateValue: String? = nil,
+        rawState: String? = nil
     ) -> WidgetPreviewSampleEntity {
         WidgetPreviewSampleEntity(
             magicItem: .init(id: id, serverId: serverId, type: .entity),
@@ -92,7 +102,10 @@ enum WidgetPreviewSample {
             state: .init(
                 value: stateValue ?? state.map(stateName(for:)) ?? "",
                 domainState: state,
-                hexColor: nil
+                rawState: rawState ?? state?.rawValue ?? EntityStateActive.unknown,
+                deviceClass: nil,
+                liveColorHex: nil,
+                groupMemberDomain: nil
             )
         )
     }
