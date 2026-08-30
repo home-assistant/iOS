@@ -2,7 +2,12 @@ import Alamofire
 import Foundation
 import UIKit
 
-class MJPEGStreamerSessionDelegate: SessionDelegate, @unchecked Sendable {
+/// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
+///
+/// Certificate handling is not iOS-only: the watch streams `camera_proxy_stream` for a camera
+/// notification's long look, and an mTLS server rejects that stream without the client certificate
+/// just as it rejects everything else.
+final class MJPEGStreamerSessionDelegate: ClientCertificateSessionDelegate, @unchecked Sendable {
     static let didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
     static let taskUserInfoKey: AnyHashable = "taskUserInfoKey"
 
@@ -22,26 +27,6 @@ class MJPEGStreamerSessionDelegate: SessionDelegate, @unchecked Sendable {
         completionHandler(.allow)
     }
 }
-
-#if !os(watchOS)
-/// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
-final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate, @unchecked Sendable {
-    override func urlSession(
-        _ session: URLSession,
-        dataTask: URLSessionDataTask,
-        didReceive response: URLResponse,
-        completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void
-    ) {
-        super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
-        NotificationCenter.default.post(
-            name: MJPEGStreamerSessionDelegate.didReceiveResponse,
-            object: self,
-            userInfo: [MJPEGStreamerSessionDelegate.taskUserInfoKey: dataTask]
-        )
-        completionHandler(.allow)
-    }
-}
-#endif
 
 enum MJPEGEvent: CustomStringConvertible {
     case data(Data)

@@ -61,13 +61,32 @@ enum WatchServerSync {
         // Already off-main here, so the Keychain lookups (SecItemCopyMatching) can run inline.
         // Pushed mirrors also often arrive while the phone isn't immediately reachable, so the
         // follow-up request waits for reachability instead of being dropped.
-        let missingCertificate = Current.servers.all.contains { server in
+        guard hasMissingCertificate() else { return }
+        Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
+        DispatchQueue.main.async { requestWhenReachable() }
+    }
+
+    /// Whether any configured server references a client certificate this Watch's Keychain lacks.
+    /// Reads the Keychain, so it must not run on the main thread.
+    private static func hasMissingCertificate() -> Bool {
+        Current.servers.all.contains { server in
             guard let certificate = server.info.connection.clientCertificate else { return false }
             return !ClientCertificateManager.shared.hasIdentity(for: certificate)
         }
-        guard missingCertificate else { return }
-        Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
-        DispatchQueue.main.async { requestWhenReachable() }
+    }
+
+    /// Pull the mTLS bundles from the phone when a configured server references a client certificate
+    /// this Watch's Keychain doesn't have. Called at launch as well as after each mirror apply: the
+    /// servers persisted from a previous run outlive the identity that went with them (the mirror is
+    /// sanitized of Keychain material, and a Watch restored from a backup keeps neither), and without
+    /// this every mTLS request fails with `certificateNotFound` for the process's whole lifetime with
+    /// nothing asking the phone to re-send.
+    static func requestCertificatesIfMissing() {
+        applyQueue.async {
+            guard hasMissingCertificate() else { return }
+            Current.Log.info("[Watch] A configured server references a client certificate not in the Keychain")
+            DispatchQueue.main.async { requestWhenReachable() }
+        }
     }
 
     /// One-shot reachability observation guarding the deferred certificate request. Main-thread only.

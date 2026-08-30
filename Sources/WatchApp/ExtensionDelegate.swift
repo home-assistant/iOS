@@ -70,6 +70,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // connection info doesn't carry the override across launches/syncs).
         WatchServerSync.applyURLOverrides()
 
+        // The persisted servers can reference an mTLS client certificate this Watch's Keychain no
+        // longer has; ask the phone to re-send it rather than failing every request until the user
+        // happens to hit refresh.
+        WatchServerSync.requestCertificatesIfMissing()
+
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
 

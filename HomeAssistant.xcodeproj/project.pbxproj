@@ -78,6 +78,7 @@
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BD4D48734DB8B6FDE329FCD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DC7A63D910AB3EEAC50BE210 /* RealmSwift */; };
 		1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */; };
+		42C11A2031AC500011AABB20 /* MJPEGStreamerSessionDelegate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C11A2131AC500011AABB21 /* MJPEGStreamerSessionDelegate.test.swift */; };
 		223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */; };
 		2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB784C585C188EB65EA62A21 /* RealmSwift */; };
 		3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 70600C4E2473CC736B505F6D /* RealmSwift */; };
@@ -663,6 +664,7 @@
 		46C62B882D8A3687002C0001 /* SharedTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46C62BA82D8A3AC5002C0001 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/System/iOSSupport/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.test.swift; sourceTree = "<group>"; };
+		42C11A2131AC500011AABB21 /* MJPEGStreamerSessionDelegate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MJPEGStreamerSessionDelegate.test.swift; sourceTree = "<group>"; };
 		5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Database/GRDB+Initialization.test.swift"; sourceTree = "<group>"; };
 		6F482639B10AA7F76717F84F /* WatchConnectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.test.swift; sourceTree = "<group>"; };
 		892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
@@ -2954,6 +2956,7 @@
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 				42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */,
 				480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */,
+				42C11A2131AC500011AABB21 /* MJPEGStreamerSessionDelegate.test.swift */,
 				6F482639B10AA7F76717F84F /* WatchConnectivity.test.swift */,
 				114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */,
 				114CBAEC283AB92D00A9BAFF /* SecTrust+TestAdditions.swift */,
@@ -4389,6 +4392,7 @@
 				11B38EDF275BE29F00205C7B /* ConnectionInfo.test.swift in Sources */,
 				42F1C0323140B00011AACC02 /* ConnectivityWrapper.test.swift in Sources */,
 				1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */,
+				42C11A2031AC500011AABB20 /* MJPEGStreamerSessionDelegate.test.swift in Sources */,
 				6DC7361D22E7972F8C24B259 /* WatchConnectivity.test.swift in Sources */,
 				42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
