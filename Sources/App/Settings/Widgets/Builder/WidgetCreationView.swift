@@ -207,7 +207,7 @@ struct WidgetCreationView: View {
         let models = viewModel.widget.items.map { magicItem in
             let info = viewModel.magicItemInfo(for: magicItem)
             let textColor = Color(hex: magicItem.customization?.textColor)
-            let iconColor = Color(hex: magicItem.customization?.iconColor)
+            let iconColor = Color(hex: magicItem.customization?.customIconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
             let icon: MaterialDesignIcons = {
                 if let info {

@@ -70,17 +70,12 @@ struct WidgetCommonlyUsedEntities: Widget {
                 }
             }()
 
+            // The icon takes the color home-assistant/frontend gives the entity — its domain's and
+            // device class's `--state-…` palette. Items the widget fetches no state for keep the
+            // app's tint.
             let iconColor: Color = {
-                let domainsWithActiveState: [Domain] = [.light, .switch, .inputBoolean, .cover, .fan, .climate]
-                if showStates, let domain = magicItem.domain, domainsWithActiveState.contains(domain) {
-                    if state?.domainState?.isActive ?? false {
-                        return state?.color ?? Color.haPrimary
-                    } else {
-                        return Color.gray
-                    }
-                } else {
-                    return Color.haPrimary
-                }
+                guard showStates, let state else { return Color.haPrimary }
+                return state.iconColor(domain: magicItem.domain)
             }()
 
             let title: String = {

@@ -76,26 +76,22 @@ struct WidgetCustom: Widget {
                 }
             }()
 
+            // The icon takes the color home-assistant/frontend gives the entity — its domain's and
+            // device class's `--state-…` palette — unless the user picked one for this tile.
             let iconColor: Color = {
-                let magicItemIconColor = {
-                    if let iconColor = magicItem.customization?.iconColor {
-                        return Color(hex: iconColor)
-                    } else {
-                        return Color.haPrimary
-                    }
-                }()
-
                 if !widget.itemsStates.isEmpty {
                     return Color.gray
-                } else if showStates, [.light, .switch, .inputBoolean, .cover, .fan].contains(magicItem.domain) {
-                    if state?.domainState?.isActive ?? false {
-                        return state?.color ?? magicItemIconColor
-                    } else {
-                        return Color.gray
-                    }
-                } else {
-                    return magicItemIconColor
                 }
+
+                let customIconColor = magicItem.customization?.customIconColor.map { Color(hex: $0) }
+
+                // Items the widget never fetches a state for (scripts, scenes, buttons, Assist)
+                // have nothing to color from, and keep the app's tint.
+                guard showStates, let state else {
+                    return customIconColor ?? Color.haPrimary
+                }
+
+                return state.iconColor(domain: magicItem.domain, customColor: customIconColor)
             }()
 
             let title: String = {

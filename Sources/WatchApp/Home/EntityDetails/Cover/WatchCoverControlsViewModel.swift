@@ -64,7 +64,7 @@ final class WatchCoverControlsViewModel: ObservableObject {
 
     var iconColor: UIColor {
         if let entity, itemInfo.customization?.iconIsCustomized != true {
-            return entity.carPlayIconColor() ?? .white
+            return entity.stateIconColor() ?? .white
         }
         if let hex = itemInfo.customization?.iconColor {
             return UIColor(hex: hex)

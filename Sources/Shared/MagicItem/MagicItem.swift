@@ -158,9 +158,36 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
         public var iconIsCustomized: Bool?
+        /// True only when the user explicitly picked a custom icon color via the color picker
+        public var iconColorIsCustomized: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
+        }
+
+        /// The icon color the user deliberately chose, or `nil` to let the entity keep the color
+        /// home-assistant/frontend gives it.
+        ///
+        /// The customization screen seeds its color picker with the app's tint the first time it
+        /// opens, so a stored color on its own never meant the user picked one. Items saved before
+        /// ``iconColorIsCustomized`` existed are therefore only treated as customized when their
+        /// color differs from that seed.
+        public var customIconColor: String? {
+            guard let iconColor else { return nil }
+            if iconColorIsCustomized == true { return iconColor }
+            return normalizedHex(iconColor) == normalizedHex(MagicItem.defaultIconColorHex)
+                ? nil
+                : iconColor
+        }
+
+        /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
+        /// opaque alpha channel — the app writes the same color in both shapes.
+        private func normalizedHex(_ hex: String) -> String {
+            var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
+            if normalized.count == 8, normalized.hasSuffix("FF") {
+                normalized = String(normalized.dropLast(2))
+            }
+            return normalized
         }
 
         public init(
@@ -169,7 +196,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
             backgroundColor: String? = nil,
             requiresConfirmation: Bool = false,
             icon: String? = nil,
-            iconIsCustomized: Bool = false
+            iconIsCustomized: Bool = false,
+            iconColorIsCustomized: Bool = false
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
@@ -177,6 +205,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
             self.iconIsCustomized = iconIsCustomized
+            self.iconColorIsCustomized = iconColorIsCustomized
         }
     }
 
@@ -517,8 +546,13 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 }
 
 public extension MagicItem {
-    static var defaultAssistIconColorHex: String {
+    /// The color the icon color picker seeds itself with when an item has none yet: the app's tint.
+    static var defaultIconColorHex: String {
         Color.haPrimary.hex() ?? Color.brand50.hex() ?? ""
+    }
+
+    static var defaultAssistIconColorHex: String {
+        defaultIconColorHex
     }
 
     /// Single entry point for executing a magic item.
