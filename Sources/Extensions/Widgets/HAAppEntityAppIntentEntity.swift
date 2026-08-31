@@ -16,6 +16,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     var serverName: String
     var areaName: String?
     var deviceName: String?
+    /// Name of the hardware a child device belongs to. Only the Spotlight index sets it.
+    var parentDeviceName: String?
     var floorName: String?
     var displayString: String
     var iconName: String
@@ -54,6 +56,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
         floorName: String? = nil,
         displayString: String,
         iconName: String,
@@ -65,6 +68,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
         self.floorName = floorName
         self.displayString = displayString
         self.iconName = iconName

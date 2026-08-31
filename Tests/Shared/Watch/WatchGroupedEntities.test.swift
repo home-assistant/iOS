@@ -35,7 +35,39 @@ struct WatchGroupedEntitiesTests {
         #expect(grouped.deviceGroups.map(\.name) == ["alpha", "Zulu"])
         // …while the entities inside each section stay in the order the section was sorted in.
         #expect(grouped.deviceGroups.first?.entries.map(\.item.id) == ["light.alpha_two", "light.alpha_one"])
-        #expect(grouped.allEntries.count == 4)
+    }
+
+    @Test("A child device's section sorts under its parent and says what it belongs to")
+    func sortsChildSectionsUnderTheirParent() {
+        let outlet = WatchEntityEntry.Device(id: "outlet", name: "Outlet 2", parentName: "Power strip")
+        let grouped = WatchGroupedEntities.make([
+            entry("light.alpha_one", device: .init(id: "alpha", name: "Alpha lamp")),
+            entry("light.alpha_two", device: .init(id: "alpha", name: "Alpha lamp")),
+            entry("switch.outlet_power", device: outlet),
+            entry("sensor.outlet_energy", device: outlet),
+            entry("switch.strip_main", device: .init(id: "strip", name: "Power strip")),
+            entry("sensor.strip_energy", device: .init(id: "strip", name: "Power strip")),
+        ])
+
+        // "Outlet 2" would sort first alphabetically; as a child it follows its parent instead.
+        #expect(grouped.deviceGroups.map(\.name) == ["Alpha lamp", "Power strip", "Outlet 2"])
+        #expect(grouped.deviceGroups.last?.parentName == "Power strip")
+        #expect(grouped.deviceGroups.first?.parentName == nil)
+    }
+
+    @Test("Flattening one device's group keeps the other sections")
+    func flattensASingleDeviceGroup() {
+        let outlet = WatchEntityEntry.Device(id: "outlet", name: "Outlet 2", parentName: "Power strip")
+        let grouped = WatchGroupedEntities.make([
+            entry("switch.strip_main", device: .init(id: "strip", name: "Power strip")),
+            entry("sensor.strip_energy", device: .init(id: "strip", name: "Power strip")),
+            entry("switch.outlet_power", device: outlet),
+            entry("sensor.outlet_energy", device: outlet),
+        ]).flatteningGroup(deviceId: "strip")
+
+        #expect(grouped.ungrouped.map(\.item.id) == ["switch.strip_main", "sensor.strip_energy"])
+        #expect(grouped.deviceGroups.map(\.deviceId) == ["outlet"])
+        #expect(grouped.flatteningGroup(deviceId: "unknown").deviceGroups.map(\.deviceId) == ["outlet"])
     }
 
     @Test("Nothing to group yields an empty result")

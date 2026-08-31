@@ -404,10 +404,11 @@ struct EntityPicker: View {
         }
     }
 
-    // Grouping by domain only says something when several domains are listed.
+    // Grouping only says something when there is more than one section to make: several domains, or
+    // devices to group the entities under.
     @ViewBuilder
     private var groupByPicker: some View {
-        if viewModel.selectableDomains.count > 1 {
+        if viewModel.selectableDomains.count > 1 || !viewModel.deviceRegistryData.isEmpty {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.GroupBy.title,
                 icon: .listBulletRectangle,

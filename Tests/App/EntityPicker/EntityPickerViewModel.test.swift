@@ -162,4 +162,62 @@ struct EntityPickerViewModelTests {
         await vm._test_awaitFiltering()
         #expect(entityIds().contains("light.hidden_lamp"))
     }
+
+    @Test("Grouping by device puts a child device under its parent and the deviceless entities last")
+    func groupsByDevice() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        try AppDeviceRegistryTable().createIfNeeded(database: database)
+        try AppAreaTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "A"
+        let entities: [HAAppEntity] = [
+            .make("switch.outlet_power", name: "Outlet power", domain: "switch", serverId: serverId),
+            .make("switch.strip_main", name: "Strip main", domain: "switch", serverId: serverId),
+            .make("light.yaml_lamp", name: "YAML lamp", domain: "light", serverId: serverId),
+        ]
+
+        try await database.write { db in
+            for entity in entities {
+                try entity.insert(db)
+            }
+            try EntityRegistryListForDisplay.Entity(
+                serverId: serverId,
+                entityId: "switch.outlet_power",
+                deviceId: "outlet"
+            ).insert(db)
+            try EntityRegistryListForDisplay.Entity(
+                serverId: serverId,
+                entityId: "switch.strip_main",
+                deviceId: "strip"
+            ).insert(db)
+            try AppDeviceRegistry.makeTest(areaId: nil, deviceId: "strip", serverId: serverId, name: "Power strip")
+                .insert(db)
+            try AppDeviceRegistry.makeTest(
+                areaId: nil,
+                deviceId: "outlet",
+                serverId: serverId,
+                name: "Outlet 2",
+                parentDeviceId: "strip"
+            ).insert(db)
+        }
+
+        let vm = EntityPickerViewModel(domainFilter: nil, selectedServerId: serverId)
+        vm.fetchEntities()
+        vm.selectedGrouping = .device
+        await vm._test_awaitFiltering()
+
+        // "Outlet 2" sorts before "Power strip" alphabetically, but a child follows its parent.
+        #expect(vm.filteredGroups.map(\.title) == [
+            "Power strip",
+            "Outlet 2",
+            L10n.EntityPicker.List.Device.NoDevice.title,
+        ])
+        #expect(vm.filteredGroups.first?.entities.map(\.entityId) == ["switch.strip_main"])
+        #expect(vm.filteredGroups.last?.entities.map(\.entityId) == ["light.yaml_lamp"])
+    }
 }
