@@ -183,18 +183,6 @@ public extension AppDeviceRegistry {
         )
     }
 
-    /// `device_id → display name` for a server's devices.
-    static func displayNamesById(serverId: String) -> [String: String] {
-        do {
-            return try config(serverId: serverId).reduce(into: [String: String]()) { result, device in
-                result[device.deviceId] = device.displayName
-            }
-        } catch {
-            Current.Log.error("Failed to fetch device names for server \(serverId): \(error)")
-            return [:]
-        }
-    }
-
     static func config(serverId: String) throws -> [AppDeviceRegistry] {
         try Current.database().read { db in
             try AppDeviceRegistry
