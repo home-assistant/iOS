@@ -184,6 +184,9 @@ public class SensorContainer {
     /// before another run did must not be allowed to send it afterwards — that's how a Focus switch
     /// ends up logged as `Work → (blank) → Work`. Kept per server because a value that reached one
     /// server hasn't necessarily reached the others.
+    ///
+    /// Only state updates take part: registration describes which sensors exist rather than what
+    /// they read, so it neither consults nor adds to this.
     private let lastDispatchedReads = HAProtected<[Identifier<Server>: [String: ReadSensor]]>(value: [:])
 
     func sensors(
@@ -322,6 +325,8 @@ public class SensorContainer {
             var dispatched = allServers[server.identifier] ?? [:]
             var outgoing = [WebhookSensor]()
 
+            var replaced = [String]()
+
             for batch in batches {
                 for sensor in batch.sensors {
                     guard let uniqueID = sensor.UniqueID else {
@@ -331,10 +336,7 @@ public class SensorContainer {
                     }
 
                     if let newer = dispatched[uniqueID], newer.readOrder > batch.readOrder {
-                        Current.Log.info(
-                            "re-sending \(uniqueID) to \(server.info.name): this run read it " +
-                                "(\(batch.readOrder)) before the value already sent (\(newer.readOrder))"
-                        )
+                        replaced.append(uniqueID)
                         outgoing.append(newer.sensor)
                         continue
                     }
@@ -342,6 +344,14 @@ public class SensorContainer {
                     dispatched[uniqueID] = ReadSensor(sensor: sensor, readOrder: batch.readOrder)
                     outgoing.append(sensor)
                 }
+            }
+
+            if !replaced.isEmpty {
+                // One line for the whole run: an overlap can cover every sensor, on every server.
+                Current.Log.verbose(
+                    "keeping the values already sent to \(server.info.name) for \(replaced), " +
+                        "which this run read before them"
+                )
             }
 
             allServers[server.identifier] = dispatched
