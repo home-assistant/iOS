@@ -29,6 +29,8 @@ public struct WidgetTodoListContentView: View {
     private let addControl: ControlContent
     private let completeControl: ItemContent
     private let itemContent: ItemContent
+    /// How the rows are typeset, which the small family has to tighten to fit anything at all.
+    private let sizeStyle: WidgetTodoListSizeStyle
 
     public init(
         title: String,
@@ -52,6 +54,7 @@ public struct WidgetTodoListContentView: View {
         self.addControl = addControl
         self.completeControl = completeControl
         self.itemContent = itemContent
+        self.sizeStyle = WidgetTodoListSizeStyle(family: family)
     }
 
     public var body: some View {
@@ -98,6 +101,7 @@ public struct WidgetTodoListContentView: View {
         HStack {
             if family == .systemSmall {
                 Text(verbatim: title.first.map(String.init) ?? "")
+                    .font(sizeStyle.initialFont)
                     .padding(DesignSystem.Spaces.one)
                     .background(Color(uiColor: .tertiarySystemFill))
                     .foregroundStyle(Color(uiColor: .tertiaryLabel))
@@ -105,7 +109,7 @@ public struct WidgetTodoListContentView: View {
                 Spacer()
             } else {
                 Text(verbatim: title)
-                    .font(DesignSystem.Font.title3.bold())
+                    .font(sizeStyle.titleFont)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
                     .truncationMode(.tail)
@@ -114,12 +118,12 @@ public struct WidgetTodoListContentView: View {
                 refreshControl(AnyView(
                     Image(systemSymbol: .arrowClockwiseCircle)
                         .foregroundStyle(.secondary)
-                        .font(DesignSystem.Font.title)
+                        .font(sizeStyle.controlFont)
                 ))
                 addControl(AnyView(
                     Image(systemSymbol: .plusCircleFill)
                         .foregroundStyle(.haPrimary)
-                        .font(DesignSystem.Font.title)
+                        .font(sizeStyle.controlFont)
                 ))
             }
         }
@@ -127,10 +131,10 @@ public struct WidgetTodoListContentView: View {
     }
 
     private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+        VStack(alignment: .leading, spacing: sizeStyle.rowSpacing) {
             if items.isEmpty {
                 Text(verbatim: strings.allDone)
-                    .font(DesignSystem.Font.body)
+                    .font(sizeStyle.summaryFont)
                     .foregroundStyle(.secondary)
                     .frame(height: 40)
             } else {
@@ -145,24 +149,24 @@ public struct WidgetTodoListContentView: View {
         HStack(alignment: .top) {
             completeControl(item, AnyView(
                 Image(systemSymbol: .circle)
-                    .font(DesignSystem.Font.title3)
+                    .font(sizeStyle.checkboxFont)
                     .foregroundStyle(.haPrimary)
                     .padding(.top, item.dueText != nil ? DesignSystem.Spaces.micro : 0)
             ))
             itemContent(item, AnyView(
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
                     Text(verbatim: item.summary)
-                        .font(DesignSystem.Font.body)
+                        .font(sizeStyle.summaryFont)
                         .lineLimit(1)
                         .truncationMode(.tail)
                     if let dueText = item.dueText {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                ofSize: .init(width: 12, height: 12),
+                                ofSize: .init(width: sizeStyle.dueIconSize, height: sizeStyle.dueIconSize),
                                 color: item.isOverdue ? UIColor.orange : UIColor.secondaryLabel
                             ))
                             Text(verbatim: dueText)
-                                .font(DesignSystem.Font.caption2)
+                                .font(sizeStyle.dueFont)
                                 .foregroundStyle(item.isOverdue ? Color.orange : .secondary)
                                 .lineLimit(1)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -171,7 +175,7 @@ public struct WidgetTodoListContentView: View {
                 }
             ))
         }
-        .frame(maxWidth: .infinity, minHeight: 30, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
@@ -190,5 +194,22 @@ public struct WidgetTodoListContentView: View {
     )
     .padding()
     .frame(width: 338, height: 158)
+}
+
+@available(iOS 17, *)
+#Preview("Small") {
+    WidgetTodoListContentView(
+        title: "Groceries",
+        items: [
+            .init(id: "1", summary: "Coffee beans"),
+            .init(id: "2", summary: "Book a table", dueText: "Tomorrow"),
+            .init(id: "3", summary: "Water the plants", dueText: "Yesterday", isOverdue: true),
+        ],
+        isConfigured: true,
+        family: .systemSmall,
+        strings: .preview
+    )
+    .padding()
+    .frame(width: 158, height: 158)
 }
 #endif
