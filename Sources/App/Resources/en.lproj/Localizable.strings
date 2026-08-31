@@ -2661,6 +2661,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2805,6 +2809,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";
