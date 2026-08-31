@@ -59,6 +59,7 @@ public struct WatchEntitySections {
                                 WatchEntityEntry.Device(
                                     id: device.deviceId,
                                     name: name,
+                                    parentId: device.parentDeviceId,
                                     parentName: device.parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
                                 )
                             }

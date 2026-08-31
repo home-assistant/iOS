@@ -39,7 +39,12 @@ struct WatchGroupedEntitiesTests {
 
     @Test("A child device's section sorts under its parent and says what it belongs to")
     func sortsChildSectionsUnderTheirParent() {
-        let outlet = WatchEntityEntry.Device(id: "outlet", name: "Outlet 2", parentName: "Power strip")
+        let outlet = WatchEntityEntry.Device(
+            id: "outlet",
+            name: "Outlet 2",
+            parentId: "strip",
+            parentName: "Power strip"
+        )
         let grouped = WatchGroupedEntities.make([
             entry("light.alpha_one", device: .init(id: "alpha", name: "Alpha lamp")),
             entry("light.alpha_two", device: .init(id: "alpha", name: "Alpha lamp")),
@@ -57,7 +62,12 @@ struct WatchGroupedEntitiesTests {
 
     @Test("Flattening one device's group keeps the other sections")
     func flattensASingleDeviceGroup() {
-        let outlet = WatchEntityEntry.Device(id: "outlet", name: "Outlet 2", parentName: "Power strip")
+        let outlet = WatchEntityEntry.Device(
+            id: "outlet",
+            name: "Outlet 2",
+            parentId: "strip",
+            parentName: "Power strip"
+        )
         let grouped = WatchGroupedEntities.make([
             entry("switch.strip_main", device: .init(id: "strip", name: "Power strip")),
             entry("sensor.strip_energy", device: .init(id: "strip", name: "Power strip")),
@@ -68,6 +78,25 @@ struct WatchGroupedEntitiesTests {
         #expect(grouped.ungrouped.map(\.item.id) == ["switch.strip_main", "sensor.strip_energy"])
         #expect(grouped.deviceGroups.map(\.deviceId) == ["outlet"])
         #expect(grouped.flatteningGroup(deviceId: "unknown").deviceGroups.map(\.deviceId) == ["outlet"])
+    }
+
+    @Test("Two parents sharing a name each keep their own children")
+    func keepsFamiliesTogetherWhenParentNamesCollide() {
+        func outlet(_ id: String, parent: String) -> WatchEntityEntry.Device {
+            .init(id: id, name: "Outlet", parentId: parent, parentName: "Power strip")
+        }
+        let grouped = WatchGroupedEntities.make([
+            entry("switch.a_main", device: .init(id: "strip-a", name: "Power strip")),
+            entry("sensor.a_energy", device: .init(id: "strip-a", name: "Power strip")),
+            entry("switch.b_main", device: .init(id: "strip-b", name: "Power strip")),
+            entry("sensor.b_energy", device: .init(id: "strip-b", name: "Power strip")),
+            entry("switch.a_outlet", device: outlet("outlet-a", parent: "strip-a")),
+            entry("sensor.a_outlet", device: outlet("outlet-a", parent: "strip-a")),
+            entry("switch.b_outlet", device: outlet("outlet-b", parent: "strip-b")),
+            entry("sensor.b_outlet", device: outlet("outlet-b", parent: "strip-b")),
+        ])
+
+        #expect(grouped.deviceGroups.map(\.deviceId) == ["strip-a", "outlet-a", "strip-b", "outlet-b"])
     }
 
     @Test("Nothing to group yields an empty result")
