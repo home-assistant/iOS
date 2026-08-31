@@ -8884,7 +8884,7 @@ public enum L10n {
           /// Show states (BETA)
           public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title") }
           /// Show states
-          public static var titleV2: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title_v2") }
+          public static var titleNoBeta: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title_no_beta") }
         }
       }
       public enum ShowUpdateTime {

@@ -23,7 +23,7 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
     var showLastUpdateTime: Bool
 
     @Parameter(
-        title: .init("widgets.custom.show_states.param.title_v2", defaultValue: "Show states"),
+        title: .init("widgets.custom.show_states.param.title_no_beta", defaultValue: "Show states"),
         description: .init(
             "widgets.custom.show_states.description",
             defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
