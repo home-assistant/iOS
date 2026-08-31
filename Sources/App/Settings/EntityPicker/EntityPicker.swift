@@ -225,7 +225,8 @@ struct EntityPicker: View {
     private func sectionHeader(for group: EntityPickerGroup) -> some View {
         HStack {
             Text(group.title.uppercased())
-            if allowMultipleSelection {
+            // Selecting "all" of a single row says nothing the row itself doesn't.
+            if allowMultipleSelection, group.entities.count > 1 {
                 Spacer()
                 let allSelected = allEntitiesSelected(in: group)
                 Button(allSelected ? L10n.EntityPicker.removeAll : L10n.EntityPicker.selectAll) {
