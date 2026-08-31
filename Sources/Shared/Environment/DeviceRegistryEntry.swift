@@ -60,8 +60,17 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     }
 
     // Computed helpers
+    var resolvedName: String? {
+        for candidate in [nameByUser, name, model] {
+            if let candidate, !candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return candidate
+            }
+        }
+        return nil
+    }
+
     var displayName: String {
-        nameByUser ?? name ?? model ?? id
+        resolvedName ?? id
     }
 
     var isDisabled: Bool { disabledBy != nil }

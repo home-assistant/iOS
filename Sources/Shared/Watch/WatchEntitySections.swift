@@ -52,12 +52,16 @@ public struct WatchEntitySections {
                     return WatchEntityEntry(
                         item: item,
                         info: info,
-                        device: devices[entity.entityId].map { device in
-                            WatchEntityEntry.Device(
-                                id: device.deviceId,
-                                name: device.displayName,
-                                parentName: device.parentDeviceId.flatMap { devicesById[$0]?.displayName }
-                            )
+                        // A device the registry gives no name to has nothing to title a section
+                        // with, so its entities stay loose rows rather than sitting under an id.
+                        device: devices[entity.entityId].flatMap { device in
+                            device.resolvedName.map { name in
+                                WatchEntityEntry.Device(
+                                    id: device.deviceId,
+                                    name: name,
+                                    parentName: device.parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
+                                )
+                            }
                         }
                     )
                 }

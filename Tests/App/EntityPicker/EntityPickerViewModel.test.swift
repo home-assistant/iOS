@@ -179,6 +179,7 @@ struct EntityPickerViewModelTests {
             .make("switch.outlet_power", name: "Outlet power", domain: "switch", serverId: serverId),
             .make("switch.strip_main", name: "Strip main", domain: "switch", serverId: serverId),
             .make("light.yaml_lamp", name: "YAML lamp", domain: "light", serverId: serverId),
+            .make("device_tracker.unnamed", name: "Unnamed tracker", domain: "device_tracker", serverId: serverId),
         ]
 
         try await database.write { db in
@@ -195,6 +196,11 @@ struct EntityPickerViewModelTests {
                 entityId: "switch.strip_main",
                 deviceId: "strip"
             ).insert(db)
+            try EntityRegistryListForDisplay.Entity(
+                serverId: serverId,
+                entityId: "device_tracker.unnamed",
+                deviceId: "unnamed"
+            ).insert(db)
             try AppDeviceRegistry.makeTest(areaId: nil, deviceId: "strip", serverId: serverId, name: "Power strip")
                 .insert(db)
             try AppDeviceRegistry.makeTest(
@@ -204,6 +210,9 @@ struct EntityPickerViewModelTests {
                 name: "Outlet 2",
                 parentDeviceId: "strip"
             ).insert(db)
+            // Integrations do send devices with a blank name, e.g. UniFi clients.
+            try AppDeviceRegistry.makeTest(areaId: nil, deviceId: "unnamed", serverId: serverId, name: "")
+                .insert(db)
         }
 
         let vm = EntityPickerViewModel(domainFilter: nil, selectedServerId: serverId)
@@ -218,6 +227,11 @@ struct EntityPickerViewModelTests {
             L10n.EntityPicker.List.Device.NoDevice.title,
         ])
         #expect(vm.filteredGroups.first?.entities.map(\.entityId) == ["switch.strip_main"])
-        #expect(vm.filteredGroups.last?.entities.map(\.entityId) == ["light.yaml_lamp"])
+        // A device with no name to show gathers with the entities that have no device at all,
+        // instead of opening a nameless section of its own.
+        #expect(
+            vm.filteredGroups.last?.entities.map(\.entityId).sorted() ==
+                ["device_tracker.unnamed", "light.yaml_lamp"]
+        )
     }
 }

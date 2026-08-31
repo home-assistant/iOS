@@ -213,6 +213,27 @@ struct DeviceRegistryTests {
         #expect(resolved.first?.manufacturer == nil)
     }
 
+    @Test("A blank name does not win over the fields it falls back to")
+    func blankNamesFallThrough() throws {
+        let unnamed = try DeviceRegistryEntry(data: HAData(value: [
+            "id": "8cb42cf3c996f313af723e9f74f8f731",
+            "name": "",
+        ]))
+        #expect(unnamed.resolvedName == nil)
+        #expect(unnamed.displayName == "8cb42cf3c996f313af723e9f74f8f731")
+
+        let modelOnly = try DeviceRegistryEntry(data: HAData(value: [
+            "id": "abc",
+            "name": "   ",
+            "model": "P1 Meter",
+        ]))
+        #expect(modelOnly.resolvedName == "P1 Meter")
+
+        let device = AppDeviceRegistry(serverId: "1", registry: unnamed)
+        #expect(device.resolvedName == nil)
+        #expect(device.displayName == "8cb42cf3c996f313af723e9f74f8f731")
+    }
+
     @Test("Effective area falls back to the parent's, and only when the child has none")
     func effectiveAreaId() {
         let parent = makeDevice(areaId: "kitchen", deviceId: "power-strip")
