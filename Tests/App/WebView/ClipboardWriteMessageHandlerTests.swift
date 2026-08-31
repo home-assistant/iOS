@@ -98,6 +98,8 @@ struct ClipboardWriteMessageHandlerTests {
         #expect(script.injectionTime == .atDocumentStart)
         #expect(!script.isForMainFrameOnly)
         #expect(script.source.contains("window.location.pathname.startsWith(\"/api/hassio_ingress/\")"))
+        #expect(script.source.contains("navigator.userActivation.isActive"))
+        #expect(script.source.contains("text: String(text)"))
         #expect(script.source.contains("writable: true"))
     }
 }

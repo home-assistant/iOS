@@ -22,10 +22,10 @@ final class ClipboardWriteMessageHandler: NSObject, WKScriptMessageHandlerWithRe
                     && window.webkit.messageHandlers.\(messageName);
                 if (!handler) { return; }
                 const nativeWrite = function(text) {
-                    if (typeof text !== "string") {
-                        return Promise.reject(new TypeError("Clipboard text must be a string"));
+                    if (!navigator.userActivation || !navigator.userActivation.isActive) {
+                        return Promise.reject(new DOMException("User activation is required", "NotAllowedError"));
                     }
-                    return handler.postMessage({ text: text });
+                    return handler.postMessage({ text: String(text) });
                 };
                 const clipboard = navigator.clipboard;
                 if (clipboard) {
