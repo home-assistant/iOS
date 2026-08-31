@@ -12,15 +12,23 @@ public struct WatchGroupedEntities {
     public struct DeviceGroup: Identifiable {
         public let deviceId: String
         public let name: String
-        /// Name of the device this one is a part of, when it is a child device.
+        /// The device this one is a part of, when it is a child device.
+        public let parentDeviceId: String?
         public let parentName: String?
         public let entries: [WatchEntityEntry]
 
         public var id: String { deviceId }
 
-        public init(deviceId: String, name: String, parentName: String? = nil, entries: [WatchEntityEntry]) {
+        public init(
+            deviceId: String,
+            name: String,
+            parentDeviceId: String? = nil,
+            parentName: String? = nil,
+            entries: [WatchEntityEntry]
+        ) {
             self.deviceId = deviceId
             self.name = name
+            self.parentDeviceId = parentDeviceId
             self.parentName = parentName
             self.entries = entries
         }
@@ -76,15 +84,21 @@ public struct WatchGroupedEntities {
                     return DeviceGroup(
                         deviceId: deviceId,
                         name: device?.name ?? deviceId,
+                        parentDeviceId: device?.parentId,
                         parentName: device?.parentName,
                         entries: entries
                     )
                 }
                 // A child device's section follows its parent's rather than sorting on its own name.
+                // The parent's id is part of the key, so two parents sharing a name keep their own
+                // children with them.
                 .sorted { lhs, rhs in
                     let comparison = (lhs.parentName ?? lhs.name)
                         .localizedCaseInsensitiveCompare(rhs.parentName ?? rhs.name)
                     if comparison != .orderedSame { return comparison == .orderedAscending }
+                    let lhsFamily = lhs.parentDeviceId ?? lhs.deviceId
+                    let rhsFamily = rhs.parentDeviceId ?? rhs.deviceId
+                    if lhsFamily != rhsFamily { return lhsFamily < rhsFamily }
                     if (lhs.parentName == nil) != (rhs.parentName == nil) { return lhs.parentName == nil }
                     let nameComparison = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
                     if nameComparison != .orderedSame { return nameComparison == .orderedAscending }

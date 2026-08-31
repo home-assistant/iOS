@@ -147,9 +147,10 @@ final class AreasService: AreasServiceProtocol {
         for entity in entitiesAndAreas {
             let entityId = entity.entityId
 
-            // Add entity directly to its area
+            // An entity's own area overrides its device's, so it never inherits as well
             if let areaId = entity.areaId {
                 areasAndEntitiesDict[areaId, default: []].insert(entityId)
+                continue
             }
 
             // Build device->entities mapping for later

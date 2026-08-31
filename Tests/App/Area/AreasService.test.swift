@@ -115,6 +115,24 @@ struct AreasServiceTests {
         ])
     }
 
+    @Test func entityAreaOverridesTheDeviceArea() async throws {
+        let result = AreasService().testGetAllEntitiesFromArea(
+            devicesAndAreas: [
+                .makeTest(areaId: "kitchen", deviceId: "strip"),
+                .makeTest(areaId: nil, deviceId: "outlet-1", parentDeviceId: "strip"),
+            ],
+            entitiesAndAreas: [
+                .makeTest(areaId: "garage", entityId: "switch.outlet_1", deviceId: "outlet-1", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_1_led", deviceId: "outlet-1", hiddenBy: nil),
+            ]
+        )
+
+        #expect(result == [
+            "garage": ["switch.outlet_1"],
+            "kitchen": ["switch.outlet_1_led"],
+        ])
+    }
+
     @Test func floorLookupReturnsMatchingFloorForServer() {
         let service = AreasService()
         service.floors = [

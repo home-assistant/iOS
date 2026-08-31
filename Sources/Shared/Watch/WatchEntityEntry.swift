@@ -14,11 +14,13 @@ public struct WatchEntityEntry: Identifiable {
         public let id: String
         public let name: String
         /// Set when the device is a logical part of another one, e.g. one outlet of a power strip.
+        public let parentId: String?
         public let parentName: String?
 
-        public init(id: String, name: String, parentName: String? = nil) {
+        public init(id: String, name: String, parentId: String? = nil, parentName: String? = nil) {
             self.id = id
             self.name = name
+            self.parentId = parentId
             self.parentName = parentName
         }
     }

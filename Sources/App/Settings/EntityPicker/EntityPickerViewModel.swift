@@ -50,6 +50,7 @@ final class EntityPickerViewModel: ObservableObject {
     let domainFilter: [Domain]?
     private var filterTask: Task<Void, Never>?
     private var filterGeneration = 0
+    private var rowContentTask: Task<Void, Never>?
     private var refreshTimeoutTask: Task<Void, Never>?
     private var minimumDisplayTask: Task<Void, Never>?
     private var refreshStartedAt: Date?
@@ -163,12 +164,20 @@ final class EntityPickerViewModel: ObservableObject {
             // A device the registry gives no name to can't title a section; its entities join the
             // trailing "no device" one rather than each opening a nameless section of their own.
             guard let deviceName = device.resolvedName else { continue }
-            let parentName = device.parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
+            let parent = device.parentDeviceId.flatMap { devicesById[$0] }
+            let parentName = parent?.resolvedName
+            // The family is keyed by the parent's id as well as its name, so two parents sharing a
+            // name still keep their own children with them.
             entityToDeviceGroup[entityId] = GroupKey(
                 id: device.deviceId,
                 title: deviceName,
-                sortKey: [parentName ?? deviceName, parentName == nil ? "0" : "1", deviceName]
-                    .joined(separator: "\u{0}")
+                sortKey: [
+                    parentName ?? deviceName,
+                    parent?.deviceId ?? device.deviceId,
+                    parentName == nil ? "0" : "1",
+                    deviceName,
+                    device.deviceId,
+                ].joined(separator: "\u{0}")
             )
         }
         cachedEntityToDeviceGroup = entityToDeviceGroup
@@ -176,11 +185,15 @@ final class EntityPickerViewModel: ObservableObject {
 
     private func rebuildRowContent(for serverId: String) {
         let serverEntities = cachedEntitiesByServer[serverId] ?? []
-        Task.detached(priority: .userInitiated) { [weak self] in
+        // Cancelled rather than left to race: a rebuild started before the entities loaded would
+        // otherwise be free to finish last and wipe what the populated one resolved.
+        rowContentTask?.cancel()
+        rowContentTask = Task.detached(priority: .userInitiated) { [weak self] in
             let subtitles = serverEntities.contextualSubtitles(for: serverId)
             let icons = serverEntities.reduce(into: [String: MaterialDesignIcons]()) { icons, entity in
                 icons[entity.entityId] = entity.materialDesignIcon
             }
+            guard !Task.isCancelled else { return }
             await MainActor.run { [weak self] in
                 guard let self, selectedServerId == serverId else { return }
                 self.subtitles = subtitles
