@@ -94,7 +94,8 @@ public struct WatchGroupedEntities {
     }
 
     /// The same sections with one device's group folded back into the loose rows, leading them —
-    /// for a screen already named after that device, where its child devices keep their sections.
+    /// for a screen already named after that device. Any other device that earned a section keeps
+    /// it.
     public func flatteningGroup(deviceId: String) -> WatchGroupedEntities {
         guard let index = deviceGroups.firstIndex(where: { $0.deviceId == deviceId }) else { return self }
         var groups = deviceGroups

@@ -39,8 +39,7 @@ public struct WatchEntitySections {
             let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
             let serverEntities = entitiesPerServer[serverId] ?? []
             // One registry + device-registry read for the whole screen, rather than one per row.
-            let devices = serverEntities.devicesMap(for: serverId)
-            let deviceNames = AppDeviceRegistry.displayNamesById(serverId: serverId)
+            let (devices, devicesById) = serverEntities.deviceMaps(for: serverId)
             let entries: [WatchEntityEntry] = serverEntities
                 .filter { entity in
                     entity.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded)
@@ -57,7 +56,7 @@ public struct WatchEntitySections {
                             WatchEntityEntry.Device(
                                 id: device.deviceId,
                                 name: device.displayName,
-                                parentName: device.parentDeviceId.flatMap { deviceNames[$0] }
+                                parentName: device.parentDeviceId.flatMap { devicesById[$0]?.displayName }
                             )
                         }
                     )

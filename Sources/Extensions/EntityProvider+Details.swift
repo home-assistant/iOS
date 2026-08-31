@@ -249,6 +249,15 @@ public extension [HAAppEntity] {
     /// - Parameter serverId: The server identifier to filter entities and devices by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppDeviceRegistry` objects.
     func devicesMap(for serverId: String) -> [String: AppDeviceRegistry] {
+        deviceMaps(for: serverId).byEntityId
+    }
+
+    /// The server's devices keyed both ways in a single pair of database reads: by the id of every
+    /// entity they own, and by their own device id (which also covers devices owning no entity, such
+    /// as a parent whose entities all live on its children).
+    func deviceMaps(
+        for serverId: String
+    ) -> (byEntityId: [String: AppDeviceRegistry], byDeviceId: [String: AppDeviceRegistry]) {
         do {
             // Fetch all entity registries for the server
             let entityRegistries = try Current.database().read { db in
@@ -278,10 +287,10 @@ public extension [HAAppEntity] {
                 entityToDeviceMap[entityRegistry.entityId] = device
             }
 
-            return entityToDeviceMap
+            return (entityToDeviceMap, devicesByDeviceId)
         } catch {
             Current.Log.error("Failed to fetch devices for mapping: \(error)")
-            return [:]
+            return ([:], [:])
         }
     }
 }

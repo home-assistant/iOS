@@ -5,8 +5,9 @@ import SwiftUI
 /// The watch-compatible entities of one device, pushed by tapping a device section header on the
 /// area screen. Same two sections and same rows as the area screen; the screen's own device is
 /// unwrapped into loose rows because every row already belongs to the device the screen is named
-/// after, while its child devices keep their own sections. The navigation bar stays hidden — the
-/// custom header provides the back button, matching `WatchAreaEntitiesView`.
+/// after, while a child device contributing more than one row to a section still gets its own. The
+/// navigation bar stays hidden — the custom header provides the back button, matching
+/// `WatchAreaEntitiesView`.
 struct WatchDeviceEntitiesView: View {
     let name: String
     @StateObject private var viewModel: WatchDeviceEntitiesViewModel
