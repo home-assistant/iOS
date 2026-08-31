@@ -134,6 +134,7 @@ struct EntityPicker: View {
                             EntityRowView(
                                 entity: entity,
                                 subtitle: viewModel.subtitles[entity.entityId],
+                                icon: viewModel.icons[entity.entityId],
                                 isSelected: isSelected(entity)
                             )
                         })

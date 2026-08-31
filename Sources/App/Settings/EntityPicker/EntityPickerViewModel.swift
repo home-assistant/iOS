@@ -32,9 +32,10 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var filteredGroups: [EntityPickerGroup] = []
     @Published var isRefreshing = false
     @Published var refreshStatusText: String?
-    /// `entity_id → context line`, resolved for the whole server at once so rows don't each hit the
-    /// database while the list scrolls.
+    /// `entity_id → context line` and `entity_id → glyph`, resolved for the whole server at once so
+    /// that a scrolling row neither reads the database nor writes view state.
     @Published var subtitles: [String: String] = [:]
+    @Published var icons: [String: MaterialDesignIcons] = [:]
 
     // Cached lookups to avoid recomputation on every filter
     /// `entity_id → device`, from the display entity registry of the selected server.
@@ -173,13 +174,17 @@ final class EntityPickerViewModel: ObservableObject {
         cachedEntityToDeviceGroup = entityToDeviceGroup
     }
 
-    private func rebuildSubtitles(for serverId: String) {
+    private func rebuildRowContent(for serverId: String) {
         let serverEntities = cachedEntitiesByServer[serverId] ?? []
         Task.detached(priority: .userInitiated) { [weak self] in
             let subtitles = serverEntities.contextualSubtitles(for: serverId)
+            let icons = serverEntities.reduce(into: [String: MaterialDesignIcons]()) { icons, entity in
+                icons[entity.entityId] = entity.materialDesignIcon
+            }
             await MainActor.run { [weak self] in
                 guard let self, selectedServerId == serverId else { return }
                 self.subtitles = subtitles
+                self.icons = icons
             }
         }
     }
@@ -205,7 +210,7 @@ final class EntityPickerViewModel: ObservableObject {
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             entityToDevice = cachedEntitiesByServer[serverId]?.devicesMap(for: serverId) ?? [:]
             rebuildDeviceCaches()
-            rebuildSubtitles(for: serverId)
+            rebuildRowContent(for: serverId)
             rebuildFuzzyIndex(for: serverId)
             // The available domains belong to the server that is now selected, so a domain the
             // previous server had but this one doesn't is dropped instead of emptying the list.
