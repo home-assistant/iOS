@@ -145,6 +145,14 @@ public extension HAAppEntity {
         }
     }
 
+    /// The glyph shown next to the entity: its own icon override, then the frontend-matching default
+    /// resolved from the backend `entity_component` map at sync time, then the domain fallback.
+    var materialDesignIcon: MaterialDesignIcons {
+        let fallback = Domain(entityId: entityId)?.icon(deviceClass: rawDeviceClass) ?? .dotsGridIcon
+        let iconName = icon?.isEmpty == false ? icon : resolvedIcon
+        return MaterialDesignIcons(serversideValueNamed: iconName.orEmpty, fallback: fallback)
+    }
+
     /// The secondary context line shown under the entity name (`Floor • Area • Device`).
     var contextualSubtitle: String? {
         let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
