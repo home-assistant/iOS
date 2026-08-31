@@ -127,31 +127,67 @@ public class SensorContainer {
         }
     }
 
+    /// One provider's sensors together with their place in the order values were read in.
+    ///
+    /// A run only finishes once its *slowest* provider has, which can be seconds after a fast
+    /// provider read its value — long enough for a second run to start, read a newer value and
+    /// send it first. Carrying the read order is what lets the older values be recognised as such
+    /// when the slow run finally gets to send.
+    private struct SensorBatch {
+        let sensors: [WebhookSensor]
+        let readOrder: UInt64
+    }
+
+    /// A single sensor value, and where the read that produced it sits in `readOrdering`.
+    private struct ReadSensor {
+        var sensor: WebhookSensor
+        var readOrder: UInt64
+    }
+
     private struct LastSentSensors {
-        private var value = [String: WebhookSensor]()
+        private var value = [String: ReadSensor]()
 
         var sensors: AnyCollection<WebhookSensor> {
-            AnyCollection(value.values)
+            AnyCollection(value.values.map(\.sensor))
         }
 
-        private func combined(
-            with sensors: [WebhookSensor],
-            ignoringKeys: Set<String>
-        ) -> [String: WebhookSensor] {
-            sensors.reduce(into: value) { result, sensor in
-                if let uniqueID = sensor.UniqueID, !ignoringKeys.contains(uniqueID) {
-                    result[uniqueID] = sensor
+        mutating func combine(with batches: [SensorBatch], ignoringExisting: Bool) {
+            for batch in batches {
+                for sensor in batch.sensors {
+                    guard let uniqueID = sensor.UniqueID else { continue }
+
+                    if let existing = value[uniqueID] {
+                        guard !ignoringExisting else { continue }
+                        // Runs overlap and don't finish in the order they started, so a value read
+                        // earlier can arrive later. Showing it would blank what the user can see
+                        // in sensor settings just as it does the entity in Home Assistant.
+                        guard batch.readOrder > existing.readOrder else { continue }
+                    }
+
+                    value[uniqueID] = ReadSensor(sensor: sensor, readOrder: batch.readOrder)
                 }
             }
-        }
-
-        mutating func combine(with sensors: [WebhookSensor], ignoringExisting: Bool) {
-            let keys = ignoringExisting ? Set(value.keys) : Set()
-            value = combined(with: sensors, ignoringKeys: keys)
         }
     }
 
     private var lastSentSensors: HAProtected<LastSentSensors> = .init(value: .init())
+
+    /// Numbers each value as it is read, so two of them can be put in order.
+    ///
+    /// A clock can't do this job: overlapping runs are milliseconds apart, and `Date` moves
+    /// backwards whenever the system clock is corrected, which would make a stale value look new.
+    private let readOrdering = HAProtected<UInt64>(value: 0)
+
+    /// The newest value handed out for sending to each server, per sensor.
+    ///
+    /// Home Assistant takes whatever arrives last as the current state, so a run that read a value
+    /// before another run did must not be allowed to send it afterwards — that's how a Focus switch
+    /// ends up logged as `Work → (blank) → Work`. Kept per server because a value that reached one
+    /// server hasn't necessarily reached the others.
+    ///
+    /// Only state updates take part: registration describes which sensors exist rather than what
+    /// they read, so it neither consults nor adds to this.
+    private let lastDispatchedReads = HAProtected<[Identifier<Server>: [String: ReadSensor]]>(value: [:])
 
     func sensors(
         reason: SensorProviderRequest.Reason,
@@ -166,7 +202,7 @@ public class SensorContainer {
             serverVersion: server.info.version
         )
 
-        let generatedSensors = firstly {
+        let generatedBatches = firstly {
             let promises = providers.read { $0 }
                 .filter { providerType in
                     if let limitedTo {
@@ -176,28 +212,40 @@ public class SensorContainer {
                     }
                 }
                 .map { providerType in providerType.init(request: request) }
-                .map { provider in provider.sensors().map { ($0, provider) } }
+                .map { [readOrdering] provider in
+                    provider.sensors().map { sensors in
+                        // Numbered as this provider resolves rather than when the run started: a
+                        // provider that reads late in a slow run really did read the newer value,
+                        // and one that read early in it really didn't.
+                        let readOrder = readOrdering.mutate { (next: inout UInt64) -> UInt64 in
+                            next += 1
+                            return next
+                        }
+                        return (SensorBatch(sensors: sensors, readOrder: readOrder), provider)
+                    }
+                }
 
             return when(resolved: promises)
-        }.map { (sensors: [Result<([WebhookSensor], SensorProvider)>]) -> [WebhookSensor] in
+        }.map { (batches: [Result<(SensorBatch, SensorProvider)>]) -> [SensorBatch] in
             // now that we are done, we don't need to keep a strong reference to the provider instance anymore
-            sensors.compactMap { (result: Result<([WebhookSensor], SensorProvider)>) -> [WebhookSensor]? in
+            batches.compactMap { (result: Result<(SensorBatch, SensorProvider)>) -> SensorBatch? in
                 if case let .fulfilled(value) = result {
                     return value.0
                 } else {
                     return nil
                 }
-            }.flatMap { $0 }
-        }.map { [weak self] sensors -> [WebhookSensor] in
+            }
+        }.map { [weak self] batches -> [SensorBatch] in
             // A limited run only asks some of the providers, so it can't stand in for the complete
             // set the migration needs to decide the sensors whose IDs only exist at runtime.
             if limitedTo == nil {
-                self?.enablement.seedDynamicIDsIfNeeded(from: Set(sensors.compactMap(\.UniqueID)))
+                let uniqueIDs = batches.flatMap(\.sensors).compactMap(\.UniqueID)
+                self?.enablement.seedDynamicIDsIfNeeded(from: Set(uniqueIDs))
             }
-            return sensors
+            return batches
         }
 
-        setLastUpdate(.init(sensors: generatedSensors.map { [lastSentSensors, weak self] new in
+        setLastUpdate(.init(sensors: generatedBatches.map { [lastSentSensors, weak self] new in
             // doesn't store the sent values, that happens when the network request ends
             // this is just what's presented to the user, so we always have the latest version
             let ignoringExisting: Bool
@@ -229,19 +277,86 @@ public class SensorContainer {
             })
         }))
 
-        return generatedSensors.mapValues { [weak self] sensor -> WebhookSensor in
-            guard let self else { return sensor }
+        return generatedBatches.map { [weak self] batches -> SensorResponse in
+            guard let self else { return SensorResponse(sensors: batches.flatMap(\.sensors)) }
 
-            let outgoing = isAllowedToSend(sensor: sensor, for: server) ? sensor : WebhookSensor(redacting: sensor)
+            return SensorResponse(
+                sensors: freshest(of: batches, for: server, reason: request.reason)
+                    .map { sensor -> WebhookSensor in
+                        let outgoing = self.isAllowedToSend(sensor: sensor, for: server)
+                            ? sensor
+                            : WebhookSensor(redacting: sensor)
 
-            if request.reason == .registration {
-                // Registering is the only chance to tell Home Assistant to disable the entity, rather
-                // than leave it enabled and reporting `unavailable` forever.
-                outgoing.Disabled = !isEnabled(sensor: sensor)
+                        if request.reason == .registration {
+                            // Registering is the only chance to tell Home Assistant to disable the entity, rather
+                            // than leave it enabled and reporting `unavailable` forever.
+                            outgoing.Disabled = !self.isEnabled(sensor: sensor)
+                        }
+
+                        return outgoing
+                    }
+            )
+        }
+    }
+
+    /// Replaces any value this run read before one already sent to this server, and records the
+    /// values that do go out.
+    ///
+    /// Overlapping runs finish in whatever order their slowest provider allows, so "sent last" and
+    /// "read last" are not the same thing — and Home Assistant only knows the former. Without this,
+    /// a slow full sensor run started just before a Focus changed overwrites the fresh name a
+    /// faster run reported in between, and the entity's history shows a state it was never in.
+    ///
+    /// The stale value is swapped for the newer one rather than dropped: this run's request
+    /// replaces any still in flight for the same server, so leaving the sensor out could cancel
+    /// the newer value's own delivery and lose it altogether.
+    private func freshest(
+        of batches: [SensorBatch],
+        for server: Server,
+        reason: SensorProviderRequest.Reason
+    ) -> [WebhookSensor] {
+        guard case .trigger = reason else {
+            // Registration describes which sensors exist rather than what they read, and is the
+            // only chance to create their entities — nothing here to be out of date.
+            return batches.flatMap(\.sensors)
+        }
+
+        return lastDispatchedReads.mutate { allServers -> [WebhookSensor] in
+            var dispatched = allServers[server.identifier] ?? [:]
+            var outgoing = [WebhookSensor]()
+
+            var replaced = [String]()
+
+            for batch in batches {
+                for sensor in batch.sensors {
+                    guard let uniqueID = sensor.UniqueID else {
+                        // Nothing to key freshness on, and the mapper drops it anyway.
+                        outgoing.append(sensor)
+                        continue
+                    }
+
+                    if let newer = dispatched[uniqueID], newer.readOrder > batch.readOrder {
+                        replaced.append(uniqueID)
+                        outgoing.append(newer.sensor)
+                        continue
+                    }
+
+                    dispatched[uniqueID] = ReadSensor(sensor: sensor, readOrder: batch.readOrder)
+                    outgoing.append(sensor)
+                }
             }
 
+            if !replaced.isEmpty {
+                // One line for the whole run: an overlap can cover every sensor, on every server.
+                Current.Log.verbose(
+                    "keeping the values already sent to \(server.info.name) for \(replaced), " +
+                        "which this run read before them"
+                )
+            }
+
+            allServers[server.identifier] = dispatched
             return outgoing
-        }.map(SensorResponse.init(sensors:))
+        }
     }
 
     private func notifySignal(reason: SensorContainerUpdateReason) {
