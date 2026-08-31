@@ -374,6 +374,72 @@ public class WebhookManager: NSObject {
         return promise
     }
 
+    /// Creates and resumes a persisted background upload task before returning.
+    ///
+    /// This deliberately uses the last-known network state: refreshing connectivity or hopping
+    /// through Swift concurrency first can let iOS suspend a location wake before URLSession owns
+    /// the upload. A synchronous failure means no task was started and the caller may safely retry
+    /// during a later wake.
+    public func startPersistedBackground(
+        identifier: WebhookResponseIdentifier = .unhandled,
+        server: Server,
+        request: WebhookRequest,
+        requestTimeout: TimeInterval? = nil
+    ) -> Swift.Result<Promise<Void>, Error> {
+        let start = { [self] () throws -> Promise<Void> in
+            guard let handlerType = responseHandlers[identifier] else {
+                throw WebhookError.unregisteredIdentifier(handler: identifier.rawValue)
+            }
+            guard let webhookURL = server.preferredBackgroundWebhookURL() else {
+                throw ServerConnectionError.noActiveURL(server.info.name)
+            }
+
+            var urlRequest = try URLRequest(url: webhookURL, method: .post)
+            if let requestTimeout {
+                urlRequest.timeoutInterval = requestTimeout
+            }
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
+                .toJSON(request)
+            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
+            urlRequest.httpBody = data
+
+            let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            let temporaryFile = temporaryDirectory
+                .appendingPathComponent(UUID().uuidString)
+                .appendingPathExtension("json")
+            try data.write(to: temporaryFile)
+
+            let sessionInfo = currentBackgroundSessionInfo
+            let task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
+            let persisted = WebhookPersisted(server: server.identifier, request: request, identifier: identifier)
+            task.webhookPersisted = persisted
+
+            let (promise, seal) = Promise<Void>.pending()
+            let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+            serverCache[server.identifier] = server
+            evaluateCancellable(by: task, type: handlerType, persisted: persisted, with: promise)
+            resolverForTask[taskKey] = seal
+
+            Current.backgroundTask(withName: BackgroundTask.webhookSend.rawValue) { _ in promise }.cauterize()
+            task.resume()
+            // URLSession owns the upload file after `resume()`. Cleanup failure must not turn a
+            // successfully started task into a reported start failure.
+            try? FileManager.default.removeItem(at: temporaryFile)
+
+            Current.Log.info("started immediate persisted request: \(taskKey)")
+            return promise
+        }
+
+        if DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true {
+            return Swift.Result(catching: start)
+        } else {
+            return dataQueue.sync {
+                Swift.Result(catching: start)
+            }
+        }
+    }
+
     private func send(
         on sessionInfo: WebhookSessionInfo,
         server: Server,

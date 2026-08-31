@@ -351,6 +351,29 @@ public extension Server {
         return url
     }
 
+    /// Returns the webhook URL using the most recently cached network state.
+    ///
+    /// This is intended for time-critical background callers which must create a persisted
+    /// URLSession task before iOS suspends the process. Normal callers should use `webhookURL()`
+    /// so network information is refreshed before selecting a URL.
+    func webhookURLUsingLastKnownNetworkState() -> URL? {
+        var url: URL?
+        update { info in
+            url = info.connection.evaluateWebhookURL()
+        }
+        return url
+    }
+
+    /// Returns a webhook URL suitable for immediate background delivery without consulting live
+    /// network state. A remote endpoint is preferred so stale SSID data cannot select a local URL.
+    func preferredBackgroundWebhookURL() -> URL? {
+        var url: URL?
+        update { info in
+            url = info.connection.preferredBackgroundWebhookURL()
+        }
+        return url
+    }
+
     /// Returns the active url with /api appended, refreshing network information (e.g. current
     /// SSID) before evaluating which URL is active.
     ///

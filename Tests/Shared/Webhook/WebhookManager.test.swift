@@ -811,6 +811,70 @@ class WebhookManagerTests: XCTestCase {
         wait(for: [networkExpectation], timeout: 10.0)
     }
 
+    func testStartPersistedBackgroundCreatesUploadTaskBeforeReturning() throws {
+        let request = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let result = manager.startPersistedBackground(
+            identifier: .unhandled,
+            server: api1.server,
+            request: request,
+            requestTimeout: 30
+        )
+        guard case let .success(promise) = result else {
+            return XCTFail("Expected a background upload task to start synchronously")
+        }
+
+        let taskCreated = expectation(description: "background upload task exists")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            XCTAssertEqual(tasks.count, 1)
+            XCTAssertNotNil(tasks.first as? URLSessionUploadTask)
+            XCTAssertEqual(tasks.first?.state, .running)
+            XCTAssertEqual(tasks.first?.originalRequest?.timeoutInterval, 30)
+            XCTAssertEqual(tasks.first?.webhookPersisted?.request.type, "webhook_name")
+            taskCreated.fulfill()
+        }
+        wait(for: [taskCreated], timeout: 1)
+
+        networkSemaphore.signal()
+        XCTAssertNoThrow(try hang(promise))
+    }
+
+    func testStartPersistedBackgroundPrefersRemoteURLWhenCachedNetworkStateIsInternal() throws {
+        let internalURL = URL(string: "http://homeassistant.local:8123")!
+        let externalURL = URL(string: "https://ha.example.com")!
+        let server = Server.fake { info in
+            info.connection.set(address: internalURL, for: .internal)
+            info.connection.set(address: externalURL, for: .external)
+            info.connection.internalSSIDs = ["MyWifi"]
+        }
+        let expectedURL = externalURL.appendingPathComponent(
+            server.info.connection.webhookPath,
+            isDirectory: false
+        )
+        let networkExpectation = expectation(description: "remote webhook was invoked")
+        stub(condition: { request in request.url == expectedURL }, response: { _ in
+            networkExpectation.fulfill()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let result = manager.startPersistedBackground(
+            identifier: .unhandled,
+            server: server,
+            request: WebhookRequest(type: "webhook_name", data: ["json": true])
+        )
+        guard case let .success(promise) = result else {
+            return XCTFail("Expected the remote background upload to start")
+        }
+
+        wait(for: [networkExpectation], timeout: 1)
+        XCTAssertNoThrow(try hang(promise))
+    }
+
     func testSendPersistentProtectionSpace() throws {
         // we want to fail through both regular & background, when failing
         Current.isBackgroundRequestsImmediate = { false }
@@ -928,6 +992,18 @@ private func XCTAssertEqualWebhookRequest(
 }
 
 private class FakeHassAPI: HomeAssistantAPI {}
+
+private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+    private(set) var names = [String]()
+
+    func callAsFunction<PromiseValue>(
+        withName name: String,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        names.append(name)
+        return wrapping(nil)
+    }
+}
 
 class ReplacingTestHandler: WebhookResponseHandler {
     static var returnedResult: WebhookResponseHandlerResult?

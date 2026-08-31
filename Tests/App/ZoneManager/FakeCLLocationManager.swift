@@ -9,10 +9,24 @@ class FakeCLLocationManager: CLLocationManager {
     var requestedRegions = [CLRegion]()
     var monitoredRegionsReadsWereOnMainThread = [Bool]()
     var startMonitoringCallsWereOnMainThread = [Bool]()
+    var startedRangingConstraints = [CLBeaconIdentityConstraint]()
+    var stoppedRangingConstraints = [CLBeaconIdentityConstraint]()
+    var requestAlwaysAuthorizationCount = 0
+    var startUpdatingLocationCount = 0
+    var stopUpdatingLocationCount = 0
+    var overrideAuthorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
     override var monitoredRegions: Set<CLRegion> {
         monitoredRegionsReadsWereOnMainThread.append(Thread.isMainThread)
         return overrideMonitoredRegions
+    }
+
+    override var authorizationStatus: CLAuthorizationStatus {
+        overrideAuthorizationStatus
+    }
+
+    override func requestAlwaysAuthorization() {
+        requestAlwaysAuthorizationCount += 1
     }
 
     override func startMonitoring(for region: CLRegion) {
@@ -36,5 +50,21 @@ class FakeCLLocationManager: CLLocationManager {
 
     override func requestState(for region: CLRegion) {
         requestedRegions.append(region)
+    }
+
+    override func startRangingBeacons(satisfying constraint: CLBeaconIdentityConstraint) {
+        startedRangingConstraints.append(constraint)
+    }
+
+    override func stopRangingBeacons(satisfying constraint: CLBeaconIdentityConstraint) {
+        stoppedRangingConstraints.append(constraint)
+    }
+
+    override func startUpdatingLocation() {
+        startUpdatingLocationCount += 1
+    }
+
+    override func stopUpdatingLocation() {
+        stopUpdatingLocationCount += 1
     }
 }

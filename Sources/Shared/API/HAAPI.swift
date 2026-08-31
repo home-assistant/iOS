@@ -385,6 +385,24 @@ public class HomeAssistantAPI {
         )
     }
 
+    /// Starts a persisted background event upload synchronously.
+    ///
+    /// A successful result proves URLSession owns a resumed background task. A failure means no
+    /// task was created, allowing an outbox owner to leave the event immediately retryable.
+    public func startPersistentEvent(
+        eventType: String,
+        eventData: [String: Any]
+    ) -> Swift.Result<Promise<Void>, Error> {
+        Current.webhooks.startPersistedBackground(
+            server: server,
+            request: .init(type: "fire_event", data: [
+                "event_type": eventType,
+                "event_data": eventData,
+            ]),
+            requestTimeout: 30
+        )
+    }
+
     public func temporaryDownloadFileURL(appropriateFor downloadingURL: URL? = nil) -> URL? {
         let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             // using a random file name so we always have one, see https://github.com/home-assistant/iOS/issues/1068

@@ -8,7 +8,7 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
     case unknownRegion
     case zoneDisabled
     case ignoredSSID(String)
-    case beaconExitIgnored
+    case beaconEntryNotVerified
     case recentlyUpdated
 
     var errorDescription: String? {
@@ -27,8 +27,8 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "zone has tracking disabled"
         case let .ignoredSSID(ssid):
             return "ignored due to ssid \(ssid)"
-        case .beaconExitIgnored:
-            return "beacon exit ignored"
+        case .beaconEntryNotVerified:
+            return "beacon entry was not verified by ranging"
         case .recentlyUpdated:
             return "recent location update already occurred"
         }

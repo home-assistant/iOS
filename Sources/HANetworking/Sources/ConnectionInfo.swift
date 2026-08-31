@@ -321,6 +321,24 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    /// Returns the most stable webhook URL for a time-critical background upload.
+    ///
+    /// Background location callbacks must not wait for Wi-Fi/SSID refreshes and the last-known
+    /// network state may still claim that the phone is at home. Prefer a configured remote path
+    /// that is reachable on both Wi-Fi and cellular, then fall back to the normal cached-state
+    /// evaluation for local-only installations.
+    public mutating func preferredBackgroundWebhookURL() -> URL? {
+        if let cloudhookURL {
+            return cloudhookURL
+        } else if let externalURL {
+            return externalURL.sanitized().appendingPathComponent(webhookPath, isDirectory: false)
+        } else if useCloud, let remoteUIURL {
+            return remoteUIURL.sanitized().appendingPathComponent(webhookPath, isDirectory: false)
+        } else {
+            return evaluateWebhookURL()
+        }
+    }
+
     public var webhookPath: String {
         "api/webhook/\(webhookID)"
     }
