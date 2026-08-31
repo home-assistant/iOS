@@ -1,3 +1,4 @@
+import HADesignSystem
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -14,7 +15,7 @@ struct EntityRowView: View {
     @State private var showIcon = false
     @State private var resolvedSubtitle = ""
     @State private var title = ""
-    @State private var icon: UIImage?
+    @State private var icon: MaterialDesignIcons?
     private let entity: HAAppEntity?
     private let optionalTitle: String?
     private let accessoryImageSystemSymbol: SFSymbol?
@@ -60,7 +61,10 @@ struct EntityRowView: View {
         HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
                 if showIcon, let icon {
-                    Image(uiImage: icon)
+                    // The design system's cached glyph, rather than rendering one per row: the row
+                    // re-appears constantly while a long list scrolls.
+                    MaterialDesignIconsImage(icon: icon, size: iconSize.width)
+                        .foregroundStyle(Color.gray)
                 }
             }
             .frame(width: iconSize.width, height: iconSize.height)
@@ -97,9 +101,6 @@ struct EntityRowView: View {
                 icon = MaterialDesignIcons(
                     serversideValueNamed: iconName.orEmpty,
                     fallback: fallbackIcon ?? .dotsGridIcon
-                ).image(
-                    ofSize: .init(width: iconSize.width, height: iconSize.height),
-                    color: UIColor(Color.gray)
                 )
             }
             showIcon = true
