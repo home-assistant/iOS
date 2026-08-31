@@ -3,15 +3,23 @@ import Shared
 import SwiftUI
 
 struct EntityRowView: View {
+    /// Where the context line comes from: resolved by the caller for the whole list, or by the row
+    /// itself — which costs a database read per row, so long lists resolve it in bulk instead.
+    private enum SubtitleSource {
+        case provided(String?)
+        case resolvedByRow
+    }
+
     // This avoids lag while loading a screen with several rows
     @State private var showIcon = false
-    @State private var subtitle = ""
+    @State private var resolvedSubtitle = ""
     @State private var title = ""
     @State private var icon: UIImage?
     private let entity: HAAppEntity?
     private let optionalTitle: String?
     private let accessoryImageSystemSymbol: SFSymbol?
     private let isSelected: Bool
+    private let subtitleSource: SubtitleSource
 
     private let iconSize: CGSize = .init(width: 24, height: 24)
 
@@ -25,6 +33,27 @@ struct EntityRowView: View {
         self.optionalTitle = optionalTitle
         self.accessoryImageSystemSymbol = accessoryImageSystemSymbol
         self.isSelected = isSelected
+        self.subtitleSource = .resolvedByRow
+    }
+
+    init(
+        entity: HAAppEntity?,
+        subtitle: String?,
+        accessoryImageSystemSymbol: SFSymbol? = nil,
+        isSelected: Bool = false
+    ) {
+        self.entity = entity
+        self.optionalTitle = nil
+        self.accessoryImageSystemSymbol = accessoryImageSystemSymbol
+        self.isSelected = isSelected
+        self.subtitleSource = .provided(subtitle)
+    }
+
+    private var subtitle: String {
+        switch subtitleSource {
+        case let .provided(subtitle): subtitle.orEmpty
+        case .resolvedByRow: resolvedSubtitle
+        }
     }
 
     var body: some View {
@@ -57,7 +86,9 @@ struct EntityRowView: View {
         .animation(.easeInOut, value: showIcon)
         .onAppear {
             title = optionalTitle ?? entity?.name ?? ""
-            subtitle = (entity?.contextualSubtitle).orEmpty
+            if case .resolvedByRow = subtitleSource {
+                resolvedSubtitle = (entity?.contextualSubtitle).orEmpty
+            }
             let fallbackIcon = Domain(entityId: (entity?.entityId).orEmpty)?.icon(deviceClass: entity?.rawDeviceClass)
             if let entity {
                 // Prefer the entity's own icon override, then the frontend-matching default resolved

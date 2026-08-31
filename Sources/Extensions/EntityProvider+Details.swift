@@ -245,6 +245,28 @@ public extension [HAAppEntity] {
         }
     }
 
+    /// The `Floor • Area • Device` line for every entity, built from one pass over the area, floor
+    /// and device lookups instead of the per-entity database reads `contextualSubtitle` performs.
+    func contextualSubtitles(for serverId: String) -> [String: String] {
+        let areas = areasMap(for: serverId)
+        let floorNames = floorNamesMap(for: serverId)
+        let devices = devicesMap(for: serverId)
+
+        var subtitles: [String: String] = [:]
+        for entity in self {
+            guard let subtitle = EntityContextSubtitle.make(
+                floorName: floorNames[entity.entityId],
+                areaName: areas[entity.entityId]?.name,
+                deviceName: devices[entity.entityId]?.resolvedName,
+                entityName: entity.name,
+                entityId: entity.entityId,
+                domain: Domain(rawValue: entity.domain)
+            ) else { continue }
+            subtitles[entity.entityId] = subtitle
+        }
+        return subtitles
+    }
+
     /// Creates a mapping from entity IDs to their associated devices for a given server.
     /// - Parameter serverId: The server identifier to filter entities and devices by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppDeviceRegistry` objects.

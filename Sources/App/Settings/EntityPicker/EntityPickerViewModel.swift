@@ -32,6 +32,9 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var filteredGroups: [EntityPickerGroup] = []
     @Published var isRefreshing = false
     @Published var refreshStatusText: String?
+    /// `entity_id → context line`, resolved for the whole server at once so rows don't each hit the
+    /// database while the list scrolls.
+    @Published var subtitles: [String: String] = [:]
 
     // Cached lookups to avoid recomputation on every filter
     /// `entity_id → device`, from the display entity registry of the selected server.
@@ -156,15 +159,29 @@ final class EntityPickerViewModel: ObservableObject {
         )
         var entityToDeviceGroup: [String: GroupKey] = [:]
         for (entityId, device) in entityToDevice {
-            let parentName = device.parentDeviceId.flatMap { devicesById[$0]?.displayName }
+            // A device the registry gives no name to can't title a section; its entities join the
+            // trailing "no device" one rather than each opening a nameless section of their own.
+            guard let deviceName = device.resolvedName else { continue }
+            let parentName = device.parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
             entityToDeviceGroup[entityId] = GroupKey(
                 id: device.deviceId,
-                title: device.displayName,
-                sortKey: [parentName ?? device.displayName, parentName == nil ? "0" : "1", device.displayName]
+                title: deviceName,
+                sortKey: [parentName ?? deviceName, parentName == nil ? "0" : "1", deviceName]
                     .joined(separator: "\u{0}")
             )
         }
         cachedEntityToDeviceGroup = entityToDeviceGroup
+    }
+
+    private func rebuildSubtitles(for serverId: String) {
+        let serverEntities = cachedEntitiesByServer[serverId] ?? []
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let subtitles = serverEntities.contextualSubtitles(for: serverId)
+            await MainActor.run { [weak self] in
+                guard let self, selectedServerId == serverId else { return }
+                self.subtitles = subtitles
+            }
+        }
     }
 
     private func entitiesForCurrentServer() -> [HAAppEntity] {
@@ -188,6 +205,7 @@ final class EntityPickerViewModel: ObservableObject {
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             entityToDevice = cachedEntitiesByServer[serverId]?.devicesMap(for: serverId) ?? [:]
             rebuildDeviceCaches()
+            rebuildSubtitles(for: serverId)
             rebuildFuzzyIndex(for: serverId)
             // The available domains belong to the server that is now selected, so a domain the
             // previous server had but this one doesn't is dropped instead of emptying the list.

@@ -91,8 +91,20 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
     }
 
     // Computed helpers (same as DeviceRegistryEntry)
+    /// The device's name as a person reads it, or `nil` when the registry carries none. Blank names
+    /// count as none: integrations do send `""` (e.g. UniFi clients), and a blank must not win over
+    /// the fields after it.
+    public var resolvedName: String? {
+        for candidate in [nameByUser, name, model] {
+            if let candidate, !candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return candidate
+            }
+        }
+        return nil
+    }
+
     public var displayName: String {
-        nameByUser ?? name ?? model ?? deviceId
+        resolvedName ?? deviceId
     }
 
     public var isDisabled: Bool { disabledBy != nil }
