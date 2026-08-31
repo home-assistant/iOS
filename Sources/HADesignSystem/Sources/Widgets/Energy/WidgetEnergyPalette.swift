@@ -15,6 +15,18 @@ public enum WidgetEnergyPalette {
     public static let consumption = Color(red: 0.282, green: 0.561, blue: 0.761)
     /// Energy returned to the grid. Matches the frontend `--energy-grid-return-color` (#8353d1).
     public static let gridReturn = Color(red: 0.514, green: 0.325, blue: 0.820)
+    /// Energy the battery gave back. Matches the frontend `--energy-battery-out-color` (#4db6ac).
+    public static let batteryOut = Color(red: 0.302, green: 0.714, blue: 0.675)
+    /// Energy that went into the battery. Matches the frontend `--energy-battery-in-color` (#f06292).
+    public static let batteryIn = Color(red: 0.941, green: 0.384, blue: 0.573)
+    /// Gas consumption. The frontend's `--energy-gas-color` (#8e021b) is a near-black red that only
+    /// ever sits on a light dashboard; the widget draws it as label-sized text on either appearance,
+    /// so dark mode gets a lightened variant rather than a figure that disappears into the card.
+    public static let gas = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.902, green: 0.318, blue: 0.376, alpha: 1)
+            : UIColor(red: 0.557, green: 0.008, blue: 0.106, alpha: 1)
+    })
 
     /// Unit symbol for energy, sourced from Foundation rather than hardcoded.
     public static let energyUnit = UnitEnergy.kilowattHours.symbol
@@ -30,9 +42,16 @@ public enum WidgetEnergyPalette {
         mode == .fullColor ? color : .primary
     }
 
+    /// Formats a bare quantity (locale-aware, at most one fraction digit). Gas is metered in m³ or
+    /// in kWh depending on the source, so its number is formatted the same way but carries a unit
+    /// the entry supplies rather than the kWh one.
+    public static func quantity(_ value: Double) -> String {
+        abs(value).formatted(.number.precision(.fractionLength(abs(value) >= 100 ? 0 : 1)))
+    }
+
     /// Formats an energy value in kWh (locale-aware, at most one fraction digit).
     public static func energy(_ kWh: Double) -> String {
-        abs(kWh).formatted(.number.precision(.fractionLength(abs(kWh) >= 100 ? 0 : 1)))
+        quantity(kWh)
     }
 
     /// Formats an instantaneous power magnitude, scaling W → kW → MW like the dashboard. The unit

@@ -21,6 +21,12 @@ enum WidgetEnergyStyle {
     static let consumption = WidgetEnergyPalette.consumption
     /// Energy returned to the grid. Matches the frontend `--energy-grid-return-color` (#8353d1).
     static let gridReturn = WidgetEnergyPalette.gridReturn
+    /// Energy the battery gave back. Matches the frontend `--energy-battery-out-color` (#4db6ac).
+    static let batteryOut = WidgetEnergyPalette.batteryOut
+    /// Energy that went into the battery. Matches the frontend `--energy-battery-in-color` (#f06292).
+    static let batteryIn = WidgetEnergyPalette.batteryIn
+    /// Gas consumption, from the frontend `--energy-gas-color` (#8e021b), lightened for dark mode.
+    static let gas = WidgetEnergyPalette.gas
 
     /// Unit symbol for energy, sourced from Foundation rather than hardcoded.
     static let energyUnit = WidgetEnergyPalette.energyUnit
@@ -57,6 +63,11 @@ enum WidgetEnergyStyle {
     /// colours to luminance. Only use the series colour when the widget renders in full colour.
     static func accessoryColor(_ color: Color, mode: WidgetRenderingMode) -> Color {
         WidgetEnergyPalette.accessoryColor(color, mode: mode)
+    }
+
+    /// Formats a bare quantity, for a figure whose unit isn't kWh — gas metered by volume.
+    static func quantity(_ value: Double) -> String {
+        WidgetEnergyPalette.quantity(value)
     }
 
     /// Formats an energy value in kWh (locale-aware, at most one fraction digit).

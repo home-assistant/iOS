@@ -3,8 +3,8 @@ import SwiftUI
 import WidgetKit
 
 /// Lock screen circular layout. A circular accessory only has room for one figure, so it shows the
-/// headline series — solar when the source preference includes it and the server reports it,
-/// otherwise the grid flow.
+/// headline series — the grid flow when the source preference includes it and the server reports
+/// it, otherwise whichever series the home does have.
 @available(iOS 17, *)
 struct WidgetEnergyAccessoryCircularView: View {
     let entry: WidgetEnergyEntry
@@ -14,7 +14,12 @@ struct WidgetEnergyAccessoryCircularView: View {
     }
 
     var body: some View {
-        WidgetEnergyAccessoryCircularContentView(stat: metric?.designSystemModel())
+        // The stand-in follows the widget's own configuration rather than defaulting to the grid:
+        // an accessory narrowed to solar should wait on a sun, not a pylon.
+        WidgetEnergyAccessoryCircularContentView(
+            stat: metric?.designSystemModel(),
+            placeholderIcon: WidgetEnergyMetric.Kind.headline(for: entry.source).icon
+        )
     }
 }
 

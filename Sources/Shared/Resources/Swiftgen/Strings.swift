@@ -8915,10 +8915,14 @@ public enum L10n {
       }
     }
     public enum Energy {
+      /// Battery
+      public static var battery: String { return L10n.tr("Localizable", "widgets.energy.battery") }
       /// Show your energy dashboard at a glance.
       public static var description: String { return L10n.tr("Localizable", "widgets.energy.description") }
-      /// Electricity total
-      public static var electricityTotal: String { return L10n.tr("Localizable", "widgets.energy.electricity_total") }
+      /// Grid
+      public static var electricity: String { return L10n.tr("Localizable", "widgets.energy.electricity") }
+      /// Gas
+      public static var gas: String { return L10n.tr("Localizable", "widgets.energy.gas") }
       /// Grid
       public static var grid: String { return L10n.tr("Localizable", "widgets.energy.grid") }
       /// No connection available, review your Home Assistant URL configuration
@@ -8948,8 +8952,12 @@ public enum L10n {
       public enum Source {
         /// Auto
         public static var auto: String { return L10n.tr("Localizable", "widgets.energy.source.auto") }
+        /// Battery
+        public static var battery: String { return L10n.tr("Localizable", "widgets.energy.source.battery") }
         /// Consumption
         public static var consumption: String { return L10n.tr("Localizable", "widgets.energy.source.consumption") }
+        /// Gas
+        public static var gas: String { return L10n.tr("Localizable", "widgets.energy.source.gas") }
         /// Solar
         public static var solar: String { return L10n.tr("Localizable", "widgets.energy.source.solar") }
         /// Source

@@ -4,15 +4,20 @@ import SwiftUI
 import WidgetKit
 
 /// Lock screen circular layout. A circular accessory only has room for one figure, so the widget
-/// hands over the headline series — solar when it has one, otherwise the grid flow.
+/// hands over the headline series — the grid flow when it has one, otherwise whichever series the
+/// home does report.
 @available(iOS 17, *)
 public struct WidgetEnergyAccessoryCircularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
     private let stat: WidgetEnergyStatModel?
+    /// Icon for the accessory with nothing to report yet. Supplied by the caller because which
+    /// series this accessory would have shown is the widget's configuration, not the drawing's.
+    private let placeholderIcon: MaterialDesignIcons
 
-    public init(stat: WidgetEnergyStatModel?) {
+    public init(stat: WidgetEnergyStatModel?, placeholderIcon: MaterialDesignIcons = .transmissionTowerIcon) {
         self.stat = stat
+        self.placeholderIcon = placeholderIcon
     }
 
     public var body: some View {
@@ -42,7 +47,9 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
             .padding(DesignSystem.Spaces.half)
             .foregroundStyle(WidgetEnergyPalette.accessoryColor(stat.color, mode: renderingMode))
         } else {
-            Text(verbatim: MaterialDesignIcons.solarPowerIcon.unicode)
+            // The headline series' own icon, so an accessory with nothing to report still says what
+            // it would have been reporting.
+            Text(verbatim: placeholderIcon.unicode)
                 .font(.custom(MaterialDesignIcons.familyName, size: 20))
                 .foregroundStyle(.secondary)
         }

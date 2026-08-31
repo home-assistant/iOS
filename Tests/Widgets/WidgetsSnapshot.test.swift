@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 
+import Shared
 import SharedTesting
 
 import SwiftUI
@@ -179,6 +180,99 @@ struct WidgetsSnapshotTests {
         assertEnergySnapshot(source: .auto, scenario: .mixedFlow, family: .systemMedium)
     }
 
+    /// A home with a battery: the discharge it ran on stacks teal over the solar it generated, and
+    /// what it stored hangs below the axis in pink, between the bars and the exported purple.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetBatterySystemMediumSnapshot() {
+        assertEnergySnapshot(source: .auto, scenario: .battery, family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetBatterySystemLargeSnapshot() {
+        assertEnergySnapshot(source: .auto, scenario: .battery, family: .systemLarge)
+    }
+
+    /// The battery on its own: no consumption bar for its discharge to be a share of, and no
+    /// exported purple beneath it either.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetBatteryOnlySystemMediumSnapshot() {
+        assertEnergySnapshot(source: .battery, withCost: false, scenario: .battery, family: .systemMedium)
+    }
+
+    /// Every source a dashboard can configure, which is the case the layouts had to be reworked
+    /// for: four figures in a row that used to hold two, and a cost covering both the electricity
+    /// and the gas.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetEverySourceSystemMediumSnapshot() {
+        assertEnergySnapshot(source: .auto, withGas: true, scenario: .battery, family: .systemMedium)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetEverySourceSystemLargeSnapshot() {
+        assertEnergySnapshot(source: .auto, withGas: true, scenario: .battery, family: .systemLarge)
+    }
+
+    /// Four figures on a small card, where they stop being a column and become a 2×2 block.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetEverySourceSystemSmallSnapshot() {
+        assertEnergySnapshot(source: .auto, withGas: true, scenario: .battery, family: .systemSmall)
+    }
+
+    /// Gas is a figure, never a chart series: it is metered in m³ as often as in kWh, so it has no
+    /// place in a stack drawn in kWh. Narrowed to gas, the card is one figure and an empty chart.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetGasOnlySystemMediumSnapshot() {
+        assertEnergySnapshot(source: .gas, withGas: true, scenario: .battery, family: .systemMedium)
+    }
+
+    /// A price long enough to fight the figures for the line, in both layouts that draw one. The
+    /// banknote beside it is what says the number is money rather than another meter reading, so it
+    /// has to survive the squeeze intact — a clipped half-icon, or none at all, leaves the amount
+    /// unattributed.
+    ///
+    /// Drawn from the design system's card with the amount already formatted, rather than through an
+    /// entry: a currency put through `Locale.current` renders differently on every machine, and the
+    /// point here is the layout, not the formatter.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetLongPriceSystemMediumSnapshot() {
+        assertLongPriceSnapshot(stats: WidgetEnergySampleData.stats)
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetLongPriceEverySourceSystemMediumSnapshot() {
+        assertLongPriceSnapshot(stats: WidgetEnergySampleData.allSourceStats)
+    }
+
+    @available(iOS 18, *)
+    @MainActor private func assertLongPriceSnapshot(
+        stats: [WidgetEnergyStatModel],
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: .systemMedium)
+        assertLightDarkSnapshots(
+            of: WidgetEnergyMediumContentView(
+                stats: stats,
+                costText: "-SEK 12 345,67",
+                periodTitle: "This month",
+                date: Self.dayStart.addingTimeInterval(13 * 3600),
+                chartPoints: WidgetEnergySampleData.batteryChartPoints,
+                showsBattery: true,
+                periodRange: WidgetEnergySampleData.dayRange
+            )
+            .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
+        )
+    }
+
     /// Daily buckets rather than hourly, with the whole week on the x-axis.
     @available(iOS 18, *)
     @MainActor @Test func energyWidgetThisWeekSystemMediumSnapshot() {
@@ -194,6 +288,47 @@ struct WidgetsSnapshotTests {
     @available(iOS 18, *)
     @MainActor @Test func energyWidgetYesterdaySystemMediumSnapshot() {
         assertEnergySnapshot(source: .auto, period: .yesterday, family: .systemMedium)
+    }
+
+    /// Four figures on the lock screen, where the rectangular accessory drops the period caption to
+    /// buy the room for a second column.
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetEverySourceAccessoryRectangularSnapshot() {
+        assertLightDarkSnapshots(
+            of: WidgetEnergyAccessoryRectangularView(entry: Self.everySourceEntry)
+                .environment(\.widgetFamily, .accessoryRectangular)
+                .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: 160, height: 72)
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func energyWidgetEverySourceAccessoryInlineSnapshot() {
+        assertLightDarkSnapshots(
+            of: WidgetEnergyAccessoryInlineView(entry: Self.everySourceEntry)
+                .environment(\.widgetFamily, .accessoryInline)
+                .environment(\.locale, Locale(identifier: "en_US")),
+            layout: .fixed(width: 160, height: 24)
+        )
+    }
+
+    /// A dashboard with grid, solar, a battery and gas all configured.
+    @available(iOS 17, *)
+    private static var everySourceEntry: WidgetEnergyEntry {
+        WidgetEnergyEntry(
+            date: dayStart.addingTimeInterval(13 * 3600),
+            period: .today,
+            source: .auto,
+            serverName: "Home",
+            isConfigured: true,
+            gridConsumed: 6.2,
+            gridReturned: 10.5,
+            solarGenerated: 12.4,
+            batteryCharged: 1.8,
+            batteryDischarged: 2.5,
+            gasConsumed: 4.8,
+            gasUnit: "m³"
+        )
     }
 
     @available(iOS 18, *)
@@ -318,6 +453,7 @@ struct WidgetsSnapshotTests {
     @MainActor private func assertEnergySnapshot(
         source: WidgetEnergySource,
         withCost: Bool = true,
+        withGas: Bool = false,
         scenario: EnergyScenario = .solarDay,
         period: WidgetEnergyPeriod = .today,
         family: WidgetFamily,
@@ -330,6 +466,9 @@ struct WidgetsSnapshotTests {
         let size = snapshotSize(for: family)
         let points = scenario.points(period: period)
         let totals = WidgetEnergyChartSample.totals(of: points)
+        // Only the battery scenario has a battery, so every other case keeps dropping the series
+        // rather than drawing it at zero.
+        let hasBattery = scenario == .battery
         let entry = WidgetEnergyEntry(
             date: Self.dayStart.addingTimeInterval(13 * 3600),
             period: period,
@@ -339,6 +478,10 @@ struct WidgetsSnapshotTests {
             gridConsumed: totals.gridConsumed,
             gridReturned: totals.gridReturned,
             solarGenerated: scenario == .noSolar ? nil : totals.solarGenerated,
+            batteryCharged: hasBattery ? totals.batteryCharged : nil,
+            batteryDischarged: hasBattery ? totals.batteryDischarged : nil,
+            gasConsumed: withGas ? 4.8 : nil,
+            gasUnit: withGas ? "m³" : nil,
             cost: withCost ? -0.49 : nil,
             currencyCode: withCost ? "EUR" : nil,
             chartPoints: points
@@ -378,6 +521,10 @@ struct WidgetsSnapshotTests {
         /// resolve. Energy that only passed through was never demand, so the consumption bar comes
         /// down to the difference instead of standing at the raw import.
         case mixedFlow
+        /// Solar with a battery that stores the midday surplus and gives it back over the evening
+        /// peak: teal above the axis where the battery covered demand, pink below it where it
+        /// charged. The one scenario that exercises all five of the chart's series at once.
+        case battery
 
         func points(period: WidgetEnergyPeriod) -> [WidgetEnergyEntry.ChartPoint] {
             let isDaily = period == .thisWeek || period == .thisMonth
@@ -390,34 +537,56 @@ struct WidgetsSnapshotTests {
                 var grid = 0.0
                 var solar = 0.0
                 var returned = 0.0
+                var charged = 0.0
+                var discharged = 0.0
                 for hour in hours {
                     let hourly = flows(atHour: hour, sunniness: sunniness)
                     grid += hourly.grid
                     solar += hourly.solar
                     returned += hourly.returned
+                    charged += hourly.charged
+                    discharged += hourly.discharged
                 }
-                return WidgetEnergyEntry.ChartPoint(date: date, grid: grid, solar: solar, gridReturned: returned)
+                return WidgetEnergyEntry.ChartPoint(
+                    date: date,
+                    grid: grid,
+                    solar: solar,
+                    gridReturned: returned,
+                    batteryCharged: charged,
+                    batteryDischarged: discharged
+                )
             }
         }
 
         /// One hour's grid draw, generation and export, derived from each other the way a real
         /// home's are: the house imports whatever solar can't cover, and exports the surplus.
         private func flows(atHour hour: Double, sunniness: Double)
-            -> (grid: Double, solar: Double, returned: Double) {
+            -> (grid: Double, solar: Double, returned: Double, charged: Double, discharged: Double) {
             // Household demand peaks in the morning and again in the evening; solar peaks midday.
             let load = 0.25 + 0.8 * exp(-pow(hour - 7, 2) / 4) + 1.0 * exp(-pow(hour - 20, 2) / 6)
             let daylight = hour >= 6 && hour <= 18 ? 1.6 * sin((hour - 6) / 12 * .pi) : 0
             let solar: Double = switch self {
             case .noSolar: 0
             case .heavyExport: daylight * sunniness * 4
-            case .solarDay, .solarWithoutExport, .mixedFlow: daylight * sunniness
+            case .solarDay, .solarWithoutExport, .mixedFlow, .battery: daylight * sunniness
             }
             // An evening discharge into the grid, from a source the widget can't see.
             let unexplainedExport = self == .mixedFlow && hour >= 18 && hour <= 21 ? 0.9 : 0
+            let grid = max(load - solar, 0)
+            let returned = self == .solarWithoutExport ? 0 : max(solar - load, 0) + unexplainedExport
+            guard self == .battery else {
+                return (grid: grid, solar: solar, returned: returned, charged: 0, discharged: 0)
+            }
+            // The battery takes what would otherwise have been exported at midday and gives it back
+            // over the evening peak, so neither half is energy the home never had.
+            let charged = min(returned, hour >= 10 && hour <= 15 ? 0.9 : 0)
+            let discharged = hour >= 18 && hour <= 22 ? min(grid, 0.7) : 0
             return (
-                grid: max(load - solar, 0),
+                grid: max(grid - discharged, 0),
                 solar: solar,
-                returned: self == .solarWithoutExport ? 0 : max(solar - load, 0) + unexplainedExport
+                returned: max(returned - charged, 0),
+                charged: charged,
+                discharged: discharged
             )
         }
 
