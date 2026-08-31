@@ -16,13 +16,8 @@ struct WidgetDomainAppEntity: AppEntity {
     let id: String
     let name: String
 
-    /// The localized name is what a user recognizes, but translations can read alike across two
-    /// domains, so the raw identifier stays visible as the subtitle.
     var displayRepresentation: DisplayRepresentation {
-        .init(
-            title: .init(stringLiteral: name),
-            subtitle: .init(stringLiteral: id)
-        )
+        .init(title: .init(stringLiteral: name))
     }
 
     init(id: String, name: String) {

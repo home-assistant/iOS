@@ -16,6 +16,22 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
     )
     var server: IntentServerAppEntity
 
+    @Parameter(
+        title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
+        default: true
+    )
+    var showLastUpdateTime: Bool
+
+    @Parameter(
+        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
+        description: .init(
+            "widgets.custom.show_states.description",
+            defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
+        ),
+        default: true
+    )
+    var showStates: Bool
+
     /// Left empty by default so the widget keeps showing whatever the usage prediction returns;
     /// picking domains here narrows it to a household's controllable things (lights, covers…)
     /// without having to name every entity.
@@ -43,22 +59,6 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
         )
     )
     var excludedDomains: [WidgetDomainAppEntity]?
-
-    @Parameter(
-        title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
-        default: true
-    )
-    var showLastUpdateTime: Bool
-
-    @Parameter(
-        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
-        description: .init(
-            "widgets.custom.show_states.description",
-            defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
-        ),
-        default: true
-    )
-    var showStates: Bool
 
     /// The configured domain rules as the widget applies them to the predicted entity ids.
     var domainFilter: WidgetDomainFilter {
