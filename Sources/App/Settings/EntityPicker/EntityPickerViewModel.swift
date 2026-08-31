@@ -5,6 +5,7 @@ import Shared
 enum EntityGrouping: String, CaseIterable, Identifiable {
     case domain
     case area
+    case device
 
     var id: String { rawValue }
 
@@ -12,6 +13,7 @@ enum EntityGrouping: String, CaseIterable, Identifiable {
         switch self {
         case .domain: return L10n.EntityPicker.Filter.GroupBy.domain
         case .area: return L10n.EntityPicker.Filter.GroupBy.area
+        case .device: return L10n.EntityPicker.Filter.GroupBy.device
         }
     }
 }
@@ -32,7 +34,10 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var refreshStatusText: String?
 
     // Cached lookups to avoid recomputation on every filter
+    /// `entity_id → device`, from the display entity registry of the selected server.
+    private var entityToDevice: [String: AppDeviceRegistry] = [:]
     private var cachedEntityToArea: [String: String] = [:]
+    private var cachedEntityToDeviceGroup: [String: GroupKey] = [:]
     private var cachedAreaIdToEntityIds: [String: Set<String>] = [:]
     private var cachedEntitiesByServer: [String: [HAAppEntity]] = [:]
     private var entitiesIncludingHidden: [HAAppEntity] = []
@@ -144,6 +149,24 @@ final class EntityPickerViewModel: ObservableObject {
         cachedAreaIdToEntityIds = areaIdToEntityIds
     }
 
+    private func rebuildDeviceCaches() {
+        let devicesById = Dictionary(
+            deviceRegistryData.map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        var entityToDeviceGroup: [String: GroupKey] = [:]
+        for (entityId, device) in entityToDevice {
+            let parentName = device.parentDeviceId.flatMap { devicesById[$0]?.displayName }
+            entityToDeviceGroup[entityId] = GroupKey(
+                id: device.deviceId,
+                title: device.displayName,
+                sortKey: [parentName ?? device.displayName, parentName == nil ? "0" : "1", device.displayName]
+                    .joined(separator: "\u{0}")
+            )
+        }
+        cachedEntityToDeviceGroup = entityToDeviceGroup
+    }
+
     private func entitiesForCurrentServer() -> [HAAppEntity] {
         guard let serverId = selectedServerId else { return [] }
         if let cached = cachedEntitiesByServer[serverId] {
@@ -163,6 +186,8 @@ final class EntityPickerViewModel: ObservableObject {
             rebuildAreaCaches()
             // Prime server cache for this server
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
+            entityToDevice = cachedEntitiesByServer[serverId]?.devicesMap(for: serverId) ?? [:]
+            rebuildDeviceCaches()
             rebuildFuzzyIndex(for: serverId)
             // The available domains belong to the server that is now selected, so a domain the
             // previous server had but this one doesn't is dropped instead of emptying the list.
@@ -298,9 +323,11 @@ final class EntityPickerViewModel: ObservableObject {
         let areaFilter = selectedAreaFilter
         let grouping = selectedGrouping
         let noAreaTitle = L10n.EntityPicker.List.Area.NoArea.title
+        let noDeviceTitle = L10n.EntityPicker.List.Device.NoDevice.title
 
         // Pull cached lookups
         let entityToArea = cachedEntityToArea
+        let entityToDeviceGroup = cachedEntityToDeviceGroup
         let areaIdToEntityIds = cachedAreaIdToEntityIds
 
         // Get entities already filtered by server
@@ -325,13 +352,26 @@ final class EntityPickerViewModel: ObservableObject {
 
             switch grouping {
             case .domain:
-                return Self.groupPreservingOrder(filteredEntities, sortAlphabetically: !isSearching) { $0.domain }
+                return Self.groupPreservingOrder(filteredEntities, sortAlphabetically: !isSearching) {
+                    GroupKey(id: $0.domain, title: $0.domain)
+                }
             case .area:
                 return Self.groupPreservingOrder(
                     filteredEntities,
                     sortAlphabetically: !isSearching,
-                    lastGroupTitle: noAreaTitle
-                ) { entityToArea[$0.entityId] ?? noAreaTitle }
+                    lastGroupId: noAreaTitle
+                ) { entity in
+                    let areaName = entityToArea[entity.entityId] ?? noAreaTitle
+                    return GroupKey(id: areaName, title: areaName)
+                }
+            case .device:
+                return Self.groupPreservingOrder(
+                    filteredEntities,
+                    sortAlphabetically: !isSearching,
+                    lastGroupId: noDeviceTitle
+                ) { entity in
+                    entityToDeviceGroup[entity.entityId] ?? GroupKey(id: noDeviceTitle, title: noDeviceTitle)
+                }
             }
         }.value
 
@@ -341,29 +381,43 @@ final class EntityPickerViewModel: ObservableObject {
         filteredGroups = groups
     }
 
+    /// How a section is keyed, titled and ordered, so a section can sort somewhere other than
+    /// under its own title.
+    private struct GroupKey {
+        let id: String
+        let title: String
+        let sortKey: String
+
+        init(id: String, title: String, sortKey: String? = nil) {
+            self.id = id
+            self.title = title
+            self.sortKey = sortKey ?? title
+        }
+    }
+
     private static func groupPreservingOrder(
         _ entities: [HAAppEntity],
         sortAlphabetically: Bool,
-        lastGroupTitle: String? = nil,
-        keyFor: (HAAppEntity) -> String
+        lastGroupId: String? = nil,
+        keyFor: (HAAppEntity) -> GroupKey
     ) -> [EntityPickerGroup] {
-        var order: [String] = []
+        var order: [GroupKey] = []
         var grouped: [String: [HAAppEntity]] = [:]
         for entity in entities {
             let key = keyFor(entity)
-            if grouped[key] == nil { order.append(key) }
-            grouped[key, default: []].append(entity)
+            if grouped[key.id] == nil { order.append(key) }
+            grouped[key.id, default: []].append(entity)
         }
 
         if sortAlphabetically {
-            order.sort(by: <)
-            if let lastGroupTitle, let index = order.firstIndex(of: lastGroupTitle) {
-                order.remove(at: index)
-                order.append(lastGroupTitle)
+            order.sort { $0.sortKey < $1.sortKey }
+            if let lastGroupId, let index = order.firstIndex(where: { $0.id == lastGroupId }) {
+                let last = order.remove(at: index)
+                order.append(last)
             }
         }
 
-        return order.map { EntityPickerGroup(title: $0, entities: grouped[$0] ?? []) }
+        return order.map { EntityPickerGroup(id: $0.id, title: $0.title, entities: grouped[$0.id] ?? []) }
     }
 
     // MARK: - Test helpers (DEBUG only)

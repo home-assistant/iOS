@@ -40,6 +40,7 @@ public struct WatchEntitySections {
             let serverEntities = entitiesPerServer[serverId] ?? []
             // One registry + device-registry read for the whole screen, rather than one per row.
             let devices = serverEntities.devicesMap(for: serverId)
+            let deviceNames = AppDeviceRegistry.displayNamesById(serverId: serverId)
             let entries: [WatchEntityEntry] = serverEntities
                 .filter { entity in
                     entity.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded)
@@ -52,7 +53,13 @@ public struct WatchEntitySections {
                     return WatchEntityEntry(
                         item: item,
                         info: info,
-                        device: devices[entity.entityId].map { .init(id: $0.deviceId, name: $0.displayName) }
+                        device: devices[entity.entityId].map { device in
+                            WatchEntityEntry.Device(
+                                id: device.deviceId,
+                                name: device.displayName,
+                                parentName: device.parentDeviceId.flatMap { deviceNames[$0] }
+                            )
+                        }
                     )
                 }
             // Controllable entities come first, ordered by most commonly used domain (then name —
