@@ -7,15 +7,10 @@ struct WatchAssistView: View {
     private enum Constants {
         static let micButtonFontSize: CGFloat = 11
         static let micButtonOffsetY: CGFloat = 22
-        static let micRecordingFontSizeLarge: CGFloat = 80
-        static let micRecordingFontSizeSmall: CGFloat = 50
         static let micButtonProgressScale: CGFloat = 1.5
         static let micButtonProgressHeight: CGFloat = 40
         static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
         static let micRecordingTextFontSize: CGFloat = 11
-        static let emptyStateImageWidth: CGFloat = 70
-        static let emptyStateImageHeight: CGFloat = 70
-        static let emptyStateImageOpacity: Double = 0.5
         static let progressViewScale: CGFloat = 2
     }
 
@@ -119,8 +114,13 @@ struct WatchAssistView: View {
 
     @ViewBuilder
     private var stateView: some View {
-        micRecording
-            .opacity(viewModel.state == .recording ? 1 : 0)
+        // Only built while recording: the orb draws from a `TimelineView`, so keeping it in the
+        // hierarchy behind a zero opacity would have it redrawing every frame for as long as the
+        // screen is open.
+        if viewModel.state == .recording {
+            micRecording
+                .transition(.opacity)
+        }
         ProgressView()
             .progressViewStyle(.circular)
             // This could also be achieved using .controlSize(.large) on watchOS 9+
@@ -191,20 +191,11 @@ struct WatchAssistView: View {
             viewModel.assist()
         }, label: {
             VStack(spacing: DesignSystem.Spaces.one) {
-                if #available(watchOS 10.0, *) {
-                    Image(systemSymbol: .waveformCircleFill)
-                        .font(.system(size: Constants.micRecordingFontSizeLarge))
-                        .symbolEffect(
-                            .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                            options: .repeating,
-                            value: viewModel.state
-                        )
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, Color.haPrimary)
-                } else {
-                    Image(systemSymbol: .waveformCircleFill)
-                        .font(.system(size: Constants.micRecordingFontSizeSmall))
-                }
+                AssistVoiceOrbView(
+                    level: viewModel.audioLevel,
+                    size: .watch,
+                    accessibilityLabel: L10n.Assist.Button.Listening.title
+                )
                 VStack(spacing: .zero) {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
                         .font(.system(size: Constants.micRecordingTextFontSize))
@@ -231,12 +222,8 @@ struct WatchAssistView: View {
             ScrollView {
                 // Using LazyVStack instead of List to avoid List minimum row height
                 LazyVStack(spacing: DesignSystem.Spaces.one) {
-                    LabsLabel()
                     ForEach(viewModel.chatItems, id: \.id) { item in
                         ChatBubbleView(item: item)
-                    }
-                    if viewModel.chatItems.isEmpty {
-                        emptyState
                     }
                 }
                 .frame(maxHeight: .infinity)
@@ -251,23 +238,6 @@ struct WatchAssistView: View {
         }
         .frame(maxHeight: .infinity)
     }
-
-    private var emptyState: some View {
-        HStack {
-            Spacer()
-            Image(uiImage: Asset.casitaDark.image)
-                .resizable()
-                .frame(
-                    width: Constants.emptyStateImageWidth,
-                    height: Constants.emptyStateImageHeight,
-                    alignment: .center
-                )
-                .aspectRatio(contentMode: .fit)
-                .opacity(Constants.emptyStateImageOpacity)
-            Spacer()
-        }
-        .listRowBackground(Color.clear)
-    }
 }
 
 #if DEBUG
@@ -275,7 +245,21 @@ struct WatchAssistView: View {
     WatchAssistView(viewModel: .preview)
 }
 
+#Preview("Recording") {
+    WatchAssistView(viewModel: .previewRecording)
+}
+
 private extension WatchAssistViewModel {
+    static var previewRecording: WatchAssistViewModel {
+        let viewModel = WatchAssistViewModel.preview
+        // The preview recorder does nothing, so an unreachable phone would be the only thing to move
+        // the session out of the state this preview is here to show.
+        viewModel.assistService.deviceReachable = true
+        viewModel.state = .recording
+        viewModel.audioLevel = 0.6
+        return viewModel
+    }
+
     static var preview: WatchAssistViewModel {
         let viewModel = WatchAssistViewModel(
             assistService: WatchAssistService(serverId: "preview-server", pipelineId: "preview-pipeline"),

@@ -1549,6 +1549,17 @@ public enum ComplicationTextAreas: String, CaseIterable {
         }
     }
 
+    /// Whether the area labels one end of the template's gauge rather than carrying body text. Every
+    /// ClockKit template that declares Leading and Trailing is a gauge template, and drew them at the
+    /// two ends of the gauge — so they belong to the modern gauge's min / max labels, not to a text
+    /// slot, where they would read as the complication's value or name.
+    public var isGaugeEndLabel: Bool {
+        switch self {
+        case .Leading, .Trailing: return true
+        default: return false
+        }
+    }
+
     public var slug: String {
         var cleanLocation = rawValue
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")

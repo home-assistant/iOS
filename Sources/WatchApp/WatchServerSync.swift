@@ -5,6 +5,12 @@ import Shared
 /// Home refresh button and the Settings screens. The phone replies to `serversConfigSync` with the
 /// encoded servers and any client certificate bundles inline; both are applied to the local Keychain.
 enum WatchServerSync {
+    /// Serial queue every server-state apply runs on. Restoring servers reads the Keychain and the
+    /// GRDB mirror and writes both back per server — far too slow for the main thread (the watchdog
+    /// killed the app waiting on the database queue behind burst mirror writes) — and serializing
+    /// here keeps concurrent applies from racing `restoreState`.
+    private static let applyQueue = DispatchQueue(label: "watch-server-sync-apply", qos: .utility)
+
     static func request() {
         guard Communicator.shared.currentReachability == .immediatelyReachable else {
             Current.Log.info("[Watch] Skipping server sync, iPhone not immediately reachable")
@@ -13,7 +19,7 @@ enum WatchServerSync {
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.serversConfigSync.rawValue,
             reply: { message in
-                DispatchQueue.main.async {
+                applyQueue.async {
                     apply(message)
                 }
             }
@@ -37,18 +43,48 @@ enum WatchServerSync {
     /// (which delivers the bundles inline) as soon as the phone is reachable.
     static func applyMirroredServers(_ data: Data?) {
         guard let data else { return }
+        applyQueue.async { applyMirroredServersNow(data) }
+    }
+
+    /// Synchronous variant for a caller that must have the servers applied before it returns —
+    /// the pushed-mirror path runs inside an expiring background activity, and work dispatched
+    /// past its end would hit a re-suspended database.
+    static func applyMirroredServersAndWait(_ data: Data?) {
+        guard let data else { return }
+        dispatchPrecondition(condition: .notOnQueue(.main))
+        dispatchPrecondition(condition: .notOnQueue(applyQueue))
+        applyQueue.sync { applyMirroredServersNow(data) }
+    }
+
+    private static func applyMirroredServersNow(_ data: Data) {
         applyServersState(data)
-        // Keychain lookups (SecItemCopyMatching) are too slow for the main thread this runs on, so
-        // check off-main; pushed mirrors also often arrive while the phone isn't immediately
-        // reachable, so the follow-up request waits for reachability instead of being dropped.
-        let servers = Current.servers.all
-        DispatchQueue.global(qos: .utility).async {
-            let missingCertificate = servers.contains { server in
-                guard let certificate = server.info.connection.clientCertificate else { return false }
-                return !ClientCertificateManager.shared.hasIdentity(for: certificate)
-            }
-            guard missingCertificate else { return }
-            Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
+        // Already off-main here, so the Keychain lookups (SecItemCopyMatching) can run inline.
+        // Pushed mirrors also often arrive while the phone isn't immediately reachable, so the
+        // follow-up request waits for reachability instead of being dropped.
+        guard hasMissingCertificate() else { return }
+        Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
+        DispatchQueue.main.async { requestWhenReachable() }
+    }
+
+    /// Whether any configured server references a client certificate this Watch's Keychain lacks.
+    /// Reads the Keychain, so it must not run on the main thread.
+    private static func hasMissingCertificate() -> Bool {
+        Current.servers.all.contains { server in
+            guard let certificate = server.info.connection.clientCertificate else { return false }
+            return !ClientCertificateManager.shared.hasIdentity(for: certificate)
+        }
+    }
+
+    /// Pull the mTLS bundles from the phone when a configured server references a client certificate
+    /// this Watch's Keychain doesn't have. Called at launch as well as after each mirror apply: the
+    /// servers persisted from a previous run outlive the identity that went with them (the mirror is
+    /// sanitized of Keychain material, and a Watch restored from a backup keeps neither), and without
+    /// this every mTLS request fails with `certificateNotFound` for the process's whole lifetime with
+    /// nothing asking the phone to re-send.
+    static func requestCertificatesIfMissing() {
+        applyQueue.async {
+            guard hasMissingCertificate() else { return }
+            Current.Log.info("[Watch] A configured server references a client certificate not in the Keychain")
             DispatchQueue.main.async { requestWhenReachable() }
         }
     }
@@ -108,6 +144,9 @@ enum WatchServerSync {
         }.map(\.identifier)
         Current.resetAPICache(for: affected)
 
-        NotificationCenter.default.post(name: .clientCertificatesImported, object: nil)
+        // Posted on main: WatchServerDetailView receives this straight into SwiftUI state.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .clientCertificatesImported, object: nil)
+        }
     }
 }

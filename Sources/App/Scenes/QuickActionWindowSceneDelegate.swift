@@ -72,7 +72,7 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         guard let windowScene = scene as? UIWindowScene else { return }
-        WindowScenesManager.shared.sceneDidBecomeActive(windowScene)
+        WindowScenesManager.shared.sceneDidBecomeActive(windowScene, activity: .webView)
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

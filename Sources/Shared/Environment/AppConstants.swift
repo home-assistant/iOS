@@ -109,6 +109,10 @@ public enum AppConstants {
         }
     }
 
+    /// Every scheme the app answers to — the release one and the debug build's. A URL carrying one
+    /// of these is handled inside the app; anything else lives somewhere on the web.
+    public static let deeplinkSchemes: Set<String> = ["homeassistant", "homeassistant-dev"]
+
     /// Roots a scheme-less, slash-less navigation path (`map/0` → `/map/0`) so an HA path that is
     /// missing its leading slash still resolves in the frontend. Anything already rooted, or that
     /// carries a scheme — `https://`, `mailto:`, or the app's own `homeassistant://` deep links —
@@ -158,6 +162,32 @@ public enum AppConstants {
         )?.withWidgetAuthenticity()
     }
 
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String) -> URL? {
+        var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/")
+        components?.queryItems = [
+            URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
+        ]
+        return components?.url
+    }
+
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String, serverName: String) -> URL? {
+        guard let base = openEntityMoreInfoDeeplinkURL(entityId: entityId),
+              var components = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "server", value: serverName)]
+        return components.url
+    }
+
+    /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
+    /// dialog for everything else.
+    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
+        if Domain(entityId: entityId) == .camera {
+            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
+        }
+        return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
+    }
+
     public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
@@ -183,6 +213,24 @@ public enum AppConstants {
             URLQueryItem(name: "entity_id", value: listId),
             URLQueryItem(name: "serverId", value: serverId),
         ])
+    }
+
+    /// Opens the frontend's calendar panel, which is where a tap on the calendar widget lands.
+    ///
+    /// `entityId` names the calendar the tapped event belongs to, the same way the to-do deep link
+    /// names a list; leaving it out opens the panel on everything, which is what a tap anywhere
+    /// other than an event should do. The server is always carried, because the widget can merge
+    /// calendars from several servers.
+    public static func calendarOpenURL(serverId: String, entityId: String? = nil) -> URL? {
+        guard !serverId.isEmpty else {
+            return nil
+        }
+        var queryItems = [URLQueryItem(name: "serverId", value: serverId)]
+        if let entityId, !entityId.isEmpty {
+            queryItems.insert(URLQueryItem(name: "entity_id", value: entityId), at: 0)
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/calendar")?
+            .appending(queryItems: queryItems)
     }
 
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
@@ -407,6 +455,9 @@ public extension Version {
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
     /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
     static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
+    /// `frontend/get_icons` supports the `entity_component` category, letting the app resolve entity
+    /// icons from the same backend data the frontend uses, from 2024.2.
+    static let frontendGetIconsEntityComponent: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     /// Core accepts `in_zones` in update_location payloads from 2026.6.0.
     static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
     /// Frontend sends `frontend/loaded` when its launch screen is removed from 2026.8.0.

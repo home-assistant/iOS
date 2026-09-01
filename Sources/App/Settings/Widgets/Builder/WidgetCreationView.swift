@@ -9,24 +9,27 @@ struct WidgetCreationView: View {
     @StateObject private var viewModel: WidgetCreationViewModel
     private let dismissAction: () -> Void
 
-    private let needsNavigationController: Bool
+    /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
+    /// normally pushed (from the custom widgets list), and nesting a navigation container inside a
+    /// pushed destination leaves it blank and pops it straight back out. Only a modal presentation,
+    /// which has no surrounding stack to inherit, opts in.
+    private let needsNavigationStack: Bool
 
     init(
-        needsNavigationController: Bool = true,
+        needsNavigationStack: Bool = false,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
-        self.needsNavigationController = needsNavigationController
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }
 
     var body: some View {
-        if needsNavigationController {
+        if needsNavigationStack {
             NavigationStack {
                 content
             }
-            .navigationViewStyle(.stack)
         } else {
             content
         }
@@ -204,18 +207,8 @@ struct WidgetCreationView: View {
         let models = viewModel.widget.items.map { magicItem in
             let info = viewModel.magicItemInfo(for: magicItem)
             let textColor = Color(hex: magicItem.customization?.textColor)
-            let iconColor = Color(hex: magicItem.customization?.iconColor)
+            let iconColor = Color(hex: magicItem.customization?.customIconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
-            let interactionType = magicItem.widgetInteractionType
-            let showIconBackground = {
-                switch interactionType {
-                case .widgetURL:
-                    return true
-                case let .appIntent(widgetIntentType):
-                    return widgetIntentType != .refresh
-                }
-            }()
-
             let icon: MaterialDesignIcons = {
                 if let info {
                     return magicItem.icon(info: info)
@@ -238,7 +231,7 @@ struct WidgetCreationView: View {
                 subtitle: nil,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
-                showIconBackground: showIconBackground,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: textColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor,
@@ -255,7 +248,8 @@ struct WidgetCreationView: View {
                 family: widgetFamilyPreview(),
                 modelsCount: modelsCount,
                 rowsCount: rows.count
-            )
+            ),
+            family: widgetFamilyPreview()
         )
         .environment(\.widgetFamily, widgetFamilyPreview())
     }
@@ -280,10 +274,7 @@ struct WidgetCreationView: View {
 }
 
 #Preview {
-    NavigationView {
-        VStack {}
-            .sheet(isPresented: .constant(true)) {
-                WidgetCreationView {}
-            }
+    NavigationStack {
+        WidgetCreationView {}
     }
 }

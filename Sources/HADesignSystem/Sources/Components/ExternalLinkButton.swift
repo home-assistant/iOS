@@ -3,6 +3,10 @@ import HAIconic
 import SFSafeSymbols
 import SwiftUI
 
+/// A button that opens a URL outside the app, marked with an open-in-new glyph.
+///
+/// Frontend counterpart: none as a single element — the frontend writes an `ha-button` with
+/// `mdiOpenInNew` at each call site. This is that composition, named.
 public struct ExternalLinkButton: View {
     let icon: Image
     let title: String
@@ -33,14 +37,17 @@ public struct ExternalLinkButton: View {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
-                    .tint(tint)
+                    .foregroundStyle(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                    .tint(Color(uiColor: .label))
+                    .foregroundStyle(Color(uiColor: .label))
                     .font(.body.bold())
             }
         }
+        // The row draws its own background below; without this Mac Catalyst adds the bordered
+        // button style's background on top of it, so every row shows two stacked backgrounds.
+        .buttonStyle(.plain)
         .frame(maxWidth: 600)
         .padding()
         .background(background)
@@ -69,14 +76,17 @@ public struct ActionLinkButton: View {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
-                    .tint(tint)
+                    .foregroundStyle(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                    .tint(Color(uiColor: .label))
+                    .foregroundStyle(Color(uiColor: .label))
                     .font(.body.bold())
             }
         })
+        // The row draws its own background below; without this Mac Catalyst adds the bordered
+        // button style's background on top of it, so every row shows two stacked backgrounds.
+        .buttonStyle(.plain)
         .frame(maxWidth: 600)
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))

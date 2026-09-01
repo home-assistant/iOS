@@ -2,7 +2,10 @@ import AppIntents
 import CoreLocation
 import Shared
 
-struct UpdateLocationAppIntent: AppIntent {
+struct UpdateLocationAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit SendLocationIntent
+    static let intentClassName = "SendLocationIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.update_location.title",
         defaultValue: "Update location"

@@ -83,30 +83,7 @@ public enum Domain: String, CaseIterable {
 
         case unknown
         case unavailable
-
-        /// States that represent an "active" condition
-        public var isActive: Bool {
-            Domain.activeStates.contains(self)
-        }
     }
-
-    /// States that represent an "active" condition
-    /// such as for displaying accent color for entity tile icon
-    public static var activeStates: [State] = [
-        .on,
-        .open,
-        .unlocked,
-        .unlocking,
-        .locking,
-        .opening,
-        .closing,
-    ]
-
-    /// States that represent a "problem" condition
-    public static var problemStates: [State] = [
-        .jammed,
-        .unavailable,
-    ]
 
     public var states: [State] {
         var states: [State] = []
@@ -296,11 +273,11 @@ public enum Domain: String, CaseIterable {
         case .script:
             image = .scriptTextOutlineIcon
         case .switch:
-            image = .lightSwitchIcon
+            image = .toggleSwitchVariantIcon
         case .sensor:
             image = .eyeIcon
         case .binarySensor:
-            image = .eyeIcon
+            image = .radioboxBlankIcon
         case .zone:
             image = .mapIcon
         case .person:
@@ -376,7 +353,7 @@ public enum Domain: String, CaseIterable {
         case .vacuum:
             image = .robotVacuumIcon
         case .valve:
-            image = .pipeValveIcon
+            image = .valveOpenIcon
         case .wakeWord:
             image = .microphoneIcon
         case .waterHeater:
@@ -391,6 +368,9 @@ public enum Domain: String, CaseIterable {
         return image
     }
 
+    /// Cover fallback icons, mirroring the frontend's `cover/icons.json` `entity_component` map
+    /// (device class → open/closed default). The `_` (no/unknown device class) default is a window,
+    /// matching the frontend, not curtains.
     private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
         if state == .closed {
             switch deviceClass {
@@ -401,11 +381,19 @@ public enum Domain: String, CaseIterable {
             case .shutter:
                 return MaterialDesignIcons.windowShutterIcon
             case .blind:
-                return MaterialDesignIcons.blindsVerticalClosedIcon
+                return MaterialDesignIcons.blindsHorizontalClosedIcon
             case .shade:
                 return MaterialDesignIcons.rollerShadeClosedIcon
-            default:
+            case .curtain:
                 return MaterialDesignIcons.curtainsClosedIcon
+            case .door:
+                return MaterialDesignIcons.doorClosedIcon
+            case .damper:
+                return MaterialDesignIcons.circleSlice8Icon
+            case .window:
+                return MaterialDesignIcons.windowClosedIcon
+            default:
+                return MaterialDesignIcons.windowClosedIcon
             }
         } else {
             switch deviceClass {
@@ -416,11 +404,17 @@ public enum Domain: String, CaseIterable {
             case .shutter:
                 return MaterialDesignIcons.windowShutterOpenIcon
             case .blind:
-                return MaterialDesignIcons.blindsOpenIcon
+                return MaterialDesignIcons.blindsHorizontalIcon
             case .shade:
                 return MaterialDesignIcons.rollerShadeIcon
-            default:
+            case .curtain:
                 return MaterialDesignIcons.curtainsIcon
+            case .door:
+                return MaterialDesignIcons.doorOpenIcon
+            case .damper:
+                return MaterialDesignIcons.circleIcon
+            default:
+                return MaterialDesignIcons.windowOpenIcon
             }
         }
     }
@@ -660,8 +654,7 @@ public extension Domain {
     static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
     /// Display order of the watch area screens' controllable entities, most commonly used domains
-    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
-    /// domain). Domains not listed sort last.
+    /// first, covering every watch-runnable domain. Domains not listed sort last.
     static let watchAreaControlsOrder: [Domain] = [
         .light,
         .switch,
@@ -687,16 +680,6 @@ public extension Domain {
         }
         return index
     }
-
-    static let commonlyUsedWidgetSupported: [Domain] = [
-        .light,
-        .switch,
-        .cover,
-        .fan,
-        .inputBoolean,
-        .humidifier,
-        .valve,
-    ]
 
     static let sensorWidgetSupported: [Domain] = [
         .sensor,

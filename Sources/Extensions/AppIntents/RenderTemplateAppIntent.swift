@@ -1,8 +1,10 @@
 import AppIntents
-import HAKit
 import Shared
 
-struct RenderTemplateAppIntent: AppIntent {
+struct RenderTemplateAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit RenderTemplateIntent
+    static let intentClassName = "RenderTemplateIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.render_template.title",
         defaultValue: "Render template"
@@ -24,27 +26,11 @@ struct RenderTemplateAppIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
-        guard let server = server.getServer(),
-              let connection = Current.api(for: server)?.connection else {
+        guard let server = server.getServer() else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
-        let rendered = try await connection.renderTemplate(template)
+        let rendered = try await AppIntentServerAPI.renderTemplate(server: server, template: template)
         return .result(value: rendered)
-    }
-}
-
-private extension HAConnection {
-    func renderTemplate(_ template: String) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            subscribe(to: .renderTemplate(template), initiated: { result in
-                if case let .failure(error) = result {
-                    continuation.resume(throwing: error)
-                }
-            }, handler: { token, data in
-                token.cancel()
-                continuation.resume(returning: String(describing: data.result))
-            })
-        }
     }
 }

@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 import Foundation
 import Speech
@@ -9,6 +10,8 @@ protocol SpeechTranscriberProtocol: AnyObject {
     var onTranscriptUpdate: ((String, Bool) -> Void)? { get set }
     var onError: ((Error) -> Void)? { get set }
     var onListeningStateChange: ((Bool) -> Void)? { get set }
+    /// Normalized microphone input level (0...1) emitted while listening, for UI feedback.
+    var onAudioLevelUpdate: ((Float) -> Void)? { get set }
     /// When false, the caller owns the audio session (e.g. CarPlay keeps a .playAndRecord
     /// session active for the whole conversation) and the transcriber must not reconfigure
     /// or deactivate it.
@@ -49,6 +52,18 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         case restricted
     }
 
+    private enum Constants {
+        /// Window of microphone RMS power (dBFS) mapped onto the 0...1 voice level. Matches
+        /// `AudioRecorder`: narrow on purpose, so normal speech spans the whole range. It assumes the
+        /// session's input dynamics processing is on, which is why `startListening` avoids
+        /// `.measurement` mode.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+        /// The tap runs on a real-time audio thread and fires far faster than a screen refresh, so
+        /// levels leave it at about 30 Hz instead of once per buffer.
+        static let levelInterval: TimeInterval = 1.0 / 30
+    }
+
     // MARK: - Public Properties
 
     /// The current transcribed text (updates in real-time)
@@ -73,6 +88,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
     /// Called when listening state changes
     public var onListeningStateChange: ((Bool) -> Void)?
+
+    /// Called with a normalized microphone input level (0...1) while listening
+    public var onAudioLevelUpdate: ((Float) -> Void)?
 
     /// Whether this transcriber configures and deactivates the shared audio session itself.
     public var managesAudioSession = true
@@ -184,11 +202,39 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         errorMessage = nil
         onListeningStateChange?(true)
 
+        // Past this point the transcriber counts as listening, so every failure has to unwind
+        // through `stopListening()`. Leaving `isListening` set would make the *next* start report a
+        // stale stop to the caller while it is still setting the new session up.
+        do {
+            try startRecognition(with: speechRecognizer)
+        } catch {
+            stopListening()
+            throw error
+        }
+    }
+
+    /// Configures the audio session, engine and recognition task for a session the caller has
+    /// already marked as listening, and which it unwinds if this throws.
+    private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
         // Configure audio session
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+            // `.default` rather than `.measurement`, which the framework documents as disabling the
+            // dynamics processing on input *and* output. On input that is the gain the level window
+            // below is calibrated against, so the orb sits still; and because the mode is a separate
+            // session property that `setCategory(.playback)` does not reset, it stays on the session
+            // afterwards and is what makes on-device TTS play back quietly. Matching `AudioRecorder`'s
+            // category and mode keeps the orb behaving the same whichever transcription path is used.
+            // `.duckOthers` is only valid on the playback categories, so it is not passed here either.
+            // Deactivated first, like `AudioRecorder` and `AudioPlayer` do, so the category is not
+            // switched underneath a session another Assist component left active. A failure here is
+            // not fatal: the category still has to be set, or recording starts on whatever the last
+            // playback left behind.
+            try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            try audioSession.setCategory(.record, mode: .default)
+            // No `.notifyOthersOnDeactivation` here: the framework documents that option as valid
+            // only when deactivating.
+            try audioSession.setActive(true)
         }
 
         // Create audio engine
@@ -215,10 +261,28 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
-        // from a background thread.
+        // from a background thread. The level's rate limit is held the same way, and the tap calls
+        // back serially, so it needs no further synchronisation.
         let capturedRequest = recognitionRequest
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+        var lastLevelEmission: TimeInterval = .zero
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
             capturedRequest.append(buffer)
+
+            let now = ProcessInfo.processInfo.systemUptime
+            guard now - lastLevelEmission >= Constants.levelInterval else { return }
+            lastLevelEmission = now
+
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let frameCount = vDSP_Length(buffer.frameLength)
+            guard frameCount > 0 else { return }
+            var meanSquare: Float = 0
+            vDSP_measqv(channelData, 1, &meanSquare, frameCount)
+            let decibels = 20 * log10(max(sqrt(meanSquare), .leastNormalMagnitude))
+            let range = Constants.powerCeiling - Constants.powerFloor
+            let level = max(0, min(1, (decibels - Constants.powerFloor) / range))
+            Task { @MainActor in
+                self?.onAudioLevelUpdate?(level)
+            }
         }
 
         // Start recognition task
@@ -228,12 +292,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             }
         }
 
-        // Start audio engine — clean up on failure so isListening/audio session stay consistent
+        // Start audio engine
         audioEngine.prepare()
         do {
             try audioEngine.start()
         } catch {
-            stopListening()
             throw TranscriberError.audioEngineError
         }
     }
@@ -263,15 +326,6 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         if wasListening {
             onListeningStateChange?(false)
         }
-    }
-
-    /// Get list of locales that support on-device speech recognition.
-    /// Nonisolated so non-main-actor callers (e.g. CarPlay settings) can read it; the
-    /// underlying Speech framework APIs are not main-actor-bound.
-    public nonisolated static var supportedLocales: [Locale] {
-        SFSpeechRecognizer.supportedLocales()
-            .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
-            .sorted { $0.identifier < $1.identifier }
     }
 
     // MARK: - Private Methods

@@ -16,6 +16,7 @@
 "common::state::standby" = "tryb czuwania";
 "common::state::unlocked" = "odblokowano";
 "common::state::yes" = "tak";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "wyłączono";
 "component::alarm_control_panel::title" = "Panel kontrolny alarmu";
 "component::alert::entity_component::_::state::idle" = "brak aktywności";
@@ -75,7 +76,7 @@
 "component::demo::entity::sensor::thermostat_mode::state::away" = "poza domem";
 "component::device_tracker::entity_component::_::state::home" = "w domu";
 "component::device_tracker::entity_component::_::state::not_home" = "poza domem";
-"component::device_tracker::title" = "Śledzenie urządzeń";
+"component::device_tracker::title" = "Lokalizator";
 "component::ecoforest::entity::sensor::status::state::off" = "wyłączono";
 "component::ecoforest::entity::sensor::status::state::on" = "włączono";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "tryb czuwania";

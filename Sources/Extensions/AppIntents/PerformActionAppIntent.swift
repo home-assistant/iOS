@@ -2,8 +2,11 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 17.0, *)
-struct PerformActionAppIntent: AppIntent {
+@available(iOS 17.0, watchOS 10.0, *)
+struct PerformActionAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit CallServiceIntent
+    static let intentClassName = "CallServiceIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.perform_action.title",
         defaultValue: "Perform action"
@@ -54,8 +57,7 @@ struct PerformActionAppIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
         guard action.serverId == server.id,
-              let server = server.getServer(),
-              let api = Current.api(for: server) else {
+              let server = server.getServer() else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
@@ -66,12 +68,13 @@ struct PerformActionAppIntent: AppIntent {
         }
 
         do {
-            let response = try await api.callServiceWithResponse(
+            let response = try await AppIntentServerAPI.callAction(
+                server: server,
                 domain: String(components[0]),
                 service: String(components[1]),
-                serviceData: payloadDict,
+                data: payloadDict,
                 returnResponse: action.supportsResponse
-            ).async()
+            )
 
             if let json = response.jsonString() {
                 return .result(value: json)

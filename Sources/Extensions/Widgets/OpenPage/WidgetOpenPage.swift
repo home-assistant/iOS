@@ -13,10 +13,10 @@ struct WidgetOpenPage: Widget {
             content: { entry in
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
+                        AnyView(WidgetEmptyStateView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
                     contents: {
-                        let showSubtitle = Current.servers.all.count > 1
+                        let showSubtitle = !entry.isPreview && Current.servers.all.count > 1
 
                         return entry.pages.map { page in
                             WidgetBasicViewModel(
@@ -32,7 +32,8 @@ struct WidgetOpenPage: Widget {
                             )
                         }
                     }(),
-                    type: .button
+                    type: .button,
+                    widgetKind: .openPage
                 )
             }
         )

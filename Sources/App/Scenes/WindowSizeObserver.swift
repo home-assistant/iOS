@@ -4,10 +4,12 @@ import UIKit
 
 final class WindowSizeObserver: NSObject {
     @objc private(set) var observedScene: UIWindowScene?
+    let activity: SceneActivity
     private var observation: NSKeyValueObservation?
 
-    init(windowScene: UIWindowScene) {
+    init(windowScene: UIWindowScene, activity: SceneActivity) {
         self.observedScene = windowScene
+        self.activity = activity
         super.init()
 
         guard Current.isCatalyst else { return }
@@ -17,10 +19,10 @@ final class WindowSizeObserver: NSObject {
     private func startObserving() {
         #if targetEnvironment(macCatalyst)
         guard #available(macCatalyst 16.0, *) else { return }
-        observation = observe(\.observedScene?.effectiveGeometry, options: [.new]) { _, change in
+        observation = observe(\.observedScene?.effectiveGeometry, options: [.new]) { [activity] _, change in
             guard let newSystemFrame = change.newValue??.systemFrame,
                   newSystemFrame.size != .zero, newSystemFrame.origin != .zero else { return }
-            ScenesWindowSizeConfig.defaultSceneLatestSystemFrame = newSystemFrame
+            ScenesWindowSizeConfig.setLatestSystemFrame(newSystemFrame, for: activity)
         }
         #endif
     }
@@ -28,33 +30,5 @@ final class WindowSizeObserver: NSObject {
     public func stopObserving() {
         observation?.invalidate()
         observation = nil
-    }
-}
-
-enum ScenesWindowSizeConfig {
-    private static let defaultSceneLatestSystemFrameDataKey = "default-scene-latest-system-frame-data"
-    private static var defaultSceneLatestSystemFrameData: Data? {
-        get {
-            prefs.data(forKey: ScenesWindowSizeConfig.defaultSceneLatestSystemFrameDataKey)
-        }
-        set {
-            prefs.set(newValue, forKey: ScenesWindowSizeConfig.defaultSceneLatestSystemFrameDataKey)
-        }
-    }
-
-    static var defaultSceneLatestSystemFrame: CGRect? {
-        get {
-            guard let savedData = defaultSceneLatestSystemFrameData else { return nil }
-            return try? JSONDecoder().decode(CGRect.self, from: savedData)
-        }
-        set {
-            if let newValue {
-                if let newData = try? JSONEncoder().encode(newValue) {
-                    defaultSceneLatestSystemFrameData = newData
-                }
-            } else {
-                defaultSceneLatestSystemFrameData = nil
-            }
-        }
     }
 }

@@ -14,7 +14,9 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 These apply to every change, even if you don't load the matching skill:
 
 - **One type per file**: each `struct`/`class`/`enum` lives in its own file named after the type — never stack multiple top-level types (especially SwiftUI `View` structs) in one file. Small `private` helper types nested inside the type are the only exception. Every SwiftUI view ships with a `#Preview`. See [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) for the full UI rules.
+- **No navigation title under an Apple-like header**: a screen whose `List` starts with `AppleLikeListTopRowHeader` already shows its title in that header, so it must not also set `.navigationTitle`. Two titles stack as the user scrolls.
 - **SwiftUI confirmations stay on the trigger**: apply `.confirmationDialog` directly to the `Button` that opens it, not to a parent `List`, `Section`, or container view. This keeps confirmation ownership local and avoids dialogs firing from unrelated controls.
+- **TestFlight gating is `Current.isTestFlight`, and always paired with an ungating PR**: `Current.isTestFlight` is the only supported way to limit a feature to beta builds — never add a bespoke flag, build setting, or `#if` for it. Every change that puts a feature behind that gate must be accompanied by a parallel draft PR that removes the gate, so shipping the feature to everyone is a one-click merge. See [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) for the full procedure.
 
 ## Skills
 
@@ -30,7 +32,7 @@ These apply to every change, even if you don't load the matching skill:
 | [`ha-ios-push-live-activities`](.agents/skills/ha-ios-push-live-activities/SKILL.md) | Implementing or fixing push notifications or Live Activities across the local-push and remote-push flows |
 | [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) | Building UI, choosing SwiftUI vs UIKit, or following the one-struct-per-file, inline-body, and `#Preview` rules |
 | [`ha-ios-testing`](.agents/skills/ha-ios-testing/SKILL.md) | Writing unit or snapshot tests, or mocking dependencies by overriding `Current` |
-| [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) | Preparing a change for commit or understanding the CI gates that must pass before merge |
+| [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) | Preparing a change for commit, gating a feature behind TestFlight, or understanding the CI gates that must pass before merge |
 | [`ha-ios-skill-maintenance`](.agents/skills/ha-ios-skill-maintenance/SKILL.md) | Adding, editing, or reorganizing these skills, or updating this router |
 
 ## Additional Resources

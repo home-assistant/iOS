@@ -230,7 +230,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// - Note: Opens settings if denied/restricted, grants immediately if already authorized,
     ///         or requests permission if not determined
     private func requestLocationPermission() {
-        switch Current.location.permissionStatus {
+        switch Current.location.permissionStatus() {
         case .denied, .restricted:
             guard locationPermissionContext != .lessSecureLocalConnection else {
                 applyLocationPermissionNeeds()

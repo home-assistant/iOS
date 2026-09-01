@@ -16,6 +16,7 @@
 "common::state::standby" = "בהמתנה";
 "common::state::unlocked" = "פתוח";
 "common::state::yes" = "כן";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "כבוי";
 "component::alarm_control_panel::title" = "לוח בקרה של אזעקה";
 "component::alert::entity_component::_::state::idle" = "מצב סרק";
@@ -252,7 +253,7 @@
 "component::sensor::title" = "חיישן";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "מצב סרק";
 "component::shelly::entity::sensor::valve_status::state::closed" = "נסגר";
-"component::shelly::selector::ble_scanner_mode::options::active" = "פעיל";
+"component::shelly::selector::ble_scanner_mode::options::active" = "פעיל (משתמש ביותר סוללה מהמכשיר, עדכונים מהירים ביותר)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "מושבת";
 "component::siren::entity_component::_::state::off" = "כבוי";
 "component::siren::entity_component::_::state::on" = "מופעל";

@@ -464,4 +464,71 @@ final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
     }
 }
 
+// MARK: - LiveActivityRegistry token reachability
+
+/// A push token only reaches Core over the webhook, so a server whose URL can't be resolved right
+/// now (connection security level rules the internal URL out, or location permission isn't "Always" so
+/// the SSID is unknown) must be filtered out and reported to the user instead of failing silently.
+@available(iOS 17.2, *)
+final class LiveActivityRegistryTokenReachabilityTests: XCTestCase {
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var previousLastKnownNetworkState: (() -> NetworkState)!
+    private var previousRefreshNetworkInformation: (() async -> Void)!
+
+    override func setUp() {
+        super.setUp()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
+        previousLastKnownNetworkState = Current.connectivity.lastKnownNetworkState
+        previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        // No SSID: the device can't tell it is on the internal network.
+        let state = NetworkState()
+        Current.connectivity.currentNetworkState = { state }
+        Current.connectivity.lastKnownNetworkState = { state }
+        Current.connectivity.refreshNetworkInformation = {}
+    }
+
+    override func tearDown() {
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        Current.connectivity.lastKnownNetworkState = previousLastKnownNetworkState
+        Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        super.tearDown()
+    }
+
+    /// An http-only internal URL under the most secure level, off the internal network, resolves to
+    /// no URL at all — the token can't be delivered.
+    private func serverWithoutResolvableURL() -> Server {
+        Server.fake(identifier: "unreachable") { info in
+            info.connection.set(address: nil, for: .external)
+            info.connection.set(address: URL(string: "http://homeassistant.local:8123")!, for: .internal)
+            info.connection.connectionAccessSecurityLevel = .mostSecure
+        }
+    }
+
+    func testServersWithResolvableWebhookURL_dropsServerWithNoActiveURL() async {
+        let reachable = Server.fake(identifier: "reachable")
+        let servers = await LiveActivityRegistry.serversWithResolvableWebhookURL([
+            reachable,
+            serverWithoutResolvableURL(),
+        ])
+        XCTAssertEqual(servers.map(\.identifier), ["reachable"])
+    }
+
+    func testServersWithResolvableWebhookURL_allUnreachable_returnsEmpty() async {
+        let servers = await LiveActivityRegistry.serversWithResolvableWebhookURL([serverWithoutResolvableURL()])
+        XCTAssertTrue(servers.isEmpty)
+    }
+
+    /// A cloudhook still works without an active URL, so such a server must not be filtered out.
+    func testServersWithResolvableWebhookURL_keepsServerWithCloudhookOnly() async {
+        let server = Server.fake(identifier: "cloudhook") { info in
+            info.connection.set(address: nil, for: .external)
+            info.connection.set(address: URL(string: "http://homeassistant.local:8123")!, for: .internal)
+            info.connection.connectionAccessSecurityLevel = .mostSecure
+            info.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/abc")!
+        }
+        let servers = await LiveActivityRegistry.serversWithResolvableWebhookURL([server])
+        XCTAssertEqual(servers.map(\.identifier), ["cloudhook"])
+    }
+}
+
 #endif

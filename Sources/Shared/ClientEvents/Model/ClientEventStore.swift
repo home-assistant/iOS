@@ -10,32 +10,52 @@ public protocol ClientEventStoreProtocol {
 
 final class ClientEventStore: ClientEventStoreProtocol {
     static var jsonCacheName = "databases/clientEvents.json"
+
+    private static let eventsCacheLimit = 1000
+    private static let trimCheckInterval = 100
+
     /// Events are recorded from every queue in the app (main, the WatchConnectivity callbacks, the
-    /// expiring-activity queue, cooperative pool tasks). Appending is a read-modify-write of one shared
-    /// file, so without this lock concurrent writers lose each other's events — and a reader landing
-    /// mid-write decodes a truncated file, which throws away the whole history.
-    private static let fileLock = NSLock()
+    /// expiring-activity queue, cooperative pool tasks). A serial queue keeps the file work off the
+    /// recording thread — the very first event ("Application Starting") is recorded during app launch.
+    private static let ioQueue = DispatchQueue(label: "io.home-assistant.client-event-store", qos: .utility)
+
+    private static var appendsSinceTrim = 0
+    private static var didConvertLegacyFile = false
+
+    private static let encoder = JSONEncoder()
+    private static let decoder = JSONDecoder()
 
     public func addEvent(_ event: ClientEvent) {
         Current.Log.verbose("Adding event: \(event.text), \(event.jsonPayload)")
-        let eventsCacheLimit = 1000
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        var events = readEvents()
-        events.append(event)
-        if events.count > eventsCacheLimit {
-            events = events.suffix(eventsCacheLimit)
+        Self.ioQueue.async { [self] in
+            convertLegacyFileIfNeeded()
+            guard let line = encodedLine(for: event) else { return }
+            appendLine(line)
+
+            Self.appendsSinceTrim += 1
+            if Self.appendsSinceTrim >= Self.trimCheckInterval {
+                Self.appendsSinceTrim = 0
+                trimToCacheLimit()
+            }
         }
-        saveJSONData(events)
     }
 
     public func getEvents() -> [ClientEvent] {
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        return readEvents()
+        // Sync on the serial queue so pending `addEvent` writes are visible to this read.
+        Self.ioQueue.sync {
+            readEvents()
+        }
     }
 
-    /// Unsynchronized read; callers must hold `fileLock`.
+    public func clearAllEvents() {
+        Self.ioQueue.sync {
+            writeEvents([])
+            Self.appendsSinceTrim = 0
+            Self.didConvertLegacyFile = true
+        }
+    }
+
+    /// Unsynchronized read; callers must be on `ioQueue`.
     private func readEvents() -> [ClientEvent] {
         guard let containerURL = FileManager.default
             .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID) else {
@@ -52,33 +72,98 @@ final class ClientEventStore: ClientEventStoreProtocol {
         }
 
         let data = FileManager.default.contents(atPath: fileURL.path) ?? Data()
+        guard !data.isEmpty else { return [] }
 
-        do {
-            let clientEvents = try JSONDecoder().decode([ClientEvent].self, from: data)
-            return clientEvents
-        } catch {
-            Current.Log.error("Failed to decode client events data from cache, error: \(error)")
-            return []
+        if Self.isLegacyArray(data) {
+            do {
+                return try Self.decoder.decode([ClientEvent].self, from: data)
+            } catch {
+                Current.Log.error("Failed to decode client events data from cache, error: \(error)")
+                return []
+            }
+        }
+
+        return data.split(separator: UInt8(ascii: "\n")).compactMap { line in
+            do {
+                return try Self.decoder.decode(ClientEvent.self, from: Data(line))
+            } catch {
+                Current.Log.error("Failed to decode client event line, error: \(error)")
+                return nil
+            }
         }
     }
 
-    public func clearAllEvents() {
-        Self.fileLock.lock()
-        defer { Self.fileLock.unlock() }
-        saveJSONData([])
+    /// A file written before events were stored one per line holds a single JSON array, and is
+    /// rewritten once so appends never mix the two formats.
+    private func convertLegacyFileIfNeeded() {
+        guard !Self.didConvertLegacyFile else { return }
+        Self.didConvertLegacyFile = true
+
+        let fileURL = AppConstants.clientEventsFile
+        guard let data = FileManager.default.contents(atPath: fileURL.path), Self.isLegacyArray(data) else {
+            return
+        }
+        writeEvents(readEvents())
     }
 
-    /// Unsynchronized write; callers must hold `fileLock`.
-    private func saveJSONData(_ events: [ClientEvent]) {
+    private static func isLegacyArray(_ data: Data) -> Bool {
+        data.first == UInt8(ascii: "[")
+    }
+
+    private func encodedLine(for event: ClientEvent) -> Data? {
         do {
-            let fileURL = AppConstants.clientEventsFile
-            let jsonData = try JSONEncoder().encode(events)
+            var line = try Self.encoder.encode(event)
+            line.append(UInt8(ascii: "\n"))
+            return line
+        } catch {
+            Current.Log.error("Error encoding client event: \(error)")
+            return nil
+        }
+    }
+
+    /// Unsynchronized append; callers must be on `ioQueue`. `O_APPEND` keeps a write from another
+    /// process in the app group from overwriting ours.
+    private func appendLine(_ line: Data) {
+        let fileURL = AppConstants.clientEventsFile
+        let descriptor = open(fileURL.path, O_WRONLY | O_APPEND | O_CREAT, 0o644)
+        guard descriptor >= 0 else {
+            Current.Log.error("Error opening client events file for append, errno \(errno)")
+            return
+        }
+        defer { close(descriptor) }
+
+        // One `write` call, never a loop: `O_APPEND` makes a single write atomic against the other
+        // processes in the app group, and resuming a partial one would let their bytes land in the
+        // middle of this event. A short write drops the event instead of corrupting its neighbours.
+        let written = line.withUnsafeBytes { buffer in
+            buffer.baseAddress.map { write(descriptor, $0, buffer.count) } ?? 0
+        }
+        if written != line.count {
+            Current.Log.error("Error appending client event, wrote \(written) of \(line.count), errno \(errno)")
+        }
+    }
+
+    /// Unsynchronized write; callers must be on `ioQueue`.
+    private func writeEvents(_ events: [ClientEvent]) {
+        let fileURL = AppConstants.clientEventsFile
+        var data = Data()
+        for event in events {
+            guard let line = encodedLine(for: event) else { continue }
+            data.append(line)
+        }
+        do {
             // Atomic: the app group file is also read by the other processes sharing it (widgets, the
-            // watch app), which must never observe a half-written array.
-            try jsonData.write(to: fileURL, options: .atomic)
-            Current.Log.verbose("JSON saved successfully for client events, file URL: \(fileURL.absoluteString)")
+            // watch app), which must never observe a half-written file.
+            try data.write(to: fileURL, options: .atomic)
         } catch {
-            Current.Log.error("Error saving JSON for client events: \(error)")
+            Current.Log.error("Error saving client events: \(error)")
         }
+    }
+
+    /// Unsynchronized rewrite; callers must be on `ioQueue`.
+    private func trimToCacheLimit() {
+        let events = readEvents()
+        guard events.count > Self.eventsCacheLimit else { return }
+        writeEvents(Array(events.suffix(Self.eventsCacheLimit)))
     }
 }

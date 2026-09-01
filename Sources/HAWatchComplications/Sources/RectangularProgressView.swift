@@ -39,26 +39,80 @@ public struct RectangularProgressView: View {
     let maxLabel: String?
     let valueLabel: String?
     let tint: Color
+    /// The complication's configured text color, or nil to pick automatically for contrast against
+    /// the pill. The value rides the bar rather than sitting in the text stack, so it is the one text
+    /// slot that would otherwise ignore the color the user set for it.
+    let valueColor: Color?
 
-    public init(fraction: Double, minLabel: String?, maxLabel: String?, valueLabel: String?, tint: Color) {
+    public init(
+        fraction: Double,
+        minLabel: String?,
+        maxLabel: String?,
+        valueLabel: String?,
+        tint: Color,
+        valueColor: Color? = nil
+    ) {
         self.fraction = fraction
         self.minLabel = minLabel
         self.maxLabel = maxLabel
         self.valueLabel = valueLabel
         self.tint = tint
+        self.valueColor = valueColor
     }
 
     @Environment(\.widgetRenderingMode) private var renderingMode
 
-    /// Full color: black on light tints, white on dark ones. In accented (tinted) mode the pill fill
-    /// is placed in the accent group and the text is left in the default group, so the system renders
-    /// them in two distinct tint shades; the explicit color is ignored there.
+    /// Full color: the complication's own text color when it has one, else black on light tints and
+    /// white on dark ones. In accented (tinted) mode the pill fill is placed in the accent group and
+    /// the text is left in the default group, so the system renders them in two distinct tint shades;
+    /// the explicit color is ignored there.
     private var valueTextColor: Color {
         guard renderingMode == .fullColor else { return .white }
+        return Self.valueLabelColor(configured: valueColor, tint: tint)
+    }
+
+    /// The pill label's color in full color: the configured text color wins, otherwise the shade that
+    /// reads best on the tint. Pure and static so the choice is testable without rendering a face.
+    public static func valueLabelColor(configured: Color?, tint: Color) -> Color {
+        if let configured { return configured }
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
         return (Luminance.red * r + Luminance.green * g + Luminance.blue * b) > Luminance.lightThreshold
             ? .black : .white
+    }
+
+    /// The value pill riding the bar. Full color and accented both draw the text over the fill, which
+    /// the system colours as two separate groups. Vibrant (watch night mode, iPhone Lock Screen)
+    /// desaturates everything into a single shade, so the value is rendered by punching the glyphs out
+    /// of the pill and revealing the pill’s backing capsule instead of drawing tinted text over the fill.
+    @ViewBuilder
+    private func thumb(_ valueLabel: String) -> some View {
+        let label = Text(verbatim: valueLabel)
+            .font(.body.bold())
+            .lineLimit(1)
+            .padding(.vertical, Layout.thumbVerticalPadding)
+            .padding(.horizontal, Layout.thumbHorizontalPadding)
+
+        if renderingMode == .vibrant {
+            ZStack {
+                // Backs the pill so the bar passing behind it can't show through the knocked-out glyphs.
+                Capsule().fill(.black)
+                ZStack {
+                    Capsule().fill(tint)
+                    label
+                        .foregroundStyle(.white)
+                        .blendMode(.destinationOut)
+                }
+                .compositingGroup()
+            }
+        } else {
+            ZStack {
+                Capsule()
+                    .fill(tint)
+                    .widgetAccentable()
+                label.foregroundStyle(valueTextColor)
+            }
+        }
     }
 
     public var body: some View {
@@ -70,34 +124,24 @@ public struct RectangularProgressView: View {
                     Capsule().fill(tint.opacity(Layout.trackOpacity)).frame(height: Self.barHeight)
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
-                        ZStack {
-                            Capsule()
-                                .fill(tint)
-                                .widgetAccentable()
-                            Text(verbatim: valueLabel)
-                                .font(.body.bold())
-                                .foregroundStyle(valueTextColor)
-                                .lineLimit(1)
-                                .padding(.vertical, Layout.thumbVerticalPadding)
-                                .padding(.horizontal, Layout.thumbHorizontalPadding)
-                        }
-                        // Fit the value: grow past the minimum pill width so it never crops, keeping a
-                        // fixed height. `fixedSize` sizes to the text on every platform (no async
-                        // measurement), and the measured width keeps the thumb clamped inside the bar.
-                        .frame(height: Self.thumbHeight)
-                        .frame(minWidth: Self.thumbWidth)
-                        .fixedSize(horizontal: true, vertical: false)
-                        .background(
-                            GeometryReader { proxy in
-                                Color.clear
-                                    .onAppear { thumbWidth = proxy.size.width }
-                                    .onChange(of: proxy.size.width) { thumbWidth = $0 }
-                            }
-                        )
-                        .position(
-                            x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
-                            y: Self.thumbHeight / 2
-                        )
+                        thumb(valueLabel)
+                            // Fit the value: grow past the minimum pill width so it never crops, keeping a
+                            // fixed height. `fixedSize` sizes to the text on every platform (no async
+                            // measurement), and the measured width keeps the thumb clamped inside the bar.
+                            .frame(height: Self.thumbHeight)
+                            .frame(minWidth: Self.thumbWidth)
+                            .fixedSize(horizontal: true, vertical: false)
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.clear
+                                        .onAppear { thumbWidth = proxy.size.width }
+                                        .onChange(of: proxy.size.width) { thumbWidth = $0 }
+                                }
+                            )
+                            .position(
+                                x: min(max(width * clamped, thumbWidth / 2), width - thumbWidth / 2),
+                                y: Self.thumbHeight / 2
+                            )
                     }
                 }
                 .frame(height: Self.thumbHeight)
@@ -122,6 +166,21 @@ public struct RectangularProgressView: View {
     RectangularProgressView(fraction: 0.68, minLabel: "0", maxLabel: "100", valueLabel: "68", tint: .green)
         .frame(width: 180)
         .padding()
+}
+
+// The complication's own text color applies to the value riding the bar, not just the text stack.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Custom value color") {
+    RectangularProgressView(
+        fraction: 0.68,
+        minLabel: "0",
+        maxLabel: "100",
+        valueLabel: "68",
+        tint: .green,
+        valueColor: .yellow
+    )
+    .frame(width: 180)
+    .padding()
 }
 
 // Fraction edge cases: the thumb stays inside the bar at the extremes, and out-of-range values clamp.

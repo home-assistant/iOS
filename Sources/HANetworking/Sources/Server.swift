@@ -372,6 +372,17 @@ public extension Server {
         }
         return url
     }
+
+    /// Returns the webhook url evaluated against the most recently known network information,
+    /// without refreshing it first. Only for callers that already refreshed, or that cannot await —
+    /// prefer the async `webhookURL()`.
+    func webhookURLUsingLastKnownNetworkState() -> URL? {
+        var url: URL?
+        update { info in
+            url = info.connection.evaluateWebhookURL()
+        }
+        return url
+    }
 }
 
 #if !os(watchOS)

@@ -17,90 +17,99 @@ public extension HAEntity {
     func getIcon() -> UIImage? {
         let image = getMDI()
         #if os(iOS)
-        return image.carPlayIcon(color: carPlayIconColor())
+        return image.carPlayIcon(color: stateIconColor())
         #else
         return image.image(ofSize: .init(width: 50, height: 50), color: nil)
         #endif
     }
 
-    func carPlayIconColor(activeColorOverride: UIColor? = nil) -> UIColor? {
-        let normalizedState = state.lowercased()
-        if Domain.activeStates.map(\.rawValue).contains(normalizedState),
-           let activeColorOverride {
-            return activeColorOverride
-        }
-
-        let colorAttributes = EntityColorAttributesParser.parse(from: attributes.dictionary)
-        guard let domain = Domain(rawValue: domain) else {
-            return fallbackCarPlayIconColor(
-                for: normalizedState,
-                activeColorOverride: activeColorOverride
-            )
-        }
-
-        return UIColor(
+    /// The icon color home-assistant/frontend gives this entity — its domain's, device class's and
+    /// state's `--state-…` palette, or a light's own color. Shared by CarPlay and the watch so both
+    /// read the same as the widgets and the frontend itself.
+    ///
+    /// - Parameter customColor: a color the user picked for this entity on the calling surface. As
+    ///   in the frontend's tile card, it only applies while the entity is active.
+    func stateIconColor(customColor: UIColor? = nil) -> UIColor? {
+        UIColor(
             EntityIconColorProvider.iconColor(
                 domain: domain,
-                state: normalizedState,
-                colorMode: colorAttributes.colorMode,
-                rgbColor: colorAttributes.rgbColor,
-                hsColor: colorAttributes.hsColor
+                state: state.lowercased(),
+                attributes: attributes.dictionary,
+                customColor: customColor.map(Color.init)
             )
         )
     }
 
-    /// Returns the appropriate icon for the entity based on its state, without applying color
-    /// This is useful when you want to apply a custom color to a state-based icon
-    func getMDI() -> MaterialDesignIcons {
-        var image = MaterialDesignIcons.bookmarkIcon
-
+    /// Returns the appropriate icon for the entity based on its state, without applying color.
+    /// This is useful when you want to apply a custom color to a state-based icon.
+    ///
+    /// When `componentIcons` (the backend `entity_component` map from `frontend/get_icons`) is
+    /// provided, the icon is resolved the way the frontend does via `EntityIconResolver`, falling
+    /// back to the app's hand-maintained mapping only when the map has nothing for the entity. With
+    /// no map it keeps the legacy behavior, so callers without one are unaffected.
+    func getMDI(componentIcons: EntityComponentIconsMap? = nil) -> MaterialDesignIcons {
         if let icon = attributes.icon?.normalizingIconString {
-            image = MaterialDesignIcons(named: icon)
-        } else {
-            guard let domain = Domain(rawValue: domain) else { return image }
-            switch domain {
-            case .button:
-                image = getButtonIcon()
-            case .cover:
-                image = getCoverIcon()
-            case .inputBoolean:
-                image = getInputBooleanIcon()
-            case .inputButton:
-                image = .gestureTapButtonIcon
-            case .light:
-                image = .lightbulbIcon
-            case .lock:
-                image = getLockIcon()
-            case .scene:
-                image = .paletteOutlineIcon
-            case .script:
-                image = .scriptTextOutlineIcon
-            case .switch:
-                image = getSwitchIcon()
-            case .sensor:
-                image = .eyeIcon
-            case .binarySensor:
-                image = .eyeIcon
-            case .zone:
-                image = .mapIcon
-            case .person:
-                image = .accountIcon
-            case .camera:
-                image = .cameraIcon
-            case .fan:
-                image = .fanIcon
-            case .automation:
-                image = .homeAutomationIcon
-            case .todo:
-                image = .checkboxMarkedOutlineIcon
-            case .climate:
-                image = .homeThermometerOutlineIcon
-            default:
-                image = domain.icon(deviceClass: deviceClass.rawValue, state: Domain.State(rawValue: state))
-            }
+            return MaterialDesignIcons(named: icon)
         }
 
-        return image
+        let fallback = hardcodedMDI()
+
+        if let componentIcons,
+           let resolved = EntityIconResolver.icon(
+               domain: domain,
+               deviceClass: attributes.dictionary["device_class"] as? String,
+               state: state,
+               attributes: attributes.dictionary,
+               map: componentIcons
+           ) {
+            return MaterialDesignIcons(serversideValueNamed: resolved, fallback: fallback)
+        }
+
+        return fallback
+    }
+
+    private func hardcodedMDI() -> MaterialDesignIcons {
+        guard let domain = Domain(rawValue: domain) else { return .bookmarkIcon }
+        switch domain {
+        case .button:
+            return getButtonIcon()
+        case .cover:
+            return getCoverIcon()
+        case .inputBoolean:
+            return getInputBooleanIcon()
+        case .inputButton:
+            return .gestureTapButtonIcon
+        case .light:
+            return .lightbulbIcon
+        case .lock:
+            return getLockIcon()
+        case .scene:
+            return .paletteOutlineIcon
+        case .script:
+            return .scriptTextOutlineIcon
+        case .switch:
+            return getSwitchIcon()
+        case .sensor:
+            return .eyeIcon
+        case .binarySensor:
+            return .radioboxBlankIcon
+        case .zone:
+            return .mapIcon
+        case .person:
+            return .accountIcon
+        case .camera:
+            return .cameraIcon
+        case .fan:
+            return .fanIcon
+        case .automation:
+            return .homeAutomationIcon
+        case .todo:
+            return .checkboxMarkedOutlineIcon
+        case .climate:
+            return .homeThermometerOutlineIcon
+        default:
+            return domain.icon(deviceClass: deviceClass.rawValue, state: Domain.State(rawValue: state))
+        }
     }
 
     private func getInputBooleanIcon() -> MaterialDesignIcons {
@@ -222,20 +231,5 @@ public extension HAEntity {
 
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
-    }
-
-    private func fallbackCarPlayIconColor(
-        for normalizedState: String,
-        activeColorOverride: UIColor?
-    ) -> UIColor {
-        if Domain.problemStates.map(\.rawValue).contains(normalizedState) {
-            return .red
-        }
-
-        if Domain.activeStates.map(\.rawValue).contains(normalizedState) {
-            return activeColorOverride ?? AppConstants.lighterTintColor
-        }
-
-        return .gray
     }
 }

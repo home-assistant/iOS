@@ -24,6 +24,8 @@ public enum BackgroundTask: String {
     case pushLocationRequest = "push-location-request"
     case remindersSync = "reminders-sync"
     case legacyModelCleanup = "legacy-model-cleanup"
+    case focusFilterSensorUpdate = "focus-filter-sensor-update"
+    case watchMirrorPush = "watch-mirror-push"
 }
 
 public enum BackgroundTaskError: Error {

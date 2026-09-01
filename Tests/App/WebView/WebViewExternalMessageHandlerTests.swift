@@ -226,6 +226,45 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertTrue(mockWebViewController.overlayedController is UIHostingController<AssistView>)
     }
 
+    @MainActor func testHandleExternalMessageShowAssistZoomsOutOfAnchorWhenAvailable() throws {
+        guard #available(iOS 18.0, *) else {
+            throw XCTSkip("Zoom transitions require iOS 18")
+        }
+        mockWebViewController.assistZoomAnchorView = AssistZoomAnchorView(frame: .zero)
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertNotNil(controller.preferredTransition)
+        XCTAssertEqual(controller.modalPresentationStyle, .fullScreen)
+    }
+
+    @MainActor func testHandleExternalMessageShowAssistCrossDissolvesWithoutAnchor() throws {
+        mockWebViewController.assistZoomAnchorView = nil
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertEqual(controller.modalTransitionStyle, .crossDissolve)
+        if #available(iOS 18.0, *) {
+            XCTAssertNil(controller.preferredTransition)
+        }
+    }
+
     @MainActor func testHandleExternalMessageOpenVoiceDeviceSettingsShowsSettings() {
         let coordinator = MockAppCoordinator()
         let assistSettingsShown = expectation(description: "showAssistSettings called")

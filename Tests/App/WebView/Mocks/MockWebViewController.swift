@@ -12,6 +12,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var server: Server = ServerFixture.standard
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
+    var assistZoomAnchorView: UIView?
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false
@@ -34,6 +35,13 @@ final class MockWebViewController: WebViewControllerProtocol {
     var presentAlertControllerCalled = false
     var shownBannerRequests = [BannerRequest]()
     var hiddenBannerIDs = [String]()
+    var handleExternalAuthFailureCalled = false
+    var lastExternalAuthFailure: Error?
+    var handleExternalAuthFailureExpectation: XCTestExpectation?
+    var handleFrontendRestoredFromPageCacheCalled = false
+    var showLoggedOutStateCalled = false
+    var showLoggedOutStateExpectation: XCTestExpectation?
+    var openInBrowserCalled = false
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -57,6 +65,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func goForward() {
         // Simulate going forward
+    }
+
+    func openInBrowser() {
+        openInBrowserCalled = true
     }
 
     func styleUI() {
@@ -89,6 +101,21 @@ final class MockWebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
+    }
+
+    func handleFrontendRestoredFromPageCache() {
+        handleFrontendRestoredFromPageCacheCalled = true
+    }
+
+    func handleExternalAuthFailure(error: Error) {
+        handleExternalAuthFailureCalled = true
+        lastExternalAuthFailure = error
+        handleExternalAuthFailureExpectation?.fulfill()
+    }
+
+    func showLoggedOutState() {
+        showLoggedOutStateCalled = true
+        showLoggedOutStateExpectation?.fulfill()
     }
 
     func updateImprovEntryView(show: Bool) {

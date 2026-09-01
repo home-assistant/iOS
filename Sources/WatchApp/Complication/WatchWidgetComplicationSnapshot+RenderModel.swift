@@ -32,7 +32,7 @@ extension WatchWidgetComplicationSnapshot {
             showsValue: options.showValue,
             bottomText: options.bottomText ?? "",
             showsBottomText: options.showBottomText ?? false,
-            tint: Self.color(hex: options.tint ?? tint) ?? .accentColor,
+            tint: Self.color(hex: options.tint ?? tint) ?? .complicationDefaultTint,
             textColor: Self.color(hex: options.textColor),
             bottomTextColor: Self.color(hex: options.bottomTextColor)
         )

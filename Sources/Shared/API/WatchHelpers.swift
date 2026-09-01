@@ -214,6 +214,11 @@ public extension HomeAssistantAPI {
             Current.Log.warning("Watch reload requested but watch not paired or app not installed")
             return .watchUnavailable
         }
+        // Current watch builds read complications from the database mirror and ignore the context
+        // keys below, so the reload has to travel that way too — and, once the rows land, ask the
+        // watch to fetch their values and re-render. Without this the button only refreshed watches
+        // old enough to still read the context.
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
         let context = await HAWatchConnectivity.Context(content: watchContext())
         do {
             try syncRespectingSizeLimit(context)
@@ -244,7 +249,7 @@ public extension HomeAssistantAPI {
             HomeAssistantAPI.syncWatchContext()
             #else
             // in case the user updated just the complication's metadata, force a refresh
-            WebhookResponseUpdateComplications.updateComplications()
+            NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
             #endif
 
             return .value(())
@@ -268,17 +273,29 @@ public enum WatchMirrorPushCoordinator {
     /// share the same source of truth.
     public enum Reason: String, CaseIterable {
         case databaseUpdated
+        /// Complication data changed on its own — e.g. the server re-rendered a legacy complication's
+        /// templates. Delivered like any other change; the watch rebuilds its faces when it applies
+        /// the mirror.
         case complicationChanged
+        /// The user created, edited, deleted or reordered a complication. Delivered *and* followed by
+        /// a complication refresh request (see `WatchComplicationRefreshRequest`), so the face shows
+        /// the change right after Save instead of at the watch's next periodic refresh. Kept apart
+        /// from `complicationChanged` because that request spends one of the watch's budgeted
+        /// background wakes, which belongs to a user action rather than to routine data flow.
+        case complicationSaved
         case serversChanged
         case watchConfigChanged
+        case notificationSnoozeActionsChanged
 
         /// Human-readable text used in logs and client events.
         public var logDescription: String {
             switch self {
             case .databaseUpdated: return "database updated"
             case .complicationChanged: return "complication changed"
+            case .complicationSaved: return "complication saved"
             case .serversChanged: return "servers changed"
             case .watchConfigChanged: return "watch config changed"
+            case .notificationSnoozeActionsChanged: return "notification snooze actions changed"
             }
         }
     }
@@ -289,10 +306,32 @@ public enum WatchMirrorPushCoordinator {
     private static let queue = DispatchQueue(label: AppConstants.BundleID + ".watchMirrorPush")
     private static var pendingWork: DispatchWorkItem?
     private static var lastPushedData: Data?
+    /// Whether any trigger coalesced into the pending push was a complication change, so the watch is
+    /// told to re-render once it has the new rows. Tracked separately from the push's `reason`, which
+    /// is only the newest trigger: a complication save followed by an unrelated trigger within the
+    /// debounce window would otherwise silently lose its refresh.
+    private static var pendingComplicationRefresh = false
+
+    private static let peerMirrorVersionKey = "watchMirrorPeerVersion"
+
+    /// The mirror version the paired watch advertised on its most recent sync request, persisted so
+    /// proactive pushes keep serving the right fidelity across launches. Defaults to legacy until a
+    /// versioned request arrives, and is overwritten by *every* request — including version-less
+    /// ones — so pairing an older watch drops back to the legacy payload it can decode.
+    public static var peerMirrorVersion: Int {
+        get {
+            let stored = UserDefaults.standard.integer(forKey: peerMirrorVersionKey)
+            return stored == 0 ? WatchDatabaseMirror.legacyVersion : stored
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: peerMirrorVersionKey)
+        }
+    }
 
     /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
     public static func schedule(reason: Reason) {
         queue.async {
+            pendingComplicationRefresh = pendingComplicationRefresh || reason == .complicationSaved
             pendingWork?.cancel()
             let work = DispatchWorkItem { push(reason: reason) }
             pendingWork = work
@@ -300,52 +339,122 @@ public enum WatchMirrorPushCoordinator {
         }
     }
 
-    /// Clear the de-dup cache so the next `schedule` pushes even if the snapshot is unchanged. Used
-    /// after a failed transfer and by tests.
+    /// Digests of the tables the watch is believed to hold, from the last transfer this coordinator
+    /// handed off. Used to omit unchanged tables from the next push: a full-reference snapshot is
+    /// megabytes, and pushing all of it on every trigger saturates the WatchConnectivity link —
+    /// starving the interactive chunked pull, whose sends then fail as "not immediately reachable".
+    /// Cleared whenever a transfer fails, so the next push is complete again.
+    ///
+    /// Safe to be wrong: the watch adopts digests only for tables a payload actually carried, so a
+    /// push it never applied leaves its stored digests untouched and its next pull asks for the
+    /// tables it is really missing.
+    private static var lastPushedDigests: [String: String] = [:]
+
+    /// Clear the de-dup caches so the next `schedule` pushes a complete snapshot even if unchanged.
+    /// Used after a failed transfer and by tests.
     public static func reset() {
-        queue.async { lastPushedData = nil }
+        queue.async {
+            lastPushedData = nil
+            lastPushedDigests = [:]
+        }
     }
 
     private static func push(reason: Reason) {
+        // The debounce commonly fires after its trigger's own lifetime has ended — e.g. a background
+        // URLSession or WatchConnectivity wake — so the snapshot read and transfer hand-off run under
+        // a background task assertion, keeping the process alive instead of letting it be frozen
+        // mid-read holding the app-group SQLite file lock (0xdead10cc).
+        Current.backgroundTask(withName: BackgroundTask.watchMirrorPush.rawValue) { _ -> Promise<Void> in
+            performPush(reason: reason)
+            return .value(())
+        }.cauterize()
+    }
+
+    private static func performPush(reason: Reason) {
+        // Consumed up front: whether the watch gets asked to re-render is decided per push, and a
+        // failed one leaves the ask to the next push rather than firing against data that never landed.
+        let refreshesComplications = pendingComplicationRefresh
+        pendingComplicationRefresh = false
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
             return
         }
+        // Serve the fidelity the paired watch advertised on its last sync request; a full-reference
+        // payload always travels compressed (and a legacy watch is never sent one — it couldn't
+        // decode the compressed bytes, let alone want the unfiltered tables).
+        let version = peerMirrorVersion
+        let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
         let data: Data
         let digests: [String: String]
+        let carriedKeys: Set<String>
         do {
-            let snapshot = try WatchDatabaseMirror.snapshot()
-            data = try snapshot.encodeForWatch()
+            let snapshot = try WatchDatabaseMirror.snapshot(version: version)
             digests = snapshot.tableDigests()
+            // Carry only what changed since the last transfer, the same way the watch-initiated
+            // pull does — a push that repeats the whole reference database would monopolize the
+            // link every time anything changes.
+            let payload = snapshot.omittingTables(matching: lastPushedDigests, currentDigests: digests)
+            carriedKeys = payload.carriedDigestKeys
+            guard !carriedKeys.isEmpty else {
+                Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): no table changed")
+                // Nothing to send, but the watch already holds the complications — let it re-render now.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
+                return
+            }
+            let encoded = try payload.encodeForWatch()
+            data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
         } catch {
             Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
             Current.clientEventStore.addEvent(.init(
                 text: "Watch mirror push failed to build (\(reason.logDescription)): \(error.localizedDescription)",
                 type: .database
             ))
+            // Nothing was sent, so keep the ask for the next push rather than dropping it.
+            pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
             return
         }
         if data == lastPushedData {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): unchanged")
+            if refreshesComplications { WatchComplicationRefreshRequest.send() }
             return
         }
         lastPushedData = data
-        // The digests travel in the file-transfer metadata so the watch can store them after
-        // applying this full mirror — keeping its next delta sync request accurate.
+        // Omitted tables matched these digests already, so the whole map describes what the watch
+        // is believed to hold once this payload lands.
+        lastPushedDigests = digests
+        // The digests travel in the file-transfer metadata so the watch can store them — for the
+        // tables this payload carried — keeping its next delta sync request accurate.
+        var metadata: [String: Any] = [WatchDatabaseMirror.digestsKey: digests]
+        if compressed {
+            metadata[WatchDatabaseMirror.compressedKey] = true
+        }
         Communicator.shared.transfer(HAWatchConnectivity.Blob(
             identifier: WatchDatabaseMirror.blobIdentifier,
             content: data,
-            metadata: [WatchDatabaseMirror.digestsKey: digests]
+            metadata: metadata
         )) { result in
-            if case let .failure(error) = result {
+            switch result {
+            case .success:
+                // The transfer completes on delivery, so the watch now holds the new complication
+                // rows: this is the moment it can be told to fetch their values and re-render, rather
+                // than waiting for its next periodic refresh.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
+            case let .failure(error):
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
-                queue.async { lastPushedData = nil }
+                // The watch got nothing, so drop both beliefs: the next push rebuilds in full.
+                queue.async {
+                    lastPushedData = nil
+                    lastPushedDigests = [:]
+                    // The rows never landed, so re-arm the ask for the push that carries them.
+                    pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
+                }
             }
         }
         Current.clientEventStore.addEvent(.init(
-            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes) — \(reason.logDescription)",
+            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes, "
+                + "\(carriedKeys.sorted().joined(separator: "+"))) — \(reason.logDescription)",
             type: .database,
-            payload: ["reason": reason.rawValue, "bytes": data.count]
+            payload: ["reason": reason.rawValue, "bytes": data.count, "tables": carriedKeys.sorted()]
         ))
     }
 }

@@ -57,9 +57,28 @@ public final class WatchUserDefaults {
 
     // MARK: - Database mirror digests (delta sync)
 
-    /// Digest map issued by the phone with the last applied database mirror. Opaque to the watch —
-    /// stored verbatim and echoed on the next sync request. `nil` until the first sync (the phone
-    /// then sends the full snapshot).
+    /// Adopt the phone's digests for the tables a payload actually carried, keeping the stored
+    /// values for every other table.
+    ///
+    /// The phone issues its full current digest map with each payload, but a payload may omit
+    /// tables — a delta sync, a delta push, or a table the phone declined to send. Adopting a
+    /// digest for data the watch did not receive would claim it holds rows it does not, and the
+    /// omission would then repeat on every future sync. Merging only the carried keys keeps the
+    /// stored map an honest description of what is actually in the local database.
+    public func mergeDatabaseMirrorDigests(_ digests: [String: String]?, carrying keys: Set<String>) {
+        guard let digests, !keys.isEmpty else { return }
+        var merged = databaseMirrorDigests ?? [:]
+        for key in keys {
+            // A carried table with no digest (an older phone, or a read the phone couldn't hash)
+            // drops the stored entry so the table is requested again rather than assumed current.
+            merged[key] = digests[key]
+        }
+        databaseMirrorDigests = merged
+    }
+
+    /// Digest map describing the mirrored tables currently in the local database. Opaque to the
+    /// watch — the values come from the phone and are echoed on the next sync request. `nil` until
+    /// the first sync (the phone then sends the full snapshot).
     public var databaseMirrorDigests: [String: String]? {
         get { userDefaults.dictionary(forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)
             as? [String: String]

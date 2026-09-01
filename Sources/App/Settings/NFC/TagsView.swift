@@ -17,6 +17,7 @@ struct TagsView: View {
             }
         }
         .navigationTitle(L10n.Tags.title)
+        .listTopContentMargin()
     }
 }
 

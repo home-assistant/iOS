@@ -39,6 +39,9 @@ struct CornerComplicationSnapshotTests {
             ("zero-fraction", .sample(value: "0%", fraction: 0)),
             ("full-fraction", .sample(value: "100%", fraction: 1)),
             ("custom-text-color", .sample(textColor: .yellow)),
+            // The rain-sparkline recipe: an icon plus a block-element bar graph, which only reads as a
+            // graph while its cells stay flat, abutting and all on screen.
+            ("icon-block-sparkline", .sample(value: "▁▂▃▄▅▆▇█", title: nil, fraction: nil)),
         ]
     }
 }

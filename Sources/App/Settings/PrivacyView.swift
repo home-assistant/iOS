@@ -45,6 +45,7 @@ struct PrivacyView: View {
                 }
             }
         }
+        .listTopContentMargin()
     }
 }
 

@@ -6,6 +6,9 @@ enum WebViewEmptyStateStyle: Equatable {
     /// actions as `.disconnected`, with a friendlier header and greeting.
     case inFlight
     case unauthenticated
+    /// The user signed out from the frontend. Same recovery action as `.unauthenticated`, with copy
+    /// that reads as a deliberate log out rather than an expired session.
+    case loggedOut
     case recoveredServerNeedingReauthentication
 
     enum HeaderAccessory {
@@ -22,6 +25,8 @@ enum WebViewEmptyStateStyle: Equatable {
             L10n.FlightGreetings.EmptyState.title
         case .unauthenticated:
             L10n.Unauthenticated.Message.title
+        case .loggedOut:
+            L10n.WebView.EmptyState.LoggedOut.title
         case .recoveredServerNeedingReauthentication:
             L10n.Onboarding.ServerImport.Reauthenticate.title
         }
@@ -35,6 +40,8 @@ enum WebViewEmptyStateStyle: Equatable {
             L10n.FlightGreetings.EmptyState.body
         case .unauthenticated:
             L10n.Unauthenticated.Message.body
+        case .loggedOut:
+            L10n.WebView.EmptyState.LoggedOut.body
         case .recoveredServerNeedingReauthentication:
             ""
         }
@@ -55,6 +62,8 @@ enum WebViewEmptyStateStyle: Equatable {
             L10n.WebView.EmptyState.retryButton
         case .unauthenticated:
             L10n.WebView.EmptyState.reauthenticateButton
+        case .loggedOut:
+            L10n.WebView.EmptyState.LoggedOut.loginButton
         case .recoveredServerNeedingReauthentication:
             L10n.Onboarding.ServerImport.Reauthenticate.continueButton
         }
@@ -62,7 +71,7 @@ enum WebViewEmptyStateStyle: Equatable {
 
     var secondaryButtonTitle: String {
         switch self {
-        case .disconnected, .inFlight, .unauthenticated, .recoveredServerNeedingReauthentication:
+        case .disconnected, .inFlight, .unauthenticated, .loggedOut, .recoveredServerNeedingReauthentication:
             L10n.WebView.EmptyState.openSettingsButton
         }
     }
@@ -71,7 +80,7 @@ enum WebViewEmptyStateStyle: Equatable {
         switch self {
         case .disconnected, .inFlight:
             .none
-        case .unauthenticated:
+        case .unauthenticated, .loggedOut:
             .settings
         case .recoveredServerNeedingReauthentication:
             .none
@@ -82,7 +91,7 @@ enum WebViewEmptyStateStyle: Equatable {
         switch self {
         case .disconnected, .inFlight:
             .hiddenDismiss
-        case .unauthenticated:
+        case .unauthenticated, .loggedOut:
             .none
         case .recoveredServerNeedingReauthentication:
             .settings
@@ -93,14 +102,25 @@ enum WebViewEmptyStateStyle: Equatable {
         switch self {
         case .disconnected, .inFlight:
             true
-        case .unauthenticated, .recoveredServerNeedingReauthentication:
+        case .unauthenticated, .loggedOut, .recoveredServerNeedingReauthentication:
             false
+        }
+    }
+
+    /// Whether the primary action is something the user has to do for the app to work again (rather than
+    /// a retry it could also perform itself), which the warning-colored button signals.
+    var primaryActionRequiresAttention: Bool {
+        switch self {
+        case .disconnected, .inFlight:
+            false
+        case .unauthenticated, .loggedOut, .recoveredServerNeedingReauthentication:
+            true
         }
     }
 
     var showsServerPicker: Bool {
         switch self {
-        case .disconnected, .inFlight, .unauthenticated, .recoveredServerNeedingReauthentication:
+        case .disconnected, .inFlight, .unauthenticated, .loggedOut, .recoveredServerNeedingReauthentication:
             true
         }
     }
@@ -109,6 +129,8 @@ enum WebViewEmptyStateStyle: Equatable {
         switch self {
         case .disconnected, .inFlight, .unauthenticated:
             L10n.WebView.EmptyState.reauthenticateButton
+        case .loggedOut:
+            L10n.WebView.EmptyState.LoggedOut.loginButton
         case .recoveredServerNeedingReauthentication:
             L10n.Onboarding.ServerImport.Reauthenticate.urlPickerTitle
         }

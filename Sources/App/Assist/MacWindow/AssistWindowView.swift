@@ -15,6 +15,7 @@ struct AssistWindowView: View {
                 server: server,
                 preferredPipelineId: model.preferredPipelineId,
                 autoStartRecording: model.autoStartRecording,
+                focusInputOnAppear: model.focusInputOnAppear,
                 showCloseButton: false
             )
             .id(model.revision)
@@ -28,13 +29,20 @@ final class AssistWindowModel: ObservableObject {
     @Published private(set) var server: Server?
     @Published private(set) var preferredPipelineId = ""
     @Published private(set) var autoStartRecording = false
+    @Published private(set) var focusInputOnAppear = false
     /// Bumped on each `configure` so the Assist window builds a fresh session when reused for a new request.
     @Published private(set) var revision = 0
 
-    func configure(server: Server, preferredPipelineId: String, autoStartRecording: Bool) {
+    func configure(
+        server: Server,
+        preferredPipelineId: String,
+        autoStartRecording: Bool,
+        focusInputOnAppear: Bool = false
+    ) {
         self.server = server
         self.preferredPipelineId = preferredPipelineId
         self.autoStartRecording = autoStartRecording
+        self.focusInputOnAppear = focusInputOnAppear
         revision += 1
     }
 }

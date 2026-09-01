@@ -1,6 +1,11 @@
 import Foundation
 import SwiftUI
 
+/// The design tokens every component measures itself in: type, spacing, radius, borders.
+///
+/// Frontend counterpart: the `--ha-space-*`, `--ha-border-radius-*` and typography custom properties
+/// the frontend's stylesheets read. Spacing follows the same 4pt scale, so a value transcribed from
+/// a frontend rule lands on the same token here.
 public enum DesignSystem {
     // TODO: Use HA design system font sizes when ready
     public enum Font {
@@ -34,6 +39,9 @@ public enum DesignSystem {
         public static let micro: CGFloat = 2
         public static let half: CGFloat = 4
         public static let one: CGFloat = 8
+        /// 10pt. Out of the 4pt scale, like `CornerRadius.oneAndMicro`: the frontend's tile pads and
+        /// gaps its icon-and-text row by 10px, and rounding it to 8 or 12 shifts the row height.
+        public static let oneAndMicro: CGFloat = 10
         public static let oneAndHalf: CGFloat = 12
         public static let two: CGFloat = 16
         public static let three: CGFloat = 24

@@ -68,13 +68,12 @@ extension MacWebViewTitleBar {
             static let serverPickerHorizontalPadding: CGFloat = 8
         }
 
-        // Gestures excluding no-op, already existing toolbar actions and
-        // Smart back, which is not available as a toolbar action
+        // Gestures excluding no-op and already existing toolbar actions
         private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { ![
             .none,
             .nextPage,
             .backPage,
-            .smartBack
+            .openInBrowser
         ].contains($0) }
 
         private weak var webViewController: WebViewController?
@@ -407,8 +406,8 @@ extension MacWebViewTitleBar {
                 .arrowUturnBackward
             case .nextPage:
                 .arrowUturnForward
-            case .smartBack:
-                .arrowUturnBackward
+            case .openInBrowser:
+                .safari
             case .showServersList:
                 .serverRack
             case .nextServer:

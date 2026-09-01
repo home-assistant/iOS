@@ -117,6 +117,7 @@ struct KioskSettingsView: View {
         .onAppear {
             viewModel.authenticateIfNeeded()
         }
+        .listTopContentMargin()
     }
 
     private var lockOverlay: some View {

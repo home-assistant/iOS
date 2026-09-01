@@ -40,6 +40,26 @@ public extension String {
             component.count == 1 ? "0" + component : String(component)
         }.joined(separator: ":")
     }
+
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
+    }
+
+    /// Home Assistant sometimes ships a raw translation key where a name or description is
+    /// expected; those are useless as display text, so they read as absent.
+    var nilIfEmptyUnlessTranslationKey: String? {
+        guard let value = nilIfEmpty else {
+            return nil
+        }
+        return value.hasPrefix("component.") || value.hasPrefix("component::") ? nil : value
+    }
+
+    /// Substitutes `{key}` placeholders, as used by Home Assistant's action descriptions.
+    func applying(placeholders: [String: String]) -> String {
+        placeholders.reduce(self) { value, placeholder in
+            value.replacingOccurrences(of: "{\(placeholder.key)}", with: placeholder.value)
+        }
+    }
 }
 
 public extension String? {

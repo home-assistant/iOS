@@ -32,9 +32,8 @@ struct RemindersSyncItemSnapshot: Equatable {
         self.isCompleted = todoItem.status == "completed"
         self.notes = Self.normalizedNotes(todoItem.description)
         if let raw = todoItem.dueRaw {
-            // `TodoListItem` doesn't parse every server datetime format, so fall back to parsing
-            // the raw string ourselves. An uncanonicalized string would never compare equal to
-            // the reminder's canonical one and cause an update on every sync.
+            // An uncanonicalized string would never compare equal to the reminder's canonical
+            // one and cause an update on every sync.
             if raw.contains("T"), let date = todoItem.due ?? Self.parseDueDateTime(raw) {
                 self.due = Self.canonicalDueString(from: date)
             } else {
@@ -102,26 +101,10 @@ struct RemindersSyncItemSnapshot: Equatable {
     }
 
     static func canonicalDueString(from date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        formatter.timeZone = .current
-        return formatter.string(from: date)
+        TodoListItem.canonicalDueString(from: date)
     }
 
     static func parseDueDateTime(_ string: String) -> Date? {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        if let date = formatter.date(from: string) {
-            return date
-        }
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        if let date = formatter.date(from: string) {
-            return date
-        }
-        // Datetime without timezone offset, interpreted in the current timezone
-        let localFormatter = DateFormatter()
-        localFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        localFormatter.timeZone = .current
-        return localFormatter.date(from: string)
+        TodoListItem.parseDueDateTime(string)
     }
 }

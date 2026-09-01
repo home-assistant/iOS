@@ -1,7 +1,10 @@
 import AppIntents
 import Shared
 
-struct UpdateSensorsAppIntent: AppIntent {
+struct UpdateSensorsAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit UpdateSensorsIntent
+    static let intentClassName = "UpdateSensorsIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.update_sensors.title",
         defaultValue: "Update sensors"

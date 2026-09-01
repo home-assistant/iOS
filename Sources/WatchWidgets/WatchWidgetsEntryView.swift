@@ -10,9 +10,21 @@ struct WatchWidgetsEntryView: View {
     var body: some View {
         content
             .containerBackground(for: .widget) {
-                AccessoryWidgetBackground()
+                background
             }
             .widgetURL(entry.complication?.widgetURL)
+    }
+
+    /// Only the round families get the standard accessory backdrop; in the rectangular and inline
+    /// containers it renders as a circle floating behind the content.
+    @ViewBuilder
+    private var background: some View {
+        switch entry.family {
+        case .accessoryCircular, .accessoryCorner:
+            AccessoryWidgetBackground()
+        default:
+            EmptyView()
+        }
     }
 
     @ViewBuilder

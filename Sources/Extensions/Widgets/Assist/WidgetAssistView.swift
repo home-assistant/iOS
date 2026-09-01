@@ -8,7 +8,7 @@ struct WidgetAssistView: View {
     private let tinted: Bool
 
     private var subtitle: String {
-        guard let pipeline = entry.pipeline else {
+        guard let pipeline = entry.pipelines.first else {
             return L10n.Widgets.Assist.unknownConfiguration
         }
 
@@ -29,50 +29,70 @@ struct WidgetAssistView: View {
         switch widgetFamily {
         case .accessoryCircular:
             accessoryCircular
-        default:
+                .widgetBackground(Color.clear)
+                .widgetURL(entry.widgetURL)
+        case .systemSmall:
             singleHomeScreenItem
+                .widgetBackground(Color.clear)
+                .widgetURL(entry.widgetURL)
+        default:
+            pipelinesGrid
         }
     }
 
     private var accessoryCircular: some View {
-        WidgetCircularView(icon: MaterialDesignIcons.messageProcessingOutlineIcon)
+        WidgetCircularIconView(icon: MaterialDesignIcons.messageProcessingOutlineIcon)
+    }
+
+    /// One tile per configured pipeline, each deep linking straight into its own Assist
+    /// conversation. Backgrounds and tinting are handled by `WidgetBasicContainerView`.
+    private var pipelinesGrid: some View {
+        WidgetBasicContainerView(
+            emptyViewGenerator: {
+                AnyView(WidgetEmptyStateView(message: L10n.Widgets.Assist.notConfigured))
+            },
+            contents: {
+                let showSubtitle = !entry.isPreview && Current.servers.all.count > 1
+                return entry.pipelines.map { pipeline in
+                    WidgetBasicViewModel(
+                        id: pipeline.id,
+                        title: pipeline.name,
+                        subtitle: showSubtitle ? serverName(for: pipeline) : nil,
+                        interactionType: .widgetURL(
+                            WidgetAssistEntry.widgetURL(for: pipeline, withVoice: entry.withVoice)
+                        ),
+                        icon: .messageProcessingOutlineIcon
+                    )
+                }
+            }(),
+            type: .button,
+            widgetKind: .assist
+        )
+    }
+
+    private func serverName(for pipeline: AssistPipelineEntity) -> String? {
+        let server = Current.servers.all.first { $0.identifier.rawValue == pipeline.serverId }
+            ?? Current.servers.all.first
+        return server?.info.name
     }
 
     private var singleHomeScreenItem: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            Spacer()
-            Group {
-                Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                    ofSize: .init(width: 56, height: 56),
-                    color: UIColor.haPrimary
-                ))
-                .foregroundStyle(.ultraThickMaterial)
-                VStack(spacing: .zero) {
-                    Group {
-                        Text(verbatim: L10n.Widgets.Assist.actionTitle)
-                            .font(.footnote.bold())
-                            .foregroundColor(Color(uiColor: .label))
-                        Text(subtitle)
-                            .font(.footnote.weight(.light))
-                            .lineLimit(2)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.center)
-                    }
-                    .foregroundColor(.gray)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-            }
-            .modify { view in
-                if #available(iOS 18, *) {
-                    view.widgetAccentable()
-                } else {
-                    view
-                }
-            }
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(DesignSystem.Spaces.two)
-        .background(tinted ? Color.clear : Color(uiColor: .systemBackground))
+        WidgetAssistSingleView(
+            title: L10n.Widgets.Assist.actionTitle,
+            subtitle: subtitle,
+            tinted: tinted
+        )
     }
+}
+
+#Preview {
+    WidgetAssistView(
+        entry: .init(
+            pipelines: [
+                .init(id: "preview-pipeline", serverId: "preview-server", name: "Home Assistant"),
+            ],
+            isPreview: true
+        ),
+        tinted: false
+    )
 }

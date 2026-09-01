@@ -58,8 +58,8 @@ struct SensorListView: View {
                 }
             }
             healthSensorsSection
-            Section {
-                if !viewModel.isSearching {
+            if !viewModel.isSearching {
+                Section {
                     Toggle(isOn: .init(get: {
                         viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
                     }, set: { newValue in
@@ -67,24 +67,35 @@ struct SensorListView: View {
                     })) {
                         Text(L10n.SettingsSensors.Sensors.enableAll)
                     }
-                }
-                ForEach(viewModel.filteredSensors, id: \.UniqueID) { sensor in
-                    NavigationLink(destination: SensorDetailView(sensor: sensor)) {
-                        SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
+                } header: {
+                    Text(L10n.SettingsSensors.Sensors.header)
+                } footer: {
+                    if let lastUpdate = viewModel.lastUpdateDate {
+                        Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
+                            Text(lastUpdate, style: .date) +
+                            Text(" ") +
+                            Text(lastUpdate, style: .time)
                     }
                 }
-                if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
+            }
+            ForEach(viewModel.filteredSensors, id: \.UniqueID) { sensor in
+                Section {
+                    Toggle(isOn: .init(get: {
+                        Current.sensors.isEnabled(sensor: sensor)
+                    }, set: { newValue in
+                        Current.sensors.setEnabled(newValue, for: sensor)
+                    })) {
+                        SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
+                    }
+                    NavigationLink(destination: SensorDetailView(sensor: sensor)) {
+                        Text(L10n.SettingsSensors.Sensors.configure)
+                    }
+                }
+            }
+            if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
+                Section {
                     Text(L10n.SettingsSensors.Sensors.noResults)
                         .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text(L10n.SettingsSensors.Sensors.header)
-            } footer: {
-                if let lastUpdate = viewModel.lastUpdateDate {
-                    Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
-                        Text(lastUpdate, style: .date) +
-                        Text(" ") +
-                        Text(lastUpdate, style: .time)
                 }
             }
         }
@@ -107,6 +118,7 @@ struct SensorListView: View {
                 secondaryButton: .cancel(Text(L10n.cancelLabel))
             )
         }
+        .listTopContentMargin()
     }
 
     /// Apple Health has too many sensors to mix into the list below, so they get their own screen.
@@ -120,6 +132,7 @@ struct SensorListView: View {
                 } label: {
                     HStack {
                         Text(L10n.SettingsSensors.Health.Sensors.title)
+                        LabsLabel()
                         Spacer()
                         // Inside the label rather than `.badge`, so the count sits between the
                         // title and the disclosure chevron instead of after it.

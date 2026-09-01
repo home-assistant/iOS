@@ -60,6 +60,10 @@ final class EntityAddToHandler {
                     actions.append(MacToolbarItemAction())
                 }
 
+                if domain != nil {
+                    actions.append(DeeplinkAction())
+                }
+
                 seal.fulfill(actions)
             }
         }
@@ -109,6 +113,10 @@ final class EntityAddToHandler {
                     addToMacToolbar(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
 
+                case .deeplink:
+                    openDeeplink(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
                 case .none:
                     seal.reject(EntityAddToError.unknownActionType)
                 }
@@ -126,7 +134,7 @@ final class EntityAddToHandler {
             serverId: webViewController.server.identifier.rawValue,
             type: .entity
         ))
-        let carPlaySettingsView = CarPlayConfigurationView(viewModel: viewModel)
+        let carPlaySettingsView = CarPlayConfigurationView(needsNavigationStack: true, viewModel: viewModel)
         webViewController.presentOverlayController(
             controller: carPlaySettingsView.embeddedInHostingController(),
             animated: true
@@ -141,7 +149,7 @@ final class EntityAddToHandler {
             serverId: webViewController.server.identifier.rawValue,
             type: .entity
         ))
-        let watchSettingsView = WatchConfigurationView(needsNavigationController: true, viewModel: viewModel)
+        let watchSettingsView = WatchConfigurationView(needsNavigationStack: true, viewModel: viewModel)
             .preferredColorScheme(.dark)
         let viewController = watchSettingsView.embeddedInHostingController()
         viewController.overrideUserInterfaceStyle = .dark
@@ -188,6 +196,34 @@ final class EntityAddToHandler {
         } catch {
             Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
         }
+    }
+
+    private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Opening deeplink for entity \(entityId)")
+
+        let hostingController = DeeplinkView(
+            viewModel: DeeplinkViewModel(
+                entityId: entityId,
+                serverName: webViewController.server.info.name
+            ),
+            onClose: { [weak webViewController] in
+                webViewController?.overlayedController?.dismiss(animated: true, completion: nil)
+            }
+        ).embeddedInHostingController()
+
+        if Current.isCatalyst {
+            hostingController.modalPresentationStyle = .formSheet
+        } else if let sheet = hostingController.sheetPresentationController {
+            let detent = UISheetPresentationController.Detent.custom(identifier: .init("deeplink")) { context in
+                context.maximumDetentValue * 0.7
+            }
+            sheet.detents = [detent, .large()]
+            sheet.selectedDetentIdentifier = detent.identifier
+            sheet.prefersGrabberVisible = true
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+
+        webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
 
     private func openWidgetBuilder(
@@ -293,7 +329,7 @@ final class EntityAddToHandler {
             }
 
             // Open the widget creation view to let user see and further customize
-            let widgetCreationView = WidgetCreationView(widget: updatedWidget) {
+            let widgetCreationView = WidgetCreationView(needsNavigationStack: true, widget: updatedWidget) {
                 // Reload widgets after changes
             }
             let hostingController = widgetCreationView
@@ -325,7 +361,7 @@ final class EntityAddToHandler {
             items: [newItem]
         )
 
-        let widgetCreationView = WidgetCreationView(widget: newWidget) {
+        let widgetCreationView = WidgetCreationView(needsNavigationStack: true, widget: newWidget) {
             // Reload widgets after changes
         }
 

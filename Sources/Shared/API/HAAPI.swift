@@ -48,7 +48,10 @@ public class HomeAssistantAPI {
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
     public let tokenManager: TokenManager
-    public var server: Server
+    /// Fixed for the lifetime of the API: the token manager, the websocket's connection-info and
+    /// token closures and the request adapters all capture this instance at init, so swapping it
+    /// afterwards would only change what this property reports. Build a new API instead.
+    public let server: Server
     public internal(set) var connection: HAConnection
 
     private var rejectedReconnectAttempts = 0
@@ -234,6 +237,9 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+
         return Alamofire.Session(
             configuration: configuration,
             delegate: delegate,
@@ -259,13 +265,12 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        #if !os(watchOS)
-        let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? MJPEGCertificateSessionDelegate(server: server)
-            : MJPEGStreamerSessionDelegate()
-        #else
-        let delegate = MJPEGStreamerSessionDelegate()
-        #endif
+        // Attached unconditionally, on every platform, for the same reason the REST session's
+        // delegate is (see `makeCertificateAwareURLSession`): the delegate resolves the certificate
+        // fresh at challenge time, so a streamer built before the server config carries the
+        // certificate still presents it. Gating on the init-time snapshot left the watch's camera
+        // notification stream permanently without a certificate, and an mTLS server refuses it.
+        let delegate = MJPEGStreamerSessionDelegate(server: server)
         return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: delegate,
             interceptor: newInterceptor(),
@@ -1032,10 +1037,19 @@ public class HomeAssistantAPI {
         case appOpened
         case programmatic
 
+        /// Only explicitly user-initiated updates may show the temporary full-accuracy prompt;
+        /// app-open updates run on every foreground, where a recurring system prompt would be intrusive.
         var allowsTemporaryAccess: Bool {
             switch self {
-            case .userRequested, .appOpened: return true
-            case .programmatic: return false
+            case .userRequested: return true
+            case .appOpened, .programmatic: return false
+            }
+        }
+
+        var locationUpdateTrigger: LocationUpdateTrigger {
+            switch self {
+            case .appOpened: return .Launch
+            case .userRequested, .programmatic: return .Manual
             }
         }
     }
@@ -1070,16 +1084,18 @@ public class HomeAssistantAPI {
                     }
                 }
             }.then { () -> Promise<Void> in
+                let trigger = type.locationUpdateTrigger
+
                 func updateWithoutLocation() -> Promise<Void> {
-                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: .Manual) })
+                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: trigger) })
                 }
 
                 if Current.settingsStore.isLocationEnabled(for: applicationState) {
                     return firstly {
-                        Current.location.oneShotLocation(.Manual, nil)
+                        Current.location.oneShotLocation(trigger, nil)
                     }.then { location in
                         when(fulfilled: Current.apis.map { api in
-                            api.SubmitLocation(updateType: .Manual, location: location, zone: nil)
+                            api.SubmitLocation(updateType: trigger, location: location, zone: nil)
                         }).asVoid()
                     }.recover { error -> Promise<Void> in
                         if error is CLError || error is OneShotError {
@@ -1657,6 +1673,7 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .ready:
             resetRejectedReconnectRecovery()
         case .disconnected(reason: .rejected):
+            invalidateRejectedAccessToken()
             scheduleRejectedReconnectRecoveryIfNeeded()
         case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)):
             guard let tokenFetchFailure = error as? TokenFetchFailure,
@@ -1668,6 +1685,17 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .connecting, .authenticating, .disconnected(reason: .disconnected):
             break
         }
+    }
+
+    /// A rejected websocket means the server refused the access token we just authenticated with, even
+    /// though its client-side expiration still said it was valid — typically because the server was
+    /// rebuilt or the refresh token was revoked. The stored token is the one the socket authenticated
+    /// with (HAKit fetches it for every connect), so marking it rejected sends the next reconnect
+    /// through a real token refresh instead of re-sending the same rejected token until we give up.
+    /// The refresh either mints a working token or fails with 400...403, which is what surfaces the
+    /// re-authentication screen.
+    private func invalidateRejectedAccessToken() {
+        tokenManager.handleAccessTokenRejected(server.info.token.accessToken)
     }
 
     /// Recovers from a rejected websocket (`auth: invalid`): HAKit won't auto-reconnect a rejected

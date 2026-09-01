@@ -29,11 +29,13 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetCustom()
         WidgetAssist()
         WidgetTodoList()
+        WidgetCalendar()
         WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
+        WidgetEnergy()
     }
 }
 
@@ -66,10 +68,12 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetCustom()
         WidgetAssist()
         WidgetTodoList()
+        WidgetCalendar()
         WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
+        WidgetEnergy()
     }
 }

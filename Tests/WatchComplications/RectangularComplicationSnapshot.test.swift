@@ -27,7 +27,9 @@ struct RectangularComplicationSnapshotTests {
 
     /// The complication also renders in the watch face's accented and vibrant modes. This captures how
     /// the shared view *adapts* to each `widgetRenderingMode` (e.g. the gauge's value text). It does not
-    /// reproduce the system's face-wide tint/desaturation compositing, which only happens on-device.
+    /// reproduce the system's face-wide tint/desaturation compositing, which only happens on-device;
+    /// the layer-based snapshot renderer also ignores blend modes, so the vibrant reference shows the
+    /// value drawn over the pill rather than knocked out of it.
     @MainActor @Test func renderingModeVariants() {
         let model = RectangularComplicationRenderModel.sample(
             title: "Living Room",

@@ -91,32 +91,34 @@ struct EntityPicker: View {
         }
         #endif
         .navigationViewStyle(.stack)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+        #if !targetEnvironment(macCatalyst)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        #endif
     }
 
     private var content: some View {
-        List {
-            Section {
-                TextField(L10n.EntityPicker.Search.placeholder, text: $viewModel.searchTerm)
-                    .focused($isSearchFocused)
-                    .textFieldStyle(.plain)
-                    .padding()
-                    .modify { view in
-                        if #available(iOS 26.0, *) {
-                            view
-                                .glassEffect(.regular.interactive(), in: .capsule)
-                                .contentShape(Capsule())
-
-                        } else {
-                            view
-                                .background(.tileBackground)
-                                .clipShape(.capsule)
-                        }
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+        VStack(spacing: 0) {
+            searchField
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                // Top inset matches the horizontal one so the capsule sits concentric inside the sheet's
+                // rounded corners, and it keeps the field clear of the presentation drag indicator.
+                .padding(.top, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.one)
+            list
+        }
+        .onAppear {
+            viewModel.fetchEntities()
+            if viewModel.selectedServerId == nil {
+                viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
             }
+            isSearchFocused = true
+        }
+    }
+
+    private var list: some View {
+        List {
+            refreshProgressRow
             filtersView
             ForEach(viewModel.filteredGroups) { group in
                 Section {
@@ -145,14 +147,78 @@ struct EntityPicker: View {
         .safeAreaInset(edge: .bottom) {
             multipleSelectionConfirmButton
         }
-        .onAppear {
-            viewModel.fetchEntities()
-            if viewModel.selectedServerId == nil {
-                viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
+        .animation(.easeInOut(duration: 0.35), value: viewModel.isRefreshing)
+        #if targetEnvironment(macCatalyst)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    reloadToolbarButton
+                }
             }
-            isSearchFocused = true
+        #else
+            .refreshable {
+                await viewModel.refresh()
+            }
+        #endif
+    }
+
+    private var searchField: some View {
+        capsuleFieldBackground(
+            TextField(L10n.EntityPicker.Search.placeholder, text: $viewModel.searchTerm)
+                .focused($isSearchFocused)
+                .textFieldStyle(.plain)
+                .padding()
+        )
+    }
+
+    @ViewBuilder
+    private func capsuleFieldBackground(_ content: some View) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .glassEffect(.regular.interactive(), in: .capsule)
+                .contentShape(Capsule())
+        } else {
+            content
+                .background(.tileBackground)
+                .clipShape(.capsule)
         }
     }
+
+    @ViewBuilder
+    private var refreshProgressRow: some View {
+        if viewModel.isRefreshing {
+            Section {
+                HStack(spacing: DesignSystem.Spaces.two) {
+                    ProgressView()
+                    Text(viewModel.refreshStatusText ?? L10n.EntityPicker.Refresh.updating)
+                        .font(DesignSystem.Font.footnote)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .transition(.opacity)
+            }
+        }
+    }
+
+    #if targetEnvironment(macCatalyst)
+    @ViewBuilder
+    private var reloadToolbarButton: some View {
+        if viewModel.isRefreshing {
+            ProgressView()
+                .controlSize(.small)
+                .transition(.opacity)
+        } else {
+            Button {
+                Task { await viewModel.refresh() }
+            } label: {
+                Image(systemSymbol: .arrowClockwise)
+            }
+            .accessibilityLabel(L10n.EntityPicker.reload)
+            .transition(.opacity)
+        }
+    }
+    #endif
 
     @ViewBuilder
     private func sectionHeader(for group: EntityPickerGroup) -> some View {

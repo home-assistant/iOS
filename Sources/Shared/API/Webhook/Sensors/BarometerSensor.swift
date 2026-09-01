@@ -4,8 +4,8 @@ import PromiseKit
 
 final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private let signal: () -> Void
+    private let subscriberID = "barometer-signaler-\(UUID().uuidString)"
     private var lastSignaledPressureKpa: Double?
-    private var observationQueue: OperationQueue?
 
     /// The most recent pressure in kilopascals from CMAltimeter, used by BarometerSensor
     /// to avoid starting a separate one-shot read that would conflict with the signaler's stream.
@@ -19,14 +19,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     override func observe() {
         super.observe()
         guard !isObserving else { return }
-        guard Current.barometer.isAvailable(), Current.barometer.isAuthorized() else { return }
-
-        let queue = OperationQueue()
-        queue.name = "barometer-signaler"
-        queue.maxConcurrentOperationCount = 1
-        observationQueue = queue
-
-        Current.barometer.startUpdatesOnQueueHandler(queue) { [weak self] data, _ in
+        guard Current.barometerObserver.addSubscriber(id: subscriberID, handler: { [weak self] data, _ in
             guard let self, let data else { return }
             let newPressure = data.pressure.doubleValue
             latestPressureKpa = newPressure
@@ -36,7 +29,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
             }
             lastSignaledPressureKpa = newPressure
             signal()
-        }
+        }) else { return }
         isObserving = true
 
         #if DEBUG
@@ -47,8 +40,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     override func stopObserving() {
         super.stopObserving()
         guard isObserving else { return }
-        Current.barometer.stopUpdates()
-        observationQueue = nil
+        Current.barometerObserver.removeSubscriber(id: subscriberID)
         lastSignaledPressureKpa = nil
         latestPressureKpa = nil
         isObserving = false
@@ -57,19 +49,13 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     private let oneShotLock = NSLock()
     private var pendingOneShot: Promise<CMAltitudeData>?
 
-    /// Performs a single relative-altitude read, coalescing concurrent callers onto one
-    /// `CMAltimeter` session.
+    /// Performs a single relative-altitude read, coalescing concurrent callers onto one reading.
     ///
-    /// `CMAltimeter.startRelativeAltitudeUpdates(to:withHandler:)` keeps only a single handler on
-    /// the shared altimeter (`Current.barometer`), so a second concurrent `start` orphans the first
-    /// caller's handler — which then never fires. Because sensor generation waits for *every*
-    /// provider (`when(resolved:)`), that orphaned read leaves the whole payload promise unresolved
-    /// and no `update_sensor_states` webhook is ever sent for that server. In a multi-server setup
-    /// the servers' sweeps are dispatched in list order, so the first (default) server was
-    /// deterministically starved while the last one worked. See issue #5100.
-    ///
-    /// Sharing one in-flight read fixes that, and a timeout guarantees the promise always settles
-    /// even if the hardware never reports (which would otherwise hang the sweep forever).
+    /// Sensor generation waits for *every* provider (`when(resolved:)`), so a read that never
+    /// settles leaves the whole payload promise unresolved and no `update_sensor_states` webhook is
+    /// ever sent for that server (issue #5100). Sharing one in-flight read keeps concurrent
+    /// per-server sweeps down to a single reading, and a timeout guarantees the promise always
+    /// settles even if the hardware never reports.
     func oneShotReading() -> Promise<CMAltitudeData> {
         let lock = oneShotLock
         lock.lock()
@@ -82,10 +68,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         pendingOneShot = promise
         lock.unlock()
 
-        let queue = OperationQueue()
-        queue.name = "barometer-sensor"
-        queue.maxConcurrentOperationCount = 1
-
+        let oneShotID = "barometer-sensor-one-shot-\(UUID().uuidString)"
         var timeoutWork: DispatchWorkItem?
         var resolved = false
         // Called from the altimeter handler and from the timeout; the lock serializes them so the
@@ -101,7 +84,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
             guard !alreadyResolved else { return }
             timeoutWork?.cancel()
-            Current.barometer.stopUpdates()
+            Current.barometerObserver.removeSubscriber(id: oneShotID)
 
             if let data {
                 seal.fulfill(data)
@@ -114,8 +97,11 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         timeoutWork = work
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 5, execute: work)
 
-        Current.barometer.startUpdatesOnQueueHandler(queue) { data, error in
+        guard Current.barometerObserver.addSubscriber(id: oneShotID, handler: { data, error in
             finish(data, error)
+        }) else {
+            finish(nil, BarometerSensor.BarometerError.unavailable)
+            return promise
         }
 
         return promise
@@ -137,12 +123,12 @@ public class BarometerSensor: SensorProvider {
     public func sensors() -> Promise<[WebhookSensor]> {
         let signaler: BarometerSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
-        // If the signaler is actively observing, use its cached pressure to avoid
-        // starting a separate one-shot read that would stop the signaler's stream.
+        // If the signaler is actively observing, its cached pressure is already current, so there is
+        // nothing for a one-shot read to add.
         if let cachedKpa = signaler.latestPressureKpa {
             return .value([Self.pressureSensor(fromKpa: cachedKpa)])
         } else if signaler.isObserving {
-            // Signaler started but no data yet — skip rather than racing with a one-shot
+            // Signaler started but no data yet — its first reading is moments away
             return .init(error: BarometerError.noData)
         }
 
@@ -155,8 +141,8 @@ public class BarometerSensor: SensorProvider {
             return .init(error: BarometerError.unavailable)
         }
 
-        // Route through the signaler so concurrent per-server sweeps share a single altimeter
-        // read instead of orphaning each other's handler (see `oneShotReading`, issue #5100).
+        // Route through the signaler so concurrent per-server sweeps share a single reading rather
+        // than each waiting out its own (see `oneShotReading`, issue #5100).
         return signaler.oneShotReading().map { data in
             [Self.pressureSensor(fromKpa: data.pressure.doubleValue)]
         }

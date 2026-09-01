@@ -1,3 +1,4 @@
+import HAWatchComplications
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -108,9 +109,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
         options(for: widgetFamily)?.fraction ?? fraction
     }
 
-    /// The tint color for a given family.
+    /// The tint color for a given family. A complication with no color of its own falls back to the
+    /// shared complication default rather than this extension's accent color, which is undefined here
+    /// — that mismatch is what made a default complication look different on the face than in the
+    /// iPhone builder preview.
     func tintColor(for widgetFamily: WidgetFamily) -> Color {
-        Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .accentColor
+        Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .complicationDefaultTint
     }
 
     /// The value/text color for a given family, or nil to use the default.
@@ -236,7 +240,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     }
 
     var tintColor: Color {
-        Color(hex: tint) ?? .accentColor
+        Color(hex: tint) ?? .complicationDefaultTint
     }
 
     private var isBuiltIn: Bool {
@@ -254,6 +258,35 @@ struct WatchWidgetComplicationSnapshot: Codable {
     var iconImage: Image? {
         guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
         return Image(uiImage: image).renderingMode(.template)
+    }
+
+    /// The corner family's WidgetKit archiver enforces the smallest image cap of the accessory
+    /// families (81.6 points on watchOS 26/27, vs ~122 for circular). One oversized image fails the
+    /// archival of the whole timeline — `WidgetArchiver.ArchivingError.imageTooLarge` — and the
+    /// complication renders as an empty disc on the face. The shared icon payload is rasterized at
+    /// 112px for the other families' sharpness, so the corner decodes a downsampled copy instead.
+    private static let cornerIconMaxDimension: CGFloat = 72
+
+    /// `iconImage`, downsampled to fit the corner family's archived-image cap (see
+    /// `cornerIconMaxDimension`). The corner draws the icon at ~30 points, so the smaller bitmap
+    /// stays sharp at the watch's 2x scale.
+    var cornerIconImage: Image? {
+        guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
+        let maxSide = max(image.size.width, image.size.height)
+        guard maxSide > Self.cornerIconMaxDimension, maxSide > 0 else {
+            return Image(uiImage: image).renderingMode(.template)
+        }
+        let ratio = Self.cornerIconMaxDimension / maxSide
+        let target = CGSize(width: image.size.width * ratio, height: image.size.height * ratio)
+        // `UIGraphicsImageRenderer` is unavailable on watchOS; scale 1 so the bitmap size equals
+        // `target` — the size the archiver measures.
+        UIGraphicsBeginImageContextWithOptions(target, false, 1)
+        defer { UIGraphicsEndImageContext() }
+        image.draw(in: CGRect(origin: .zero, size: target))
+        guard let resized = UIGraphicsGetImageFromCurrentImageContext() else {
+            return Image(uiImage: image).renderingMode(.template)
+        }
+        return Image(uiImage: resized).renderingMode(.template)
     }
 
     // Asset-catalog image used when there is no custom template icon: the Assist symbol for the Assist

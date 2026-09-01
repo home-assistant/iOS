@@ -290,13 +290,40 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 26 tables create successfully together")
+    @Test("FocusNameTable schema validation")
+    func focusNameTableSchema() throws {
+        try verifyTableSchema(
+            table: FocusNameTable(),
+            expectedTableName: GRDBDatabaseTable.focusName.rawValue,
+            expectedColumns: DatabaseTables.FocusName.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("HACalendarTable schema validation")
+    func haCalendarTableSchema() throws {
+        try verifyTableSchema(
+            table: HACalendarTable(),
+            expectedTableName: GRDBDatabaseTable.HACalendar.rawValue,
+            expectedColumns: DatabaseTables.HACalendar.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("HACalendarEventTable schema validation")
+    func haCalendarEventTableSchema() throws {
+        try verifyTableSchema(
+            table: HACalendarEventTable(),
+            expectedTableName: GRDBDatabaseTable.HACalendarEvent.rawValue,
+            expectedColumns: DatabaseTables.HACalendarEvent.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("All 29 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 26 tables
-        #expect(tables.count == 26, "Should have exactly 26 tables, but found \(tables.count)")
+        // Verify we have exactly 29 tables
+        #expect(tables.count == 29, "Should have exactly 29 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

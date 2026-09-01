@@ -177,6 +177,32 @@ public class AppEnvironment {
             $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
             $0.privacyLabel = L10n.privacyLabel
             $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+            $0.tipPrefix = L10n.Component.Tip.prefix
+            $0.dismissAlert = L10n.Component.Alert.dismiss
+            $0.removeChip = L10n.Component.Chip.remove
+            $0.previousPeriod = L10n.Component.EnergyPeriod.previous
+            $0.nextPeriod = L10n.Component.EnergyPeriod.next
+            $0.compareWithPreviousPeriod = L10n.Component.EnergyPeriod.compare
+            $0.moreInformation = L10n.Component.moreInformation
+            $0.clearValue = L10n.Component.TimeInput.clear
+            $0.never = L10n.Component.AbsoluteTime.never
+            $0.qrCode = L10n.Component.QrCode.label
+            $0.qrCodeFailed = L10n.Component.QrCode.failed
+            $0.retry = L10n.Component.QrScanner.retry
+            $0.enterCodeManually = L10n.Component.QrScanner.manualInput
+            $0.submit = L10n.Component.QrScanner.submit
+            $0.allDay = L10n.Component.Calendar.allDay
+            $0.showMore = L10n.Component.Distribution.showMore
+            $0.showLess = L10n.Component.Distribution.showLess
+            $0.previousTrack = L10n.Component.MediaControl.previous
+            $0.nextTrack = L10n.Component.MediaControl.next
+            $0.play = L10n.Component.MediaControl.play
+            $0.pause = L10n.Component.MediaControl.pause
+            $0.deleteDigit = L10n.Component.AlarmPanel.delete
+            $0.moreSaturation = L10n.Component.ColorPicker.moreSaturation
+            $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
+            $0.adjustLowerTarget = L10n.Component.CircularSlider.adjustLower
+            $0.adjustUpperTarget = L10n.Component.CircularSlider.adjustUpper
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 
@@ -233,6 +259,14 @@ public class AppEnvironment {
 
     public var areasProvider: () -> AreasServiceProtocol = {
         AreasService.shared
+    }
+
+    public var entityComponentIcons: () -> EntityComponentIconsProviderProtocol = {
+        EntityComponentIconsService.shared
+    }
+
+    public var calendarsModel: () -> HACalendarsModelProtocol = {
+        HACalendarsModel.shared
     }
 
     /// APNs environment string for token reporting. "sandbox" in DEBUG builds, "production" otherwise.
@@ -368,6 +402,10 @@ public class AppEnvironment {
         $0.register(provider: ActiveSensor.self)
         $0.register(provider: FrontmostAppSensor.self)
         $0.register(provider: FocusSensor.self)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        // Focus Filters, and so the name of the running Focus, are an iOS feature.
+        $0.register(provider: FocusNameSensor.self)
+        #endif
         $0.register(provider: LastUpdateSensor.self)
         $0.register(provider: WatchBatterySensor.self)
         $0.register(provider: AppVersionSensor.self)
@@ -646,6 +684,10 @@ public class AppEnvironment {
 
     public var barometer = Barometer()
 
+    /// Multiplexes the single altimeter session `Barometer` exposes, so more than one consumer can
+    /// read pressure at a time.
+    public var barometerObserver = BarometerObserver()
+
     public var device = DeviceWrapper()
 
     public var matter = MatterWrapper()
@@ -666,7 +708,9 @@ public class AppEnvironment {
             CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
 
-        public var permissionStatus: CLAuthorizationStatus {
+        /// `authorizationStatus` performs synchronous XPC to locationd and can block for
+        /// seconds; avoid calling this on the main thread.
+        public var permissionStatus: () -> CLAuthorizationStatus = {
             CLLocationManager().authorizationStatus
         }
     }
@@ -676,6 +720,8 @@ public class AppEnvironment {
     public var connectivity = ConnectivityWrapper()
 
     public var focusStatus = FocusStatusWrapper()
+
+    public var focusFilter = FocusFilterWrapper()
 
     public var diskCache: DiskCache = DiskCacheImpl()
 

@@ -77,17 +77,43 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             registryRows.compactMap { row in row.entityCategory.map { (row.entityId, $0) } },
             uniquingKeysWith: { first, _ in first }
         )
+        // The registry hidden flag is baked in the same way, so consumers can exclude hidden
+        // entities without a registry join — including watches on the legacy database mirror,
+        // which never receive the registry.
+        let registryHiddenFlags: [String: Bool] = Dictionary(
+            registryRows.compactMap { row in row.isHidden ? (row.entityId, true) : nil },
+            uniquingKeysWith: { first, _ in first }
+        )
+        // The user's entity-registry icon override wins over the live `attributes.icon`, matching the
+        // frontend's precedence (see `ha-state-icon.ts`).
+        let registryIcons: [String: String] = Dictionary(
+            registryRows.compactMap { row in row.icon.map { (row.entityId, $0) } },
+            uniquingKeysWith: { first, _ in first }
+        )
 
-        let appEntities = appRelatedEntities.map({ HAAppEntity(
-            id: ServerEntity.uniqueId(serverId: serverId, entityId: $0.entityId),
-            entityId: $0.entityId,
-            serverId: serverId,
-            domain: $0.domain,
-            name: registryNames[$0.entityId] ?? $0.attributes.friendlyName ?? $0.entityId,
-            icon: $0.attributes.icon,
-            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String,
-            entityCategory: registryEntityCategories[$0.entityId]
-        ) }).sorted(by: { $0.id < $1.id })
+        // The frontend resolves the icon from the backend `entity_component` map; we resolve the
+        // stateless default here and bake it into `resolvedIcon` so pickers render the same glyph
+        // without a live connection. `nil` when the map isn't available (old server / not yet fetched).
+        let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
+
+        let appEntities = appRelatedEntities.map { entity -> HAAppEntity in
+            let deviceClass = entity.attributes.dictionary["device_class"] as? String
+            let resolvedIcon = componentIcons.flatMap { map in
+                EntityIconResolver.componentDefaultIcon(domain: entity.domain, deviceClass: deviceClass, map: map)
+            }
+            return HAAppEntity(
+                id: ServerEntity.uniqueId(serverId: serverId, entityId: entity.entityId),
+                entityId: entity.entityId,
+                serverId: serverId,
+                domain: entity.domain,
+                name: registryNames[entity.entityId] ?? entity.attributes.friendlyName ?? entity.entityId,
+                icon: registryIcons[entity.entityId] ?? entity.attributes.icon,
+                rawDeviceClass: deviceClass,
+                entityCategory: registryEntityCategories[entity.entityId],
+                isHidden: registryHiddenFlags[entity.entityId],
+                resolvedIcon: resolvedIcon
+            )
+        }.sorted(by: { $0.id < $1.id })
 
         do {
             // Uses GRDB's async read/write so the database work is performed off the main thread

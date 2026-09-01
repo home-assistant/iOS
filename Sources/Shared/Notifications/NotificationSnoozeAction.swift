@@ -75,11 +75,22 @@ public extension NotificationSnoozeAction {
         return actions
     }
 
+    /// The Apple Watch builds its notification actions from its own mirrored copy of this table, so
+    /// every mutation here has to reach it — otherwise the watch keeps offering the presets it was
+    /// seeded with while the iPhone shows the edited ones. The push coordinator debounces and
+    /// de-duplicates, so calling this after each individual edit is cheap.
+    private static func scheduleWatchSync() {
+        #if os(iOS)
+        WatchMirrorPushCoordinator.schedule(reason: .notificationSnoozeActionsChanged)
+        #endif
+    }
+
     static func save(_ action: NotificationSnoozeAction) {
         do {
             _ = try Current.database().write { db in
                 try action.insert(db, onConflict: .replace)
             }
+            scheduleWatchSync()
         } catch {
             Current.Log.error("Failed to save notification snooze action: \(error.localizedDescription)")
         }
@@ -90,6 +101,7 @@ public extension NotificationSnoozeAction {
             _ = try Current.database().write { db in
                 try NotificationSnoozeAction.deleteOne(db, key: id)
             }
+            scheduleWatchSync()
         } catch {
             Current.Log.error("Failed to delete notification snooze action: \(error.localizedDescription)")
         }
@@ -110,6 +122,7 @@ public extension NotificationSnoozeAction {
                     )
                 }
             }
+            scheduleWatchSync()
         } catch {
             Current.Log.error("Failed to reorder notification snooze actions: \(error.localizedDescription)")
         }

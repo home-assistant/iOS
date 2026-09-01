@@ -45,10 +45,18 @@ class OnboardingAuth {
                 // actually persists to outside-onboarding
                 Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
             }.get { server in
-                // somewhat necessary so it points to the keychain-persisted version
-                api.server = server
-                // not super necessary but prevents making a duplicate connection during this session
-                Current.setCachedApi(api, for: api.server.identifier)
+                // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
+                // around a detached, in-memory `Server` — and everything that API created at init
+                // captured that instance: the token manager, the websocket's connection-info and
+                // token closures, the request adapters. Handing `api.server` the keychain-persisted
+                // server cannot reach any of them, so they keep reading the onboarding-time snapshot
+                // for the rest of the session. A later re-authentication then writes its new token to
+                // the persisted server while this API keeps presenting the superseded one, which Home
+                // Assistant answers with `auth: invalid` / 401 until the app is relaunched. Replace it
+                // with an API built on the persisted server, and drop the onboarding connection so the
+                // session doesn't keep two.
+                api.connection.disconnect()
+                Current.setCachedApi(HomeAssistantAPI(server: server), for: server.identifier)
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in

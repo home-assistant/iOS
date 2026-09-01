@@ -3,6 +3,7 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import UIKit
 import XCTest
 
 final class LocationBasedServerSwitcherTests: XCTestCase {
@@ -274,6 +275,55 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server1.identifier)
+    }
+
+    @MainActor
+    private func makeSwitcher(applicationState: UIApplication.State) -> LocationBasedServerSwitcher {
+        let switcher = LocationBasedServerSwitcher()
+        switcher.applicationStateGetter = { applicationState }
+        return switcher
+    }
+
+    @MainActor
+    func testDeepLinkSkipsTheEvaluationOfTheActivationItOpens() {
+        let previousSetting = Current.settingsStore.locationBasedServerSwitching
+        defer { Current.settingsStore.locationBasedServerSwitching = previousSetting }
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        // Cold launch ordering: the link lands while the app is still coming up, before the
+        // activation it triggered.
+        let switcher = makeSwitcher(applicationState: .background)
+        switcher.deepLinkWillOpen()
+        switcher.evaluate()
+
+        XCTAssertFalse(switcher.isEvaluating)
+
+        // The activation after that one is an ordinary return to the app, so switching runs again.
+        switcher.evaluate()
+        XCTAssertTrue(switcher.isEvaluating)
+        // Leave no evaluation running past the test.
+        switcher.deepLinkWillOpen()
+    }
+
+    @MainActor
+    func testDeepLinkCancelsAnEvaluationAlreadyInFlight() {
+        let previousSetting = Current.settingsStore.locationBasedServerSwitching
+        defer { Current.settingsStore.locationBasedServerSwitching = previousSetting }
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        // The activation lands first and the link follows while the location fix is still pending.
+        let switcher = makeSwitcher(applicationState: .active)
+        switcher.evaluate()
+        XCTAssertTrue(switcher.isEvaluating)
+
+        switcher.deepLinkWillOpen()
+        XCTAssertFalse(switcher.isEvaluating)
+
+        // This activation's evaluation is already spent, so nothing is left to skip: the next
+        // return to the app must evaluate rather than inherit the link's suppression.
+        switcher.evaluate()
+        XCTAssertTrue(switcher.isEvaluating)
+        switcher.deepLinkWillOpen()
     }
 
     func testClosestServerIsNilWithoutZonesOrNetworkMatch() {

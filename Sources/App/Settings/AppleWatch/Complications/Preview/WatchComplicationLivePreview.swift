@@ -4,72 +4,10 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-/// The resolved rendering inputs a per-family preview needs. Bundled so the family views stay small and
-/// don't each re-derive the same styling from the config.
-struct ComplicationPreviewContext {
-    let config: WatchComplicationConfig
-    /// The value text (already unit-appended when applicable).
-    let value: String
-    /// The gauge fraction (0...1), or nil when there's no gauge value.
-    let fraction: Double?
-    /// The icon image, already gated by the "show icon" toggle (nil when hidden or none).
-    let iconImage: Image?
-    /// Raw entity attributes (entity kind), so slot formulas referencing `{attr:…}` resolve in the
-    /// preview exactly like on the watch.
-    var attributes: [String: Any] = [:]
-    /// Pre-rendered templates for formula resolution. The preview only renders the main text
-    /// template; extra templates in customized slot formulas resolve empty here and render on the
-    /// watch.
-    var renderedTemplates: [String: String] = [:]
-
-    private var family: WatchComplicationConfig.Family { config.widgetFamily }
-
-    var name: String { config.faceName }
-    var showsValue: Bool { config.isSlotVisible(.value, for: family) }
-    var showsName: Bool { config.isSlotVisible(.title, for: family) }
-    var showsSubtitle: Bool { config.isSlotVisible(.subtitle, for: family) }
-    var showsBottomText: Bool { config.isSlotVisible(.bottomText, for: family) }
-    var showsMin: Bool { config.showsMin(for: family) }
-    var showsMax: Bool { config.showsMax(for: family) }
-    /// Whether a gauge is drawn — needs both the toggle on and an actual value.
-    var showsGauge: Bool { config.showsGauge(for: family) && fraction != nil }
-    var range: (min: Double, max: Double)? { config.gaugeRange(for: family) }
-    var gaugeStyle: WatchComplicationConfig.GaugeStyle { config.gaugeStyle(for: family) }
-
-    /// Gauge/ring tint; defaults to the accent color.
-    var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor($0)) } ?? .accentColor }
-    /// Value/text color; defaults to white for contrast on the dark preview face.
-    var textColor: Color { config.textColor(for: family).map { Color(uiColor: UIColor(hex: $0)) } ?? .white }
-    /// Per-slot bottom text color override; nil falls back to `textColor` in the rendered view.
-    var bottomTextColor: Color? { config.slotColor(.bottomText, for: family).map { Color(uiColor: UIColor(hex: $0)) } }
-
-    /// Min/max are whole numbers.
-    func label(_ value: Double) -> String { String(Int(value.rounded())) }
-
-    // MARK: - Slot texts (same resolution as the watch's snapshot builder)
-
-    private func slotText(_ slot: ComplicationSlot) -> String {
-        ComplicationFormulaResolver.resolve(
-            config.formula(for: slot, family: family),
-            context: ComplicationFormulaContext(
-                entityName: name,
-                formattedState: value,
-                attributeValue: { attributes[$0].map { String(describing: $0) } },
-                renderedTemplates: renderedTemplates
-            )
-        )
-    }
-
-    var titleText: String { slotText(.title) }
-    var valueText: String { slotText(.value) }
-    var subtitleText: String { slotText(.subtitle) }
-    var bottomText: String { slotText(.bottomText) }
-}
-
 #if DEBUG
-extension ComplicationPreviewContext {
+extension ComplicationRenderContext {
     /// Sample context used by the per-family preview SwiftUI previews.
-    static func preview(_ family: WatchComplicationConfig.Family, gauge: Bool = true) -> ComplicationPreviewContext {
+    static func preview(_ family: WatchComplicationConfig.Family, gauge: Bool = true) -> ComplicationRenderContext {
         var config = WatchComplicationConfig(
             serverId: "preview",
             widgetFamily: family,
@@ -81,7 +19,7 @@ extension ComplicationPreviewContext {
             config.gaugeMin = 0
             config.gaugeMax = 100
         }
-        return ComplicationPreviewContext(
+        return ComplicationRenderContext(
             config: config,
             value: "68%",
             fraction: gauge ? 0.68 : nil,
@@ -98,7 +36,7 @@ extension ComplicationPreviewContext {
         showName: Bool = true,
         showIcon: Bool = true,
         gauge: Bool = true
-    ) -> ComplicationPreviewContext {
+    ) -> ComplicationRenderContext {
         var config = WatchComplicationConfig(serverId: "preview", widgetFamily: .corner, name: name)
         if gauge {
             config.gaugeMin = 0
@@ -114,7 +52,7 @@ extension ComplicationPreviewContext {
             ),
             for: .corner
         )
-        return ComplicationPreviewContext(
+        return ComplicationRenderContext(
             config: config,
             value: value,
             fraction: gauge ? 0.68 : nil,
@@ -123,101 +61,6 @@ extension ComplicationPreviewContext {
     }
 }
 #endif
-
-extension ComplicationPreviewContext {
-    /// Build a context for `family` from already-fetched entity data. Centralizes the value / unit /
-    /// fraction / icon resolution so the single-family and all-families previews render identically off
-    /// one fetch.
-    static func entity(
-        config: WatchComplicationConfig,
-        family: WatchComplicationConfig.Family,
-        state: String,
-        attributes: [String: Any]
-    ) -> ComplicationPreviewContext {
-        var familyConfig = config
-        familyConfig.widgetFamily = family
-
-        // Value is shared across families: the chosen attribute (or the state), formatted with the
-        // resolved unit + precision.
-        let raw = config.valueAttribute.flatMap { attributes[$0] }.map { String(describing: $0) } ?? state
-        let resolvedUnit: String? = {
-            if let attribute = config.valueAttribute {
-                return WatchComplicationConfig.attributeUnit(
-                    attribute: attribute,
-                    attributes: attributes,
-                    domain: config.entityId?.components(separatedBy: ".").first
-                )
-            }
-            return attributes["unit_of_measurement"] as? String
-        }()
-        let unit: String? = {
-            guard config.showsUnit() else { return nil }
-            if let override = config.unitOverride, !override.isEmpty { return override }
-            return resolvedUnit
-        }()
-        let precision = config.valuePrecision ?? config.entityId.flatMap {
-            EntityRegistryListForDisplay.Entity.displayPrecision(serverId: config.serverId, entityId: $0)
-        }
-        let value = state.isEmpty ? "" : WatchComplicationLivePreview.formatValue(raw, unit: unit, precision: precision)
-
-        // Fraction depends on the family's gauge range.
-        var fraction: Double?
-        if let range = familyConfig.gaugeRange(for: family) {
-            let source: Any = familyConfig.gaugeAttribute(for: family).flatMap { attributes[$0] }
-                ?? config.valueAttribute.flatMap { attributes[$0] }
-                ?? state
-            if let rawNumber = WatchComplication.percentileNumber(from: source), range.max > range.min {
-                fraction = min(max((Double(rawNumber) - range.min) / (range.max - range.min), 0), 1)
-            }
-        }
-
-        // Icon is gated by the icon slot's visibility (same resolution the watch uses).
-        var iconImage: Image?
-        if familyConfig.isSlotVisible(.icon, for: family), let iconName = config.iconName {
-            let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
-            iconImage = Image(
-                uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
-                    .image(ofSize: CGSize(width: 64, height: 64), color: color)
-            )
-        }
-
-        return ComplicationPreviewContext(
-            config: familyConfig,
-            value: value,
-            fraction: fraction,
-            iconImage: iconImage,
-            attributes: attributes
-        )
-    }
-
-    /// A representative placeholder shown before the user picks an entity/template, so every size renders
-    /// meaningful sample content instead of an empty face. Honors the config's toggles, colors, chosen
-    /// icon, and any typed name.
-    static func mock(
-        config: WatchComplicationConfig,
-        family: WatchComplicationConfig.Family
-    ) -> ComplicationPreviewContext {
-        var familyConfig = config
-        familyConfig.widgetFamily = family
-        familyConfig.gaugeMin = familyConfig.gaugeMin ?? 0
-        familyConfig.gaugeMax = familyConfig.gaugeMax ?? 100
-        if familyConfig.name == nil, familyConfig.entityDisplayName == nil, familyConfig.entityId == nil {
-            familyConfig.name = "Battery"
-        }
-        // The face's name token ignores the complication name for the entity kind, so the pre-entity
-        // mock needs a stand-in entity name for the title to render.
-        if familyConfig.entityDisplayName == nil, familyConfig.entityId == nil {
-            familyConfig.entityDisplayName = familyConfig.name
-        }
-        var iconImage: Image?
-        if familyConfig.isSlotVisible(.icon, for: family) {
-            let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon
-            let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
-            iconImage = Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
-        }
-        return ComplicationPreviewContext(config: familyConfig, value: "72%", fraction: 0.72, iconImage: iconImage)
-    }
-}
 
 /// A live approximation of the watch complication, rendered on iPhone with current data so the user
 /// sees the real result before saving. Entity complications fetch their value over the plain REST
@@ -355,7 +198,7 @@ struct WatchComplicationLivePreview: View {
         }
     }
 
-    private var context: ComplicationPreviewContext {
+    private var context: ComplicationRenderContext {
         switch config.kind {
         case .entity:
             return .entity(
@@ -365,7 +208,7 @@ struct WatchComplicationLivePreview: View {
                 attributes: entityAttributes
             )
         case .customTemplate:
-            return ComplicationPreviewContext(
+            return ComplicationRenderContext(
                 config: config,
                 value: value,
                 fraction: fraction,
@@ -500,17 +343,6 @@ struct WatchComplicationLivePreview: View {
     }
 
     static func formatValue(_ state: String, unit: String?, precision: Int?) -> String {
-        var text = state
-        if let precision, let number = Double(state) {
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            formatter.minimumFractionDigits = precision
-            formatter.maximumFractionDigits = precision
-            text = formatter.string(from: NSNumber(value: number)) ?? state
-        }
-        if let unit, !unit.isEmpty {
-            text += " \(unit)"
-        }
-        return text
+        ComplicationRenderContext.formatValue(state, unit: unit, precision: precision)
     }
 }

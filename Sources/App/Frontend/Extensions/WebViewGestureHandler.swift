@@ -19,8 +19,8 @@ final class WebViewGestureHandler {
             webViewNavigateBack()
         case .nextPage:
             webViewNavigateForward()
-        case .smartBack:
-            smartBack()
+        case .openInBrowser:
+            webView?.openInBrowser()
         case .showServersList:
             showServersList()
         case .nextServer:
@@ -51,11 +51,9 @@ final class WebViewGestureHandler {
             .cauterize()
     }
 
-    @discardableResult
-    private func webViewNavigateBack() -> Bool {
-        guard webView?.canGoBack ?? false else { return false }
+    private func webViewNavigateBack() {
+        guard webView?.canGoBack ?? false else { return }
         webView?.goBack()
-        return true
     }
 
     private func webViewNavigateForward() {
@@ -64,15 +62,9 @@ final class WebViewGestureHandler {
         }
     }
 
-    private func smartBack() {
-        if !webViewNavigateBack() {
-            showSidebar()
-        }
-    }
-
     private func showServersList() {
         Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.selectServer(prompt: nil, includeSettings: true) { server in
+            coordinator.selectServer(prompt: nil) { server in
                 coordinator.activate(server: server)
             }
         }

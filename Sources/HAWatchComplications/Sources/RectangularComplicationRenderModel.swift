@@ -2,9 +2,10 @@ import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the rectangular complication.
 ///
-/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the in-app
-/// editor's `ComplicationPreviewContext` map their own data into this one struct, so a single
-/// `RectangularComplicationContentView` renders identically in the real complication and the preview.
+/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the shared
+/// `ComplicationRenderContext` (the in-app editor preview and the iPhone lock-screen widgets) map their
+/// own data into this one struct, so a single `RectangularComplicationContentView` renders identically
+/// everywhere the complication appears.
 /// This is the seam that guarantees the preview can't drift from the watch.
 public struct RectangularComplicationRenderModel {
     public var iconImage: Image?
@@ -42,7 +43,7 @@ public struct RectangularComplicationRenderModel {
         showsValue: Bool = false,
         bottomText: String = "",
         showsBottomText: Bool = false,
-        tint: Color = .accentColor,
+        tint: Color = .complicationDefaultTint,
         textColor: Color? = nil,
         bottomTextColor: Color? = nil
     ) {

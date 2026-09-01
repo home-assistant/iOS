@@ -13,6 +13,17 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
         userContentController.add(safeScriptMessageHandler, name: "logError")
+        userContentController.add(safeScriptMessageHandler, name: "frontendRestored")
+
+        // Route clipboard writes through the native bridge so iframe calls update the pasteboard reliably.
+        // Install it in every frame so ingress panels use the same path and receive the native result.
+        userContentController.addScriptMessageHandler(
+            ClipboardWriteMessageHandler(server: server),
+            contentWorld: .page,
+            name: ClipboardWriteMessageHandler.messageName
+        )
+        userContentController.addUserScript(ClipboardWriteMessageHandler.userScript)
+
         return userContentController
     }
 

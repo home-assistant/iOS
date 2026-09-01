@@ -21,6 +21,8 @@ final class HAppEntityTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.AppEntity.icon.rawValue, .text)
                     t.column(DatabaseTables.AppEntity.rawDeviceClass.rawValue, .text)
                     t.column(DatabaseTables.AppEntity.entityCategory.rawValue, .integer)
+                    t.column(DatabaseTables.AppEntity.isHidden.rawValue, .boolean)
+                    t.column(DatabaseTables.AppEntity.resolvedIcon.rawValue, .text)
                 }
             }
         } else {

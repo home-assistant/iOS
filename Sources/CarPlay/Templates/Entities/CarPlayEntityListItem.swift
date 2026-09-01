@@ -149,32 +149,25 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
 
     private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
-        var iconColor = entity.carPlayIconColor()
-        var image = entity.getMDI().carPlayIcon(color: iconColor)
+        let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
+        // The color always comes from the entity's live state — the same palette the frontend, the
+        // widgets and the watch use. Only the *icon* is subject to the saved/customized choice: a
+        // user who picked a custom icon still wants to see whether the thing is on.
+        let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
+        let iconColor = entity.stateIconColor(customColor: customIconColor)
+
+        var icon = entity.getMDI(componentIcons: componentIcons)
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
 
-            // Check if user has customized the icon color
-            let customIconColor: UIColor? = {
-                if let iconColorString = magicItem.customization?.iconColor {
-                    return UIColor(hex: iconColorString)
-                }
-                return nil
-            }()
-
             let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
             if !entityHasDynamicIcon || userHasCustomizedIcon {
-                // Use the configured icon, respecting any explicit user customization
-                iconColor = customIconColor ?? .haPrimary
-                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
-            } else {
-                // Dynamic entity icons should reflect the live server-provided color,
-                // matching the main entities/controls views instead of saved quick-access tint.
-                iconColor = entity.carPlayIconColor()
-                image = entity.getMDI().carPlayIcon(color: iconColor)
+                // Use the configured icon, respecting any explicit user customization.
+                icon = magicItem.icon(info: magicItemInfo)
             }
         }
+        let image = icon.carPlayIcon(color: iconColor)
 
         var detailText: String?
         if !entityHasIrrelevantState {

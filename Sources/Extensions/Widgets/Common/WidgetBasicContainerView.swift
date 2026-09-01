@@ -12,6 +12,7 @@ struct WidgetBasicContainerView: View {
     let showLastUpdate: Bool
     let showServerName: Bool
     let serverName: String?
+    let widgetKind: WidgetsKind
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
@@ -19,7 +20,8 @@ struct WidgetBasicContainerView: View {
         type: WidgetType,
         showLastUpdate: Bool = false,
         showServerName: Bool = false,
-        serverName: String? = nil
+        serverName: String? = nil,
+        widgetKind: WidgetsKind
     ) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
@@ -27,6 +29,7 @@ struct WidgetBasicContainerView: View {
         self.showLastUpdate = showLastUpdate
         self.showServerName = showServerName
         self.serverName = serverName
+        self.widgetKind = widgetKind
     }
 
     var body: some View {
@@ -37,6 +40,7 @@ struct WidgetBasicContainerView: View {
             showLastUpdate: showLastUpdate,
             showServerName: showServerName,
             serverName: serverName,
+            widgetKind: widgetKind,
             family: family
         )
     }
@@ -104,13 +108,9 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
             #endif
         }
 
+    /// These previews are drawn as `.custom`, so they go all the way to the packed count.
     private static func maxTiles(for familySize: WidgetFamily) -> Int {
-        switch familySize {
-        case .systemSmall: 3
-        case .systemMedium: 6
-        case .systemLarge: 12
-        default: 12
-        }
+        WidgetFamilySizes.size(for: familySize, capacity: .packed)
     }
 
     private static func configurations(for familySize: WidgetFamily)
@@ -197,6 +197,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 withIconBackgroundColor: withIconBackgroundColor
             ),
             type: .custom,
+            widgetKind: .custom,
             family: familySize
         )
     }
@@ -229,6 +230,7 @@ struct WidgetBasicContainerWrapperView: View {
     let family: WidgetFamily
     let showServerName: Bool
     let serverName: String?
+    let widgetKind: WidgetsKind
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
@@ -237,6 +239,7 @@ struct WidgetBasicContainerWrapperView: View {
         showLastUpdate: Bool = false,
         showServerName: Bool = false,
         serverName: String? = nil,
+        widgetKind: WidgetsKind,
         family: WidgetFamily
     ) {
         self.emptyViewGenerator = emptyViewGenerator
@@ -246,55 +249,32 @@ struct WidgetBasicContainerWrapperView: View {
         self.family = family
         self.showServerName = showServerName
         self.serverName = serverName
+        self.widgetKind = widgetKind
     }
 
     var body: some View {
-        VStack {
-            if contents.isEmpty {
-                emptyViewGenerator()
-            } else {
-                content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
-            }
-            if showLastUpdate, !contents.isEmpty {
-                let lastUpdatedTextView = Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") +
-                    Text(Current.date(), style: .time)
-                Group {
-                    if showServerName, let serverName {
-                        Text(serverName) + Text(" · ") + lastUpdatedTextView
-                    } else {
-                        lastUpdatedTextView
-                    }
-                }
-                .font(.system(size: 10).bold())
-                .frame(maxWidth: .infinity, alignment: .center)
-                .multilineTextAlignment(.center)
-                .padding(.bottom, DesignSystem.Spaces.half)
-                .opacity(0.5)
-            }
-        }
-        // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(.primaryBackground)
-    }
-
-    @ViewBuilder
-    func content(for models: [WidgetBasicViewModel]) -> some View {
-        let modelsCount = models.count
-        let columnCount = WidgetFamilySizes.columns(family: family, modelCount: modelsCount)
-        let rows = Array(WidgetFamilySizes.rows(count: columnCount, models: models))
-        WidgetBasicView(
-            type: type,
-            rows: rows,
-            sizeStyle: WidgetFamilySizes.sizeStyle(
-                family: family,
-                modelsCount: modelsCount,
-                rowsCount: rows.count
-            )
+        let interaction = WidgetTileInteraction(type: type, family: family)
+        WidgetTileContainerView(
+            contents: contents,
+            family: family,
+            kind: type.tileKind,
+            capacity: widgetKind.tileCapacity,
+            serverName: showServerName ? serverName : nil,
+            emptyView: emptyViewGenerator,
+            refreshControl: refreshControl,
+            tileContent: interaction.content,
+            tileRegions: interaction.regions
         )
     }
 
-    // This is all widgets that are on the lock screen
-    // Lock screen widgets are transparent and don't need a colored background
-    private static var transparentFamilies: [WidgetFamily] {
-        [.accessoryCircular, .accessoryRectangular]
+    /// The last refresh time doubles as the reload control, matching the energy widget: tapping the
+    /// glyph or the time reloads this widget's timeline. Only offered where App Intents exist.
+    private var refreshControl: (() -> AnyView)? {
+        guard showLastUpdate else { return nil }
+        if #available(iOS 17, *) {
+            let kind = widgetKind
+            return { AnyView(WidgetRefreshButton(kind: kind, date: Current.date())) }
+        }
+        return nil
     }
 }

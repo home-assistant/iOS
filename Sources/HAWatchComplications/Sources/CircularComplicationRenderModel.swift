@@ -2,9 +2,10 @@ import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the circular complication.
 ///
-/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the in-app
-/// editor's `ComplicationPreviewContext` map their own data into this one struct, so a single
-/// `CircularComplicationContentView` renders identically in the real complication and the preview.
+/// Both the on-watch `WatchWidgetComplicationSnapshot` (in the WatchWidgets extension) and the shared
+/// `ComplicationRenderContext` (the in-app editor preview and the iPhone lock-screen widgets) map their
+/// own data into this one struct, so a single `CircularComplicationContentView` renders identically
+/// everywhere the complication appears.
 public struct CircularComplicationRenderModel {
     public var iconImage: Image?
     public var showsIcon: Bool
@@ -34,7 +35,7 @@ public struct CircularComplicationRenderModel {
         isCapacityGauge: Bool = false,
         minLabel: String? = nil,
         maxLabel: String? = nil,
-        tint: Color = .accentColor,
+        tint: Color = .complicationDefaultTint,
         textColor: Color? = nil
     ) {
         self.iconImage = iconImage
@@ -57,5 +58,16 @@ public struct CircularComplicationRenderModel {
         let hasIcon = showsIcon && iconImage != nil
         let hasName = showsName && !title.isEmpty
         return !hasIcon && !hasName
+    }
+
+    /// Whether the face leads with a large centered icon and renders the value in the open gauge's
+    /// bottom label instead of stacking the two in the middle.
+    ///
+    /// That bottom slot is occupied by the min/max labels when they're shown and doesn't exist on the
+    /// capacity ring, so this is exactly the open-gauge-without-min/max case: with the slot free, the
+    /// value reads better underneath and the icon gets the whole inner circle rather than sharing it.
+    public var isIconLedWithBottomValue: Bool {
+        guard fraction != nil, !isCapacityGauge, minLabel == nil, maxLabel == nil else { return false }
+        return showsIcon && iconImage != nil && showsValue && !valueText.isEmpty
     }
 }

@@ -27,6 +27,7 @@ struct CameraPlayerView: View {
     @State private var showLoader = true
 
     private let maxTitleTextWidth: CGFloat = 100
+    private let topScrimHeight: CGFloat = 140
 
     enum PlayerType {
         case webRTC
@@ -63,6 +64,30 @@ struct CameraPlayerView: View {
     private var navigationStack: some View {
         NavigationStack {
             content
+                .overlay {
+                    // From iOS 26 the toolbar items get their contrast from Liquid Glass. Earlier
+                    // versions render them bare over the stream, so they can disappear against a
+                    // bright image — a scrim from the top gives them something to sit on. It mirrors
+                    // the bottom gradient behind the talkback controls.
+                    if needsTopScrim, isToolbarVisible {
+                        VStack(spacing: 0) {
+                            LinearGradient(
+                                colors: [.black.opacity(0.6), .clear],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .frame(height: topScrimHeight)
+                            Spacer(minLength: 0)
+                        }
+                        .allowsHitTesting(false)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                    }
+                }
+                // Only the WebRTC player toggles `controlsVisible` inside `withAnimation`; the HLS and
+                // MJPEG ones toggle it bare, so scope the animation here to fade the scrim on every
+                // player type. Matches the curve WebRTC uses for the rest of the controls.
+                .animation(.easeInOut(duration: 0.2), value: isToolbarVisible)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
@@ -85,9 +110,39 @@ struct CameraPlayerView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    /// Liquid Glass backs the toolbar items from iOS 26 onwards, so the scrim is only needed before that.
+    private var needsTopScrim: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /// Mirrors the navigation bar visibility so the scrim comes and goes with the items it backs. Hiding
+    /// the bar requires `toolbarVisibility`, so before iOS 18 the toolbar — and therefore the scrim —
+    /// stays on screen even while the controls are dimmed.
+    private var isToolbarVisible: Bool {
+        if #available(iOS 18.0, *) {
+            return controlsVisible
+        } else {
+            return true
+        }
+    }
+
+    /// Entities can reach the picker without a usable name — an empty `friendly_name` upstream, or no
+    /// cached entity at all — and a menu row with no title is unpickable, so fall back to a generic
+    /// localized "Camera" rather than rendering blank.
+    private func displayName(_ name: String?) -> String {
+        guard let name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return L10n.CameraPlayer.defaultCameraName
+        }
+        return name
+    }
+
     @ViewBuilder
     private var nameBadge: some View {
-        if let name, controlsVisible {
+        if controlsVisible {
             Menu {
                 ForEach(cameras) { camera in
                     Button {
@@ -100,7 +155,7 @@ struct CameraPlayerView: View {
                         } else {
                             Image(systemSymbol: .videoFill)
                         }
-                        Text(camera.name)
+                        Text(displayName(camera.name))
                         if let subtitle = cameraSubtitles[camera.entityId], !subtitle.isEmpty {
                             Text(subtitle)
                         }
@@ -109,7 +164,7 @@ struct CameraPlayerView: View {
             } label: {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Text(name)
+                        Text(displayName(name))
                             .font(DesignSystem.Font.caption.bold())
                             .foregroundStyle(.primary)
                             .frame(maxWidth: maxTitleTextWidth, alignment: .leading)

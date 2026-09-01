@@ -79,6 +79,8 @@ struct WatchHomeView: View {
                         WatchAreasListView(serverId: serverId)
                     case let .areaEntities(areaId, serverId):
                         WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
+                    case let .deviceEntities(deviceId, serverId, name):
+                        WatchDeviceEntitiesView(deviceId: deviceId, serverId: serverId, name: name)
                     }
                 }
         }
@@ -102,6 +104,15 @@ struct WatchHomeView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
             viewModel.loadCache()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: WatchSettingsLaunch.launchNotification)) { _ in
+            WatchSettingsLaunch.pendingLaunch = false
+            showSettings = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: WatchAssistLaunch.launchNotification)) { _ in
+            guard let presentation = WatchAssistLaunch.pendingPresentation else { return }
+            WatchAssistLaunch.pendingPresentation = nil
+            assistPresentation = presentation
         }
         .fullScreenCover(item: $assistPresentation, content: { presentation in
             switch presentation {
@@ -187,6 +198,15 @@ struct WatchHomeView: View {
             if AssistDefaultComplication.pendingLaunch {
                 AssistDefaultComplication.pendingLaunch = false
                 presentConfiguredAssist()
+            }
+            // Same for the App Intents that open the app: settings, and a specific Assist pipeline.
+            if WatchSettingsLaunch.pendingLaunch {
+                WatchSettingsLaunch.pendingLaunch = false
+                showSettings = true
+            }
+            if let presentation = WatchAssistLaunch.pendingPresentation {
+                WatchAssistLaunch.pendingPresentation = nil
+                assistPresentation = presentation
             }
             updateIPhoneReachability(Communicator.shared.currentReachability)
             startReachabilityObservation()
@@ -307,10 +327,15 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
-            Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .listRowBackground(Color.clear)
+            // The areas rows fill the screen on their own, so the "add items with +" hint only
+            // shows when there is genuinely nothing else. It also stays out of edit mode, where the
+            // header swaps the + for Done and the hint would point at a button that isn't there.
+            if !isEditing, !viewModel.showsAreasContent {
+                Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .listRowBackground(Color.clear)
+            }
         } else if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
             gridContent
         } else {

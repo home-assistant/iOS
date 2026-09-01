@@ -313,16 +313,6 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
         }
         return orientation
     }
-
-    private func videoOrientationFor(_ deviceOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
-        switch deviceOrientation {
-        case .portrait: return AVCaptureVideoOrientation.portrait
-        case .portraitUpsideDown: return AVCaptureVideoOrientation.portraitUpsideDown
-        case .landscapeLeft: return AVCaptureVideoOrientation.landscapeRight
-        case .landscapeRight: return AVCaptureVideoOrientation.landscapeLeft
-        default: return nil
-        }
-    }
 }
 
 extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -334,7 +324,7 @@ extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let pixelBuffer = sampleBuffer.imageBuffer else { return }
 
         if connection.isVideoOrientationSupported,
-           let videoOrientation = videoOrientationFor(deviceOrientation) {
+           let videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation) {
             connection.videoOrientation = videoOrientation
         }
 

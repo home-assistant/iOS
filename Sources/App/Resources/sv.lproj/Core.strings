@@ -16,6 +16,7 @@
 "common::state::standby" = "Viloläge";
 "common::state::unlocked" = "Olåst";
 "common::state::yes" = "Ja";
+"component::ai_task::title" = "AI-uppgift";
 "component::airzone::entity::select::sleep_times::state::off" = "Av";
 "component::alarm_control_panel::title" = "Larmkontrollpanel";
 "component::alert::entity_component::_::state::idle" = "Inaktiv";
