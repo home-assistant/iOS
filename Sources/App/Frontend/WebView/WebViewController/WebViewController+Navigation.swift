@@ -75,7 +75,7 @@ extension WebViewController {
 
     /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
     /// Returns true if the navigation was successful
-    func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
+    private func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
         guard server.info.version >= .canNavigateThroughFrontend else {
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
             completion(false)

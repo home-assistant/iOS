@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 
 struct AppLabsView: View {
-    @State private var redrawHelper: UUID = .init()
+    @ObservedObject private var appLabs = Current.appLabs
 
     var body: some View {
         List {
@@ -34,10 +34,9 @@ struct AppLabsView: View {
                 ForEach(features) { feature in
                     Section {
                         Toggle(isOn: .init(get: {
-                            feature.isEnabled
+                            feature.isEnabled(in: appLabs.enabledFeatureIds)
                         }, set: { newValue in
                             feature.isEnabled = newValue
-                            redrawHelper = .init()
                         })) {
                             Text(feature.title)
                         }
@@ -51,7 +50,6 @@ struct AppLabsView: View {
                 }
             }
         }
-        .id(redrawHelper)
         .listTopContentMargin()
     }
 }

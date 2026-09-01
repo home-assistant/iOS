@@ -281,7 +281,7 @@ final class MacSidebarViewModel: ObservableObject {
                     path: panel.path,
                     component: panel.component,
                     showInSidebar: panel.showInSidebar,
-                    rawTitle: panel.title
+                    rawTitle: panel.title == panel.path ? nil : panel.title
                 )
             } ?? []
         } catch {

@@ -21,15 +21,11 @@ public final class AppLabsStore: ObservableObject {
         enabledFeatureIds.contains(featureId)
     }
 
+    /// Writes the flag; `enabledFeatureIds` follows through the database observation.
     public func setEnabled(_ enabled: Bool, featureId: String) {
         do {
             try Current.database().write { db in
                 try AppLabsFeatureState(id: featureId, isEnabled: enabled).insert(db, onConflict: .replace)
-            }
-            if enabled {
-                enabledFeatureIds.insert(featureId)
-            } else {
-                enabledFeatureIds.remove(featureId)
             }
         } catch {
             Current.Log.error("Failed to persist App Labs feature \(featureId): \(error)")
