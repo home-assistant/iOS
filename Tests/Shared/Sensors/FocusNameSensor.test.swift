@@ -69,13 +69,15 @@ class FocusNameSensorTests: XCTestCase {
     private func received(
         isFocused: Bool?,
         at offset: TimeInterval,
-        lastEnded: TimeInterval? = nil
+        lastEnded: TimeInterval? = nil,
+        lastStarted: TimeInterval? = nil
     ) -> FocusStatusState {
         let date = now.addingTimeInterval(offset)
         return FocusStatusState(
             isFocused: isFocused,
             date: date,
-            lastEndedDate: lastEnded.map { now.addingTimeInterval($0) } ?? (isFocused == false ? date : nil)
+            lastEndedDate: lastEnded.map { now.addingTimeInterval($0) } ?? (isFocused == false ? date : nil),
+            lastStartedDate: lastStarted.map { now.addingTimeInterval($0) } ?? (isFocused == true ? date : nil)
         )
     }
 
@@ -157,11 +159,47 @@ class FocusNameSensorTests: XCTestCase {
     /// Knowing every Focus ended blanks the name rather than reporting a made-up state.
     func testReportsEmptyOnceEveryFocusEnded() throws {
         FocusName(name: "Work").save()
-        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: false, at: -10))
+        setUpDependencies(
+            activeFocusName: "Work",
+            receivedStatus: received(isFocused: false, at: -10, lastStarted: -50)
+        )
 
         let sensors = try hang(FocusNameSensor(request: request).sensors())
         XCTAssertEqual(sensors[0].State as? String, "")
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, false)
+    }
+
+    /// The bug behind #5592: Focus status is shared per Focus, and the ones the user doesn't share
+    /// read back as "not focused" the whole time they run. Nothing ever confirmed this Focus, so
+    /// those statuses can't be what ended it — only the filter's own reset run can.
+    func testKeepsTheNameWhenTheEndedStatusNeverSawTheFocusStart() throws {
+        FocusName(name: "Work").save()
+        setUpDependencies(
+            activeFocusName: "Work",
+            filterRan: -3600,
+            receivedStatus: received(isFocused: false, at: -60),
+            liveIsFocused: false
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Work")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
+    /// Switching from a Focus iOS could see to one it can't: the confirmation belongs to the Focus
+    /// that ended, so it must not hand the statuses that follow the right to end the new one.
+    func testKeepsTheNameWhenOnlyThePreviousFocusWasEverConfirmed() throws {
+        FocusName(name: "Work").save()
+        setUpDependencies(
+            activeFocusName: "Work",
+            filterRan: -3600,
+            receivedStatus: received(isFocused: false, at: -60, lastStarted: -3610),
+            liveIsFocused: false
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Work")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
     }
 
     /// A Focus without a filter starting after every Focus ended keeps the last reported name —
@@ -257,8 +295,9 @@ class FocusNameSensorTests: XCTestCase {
     }
 
     /// The received status is what every process reads back, so it has to survive the one that
-    /// received it going away — and it has to remember when a Focus last ended.
-    func testReceivedStatusIsStoredWithWhenEveryFocusLastEnded() throws {
+    /// received it going away — and it has to remember when a Focus last started and last ended,
+    /// which is what pairs a status with the Focus it is talking about.
+    func testReceivedStatusIsStoredWithWhenAFocusLastStartedAndEnded() throws {
         Current.isAppExtension = true
 
         Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
@@ -269,6 +308,12 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: true))
         XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, true)
         XCTAssertEqual(Current.focusStatus.lastReceived()?.lastEndedDate, now)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastStartedDate, now.addingTimeInterval(60))
+
+        Current.date = { [now] in now.addingTimeInterval(120) }
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastEndedDate, now.addingTimeInterval(120))
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastStartedDate, now.addingTimeInterval(60))
     }
 
     /// A received status must not destroy the reported name: whether it is still current depends on

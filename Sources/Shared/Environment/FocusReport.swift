@@ -5,9 +5,9 @@ import Foundation
 ///
 /// Two sources each know half of it and neither is complete on its own. The Focus Filter runs when
 /// a Focus *starts* and is the only thing that ever tells us its name. `INShareFocusStatusIntent`
-/// pushes whether any Focus is running, which is the only thing that tells us one ended — but
-/// asking iOS for that status back reports `false` for a Focus whose status the user doesn't
-/// share, and during a switch it still describes the Focus that just ended.
+/// pushes whether any Focus is running, which is the only thing that tells us one ended — but it
+/// says `false` for a Focus whose status the user doesn't share, whether pushed to us or asked
+/// for, and during a switch it still describes the Focus that just ended.
 ///
 /// The name is deliberately sticky: iOS wipes the filter's name on deactivation and skips
 /// re-running the filter for quick reactivations, so the last reported name is the best answer to
@@ -65,7 +65,8 @@ public struct FocusReport: Equatable {
             } ?? "<never ran>"
             let status = receivedStatus.map {
                 "isFocused(\(String(describing: $0.isFocused))) at(\($0.date)) " +
-                    "lastEnded(\(String(describing: $0.lastEndedDate)))"
+                    "lastEnded(\(String(describing: $0.lastEndedDate))) " +
+                    "lastStarted(\(String(describing: $0.lastStartedDate)))"
             } ?? "<never received>"
             return "focus report: \(report) from filter[\(filter)] status[\(status)]"
         }
@@ -76,9 +77,18 @@ public struct FocusReport: Equatable {
     /// Whether iOS said every Focus had ended after the filter ran, which is what makes the name it
     /// reported stale. Checked against the last such moment rather than the current status, so a
     /// Focus that started without a filter can't inherit the name of the one before it.
+    ///
+    /// It only counts for a Focus iOS confirmed running after that filter run. Focus status is
+    /// shared per Focus, and the ones the user doesn't share read back as "not focused" for as
+    /// long as they run — repeatedly, since iOS re-shares that on its own — so without a
+    /// confirmation to pair it with, a status saying nothing is running says nothing about this
+    /// Focus. The filter's own reset run still ends those.
     private static func hasEnded(filterState: FocusFilterState, receivedStatus: FocusStatusState?) -> Bool {
-        guard let lastEndedDate = receivedStatus?.lastEndedDate else { return false }
-        return lastEndedDate > filterState.date.addingTimeInterval(switchGracePeriod)
+        guard let receivedStatus,
+              let lastEndedDate = receivedStatus.lastEndedDate,
+              lastEndedDate > filterState.date.addingTimeInterval(switchGracePeriod) else { return false }
+        guard let lastStartedDate = receivedStatus.lastStartedDate else { return false }
+        return lastStartedDate > filterState.date
     }
 
     /// Asking iOS directly, which only the app can do, and which only answers for Focuses whose
