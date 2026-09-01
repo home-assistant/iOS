@@ -6,9 +6,8 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    // App Labs is limited to TestFlight builds while its features mature.
     static var isLabsAvailable: Bool {
-        Current.isTestFlight
+        true
     }
 
     var title: String {

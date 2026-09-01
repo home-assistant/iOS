@@ -8,13 +8,12 @@ struct AppLabsViewTests {
         assertLightDarkSnapshots(of: AppLabsView())
     }
 
-    @Test func appLabsIsHiddenOutsideTestFlight() {
+    @Test func appLabsIsAvailableOnEveryBuild() {
         let previousIsTestFlight = Current.isTestFlight
         defer { Current.isTestFlight = previousIsTestFlight }
 
         Current.isTestFlight = false
-        #expect(!SettingsItem.appLabs.isVisible)
-        #expect(!AppLabsFeature.macNativeSidebar.isEnabled)
+        #expect(SettingsItem.appLabs.isVisible)
 
         Current.isTestFlight = true
         #expect(SettingsItem.appLabs.isVisible)
