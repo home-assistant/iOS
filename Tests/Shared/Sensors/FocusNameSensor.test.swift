@@ -186,6 +186,20 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
     }
 
+    /// A confirmation stamped at the same instant as the filter run belongs to that run: the two
+    /// come from different processes reading the same clock, so the boundary counts as seen.
+    func testReportsEmptyWhenTheFocusWasConfirmedAtTheFilterRunInstant() throws {
+        FocusName(name: "Work").save()
+        setUpDependencies(
+            activeFocusName: "Work",
+            receivedStatus: received(isFocused: false, at: -10, lastStarted: -60)
+        )
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, false)
+    }
+
     /// Switching from a Focus iOS could see to one it can't: the confirmation belongs to the Focus
     /// that ended, so it must not hand the statuses that follow the right to end the new one.
     func testKeepsTheNameWhenOnlyThePreviousFocusWasEverConfirmed() throws {

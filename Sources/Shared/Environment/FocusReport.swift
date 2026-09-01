@@ -88,7 +88,7 @@ public struct FocusReport: Equatable {
               let lastEndedDate = receivedStatus.lastEndedDate,
               lastEndedDate > filterState.date.addingTimeInterval(switchGracePeriod) else { return false }
         guard let lastStartedDate = receivedStatus.lastStartedDate else { return false }
-        return lastStartedDate > filterState.date
+        return lastStartedDate >= filterState.date
     }
 
     /// Asking iOS directly, which only the app can do, and which only answers for Focuses whose
