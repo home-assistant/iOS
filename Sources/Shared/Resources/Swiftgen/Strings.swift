@@ -8597,6 +8597,22 @@ public enum L10n {
         /// No commonly used entities found. Use Home Assistant to build your usage history.
         public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
       }
+      public enum ExcludeDomains {
+        public enum Param {
+          /// Entities of the selected domains are never displayed.
+          public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.exclude_domains.param.description") }
+          /// Exclude domains
+          public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.exclude_domains.param.title") }
+        }
+      }
+      public enum IncludeDomains {
+        public enum Param {
+          /// When domains are selected, only entities of those domains are displayed.
+          public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.include_domains.param.description") }
+          /// Include domains
+          public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.include_domains.param.title") }
+        }
+      }
     }
     public enum ContentSource {
       /// Complication
@@ -8923,6 +8939,8 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "widgets.energy.description") }
       /// Grid
       public static var electricity: String { return L10n.tr("Localizable", "widgets.energy.electricity") }
+      /// Electricity total
+      public static var electricityTotal: String { return L10n.tr("Localizable", "widgets.energy.electricity_total") }
       /// Gas
       public static var gas: String { return L10n.tr("Localizable", "widgets.energy.gas") }
       /// Grid
@@ -9035,6 +9053,8 @@ public enum L10n {
       public static var attribute: String { return L10n.tr("Localizable", "widgets.parameters.attribute") }
       /// Complication
       public static var complication: String { return L10n.tr("Localizable", "widgets.parameters.complication") }
+      /// Domain
+      public static var domain: String { return L10n.tr("Localizable", "widgets.parameters.domain") }
       /// Entity
       public static var entity: String { return L10n.tr("Localizable", "widgets.parameters.entity") }
     }

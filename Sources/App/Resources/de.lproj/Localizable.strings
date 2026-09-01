@@ -2662,6 +2662,10 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.calendar.tomorrow" = "Morgen";
 "widgets.commonly_used_entities.description" = "Deine häufig verwendeten Entitäten basierend auf deinem Nutzungsverhalten anzeigen.";
 "widgets.commonly_used_entities.empty.description" = "Keine häufig verwendeten Entitäten gefunden. Verwende Home Assistant, um deinen Nutzungsverlauf aufzubauen.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Häufig genutzte Steuerelemente";
 "widgets.content_source.complication" = "Komplikation";
 "widgets.content_source.entity" = "Entität";
@@ -2746,6 +2750,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.custom.show_last_update_time.param.title" = "Letzte Aktualisierungszeit anzeigen";
 "widgets.custom.show_states.description" = "Die Anzeige der neuesten Zustände ist nicht zu 100 % garantiert. Du kannst es ausprobieren und in der Dokumentation der Companion-App nachsehen, um weitere Informationen zu erhalten.";
 "widgets.custom.show_states.param.title" = "Zustände anzeigen (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
@@ -2759,8 +2764,11 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template unterer Text";
 "widgets.details.title" = "Details";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Dein Energie-Dashboard auf einen Blick anzeigen.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Strom insgesamt";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Netz";
 "widgets.energy.no_connection" = "Keine Verbindung verfügbar. Überprüfe die Konfiguration deiner Home Assistant-URL.";
 "widgets.energy.no_data" = "Keine Energiedaten";
@@ -2773,7 +2781,9 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.refresh_title" = "Energie aktualisieren";
 "widgets.energy.solar" = "PV";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Verbrauch";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "PV";
 "widgets.energy.source.title" = "Quelle";
 "widgets.energy.title" = "Energie";
@@ -2802,6 +2812,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribut";
 "widgets.parameters.complication" = "Komplikation";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entität";
 "widgets.preview.custom.description" = "Erstelle dein eigenes Widget innerhalb der App und lasse es dann hier anzeigen.";
 "widgets.preview.custom.title" = "Benutzerdefiniertes Widget";

@@ -2656,6 +2656,10 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.calendar.tomorrow" = "I morgon";
 "widgets.commonly_used_entities.description" = "Visa dina vanligaste entiteter baserat på dina användningsmönster.";
 "widgets.commonly_used_entities.empty.description" = "Inga vanligt använda enheter hittades. Använd Home Assistant för att bygga upp din användningshistorik.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Vanliga kontroller";
 "widgets.content_source.complication" = "Komplikation";
 "widgets.content_source.entity" = "Entitet";
@@ -2740,6 +2744,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.custom.show_last_update_time.param.title" = "Visa senaste uppdateringstid";
 "widgets.custom.show_states.description" = "Visning av senaste tillstånd är inte 100 % garanterat, du kan göra ett försök och kolla appdokumentationen för mer information.";
 "widgets.custom.show_states.param.title" = "Visa tillstånd (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Senaste uppdatering:";
 "widgets.custom.subtitle" = "Skapa widgets med din egen stil";
 "widgets.custom.title" = "Anpassade widgets";
@@ -2753,8 +2758,11 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Mall för övre text";
 "widgets.details.title" = "Detaljer";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Visa din energiöversikt med en snabb blick.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "El, totalt";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Elnät";
 "widgets.energy.no_connection" = "Ingen anslutning tillgänglig. Kontrollera inställningarna för Home Assistant-URL:en.";
 "widgets.energy.no_data" = "Inga energidata";
@@ -2767,7 +2775,9 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.energy.refresh_title" = "Uppdatera energi";
 "widgets.energy.solar" = "Solenergi";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Förbrukning";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solenergi";
 "widgets.energy.source.title" = "Källa";
 "widgets.energy.title" = "Energi";
@@ -2796,6 +2806,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribut";
 "widgets.parameters.complication" = "Komplikation";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entitet";
 "widgets.preview.custom.description" = "Skapa din egen widget i appen och visa den sedan här.";
 "widgets.preview.custom.title" = "Anpassad widget";

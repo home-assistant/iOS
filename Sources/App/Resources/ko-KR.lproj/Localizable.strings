@@ -240,7 +240,7 @@
 "assist.settings.title" = "Assist 설정";
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
-"assist.text_field.placeholder" = "요청 입력...";
+"assist.text_field.placeholder" = "요청을 입력하세요...";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.volume.title" = "음량 조절";
@@ -453,13 +453,13 @@
 "component.alert.dismiss" = "알림 닫기";
 "component.calendar.all_day" = "종일";
 "component.chip.remove" = "제거";
-"component.circular_slider.adjust_lower" = "하한 조정";
-"component.circular_slider.adjust_upper" = "상한 조정";
+"component.circular_slider.adjust_lower" = "하한값 조정";
+"component.circular_slider.adjust_upper" = "상한값 조정";
 "component.collapsible_view.collapse" = "접기";
 "component.collapsible_view.expand" = "확장하기";
-"component.color_picker.less_saturation" = "채도 낮추기";
-"component.color_picker.more_saturation" = "채도 높이기";
-"component.distribution.show_less" = "적게 보기";
+"component.color_picker.less_saturation" = "채도 감소";
+"component.color_picker.more_saturation" = "채도 증가";
+"component.distribution.show_less" = "간략히 보기";
 "component.distribution.show_more" = "더 보기";
 "component.energy_period.compare" = "이전 기간과 비교";
 "component.energy_period.next" = "다음 기간";
@@ -468,7 +468,7 @@
 "component.media_control.pause" = "일시 중지";
 "component.media_control.play" = "재생";
 "component.media_control.previous" = "이전";
-"component.more_information" = "더 많은 정보";
+"component.more_information" = "추가 정보";
 "component.qr_code.failed" = "QR 코드를 생성할 수 없습니다";
 "component.qr_code.label" = "QR 코드";
 "component.qr_scanner.manual_input" = "코드를 수동으로 입력";
@@ -2659,6 +2659,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.calendar.tomorrow" = "내일";
 "widgets.commonly_used_entities.description" = "사용 패턴을 기반으로 자주 사용하는 엔티티를 표시합니다.";
 "widgets.commonly_used_entities.empty.description" = "자주 사용하는 엔티티를 찾을 수 없습니다. Home Assistant를 사용하여 사용 기록을 쌓으세요.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "공통 컨트롤";
 "widgets.content_source.complication" = "컴플리케이션";
 "widgets.content_source.entity" = "엔티티";
@@ -2731,7 +2735,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.controls.switch.title" = "스위치";
 "widgets.custom.intent_activate_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_activate_failed.title" = "엔티티 '활성화'에 실패했습니다.";
-"widgets.custom.intent_perform_action_failed.body" = "다시 시도해 주세요";
+"widgets.custom.intent_perform_action_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_perform_action_failed.title" = "액션 실행 실패";
 "widgets.custom.intent_press_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_press_failed.title" = "엔티티 '누르기'에 실패했습니다";
@@ -2743,6 +2747,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.custom.show_last_update_time.param.title" = "마지막 업데이트 시간 표시";
 "widgets.custom.show_states.description" = "최신 상태가 100% 표시되는 것은 보장할 수 없으므로, 시도해 보고 자세한 내용은 앱 문서를 확인하세요.";
 "widgets.custom.show_states.param.title" = "상태 표시 (베타)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "마지막 업데이트:";
 "widgets.custom.subtitle" = "나만의 스타일로 위젯 만들기";
 "widgets.custom.title" = "사용자 정의 위젯";
@@ -2756,8 +2761,11 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.details.parameters.server" = "서버";
 "widgets.details.parameters.upper_template" = "상단 텍스트 템플릿";
 "widgets.details.title" = "세부 정보";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "에너지 대시보드를 한눈에 확인하세요.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "전력 총계";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "전력망";
 "widgets.energy.no_connection" = "연결할 수 없습니다. Home Assistant URL 구성을 확인하세요.";
 "widgets.energy.no_data" = "에너지 데이터 없음";
@@ -2770,7 +2778,9 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.refresh_title" = "에너지 새로 고침";
 "widgets.energy.solar" = "태양광";
 "widgets.energy.source.auto" = "자동";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "소비";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "태양광";
 "widgets.energy.source.title" = "소스";
 "widgets.energy.title" = "에너지";
@@ -2799,6 +2809,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.param.server.title" = "서버";
 "widgets.parameters.attribute" = "속성";
 "widgets.parameters.complication" = "컴플리케이션";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "엔티티";
 "widgets.preview.custom.description" = "앱 내에서 나만의 위젯을 만든 다음 여기에 표시하세요.";
 "widgets.preview.custom.title" = "사용자 정의 위젯";
