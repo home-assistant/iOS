@@ -11,6 +11,16 @@ class ConnectivityWrapperTests: XCTestCase {
     private var previousEmptyNetworkStateGrace: TimeInterval!
     private var previousDate: (() -> Date)!
 
+    /// Alternates between an unreadable read and a populated one so concurrent fetches interleave both.
+    private actor FetchResults {
+        private var count = 0
+
+        func next() -> Bool {
+            count += 1
+            return count.isMultiple(of: 2)
+        }
+    }
+
     override func setUp() {
         super.setUp()
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
@@ -291,6 +301,39 @@ class ConnectivityWrapperTests: XCTestCase {
         let state = await Current.connectivity.fetchNetworkState()
 
         XCTAssertNil(state.ssid)
+    }
+
+    func testBelievingAnEmptyFetchLeavesNothingForTheGraceToPreserve() async {
+        Current.connectivity.simpleNetworkType = { .cellular }
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+
+        _ = await Current.connectivity.fetchNetworkState()
+
+        // An empty cache must not be held on to as if it were a network worth preserving.
+        XCTAssertNil(Current.connectivity.lastPopulatedNetworkStateDateForTests())
+    }
+
+    func testConcurrentFetchesNeverLeaveAnEmptyCacheAnchoredToAPopulatedRead() async {
+        // The empty result is decided against the cache and written to it under one lock: deciding
+        // against one snapshot and writing against another lets an empty fetch land on top of a
+        // populated one that arrived in between, leaving the cache empty but still anchored, which
+        // makes every later empty read preserve the emptiness.
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.emptyNetworkStateGrace = 0
+        let results = FetchResults()
+        Current.connectivity.performNetworkStateFetch = {
+            await results.next() ? NetworkState() : NetworkState(ssid: "home")
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0 ..< 200 {
+                group.addTask { _ = await Current.connectivity.fetchNetworkState() }
+            }
+        }
+
+        let cached = Current.connectivity.lastKnownNetworkState()
+        let anchor = Current.connectivity.lastPopulatedNetworkStateDateForTests()
+        XCTAssertFalse(cached == NetworkState() && anchor != nil)
     }
 
     func testRefreshingWhileTheNetworkIsUnreadableKeepsReportingTheSameNetwork() async {

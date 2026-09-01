@@ -81,15 +81,38 @@ public class ConnectivityWrapper {
         }
     }
 
-    /// Records a state that a fetch actually returned. Unlike a state re-applied from the cache by
-    /// `refreshNetworkInformation()`, this is what `emptyNetworkStateGrace` measures from.
-    private func recordFetchedNetworkState(_ state: NetworkState) {
+    /// Applies a state a fetch actually returned, deciding whether to believe an empty result under the
+    /// same lock as the write: `currentNetworkState()` has many concurrent callers, and deciding against
+    /// one snapshot and writing against another lets an empty result overwrite a populated one that
+    /// landed in between. Returns what the caller should see, and whether the fetched state was dropped
+    /// in favour of the last-known one.
+    private func applyFetchedNetworkState(_ state: NetworkState) -> (state: NetworkState, keptLastKnown: Bool) {
+        guard state == NetworkState() else {
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            cachedNetworkState = state
+            lastPopulatedNetworkStateDate = Current.date()
+            return (state, false)
+        }
+
+        // On cellular there is genuinely no Wi-Fi to report, and switching to the external URL right
+        // away is the correct response to leaving the network. Read before taking the lock: it does not
+        // touch the cache, and the path monitor should not be called with `stateLock` held.
+        let isOnCellular = simpleNetworkType() == .cellular
+
         stateLock.lock()
         defer { stateLock.unlock() }
-        cachedNetworkState = state
-        if state != NetworkState() {
-            lastPopulatedNetworkStateDate = Current.date()
+
+        if !isOnCellular, let lastPopulated = lastPopulatedNetworkStateDate,
+           Current.date().timeIntervalSince(lastPopulated) < emptyNetworkStateGrace {
+            return (cachedNetworkState, true)
         }
+
+        cachedNetworkState = state
+        // Believing an empty state leaves nothing for the grace to measure from, so the next empty read
+        // is believed straight away rather than preserving a cache that is already empty.
+        lastPopulatedNetworkStateDate = nil
+        return (state, false)
     }
 
     private func readLastKnownNetworkState() -> NetworkState {
@@ -98,7 +121,9 @@ public class ConnectivityWrapper {
         return cachedNetworkState
     }
 
-    private func readLastPopulatedNetworkStateDate() -> Date? {
+    /// When the last fetch that reported a network landed, which `emptyNetworkStateGrace` measures from.
+    /// Internal so tests can assert it never disagrees with the cache.
+    func lastPopulatedNetworkStateDateForTests() -> Date? {
         stateLock.lock()
         defer { stateLock.unlock() }
         return lastPopulatedNetworkStateDate
@@ -153,30 +178,11 @@ public class ConnectivityWrapper {
             return readLastKnownNetworkState()
         }
 
-        guard state != NetworkState() || shouldBelieveEmptyNetworkState() else {
+        let applied = applyFetchedNetworkState(state)
+        if applied.keptLastKnown {
             Current.Log.info("network information came back unreadable; keeping last-known network state")
-            return readLastKnownNetworkState()
         }
-
-        recordFetchedNetworkState(state)
-        return state
-    }
-
-    /// Whether a fetch reporting no network describes the network the device is actually on, rather
-    /// than a read that failed while it was between access points.
-    private func shouldBelieveEmptyNetworkState() -> Bool {
-        // On cellular there is genuinely no Wi-Fi to report, and switching to the external URL right
-        // away is the correct response to leaving the network.
-        if simpleNetworkType() == .cellular {
-            return true
-        }
-
-        guard let lastPopulated = readLastPopulatedNetworkStateDate() else {
-            // Nothing was ever read successfully, so there is no earlier network to hold on to.
-            return true
-        }
-
-        return Current.date().timeIntervalSince(lastPopulated) >= emptyNetworkStateGrace
+        return applied.state
     }
 
     #if targetEnvironment(macCatalyst)
