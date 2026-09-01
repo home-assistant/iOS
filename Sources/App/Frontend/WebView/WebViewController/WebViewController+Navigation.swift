@@ -53,7 +53,7 @@ extension WebViewController {
             return url.path
         }()
 
-        navigate(path: urlPathIncludingQueryParams) { [weak self] success in
+        navigateThroughFrontend(path: urlPathIncludingQueryParams) { [weak self] success in
             if !success {
                 Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
                 // Fallback to loading the URL directly if navigation fails
@@ -62,9 +62,20 @@ extension WebViewController {
         }
     }
 
+    /// Used by the native macOS sidebar
+    func openSidebarPath(_ path: String) {
+        loadViewIfNeeded()
+        navigateThroughFrontend(path: path) { [weak self] success in
+            if !success {
+                Current.Log.warning("Failed to navigate through frontend for sidebar path: \(path)")
+                self?.navigateToPath(path: path)
+            }
+        }
+    }
+
     /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
     /// Returns true if the navigation was successful
-    private func navigate(path: String, completion: @escaping (Bool) -> Void) {
+    func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
         guard server.info.version >= .canNavigateThroughFrontend else {
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
             completion(false)

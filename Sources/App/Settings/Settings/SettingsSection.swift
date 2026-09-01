@@ -32,7 +32,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
         case .quickAccess: return [.widgets, .appIconShortcuts, .nfc]
         case .otherDevices: return [.watch, .complications, .carPlay]
         case .privacySecurity: return [.permissions, .privacy]
-        case .helpSupport: return [.help, .debugging]
+        case .helpSupport: return [.help, .debugging, .appLabs]
         }
     }
 

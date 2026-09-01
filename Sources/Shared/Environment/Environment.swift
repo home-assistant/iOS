@@ -467,6 +467,8 @@ public class AppEnvironment {
 
     public lazy var kiosk = KioskModeManager()
 
+    public lazy var appLabs = AppLabsStore()
+
     /// The current kiosk mode configuration. Always available, defaulting to a disabled
     /// configuration when nothing has been persisted yet.
     public var kioskSettings: KioskSettings { kiosk.settings }

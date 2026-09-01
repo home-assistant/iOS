@@ -23,6 +23,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case permissions
     case privacy
     case debugging
+    case appLabs
     case whatsNew
 
     var title: String {
@@ -48,6 +49,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .permissions: return L10n.SettingsSensors.Permissions.header
         case .privacy: return L10n.SettingsDetails.Privacy.title
         case .debugging: return L10n.Settings.Debugging.title
+        case .appLabs: return L10n.Settings.AppLabs.title
         case .whatsNew: return L10n.Settings.WhatsNew.title
         }
     }
@@ -99,6 +101,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .lockOutlineIcon, size: Self.iconSize)
             case .debugging:
                 MaterialDesignIconsImage(icon: .bugIcon, size: Self.iconSize)
+            case .appLabs:
+                MaterialDesignIconsImage(icon: .flaskOutlineIcon, size: Self.iconSize)
             case .whatsNew:
                 MaterialDesignIconsImage(icon: .starIcon, size: Self.iconSize)
             }
@@ -166,6 +170,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             PrivacyView()
         case .debugging:
             DebugView()
+        case .appLabs:
+            AppLabsView()
         case .whatsNew:
             EmptyView()
         }
@@ -205,6 +211,9 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return Self.isWatchAvailable
         case .carPlay:
             return UIDevice.current.userInterfaceIdiom == .phone
+        case .appLabs:
+            // App Labs is limited to TestFlight builds while its features mature.
+            return AppLabsFeature.isLabsAvailable
         default:
             return true
         }
@@ -242,6 +251,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .permissions: return L10n.Settings.SearchKeywords.permissions
         case .privacy: return L10n.Settings.SearchKeywords.privacy
         case .debugging: return L10n.Settings.SearchKeywords.debugging
+        case .appLabs: return L10n.Settings.SearchKeywords.appLabs
         case .whatsNew: return nil
         }
     }
@@ -278,6 +288,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .permissions: return SensorPermissionsView.settingsSearchEntries
         case .privacy: return PrivacyView.settingsSearchEntries
         case .debugging: return DebugView.settingsSearchEntries
+        case .appLabs: return AppLabsView.settingsSearchEntries
         case .help, .whatsNew: return []
         }
     }

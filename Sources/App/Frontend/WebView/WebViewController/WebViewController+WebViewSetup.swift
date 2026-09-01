@@ -71,7 +71,11 @@ extension WebViewController {
             // re-resolved from current connectivity at load time (see `resolvedLoadURL`).
             Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
             if let components = URLComponents(url: cleanURL, resolvingAgainstBaseURL: false) {
-                var relative = components.path.isEmpty ? "/" : components.path
+                let path = components.path.isEmpty ? "/" : components.path
+                Task { @MainActor [weak overlayState] in
+                    overlayState?.currentPath = path
+                }
+                var relative = path
                 if let query = components.query {
                     relative += "?\(query)"
                 }
