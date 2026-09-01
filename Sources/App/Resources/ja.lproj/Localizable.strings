@@ -2660,6 +2660,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "使用パターンに基づいて、よく使用するエンティティを表示します。";
 "widgets.commonly_used_entities.empty.description" = "よく使用されるエンティティが見つかりませんでした。使用履歴を作成するには、Home Assistantを使用してください。";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "一般的なコントロール";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2744,6 +2748,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "最終更新時間を表示";
 "widgets.custom.show_states.description" = "最新の状態が表示されることは 100% 保証されているわけではありませんが、試してみて、付属のアプリのドキュメントで詳細を確認してください。";
 "widgets.custom.show_states.param.title" = "状態を表示 (ベータ版)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "最終更新日:";
 "widgets.custom.subtitle" = "独自のスタイルでウィジェットを作成する";
 "widgets.custom.title" = "カスタムウィジェット";
@@ -2757,8 +2762,11 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.details.parameters.server" = "サーバー";
 "widgets.details.parameters.upper_template" = "上部テキストテンプレート";
 "widgets.details.title" = "詳細";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
 "widgets.energy.no_data" = "No energy data";
@@ -2771,7 +2779,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
@@ -2800,6 +2810,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "サーバー";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "アプリ内に独自のウィジェットを作成し、ここに表示します。";
 "widgets.preview.custom.title" = "カスタムウィジェット";

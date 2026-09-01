@@ -2660,6 +2660,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Tampilkan entitas yang sering digunakan berdasarkan pola penggunaan Anda.";
 "widgets.commonly_used_entities.empty.description" = "Tidak ditemukan entitas yang umum digunakan. Gunakan Home Assistant untuk membangun riwayat penggunaan Anda.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Kontrol Umum";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2744,6 +2748,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "Tampilkan waktu pembaruan terakhir";
 "widgets.custom.show_states.description" = "Tampilan status terbaru tidak dapat dijamin 100%, Anda dapat mencobanya dan memeriksa dokumentasi Aplikasi pendamping untuk informasi lebih lanjut.";
 "widgets.custom.show_states.param.title" = "Tampilkan status (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Pembaruan terakhir:";
 "widgets.custom.subtitle" = "Buat widget dengan gaya Anda sendiri";
 "widgets.custom.title" = "Widget khusus";
@@ -2757,8 +2762,11 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Templat Teks Atas";
 "widgets.details.title" = "Detail";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
 "widgets.energy.no_data" = "No energy data";
@@ -2771,7 +2779,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
@@ -2800,6 +2810,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Buat widget Anda sendiri di dalam aplikasi dan tampilkan di sini.";
 "widgets.preview.custom.title" = "Widget khusus";

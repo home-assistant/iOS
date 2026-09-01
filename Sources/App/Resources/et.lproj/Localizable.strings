@@ -2661,6 +2661,10 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.calendar.tomorrow" = "Homme";
 "widgets.commonly_used_entities.description" = "Kuva sagedamini kasutatavaid üksusi vastavalt kasutusmustritele.";
 "widgets.commonly_used_entities.empty.description" = "Ühtegi sageli kasutatavat üksust ei leitud. Kasuta oma kasutusajaloo loomiseks Home Assistantit.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Tüüpilised juhtseaded";
 "widgets.content_source.complication" = "Komplikatsioon";
 "widgets.content_source.entity" = "Olem";
@@ -2745,6 +2749,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.custom.show_last_update_time.param.title" = "Kuva viimase värskenduse aeg";
 "widgets.custom.show_states.description" = "Viimaste olekute kuvamine ei ole 100% tagatud, võid proovida ja vaadata lisateavet kaasrakenduse dokumentatsioonist.";
 "widgets.custom.show_states.param.title" = "Kuva olekud (BEETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Viimati uuendatud:";
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";
@@ -2758,8 +2763,11 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Suurema teksti mall";
 "widgets.details.title" = "Üksikasjad";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "Ühendus pole saadaval, kontrolli oma Home Assistant’i URL-i seadeid";
 "widgets.energy.no_data" = "No energy data";
@@ -2772,7 +2780,9 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.refresh_title" = "Värskenda energiat";
 "widgets.energy.solar" = "Päikeseenergia";
 "widgets.energy.source.auto" = "Automaatne";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Tarbimine";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Päikeseenergia";
 "widgets.energy.source.title" = "Allikas";
 "widgets.energy.title" = "Energia";
@@ -2801,6 +2811,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Atribuut";
 "widgets.parameters.complication" = "Komplikatsioon";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Olem";
 "widgets.preview.custom.description" = "Loo rakenduses oma vidin ja kuva see siis siin.";
 "widgets.preview.custom.title" = "Kohandatud vidin";

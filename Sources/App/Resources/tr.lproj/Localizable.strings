@@ -2661,6 +2661,10 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.calendar.tomorrow" = "Yarın";
 "widgets.commonly_used_entities.description" = "Kullanım kalıplarınıza göre sık kullandığınız varlıkları görüntüleyin.";
 "widgets.commonly_used_entities.empty.description" = "Sık kullanılan hiçbir varlık bulunamadı. Kullanım geçmişinizi oluşturmak için Home Assistant'ı kullanın.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Ortak Kontroller";
 "widgets.content_source.complication" = "Komplikasyon";
 "widgets.content_source.entity" = "Varlık";
@@ -2745,6 +2749,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.custom.show_last_update_time.param.title" = "Son güncelleme saatini göster";
 "widgets.custom.show_states.description" = "En güncel durumların görüntülenmesi %100 garanti edilmez, ancak deneyebilirsin ve daha fazla bilgi için eşlik eden uygulamanın belgelerine göz atabilirsin.";
 "widgets.custom.show_states.param.title" = "Durumları göster (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Son güncelleme:";
 "widgets.custom.subtitle" = "Kendi stilinizle widget'lar yaratın";
 "widgets.custom.title" = "Kişiselleştirilmiş widget'lar";
@@ -2758,8 +2763,11 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.details.parameters.server" = "Sunucu";
 "widgets.details.parameters.upper_template" = "Üst Metin Şablonu";
 "widgets.details.title" = "Ayrıntılar";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Şebeke";
 "widgets.energy.no_connection" = "Bağlantı yok, Home Assistant URL yapılandırmanızı gözden geçirin";
 "widgets.energy.no_data" = "Enerji verisi yok";
@@ -2772,7 +2780,9 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.energy.refresh_title" = "Enerji Yenileyin";
 "widgets.energy.solar" = "Güneş";
 "widgets.energy.source.auto" = "Otomatik";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Tüketim";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Güneş";
 "widgets.energy.source.title" = "Kaynak";
 "widgets.energy.title" = "Enerji";
@@ -2801,6 +2811,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.param.server.title" = "Sunucu";
 "widgets.parameters.attribute" = "Öznitelik";
 "widgets.parameters.complication" = "Komplikasyon";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Varlık";
 "widgets.preview.custom.description" = "Uygulama içerisinde kendi widget'ınızı yaratın ve burada görüntüleyin.";
 "widgets.preview.custom.title" = "Kişiselleştirilmiş widget";
