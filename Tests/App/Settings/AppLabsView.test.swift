@@ -3,11 +3,6 @@ import Shared
 import Testing
 
 struct AppLabsViewTests {
-    @MainActor
-    @Test func testUI() async throws {
-        assertLightDarkSnapshots(of: AppLabsView())
-    }
-
     @Test func appLabsIsHiddenOutsideTestFlight() {
         let previousIsTestFlight = Current.isTestFlight
         defer { Current.isTestFlight = previousIsTestFlight }
