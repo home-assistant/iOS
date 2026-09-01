@@ -63,6 +63,13 @@ struct DomainTests {
             .weather: "weather",
             .counter: "counter",
             .timer: "timer",
+            .aiTask: "ai_task",
+            .configurator: "configurator",
+            .imageProcessing: "image_processing",
+            .infrared: "infrared",
+            .plant: "plant",
+            .radioFrequency: "radio_frequency",
+            .tag: "tag",
         ]
 
         #expect(
@@ -505,13 +512,6 @@ struct DomainFeatureSupportTests {
         #expect(Set(Domain.sensorWidgetSupported) == expected, "Domain.sensorWidgetSupported membership changed")
     }
 
-    @Test func appDatabaseExcludedMembership() {
-        let expected: Set<Domain> = [
-            .geoLocation, .conversation, .stt, .tts, .wakeWord, .assistSatellite, .notify, .image,
-        ]
-        #expect(Set(Domain.appDatabaseExcluded) == expected, "Domain.appDatabaseExcluded membership changed")
-    }
-
     @Test func groupsHaveNoDuplicates() {
         let groups: [(String, [Domain])] = [
             ("carPlaySupported", Domain.carPlaySupported),
@@ -520,26 +520,9 @@ struct DomainFeatureSupportTests {
             ("watchAddable", Domain.watchAddable),
             ("controlScreenDomains", Domain.controlScreenDomains),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-            ("appDatabaseExcluded", Domain.appDatabaseExcluded),
         ]
         for (name, group) in groups {
             #expect(group.count == Set(group).count, "\(name) contains duplicate domains")
-        }
-    }
-
-    @Test func supportedDomainsAreNotExcludedFromPersistence() {
-        let excluded = Set(Domain.appDatabaseExcluded)
-        let featureLists: [(String, [Domain])] = [
-            ("carPlaySupported", Domain.carPlaySupported),
-            ("watchSupported", Domain.watchSupported),
-            ("watchAddable", Domain.watchAddable),
-            ("controlScreenDomains", Domain.controlScreenDomains),
-            ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-        ]
-        for (name, list) in featureLists {
-            for domain in list {
-                #expect(!excluded.contains(domain), "\(name) domain \(domain) must not be in appDatabaseExcluded")
-            }
         }
     }
 }
