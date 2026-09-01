@@ -41,7 +41,7 @@ struct EntityRegistryTests {
     }
 }
 
-@Suite("AppEntitiesModel display-name resolution")
+@Suite("AppEntitiesModel display-name resolution", .serialized)
 struct AppEntitiesModelNameResolutionTests {
     private func makeEntity(_ entityId: String, friendlyName: String?) throws -> HAEntity {
         var attributes: [String: Any] = [:]

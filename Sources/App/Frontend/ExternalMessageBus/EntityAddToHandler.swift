@@ -51,9 +51,7 @@ final class EntityAddToHandler {
                 #endif
 
                 // Widgets are available on all platforms
-                if domain != nil {
-                    actions.append(CustomWidgetAction())
-                }
+                actions.append(CustomWidgetAction())
 
                 // Mac titlebar/toolbar is available on Mac Catalyst for any entity
                 if Current.isCatalyst, domain != nil {
