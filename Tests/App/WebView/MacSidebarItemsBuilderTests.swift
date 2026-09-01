@@ -85,7 +85,7 @@ struct MacSidebarItemsBuilderTests {
             hiddenPanels: ["hidden"]
         )
 
-        #expect(items.map(\.id) == ["home", "security", "shown"])
+        #expect(items.map(\.id) == ["security", "home", "shown"])
     }
 
     @Test("Legacy lovelace default falls back to home when no lovelace panel exists")
