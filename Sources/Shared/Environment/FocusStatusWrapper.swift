@@ -107,6 +107,12 @@ public class FocusStatusWrapper {
 
         let now = Current.date()
         let isFocused = lastStatus?.isFocused
+        let previous = receivedStatus.value
+
+        // State persisted before `lastStartedDate` existed still carries the same evidence in its
+        // own `isFocused`: a status that said a Focus was running is the confirmation, so the
+        // first status after an upgrade doesn't have to be the one that establishes it.
+        let previousStartedDate = previous?.lastStartedDate ?? (previous?.isFocused == true ? previous?.date : nil)
 
         // Recorded rather than acted on: iOS runs the next Focus' filter before it tells us the
         // previous one ended, so which of the two is current is decided when they are read back
@@ -114,8 +120,8 @@ public class FocusStatusWrapper {
         receivedStatus.value = FocusStatusState(
             isFocused: isFocused,
             date: now,
-            lastEndedDate: isFocused == false ? now : receivedStatus.value?.lastEndedDate,
-            lastStartedDate: isFocused == true ? now : receivedStatus.value?.lastStartedDate
+            lastEndedDate: isFocused == false ? now : previous?.lastEndedDate,
+            lastStartedDate: isFocused == true ? now : previousStartedDate
         )
     }
 

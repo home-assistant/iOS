@@ -330,6 +330,23 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(Current.focusStatus.lastReceived()?.lastStartedDate, now.addingTimeInterval(60))
     }
 
+    /// Status persisted before it recorded when a Focus started still says one was running, and
+    /// that is the confirmation — otherwise the first status after an upgrade could never be the
+    /// one that ends the Focus it was talking about.
+    func testReceivedStatusBackfillsTheStartFromAPersistedFocusedStatus() throws {
+        Current.isAppExtension = true
+        Current.focusStatus.receivedStatus.value = FocusStatusState(
+            isFocused: true,
+            date: now.addingTimeInterval(-60),
+            lastEndedDate: nil
+        )
+
+        Current.focusStatus.update(fromReceived: INFocusStatus(isFocused: false))
+
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastEndedDate, now)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.lastStartedDate, now.addingTimeInterval(-60))
+    }
+
     /// A received status must not destroy the reported name: whether it is still current depends on
     /// when the filter ran, which is only known when the two are read back together.
     func testReceivedStatusKeepsTheReportedName() throws {
