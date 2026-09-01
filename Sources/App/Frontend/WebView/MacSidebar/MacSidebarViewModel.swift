@@ -33,7 +33,8 @@ final class MacSidebarViewModel: ObservableObject {
     private var legacyPanelOrder: [String]?
     private var legacyHiddenPanels: [String]?
     private var legacyDefaultPanel: String?
-    private var userDefaultPanel: String?
+    private var coreUserData = FrontendDefaultPanelData()
+    private var userDefaultPanel: String? { coreUserData.defaultPanel }
     private var systemDefaultPanel: String?
     private var notificationIds: Set<String> = []
     private var currentPath: String?
@@ -106,7 +107,7 @@ final class MacSidebarViewModel: ObservableObject {
         ) { [weak self] result in
             guard case let .success(data) = result else { return }
             Task { @MainActor [weak self] in
-                self?.userDefaultPanel = data.defaultPanel
+                self?.coreUserData = data
                 self?.rebuild()
             }
         })
@@ -179,6 +180,30 @@ final class MacSidebarViewModel: ObservableObject {
     func show(itemId: String) {
         guard hiddenItems.contains(where: { $0.id == itemId }) else { return }
         save(effectiveUserData.showing(itemId, visibleOrder: mainItems.map(\.id)))
+    }
+
+    /// Mirrors the profile page's dashboard picker: only dashboards can be chosen, and the current
+    /// default needs no action.
+    func canSetDefaultDashboard(_ item: MacSidebarItem) -> Bool {
+        item.isDashboard && item.id != defaultPanelPath
+    }
+
+    func setDefaultDashboard(itemId: String) {
+        guard let item = (mainItems + hiddenItems).first(where: { $0.id == itemId }),
+              canSetDefaultDashboard(item) else { return }
+        coreUserData = coreUserData.settingDefaultPanel(itemId)
+        rebuild()
+        guard let connection = Current.api(for: server)?.connection else { return }
+        tokens.append(connection.send(
+            HATypedRequest<HAResponseVoid>.setFrontendUserData(
+                key: FrontendDefaultPanelData.dataKey,
+                value: coreUserData.rawValue
+            )
+        ) { result in
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to save default dashboard: \(error)")
+            }
+        })
     }
 
     func resetToDefaults() {

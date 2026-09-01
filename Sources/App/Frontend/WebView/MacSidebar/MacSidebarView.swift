@@ -116,6 +116,9 @@ struct MacSidebarView: View {
                 Button(L10n.Mac.Sidebar.resetToDefaults) { viewModel.resetToDefaults() }
                 Button(L10n.Mac.Sidebar.done) { viewModel.isEditing = false }
             } else {
+                if viewModel.canSetDefaultDashboard(item) {
+                    Button(L10n.Mac.Sidebar.setDefaultDashboard) { viewModel.setDefaultDashboard(itemId: item.id) }
+                }
                 if viewModel.canHide(item) {
                     Button(L10n.Mac.Sidebar.hide) { viewModel.hide(itemId: item.id) }
                 }

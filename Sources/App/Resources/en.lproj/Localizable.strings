@@ -957,6 +957,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
 "mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";

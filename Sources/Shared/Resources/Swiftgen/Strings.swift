@@ -3234,6 +3234,8 @@ public enum L10n {
       public static var notifications: String { return L10n.tr("Localizable", "mac.sidebar.notifications") }
       /// Reset to Defaults
       public static var resetToDefaults: String { return L10n.tr("Localizable", "mac.sidebar.reset_to_defaults") }
+      /// Set as Default Dashboard
+      public static var setDefaultDashboard: String { return L10n.tr("Localizable", "mac.sidebar.set_default_dashboard") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "mac.sidebar.settings") }
       /// Show
