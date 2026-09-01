@@ -337,6 +337,19 @@ public class SettingsStore {
         }
     }
 
+    public var macNativeSidebarVisible: Bool {
+        get {
+            if let value = prefs.object(forKey: "macNativeSidebarVisible") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "macNativeSidebarVisible")
+        }
+    }
+
     /// Whether the one-time Live Activity lock screen privacy disclosure has been shown.
     /// Set to true after the first Live Activity is started; never reset.
     public var hasSeenLiveActivityDisclosure: Bool {

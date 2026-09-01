@@ -31,10 +31,12 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
+    case sidebarShow = "sidebar/show"
 
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
+            "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "hasMatterStatusReport": Current.matter.isAvailable,
@@ -71,4 +73,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case navigate = "navigate"
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
+    case showNotifications = "notifications/show"
 }
