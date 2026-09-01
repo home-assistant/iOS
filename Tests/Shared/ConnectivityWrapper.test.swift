@@ -8,6 +8,8 @@ class ConnectivityWrapperTests: XCTestCase {
     private var previousPerformNetworkStateFetch: (() async -> NetworkState)!
     private var previousNetworkFetchTimeout: TimeInterval!
     private var previousSimpleNetworkType: (() -> NetworkType)!
+    private var previousEmptyNetworkStateGrace: TimeInterval!
+    private var previousDate: (() -> Date)!
 
     override func setUp() {
         super.setUp()
@@ -17,6 +19,9 @@ class ConnectivityWrapperTests: XCTestCase {
         previousPerformNetworkStateFetch = Current.connectivity.performNetworkStateFetch
         previousNetworkFetchTimeout = Current.connectivity.networkFetchTimeout
         previousSimpleNetworkType = Current.connectivity.simpleNetworkType
+        previousEmptyNetworkStateGrace = Current.connectivity.emptyNetworkStateGrace
+        previousDate = Current.date
+        Current.connectivity.updateLastKnownNetworkState(NetworkState())
     }
 
     override func tearDown() {
@@ -26,6 +31,9 @@ class ConnectivityWrapperTests: XCTestCase {
         Current.connectivity.performNetworkStateFetch = previousPerformNetworkStateFetch
         Current.connectivity.networkFetchTimeout = previousNetworkFetchTimeout
         Current.connectivity.simpleNetworkType = previousSimpleNetworkType
+        Current.connectivity.emptyNetworkStateGrace = previousEmptyNetworkStateGrace
+        Current.date = previousDate
+        Current.connectivity.updateLastKnownNetworkState(NetworkState())
         super.tearDown()
     }
 
@@ -207,5 +215,112 @@ class ConnectivityWrapperTests: XCTestCase {
         XCTAssertEqual(state.ssid, "fresh-ssid")
         XCTAssertEqual(state.bssid, "fresh-bssid")
         XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "fresh-ssid")
+    }
+
+    func testEmptyFetchWhileStillOnWiFiKeepsLastKnownNetwork() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home", bssid: "ap-a") }
+        _ = await Current.connectivity.fetchNetworkState()
+
+        // Roaming to another access point on the same SSID: NEHotspotNetwork reports nothing while the
+        // device re-associates, which must not read as having left the network.
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertEqual(state.ssid, "home")
+        XCTAssertEqual(state.bssid, "ap-a")
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "home")
+    }
+
+    func testEmptyFetchOnCellularClearsLastKnownNetwork() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home", bssid: "ap-a") }
+        _ = await Current.connectivity.fetchNetworkState()
+
+        Current.connectivity.simpleNetworkType = { .cellular }
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertNil(state.ssid)
+        XCTAssertNil(Current.connectivity.lastKnownNetworkState().ssid)
+    }
+
+    func testEmptyFetchIsBelievedOnceTheGraceElapses() async {
+        var now = Date(timeIntervalSince1970: 1_000_000)
+        Current.date = { now }
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.emptyNetworkStateGrace = 60
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home") }
+        _ = await Current.connectivity.fetchNetworkState()
+
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+        now = now.addingTimeInterval(59)
+        let withinGrace = await Current.connectivity.fetchNetworkState()
+        XCTAssertEqual(withinGrace.ssid, "home")
+
+        now = now.addingTimeInterval(2)
+        let pastGrace = await Current.connectivity.fetchNetworkState()
+        XCTAssertNil(pastGrace.ssid)
+    }
+
+    func testRepeatedEmptyFetchesDoNotExtendTheGrace() async {
+        var now = Date(timeIntervalSince1970: 1_000_000)
+        Current.date = { now }
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.emptyNetworkStateGrace = 60
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home") }
+        _ = await Current.connectivity.fetchNetworkState()
+
+        // The grace is measured from the last fetch that actually reported a network, so preserving the
+        // cached one must not push the deadline out on every retry.
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+        for _ in 0 ..< 6 {
+            now = now.addingTimeInterval(10)
+            _ = await Current.connectivity.fetchNetworkState()
+        }
+
+        XCTAssertNil(Current.connectivity.lastKnownNetworkState().ssid)
+    }
+
+    func testEmptyFetchWithNoPriorNetworkIsBelieved() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertNil(state.ssid)
+    }
+
+    func testRefreshingWhileTheNetworkIsUnreadableKeepsReportingTheSameNetwork() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { await Current.connectivity.fetchNetworkState() }
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home", bssid: "ap-a") }
+        await Current.connectivity.refreshNetworkInformation()
+
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+        await Current.connectivity.refreshNetworkInformation()
+
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "home")
+    }
+
+    func testPathUpdateWhileRoamingDoesNotPostConnectivityChange() async {
+        Current.connectivity.simpleNetworkType = { .wifi }
+        Current.connectivity.currentNetworkState = { await Current.connectivity.fetchNetworkState() }
+        Current.connectivity.performNetworkStateFetch = { NetworkState(ssid: "home", bssid: "ap-a") }
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        Current.connectivity.performNetworkStateFetch = { NetworkState() }
+        let expectation = expectation(
+            forNotification: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+        expectation.isInverted = true
+
+        await Current.connectivity.handleNetworkPathUpdate()
+
+        await fulfillment(of: [expectation], timeout: 0.5)
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "home")
     }
 }

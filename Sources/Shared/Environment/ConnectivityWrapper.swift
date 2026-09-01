@@ -63,6 +63,7 @@ public class ConnectivityWrapper {
 
     private let stateLock = NSLock()
     private var cachedNetworkState = NetworkState()
+    private var lastPopulatedNetworkStateDate: Date?
 
     private let notificationLock = NSLock()
     private var lastNotifiedNetworkType: NetworkType?
@@ -74,6 +75,21 @@ public class ConnectivityWrapper {
         stateLock.lock()
         defer { stateLock.unlock() }
         cachedNetworkState = state
+        if state == NetworkState() {
+            // Deliberately resetting to no network leaves nothing for `emptyNetworkStateGrace` to hold on to.
+            lastPopulatedNetworkStateDate = nil
+        }
+    }
+
+    /// Records a state that a fetch actually returned. Unlike a state re-applied from the cache by
+    /// `refreshNetworkInformation()`, this is what `emptyNetworkStateGrace` measures from.
+    private func recordFetchedNetworkState(_ state: NetworkState) {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        cachedNetworkState = state
+        if state != NetworkState() {
+            lastPopulatedNetworkStateDate = Current.date()
+        }
     }
 
     private func readLastKnownNetworkState() -> NetworkState {
@@ -82,9 +98,24 @@ public class ConnectivityWrapper {
         return cachedNetworkState
     }
 
+    private func readLastPopulatedNetworkStateDate() -> Date? {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return lastPopulatedNetworkStateDate
+    }
+
     /// Maximum time to await a network-info fetch before falling back to the last-known state.
     /// Overridable in tests.
     var networkFetchTimeout: TimeInterval = 3
+
+    /// How long a fetch that reports no network at all keeps deferring to the last-known state while
+    /// the device is not on cellular. `NEHotspotNetwork.fetchCurrent` reports nothing for reasons other
+    /// than being off Wi-Fi, most commonly a roam between access points on the same SSID, which leaves
+    /// the device with no readable network while it re-associates. Believing that flips the active URL
+    /// to the external one and reloads the whole frontend, then reloads it again once the read recovers.
+    /// Bounded rather than indefinite so a read that never recovers (location access denied, say) is
+    /// eventually believed. Overridable in tests.
+    var emptyNetworkStateGrace: TimeInterval = 60
 
     /// The underlying network-info fetch, before the timeout guard in `fetchNetworkState()`.
     /// Overridable in tests to simulate a fetch that never completes.
@@ -122,8 +153,30 @@ public class ConnectivityWrapper {
             return readLastKnownNetworkState()
         }
 
-        updateLastKnownNetworkState(state)
+        guard state != NetworkState() || shouldBelieveEmptyNetworkState() else {
+            Current.Log.info("network information came back unreadable; keeping last-known network state")
+            return readLastKnownNetworkState()
+        }
+
+        recordFetchedNetworkState(state)
         return state
+    }
+
+    /// Whether a fetch reporting no network describes the network the device is actually on, rather
+    /// than a read that failed while it was between access points.
+    private func shouldBelieveEmptyNetworkState() -> Bool {
+        // On cellular there is genuinely no Wi-Fi to report, and switching to the external URL right
+        // away is the correct response to leaving the network.
+        if simpleNetworkType() == .cellular {
+            return true
+        }
+
+        guard let lastPopulated = readLastPopulatedNetworkStateDate() else {
+            // Nothing was ever read successfully, so there is no earlier network to hold on to.
+            return true
+        }
+
+        return Current.date().timeIntervalSince(lastPopulated) >= emptyNetworkStateGrace
     }
 
     #if targetEnvironment(macCatalyst)
