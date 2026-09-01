@@ -4491,10 +4491,6 @@ public enum L10n {
         /// Native sidebar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
       }
-      public enum TestflightOnly {
-        /// App Labs is only available on TestFlight builds.
-        public static var body: String { return L10n.tr("Localizable", "settings.app_labs.testflight_only.body") }
-      }
     }
     public enum ConnectionSection {
       /// Activate

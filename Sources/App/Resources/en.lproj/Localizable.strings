@@ -1342,7 +1342,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
 "settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
 "settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
 "settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Add Server";

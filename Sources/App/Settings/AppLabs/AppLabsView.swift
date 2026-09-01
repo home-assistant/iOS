@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -12,17 +11,6 @@ struct AppLabsView: View {
                 title: L10n.Settings.AppLabs.title,
                 subtitle: L10n.Settings.AppLabs.Header.subtitle
             )
-
-            Section {
-                Label {
-                    Text(L10n.Settings.AppLabs.TestflightOnly.body)
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                } icon: {
-                    Image(systemSymbol: .infoCircle)
-                        .foregroundColor(.haPrimary)
-                }
-            }
 
             let features = AppLabsFeature.availableFeatures
             if features.isEmpty {
