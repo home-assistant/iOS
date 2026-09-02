@@ -31,7 +31,7 @@ struct WidgetEntitiesAppEntityQueryTests {
 
             let perServer = query.entitiesPerServer()
 
-            #expect(perServer.map { $0.0.identifier.rawValue } == ["A", "B"])
+            #expect(perServer.map(\.0.identifier.rawValue) == ["A", "B"])
             #expect(perServer[0].1.map(\.displayString) == ["Kitchen light", "Porch", "Temperature"])
             #expect(perServer[0].1.first?.areaName == "Kitchen")
             #expect(perServer[0].1.first?.contextSubtitle?.contains("Kitchen") == true)
