@@ -483,7 +483,7 @@ public class AppEnvironment {
         print("⚠️ isTestFlight returns TRUE while debugging")
         return true
         #else
-        return Environment.isTestFlightReceipt()
+        return AppEnvironment.isTestFlightReceipt()
         #endif
     }()
 
@@ -596,7 +596,7 @@ public class AppEnvironment {
         )
 
         // Create a file log destination
-        let isTestFlight = Environment.isTestFlightReceipt()
+        let isTestFlight = AppEnvironment.isTestFlightReceipt()
         let fileDestination = AutoRotatingFileDestination(
             writeToFile: logPath,
             identifier: "advancedLogger.fileDestination",
