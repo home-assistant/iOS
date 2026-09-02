@@ -56,57 +56,40 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     private static let iconSize: CGFloat = 24
 
-    var icon: some View {
-        Group {
-            switch self {
-            case .servers:
-                MaterialDesignIconsImage(icon: .serverIcon, size: Self.iconSize)
-            case .general:
-                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: Self.iconSize)
-            case .macToolbar:
-                MaterialDesignIconsImage(icon: .dockWindowIcon, size: Self.iconSize)
-            case .gestures:
-                MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
-            case .greetings:
-                MaterialDesignIconsImage(icon: .airplaneIcon, size: Self.iconSize)
-            case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletDashboardIcon, size: Self.iconSize)
-            case .location:
-                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
-            case .remindersSync:
-                MaterialDesignIconsImage(icon: .formatListChecksIcon, size: Self.iconSize)
-            case .notifications:
-                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: Self.iconSize)
-            case .liveActivities:
-                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: Self.iconSize)
-            case .sensors:
-                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: Self.iconSize)
-            case .nfc:
-                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: Self.iconSize)
-            case .widgets:
-                MaterialDesignIconsImage(icon: .widgetsIcon, size: Self.iconSize)
-            case .appIconShortcuts:
-                MaterialDesignIconsImage(icon: .applicationIcon, size: Self.iconSize)
-            case .watch:
-                MaterialDesignIconsImage(icon: .watchVariantIcon, size: Self.iconSize)
-            case .carPlay:
-                MaterialDesignIconsImage(icon: .carBackIcon, size: Self.iconSize)
-            case .complications:
-                MaterialDesignIconsImage(icon: .chartDonutIcon, size: Self.iconSize)
-            case .help:
-                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: Self.iconSize)
-            case .permissions:
-                MaterialDesignIconsImage(icon: .shieldKeyOutlineIcon, size: Self.iconSize)
-            case .privacy:
-                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: Self.iconSize)
-            case .debugging:
-                MaterialDesignIconsImage(icon: .bugIcon, size: Self.iconSize)
-            case .appLabs:
-                MaterialDesignIconsImage(icon: .flaskOutlineIcon, size: Self.iconSize)
-            case .whatsNew:
-                MaterialDesignIconsImage(icon: .starIcon, size: Self.iconSize)
-            }
+    var materialIcon: MaterialDesignIcons {
+        switch self {
+        case .servers: return .serverIcon
+        case .general: return .paletteOutlineIcon
+        case .macToolbar: return .dockWindowIcon
+        case .gestures: return .gestureIcon
+        case .greetings: return .airplaneIcon
+        case .kiosk: return .tabletDashboardIcon
+        case .location: return .crosshairsGpsIcon
+        case .remindersSync: return .formatListChecksIcon
+        case .notifications: return .bellOutlineIcon
+        case .liveActivities: return .playBoxOutlineIcon
+        case .sensors: return .formatListBulletedIcon
+        case .nfc: return .nfcVariantIcon
+        case .widgets: return .widgetsIcon
+        case .appIconShortcuts: return .applicationIcon
+        case .watch: return .watchVariantIcon
+        case .carPlay: return .carBackIcon
+        case .complications: return .chartDonutIcon
+        case .help: return .helpCircleOutlineIcon
+        case .permissions: return .shieldKeyOutlineIcon
+        case .privacy: return .lockOutlineIcon
+        case .debugging: return .bugIcon
+        case .appLabs: return .flaskOutlineIcon
+        case .whatsNew: return .starIcon
         }
+    }
+
+    var icon: some View {
+        icon(size: Self.iconSize)
+    }
+
+    func icon(size: CGFloat) -> some View {
+        MaterialDesignIconsImage(icon: materialIcon, size: size)
     }
 
     var accessoryIcon: some View {

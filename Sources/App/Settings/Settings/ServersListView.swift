@@ -2,6 +2,8 @@ import Shared
 import SwiftUI
 
 struct ServersListView: View {
+    var macSidebarSelection: MacSettingsSidebarSelection?
+
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
@@ -10,8 +12,10 @@ struct ServersListView: View {
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
-                HomeAssistantAccountRowView(server: server)
+                HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .tag(MacSettingsSidebarSelection.server(server.identifier))
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
             .contextMenu {
                 Button {
                     server.refreshAppDatabase(forceUpdate: true, showProgress: true)
@@ -54,6 +58,8 @@ struct ServersListView: View {
         NavigationLink(destination: ServerSwitchingSettingsView()) {
             Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
         }
+        .tag(MacSettingsSidebarSelection.serverSwitching)
+        .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
 
         Button {
             #if targetEnvironment(macCatalyst)
@@ -69,6 +75,7 @@ struct ServersListView: View {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
         #endif
+        .macSettingsSidebarRow()
     }
 }
 
