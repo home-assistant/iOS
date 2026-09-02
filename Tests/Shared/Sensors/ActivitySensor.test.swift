@@ -25,11 +25,15 @@ class ActivitySensorTests: XCTestCase {
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler([], nil) }
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = ActivitySensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? ActivitySensor.ActivityError, .unauthorized)
-        }
+    /// Listed rather than dropped: switching the sensor on is what asks for motion access, so a
+    /// sensor that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.motion.isActivityAvailable = { true }
+
+        let sensors = try hang(ActivitySensor(request: request).sensors())
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.activity.rawValue)
+        XCTAssertEqual(sensors[0].State as? String, "unavailable")
     }
 
     func testUnavailableReturnsError() {

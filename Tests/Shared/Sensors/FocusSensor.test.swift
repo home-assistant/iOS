@@ -50,16 +50,19 @@ class FocusSensorTests: XCTestCase {
         }
     }
 
-    func testNotAuthorized() throws {
+    /// Listed rather than dropped: switching it on is what asks for Focus access, so a sensor that
+    /// vanished until it was granted would have no row left to switch on.
+    func testNotAuthorizedReportsUnavailable() throws {
         for state: FocusStatusWrapper.AuthorizationStatus in [
             .restricted, .denied, .notDetermined,
         ] {
             setUpDependencies(authorization: state)
 
-            let promise = FocusSensor(request: request).sensors()
-            XCTAssertThrowsError(try hang(promise)) { error in
-                XCTAssertEqual(error as? FocusSensor.FocusError, .unauthorized)
-            }
+            let sensors = try hang(FocusSensor(request: request).sensors())
+            XCTAssertEqual(sensors.count, 1, "\(state)")
+            XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.focus.rawValue)
+            XCTAssertEqual(sensors[0].State as? String, "unavailable")
+            XCTAssertEqual(sensors[0].Type, "binary_sensor")
         }
     }
 

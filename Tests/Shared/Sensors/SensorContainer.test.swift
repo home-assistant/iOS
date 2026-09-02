@@ -84,6 +84,27 @@ class SensorContainerTests: XCTestCase {
         }
     }
 
+    /// The list the user sees comes from this update, and a row that jumped as it was switched on
+    /// would move the next one under their finger.
+    func testUpdateIsAlphabeticalWhicheverSensorsAreEnabled() throws {
+        container.register(observer: observer)
+        container.register(provider: MockSensorProvider.self)
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "Charlie", uniqueID: "charlie"),
+                WebhookSensor(name: "alpha", uniqueID: "alpha"),
+                WebhookSensor(name: "Bravo", uniqueID: "bravo"),
+            ]),
+        ]
+        container.setEnabled(true, forUniqueID: "charlie")
+
+        _ = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
+
+        let update = try XCTUnwrap(observer.updates.first)
+        let names = try hang(Promise(update.sensors)).map { $0.Name ?? "" }
+        XCTAssertEqual(names, ["alpha", "Bravo", "Charlie"])
+    }
+
     func testMultipleButContainingErrorsReturnsSuccessful() throws {
         container.register(provider: MockSensorProvider.self)
         container.register(provider: MockSensorProvider.self)

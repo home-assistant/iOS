@@ -83,7 +83,7 @@ struct SensorListView: View {
                     Toggle(isOn: .init(get: {
                         Current.sensors.isEnabled(sensor: sensor)
                     }, set: { newValue in
-                        Current.sensors.setEnabled(newValue, for: sensor)
+                        viewModel.setEnabled(newValue, for: sensor)
                     })) {
                         SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
                     }

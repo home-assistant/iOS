@@ -85,6 +85,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared
         }
 
+        Current.requestSensorPermissions = { uniqueIDs in
+            Task { @MainActor in
+                SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
+            }
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false

@@ -110,7 +110,6 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
 public class BarometerSensor: SensorProvider {
     public enum BarometerError: Error, Equatable {
-        case unauthorized
         case unavailable
         case noData
     }
@@ -132,13 +131,16 @@ public class BarometerSensor: SensorProvider {
             return .init(error: BarometerError.noData)
         }
 
-        guard Current.barometer.isAuthorized() else {
-            return .init(error: BarometerError.unauthorized)
-        }
-
         guard Current.barometer.isAvailable() else {
             Current.Log.warning("Barometer is not available")
             return .init(error: BarometerError.unavailable)
+        }
+
+        guard Current.barometer.isAuthorized() else {
+            return .value([WebhookSensor(
+                awaitingPermissionNamed: "Pressure",
+                uniqueID: WebhookSensorId.pressure.rawValue
+            )])
         }
 
         // Route through the signaler so concurrent per-server sweeps share a single reading rather

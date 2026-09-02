@@ -21,6 +21,8 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         SensorEnablementStore.resetForTesting()
         Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
         Current.healthKitService.isAvailable = { true }
+        // Switching a metric on now asks HealthKit for access, which must not reach the real store.
+        Current.healthKitService.requestReadAuthorization = {}
     }
 
     override func tearDown() {

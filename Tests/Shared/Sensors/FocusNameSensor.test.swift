@@ -81,13 +81,16 @@ class FocusNameSensorTests: XCTestCase {
         )
     }
 
-    func testUnconfiguredWithoutNamesOrActiveName() throws {
+    /// The sensor's detail screen is the only route to the Focus names, so it has to be in the
+    /// list before the first one is created or a new user can never get there.
+    func testReportsEmptyStateWithoutNamesOrActiveName() throws {
         setUpDependencies(activeFocusName: nil, liveIsFocused: true)
 
-        let promise = FocusNameSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unconfigured)
-        }
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].UniqueID, "focus_name")
+        XCTAssertEqual(sensors[0].State as? String, "")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
     }
 
     func testUnavailableOutsideTestFlight() throws {
