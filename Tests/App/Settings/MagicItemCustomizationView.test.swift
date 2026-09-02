@@ -72,9 +72,9 @@ struct MagicItemCustomizationViewTests {
         assertSnapshots(context: .widget, item: item)
     }
 
-    /// An entity whose icon isn't a control on the frontend's tile card — a sensor — names "Nothing"
-    /// as its icon's default and "More info" as the tile's, the way the tile card defaults them.
-    @Test func widgetNamesTheFrontendDefaultsForAnEntityThatCannotToggle() {
+    /// An entity whose icon isn't a control on the frontend's tile card — a sensor — names "More
+    /// info" as the default for both halves of the tile, since there is nothing for its icon to run.
+    @Test func widgetNamesMoreInfoAsTheDefaultForAnEntityThatCannotToggle() {
         assertSnapshots(context: .widget, item: .init(id: "sensor.temperature", serverId: "1", type: .entity))
     }
 

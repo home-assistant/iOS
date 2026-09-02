@@ -31,8 +31,11 @@ struct MagicItemActionSelectionView: View {
     @State private var performActionId: String?
     @State private var performActionPayload = ""
 
+    /// A retired choice — "nothing", which items saved with it still carry — reads as the default
+    /// it now behaves as, so the picker never shows a behavior it no longer offers.
     private var selected: ItemAction {
-        action ?? .default
+        guard let action, !action.isRetired else { return .default }
+        return action
     }
 
     private var offeredActions: [ItemAction] {

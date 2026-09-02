@@ -290,11 +290,12 @@ public struct MagicItem: Codable, Equatable, Hashable {
         canToggle && domain?.toggleIsStateAware == true
     }
 
-    /// What `.default` stands for on a widget tile's icon, the frontend tile card's
-    /// `getEntityDefaultTileIconAction`: "toggle" for the domains whose icon is a control
-    /// (`DOMAINS_TOGGLE`, plus a button, input button, or scene), and nothing for every other
-    /// entity — the rest of the tile opens it. An Assist pipeline has no entity, so its icon
-    /// starts Assist.
+    /// What `.default` stands for on a widget tile's icon — and on an app icon shortcut, which
+    /// runs the same thing: "toggle" for the domains the frontend's tile card makes the icon a
+    /// control for (`DOMAINS_TOGGLE`, plus a button, input button, or scene), and the entity's
+    /// more-info dialog for every other entity. The tile card leaves those icons inert instead;
+    /// here there is always an entity to open, so the icon opens it. An Assist pipeline has no
+    /// entity, so its icon starts Assist.
     public var defaultIconAction: ItemAction {
         if type == .assistPipeline {
             return .assist(serverId, assistPipelineId ?? id, true)
@@ -302,7 +303,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         if hasMoreInfoDialog, let domain, domain.togglesFromTileIcon {
             return .toggle
         }
-        return .nothing
+        return .moreInfoDialog
     }
 
     /// What `.default` stands for on the rest of a widget tile: the entity's more-info dialog, the
@@ -312,32 +313,17 @@ public struct MagicItem: Codable, Equatable, Hashable {
         hasMoreInfoDialog ? .moreInfoDialog : defaultIconAction
     }
 
-    /// What `.default` stands for on an app icon shortcut, which has no tile: what the tile's icon
-    /// would do, except that a shortcut whose icon would do nothing opens the entity instead — a
-    /// shortcut that does nothing isn't worth one of the four slots.
-    public var defaultShortcutAction: ItemAction {
-        defaultIconAction == .nothing ? defaultTapAction : defaultIconAction
-    }
-
-    /// What tapping a widget tile's icon does.
-    public var widgetInteractionType: WidgetInteractionType {
-        interactionType(defaultingTo: defaultIconAction)
-    }
-
-    /// What tapping the item's app icon shortcut does.
-    public var shortcutInteractionType: WidgetInteractionType {
-        interactionType(defaultingTo: defaultShortcutAction)
-    }
-
+    /// What tapping a widget tile's icon — or the item's app icon shortcut — does.
+    ///
     /// An explicit action override wins over whatever the item would do by default; a pipeline is
     /// the one item with nothing to override, since starting it is all it can do. The default is
     /// resolved through the same action the customization screen names as "Default", so what the
     /// picker says and what a tap does can't drift apart.
-    private func interactionType(defaultingTo defaultAction: ItemAction) -> WidgetInteractionType {
+    public var widgetInteractionType: WidgetInteractionType {
         if type != .assistPipeline, let action, let interaction = interactionType(for: action) {
             return interaction
         }
-        return interactionType(for: defaultAction) ?? .appIntent(.refresh)
+        return interactionType(for: defaultIconAction) ?? .appIntent(.refresh)
     }
 
     /// What tapping a widget tile outside its icon does.
@@ -369,17 +355,16 @@ public struct MagicItem: Codable, Equatable, Hashable {
         [.entity, .script, .scene].contains(type)
     }
 
-    /// The interaction an explicitly chosen action performs. `nil` for `.default`, and for a
-    /// `.toggle` or an on/off behavior the item's domain can't perform — all of which leave the
+    /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
+    /// `.toggle` or an on/off behavior the item's domain can't perform, for a more-info dialog an
+    /// item without an entity can't open, and for the retired `.nothing` — all of which leave the
     /// choice to whatever the caller falls back on.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
-        case .default:
+        case .default, .nothing:
             return nil
         case .moreInfoDialog:
-            return moreInfoIntent()
-        case .nothing:
-            return .appIntent(.refresh)
+            return hasMoreInfoDialog ? moreInfoIntent() : nil
         case .toggle:
             return toggleIntent()
         case .turnOn:
@@ -497,7 +482,8 @@ public enum MagicItemError: Error {
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// Listed in the frontend's own order, with the app's own additions next to the action they
     /// resemble most: the explicit on/off behaviors after "toggle", `runScript` after "perform
-    /// action".
+    /// action". The frontend's "no action" is left out: an item with nothing else to do opens its
+    /// more-info dialog, so `.nothing` is storage only.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
@@ -509,7 +495,6 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         .performAction("", "", ""),
         .runScript("", ""),
         .assist("", "", false),
-        .nothing,
     ]
 
     case `default`
@@ -535,13 +520,17 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
+    /// Retired: the picker no longer offers it, and an item stored with it behaves as `.default`.
+    /// The case stays only so configurations saved while it was offered still decode — dropping
+    /// it would fail every item in such a configuration, not just this one's choice.
     case nothing
 
     /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
     /// perform — "toggle" for an entity with nothing to toggle, the explicit on/off pair for one
     /// with a single service — the way the frontend's action editor filters "toggle" out of its
     /// own list. A stored choice stays listed even then, so it never vanishes from under the user;
-    /// it falls back at tap time the way it always has.
+    /// it falls back at tap time the way it always has. The retired `.nothing` is the exception:
+    /// it reads as the default, so it is never listed.
     public static func offered(for item: MagicItem, selected: ItemAction) -> [ItemAction] {
         allCases.filter { itemAction in
             if itemAction.id == selected.id {
@@ -556,6 +545,12 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
                 return true
             }
         }
+    }
+
+    /// Whether this is a stored choice the picker should treat as the default: the retired
+    /// `.nothing`, which no longer means anything on its own.
+    public var isRetired: Bool {
+        self == .nothing
     }
 
     public var id: String {

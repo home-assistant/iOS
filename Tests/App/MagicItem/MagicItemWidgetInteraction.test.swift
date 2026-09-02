@@ -19,22 +19,22 @@ struct MagicItemWidgetInteractionTests {
         #expect(item.widgetInteractionType != item.widgetTapInteractionType)
     }
 
-    /// The frontend's tile card gives a read-only entity's icon no action at all: the rest of the
-    /// tile opens the entity, and the icon is drawn plain, not as a control.
-    @Test func readOnlyEntityIconDoesNothingAndKeepsItsIconPlain() {
+    /// The frontend's tile card gives a read-only entity's icon no action at all; here it opens the
+    /// entity like the rest of the tile does, so the tile isn't split and the icon is drawn plain.
+    @Test func readOnlyEntityIsNotSplitAndKeepsItsIconPlain() {
         let item = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
 
-        #expect(item.widgetInteractionType == .appIntent(.refresh))
-        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "sensor.temperature"))
+        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "sensor.temperature"))
+        #expect(item.widgetInteractionType == item.widgetTapInteractionType)
         #expect(!item.controlsEntityFromWidget)
     }
 
-    /// A lock is not one of the frontend's toggle-by-default domains, so its icon does nothing
-    /// until told to — but it can be told to toggle, which locks or unlocks by its state.
-    @Test func lockIconDoesNothingByDefaultButCanToggle() {
+    /// A lock is not one of the frontend's toggle-by-default domains, so its icon opens it until
+    /// told otherwise — but it can be told to toggle, which locks or unlocks by its state.
+    @Test func lockOpensMoreInfoByDefaultButCanToggle() {
         var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
 
-        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "lock.front_door"))
         #expect(!item.controlsEntityFromWidget)
 
         item.action = .toggle
@@ -51,9 +51,9 @@ struct MagicItemWidgetInteractionTests {
     @Test func scriptOpensMoreInfoUntilToldToToggle() {
         var item = MagicItem(id: "script.morning", serverId: "1", type: .script)
 
-        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "script.morning"))
         #expect(!item.controlsEntityFromWidget)
-        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "script.morning"))
+        #expect(item.widgetInteractionType == item.widgetTapInteractionType)
 
         item.action = .toggle
         #expect(item.widgetInteractionType == .appIntent(.toggle(
@@ -104,10 +104,27 @@ struct MagicItemWidgetInteractionTests {
         var moreInfo = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         moreInfo.action = .moreInfoDialog
         #expect(!moreInfo.controlsEntityFromWidget)
+    }
 
-        var nothing = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
-        nothing.action = .nothing
-        #expect(!nothing.controlsEntityFromWidget)
+    /// "Nothing" was retired: an item saved with it still decodes, behaves as the default, and the
+    /// picker neither offers nor shows it.
+    @Test func retiredNothingBehavesAsTheDefault() throws {
+        let stored = Data("""
+        {"id":"light.kitchen","serverId":"1","type":"entity","action":{"nothing":{}},"tapAction":{"nothing":{}}}
+        """.utf8)
+
+        let item = try JSONDecoder().decode(MagicItem.self, from: stored)
+
+        #expect(item.action == .nothing)
+        #expect(item.action?.isRetired == true)
+        #expect(item.widgetInteractionType == .appIntent(.toggle(
+            entityId: "light.kitchen",
+            domain: "light",
+            serverId: "1"
+        )))
+        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "light.kitchen"))
+        #expect(!ItemAction.allCases.map(\.id).contains(ItemAction.nothing.id))
+        #expect(!ItemAction.offered(for: item, selected: .default).map(\.id).contains(ItemAction.nothing.id))
     }
 
     /// An Assist pipeline has no entity behind it, so there is no dialog for the rest of the tile to
@@ -150,7 +167,7 @@ struct MagicItemWidgetInteractionTests {
 
         var sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
         sensor.action = .toggle
-        #expect(sensor.widgetInteractionType == .appIntent(.refresh))
+        #expect(Self.opensMoreInfo(sensor.widgetInteractionType, entityId: "sensor.temperature"))
         #expect(!sensor.controlsEntityFromWidget)
         sensor.tapAction = .toggle
         #expect(Self.opensMoreInfo(sensor.widgetTapInteractionType, entityId: "sensor.temperature"))
@@ -265,8 +282,9 @@ struct MagicItemWidgetInteractionTests {
     }
 
     /// "Default" on the customization screen names what it stands for, and that name is what the
-    /// tile runs — the frontend tile card's defaults: the icon toggles for its toggle domains and
-    /// does nothing otherwise, and the rest of the tile always opens the entity.
+    /// tile runs — the frontend tile card's defaults, with more-info where the card would do
+    /// nothing: the icon toggles for the toggle domains and opens the entity otherwise, and the
+    /// rest of the tile always opens the entity.
     @Test func defaultActionsNameWhatTheTileDoes() {
         let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         #expect(light.defaultIconAction == .toggle)
@@ -282,7 +300,7 @@ struct MagicItemWidgetInteractionTests {
             MagicItem(id: "cover.garage", serverId: "1", type: .entity),
             MagicItem(id: "custom.thing", serverId: "1", type: .entity),
         ] {
-            #expect(item.defaultIconAction == .nothing, "\(item.id)")
+            #expect(item.defaultIconAction == .moreInfoDialog, "\(item.id)")
             #expect(item.defaultTapAction == .moreInfoDialog, "\(item.id)")
         }
 
@@ -294,32 +312,6 @@ struct MagicItemWidgetInteractionTests {
 
         #expect(ItemAction.defaultName(resolvingTo: ItemAction.toggle.name) == "Default (Toggle)")
         #expect(ItemAction.defaultName(resolvingTo: ItemAction.moreInfoDialog.name) == "Default (More info)")
-        #expect(ItemAction.defaultName(resolvingTo: ItemAction.nothing.name) == "Default (Nothing)")
-    }
-
-    /// An app icon shortcut has no tile to open the entity from, so where the tile's icon would do
-    /// nothing the shortcut opens the entity instead; where the icon toggles, so does the shortcut.
-    @Test func shortcutDefaultsToTheIconActionOrOpensTheEntity() {
-        let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
-        #expect(light.defaultShortcutAction == .toggle)
-        #expect(light.shortcutInteractionType == .appIntent(.toggle(
-            entityId: "light.kitchen",
-            domain: "light",
-            serverId: "1"
-        )))
-
-        let script = MagicItem(id: "script.morning", serverId: "1", type: .script)
-        #expect(script.defaultShortcutAction == .moreInfoDialog)
-        #expect(Self.opensMoreInfo(script.shortcutInteractionType, entityId: "script.morning"))
-
-        var lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
-        #expect(lock.defaultShortcutAction == .moreInfoDialog)
-        lock.action = .toggle
-        #expect(lock.shortcutInteractionType == .appIntent(.toggle(
-            entityId: "lock.front_door",
-            domain: "lock",
-            serverId: "1"
-        )))
     }
 
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still

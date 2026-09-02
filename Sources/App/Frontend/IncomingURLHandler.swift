@@ -388,7 +388,7 @@ class IncomingURLHandler {
             return customAction
         }
 
-        let interactionType = item.shortcutInteractionType
+        let interactionType = item.widgetInteractionType
         if case let .widgetURL(url) = interactionType {
             _ = handle(url: url)
             return .value(())
@@ -442,7 +442,8 @@ class IncomingURLHandler {
         guard let action = item.action, action != .default else { return nil }
 
         switch action {
-        case .default:
+        case .default, .nothing:
+            // The retired "nothing" behaves as the default.
             return nil
         case .toggle, .turnOn, .turnOff:
             // These resolve through the item's interaction type, the way a widget tile's do, so
@@ -501,8 +502,6 @@ class IncomingURLHandler {
             ) {
                 _ = handle(url: url)
             }
-            return .value(())
-        case .nothing:
             return .value(())
         }
     }

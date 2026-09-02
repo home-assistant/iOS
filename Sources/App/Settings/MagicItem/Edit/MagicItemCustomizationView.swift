@@ -172,12 +172,11 @@ struct MagicItemCustomizationView: View {
                         action: $viewModel.item.tapAction
                     )
                 }
+                // An app icon shortcut runs what the widget icon would, so both name the same default.
                 MagicItemActionSelectionView(
                     title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
                     item: viewModel.item,
-                    defaultAction: context == .widget
-                        ? viewModel.item.defaultIconAction
-                        : viewModel.item.defaultShortcutAction,
+                    defaultAction: viewModel.item.defaultIconAction,
                     action: $viewModel.item.action
                 )
             } header: {
