@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "Liigu edasi";
 "mac.open_in_safari.accessibility_label" = "Ava Safaris";
 "mac.paste.accessibility_label" = "Aseta";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Toiming";
 "magic_item.action.assist.pipeline.title" = "Voog";
 "magic_item.action.assist.start_listening.title" = "Alusta kuulamist";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
 "menu.view.customize_toolbar" = "Tööriistariba kohandamine…";
 "menu.view.find" = "Otsi";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Taaslae vaade";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "See on beetafunktsioon, kui tekib probleeme, teata neist alloleva nupu abil. \
  \
  Praegu toetatakse mTLS-i ainult iOS 17+ versioonides ning see võib põhjustada probleeme teavitusmanuste kuvamise ja Assist TTS-heli kuvamisega ning see ei tööta täielikult Apple Watchis.";
@@ -1326,6 +1338,13 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.app_icon_shortcuts.reset.title" = "Rakenduse ikooni otseteede lähtestamine";
 "settings.app_icon_shortcuts.subtitle" = "Vali üksused mis kuvatakse rakenduse ikooni pikal vajutamisel.";
 "settings.app_icon_shortcuts.title" = "Rakenduse ikoonide otseteed";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktiveeri";
 "settings.connection_section.add_server" = "Lisa server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Kui teil on ebaturvaline ühendus võib see paljastada teie autentimistõendi avalikes võrkudes.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "Pole tulemusi päringule „%@\"";
 "settings.search.prompt" = "Otsingu seaded";
 "settings.search_keywords.app_icon_shortcuts" = "kiirtoimingud, avakuva, pikk vajutus, käivitusrakendus";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "auto, sõiduk, juhtimine, kuvapaneel";
 "settings.search_keywords.complications" = "kella sihverplaat, Apple Watch, glance";
 "settings.search_keywords.debugging" = "logid, diagnostika, eksport, andmebaas, tõrkeotsing, lähtestamine";

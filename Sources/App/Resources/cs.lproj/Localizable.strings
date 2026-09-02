@@ -951,6 +951,16 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "mac.navigation.go_forward.accessibility_label" = "Přejít vpřed";
 "mac.open_in_safari.accessibility_label" = "Otevřít v Safari";
 "mac.paste.accessibility_label" = "Vložit";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Akce";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Začít poslouchat";
@@ -1017,7 +1027,9 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "menu.status_item.toggle" = "Přepnout %1$@";
 "menu.view.customize_toolbar" = "Přizpůsobit panel nástrojů...";
 "menu.view.find" = "Najít";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Znovu načíst stránku";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Toto je beta verze. Pokud narazíte na nějaké problémy, nahlaste je pomocí tlačítka níže.\
  \
 Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat problémy se zobrazováním příloh oznámení, zvukem asistence TTS a nebude plně fungovat na Apple Watch.";
@@ -1326,6 +1338,13 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.app_icon_shortcuts.reset.title" = "Resetovat zkratky ikon aplikací";
 "settings.app_icon_shortcuts.subtitle" = "Vyberte položky, které se zobrazí po dlouhém stisknutí ikony aplikace.";
 "settings.app_icon_shortcuts.title" = "Zkratky ikon aplikací";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktivovat";
 "settings.connection_section.add_server" = "Přidat server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Pokud máte nezabezpečené připojení, může to odhalit váš ověřovací token ve veřejných sítích.";
@@ -1648,6 +1667,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings.search.no_results.title" = "Žádné výsledky pro \"%@\"";
 "settings.search.prompt" = "Nastavení vyhledávání";
 "settings.search_keywords.app_icon_shortcuts" = "rychlé akce, domovská obrazovka, dlouhé stisknutí, spouštěč";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "auto, vozidlo, řízení, palubní deska";
 "settings.search_keywords.complications" = "ciferník, apple watch, glance";
 "settings.search_keywords.debugging" = "protokoly, diagnostika, export, databáze, řešení problémů, reset";
@@ -2661,10 +2681,10 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.calendar.tomorrow" = "Zítra";
 "widgets.commonly_used_entities.description" = "Zobrazí běžně používané entity na základě vašich vzorců používání.";
 "widgets.commonly_used_entities.empty.description" = "Nebyly nalezeny žádné běžně používané entity. Použijte Home Assistanta k vytvoření historie používání.";
-"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
-"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
-"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
-"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entity vybraných domén se nikdy nezobrazují.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Vyloučit domény";
+"widgets.commonly_used_entities.include_domains.param.description" = "Pokud jsou vybrány domény, zobrazí se jen entity těchto domén.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Zahrnout domény";
 "widgets.commonly_used_entities.title" = "Běžně používáno";
 "widgets.content_source.complication" = "Komplikace";
 "widgets.content_source.entity" = "Entita";
@@ -2749,7 +2769,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.custom.show_last_update_time.param.title" = "Zobrazit čas poslední aktualizace";
 "widgets.custom.show_states.description" = "Zobrazení nejnovějších stavů není 100% zaručeno. Můžete to zkusit a další informace naleznete v dokumentaci k doprovodné aplikaci.";
 "widgets.custom.show_states.param.title" = "Zobrazit stavy (BETA)";
-"widgets.custom.show_states.param.title_no_beta" = "Show states";
+"widgets.custom.show_states.param.title_no_beta" = "Zobrazit státy";
 "widgets.custom.show_update_time.title" = "Poslední aktualizace:";
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
 "widgets.custom.title" = "Vlastní widgety";
@@ -2763,11 +2783,11 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Šablona horního textu";
 "widgets.details.title" = "Podrobnosti";
-"widgets.energy.battery" = "Battery";
+"widgets.energy.battery" = "Baterie";
 "widgets.energy.description" = "Zobrazí ovládací panel Energie.";
-"widgets.energy.electricity" = "Grid";
+"widgets.energy.electricity" = "Síť";
 "widgets.energy.electricity_total" = "Celkem elektřina";
-"widgets.energy.gas" = "Gas";
+"widgets.energy.gas" = "Plyn";
 "widgets.energy.grid" = "Síť";
 "widgets.energy.no_connection" = "Není k dispozici žádné připojení, zkontrolujte nastavení URL Home Assistanta";
 "widgets.energy.no_data" = "Žádné údaje o energii";
@@ -2780,9 +2800,9 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.energy.refresh_title" = "Obnovit energii";
 "widgets.energy.solar" = "Solární";
 "widgets.energy.source.auto" = "Auto";
-"widgets.energy.source.battery" = "Battery";
+"widgets.energy.source.battery" = "Baterie";
 "widgets.energy.source.consumption" = "Spotřeba";
-"widgets.energy.source.gas" = "Gas";
+"widgets.energy.source.gas" = "Plyn";
 "widgets.energy.source.solar" = "Solární";
 "widgets.energy.source.title" = "Zdroj";
 "widgets.energy.title" = "Energie";
@@ -2811,7 +2831,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Atribut";
 "widgets.parameters.complication" = "Komplikace";
-"widgets.parameters.domain" = "Domain";
+"widgets.parameters.domain" = "Doména";
 "widgets.parameters.entity" = "Entita";
 "widgets.preview.custom.description" = "Vytvořte si vlastní widget v aplikaci a poté jej zde zobrazte.";
 "widgets.preview.custom.title" = "Vlastní widget";

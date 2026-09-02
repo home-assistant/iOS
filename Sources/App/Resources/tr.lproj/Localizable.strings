@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "İleri git";
 "mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Yapıştır";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Eylem";
 "magic_item.action.assist.pipeline.title" = "İşlem hattı";
 "magic_item.action.assist.start_listening.title" = "Dinlemeye başla";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "Geçiş %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Bul";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Bu beta bir özelliktir, herhangi bir sorun yaşarsanız lütfen aşağıdaki düğmeyi kullanarak bildirin. \
  \
  Şu anda mTLS yalnızca iOS 17 ve üzeri sürümlerde desteklenmektedir, bildirim eklerinin görüntülenmesi, Yardımcı Metin Okuma (TTS) sesi ile ilgili sorunlar yaşanabilir ve Apple Watch'ta tam olarak çalışmayabilir.";
@@ -1326,6 +1338,13 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
 "settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
 "settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Etkinleştir";
 "settings.connection_section.add_server" = "Sunucu Ekle";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Güvenli olmayan bir bağlantınız varsa bu durum kimlik doğrulama belirtecinizin herkese açık ağlarda açığa çıkmasına neden olabilir.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "“%@” için sonuç bulunamadı";
 "settings.search.prompt" = "Arama ayarları";
 "settings.search_keywords.app_icon_shortcuts" = "hızlı işlemler, ana ekran, uzun basma, başlatıcı";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "araba, araç, sürüş, gösterge paneli";
 "settings.search_keywords.complications" = "saat kadranı, Apple Watch, bakış";
 "settings.search_keywords.debugging" = "günlükler, teşhis, dışa aktarma, veritabanı, sorun giderme, sıfırlama";
