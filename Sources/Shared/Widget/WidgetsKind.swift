@@ -9,6 +9,7 @@ public enum WidgetsKind: String, CaseIterable {
     case sensors
     case custom
     case commonlyUsedEntities
+    case entities
     case energy
     case controlAutomation
     case todoList
