@@ -62,8 +62,7 @@ final class OnboardingE2ETests: XCTestCase {
 
         let urlField = app.textFields.firstMatch
         wait(for: urlField, timeout: Timeout.screen, "manual URL entry field")
-        urlField.tap()
-        urlField.typeText(Instance.url)
+        type(Instance.url, into: urlField, "manual URL entry field")
 
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
     }
@@ -76,14 +75,12 @@ final class OnboardingE2ETests: XCTestCase {
         // keyboard happens to be focused, and a miss otherwise surfaces only as a rejected login.
         let username = webView.textFields.firstMatch
         wait(for: username, timeout: Timeout.frontend, "username field")
-        username.tap()
-        username.typeText(Instance.username)
+        type(Instance.username, into: username, "username field")
         XCTAssertEqual(username.value as? String, Instance.username, "Username field did not receive the username")
 
         let password = webView.secureTextFields.firstMatch
         wait(for: password, timeout: Timeout.frontend, "password field")
-        password.tap()
-        password.typeText(Instance.password)
+        type(Instance.password, into: password, "password field")
         // Secure fields report one bullet per character rather than the text itself.
         XCTAssertEqual(
             (password.value as? String)?.count,
@@ -153,6 +150,24 @@ final class OnboardingE2ETests: XCTestCase {
     private func tap(_ element: XCUIElement, timeout: TimeInterval, _ description: String) {
         wait(for: element, timeout: timeout, description)
         element.tap()
+    }
+
+    /// Types into a field, waiting for it to actually take keyboard focus first.
+    ///
+    /// A tap on a web view field does not focus it synchronously: the page has to handle the touch
+    /// and move focus itself. Typing before that fails outright with "Neither element nor any
+    /// descendant has keyboard focus", so the tap is repeated until the keyboard is up.
+    private func type(_ text: String, into element: XCUIElement, _ description: String) {
+        // Always taps at least once, even when the keyboard is already up for a previous field,
+        // since that tap is what moves focus to this one.
+        var attempts = 0
+        repeat {
+            element.tap()
+            attempts += 1
+        } while !app.keyboards.element.waitForExistence(timeout: Timeout.optional) && attempts < 3
+
+        XCTAssertTrue(app.keyboards.element.exists, "Keyboard never came up for the \(description)")
+        element.typeText(text)
     }
 
     @discardableResult
