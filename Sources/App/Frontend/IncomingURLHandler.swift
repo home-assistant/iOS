@@ -429,7 +429,9 @@ class IncomingURLHandler {
                         try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
                         seal.fulfill(())
                     } catch {
-                        Current.Log.error("Failed to toggle App Icon Shortcut magic item id: \(item.id), error: \(error)")
+                        Current.Log.error(
+                            "Failed to toggle App Icon Shortcut magic item id: \(item.id), error: \(error)"
+                        )
                         seal.reject(error)
                     }
                 }
