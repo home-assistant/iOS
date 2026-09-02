@@ -63,9 +63,13 @@ for f in $(cd .github/e2e/homeassistant/.storage && ls); do curl -fsS "https://r
 ## When a run fails
 
 The `e2e-artifacts` artifact carries a screen recording of the run under `e2e-recording/`, which is
-usually the quickest way to see where the flow went wrong. Xcode only keeps the recording when the
-test fails, so a passing run has none. Alongside it are Home Assistant's own log, the `/api/config`
-it reported, and the full `.xcresult`.
+usually the quickest way to see where the flow went wrong. Alongside it are Home Assistant's own log,
+the `/api/config` it reported, and the full `.xcresult`.
+
+Recordings are kept for passing runs as well, through `uiTestingScreenshotsLifetime` in
+[`Tests-UI.xctestplan`](../../Tests/UI/Tests-UI.xctestplan); Xcode would otherwise discard them on
+success. That is what the test plan exists for. It costs roughly 160 MB per run, so the artifact is
+kept for 14 days rather than the 90-day default.
 
 ## Notes
 

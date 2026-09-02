@@ -223,6 +223,9 @@ jobs:
         with:
           name: e2e-artifacts
           if-no-files-found: warn
+          # The recording is kept for passing runs too (see the test plan), which puts each run's
+          # artifact around 160 MB. Nightly, that is worth capping well below the 90-day default.
+          retention-days: 14
           path: |
             ${{ runner.temp }}/hass-stdout.log
             ${{ runner.temp }}/homeassistant-config.json
