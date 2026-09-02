@@ -44,7 +44,9 @@ struct WidgetEntitiesAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func entitiesPerServer(matching string: String? = nil) -> [(Server, [WidgetEntitiesAppEntity])] {
+    /// Every server's entities as the picker offers them: sorted by name, or ranked by relevance
+    /// when there is a search string.
+    func entitiesPerServer(matching string: String? = nil) -> [(Server, [WidgetEntitiesAppEntity])] {
         let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
         let isSearching = !(string ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 

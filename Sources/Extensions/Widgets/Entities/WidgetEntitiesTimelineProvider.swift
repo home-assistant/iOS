@@ -40,7 +40,20 @@ struct WidgetEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
         for configuration: WidgetEntitiesAppIntent,
         in context: Context
     ) async -> WidgetEntitiesEntry {
-        let items = Self.items(for: configuration, family: context.family)
+        await snapshotEntry(for: configuration, family: context.family)
+    }
+
+    func makeTimelineEntry(
+        for configuration: WidgetEntitiesAppIntent,
+        in context: Context
+    ) async -> WidgetEntitiesEntry {
+        await timelineEntry(for: configuration, family: context.family)
+    }
+
+    /// The entry WidgetKit shows while the timeline is on its way: the configured tiles without
+    /// their states, which are only worth a server round trip for the timeline itself.
+    func snapshotEntry(for configuration: WidgetEntitiesAppIntent, family: WidgetFamily) async -> WidgetEntitiesEntry {
+        let items = Self.items(for: configuration, family: family)
         return await .init(
             date: .now,
             items: items,
@@ -51,11 +64,8 @@ struct WidgetEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
         )
     }
 
-    func makeTimelineEntry(
-        for configuration: WidgetEntitiesAppIntent,
-        in context: Context
-    ) async -> WidgetEntitiesEntry {
-        let items = Self.items(for: configuration, family: context.family)
+    func timelineEntry(for configuration: WidgetEntitiesAppIntent, family: WidgetFamily) async -> WidgetEntitiesEntry {
+        let items = Self.items(for: configuration, family: family)
         let entitiesState = await entitiesState(configuration: configuration, items: items)
 
         return await .init(
