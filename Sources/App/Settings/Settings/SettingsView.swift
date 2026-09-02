@@ -9,7 +9,7 @@ struct SettingsView: View {
 
     var embedInOwnNavigation: Bool = true
 
-    @State private var selectedItem: SettingsItem? = .general
+    @State private var macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
     @State private var testFlightMessage: TestFlightMessage?
@@ -40,23 +40,37 @@ struct SettingsView: View {
         // such as no back buttons for navigated views
         NavigationView {
             macOSSidebarContent
-            if let selectedItem {
-                selectedItem.destinationView
-            } else {
-                macOSPlaceholder
-            }
+            macOSDetail
         }
         .navigationViewStyle(.columns)
     }
 
+    @ViewBuilder
+    private var macOSDetail: some View {
+        switch macSidebarSelection {
+        case let .item(item):
+            item.destinationView
+        case let .server(identifier):
+            if let server = serversObserver.servers.first(where: { $0.identifier == identifier }) {
+                ConnectionSettingsView(server: server)
+            } else {
+                macOSPlaceholder
+            }
+        case .serverSwitching:
+            ServerSwitchingSettingsView()
+        case nil:
+            macOSPlaceholder
+        }
+    }
+
     private var macOSSidebarContent: some View {
-        List(selection: $selectedItem) {
+        List(selection: $macSidebarSelection) {
             if isSearching {
                 searchResultsContent
             } else {
                 // Servers section
                 settingsSection(header: L10n.Settings.ConnectionSection.serversHeader) {
-                    ServersListView()
+                    ServersListView(macSidebarSelection: macSidebarSelection)
                 }
 
                 if isShowingTranslationKeys {
@@ -300,7 +314,8 @@ struct SettingsView: View {
                         NavigationLink(destination: ConnectionSettingsView(server: server)) {
                             serverSearchRow(server: server)
                         }
-                        .macSettingsSidebarRow()
+                        .tag(MacSettingsSidebarSelection.server(server.identifier))
+                        .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
                     }
                 }
             }
@@ -387,7 +402,8 @@ struct SettingsView: View {
             NavigationLink(destination: item.destinationView) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
-            .macSettingsSidebarRow(isSelected: selectedItem == item)
+            .tag(MacSettingsSidebarSelection.item(item))
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .item(item))
         } else if embedInOwnNavigation {
             // Value-based, resolved by `navigationDestination(for:)` in `iOSView`, so
             // `item.destinationView` — and every destination's stored properties with it — is only
@@ -427,7 +443,7 @@ struct SettingsView: View {
             VStack(alignment: .leading) {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Text(item.title)
-                        .fontWeight(Current.isCatalyst && selectedItem == item ? .semibold : .regular)
+                        .fontWeight(macSidebarSelection == .item(item) ? .semibold : .regular)
                         .lineLimit(Current.isCatalyst ? 1 : nil)
                     if item == .complications || item == .remindersSync {
                         LabsLabel()
