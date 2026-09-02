@@ -19,33 +19,66 @@ struct MagicItemWidgetInteractionTests {
         #expect(item.widgetInteractionType != item.widgetTapInteractionType)
     }
 
-    @Test func readOnlyEntityIsNotSplitAndKeepsItsIconPlain() {
+    /// The frontend's tile card gives a read-only entity's icon no action at all: the rest of the
+    /// tile opens the entity, and the icon is drawn plain, not as a control.
+    @Test func readOnlyEntityIconDoesNothingAndKeepsItsIconPlain() {
         let item = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
 
-        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "sensor.temperature"))
-        #expect(item.widgetInteractionType == item.widgetTapInteractionType)
+        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "sensor.temperature"))
         #expect(!item.controlsEntityFromWidget)
     }
 
-    /// A lock has no single main action, so both halves open it — which is exactly a tile that isn't
-    /// split, and an icon drawn without its background.
-    @Test func lockOpensMoreInfoFromBothHalves() {
-        let item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+    /// A lock is not one of the frontend's toggle-by-default domains, so its icon does nothing
+    /// until told to — but it can be told to toggle, which locks or unlocks by its state.
+    @Test func lockIconDoesNothingByDefaultButCanToggle() {
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
 
-        #expect(item.widgetInteractionType == item.widgetTapInteractionType)
+        #expect(item.widgetInteractionType == .appIntent(.refresh))
         #expect(!item.controlsEntityFromWidget)
+
+        item.action = .toggle
+        #expect(item.widgetInteractionType == .appIntent(.toggle(
+            entityId: "lock.front_door",
+            domain: "lock",
+            serverId: "1"
+        )))
+        #expect(item.controlsEntityFromWidget)
     }
 
-    @Test func scriptIsControllableAndOpensMoreInfoOnTap() {
-        let item = MagicItem(id: "script.morning", serverId: "1", type: .script)
+    /// A script isn't in the frontend's toggle-by-default set either: its tile opens the script,
+    /// and only an explicit "toggle" runs it from the icon.
+    @Test func scriptOpensMoreInfoUntilToldToToggle() {
+        var item = MagicItem(id: "script.morning", serverId: "1", type: .script)
 
-        #expect(item.widgetInteractionType == .appIntent(.activate(
+        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(!item.controlsEntityFromWidget)
+        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "script.morning"))
+
+        item.action = .toggle
+        #expect(item.widgetInteractionType == .appIntent(.toggle(
             entityId: "script.morning",
             domain: "script",
             serverId: "1"
         )))
-        #expect(item.controlsEntityFromWidget)
-        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "script.morning"))
+    }
+
+    /// A scene is one of the domains whose icon runs by default, like a button.
+    @Test func sceneAndButtonIconsActivateByDefault() {
+        let scene = MagicItem(id: "scene.movie", serverId: "1", type: .scene)
+        #expect(scene.widgetInteractionType == .appIntent(.toggle(
+            entityId: "scene.movie",
+            domain: "scene",
+            serverId: "1"
+        )))
+        #expect(scene.controlsEntityFromWidget)
+
+        let button = MagicItem(id: "button.doorbell", serverId: "1", type: .entity)
+        #expect(button.widgetInteractionType == .appIntent(.toggle(
+            entityId: "button.doorbell",
+            domain: "button",
+            serverId: "1"
+        )))
     }
 
     @Test func chosenTapBehaviorWinsOverTheDefaultMoreInfoDialog() {
@@ -104,9 +137,9 @@ struct MagicItemWidgetInteractionTests {
         )))
     }
 
-    /// The frontend's "toggle" runs the entity's domain action; a domain without one — a sensor —
-    /// has nothing to toggle, so the item keeps the behavior it would have had anyway.
-    @Test func toggleActionRunsTheDomainActionOrFallsBack() {
+    /// The frontend's "toggle" runs the entity's on or off service; a domain without such a pair —
+    /// a sensor — has nothing to toggle, so the item keeps the behavior it would have had anyway.
+    @Test func toggleActionTogglesTheDomainOrFallsBack() {
         var light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         light.tapAction = .toggle
         #expect(light.widgetTapInteractionType == .appIntent(.toggle(
@@ -117,57 +150,141 @@ struct MagicItemWidgetInteractionTests {
 
         var sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
         sensor.action = .toggle
-        #expect(Self.opensMoreInfo(sensor.widgetInteractionType, entityId: "sensor.temperature"))
+        #expect(sensor.widgetInteractionType == .appIntent(.refresh))
         #expect(!sensor.controlsEntityFromWidget)
+        sensor.tapAction = .toggle
+        #expect(Self.opensMoreInfo(sensor.widgetTapInteractionType, entityId: "sensor.temperature"))
     }
 
-    /// "Toggle" is only worth offering to an item whose domain the app can run in one tap — the
-    /// frontend's action editor drops it the same way for an entity that can't be toggled. A lock is
-    /// state-aware and a sensor read-only, so neither gets it; a script or scene runs, so both do.
-    @Test func toggleIsOnlyOfferedToItemsTheAppCanToggle() {
-        #expect(MagicItem(id: "light.kitchen", serverId: "1", type: .entity).canToggle)
-        #expect(MagicItem(id: "switch.fan", serverId: "1", type: .entity).canToggle)
-        #expect(MagicItem(id: "button.doorbell", serverId: "1", type: .entity).canToggle)
-        #expect(MagicItem(id: "automation.night", serverId: "1", type: .entity).canToggle)
+    /// "Toggle" is offered to exactly the domains the frontend's `canToggleDomain` accepts: the ones
+    /// with an on/off service pair, a lock included, and a button or scene whose single service
+    /// stands in for both. A sensor has none, and neither does an entity of a domain the app
+    /// doesn't know.
+    @Test func toggleIsOfferedToTheDomainsTheFrontendToggles() {
+        for entityId in [
+            "light.kitchen", "switch.fan", "fan.bedroom", "cover.garage", "valve.water", "lock.front_door",
+            "climate.living_room", "media_player.tv", "automation.night", "button.doorbell", "input_button.ring",
+            "group.downstairs", "humidifier.bedroom", "input_boolean.guest", "camera.porch", "siren.alarm",
+            "remote.tv", "water_heater.tank",
+        ] {
+            #expect(MagicItem(id: entityId, serverId: "1", type: .entity).canToggle, "\(entityId)")
+        }
         #expect(MagicItem(id: "script.morning", serverId: "1", type: .script).canToggle)
         #expect(MagicItem(id: "scene.movie", serverId: "1", type: .scene).canToggle)
 
-        #expect(!MagicItem(id: "sensor.temperature", serverId: "1", type: .entity).canToggle)
-        #expect(!MagicItem(id: "lock.front_door", serverId: "1", type: .entity).canToggle)
-        #expect(!MagicItem(id: "climate.living_room", serverId: "1", type: .entity).canToggle)
-        #expect(!MagicItem(id: "media_player.tv", serverId: "1", type: .entity).canToggle)
-        #expect(!MagicItem(id: "custom.thing", serverId: "1", type: .entity).canToggle)
+        for entityId in ["sensor.temperature", "binary_sensor.door", "vacuum.roomba", "weather.home", "custom.thing"] {
+            #expect(!MagicItem(id: entityId, serverId: "1", type: .entity).canToggle, "\(entityId)")
+        }
         #expect(!MagicItem(id: "pipeline-1", serverId: "1", type: .assistPipeline).canToggle)
 
-        let offered = ItemAction.offered(canToggle: false, selected: .default).map(\.id)
-        #expect(!offered.contains(ItemAction.toggle.id))
-        #expect(offered == ItemAction.allCases.map(\.id).filter { $0 != ItemAction.toggle.id })
-        #expect(ItemAction.offered(canToggle: true, selected: .default).map(\.id) == ItemAction.allCases.map(\.id))
+        let sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
+        let sensorOffered = ItemAction.offered(for: sensor, selected: .default).map(\.id)
+        #expect(!sensorOffered.contains(ItemAction.toggle.id))
+        #expect(!sensorOffered.contains(ItemAction.turnOn.id))
+        #expect(!sensorOffered.contains(ItemAction.turnOff.id))
+        #expect(sensorOffered == ItemAction.allCases.map(\.id).filter { id in
+            ![ItemAction.toggle.id, ItemAction.turnOn.id, ItemAction.turnOff.id].contains(id)
+        })
+
+        let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(ItemAction.offered(for: light, selected: .default).map(\.id) == ItemAction.allCases.map(\.id))
+
         // A choice already stored stays on screen even when it would no longer be offered.
-        #expect(ItemAction.offered(canToggle: false, selected: .toggle).map(\.id).contains(ItemAction.toggle.id))
+        #expect(ItemAction.offered(for: sensor, selected: .toggle).map(\.id).contains(ItemAction.toggle.id))
     }
 
-    /// "Default" on the customization screen names what it stands for, and that name is the behavior
-    /// the tile actually runs: the icon of a controllable entity toggles, everything else opens the
-    /// entity, and the rest of the tile always opens it.
+    /// The explicit on/off behaviors only make sense where "on" and "off" are different services:
+    /// a button or a scene has one, and "toggle" already runs it.
+    @Test func onOffBehaviorsAreOfferedWhereTheServicesDiffer() {
+        let lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        #expect(lock.hasOnOffActions)
+        let lockOffered = ItemAction.offered(for: lock, selected: .default).map(\.id)
+        #expect(lockOffered.contains(ItemAction.turnOn.id))
+        #expect(lockOffered.contains(ItemAction.turnOff.id))
+
+        for item in [
+            MagicItem(id: "button.doorbell", serverId: "1", type: .entity),
+            MagicItem(id: "input_button.ring", serverId: "1", type: .entity),
+            MagicItem(id: "scene.movie", serverId: "1", type: .scene),
+        ] {
+            #expect(!item.hasOnOffActions, "\(item.id)")
+            let offered = ItemAction.offered(for: item, selected: .default).map(\.id)
+            #expect(offered.contains(ItemAction.toggle.id), "\(item.id)")
+            #expect(!offered.contains(ItemAction.turnOn.id), "\(item.id)")
+        }
+    }
+
+    /// The on/off behaviors call the domain's own service outright, and are named after it: a lock
+    /// unlocks and locks, a cover opens and closes, a group goes through `homeassistant`.
+    @Test func onOffBehaviorsCallTheDomainsOwnServices() {
+        var lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        lock.action = .turnOn
+        #expect(lock.widgetInteractionType == .appIntent(.performAction(
+            serverId: "1",
+            actionId: "lock.unlock",
+            payload: "{\"entity_id\": \"lock.front_door\"}"
+        )))
+        lock.action = .turnOff
+        #expect(lock.widgetInteractionType == .appIntent(.performAction(
+            serverId: "1",
+            actionId: "lock.lock",
+            payload: "{\"entity_id\": \"lock.front_door\"}"
+        )))
+        #expect(lock.controlsEntityFromWidget)
+        #expect(ItemAction.turnOn.name(for: .lock) == "Unlock")
+        #expect(ItemAction.turnOff.name(for: .lock) == "Lock")
+
+        var cover = MagicItem(id: "cover.garage", serverId: "1", type: .entity)
+        cover.tapAction = .turnOff
+        #expect(cover.widgetTapInteractionType == .appIntent(.performAction(
+            serverId: "1",
+            actionId: "cover.close_cover",
+            payload: "{\"entity_id\": \"cover.garage\"}"
+        )))
+        #expect(ItemAction.turnOn.name(for: .cover) == "Open")
+        #expect(ItemAction.turnOff.name(for: .cover) == "Close")
+
+        var group = MagicItem(id: "group.downstairs", serverId: "1", type: .entity)
+        group.action = .turnOn
+        #expect(group.widgetInteractionType == .appIntent(.performAction(
+            serverId: "1",
+            actionId: "homeassistant.turn_on",
+            payload: "{\"entity_id\": \"group.downstairs\"}"
+        )))
+        #expect(ItemAction.turnOn.name(for: .light) == "Turn on")
+        #expect(ItemAction.turnOff.name(for: .light) == "Turn off")
+
+        // A button has no "off" to call, so the choice falls back to the icon's default.
+        var button = MagicItem(id: "button.doorbell", serverId: "1", type: .entity)
+        button.action = .turnOff
+        #expect(button.widgetInteractionType == .appIntent(.toggle(
+            entityId: "button.doorbell",
+            domain: "button",
+            serverId: "1"
+        )))
+    }
+
+    /// "Default" on the customization screen names what it stands for, and that name is what the
+    /// tile runs — the frontend tile card's defaults: the icon toggles for its toggle domains and
+    /// does nothing otherwise, and the rest of the tile always opens the entity.
     @Test func defaultActionsNameWhatTheTileDoes() {
         let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         #expect(light.defaultIconAction == .toggle)
         #expect(light.defaultTapAction == .moreInfoDialog)
 
-        let script = MagicItem(id: "script.morning", serverId: "1", type: .script)
-        #expect(script.defaultIconAction == .toggle)
-        #expect(script.defaultTapAction == .moreInfoDialog)
+        let scene = MagicItem(id: "scene.movie", serverId: "1", type: .scene)
+        #expect(scene.defaultIconAction == .toggle)
 
-        let sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
-        #expect(sensor.defaultIconAction == .moreInfoDialog)
-        #expect(sensor.defaultTapAction == .moreInfoDialog)
-
-        let lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
-        #expect(lock.defaultIconAction == .moreInfoDialog)
-
-        let unknownDomain = MagicItem(id: "custom.thing", serverId: "1", type: .entity)
-        #expect(unknownDomain.defaultIconAction == .moreInfoDialog)
+        for item in [
+            MagicItem(id: "script.morning", serverId: "1", type: .script),
+            MagicItem(id: "sensor.temperature", serverId: "1", type: .entity),
+            MagicItem(id: "lock.front_door", serverId: "1", type: .entity),
+            MagicItem(id: "cover.garage", serverId: "1", type: .entity),
+            MagicItem(id: "custom.thing", serverId: "1", type: .entity),
+        ] {
+            #expect(item.defaultIconAction == .nothing, "\(item.id)")
+            #expect(item.defaultTapAction == .moreInfoDialog, "\(item.id)")
+        }
 
         // No entity behind a pipeline, so both halves of the tile start Assist.
         var pipeline = MagicItem(id: "pipeline-1", serverId: "1", type: .assistPipeline)
@@ -175,8 +292,34 @@ struct MagicItemWidgetInteractionTests {
         #expect(pipeline.defaultIconAction == .assist("1", "pipeline-1", true))
         #expect(pipeline.defaultTapAction == .assist("1", "pipeline-1", true))
 
-        #expect(ItemAction.defaultName(resolvingTo: .toggle) == "Default (Toggle)")
-        #expect(ItemAction.defaultName(resolvingTo: .moreInfoDialog) == "Default (More info)")
+        #expect(ItemAction.defaultName(resolvingTo: ItemAction.toggle.name) == "Default (Toggle)")
+        #expect(ItemAction.defaultName(resolvingTo: ItemAction.moreInfoDialog.name) == "Default (More info)")
+        #expect(ItemAction.defaultName(resolvingTo: ItemAction.nothing.name) == "Default (Nothing)")
+    }
+
+    /// An app icon shortcut has no tile to open the entity from, so where the tile's icon would do
+    /// nothing the shortcut opens the entity instead; where the icon toggles, so does the shortcut.
+    @Test func shortcutDefaultsToTheIconActionOrOpensTheEntity() {
+        let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(light.defaultShortcutAction == .toggle)
+        #expect(light.shortcutInteractionType == .appIntent(.toggle(
+            entityId: "light.kitchen",
+            domain: "light",
+            serverId: "1"
+        )))
+
+        let script = MagicItem(id: "script.morning", serverId: "1", type: .script)
+        #expect(script.defaultShortcutAction == .moreInfoDialog)
+        #expect(Self.opensMoreInfo(script.shortcutInteractionType, entityId: "script.morning"))
+
+        var lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        #expect(lock.defaultShortcutAction == .moreInfoDialog)
+        lock.action = .toggle
+        #expect(lock.shortcutInteractionType == .appIntent(.toggle(
+            entityId: "lock.front_door",
+            domain: "lock",
+            serverId: "1"
+        )))
     }
 
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still

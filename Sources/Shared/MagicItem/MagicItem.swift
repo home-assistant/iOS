@@ -276,52 +276,68 @@ public struct MagicItem: Codable, Equatable, Hashable {
         displayText ?? info.name
     }
 
-    /// Whether the "toggle" behavior can do anything for this item: its domain has a main action
-    /// the app runs in one tap (`light.toggle`, `button.press`, `scene.turn_on`…).
-    ///
-    /// The frontend's action editor drops "toggle" from its list when the entity's domain can't be
-    /// toggled (`canToggleDomain`). The app narrows that further to the domains its toggle intent
-    /// knows how to run — a lock is toggleable there but state-aware here, and a group is toggled
-    /// there but has no main action here — so the picker only offers what a tap will actually do.
+    /// Whether "toggle" can do anything for this item: it stands for an entity whose domain has
+    /// the on/off service pair the frontend's `canToggleDomain` looks for. The frontend's action
+    /// editor drops "toggle" from its list otherwise, and so does the customization screen.
     public var canToggle: Bool {
-        mainActionIntent() != nil
+        hasMoreInfoDialog && domain?.canToggle == true
     }
 
-    /// What `.default` stands for on a widget tile's icon — and on an app icon shortcut, which
-    /// runs the same thing: the domain's main action when there is one, otherwise the entity's
-    /// more-info dialog. The frontend's tile card leaves an uncontrollable entity's icon inert
-    /// instead; here there is always an entity to open, so the icon opens it.
+    /// Whether the explicit on/off behaviors — "Lock" and "Unlock", "Open" and "Close", "Turn on"
+    /// and "Turn off" — mean anything for this item: it toggles, and between two different
+    /// services. A button or a scene has only the one, and "toggle" already runs it.
+    public var hasOnOffActions: Bool {
+        canToggle && domain?.toggleIsStateAware == true
+    }
+
+    /// What `.default` stands for on a widget tile's icon, the frontend tile card's
+    /// `getEntityDefaultTileIconAction`: "toggle" for the domains whose icon is a control
+    /// (`DOMAINS_TOGGLE`, plus a button, input button, or scene), and nothing for every other
+    /// entity — the rest of the tile opens it. An Assist pipeline has no entity, so its icon
+    /// starts Assist.
     public var defaultIconAction: ItemAction {
         if type == .assistPipeline {
             return .assist(serverId, assistPipelineId ?? id, true)
         }
-        if canToggle {
+        if hasMoreInfoDialog, let domain, domain.togglesFromTileIcon {
             return .toggle
         }
-        // An entity whose domain isn't modeled here (one from a custom integration, say) still has
-        // a more-info dialog, so open that instead of leaving the tile inert. Non-entity items have
-        // no entity id to open.
-        return hasMoreInfoDialog ? .moreInfoDialog : .nothing
+        return .nothing
     }
 
     /// What `.default` stands for on the rest of a widget tile: the entity's more-info dialog, the
-    /// way the frontend's tile card opens the entity. Items with no entity behind them — an Assist
-    /// pipeline, a folder — have no dialog to open, so the whole tile keeps what the icon does.
+    /// frontend tile card's `tap_action`. Items with no entity behind them — an Assist pipeline, a
+    /// folder — have no dialog to open, so the whole tile keeps what the icon does.
     public var defaultTapAction: ItemAction {
         hasMoreInfoDialog ? .moreInfoDialog : defaultIconAction
     }
 
-    /// What tapping the item — or, on a split widget tile, its icon — does.
+    /// What `.default` stands for on an app icon shortcut, which has no tile: what the tile's icon
+    /// would do, except that a shortcut whose icon would do nothing opens the entity instead — a
+    /// shortcut that does nothing isn't worth one of the four slots.
+    public var defaultShortcutAction: ItemAction {
+        defaultIconAction == .nothing ? defaultTapAction : defaultIconAction
+    }
+
+    /// What tapping a widget tile's icon does.
     public var widgetInteractionType: WidgetInteractionType {
-        // An explicit action override wins over whatever the item would do by default; a pipeline
-        // is the one item with nothing to override, since starting it is all it can do.
+        interactionType(defaultingTo: defaultIconAction)
+    }
+
+    /// What tapping the item's app icon shortcut does.
+    public var shortcutInteractionType: WidgetInteractionType {
+        interactionType(defaultingTo: defaultShortcutAction)
+    }
+
+    /// An explicit action override wins over whatever the item would do by default; a pipeline is
+    /// the one item with nothing to override, since starting it is all it can do. The default is
+    /// resolved through the same action the customization screen names as "Default", so what the
+    /// picker says and what a tap does can't drift apart.
+    private func interactionType(defaultingTo defaultAction: ItemAction) -> WidgetInteractionType {
         if type != .assistPipeline, let action, let interaction = interactionType(for: action) {
             return interaction
         }
-
-        // Resolved through the same action the customization screen names as the default, so
-        // what the picker says "Default" does and what the tile does can't drift apart.
-        return interactionType(for: defaultIconAction) ?? .appIntent(.refresh)
+        return interactionType(for: defaultAction) ?? .appIntent(.refresh)
     }
 
     /// What tapping a widget tile outside its icon does.
@@ -354,8 +370,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
     }
 
     /// The interaction an explicitly chosen action performs. `nil` for `.default`, and for a
-    /// `.toggle` the item's domain can't perform — both leave the choice to whatever the caller
-    /// falls back on.
+    /// `.toggle` or an on/off behavior the item's domain can't perform — all of which leave the
+    /// choice to whatever the caller falls back on.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
         case .default:
@@ -365,7 +381,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case .nothing:
             return .appIntent(.refresh)
         case .toggle:
-            return mainActionIntent()
+            return toggleIntent()
+        case .turnOn:
+            return onOffIntent(turnOn: true)
+        case .turnOff:
+            return onOffIntent(turnOn: false)
         case let .navigate(path):
             return navigateIntent(path: path)
         case let .url(urlString):
@@ -391,21 +411,24 @@ public struct MagicItem: Codable, Equatable, Hashable {
         }
     }
 
-    /// The intent that runs the item's domain main action — toggling a light, pressing a button,
-    /// activating a scene. `nil` for a domain that has no single main action (a sensor), or whose
-    /// action needs more than one tap can express (a lock, which is state-aware).
-    private func mainActionIntent() -> WidgetInteractionType? {
-        guard let domain, let mainAction = domain.mainAction else { return nil }
-        switch mainAction {
-        case .press:
-            return .appIntent(.press(entityId: id, domain: domain.rawValue, serverId: serverId))
-        case .toggle, .trigger:
-            return .appIntent(.toggle(entityId: id, domain: domain.rawValue, serverId: serverId))
-        case .turnOn where domain == .scene || domain == .script:
-            return .appIntent(.activate(entityId: id, domain: domain.rawValue, serverId: serverId))
-        default:
-            return nil
-        }
+    /// The intent that toggles the entity the way the frontend does — turning a light on or off by
+    /// its state, pressing a button, activating a scene, locking or unlocking a lock. `nil` for a
+    /// domain with nothing to toggle between (a sensor).
+    private func toggleIntent() -> WidgetInteractionType? {
+        guard canToggle, let domain else { return nil }
+        return .appIntent(.toggle(entityId: id, domain: domain.rawValue, serverId: serverId))
+    }
+
+    /// The intent that calls one side of the entity's on/off pair outright — `lock.lock`,
+    /// `cover.open_cover` — which is a "perform action" on the entity and nothing more.
+    private func onOffIntent(turnOn: Bool) -> WidgetInteractionType? {
+        guard hasOnOffActions, let domain, let services = domain.toggleServices else { return nil }
+        let service = turnOn ? services.on : services.off
+        return .appIntent(.performAction(
+            serverId: serverId,
+            actionId: "\(domain.toggleServiceDomain).\(service.rawValue)",
+            payload: "{\"entity_id\": \"\(id)\"}"
+        ))
     }
 
     /// Opens whatever the user typed. Nothing to open — an empty or unusable address — leaves the
@@ -472,12 +495,15 @@ public enum MagicItemError: Error {
 /// order of their associated values are storage format — renaming either drops existing
 /// configurations back to `.default`.
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
-    /// Listed in the frontend's own order, with `runScript` — which the frontend has no equivalent
-    /// for — next to the action it resembles most.
+    /// Listed in the frontend's own order, with the app's own additions next to the action they
+    /// resemble most: the explicit on/off behaviors after "toggle", `runScript` after "perform
+    /// action".
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
         .toggle,
+        .turnOn,
+        .turnOff,
         .navigate(""),
         .url(""),
         .performAction("", "", ""),
@@ -488,10 +514,18 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 
     case `default`
     case moreInfoDialog
-    /// Runs the entity's domain main action (`light.toggle`, `button.press`, `scene.turn_on`…).
-    /// Only domains that have one can do this — see `Domain.mainAction` — so for anything else the
-    /// item falls back to the behavior it would have had without an override.
+    /// The frontend's "toggle": the domain's on or off service, picked from the entity's state —
+    /// `light.turn_on` for a light that is off, `lock.unlock` for a locked lock, `button.press`
+    /// for a button. Only domains with such a pair can do this — see `Domain.toggleServices` — so
+    /// for anything else the item falls back to the behavior it would have had without an override.
     case toggle
+    /// Calls the domain's "on" service outright, whatever the entity's state: `lock.unlock`,
+    /// `cover.open_cover`, `light.turn_on`. Named after that service on the customization screen
+    /// ("Unlock", "Open", "Turn on"), and only offered where it differs from the "off" one.
+    case turnOn
+    /// Calls the domain's "off" service outright: `lock.lock`, `cover.close_cover`,
+    /// `light.turn_off`. The counterpart of `turnOn`.
+    case turnOff
     case navigate(_ navigationPath: String)
     /// Opens an arbitrary URL, the frontend's `url` action (`url_path`). An `https://` link opens in
     /// the browser; the app's own `homeassistant://` deep links are handled in-app.
@@ -503,13 +537,24 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
     case nothing
 
-    /// The behaviors a picker offers one item: every case, minus `.toggle` for an item that can't
-    /// (see `MagicItem.canToggle`) — the way the frontend's action editor filters its own list.
-    /// A stored `.toggle` stays listed even then, so the choice on screen never vanishes from
-    /// under the user; it falls back at tap time the way it always has.
-    public static func offered(canToggle: Bool, selected: ItemAction) -> [ItemAction] {
+    /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
+    /// perform — "toggle" for an entity with nothing to toggle, the explicit on/off pair for one
+    /// with a single service — the way the frontend's action editor filters "toggle" out of its
+    /// own list. A stored choice stays listed even then, so it never vanishes from under the user;
+    /// it falls back at tap time the way it always has.
+    public static func offered(for item: MagicItem, selected: ItemAction) -> [ItemAction] {
         allCases.filter { itemAction in
-            itemAction.id != ItemAction.toggle.id || canToggle || selected.id == ItemAction.toggle.id
+            if itemAction.id == selected.id {
+                return true
+            }
+            switch itemAction {
+            case .toggle:
+                return item.canToggle
+            case .turnOn, .turnOff:
+                return item.hasOnOffActions
+            default:
+                return true
+            }
         }
     }
 
@@ -521,6 +566,10 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return "moreInfoDialog"
         case .toggle:
             return "toggle"
+        case .turnOn:
+            return "turnOn"
+        case .turnOff:
+            return "turnOff"
         case .navigate:
             return "navigate"
         case .url:
@@ -538,8 +587,22 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 
     /// The picker's label for `.default`, naming what it stands in for — "Default (More info)",
     /// "Default (Toggle)" — the way the frontend's action editor labels its default entry.
-    public static func defaultName(resolvingTo action: ItemAction) -> String {
-        L10n.Widgets.Action.Name.defaultAction(action.name)
+    public static func defaultName(resolvingTo actionName: String) -> String {
+        L10n.Widgets.Action.Name.defaultAction(actionName)
+    }
+
+    /// The name shown for this behavior on one item. The explicit on/off behaviors take the
+    /// domain's own words — "Lock" and "Unlock" for a lock, "Open" and "Close" for a cover —
+    /// and everything else reads the same on every item.
+    public func name(for domain: Domain?) -> String {
+        switch self {
+        case .turnOn:
+            return domain?.toggleServices?.on.toggleActionName ?? name
+        case .turnOff:
+            return domain?.toggleServices?.off.toggleActionName ?? name
+        default:
+            return name
+        }
     }
 
     public var name: String {
@@ -550,6 +613,10 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return L10n.Widgets.Action.Name.moreInfoDialog
         case .toggle:
             return L10n.Widgets.Action.Name.toggle
+        case .turnOn:
+            return L10n.Widgets.Action.Name.turnOn
+        case .turnOff:
+            return L10n.Widgets.Action.Name.turnOff
         case .navigate:
             return L10n.Widgets.Action.Name.navigate
         case .url:

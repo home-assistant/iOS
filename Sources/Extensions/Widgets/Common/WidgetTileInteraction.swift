@@ -176,12 +176,6 @@ struct WidgetTileInteraction {
                 intent.entityId = entityId
                 intent.serverId = serverId
                 return intent
-            case let .press(entityId, domain, serverId):
-                let intent = CustomWidgetPressButtonAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
             case let .performAction(serverId, actionId, payload):
                 let intent = CustomWidgetPerformActionAppIntent()
                 intent.serverId = serverId

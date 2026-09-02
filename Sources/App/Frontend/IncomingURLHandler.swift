@@ -388,7 +388,8 @@ class IncomingURLHandler {
             return customAction
         }
 
-        if case let .widgetURL(url) = item.widgetInteractionType {
+        let interactionType = item.shortcutInteractionType
+        if case let .widgetURL(url) = interactionType {
             _ = handle(url: url)
             return .value(())
         }
@@ -410,12 +411,28 @@ class IncomingURLHandler {
             )
         }
 
-        return Promise { seal in
-            item.execute(on: server, source: .AppShortcut) { success, _ in
-                if success {
-                    seal.fulfill(())
-                } else {
-                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+        switch interactionType {
+        case let .appIntent(.toggle(entityId, domainString, _)):
+            // The same state-aware toggle a widget tile runs, so a lock shortcut locks or unlocks
+            // by the lock's state instead of doing nothing for want of one.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection else {
+                Current.Log.error("No connection to toggle App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+        case let .appIntent(.performAction(serverId, actionId, payload)):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
+        case .appIntent(.refresh):
+            return .value(())
+        case .widgetURL, .appIntent:
+            return Promise { seal in
+                item.execute(on: server, source: .AppShortcut) { success, _ in
+                    if success {
+                        seal.fulfill(())
+                    } else {
+                        seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                    }
                 }
             }
         }
@@ -427,9 +444,9 @@ class IncomingURLHandler {
         switch action {
         case .default:
             return nil
-        case .toggle:
-            // Running the item already performs its domain's main action, so there is nothing to
-            // override here — falling through keeps the confirmation overlay and error handling.
+        case .toggle, .turnOn, .turnOff:
+            // These resolve through the item's interaction type, the way a widget tile's do, so
+            // falling through keeps the confirmation overlay and error handling.
             return nil
         case .moreInfoDialog:
             if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
