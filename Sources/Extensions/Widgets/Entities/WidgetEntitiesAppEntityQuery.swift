@@ -63,7 +63,7 @@ struct WidgetEntitiesAppEntityQuery: EntityQuery, EntityStringQuery {
                     deviceName: deviceMap[entity.entityId]?.name,
                     floorName: floorMap[entity.entityId],
                     displayString: entity.name,
-                    icon: entity.icon
+                    icon: Self.iconName(for: entity)
                 )
             }
             // A search comes back ranked by relevance, which is worth more than alphabetical order.
@@ -72,5 +72,18 @@ struct WidgetEntitiesAppEntityQuery: EntityQuery, EntityStringQuery {
             }
             return (server, items)
         }
+    }
+
+    /// The same precedence the app's entity pickers use: the entity's own icon, then the frontend
+    /// default resolved from the backend `entity_component` map, then the domain fallback.
+    static func iconName(for entity: HAAppEntity) -> String {
+        if let icon = entity.icon, !icon.isEmpty {
+            return icon
+        }
+        if let resolvedIcon = entity.resolvedIcon, !resolvedIcon.isEmpty {
+            return resolvedIcon
+        }
+        return Domain(rawValue: entity.domain)?.icon(deviceClass: entity.rawDeviceClass).name
+            ?? MaterialDesignIcons.dotsGridIcon.name
     }
 }

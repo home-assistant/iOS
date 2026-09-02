@@ -17,16 +17,11 @@ struct WidgetEntitiesAppIntent: AppIntent, WidgetConfigurationIntent {
     )
     var server: IntentServerAppEntity
 
-    // ATTENTION: Unfortunately these sizes below can't be retrieved dynamically from widget family sizes.
-    // Check ``WidgetFamilySizes.swift`` as source of truth
+    /// Picked from the same kind of multi-select list as the domain pickers of the commonly used
+    /// widget, with no per-family slot count: the user picks as many as they like and the timeline
+    /// provider shows as many as the family holds.
     @Parameter(
-        title: .init("widgets.entities.param.entities.title", defaultValue: "Entities"),
-        size: [
-            .systemSmall: 3,
-            .systemMedium: 6,
-            .systemLarge: 12,
-            .systemExtraLarge: 20,
-        ]
+        title: .init("widgets.entities.param.entities.title", defaultValue: "Entities")
     )
     var entities: [WidgetEntitiesAppEntity]?
 

@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import SFSafeSymbols
 import Shared
 
 /// One entity as picked in the entities widget configuration.
@@ -21,13 +22,26 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
     var deviceName: String?
     var floorName: String?
     var displayString: String
+    /// The Material Design icon the entity is drawn with, already resolved through the same
+    /// precedence the app's pickers use: the entity's own icon, then the frontend default, then
+    /// the domain's.
     var icon: String?
 
+    /// Icon, name and the `Floor • Area • Device` context line, the way the app's other entity
+    /// pickers draw their rows.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) },
+            image: displayRepresentationImage
         )
+    }
+
+    private var displayRepresentationImage: DisplayRepresentation.Image {
+        guard let data = icon.flatMap(MaterialDesignIcons.pngData(forServersideValue:)) else {
+            return .init(systemName: SFSymbol.squareGrid2x2.rawValue)
+        }
+        return .init(data: data, isTemplate: true)
     }
 
     init(
