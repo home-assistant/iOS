@@ -110,7 +110,7 @@ struct WidgetEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
     /// home screen with different picks, and a cache keyed only by server would hand one instance
     /// the other's states — or none — while its short validity window is open.
     static func cacheURL(serverId: String, items: [MagicItem]) -> URL {
-        let key = items.map(\.id).joined(separator: ",")
+        let key = items.map(\.id).sorted().joined(separator: ",")
         let digest = SHA256.hash(data: Data(key.utf8))
         let fingerprint = digest.prefix(8).map { String(format: "%02x", $0) }.joined()
         return AppConstants.widgetCachedStates(widgetId: "entities-\(serverId)-\(fingerprint)")

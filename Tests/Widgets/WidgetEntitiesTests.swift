@@ -76,7 +76,8 @@ struct WidgetEntitiesTests {
         }
     }
 
-    /// Two instances of the widget with different picks must not share a state cache.
+    /// Two instances of the widget with different picks must not share a state cache, while the
+    /// same picks in a different order do.
     @available(iOS 17, *)
     @Test func cacheIsPerSetOfEntities() {
         let kitchen = [MagicItem(id: "light.kitchen", serverId: "1", type: .entity)]
@@ -85,6 +86,10 @@ struct WidgetEntitiesTests {
         #expect(
             WidgetEntitiesTimelineProvider.cacheURL(serverId: "1", items: kitchen)
                 == WidgetEntitiesTimelineProvider.cacheURL(serverId: "1", items: kitchen)
+        )
+        #expect(
+            WidgetEntitiesTimelineProvider.cacheURL(serverId: "1", items: kitchen + office)
+                == WidgetEntitiesTimelineProvider.cacheURL(serverId: "1", items: office + kitchen)
         )
         #expect(
             WidgetEntitiesTimelineProvider.cacheURL(serverId: "1", items: kitchen)

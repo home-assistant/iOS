@@ -12,8 +12,14 @@ struct WidgetEntitiesAppEntityQuery: EntityQuery, EntityStringQuery {
     @IntentParameterDependency<WidgetEntitiesAppIntent>(\.$server)
     var config
 
+    /// Resolves in the order the identifiers were saved, which is the order the user picked the
+    /// entities in and the order the widget draws them.
     func entities(for identifiers: [WidgetEntitiesAppEntity.ID]) async throws -> [WidgetEntitiesAppEntity] {
-        entitiesPerServer().flatMap(\.1).filter { identifiers.contains($0.id) }
+        let byId = Dictionary(
+            entitiesPerServer().flatMap(\.1).map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return identifiers.compactMap { byId[$0] }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<WidgetEntitiesAppEntity> {
