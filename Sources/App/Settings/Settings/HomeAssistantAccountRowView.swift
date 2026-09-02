@@ -47,11 +47,11 @@ struct HomeAssistantAccountRowView: View {
             VStack(alignment: .leading) {
                 Text(serverName)
                     .font(isCompact ? .body : .headline)
-                    .lineLimit(1)
+                    .lineLimit(isCompact ? 1 : nil)
                 Text(userName)
                     .font(isCompact ? .caption2 : .caption)
                     .foregroundColor(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(isCompact ? 1 : nil)
             }
         }
         .frame(minHeight: isCompact ? Constants.compactMinHeight : nil)

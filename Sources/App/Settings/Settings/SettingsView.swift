@@ -355,6 +355,7 @@ struct SettingsView: View {
                     ))
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    .accessibilityAddTraits(.isHeader)
                 content()
             }
         } else {
