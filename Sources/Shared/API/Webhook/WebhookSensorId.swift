@@ -17,8 +17,6 @@ public enum WebhookSensorId: String, CaseIterable {
     case primaryDisplayName = "primary_display_name"
     case primaryDisplayId = "primary_display_id"
     case frontmostApp = "frontmost_app"
-    case watchBattery = "watch-battery"
-    case watchBatteryState = "watch-battery-state"
     case appVersion = "app-version"
     case locationPermission = "location-permission"
     case focus

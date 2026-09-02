@@ -413,7 +413,6 @@ public class AppEnvironment {
         $0.register(provider: FocusNameSensor.self)
         #endif
         $0.register(provider: LastUpdateSensor.self)
-        $0.register(provider: WatchBatterySensor.self)
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
@@ -443,6 +442,10 @@ public class AppEnvironment {
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
     #endif
+
+    /// The watch's own `mobile_app` registrations, one per server. Compiled everywhere so the
+    /// reporting built on it stays testable from the iOS unit-test target.
+    public var watchDeviceRegistrations: WatchDeviceRegistrationStore = KeychainWatchDeviceRegistrationStore()
 
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {

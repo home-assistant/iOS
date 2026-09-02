@@ -8403,6 +8403,24 @@ public enum L10n {
         /// Restart App
         public static var title: String { return L10n.tr("Localizable", "watch.settings.restart_app.title") }
       }
+      public enum Sensors {
+        /// Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.sensors.footer") }
+        /// Last error: %@
+        public static func lastError(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.sensors.last_error", String(describing: p1))
+        }
+        /// Last sent %@
+        public static func lastSent(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.sensors.last_sent", String(describing: p1))
+        }
+        /// Not sent yet
+        public static var neverSent: String { return L10n.tr("Localizable", "watch.settings.sensors.never_sent") }
+        /// Status
+        public static var statusHeader: String { return L10n.tr("Localizable", "watch.settings.sensors.status_header") }
+        /// Sensors
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.sensors.title") }
+      }
       public enum Server {
         /// Needs attention
         public static var needsAttention: String { return L10n.tr("Localizable", "watch.settings.server.needs_attention") }
