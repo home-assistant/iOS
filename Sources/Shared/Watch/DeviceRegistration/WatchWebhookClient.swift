@@ -6,12 +6,23 @@ import Foundation
 /// paired iPhone's, mirrored. Now that the watch is a `mobile_app` device of its own, what it reports
 /// about itself goes through its own webhook — same encryption, same cloudhook rule, own identity.
 public enum WatchWebhookClient {
-    public enum WebhookError: Error, Equatable {
+    public enum WebhookError: LocalizedError, Equatable {
         /// The registration no longer exists on the server — the device was deleted there. A 404 or
         /// 410 from the cloudhook, or an empty 200 from Home Assistant directly.
         case registrationGone
         case unacceptableStatus(code: Int)
         case invalidResponse
+
+        public var errorDescription: String? {
+            switch self {
+            case .registrationGone:
+                return "The watch is no longer registered with the server"
+            case let .unacceptableStatus(code):
+                return "The server answered with status \(code)"
+            case .invalidResponse:
+                return "The server's response could not be read"
+            }
+        }
     }
 
     /// Where to post: the cloudhook whenever the active URL isn't the server's internal one,

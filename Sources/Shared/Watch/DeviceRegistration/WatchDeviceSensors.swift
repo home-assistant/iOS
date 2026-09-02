@@ -23,11 +23,19 @@ public enum WatchDeviceSensors {
         Descriptor(uniqueID: batteryStateID, name: "Battery State"),
     ]
 
-    /// Current readings, in `all` order.
+    /// Current readings, in `all` order. A reading the watch can't take right now (WatchKit reports
+    /// the level as -1 while battery monitoring is unavailable) is reported as `unavailable` rather
+    /// than as the nonsense value it would otherwise turn into.
     public static func current() -> [WebhookSensor] {
         let ids = all.map(\.uniqueID)
         return Current.device.batteries()
-            .flatMap(BatterySensor.sensors(battery:))
+            .flatMap { battery -> [WebhookSensor] in
+                let sensors = BatterySensor.sensors(battery: battery)
+                guard battery.level >= 0 else {
+                    return sensors.map(WebhookSensor.init(redacting:))
+                }
+                return sensors
+            }
             .filter { sensor in sensor.UniqueID.map { ids.contains($0) } ?? false }
             .sorted { lhs, rhs in
                 (ids.firstIndex(of: lhs.UniqueID ?? "") ?? 0) < (ids.firstIndex(of: rhs.UniqueID ?? "") ?? 0)
@@ -35,10 +43,12 @@ public enum WatchDeviceSensors {
     }
 
     /// The `register_sensor` payload for one sensor, carrying whether the user switched it on so
-    /// Home Assistant creates its entity enabled or disabled accordingly.
+    /// Home Assistant creates its entity enabled or disabled accordingly. A sensor that is off is
+    /// registered redacted, as the phone does: registering is not a way to send its value.
     public static func registrationPayload(sensor: WebhookSensor, enabled: Bool) -> [String: Any] {
-        sensor.Disabled = !enabled
-        return sensor.toJSON()
+        let outgoing = enabled ? sensor : WebhookSensor(redacting: sensor)
+        outgoing.Disabled = !enabled
+        return outgoing.toJSON()
     }
 
     /// The `update_sensor_states` payload: real readings for the sensors switched on, `unavailable`
@@ -61,14 +71,27 @@ public enum WatchDeviceSensors {
     /// The unique IDs a `update_sensor_states` response says Home Assistant doesn't know, which need
     /// registering before their state is accepted.
     public static func unregisteredIDs(in response: Any) -> [String] {
-        guard let dictionary = response as? [String: [String: Any]] else { return [] }
-        return dictionary.compactMap { uniqueID, json -> String? in
-            guard let sensorResponse = WebhookSensorResponse(JSON: json),
-                  sensorResponse.Success == false,
-                  sensorResponse.ErrorCode == "not_registered" else {
-                return nil
-            }
-            return uniqueID
+        failures(in: response).compactMap { uniqueID, failure in
+            failure.ErrorCode == "not_registered" ? uniqueID : nil
         }.sorted()
+    }
+
+    /// What a `update_sensor_states` response rejected, by unique ID, other than sensors that just
+    /// need registering. Home Assistant answers per sensor inside an otherwise successful response,
+    /// so a rejected value only shows up here.
+    public static func rejections(in response: Any) -> [String: String] {
+        failures(in: response).reduce(into: [:]) { rejections, entry in
+            guard entry.value.ErrorCode != "not_registered" else { return }
+            rejections[entry.key] = entry.value.ErrorMessage ?? entry.value.ErrorCode ?? "rejected"
+        }
+    }
+
+    private static func failures(in response: Any) -> [String: WebhookSensorResponse] {
+        guard let dictionary = response as? [String: [String: Any]] else { return [:] }
+        return dictionary.reduce(into: [:]) { failures, entry in
+            guard let sensorResponse = WebhookSensorResponse(JSON: entry.value),
+                  sensorResponse.Success == false else { return }
+            failures[entry.key] = sensorResponse
+        }
     }
 }

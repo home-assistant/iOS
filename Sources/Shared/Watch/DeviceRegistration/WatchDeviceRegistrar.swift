@@ -4,9 +4,22 @@ import ObjectMapper
 /// Registers the watch with a server's `mobile_app` integration as a device of its own, over REST —
 /// the one transport the watch reliably has (see `HomeAssistantRESTClient`).
 public enum WatchDeviceRegistrar {
-    public enum RegistrationError: Error, Equatable {
+    public enum RegistrationError: LocalizedError, Equatable {
         /// The response carried no webhook ID, so there is nothing to report through.
         case unmappableResponse
+        /// The server registered the watch but the registration couldn't be saved on the watch.
+        /// Surfaced rather than retried: every registration request creates another device in
+        /// Home Assistant, so a registration that can't be kept must not be repeated blindly.
+        case persistenceFailed(String)
+
+        public var errorDescription: String? {
+            switch self {
+            case .unmappableResponse:
+                return "The registration response had no webhook ID"
+            case let .persistenceFailed(reason):
+                return "The registration could not be saved on the watch: \(reason)"
+            }
+        }
     }
 
     /// The `POST /api/mobile_app/registrations` body. `device_id` is left out for servers that
@@ -72,8 +85,14 @@ public enum WatchDeviceRegistrar {
         }
 
         let registration = try registration(from: json, registeredAt: Current.date())
-        Current.watchDeviceRegistrations.set(registration, for: server.identifier)
-        Current.Log.info("registered watch with \(server.info.name); webhook \(registration.webhookID)")
+        do {
+            try Current.watchDeviceRegistrations.set(registration, for: server.identifier)
+        } catch {
+            Current.Log.error("failed saving watch registration for \(server.info.name): \(error)")
+            throw RegistrationError.persistenceFailed(error.localizedDescription)
+        }
+        // Not the webhook ID: it is the credential for the webhook URL.
+        Current.Log.info("registered watch with \(server.info.name)")
         return registration
     }
 }

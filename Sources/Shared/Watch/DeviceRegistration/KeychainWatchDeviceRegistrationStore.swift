@@ -25,15 +25,11 @@ public final class KeychainWatchDeviceRegistrationStore: WatchDeviceRegistration
         }
     }
 
-    public func set(_ registration: WatchDeviceRegistration?, for server: Identifier<Server>) {
-        do {
-            if let registration {
-                try keychain.set(encoder.encode(registration), key: server.rawValue)
-            } else {
-                try keychain.remove(server.rawValue)
-            }
-        } catch {
-            Current.Log.error("failed writing watch registration for \(server): \(error)")
+    public func set(_ registration: WatchDeviceRegistration?, for server: Identifier<Server>) throws {
+        if let registration {
+            try keychain.set(encoder.encode(registration), key: server.rawValue)
+        } else {
+            try keychain.remove(server.rawValue)
         }
     }
 }

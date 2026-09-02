@@ -6,8 +6,9 @@ import Foundation
 ///
 /// Runs on the watch's schedule — foreground, the periodic background refresh, a settings change —
 /// and talks to the server directly, so it doesn't need the paired iPhone to be reachable or even
-/// running. An actor so overlapping triggers (a background refresh landing while the app is being
-/// opened) queue up instead of registering twice.
+/// running. Runs are coalesced: a trigger that lands while a run is in flight waits for it rather
+/// than starting another, because two runs that both find no registration would each register,
+/// and Home Assistant creates a new device for every registration request.
 public actor WatchDeviceReporter {
     public static let shared = WatchDeviceReporter()
 
@@ -47,13 +48,23 @@ public actor WatchDeviceReporter {
         }
     }
 
+    /// The run in progress, if any. Actor isolation alone doesn't serialize runs — every network
+    /// `await` lets another trigger in — so a new trigger joins this one instead.
+    private var inFlight: Task<[Report], Never>?
+
     public init() {}
 
-    /// Reports to every configured server, one after another, and returns what happened for each.
+    /// Reports to every configured server and returns what happened for each. A trigger that
+    /// arrives during a run waits for that run and then runs itself, so a settings change made
+    /// mid-run still gets sent.
     @discardableResult
     public func report(trigger: Trigger) async -> [Report] {
-        let defaults = WatchUserDefaults.shared
+        if let inFlight {
+            Current.Log.verbose("watch sensor report (\(trigger.rawValue)) waiting for the run in flight")
+            _ = await inFlight.value
+        }
 
+        let defaults = WatchUserDefaults.shared
         if trigger == .foreground,
            let lastSuccess = defaults.lastSensorReportAt,
            Current.date().timeIntervalSince(lastSuccess) < Self.minimumForegroundInterval {
@@ -61,13 +72,33 @@ public actor WatchDeviceReporter {
             return []
         }
 
+        let run = Task { await self.run(trigger: trigger) }
+        inFlight = run
+        let reports = await run.value
+        if inFlight == run {
+            inFlight = nil
+        }
+        return reports
+    }
+
+    private func run(trigger: Trigger) async -> [Report] {
         Current.Log.info("reporting watch sensors (\(trigger.rawValue))")
 
-        var reports = [Report]()
-        for server in Current.servers.all {
-            let outcome = await report(server: server, trigger: trigger)
-            Current.Log.info("watch sensor report to \(server.info.name): \(outcome)")
-            reports.append(Report(server: server.identifier, outcome: outcome))
+        // Servers are independent, and the background budget is too short to take them in turn.
+        let servers = Current.servers.all
+        let reports = await withTaskGroup(of: (Int, Report).self) { group -> [Report] in
+            for (index, server) in servers.enumerated() {
+                group.addTask {
+                    let outcome = await self.report(server: server, trigger: trigger)
+                    Current.Log.info("watch sensor report to \(server.info.name): \(outcome)")
+                    return (index, Report(server: server.identifier, outcome: outcome))
+                }
+            }
+            var indexed = [(Int, Report)]()
+            for await result in group {
+                indexed.append(result)
+            }
+            return indexed.sorted { $0.0 < $1.0 }.map(\.1)
         }
 
         let failures = reports.compactMap { report -> String? in
@@ -78,6 +109,7 @@ public actor WatchDeviceReporter {
             if case .reported = report.outcome { return true }
             return false
         }
+        let defaults = WatchUserDefaults.shared
         if anyReported {
             defaults.lastSensorReportAt = Current.date()
         }
@@ -99,7 +131,7 @@ public actor WatchDeviceReporter {
             return try await report(server: server, timeout: Self.timeout(for: trigger), allowingReregistration: true)
         } catch {
             Current.Log.error("watch sensor report to \(server.info.name) failed: \(error)")
-            return .failed(error.localizedDescription)
+            return .failed("\(server.info.name): \(error.localizedDescription)")
         }
     }
 
@@ -118,7 +150,7 @@ public actor WatchDeviceReporter {
             // The device was deleted in Home Assistant: forget the registration and start over,
             // once — a second miss in the same run means something other than a stale registration.
             Current.Log.info("watch registration with \(server.info.name) is gone; registering again")
-            store.set(nil, for: server.identifier)
+            try store.set(nil, for: server.identifier)
             return try await report(server: server, timeout: timeout, allowingReregistration: false)
         }
     }
@@ -150,7 +182,7 @@ public actor WatchDeviceReporter {
         }
 
         let payload = WatchDeviceSensors.updatePayload(sensors: sensors, enabledIDs: enabledIDs)
-        let response = try await send(type: "update_sensor_states", data: payload, server: server, timeout: timeout)
+        var response = try await send(type: "update_sensor_states", data: payload, server: server, timeout: timeout)
 
         // Home Assistant answers per sensor; one it doesn't know needs registering, after which the
         // same values are sent once more so this run doesn't leave that sensor a cycle behind.
@@ -164,7 +196,17 @@ public actor WatchDeviceReporter {
                 registration: registration,
                 timeout: timeout
             )
-            _ = try await send(type: "update_sensor_states", data: payload, server: server, timeout: timeout)
+            response = try await send(type: "update_sensor_states", data: payload, server: server, timeout: timeout)
+        }
+
+        // Anything still rejected inside the successful response is a failure of this run, not a
+        // value Home Assistant took.
+        let rejections = WatchDeviceSensors.rejections(in: response)
+        if !rejections.isEmpty {
+            let description = rejections.sorted { $0.key < $1.key }
+                .map { "\($0.key): \($0.value)" }
+                .joined(separator: ", ")
+            throw WatchDeviceReporterError.sensorsRejected(description)
         }
 
         return .reported(sensorCount: enabledIDs.intersection(sensors.compactMap(\.UniqueID)).count)
@@ -190,7 +232,7 @@ public actor WatchDeviceReporter {
 
             var updated = store.registration(for: server.identifier) ?? registration
             updated.registeredSensorEnablement[uniqueID] = enabled
-            store.set(updated, for: server.identifier)
+            try store.set(updated, for: server.identifier)
         }
     }
 

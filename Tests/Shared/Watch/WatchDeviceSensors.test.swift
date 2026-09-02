@@ -2,17 +2,19 @@ import Foundation
 @testable import Shared
 import Testing
 
+// Serialized: the tests override the shared `Current.device`, which concurrent tests would race on.
+@Suite(.serialized)
 struct WatchDeviceSensorsTests {
-    /// Runs `body` with the device reporting one battery at 80%, charging, restoring the shared
+    /// Runs `body` with the device reporting one battery at `level`, charging, restoring the shared
     /// environment afterwards so other suites see the defaults.
-    private func withChargingBattery<T>(_ body: () throws -> T) rethrows -> T {
+    private func withChargingBattery<T>(level: Int = 80, _ body: () throws -> T) rethrows -> T {
         let batteries = Current.device.batteries
         let isLowPowerMode = Current.device.isLowPowerMode
         defer {
             Current.device.batteries = batteries
             Current.device.isLowPowerMode = isLowPowerMode
         }
-        Current.device.batteries = { [DeviceBattery(level: 80, state: .charging, attributes: [:])] }
+        Current.device.batteries = { [DeviceBattery(level: level, state: .charging, attributes: [:])] }
         Current.device.isLowPowerMode = { false }
         return try body()
     }
@@ -35,6 +37,14 @@ struct WatchDeviceSensorsTests {
         #expect(sensors[1].State as? String == "Charging")
     }
 
+    @Test func unreadableBatteryIsReportedUnavailable() {
+        let sensors = withChargingBattery(level: -1) { WatchDeviceSensors.current() }
+
+        #expect(sensors.map(\.UniqueID) == ["battery_level", "battery_state"])
+        #expect(sensors[0].State as? String == "unavailable")
+        #expect(sensors[1].State as? String == "unavailable")
+    }
+
     @Test func registrationPayloadCarriesEnablement() throws {
         let sensor = try #require(withChargingBattery { WatchDeviceSensors.current().first })
 
@@ -43,9 +53,16 @@ struct WatchDeviceSensorsTests {
         #expect(enabled["name"] as? String == "Battery Level")
         #expect(enabled["disabled"] as? Bool == false)
         #expect(enabled["state"] as? Int == 80)
+    }
+
+    @Test func registrationPayloadRedactsASensorThatIsOff() throws {
+        let sensor = try #require(withChargingBattery { WatchDeviceSensors.current().first })
 
         let disabled = WatchDeviceSensors.registrationPayload(sensor: sensor, enabled: false)
+        #expect(disabled["unique_id"] as? String == "battery_level")
+        #expect(disabled["name"] as? String == "Battery Level")
         #expect(disabled["disabled"] as? Bool == true)
+        #expect(disabled["state"] as? String == "unavailable")
     }
 
     @Test func updatePayloadRedactsSensorsThatAreOff() throws {
@@ -75,7 +92,21 @@ struct WatchDeviceSensorsTests {
         ]
 
         #expect(WatchDeviceSensors.unregisteredIDs(in: response) == ["battery_state"])
+        #expect(WatchDeviceSensors.rejections(in: response).isEmpty)
         #expect(WatchDeviceSensors.unregisteredIDs(in: ()) == [])
         #expect(WatchDeviceSensors.unregisteredIDs(in: ["battery_level": ["success": true]]) == [])
+    }
+
+    @Test func findsSensorsTheServerRejected() {
+        let response: [String: [String: Any]] = [
+            "battery_level": ["success": true],
+            "battery_state": [
+                "success": false,
+                "error": ["code": "invalid_format", "message": "Unexpected value for state"],
+            ],
+        ]
+
+        #expect(WatchDeviceSensors.rejections(in: response) == ["battery_state": "Unexpected value for state"])
+        #expect(WatchDeviceSensors.unregisteredIDs(in: response) == [])
     }
 }
