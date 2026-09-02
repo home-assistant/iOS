@@ -213,9 +213,12 @@ jobs:
       # own Swift plugin globs DerivedData and pairs profdata with the wrong binaries,
       # which reported ~0% for the whole project. Convert the result bundle ourselves
       # and hand Codecov a plain LCOV tracefile instead.
+      #
+      # Both steps below are `continue-on-error`: tests gate merges, coverage reporting
+      # must not. `fail_ci_if_error` covers only the upload result, not the uploader's
+      # own setup steps (dependency checks, CLI download, signature verification), which
+      # exit nonzero on their own, so the action needs the same treatment.
       - name: Build coverage report
-        # Tests gate merges; coverage reporting must not. A broken report shows up as a
-        # failed step (and a missing Codecov comment) without blocking the pull request.
         continue-on-error: true
         run: >-
           python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult
@@ -224,6 +227,7 @@ jobs:
 
       - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
         name: "Upload Code Coverage"
+        continue-on-error: true
         with:
           files: fastlane/test_output/coverage.lcov
           disable_search: true
