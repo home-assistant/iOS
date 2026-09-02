@@ -10,6 +10,7 @@ public enum DataWidgetsUpdater {
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.sensors.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.commonlyUsedEntities.rawValue)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.entities.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.todoList.rawValue)
         DataWidgetsUpdater.updateControlCenterControls()
     }

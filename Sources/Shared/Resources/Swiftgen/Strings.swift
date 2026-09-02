@@ -9040,6 +9040,20 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.energy.source.title") }
       }
     }
+    public enum Entities {
+      /// Show and control the entities you choose.
+      public static var description: String { return L10n.tr("Localizable", "widgets.entities.description") }
+      /// Edit the widget to choose entities.
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.entities.not_configured") }
+      /// Entities
+      public static var title: String { return L10n.tr("Localizable", "widgets.entities.title") }
+      public enum Param {
+        public enum Entities {
+          /// Entities
+          public static var title: String { return L10n.tr("Localizable", "widgets.entities.param.entities.title") }
+        }
+      }
+    }
     public enum EntityState {
       /// Entity state
       public static var placeholder: String { return L10n.tr("Localizable", "widgets.entity_state.placeholder") }
