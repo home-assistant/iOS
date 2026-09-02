@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update with this frequency while the app is open in the foreground.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Off";
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";

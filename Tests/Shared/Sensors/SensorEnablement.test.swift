@@ -47,6 +47,14 @@ class SensorEnablementTests: XCTestCase {
         XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.cameraStream.rawValue))
     }
 
+    /// A sensor added after the allowlist shipped can't be in a legacy denylist, and reading that
+    /// silence as "the user wanted it on" is what used to switch new sensors on for free.
+    func testUpgradeLeavesSensorsAddedAfterTheLegacyEraOff() {
+        SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
+
+        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.focusName.rawValue))
+    }
+
     func testUpgradeKeepsOptInSensorsTheUserHadTurnedOn() {
         SensorEnablementStore.seedLegacyStateForTesting(
             disabledSensorIDs: [],
@@ -174,42 +182,46 @@ class SensorEnablementTests: XCTestCase {
 
     // MARK: - First-time installs
 
-    func testFirstRunDefaultsEnableOnlyTheOutOfTheBoxSensors() {
-        container.applyFirstRunSensorDefaults()
+    /// Every sensor is opt-in, so a new install reports nothing until the user picks something.
+    func testFirstRunEnablesNothing() {
+        container.resetSensorsForFirstRun()
 
-        XCTAssertTrue(container.isEnabled(uniqueID: "battery_level"))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.appVersion.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.locationPermission.rawValue))
-
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
+        for uniqueID in [
+            "battery_level",
+            WebhookSensorId.appVersion.rawValue,
+            WebhookSensorId.locationPermission.rawValue,
+            WebhookSensorId.storage.rawValue,
+            WebhookSensorId.activity.rawValue,
+            WebhookSensorId.cameraMotion.rawValue,
+            HealthKitMetric.restingHeartRate.uniqueID,
+        ] {
+            XCTAssertFalse(container.isEnabled(uniqueID: uniqueID), uniqueID)
+        }
     }
 
-    func testFirstRunDefaultsPickUpThisDevicesBatterySensors() throws {
-        container.applyFirstRunSensorDefaults()
+    func testFirstRunLeavesTheSensorsThisDeviceProducesLaterOff() throws {
+        container.resetSensorsForFirstRun()
 
         try generateSensors(withUniqueIDs: [dynamicSensorID, "connectivity_sim_1"])
 
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID))
+        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID))
         XCTAssertFalse(container.isEnabled(uniqueID: "connectivity_sim_1"))
     }
 
-    func testFirstRunDefaultsLeaveAnUpgradedInstallAlone() {
+    func testFirstRunLeavesAnUpgradedInstallAlone() {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [WebhookSensorId.storage.rawValue])
         XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
 
-        container.applyFirstRunSensorDefaults()
+        container.resetSensorsForFirstRun()
 
         XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
     }
 
-    func testFirstRunDefaultsDoNotComeBackWhenAServerIsSetUpAgain() {
-        container.applyFirstRunSensorDefaults()
+    func testFirstRunDoesNotComeBackWhenAServerIsSetUpAgain() {
+        container.resetSensorsForFirstRun()
         container.setEnabled(true, forUniqueID: WebhookSensorId.storage.rawValue)
 
-        container.applyFirstRunSensorDefaults()
+        container.resetSensorsForFirstRun()
 
         XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
     }

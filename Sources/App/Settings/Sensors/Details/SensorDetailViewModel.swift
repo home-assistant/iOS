@@ -64,6 +64,9 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
     func setEnabled(_ enabled: Bool) {
         Current.sensors.setEnabled(enabled, for: sensor)
         isEnabled = enabled
+
+        guard enabled, let uniqueID = sensor.UniqueID else { return }
+        Current.requestSensorPermissions([uniqueID])
     }
 
     private func updateSettingsViews() {

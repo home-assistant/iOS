@@ -295,6 +295,12 @@ public class AppEnvironment {
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
 
+    /// Asks iOS for the permissions the given sensors need, at the moment the user switches them on.
+    ///
+    /// Sensors are opt-in, so the toggle is the only place the app learns someone wants one. The app
+    /// points this at `SensorPermissionRequester`; everywhere else, tests included, it does nothing.
+    public var requestSensorPermissions: ([String]) -> Void = { _ in }
+
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?

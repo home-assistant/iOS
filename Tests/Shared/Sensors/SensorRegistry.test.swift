@@ -3,8 +3,6 @@ import Foundation
 import XCTest
 
 class SensorRegistryTests: XCTestCase {
-    /// The migration seeds the allowlist from this, so anything missing here is a sensor an
-    /// upgrading user would silently lose.
     func testStaticSensorIDsCoverEveryWebhookSensorId() {
         for sensorId in WebhookSensorId.allCases {
             XCTAssertTrue(
@@ -42,25 +40,38 @@ class SensorRegistryTests: XCTestCase {
         XCTAssertEqual(SensorRegistry.optInSensorIDs.count, HealthKitMetric.all.count + 2)
     }
 
-    func testOptInSensorsAreNeverOnByDefault() {
-        for uniqueID in SensorRegistry.optInSensorIDs {
-            XCTAssertFalse(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: uniqueID))
+    // MARK: - The frozen legacy-era set
+
+    /// The migration seeds the allowlist from this, so anything missing is a sensor an upgrading
+    /// user would silently lose.
+    func testLegacyEraSensorIDsCoverTheSensorsThatPredateTheAllowlist() {
+        for uniqueID in [
+            WebhookSensorId.activity.rawValue,
+            WebhookSensorId.storage.rawValue,
+            WebhookSensorId.focus.rawValue,
+            WebhookSensorId.pressure.rawValue,
+            WebhookSensorId.cameraMotion.rawValue,
+            WebhookSensorId.locationPermission.rawValue,
+            "battery_level",
+            "battery_state",
+            "camera_in_use",
+            "active_camera",
+        ] + PedometerSensor.allSensorIDs {
+            XCTAssertTrue(SensorRegistry.legacyEraSensorIDs.contains(uniqueID), uniqueID)
+        }
+        for metric in HealthKitMetric.all {
+            XCTAssertTrue(SensorRegistry.legacyEraSensorIDs.contains(metric.uniqueID), metric.uniqueID)
         }
     }
 
-    func testFirstRunDefaultsMatchWhatOnboardingUsedToKeepEnabled() {
-        for uniqueID in ["battery_level", "battery_state", "watch-battery", "watch-battery-state"] {
-            XCTAssertTrue(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: uniqueID))
-        }
-        XCTAssertTrue(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.appVersion.rawValue))
-        XCTAssertTrue(
-            SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.locationPermission.rawValue)
-        )
+    /// What keeps a new sensor from being read as one an upgrading install had chosen. Nothing is
+    /// added to the frozen set, so this holds for every sensor added from here on.
+    func testLegacyEraSensorIDsExcludeSensorsAddedAfterTheAllowlist() {
+        XCTAssertFalse(SensorRegistry.legacyEraSensorIDs.contains(WebhookSensorId.focusName.rawValue))
+        XCTAssertTrue(SensorRegistry.staticSensorIDs.contains(WebhookSensorId.focusName.rawValue))
+    }
 
-        XCTAssertFalse(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.storage.rawValue))
-        XCTAssertFalse(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertFalse(
-            SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID: HealthKitMetric.restingHeartRate.uniqueID)
-        )
+    func testLegacyEraSensorIDsAreAllStillKnown() {
+        XCTAssertTrue(SensorRegistry.legacyEraSensorIDs.isSubset(of: SensorRegistry.staticSensorIDs))
     }
 }

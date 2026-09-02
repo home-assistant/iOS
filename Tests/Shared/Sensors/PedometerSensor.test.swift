@@ -27,10 +27,15 @@ class PedometerSensorTests: XCTestCase {
         Current.pedometer.queryStartEndHandler = { _, _, handler in handler(nil, nil) }
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = PedometerSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? PedometerSensor.PedometerError, .unauthorized)
+    /// Listed rather than dropped: switching one on is what asks for motion access, so sensors
+    /// that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.pedometer.isStepCountingAvailable = { true }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        for sensor in sensors {
+            XCTAssertEqual(sensor.State as? String, "unavailable", sensor.UniqueID ?? "")
         }
     }
 

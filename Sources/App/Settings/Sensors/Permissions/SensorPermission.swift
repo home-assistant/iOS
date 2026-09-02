@@ -15,6 +15,34 @@ enum SensorPermission: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// The permission a sensor needs before it can report anything, requested when the user
+    /// switches that sensor on. `nil` for the sensors that need none.
+    ///
+    /// Apple Health is absent on purpose: HealthKit asks per data type, from its own screen.
+    static func required(forSensorUniqueID uniqueID: String) -> SensorPermission? {
+        requirementsBySensorID[uniqueID]
+    }
+
+    private static let requirementsBySensorID: [String: SensorPermission] = {
+        var requirements: [String: SensorPermission] = [
+            WebhookSensorId.activity.rawValue: .motion,
+            WebhookSensorId.pressure.rawValue: .motion,
+            WebhookSensorId.focus.rawValue: .focus,
+            // The Focus name sensor stands on it too: without it nothing tells the app a Focus
+            // ended, so the name the filter last reported would stay put.
+            WebhookSensorId.focusName.rawValue: .focus,
+            WebhookSensorId.geocodedLocation.rawValue: .location,
+            WebhookSensorId.connectivitySSID.rawValue: .location,
+            WebhookSensorId.connectivityBSID.rawValue: .location,
+            WebhookSensorId.cameraMotion.rawValue: .camera,
+            WebhookSensorId.cameraStream.rawValue: .camera,
+        ]
+        for uniqueID in PedometerSensor.allSensorIDs {
+            requirements[uniqueID] = .motion
+        }
+        return requirements
+    }()
+
     var title: String {
         switch self {
         case .location:

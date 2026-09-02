@@ -57,11 +57,15 @@ class BarometerSensorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = BarometerSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? BarometerSensor.BarometerError, .unauthorized)
-        }
+    /// Listed rather than dropped: switching it on is what asks for motion access, so a sensor
+    /// that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.barometer.isAvailable = { true }
+
+        let sensors = try hang(BarometerSensor(request: request).sensors())
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.pressure.rawValue)
+        XCTAssertEqual(sensors[0].State as? String, "unavailable")
     }
 
     func testUnavailableReturnsError() {

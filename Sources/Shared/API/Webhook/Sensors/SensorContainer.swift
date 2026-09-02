@@ -107,10 +107,10 @@ public class SensorContainer {
         notifySignal(reason: .settingsChange(changedUniqueIDs: changed))
     }
 
-    /// Applies the sensor selection a first-time install starts with. Sensors outside it stay off
-    /// until the user enables them, so there is nothing to switch off here.
-    public func applyFirstRunSensorDefaults() {
-        guard enablement.applyFirstRunDefaults() else { return }
+    /// Starts a first-time install with nothing enabled. Every sensor is opt-in, so an install that
+    /// has just been set up reports only what the user switches on.
+    public func resetSensorsForFirstRun() {
+        guard enablement.resetForFirstRun() else { return }
         notifySignal(reason: .settingsChange(changedUniqueIDs: []))
     }
 
@@ -245,7 +245,7 @@ public class SensorContainer {
             return batches
         }
 
-        setLastUpdate(.init(sensors: generatedBatches.map { [lastSentSensors, weak self] new in
+        setLastUpdate(.init(sensors: generatedBatches.map { [lastSentSensors] new in
             // doesn't store the sent values, that happens when the network request ends
             // this is just what's presented to the user, so we always have the latest version
             let ignoringExisting: Bool
@@ -258,23 +258,12 @@ public class SensorContainer {
                 ignoringExisting = false
             }
 
-            // Read once for the whole sort: asking the store per comparison turns one update into
-            // hundreds of app group defaults reads, which is enough to hang the main thread.
-            let enabledUniqueIDs = self?.enablement.enabledUniqueIDs() ?? []
-
+            // Alphabetical, and only alphabetical: switching a sensor on must not move its row out
+            // from under whoever just tapped it.
             return lastSentSensors.mutate { lastSentSensors -> AnyCollection<WebhookSensor> in
                 lastSentSensors.combine(with: new, ignoringExisting: ignoringExisting)
                 return lastSentSensors.sensors
-            }.sorted(by: { lhs, rhs in
-                let isLhsEnabled = lhs.UniqueID.map { enabledUniqueIDs.contains($0) } ?? false
-                let isRhsEnabled = rhs.UniqueID.map { enabledUniqueIDs.contains($0) } ?? false
-                switch (isLhsEnabled, isRhsEnabled) {
-                case (true, true): return lhs < rhs
-                case (false, false): return lhs < rhs
-                case (true, false): return true
-                case (false, true): return false
-                }
-            })
+            }.sorted()
         }))
 
         return generatedBatches.map { [weak self] batches -> SensorResponse in

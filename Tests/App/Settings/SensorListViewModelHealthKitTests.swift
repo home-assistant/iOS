@@ -21,6 +21,8 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         SensorEnablementStore.resetForTesting()
         Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
         Current.healthKitService.isAvailable = { true }
+        // Switching a metric on now asks HealthKit for access, which must not reach the real store.
+        Current.healthKitService.requestReadAuthorization = {}
     }
 
     override func tearDown() {
@@ -52,6 +54,9 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     }
 
     func testRequestingAccessWithNothingEnabledFails() async {
+        // The real implementation, which `setUp` stubs out so that switching a metric on in the
+        // tests below can't reach HealthKit. With nothing enabled it returns before it would.
+        Current.healthKitService.requestReadAuthorization = originalHealthKitService.requestReadAuthorization
         // Established explicitly rather than assumed: with a sensor enabled this reaches real
         // HealthKit, which never returns on a headless simulator and hangs the whole suite.
         Current.sensors.setEnabled(false, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
