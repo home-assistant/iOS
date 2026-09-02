@@ -199,12 +199,14 @@ struct MagicItemWidgetInteractionTests {
         #expect(!sensorOffered.contains(ItemAction.toggle.id))
         #expect(!sensorOffered.contains(ItemAction.turnOn.id))
         #expect(!sensorOffered.contains(ItemAction.turnOff.id))
-        #expect(sensorOffered == ItemAction.allCases.map(\.id).filter { id in
-            ![ItemAction.toggle.id, ItemAction.turnOn.id, ItemAction.turnOff.id].contains(id)
-        })
+        let domainSpecific = [ItemAction.toggle.id, ItemAction.activate.id, ItemAction.turnOn.id, ItemAction.turnOff.id]
+        #expect(sensorOffered == ItemAction.allCases.map(\.id).filter { !domainSpecific.contains($0) })
 
+        // A light toggles and turns on and off, but has nothing of its own to run.
         let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
-        #expect(ItemAction.offered(for: light, selected: .default).map(\.id) == ItemAction.allCases.map(\.id))
+        #expect(ItemAction.offered(for: light, selected: .default).map(\.id) == ItemAction.allCases.map(\.id).filter {
+            $0 != ItemAction.activate.id
+        })
 
         // A choice already stored stays on screen even when it would no longer be offered.
         #expect(ItemAction.offered(for: sensor, selected: .toggle).map(\.id).contains(ItemAction.toggle.id))
@@ -229,6 +231,53 @@ struct MagicItemWidgetInteractionTests {
             #expect(offered.contains(ItemAction.toggle.id), "\(item.id)")
             #expect(!offered.contains(ItemAction.turnOn.id), "\(item.id)")
         }
+    }
+
+    /// A script and an automation each get a behavior of their own beyond "toggle", since their
+    /// toggle does something else: "Run" runs the script outright, "Trigger" fires the automation.
+    /// A scene or a button's toggle already activates or presses it, so they get no duplicate.
+    @Test func scriptRunsAndAutomationTriggersWithTheirOwnBehavior() {
+        var script = MagicItem(id: "script.morning", serverId: "1", type: .script)
+        #expect(script.canActivate)
+        #expect(ItemAction.offered(for: script, selected: .default).map(\.id).contains(ItemAction.activate.id))
+        #expect(ItemAction.activate.name(for: .script) == "Run")
+        script.action = .activate
+        #expect(script.widgetInteractionType == .appIntent(.activate(
+            entityId: "script.morning",
+            domain: "script",
+            serverId: "1"
+        )))
+        #expect(script.controlsEntityFromWidget)
+
+        var automation = MagicItem(id: "automation.night", serverId: "1", type: .entity)
+        #expect(automation.canActivate)
+        #expect(ItemAction.activate.name(for: .automation) == "Trigger")
+        automation.tapAction = .activate
+        #expect(automation.widgetTapInteractionType == .appIntent(.activate(
+            entityId: "automation.night",
+            domain: "automation",
+            serverId: "1"
+        )))
+
+        for item in [
+            MagicItem(id: "scene.movie", serverId: "1", type: .scene),
+            MagicItem(id: "button.doorbell", serverId: "1", type: .entity),
+            MagicItem(id: "light.kitchen", serverId: "1", type: .entity),
+            MagicItem(id: "sensor.temperature", serverId: "1", type: .entity),
+        ] {
+            #expect(!item.canActivate, "\(item.id)")
+            let offered = ItemAction.offered(for: item, selected: .default).map(\.id)
+            #expect(!offered.contains(ItemAction.activate.id), "\(item.id)")
+        }
+
+        // A light has nothing of its own to run, so the choice falls back to the icon's default.
+        var light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        light.action = .activate
+        #expect(light.widgetInteractionType == .appIntent(.toggle(
+            entityId: "light.kitchen",
+            domain: "light",
+            serverId: "1"
+        )))
     }
 
     /// The on/off behaviors call the domain's own service outright, and are named after it: a lock

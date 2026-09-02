@@ -8586,10 +8586,14 @@ public enum L10n {
         public static var open: String { return L10n.tr("Localizable", "widgets.action.name.open") }
         /// Perform action
         public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
+        /// Run
+        public static var run: String { return L10n.tr("Localizable", "widgets.action.name.run") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
         /// Toggle
         public static var toggle: String { return L10n.tr("Localizable", "widgets.action.name.toggle") }
+        /// Trigger
+        public static var trigger: String { return L10n.tr("Localizable", "widgets.action.name.trigger") }
         /// Turn off
         public static var turnOff: String { return L10n.tr("Localizable", "widgets.action.name.turn_off") }
         /// Turn on

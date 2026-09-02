@@ -445,7 +445,7 @@ class IncomingURLHandler {
         case .default, .nothing:
             // The retired "nothing" behaves as the default.
             return nil
-        case .toggle, .turnOn, .turnOff:
+        case .toggle, .activate, .turnOn, .turnOff:
             // These resolve through the item's interaction type, the way a widget tile's do, so
             // falling through keeps the confirmation overlay and error handling.
             return nil

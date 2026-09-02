@@ -78,6 +78,13 @@ struct MagicItemCustomizationViewTests {
         assertSnapshots(context: .widget, item: .init(id: "sensor.temperature", serverId: "1", type: .entity))
     }
 
+    /// An automation's own behavior is "Trigger", and it reads that way on the row once chosen.
+    @Test func widgetNamesAnAutomationsOwnBehaviorTrigger() {
+        var item = MagicItem(id: "automation.night", serverId: "1", type: .entity)
+        item.action = .activate
+        assertSnapshots(context: .widget, item: item)
+    }
+
     /// A lock's explicit behaviors are named in its own words, "Lock" and "Unlock", and the chosen
     /// one reads that way on the row.
     @Test func widgetNamesALocksOnOffBehaviorsAsLockAndUnlock() {

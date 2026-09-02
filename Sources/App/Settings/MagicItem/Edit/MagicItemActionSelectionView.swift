@@ -180,7 +180,7 @@ struct MagicItemActionSelectionView: View {
             return .assist(pipelineServerId ?? "", pipelineId ?? "", startListening)
         case .runScript:
             return .runScript(script?.serverId ?? "", script?.entityId ?? "")
-        case .default, .moreInfoDialog, .toggle, .turnOn, .turnOff, .nothing:
+        case .default, .moreInfoDialog, .toggle, .activate, .turnOn, .turnOff, .nothing:
             return itemAction
         }
     }
@@ -218,7 +218,7 @@ struct MagicItemActionSelectionView: View {
             pipelineServerId = assistServerId
             self.pipelineId = pipelineId
             self.startListening = startListening
-        case .default, .nothing, .moreInfoDialog, .toggle, .turnOn, .turnOff:
+        case .default, .nothing, .moreInfoDialog, .toggle, .activate, .turnOn, .turnOff:
             break
         }
     }

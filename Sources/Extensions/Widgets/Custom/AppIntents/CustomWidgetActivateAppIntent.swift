@@ -5,7 +5,7 @@ import HAKit_PromiseKit
 import Shared
 import SwiftUI
 
-/// Intent activate scenes or scripts
+/// Runs a script, activates a scene, or triggers an automation outright.
 struct CustomWidgetActivateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Activate"
     static var isDiscoverable: Bool = false
@@ -47,6 +47,8 @@ struct CustomWidgetActivateAppIntent: AppIntent {
                 return .runScript(entityId: entityId)
             case .scene:
                 return .applyScene(entityId: entityId)
+            case .automation:
+                return .trigger(entityId: entityId)
             default:
                 Current.Log
                     .error(
