@@ -189,6 +189,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsList.rawValue)
         .searchable(
             text: $searchText,
             placement: .navigationBarDrawer(displayMode: .always),

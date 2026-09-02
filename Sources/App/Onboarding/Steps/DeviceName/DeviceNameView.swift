@@ -36,7 +36,8 @@ struct DeviceNameView: View {
             primaryActionTitle: L10n.DeviceName.PrimaryButton.title,
             primaryAction: {
                 request.save(deviceName)
-            }
+            },
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingDeviceNameSave.rawValue
         )
         .disableOnboardingPrimaryAction(deviceName.count < 3 || request.isSaving)
         .navigationBarTitleDisplayMode(.inline)

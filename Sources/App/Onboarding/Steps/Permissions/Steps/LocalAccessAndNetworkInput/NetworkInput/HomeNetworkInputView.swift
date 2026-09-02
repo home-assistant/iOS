@@ -27,6 +27,7 @@ struct HomeNetworkInputView: View {
             },
             primaryActionTitle: L10n.Onboarding.NetworkInput.PrimaryButton.title,
             primaryAction: handlePrimaryAction,
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingHomeNetworkNext.rawValue,
             secondaryActionTitle: L10n.SettingsDetails.learnMore,
             secondaryAction: {
                 showLearnMore = true

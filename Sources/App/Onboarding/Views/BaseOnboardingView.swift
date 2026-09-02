@@ -25,9 +25,11 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
 
     private let primaryActionTitle: String
     private let primaryAction: () -> Void
+    private let primaryActionIdentifier: String?
 
     private let secondaryActionTitle: String?
     private let secondaryAction: (() -> Void)?
+    private let secondaryActionIdentifier: String?
 
     // Layout tuning
     private let verticalSpacing: CGFloat
@@ -45,8 +47,10 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         @ViewBuilder content: @escaping () -> Content,
         primaryActionTitle: String,
         primaryAction: @escaping () -> Void,
+        primaryActionIdentifier: String? = nil,
         secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
+        secondaryActionIdentifier: String? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
     ) {
@@ -57,8 +61,10 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         self.content = content
         self.primaryActionTitle = primaryActionTitle
         self.primaryAction = primaryAction
+        self.primaryActionIdentifier = primaryActionIdentifier
         self.secondaryActionTitle = secondaryActionTitle
         self.secondaryAction = secondaryAction
+        self.secondaryActionIdentifier = secondaryActionIdentifier
         self.verticalSpacing = verticalSpacing
     }
 
@@ -70,8 +76,10 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         secondaryDescription: String? = nil,
         primaryActionTitle: String,
         primaryAction: @escaping () -> Void,
+        primaryActionIdentifier: String? = nil,
         secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
+        secondaryActionIdentifier: String? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
     ) where Content == EmptyView {
@@ -82,8 +90,10 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         self.content = nil
         self.primaryActionTitle = primaryActionTitle
         self.primaryAction = primaryAction
+        self.primaryActionIdentifier = primaryActionIdentifier
         self.secondaryActionTitle = secondaryActionTitle
         self.secondaryAction = secondaryAction
+        self.secondaryActionIdentifier = secondaryActionIdentifier
         self.verticalSpacing = verticalSpacing
     }
 
@@ -167,6 +177,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
             }
             .buttonStyle(.primaryButton)
             .disabled(disablePrimaryAction)
+            .accessibilityIdentifier(primaryActionIdentifier ?? "")
 
             if let secondaryActionTitle, let secondaryAction {
                 Button(action: secondaryAction) {
@@ -174,6 +185,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
                 }
                 .buttonStyle(.secondaryButton)
                 .tint(Color.haPrimary)
+                .accessibilityIdentifier(secondaryActionIdentifier ?? "")
             }
         }
         .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
