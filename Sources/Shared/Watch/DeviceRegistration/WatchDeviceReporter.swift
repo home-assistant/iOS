@@ -1,5 +1,6 @@
 import Foundation
 
+#if os(watchOS)
 /// Reports the watch's own sensors to every server, registering the watch as a `mobile_app` device
 /// of its own first.
 ///
@@ -144,7 +145,7 @@ public actor WatchDeviceReporter {
             timeout: timeout
         )
 
-        guard sensors.contains(where: { sensor in sensor.UniqueID.map(enabledIDs.contains) ?? false }) else {
+        guard sensors.contains(where: { sensor in sensor.UniqueID.map { enabledIDs.contains($0) } ?? false }) else {
             return .nothingEnabled
         }
 
@@ -157,7 +158,7 @@ public actor WatchDeviceReporter {
         if !unregistered.isEmpty {
             Current.Log.info("\(server.info.name) doesn't know watch sensors \(unregistered); registering")
             try await register(
-                sensors: sensors.filter { sensor in sensor.UniqueID.map(unregistered.contains) ?? false },
+                sensors: sensors.filter { sensor in sensor.UniqueID.map { unregistered.contains($0) } ?? false },
                 enabledIDs: enabledIDs,
                 server: server,
                 registration: registration,
@@ -216,3 +217,4 @@ public actor WatchDeviceReporter {
         return response
     }
 }
+#endif

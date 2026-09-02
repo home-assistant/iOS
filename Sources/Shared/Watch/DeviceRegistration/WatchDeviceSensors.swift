@@ -28,7 +28,7 @@ public enum WatchDeviceSensors {
         let ids = all.map(\.uniqueID)
         return Current.device.batteries()
             .flatMap(BatterySensor.sensors(battery:))
-            .filter { sensor in sensor.UniqueID.map(ids.contains) ?? false }
+            .filter { sensor in sensor.UniqueID.map { ids.contains($0) } ?? false }
             .sorted { lhs, rhs in
                 (ids.firstIndex(of: lhs.UniqueID ?? "") ?? 0) < (ids.firstIndex(of: rhs.UniqueID ?? "") ?? 0)
             }
