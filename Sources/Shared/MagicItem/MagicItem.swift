@@ -290,10 +290,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
         canToggle && domain?.toggleIsStateAware == true
     }
 
-    /// Whether the item has a behavior of its own to run — "Run" for a script, "Trigger" for an
-    /// automation — that its toggle doesn't cover. See `Domain.activateService`.
-    public var canActivate: Bool {
-        hasMoreInfoDialog && domain?.activateService != nil
+    /// Whether the item's domain has a main action worth its own entry — "Press" for a button,
+    /// "Activate" for a scene, "Run" for a script, "Trigger" for an automation — rather than one
+    /// "Toggle" already names. See `Domain.explicitMainAction`.
+    public var hasExplicitMainAction: Bool {
+        hasMoreInfoDialog && domain?.explicitMainAction != nil
     }
 
     /// What `.default` stands for on a widget tile's icon — and on an app icon shortcut, which
@@ -373,8 +374,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
             return hasMoreInfoDialog ? moreInfoIntent() : nil
         case .toggle:
             return toggleIntent()
-        case .activate:
-            return activateIntent()
+        case .mainAction:
+            return mainActionIntent()
         case .turnOn:
             return onOffIntent(turnOn: true)
         case .turnOff:
@@ -412,10 +413,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
         return .appIntent(.toggle(entityId: id, domain: domain.rawValue, serverId: serverId))
     }
 
-    /// The intent that runs the entity outright — a script, or an automation's trigger. `nil` for a
-    /// domain with nothing of its own to run beyond its toggle.
-    private func activateIntent() -> WidgetInteractionType? {
-        guard canActivate, let domain else { return nil }
+    /// The intent that runs the domain's main action outright — pressing a button, activating a
+    /// scene, running a script, triggering an automation. `nil` for a domain whose main action
+    /// "Toggle" already covers, or that has none.
+    private func mainActionIntent() -> WidgetInteractionType? {
+        guard hasExplicitMainAction, let domain else { return nil }
         return .appIntent(.activate(entityId: id, domain: domain.rawValue, serverId: serverId))
     }
 
@@ -496,14 +498,14 @@ public enum MagicItemError: Error {
 /// configurations back to `.default`.
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// Listed in the frontend's own order, with the app's own additions next to the action they
-    /// resemble most: the domain's own run and on/off behaviors after "toggle", `runScript` after
-    /// "perform action". The frontend's "no action" is left out: an item with nothing else to do
-    /// opens its more-info dialog, so `.nothing` is storage only.
+    /// resemble most: the domain's main action and on/off behaviors after "toggle", `runScript`
+    /// after "perform action". The frontend's "no action" is left out: an item with nothing else
+    /// to do opens its more-info dialog, so `.nothing` is storage only.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
         .toggle,
-        .activate,
+        .mainAction,
         .turnOn,
         .turnOff,
         .navigate(""),
@@ -520,11 +522,10 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// for a button. Only domains with such a pair can do this — see `Domain.toggleServices` — so
     /// for anything else the item falls back to the behavior it would have had without an override.
     case toggle
-    /// Runs the entity outright where its toggle does something else: a script runs (its toggle
-    /// stops a running one), an automation triggers (its toggle enables or disables it). Named
-    /// "Run" or "Trigger" on the customization screen, and only offered to those domains — see
-    /// `Domain.activateService`.
-    case activate
+    /// Runs the domain's main action outright — press a button, activate a scene, run a script,
+    /// trigger an automation — named that way on the customization screen, and only offered where
+    /// "Toggle" doesn't already spell the same thing out. See `Domain.explicitMainAction`.
+    case mainAction
     /// Calls the domain's "on" service outright, whatever the entity's state: `lock.unlock`,
     /// `cover.open_cover`, `light.turn_on`. Named after that service on the customization screen
     /// ("Unlock", "Open", "Turn on"), and only offered where it differs from the "off" one.
@@ -560,8 +561,8 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             switch itemAction {
             case .toggle:
                 return item.canToggle
-            case .activate:
-                return item.canActivate
+            case .mainAction:
+                return item.hasExplicitMainAction
             case .turnOn, .turnOff:
                 return item.hasOnOffActions
             default:
@@ -584,8 +585,8 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return "moreInfoDialog"
         case .toggle:
             return "toggle"
-        case .activate:
-            return "activate"
+        case .mainAction:
+            return "mainAction"
         case .turnOn:
             return "turnOn"
         case .turnOff:
@@ -612,12 +613,12 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     }
 
     /// The name shown for this behavior on one item. The domain's own behaviors take its words —
-    /// "Run" for a script and "Trigger" for an automation, "Lock" and "Unlock" for a lock, "Open"
-    /// and "Close" for a cover — and everything else reads the same on every item.
+    /// "Press" for a button, "Run" for a script, "Lock" and "Unlock" for a lock, "Open" and
+    /// "Close" for a cover — and everything else reads the same on every item.
     public func name(for domain: Domain?) -> String {
         switch self {
-        case .activate:
-            return domain?.activateActionName ?? name
+        case .mainAction:
+            return domain?.mainActionName ?? name
         case .turnOn:
             return domain?.toggleServices?.on.toggleActionName ?? name
         case .turnOff:
@@ -635,8 +636,8 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return L10n.Widgets.Action.Name.moreInfoDialog
         case .toggle:
             return L10n.Widgets.Action.Name.toggle
-        case .activate:
-            return L10n.Widgets.Action.Name.run
+        case .mainAction:
+            return L10n.Widgets.Action.Name.mainAction
         case .turnOn:
             return L10n.Widgets.Action.Name.turnOn
         case .turnOff:

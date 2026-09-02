@@ -8564,6 +8564,8 @@ public enum L10n {
     public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.refresh_title") }
     public enum Action {
       public enum Name {
+        /// Activate
+        public static var activate: String { return L10n.tr("Localizable", "widgets.action.name.activate") }
         /// Assist
         public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
         /// Close
@@ -8576,6 +8578,8 @@ public enum L10n {
         }
         /// Lock
         public static var lock: String { return L10n.tr("Localizable", "widgets.action.name.lock") }
+        /// Main action
+        public static var mainAction: String { return L10n.tr("Localizable", "widgets.action.name.main_action") }
         /// More info
         public static var moreInfoDialog: String { return L10n.tr("Localizable", "widgets.action.name.moreInfoDialog") }
         /// Navigate
@@ -8586,6 +8590,8 @@ public enum L10n {
         public static var open: String { return L10n.tr("Localizable", "widgets.action.name.open") }
         /// Perform action
         public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
+        /// Press
+        public static var press: String { return L10n.tr("Localizable", "widgets.action.name.press") }
         /// Run
         public static var run: String { return L10n.tr("Localizable", "widgets.action.name.run") }
         /// Run Script

@@ -424,11 +424,11 @@ class IncomingURLHandler {
             }
             return EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
         case let .appIntent(.activate(entityId, domainString, _)):
-            // The same request a widget tile's "Run" or "Trigger" sends, rather than the item's
-            // own run, so a script, scene, or automation behaves the same from either place.
+            // The same request a widget tile's "Press", "Run" or "Trigger" sends, rather than the
+            // item's own run, so an entity behaves the same from either place.
             guard let domain = Domain(rawValue: domainString),
                   let connection = Current.api(for: server)?.connection,
-                  let request = HATypedRequest<HAResponseVoid>.activate(domain: domain, entityId: entityId) else {
+                  let request = HATypedRequest<HAResponseVoid>.mainAction(domain: domain, entityId: entityId) else {
                 Current.Log.error("Cannot activate App Icon Shortcut magic item id: \(item.id)")
                 return .init(error: HomeAssistantAPI.APIError.notConfigured)
             }
@@ -457,7 +457,7 @@ class IncomingURLHandler {
         case .default, .nothing:
             // The retired "nothing" behaves as the default.
             return nil
-        case .toggle, .activate, .turnOn, .turnOff:
+        case .toggle, .mainAction, .turnOn, .turnOff:
             // These resolve through the item's interaction type, the way a widget tile's do, so
             // falling through keeps the confirmation overlay and error handling.
             return nil

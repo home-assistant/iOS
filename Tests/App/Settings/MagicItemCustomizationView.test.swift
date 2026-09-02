@@ -81,7 +81,7 @@ struct MagicItemCustomizationViewTests {
     /// An automation's own behavior is "Trigger", and it reads that way on the row once chosen.
     @Test func widgetNamesAnAutomationsOwnBehaviorTrigger() {
         var item = MagicItem(id: "automation.night", serverId: "1", type: .entity)
-        item.action = .activate
+        item.action = .mainAction
         assertSnapshots(context: .widget, item: item)
     }
 

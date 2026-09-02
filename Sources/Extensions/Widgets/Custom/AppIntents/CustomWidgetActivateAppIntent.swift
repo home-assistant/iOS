@@ -5,7 +5,8 @@ import HAKit_PromiseKit
 import Shared
 import SwiftUI
 
-/// Runs a script, activates a scene, or triggers an automation outright.
+/// Runs a domain's main action outright: presses a button, activates a scene, runs a script,
+/// triggers an automation.
 struct CustomWidgetActivateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Activate"
     static var isDiscoverable: Bool = false
@@ -41,7 +42,7 @@ struct CustomWidgetActivateAppIntent: AppIntent {
         }
         AppIntentHaptics.notify()
 
-        guard let request = HATypedRequest<HAResponseVoid>.activate(domain: domain, entityId: entityId) else {
+        guard let request = HATypedRequest<HAResponseVoid>.mainAction(domain: domain, entityId: entityId) else {
             Current.Log
                 .error(
                     "ActivateAppIntent: unsupported domain \(domain), entityId: \(entityId), serverId: \(serverId)"
