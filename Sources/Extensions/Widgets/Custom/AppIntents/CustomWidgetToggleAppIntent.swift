@@ -1,7 +1,6 @@
 import AppIntents
 import Foundation
-import HAKit
-import HAKit_PromiseKit
+import PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -44,23 +43,24 @@ struct CustomWidgetToggleAppIntent: AppIntent {
         ) else {
             return .result()
         }
-        guard let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
-            Current.Log
-                .error(
-                    "ToggleAppIntent: no main action for domain \(domain.rawValue), entityId: \(entityId), serverId: \(serverId)"
-                )
+        guard domain.canToggle else {
+            Current.Log.error(
+                "ToggleAppIntent: \(domain.rawValue) cannot be toggled, entityId: \(entityId), serverId: \(serverId)"
+            )
             return .result()
         }
         Current.Log.verbose(
-            "ToggleAppIntent: sending main action, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            "ToggleAppIntent: toggling, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
         )
         AppIntentHaptics.notify()
         await withCheckedContinuation { continuation in
-            connection.send(request).promise.pipe { result in
+            // The frontend's toggle: the entity's state decides between the domain's on and off
+            // services, so a locked lock unlocks and a running script stops.
+            EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection).pipe { result in
                 switch result {
                 case .fulfilled:
                     Current.Log.verbose(
-                        "ToggleAppIntent: main action succeeded, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+                        "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
                     )
                     continuation.resume()
                 case let .rejected(error):

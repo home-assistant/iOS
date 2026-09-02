@@ -1,0 +1,87 @@
+import Foundation
+
+/// The frontend's toggle model, ported so a widget tile behaves the way a tile card does.
+///
+/// Each member names the home-assistant/frontend source it mirrors, all under `src/`:
+/// - `common/const.ts`: `DOMAINS_TOGGLE` and `STATES_OFF`
+/// - `common/entity/get_toggle_action.ts`: the on and off service each domain toggles between
+/// - `common/entity/can_toggle_domain.ts`: a domain toggles when it has both of those services
+/// - `panels/lovelace/common/entity/toggle-entity.ts` and `turn-on-off-entity.ts`: the call a
+///   toggle makes
+/// - `panels/lovelace/cards/hui-tile-card.ts`: `getEntityDefaultTileIconAction`
+public extension Domain {
+    /// `DOMAINS_TOGGLE`: the domains whose tile card icon toggles the entity by default.
+    static let tileIconToggleDomains: [Domain] = [
+        .fan,
+        .inputBoolean,
+        .light,
+        .switch,
+        .group,
+        .automation,
+        .humidifier,
+        .valve,
+    ]
+
+    /// `STATES_OFF`: a toggle turns an entity in one of these states on, and one in any other
+    /// state off.
+    static let statesOff: [String] = ["closed", "locked", "off"]
+
+    /// `getEntityDefaultTileIconAction`: whether a tile card's icon runs "toggle" for this domain
+    /// when nothing else was chosen. Every other domain's icon does nothing, and the rest of the
+    /// tile opens the entity.
+    var togglesFromTileIcon: Bool {
+        Self.tileIconToggleDomains.contains(self) || [.button, .inputButton, .scene].contains(self)
+    }
+
+    /// `getToggleAction`, narrowed by `canToggleDomain`: the service a toggle calls to turn an
+    /// entity of this domain on, and the one to turn it off. A button or a scene has only the one,
+    /// which the frontend uses for both. `nil` for a domain Home Assistant registers no such pair
+    /// for, which is what leaves "toggle" out of the frontend's action list.
+    ///
+    /// The frontend also checks the entity's supported features for a camera, climate, cover,
+    /// media player, or siren; the app's entity registry doesn't carry them, so that is left to
+    /// the server.
+    var toggleServices: (on: Service, off: Service)? {
+        switch self {
+        case .button, .inputButton:
+            return (.press, .press)
+        case .scene:
+            return (.turnOn, .turnOn)
+        case .cover:
+            return (.openCover, .closeCover)
+        case .valve:
+            return (.openValve, .closeValve)
+        case .lock:
+            return (.unlock, .lock)
+        case .automation, .camera, .climate, .fan, .group, .humidifier, .inputBoolean, .light, .mediaPlayer,
+             .remote, .script, .siren, .switch, .waterHeater:
+            return (.turnOn, .turnOff)
+        default:
+            return nil
+        }
+    }
+
+    /// `canToggleDomain`: whether a toggle can do anything for this domain.
+    var canToggle: Bool {
+        toggleServices != nil
+    }
+
+    /// Whether a toggle has to read the entity's state to know which service to call. A button
+    /// or a scene has the same service either way, so there is nothing to look up.
+    var toggleIsStateAware: Bool {
+        guard let services = toggleServices else { return false }
+        return services.on != services.off
+    }
+
+    /// `turnOnOffEntity`: the domain the toggle's service is called on. A group has no on/off
+    /// services of its own, so it is toggled through `homeassistant.turn_on` and `turn_off`.
+    var toggleServiceDomain: String {
+        self == .group ? "homeassistant" : rawValue
+    }
+
+    /// `toggleEntity`: the service a toggle calls for an entity currently in `state`.
+    func toggleService(state: String) -> Service? {
+        guard let services = toggleServices else { return nil }
+        return Self.statesOff.contains(state) ? services.on : services.off
+    }
+}
