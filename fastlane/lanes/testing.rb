@@ -130,6 +130,9 @@ lane :e2e do |options|
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-UI',
+    # The scheme also holds `HomeAssistantUITests`, the fastlane screenshot flow, which expects
+    # notification fixtures this lane does not set up.
+    only_testing: ['Tests-UI/OnboardingE2ETests'],
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,

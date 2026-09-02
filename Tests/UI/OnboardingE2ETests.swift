@@ -36,6 +36,12 @@ final class OnboardingE2ETests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
+        // Onboards with the release client ID rather than the debug one. Home Assistant allows the
+        // release iOS callback offline, but has to fetch `https://home-assistant.io/iOS/dev-auth`
+        // to allow the debug one, and it reads only the first 10 KB of that page, which no longer
+        // reaches the `redirect_uri` link tag. The debug pair is rejected with "Invalid redirect
+        // URI", so the flow could never log in.
+        app.launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
         app.launch()
     }
 
@@ -66,17 +72,28 @@ final class OnboardingE2ETests: XCTestCase {
         let webView = app.webViews.firstMatch
         wait(for: webView, timeout: Timeout.frontend, "login web view")
 
+        // Both fields are checked after typing: text aimed at a web view field lands wherever the
+        // keyboard happens to be focused, and a miss otherwise surfaces only as a rejected login.
         let username = webView.textFields.firstMatch
         wait(for: username, timeout: Timeout.frontend, "username field")
         username.tap()
         username.typeText(Instance.username)
+        XCTAssertEqual(username.value as? String, Instance.username, "Username field did not receive the username")
 
         let password = webView.secureTextFields.firstMatch
         wait(for: password, timeout: Timeout.frontend, "password field")
         password.tap()
+        password.typeText(Instance.password)
+        // Secure fields report one bullet per character rather than the text itself.
+        XCTAssertEqual(
+            (password.value as? String)?.count,
+            Instance.password.count,
+            "Password field did not receive the whole password"
+        )
+
         // Submitting from the field avoids matching the login button, whose label the frontend
         // renders inside a shadow root.
-        password.typeText("\(Instance.password)\n")
+        password.typeText("\n")
 
         // Shown only when Home Assistant asks to confirm the redirect back to the app.
         tapIfPresent(webElement(labelContaining: "authorize"), timeout: Timeout.optional)
