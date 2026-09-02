@@ -171,6 +171,50 @@ jobs:
             kill "$(cat "$RUNNER_TEMP/hass.pid")" 2>/dev/null || true
           fi
 
+      # XCUITest records the run and attaches it to the result bundle, but it lands inside the
+      # .xcresult under an opaque UUID filename. Exporting it puts the recording one click away in
+      # the artifact instead, which is the fastest way to see where a flow went wrong. Xcode keeps
+      # the recording only when the test fails, so a passing run exports nothing.
+      - name: Export screen recording
+        if: always()
+        run: |
+          XCRESULT=fastlane/test_output/e2e/Tests-UI.xcresult
+          if [ ! -d "$XCRESULT" ]; then
+            echo "No result bundle at $XCRESULT, nothing to export"
+            exit 0
+          fi
+
+          OUT="$RUNNER_TEMP/e2e-recording"
+          mkdir -p "$OUT"
+          xcrun xcresulttool export attachments --path "$XCRESULT" --output-path "$OUT" >/dev/null
+
+          # Name the exports after what they are. Anything that is not a recording or a screenshot
+          # is dropped, so the artifact stays small enough to download for a quick look.
+          python3 - "$OUT" <<'PY'
+          import json, pathlib, shutil, sys
+
+          out = pathlib.Path(sys.argv[1])
+          manifest = out / "manifest.json"
+          kept = 0
+
+          for group in json.loads(manifest.read_text()) if manifest.exists() else []:
+              for attachment in group.get("attachments", []):
+                  source = out / attachment["exportedFileName"]
+                  name = attachment.get("suggestedHumanReadableName", source.name)
+                  if not source.exists() or not name.lower().endswith((".mp4", ".png", ".jpeg", ".jpg")):
+                      continue
+                  shutil.move(source, out / name.replace("/", "-"))
+                  kept += 1
+
+          for leftover in out.iterdir():
+              if leftover.is_file() and leftover.suffix.lower() not in {".mp4", ".png", ".jpeg", ".jpg"}:
+                  leftover.unlink()
+              elif leftover.is_dir():
+                  shutil.rmtree(leftover)
+
+          print(f"Exported {kept} recording/screenshot attachment(s)")
+          PY
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload E2E Artifacts"
         if: always()
@@ -181,5 +225,6 @@ jobs:
             ${{ runner.temp }}/hass-stdout.log
             ${{ runner.temp }}/homeassistant-config.json
             ${{ runner.temp }}/homeassistant/home-assistant.log
+            ${{ runner.temp }}/e2e-recording
             fastlane/test_output/e2e
             ~/Library/Logs/scan

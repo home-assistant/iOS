@@ -59,6 +59,13 @@ for f in $(cd .github/e2e/homeassistant/.storage && ls); do curl -fsS "https://r
 
 `core.config_entries` is expected to differ: the `go2rtc` entry is deliberately removed here.
 
+## When a run fails
+
+The `e2e-artifacts` artifact carries a screen recording of the run under `e2e-recording/`, which is
+usually the quickest way to see where the flow went wrong. Xcode only keeps the recording when the
+test fails, so a passing run has none. Alongside it are Home Assistant's own log, the `/api/config`
+it reported, and the full `.xcresult`.
+
 ## Notes
 
 - The test is not repeatable on a simulator that has already onboarded: it starts from the welcome
