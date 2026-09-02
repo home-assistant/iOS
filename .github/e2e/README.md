@@ -22,10 +22,11 @@ in step means both apps are tested against the same instance, with the same enti
 ## Running it locally
 
 Start an instance. Use a copy: Home Assistant rewrites `.storage` and writes its database and logs
-into whichever config dir it is given.
+into whichever config dir it is given. The interpreter has to satisfy core's `requires-python`,
+which is 3.14.2 or newer.
 
 ```bash
-cp -R .github/e2e/homeassistant /tmp/homeassistant && python3 -m venv /tmp/ha && /tmp/ha/bin/pip install homeassistant && /tmp/ha/bin/hass --config /tmp/homeassistant
+cp -R .github/e2e/homeassistant /tmp/homeassistant && python3.14 -m venv /tmp/ha && /tmp/ha/bin/pip install homeassistant && /tmp/ha/bin/hass --config /tmp/homeassistant
 ```
 
 Then run the flow. The lane checks the instance first, walking the same login exchange the app
