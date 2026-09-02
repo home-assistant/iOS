@@ -2786,7 +2786,6 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "Electricity total";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "Ühendus pole saadaval, kontrolli oma Home Assistant’i URL-i seadeid";

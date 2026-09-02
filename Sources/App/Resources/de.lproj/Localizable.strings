@@ -2787,7 +2787,6 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.battery" = "Batterie";
 "widgets.energy.description" = "Dein Energie-Dashboard auf einen Blick anzeigen.";
 "widgets.energy.electricity" = "Netz";
-"widgets.energy.electricity_total" = "Strom insgesamt";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Netz";
 "widgets.energy.no_connection" = "Keine Verbindung verfügbar. Überprüfe die Konfiguration deiner Home Assistant-URL.";

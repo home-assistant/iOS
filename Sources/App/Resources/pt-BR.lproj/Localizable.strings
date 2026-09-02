@@ -2786,7 +2786,6 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Veja seu dashboard de energia rapidamente.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "Total de eletricidade";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Rede";
 "widgets.energy.no_connection" = "Nenhuma conexão disponível, revise a configuração da URL do Home Assistant";
