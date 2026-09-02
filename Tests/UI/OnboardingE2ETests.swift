@@ -72,14 +72,14 @@ final class OnboardingE2ETests: XCTestCase {
         username.typeText(Instance.username)
 
         let password = webView.secureTextFields.firstMatch
-        wait(for: password, timeout: Timeout.screen, "password field")
+        wait(for: password, timeout: Timeout.frontend, "password field")
         password.tap()
         // Submitting from the field avoids matching the login button, whose label the frontend
         // renders inside a shadow root.
         password.typeText("\(Instance.password)\n")
 
         // Shown only when Home Assistant asks to confirm the redirect back to the app.
-        tapIfPresent(webElement(labelMatching: "authorize"), timeout: Timeout.optional)
+        tapIfPresent(webElement(labelContaining: "authorize"), timeout: Timeout.optional)
     }
 
     private func nameDevice() {
@@ -114,12 +114,12 @@ final class OnboardingE2ETests: XCTestCase {
     }
 
     private func openNativeSettingsFromFrontend() {
-        tapWebElement(labelMatching: "sidebar toggle", timeout: Timeout.frontend, "frontend sidebar toggle")
-        tapWebElement(labelMatching: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
+        tapWebElement(labelContaining: "sidebar toggle", timeout: Timeout.frontend, "frontend sidebar toggle")
+        tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
         // The app's own settings screen is opened by the frontend over the external message bus, so
         // reaching it proves the bus is wired up in both directions.
-        tapWebElement(labelMatching: ".*companion app.*", timeout: Timeout.frontend, "companion app row")
+        tapWebElement(labelContaining: "companion app", timeout: Timeout.frontend, "companion app row")
         wait(
             for: app.descendants(matching: .any)[.settingsList],
             timeout: Timeout.screen,
@@ -145,19 +145,19 @@ final class OnboardingE2ETests: XCTestCase {
         return true
     }
 
-    /// An element of the frontend, matched on its accessibility label.
+    /// An element of the frontend, matched on part of its accessibility label.
     ///
-    /// The frontend's own copy is the only handle here, so the patterns stay short and
-    /// case-insensitive rather than depending on exact wording.
-    private func webElement(labelMatching pattern: String) -> XCUIElement {
-        let predicate = NSPredicate(format: "label MATCHES[c] %@", pattern)
+    /// The frontend's own copy is the only handle here, so matching stays loose: a sidebar entry
+    /// carries a badge when there are pending updates or repairs, and an exact label would miss it.
+    private func webElement(labelContaining text: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
         return app.webViews.firstMatch.descendants(matching: .any).matching(predicate).firstMatch
     }
 
     /// Taps an element of the frontend, scrolling it into reach first when the page is long enough
     /// to render it below the fold.
-    private func tapWebElement(labelMatching pattern: String, timeout: TimeInterval, _ description: String) {
-        let element = webElement(labelMatching: pattern)
+    private func tapWebElement(labelContaining text: String, timeout: TimeInterval, _ description: String) {
+        let element = webElement(labelContaining: text)
         wait(for: element, timeout: timeout, description)
 
         var scrolls = 0

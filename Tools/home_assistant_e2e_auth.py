@@ -34,12 +34,18 @@ def request(url: str, *, data: Optional[bytes] = None, headers: Optional[Dict[st
 
     try:
         with urllib.request.urlopen(req, timeout=30) as response:
-            return json.loads(response.read().decode('utf-8'))
+            body = response.read().decode('utf-8', errors='replace')
     except urllib.error.HTTPError as error:
-        body = error.read().decode('utf-8', errors='replace').strip()
-        raise AuthError(f"{req.get_method()} {url} failed: HTTP {error.code} {body}") from error
+        detail = error.read().decode('utf-8', errors='replace').strip()
+        raise AuthError(f"{req.get_method()} {url} failed: HTTP {error.code} {detail}") from error
     except urllib.error.URLError as error:
         raise AuthError(f"{req.get_method()} {url} failed: {error.reason}") from error
+
+    try:
+        return json.loads(body)
+    except json.JSONDecodeError as error:
+        # A proxy or a misconfigured instance can answer 2xx with an HTML error page.
+        raise AuthError(f"{req.get_method()} {url} returned a non-JSON body: {body.strip()[:500]}") from error
 
 
 def post_json(url: str, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None) -> Any:
