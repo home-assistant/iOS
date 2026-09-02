@@ -3,17 +3,27 @@ import Shared
 import SwiftUI
 
 struct HomeAssistantAccountRowView: View {
+    private enum Constants {
+        static let imageSize: CGFloat = 40
+        static let compactImageSize: CGFloat = 32
+        static let compactMinHeight: CGFloat = 48
+    }
+
     let server: Server
+    let isCompact: Bool
 
     @State private var serverName: String = ""
     @State private var userName: String = ""
     @State private var profilePicture: UIImage?
     @State private var serverObserver: HACancellable?
 
-    private var imageSize: CGFloat = 40
-
-    init(server: Server) {
+    init(server: Server, isCompact: Bool = false) {
         self.server = server
+        self.isCompact = isCompact
+    }
+
+    private var imageSize: CGFloat {
+        isCompact ? Constants.compactImageSize : Constants.imageSize
     }
 
     var body: some View {
@@ -36,12 +46,15 @@ struct HomeAssistantAccountRowView: View {
 
             VStack(alignment: .leading) {
                 Text(serverName)
-                    .font(.headline)
+                    .font(isCompact ? .body : .headline)
+                    .lineLimit(1)
                 Text(userName)
-                    .font(.caption)
+                    .font(isCompact ? .caption2 : .caption)
                     .foregroundColor(.secondary)
+                    .lineLimit(1)
             }
         }
+        .frame(minHeight: isCompact ? Constants.compactMinHeight : nil)
         .onAppear {
             setupObserver()
             loadUserNameAndProfilePicture()

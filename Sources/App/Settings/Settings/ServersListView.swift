@@ -10,8 +10,9 @@ struct ServersListView: View {
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
-                HomeAssistantAccountRowView(server: server)
+                HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .macSettingsSidebarRow()
             .contextMenu {
                 Button {
                     server.refreshAppDatabase(forceUpdate: true, showProgress: true)
@@ -54,6 +55,7 @@ struct ServersListView: View {
         NavigationLink(destination: ServerSwitchingSettingsView()) {
             Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
         }
+        .macSettingsSidebarRow()
 
         Button {
             #if targetEnvironment(macCatalyst)
@@ -69,6 +71,7 @@ struct ServersListView: View {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
         #endif
+        .macSettingsSidebarRow()
     }
 }
 
