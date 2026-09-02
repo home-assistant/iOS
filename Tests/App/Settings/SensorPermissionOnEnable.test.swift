@@ -38,6 +38,7 @@ class SensorPermissionOnEnableTests: XCTestCase {
         XCTAssertEqual(SensorPermission.required(forSensorUniqueID: WebhookSensorId.activity.rawValue), .motion)
         XCTAssertEqual(SensorPermission.required(forSensorUniqueID: WebhookSensorId.pressure.rawValue), .motion)
         XCTAssertEqual(SensorPermission.required(forSensorUniqueID: WebhookSensorId.focus.rawValue), .focus)
+        XCTAssertEqual(SensorPermission.required(forSensorUniqueID: WebhookSensorId.focusName.rawValue), .focus)
         XCTAssertEqual(
             SensorPermission.required(forSensorUniqueID: WebhookSensorId.connectivitySSID.rawValue),
             .location

@@ -22,7 +22,10 @@ struct SensorListView: View {
                     title: L10n.SettingsSensors.title,
                     subtitle: L10n.SettingsSensors.body
                 )
-                Section(footer: Text(periodicUpdateFooter)) {
+                Section(
+                    header: Text(L10n.SettingsSensors.PeriodicUpdate.foregroundHeader),
+                    footer: Text(periodicUpdateFooter)
+                ) {
                     Picker(
                         selection: $viewModel.periodicUpdateInterval,
                         label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
@@ -35,6 +38,11 @@ struct SensorListView: View {
                     .onChange(of: viewModel.periodicUpdateInterval) { newValue in
                         viewModel.setPeriodicUpdateInterval(newValue)
                     }
+                }
+                Section(header: Text(L10n.SettingsSensors.PeriodicUpdate.backgroundHeader)) {
+                    Text(L10n.SettingsSensors.PeriodicUpdate.backgroundTitle)
+                        .foregroundStyle(.secondary)
+                        .disabled(true)
                 }
                 if !permissionsViewModel.availablePermissions.isEmpty {
                     Section {

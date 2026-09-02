@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import CoreBluetooth
 import CoreMotion
 import Foundation
@@ -23,8 +24,10 @@ final class SensorPermissionRequester {
     private var didPrompt = false
     private var bluetoothRequester: BluetoothAuthorizationRequester?
 
-    /// Called after each request resolves, so a screen showing these statuses can refresh.
-    var onStatusChange: (() -> Void)?
+    /// Fires after each request resolves, so every screen showing these statuses refreshes. A
+    /// subject rather than one callback: the sensor list's badge and the permissions screen both
+    /// watch this, and a single slot left whichever registered first hearing nothing.
+    let statusDidChange = PassthroughSubject<Void, Never>()
 
     /// Whether the device can be asked for this permission at all.
     func isAvailable(_ permission: SensorPermission) -> Bool {
@@ -85,7 +88,9 @@ final class SensorPermissionRequester {
     private func enqueue(_ permission: SensorPermission) {
         guard isAvailable(permission), !pending.contains(permission) else { return }
         guard permission != .localNetwork else { return }
-        guard status(for: permission) == .notDetermined else { return }
+        // Notification is the one permission whose status only answers asynchronously, so there is
+        // nothing to check against here; asking for one already answered doesn't prompt again.
+        guard permission == .notification || status(for: permission) == .notDetermined else { return }
         pending.append(permission)
     }
 
@@ -106,7 +111,7 @@ final class SensorPermissionRequester {
         prompt(for: permission) { [weak self] in
             guard let self else { return }
             isPrompting = false
-            onStatusChange?()
+            statusDidChange.send()
             promptForNextIfIdle()
         }
     }

@@ -10,6 +10,7 @@ final class SensorPermissionsViewModel: ObservableObject {
     @Published var showAlert = false
 
     private let requester = SensorPermissionRequester.shared
+    private var cancellables = Set<AnyCancellable>()
 
     var availablePermissions: [SensorPermission] {
         SensorPermission.allCases.filter { requester.isAvailable($0) }
@@ -21,9 +22,11 @@ final class SensorPermissionsViewModel: ObservableObject {
     }
 
     init() {
-        requester.onStatusChange = { [weak self] in
-            self?.update()
-        }
+        requester.statusDidChange
+            .sink { [weak self] in
+                self?.update()
+            }
+            .store(in: &cancellables)
         update()
     }
 
