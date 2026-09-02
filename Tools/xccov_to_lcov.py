@@ -31,7 +31,13 @@ class FileCoverage(NamedTuple):
 
 
 def read_archive(xcresult: Path) -> Dict[str, list]:
-    """Dump the per-line coverage archive of an .xcresult bundle as JSON."""
+    """
+    Dump the per-line coverage archive of an .xcresult bundle as JSON.
+
+    `--archive` maps each absolute source path to its list of lines. This is not
+    the `--report` format, which nests files under targets and carries no
+    per-line execution counts, so it cannot produce LCOV.
+    """
     result = subprocess.run(
         ['xcrun', 'xccov', 'view', '--archive', '--json', str(xcresult)],
         capture_output=True,
@@ -42,7 +48,17 @@ def read_archive(xcresult: Path) -> Dict[str, list]:
         print(f"xccov failed for {xcresult}:\n{result.stderr}", file=sys.stderr)
         sys.exit(1)
 
-    return json.loads(result.stdout)
+    archive = json.loads(result.stdout)
+
+    if not isinstance(archive, dict) or not all(isinstance(lines, list) for lines in archive.values()):
+        print(
+            "Unexpected xccov archive format: expected a mapping of source path to lines. "
+            "If a future Xcode changed it, this script needs updating.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    return archive
 
 
 def parse_coverage(archive: Dict[str, list], repo_root: Path) -> List[FileCoverage]:
