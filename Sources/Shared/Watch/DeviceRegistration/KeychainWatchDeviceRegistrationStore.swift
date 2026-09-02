@@ -28,7 +28,7 @@ public final class KeychainWatchDeviceRegistrationStore: WatchDeviceRegistration
     public func set(_ registration: WatchDeviceRegistration?, for server: Identifier<Server>) {
         do {
             if let registration {
-                try keychain.set(try encoder.encode(registration), key: server.rawValue)
+                try keychain.set(encoder.encode(registration), key: server.rawValue)
             } else {
                 try keychain.remove(server.rawValue)
             }
