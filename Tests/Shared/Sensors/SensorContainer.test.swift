@@ -440,6 +440,8 @@ class SensorContainerTests: XCTestCase {
     func testValueReadBeforeOneAlreadySentIsReplaced() throws {
         container.register(provider: MockSensorProvider.self)
         container.register(provider: MockSensorProvider.self)
+        // Opt-in like every sensor, and this test is about the value that reaches the server.
+        container.setEnabled(true, forUniqueID: "focus_name")
 
         let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
 
@@ -477,6 +479,7 @@ class SensorContainerTests: XCTestCase {
     func testValueSentToOneServerDoesntStopAnother() throws {
         container.register(provider: MockSensorProvider.self)
         container.register(provider: MockSensorProvider.self)
+        container.setEnabled(true, forUniqueID: "focus_name")
 
         let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
 
