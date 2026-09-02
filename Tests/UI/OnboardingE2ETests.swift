@@ -183,7 +183,18 @@ final class OnboardingE2ETests: XCTestCase {
     /// carries a badge when there are pending updates or repairs, and an exact label would miss it.
     private func webElement(labelContaining text: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
-        return app.webViews.firstMatch.descendants(matching: .any).matching(predicate).firstMatch
+        let webView = app.webViews.firstMatch
+
+        // Links and buttons first: a row's label usually also matches the static text inside it,
+        // and tapping that does not activate the row.
+        for query in [webView.links, webView.buttons] {
+            let element = query.matching(predicate).firstMatch
+            if element.exists {
+                return element
+            }
+        }
+
+        return webView.descendants(matching: .any).matching(predicate).firstMatch
     }
 
     /// Taps an element of the frontend, scrolling it into reach first when the page is long enough
