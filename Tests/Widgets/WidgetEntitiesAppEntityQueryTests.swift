@@ -35,10 +35,7 @@ struct WidgetEntitiesAppEntityQueryTests {
             #expect(perServer.map(\.0.identifier.rawValue) == ["A", "B"])
             #expect(perServer[0].1.map(\.displayString) == ["Kitchen light", "Temperature", "Porch"])
             #expect(perServer[0].1.first?.areaName == "Kitchen")
-            #expect(perServer[0].1.first?.icon == "mdi:lightbulb-group")
             #expect(perServer[0].1.first?.contextSubtitle?.contains("Kitchen") == true)
-            // No icon of its own and no frontend default, so the domain's icon stands in.
-            #expect(perServer[0].1[1].icon == Domain.sensor.icon().name)
             #expect(perServer[0].1.last?.hasContext == false)
             #expect(perServer[1].1.map(\.entityId) == ["light.office"])
         }
@@ -69,36 +66,22 @@ struct WidgetEntitiesAppEntityQueryTests {
         }
     }
 
-    /// A pick maps onto the item the widget renders and acts on, and draws its row with an icon.
-    /// With no area or device to show, its context line falls back to the entity id.
+    /// A pick maps onto the item the widget renders and acts on. With no area or device to show,
+    /// its context line falls back to the entity id, and its row carries no image: rendering one
+    /// per row is more than the widget extension's memory allows.
     @available(iOS 17, *)
     @Test func pickBecomesAMagicItem() {
         let pick = WidgetEntitiesAppEntity(
             id: "A-light.kitchen",
             entityId: "light.kitchen",
             serverId: "A",
-            displayString: "Kitchen light",
-            icon: "mdi:lightbulb"
+            displayString: "Kitchen light"
         )
 
         #expect(pick.magicItem == MagicItem(id: "light.kitchen", serverId: "A", type: .entity))
         #expect(pick.contextSubtitle == "light.kitchen")
         #expect(!pick.hasContext)
-        #expect(pick.displayRepresentation.image != nil)
-    }
-
-    /// An icon name the app does not know still gets a row image, from the fallback symbol.
-    @available(iOS 17, *)
-    @Test func unknownIconFallsBackToASymbol() {
-        let pick = WidgetEntitiesAppEntity(
-            id: "A-light.kitchen",
-            entityId: "light.kitchen",
-            serverId: "A",
-            displayString: "Kitchen light",
-            icon: "mdi:not-a-real-icon"
-        )
-
-        #expect(pick.displayRepresentation.image != nil)
+        #expect(pick.displayRepresentation.image == nil)
     }
 
     /// Two servers, "A" with three entities (two in areas) and "B" with one, in an in-memory
@@ -125,7 +108,7 @@ struct WidgetEntitiesAppEntityQueryTests {
 
         try await database.write { db in
             try Self.entity("A", "sensor.temperature", name: "Temperature").insert(db)
-            try Self.entity("A", "light.kitchen", name: "Kitchen light", icon: "mdi:lightbulb-group").insert(db)
+            try Self.entity("A", "light.kitchen", name: "Kitchen light").insert(db)
             try Self.entity("A", "switch.porch", name: "Porch").insert(db)
             try Self.entity("B", "light.office", name: "Office light").insert(db)
             try AppArea(
@@ -155,19 +138,14 @@ struct WidgetEntitiesAppEntityQueryTests {
         try await body()
     }
 
-    private static func entity(
-        _ serverId: String,
-        _ entityId: String,
-        name: String,
-        icon: String? = nil
-    ) -> HAAppEntity {
+    private static func entity(_ serverId: String, _ entityId: String, name: String) -> HAAppEntity {
         HAAppEntity(
             id: "\(serverId)-\(entityId)",
             entityId: entityId,
             serverId: serverId,
             domain: String(entityId.split(separator: ".")[0]),
             name: name,
-            icon: icon,
+            icon: nil,
             rawDeviceClass: nil
         )
     }

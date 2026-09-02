@@ -171,8 +171,7 @@ struct WidgetEntitiesTests {
             id: "\(serverId)-\(entityId)",
             entityId: entityId,
             serverId: serverId,
-            displayString: entityId,
-            icon: nil
+            displayString: entityId
         )
     }
 }

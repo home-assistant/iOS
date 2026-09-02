@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import SFSafeSymbols
 import Shared
 
 /// One entity as picked in the entities widget configuration.
@@ -22,26 +21,14 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
     var deviceName: String?
     var floorName: String?
     var displayString: String
-    /// The Material Design icon the entity is drawn with, already resolved through the same
-    /// precedence the app's pickers use: the entity's own icon, then the frontend default, then
-    /// the domain's.
-    var icon: String?
 
-    /// Icon, name and the `Floor • Area • Device` context line, the way the app's other entity
-    /// pickers draw their rows.
+    /// Name and the `Floor • Area • Device` context line. No image: rendering an icon for every
+    /// row of a large entity list costs the widget extension more memory than it has.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) },
-            image: displayRepresentationImage
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
-    }
-
-    private var displayRepresentationImage: DisplayRepresentation.Image {
-        guard let data = icon.flatMap(MaterialDesignIcons.pngData(forServersideValue:)) else {
-            return .init(systemName: SFSymbol.squareGrid2x2.rawValue)
-        }
-        return .init(data: data, isTemplate: true)
     }
 
     init(
@@ -51,8 +38,7 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
         areaName: String? = nil,
         deviceName: String? = nil,
         floorName: String? = nil,
-        displayString: String,
-        icon: String?
+        displayString: String
     ) {
         self.id = id
         self.entityId = entityId
@@ -61,7 +47,6 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
         self.deviceName = deviceName
         self.floorName = floorName
         self.displayString = displayString
-        self.icon = icon
     }
 
     /// Whether the row has somewhere to say the entity is — an area or a device — rather than only
