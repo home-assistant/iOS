@@ -469,6 +469,12 @@ final class EntityPickerViewModel: ObservableObject {
         updateFilteredEntities()
     }
 
+    /// Awaits the off-main pass that resolves every row's context line and glyph, so tests can
+    /// assert on `subtitles`/`icons` without polling.
+    func _test_awaitRowContent() async {
+        await rowContentTask?.value
+    }
+
     /// Runs the filtering pipeline to completion so tests can assert on `filteredGroups` without racing
     /// the debounce/Task hop that `updateFilteredEntities` introduces. The generation guard in
     /// `performFiltering` ensures any still-running earlier task cannot clobber this result.

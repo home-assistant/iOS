@@ -14,14 +14,20 @@ private struct FakeEntity: Equatable {
 }
 
 private extension HAAppEntity {
-    static func make(_ id: String, name: String, domain: String, serverId: String) -> HAAppEntity {
+    static func make(
+        _ id: String,
+        name: String,
+        domain: String,
+        serverId: String,
+        icon: String? = nil
+    ) -> HAAppEntity {
         HAAppEntity(
             id: id,
             entityId: id,
             serverId: serverId,
             domain: domain,
             name: name,
-            icon: nil,
+            icon: icon,
             rawDeviceClass: ""
         )
     }
@@ -177,7 +183,13 @@ struct EntityPickerViewModelTests {
         let serverId = "A"
         let entities: [HAAppEntity] = [
             .make("switch.outlet_power", name: "Outlet power", domain: "switch", serverId: serverId),
-            .make("switch.strip_main", name: "Strip main", domain: "switch", serverId: serverId),
+            .make(
+                "switch.strip_main",
+                name: "Strip main",
+                domain: "switch",
+                serverId: serverId,
+                icon: "mdi:power-socket-eu"
+            ),
             .make("light.yaml_lamp", name: "YAML lamp", domain: "light", serverId: serverId),
             .make("device_tracker.unnamed", name: "Unnamed tracker", domain: "device_tracker", serverId: serverId),
         ]
@@ -227,6 +239,13 @@ struct EntityPickerViewModelTests {
             L10n.EntityPicker.List.Device.NoDevice.title,
         ])
         #expect(vm.filteredGroups.first?.entities.map(\.entityId) == ["switch.strip_main"])
+        // The rows' context lines and glyphs are resolved for the whole server, off the main thread.
+        await vm._test_awaitRowContent()
+        #expect(vm.subtitles["switch.outlet_power"] == "Outlet 2")
+        #expect(vm.subtitles["switch.strip_main"] == "Power strip")
+        // The entity's own icon override wins over the domain fallback.
+        #expect(vm.icons["switch.strip_main"] == MaterialDesignIcons(named: "power_socket_eu"))
+        #expect(vm.icons["switch.outlet_power"] != nil)
         // A device with no name to show gathers with the entities that have no device at all,
         // instead of opening a nameless section of its own.
         #expect(
