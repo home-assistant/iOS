@@ -6,8 +6,8 @@ import WidgetKit
 /// Every widget the app ships, drawn from the design system's own components with mocked data.
 ///
 /// One case per component rather than one per widget: the tile widgets — custom, scripts, open page,
-/// commonly used — are all the same grid with different contents, so they are listed once and the
-/// subtitle says which widgets share it.
+/// commonly used, entities — are all the same grid with different contents, so they are listed once
+/// and the subtitle says which widgets share it.
 public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     case actions
     case sensors
@@ -36,7 +36,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     /// Which shipped widgets this component draws.
     public var subtitle: String {
         switch self {
-        case .actions: "Custom, Scripts, Open page, Commonly used"
+        case .actions: "Custom, Scripts, Open page, Commonly used, Entities"
         case .sensors: "Sensors"
         case .assist: "Assist"
         case .calendar: "Calendar"
