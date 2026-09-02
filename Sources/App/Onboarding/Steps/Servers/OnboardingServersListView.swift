@@ -409,6 +409,7 @@ struct OnboardingServersListView: View {
             Text(L10n.Onboarding.Scanning.Manual.Button.title)
         }
         .buttonStyle(.secondaryButton)
+        .accessibilityIdentifier(AccessibilityIdentifier.onboardingServersManualEntry.rawValue)
         .padding()
         // A little bit of opacity to indicate items behind it
         .background(Color(uiColor: .systemBackground).opacity(0.9))

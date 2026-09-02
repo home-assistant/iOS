@@ -24,12 +24,16 @@ struct NotificationPermissionRequestView: View {
                             Text(L10n.Permission.Notification.primaryButton)
                         }
                         .buttonStyle(.primaryButton)
+                        .accessibilityIdentifier(AccessibilityIdentifier.notificationPermissionRequestPrimary.rawValue)
                         Button {
                             triggerNativePopup()
                         } label: {
                             Text(L10n.Permission.Notification.secondaryButton)
                         }
                         .buttonStyle(.secondaryButton)
+                        .accessibilityIdentifier(
+                            AccessibilityIdentifier.notificationPermissionRequestSecondary.rawValue
+                        )
                     }
                 }
             },

@@ -71,6 +71,7 @@ struct OnboardingWelcomeView: View {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
+            .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
             Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true
             }

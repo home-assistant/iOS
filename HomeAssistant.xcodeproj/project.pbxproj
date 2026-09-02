@@ -239,6 +239,7 @@
 		B627CB151D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
+		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; };
 		B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -683,6 +684,7 @@
 		B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-UI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
+		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B67CE82422200D420034C1D0 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2318,6 +2320,7 @@
 		42DF4F00302CACC600589E49 /* Templating */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Templating; sourceTree = "<group>"; };
 		42DF4F03302CACD000589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
 		42DF4F06302CACD400589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
+		42E2E0000000000000000006 /* Accessibility */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Accessibility; sourceTree = "<group>"; };
 		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
@@ -2736,6 +2739,7 @@
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
+				42E2E0000000000000000006 /* Accessibility */,
 				42EDE685300315A50051FC9B /* Assist */,
 				42EDE68E300315A50051FC9B /* BarcodeScanner */,
 				42EDE699300315A50051FC9B /* Cameras */,
@@ -2861,6 +2865,7 @@
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
+				42E2E0000000000000000002 /* OnboardingE2ETests.swift */,
 				42EDBC3A3002FBD90051FC9B /* Resources */,
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 				119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */,
@@ -3291,6 +3296,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4283E0D53004DCF4004D1061 /* Resources */,
+				42E2E0000000000000000006 /* Accessibility */,
 				42DF4EE5302CACB600589E49 /* FlightGreetings */,
 				42DF4EF6302CACC200589E49 /* Templating */,
 				42DF4F03302CACD000589E49 /* ServerSwitching */,
@@ -3409,6 +3415,9 @@
 			);
 			dependencies = (
 				B657A9091CA646EB00121384 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				42E2E0000000000000000006 /* Accessibility */,
 			);
 			name = "Tests-UI";
 			productName = HomeAssistantUITests;
@@ -4324,6 +4333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */,
 				B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */,
 				B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */,
 			);
