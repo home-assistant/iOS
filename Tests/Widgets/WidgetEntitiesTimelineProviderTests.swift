@@ -29,16 +29,16 @@ struct WidgetEntitiesTimelineProviderTests {
         }
     }
 
-    /// A configuration whose server is gone draws no server name and no tiles, rather than tiles
-    /// attributed to a server the app no longer knows.
+    /// A configuration whose server the app no longer knows keeps its tiles — they are still the
+    /// picks the user made — but has no server name to put in the footer.
     @available(iOS 17, *)
-    @Test func snapshotEntryForAnUnknownServerIsEmpty() async {
+    @Test func snapshotEntryForAnUnknownServerHasNoServerName() async {
         await withFakes { _ in
             let configuration = Self.configuration(serverId: "gone", entityIds: ["light.kitchen"])
 
             let entry = await WidgetEntitiesTimelineProvider().snapshotEntry(for: configuration, family: .systemMedium)
 
-            #expect(entry.items.isEmpty)
+            #expect(entry.items.map(\.id) == ["light.kitchen"])
             #expect(entry.serverName == nil)
         }
     }
