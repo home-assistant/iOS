@@ -19,6 +19,8 @@ struct WebhookSensorIdTests {
         assert(WebhookSensorId.primaryDisplayName.rawValue == "primary_display_name")
         assert(WebhookSensorId.primaryDisplayId.rawValue == "primary_display_id")
         assert(WebhookSensorId.frontmostApp.rawValue == "frontmost_app")
+        assert(WebhookSensorId.watchBattery.rawValue == "watch-battery")
+        assert(WebhookSensorId.watchBatteryState.rawValue == "watch-battery-state")
         assert(WebhookSensorId.appVersion.rawValue == "app-version")
         assert(WebhookSensorId.locationPermission.rawValue == "location-permission")
         assert(WebhookSensorId.focus.rawValue == "focus")
@@ -31,7 +33,7 @@ struct WebhookSensorIdTests {
         assert(WebhookSensorId.cameraMotion.rawValue == "cameraMotion")
         assert(WebhookSensorId.cameraStream.rawValue == "cameraStream")
         assert(
-            WebhookSensorId.allCases.count == 27,
+            WebhookSensorId.allCases.count == 29,
             "WebhookSensorId has different number of cases than defined in test, \(WebhookSensorId.allCases.count)"
         )
     }
