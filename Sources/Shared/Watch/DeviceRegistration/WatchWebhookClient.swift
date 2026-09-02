@@ -14,10 +14,16 @@ public enum WatchWebhookClient {
         case invalidResponse
     }
 
-    /// Where to post: the cloudhook whenever the watch isn't on the server's internal URL, otherwise
-    /// the webhook path on the active URL — the same choice `ConnectionInfo.evaluateWebhookURL` makes.
-    public static func webhookURL(activeURL: URL, internalURL: URL?, registration: WatchDeviceRegistration) -> URL {
-        if let cloudhookURL = registration.cloudhookURL, activeURL != internalURL {
+    /// Where to post: the cloudhook whenever the active URL isn't the server's internal one,
+    /// otherwise the webhook path on the active URL — the same choice `ConnectionInfo` makes for
+    /// the phone's registration. Decided by URL type rather than by comparing URLs, which differ in
+    /// normalization (the active URL is sanitized, the stored one isn't).
+    public static func webhookURL(
+        activeURL: URL,
+        activeURLType: ConnectionInfo.URLType,
+        registration: WatchDeviceRegistration
+    ) -> URL {
+        if let cloudhookURL = registration.cloudhookURL, activeURLType != .internal {
             return cloudhookURL
         }
         return activeURL.appendingPathComponent(registration.webhookPath, isDirectory: false)
@@ -58,14 +64,15 @@ public enum WatchWebhookClient {
         registration: WatchDeviceRegistration,
         timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout
     ) async throws -> Any {
-        // Synchronous URL evaluation on purpose — see `MagicItem.executeViaREST`.
+        // Synchronous URL evaluation on purpose — see `MagicItem.executeViaREST`. Evaluating also
+        // writes the chosen URL type back to the server, which is what's read next.
         guard let activeURL = server.activeURLUsingLastKnownNetworkState() else {
             throw ServerConnectionError.noActiveURL(server.info.name)
         }
 
         let url = webhookURL(
             activeURL: activeURL,
-            internalURL: server.info.connection.address(for: .internal),
+            activeURLType: server.info.connection.activeURLType,
             registration: registration
         )
         let secret = registration.webhookSecretBytes(version: server.info.version)

@@ -3,9 +3,18 @@ import Foundation
 import Testing
 
 struct WatchDeviceSensorsTests {
-    init() {
+    /// Runs `body` with the device reporting one battery at 80%, charging, restoring the shared
+    /// environment afterwards so other suites see the defaults.
+    private func withChargingBattery<T>(_ body: () throws -> T) rethrows -> T {
+        let batteries = Current.device.batteries
+        let isLowPowerMode = Current.device.isLowPowerMode
+        defer {
+            Current.device.batteries = batteries
+            Current.device.isLowPowerMode = isLowPowerMode
+        }
         Current.device.batteries = { [DeviceBattery(level: 80, state: .charging, attributes: [:])] }
         Current.device.isLowPowerMode = { false }
+        return try body()
     }
 
     @Test func listsBatteryLevelAndState() {
@@ -14,7 +23,7 @@ struct WatchDeviceSensorsTests {
     }
 
     @Test func currentReadsTheWatchBatteryLikeThePhoneDoes() {
-        let sensors = WatchDeviceSensors.current()
+        let sensors = withChargingBattery { WatchDeviceSensors.current() }
 
         #expect(sensors.map(\.UniqueID) == ["battery_level", "battery_state"])
         #expect(sensors[0].Name == "Battery Level")
@@ -27,7 +36,7 @@ struct WatchDeviceSensorsTests {
     }
 
     @Test func registrationPayloadCarriesEnablement() throws {
-        let sensor = try #require(WatchDeviceSensors.current().first)
+        let sensor = try #require(withChargingBattery { WatchDeviceSensors.current().first })
 
         let enabled = WatchDeviceSensors.registrationPayload(sensor: sensor, enabled: true)
         #expect(enabled["unique_id"] as? String == "battery_level")
@@ -41,7 +50,7 @@ struct WatchDeviceSensorsTests {
 
     @Test func updatePayloadRedactsSensorsThatAreOff() throws {
         let payload = WatchDeviceSensors.updatePayload(
-            sensors: WatchDeviceSensors.current(),
+            sensors: withChargingBattery { WatchDeviceSensors.current() },
             enabledIDs: ["battery_level"]
         )
 

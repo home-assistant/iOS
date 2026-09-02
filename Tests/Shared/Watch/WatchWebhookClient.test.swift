@@ -19,7 +19,7 @@ struct WatchWebhookClientTests {
     @Test func usesWebhookPathOnInternalURL() {
         let url = WatchWebhookClient.webhookURL(
             activeURL: internalURL,
-            internalURL: internalURL,
+            activeURLType: .internal,
             registration: registration(cloudhook: true)
         )
 
@@ -29,7 +29,17 @@ struct WatchWebhookClientTests {
     @Test func usesCloudhookAwayFromInternalURL() {
         let url = WatchWebhookClient.webhookURL(
             activeURL: externalURL,
-            internalURL: internalURL,
+            activeURLType: .external,
+            registration: registration(cloudhook: true)
+        )
+
+        #expect(url.absoluteString == "https://hooks.nabu.casa/watch-hook")
+    }
+
+    @Test func usesCloudhookOnRemoteUI() {
+        let url = WatchWebhookClient.webhookURL(
+            activeURL: URL(string: "https://example.ui.nabu.casa")!,
+            activeURLType: .remoteUI,
             registration: registration(cloudhook: true)
         )
 
@@ -39,7 +49,7 @@ struct WatchWebhookClientTests {
     @Test func usesWebhookPathWithoutCloudhook() {
         let url = WatchWebhookClient.webhookURL(
             activeURL: externalURL,
-            internalURL: nil,
+            activeURLType: .external,
             registration: registration(cloudhook: false)
         )
 

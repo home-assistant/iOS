@@ -209,8 +209,8 @@ public actor WatchDeviceReporter {
         )
 
         // Home Assistant answers a deleted registration with 200 and no body (the cloudhook, with a
-        // 404, which `WatchWebhookClient` already maps).
-        guard response is [String: Any] else {
+        // 404, which `WatchWebhookClient` already maps). Any other shape is a real answer.
+        if response is Void {
             throw WatchWebhookClient.WebhookError.registrationGone
         }
         return response
