@@ -240,7 +240,7 @@
 "assist.settings.title" = "Assist 설정";
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
-"assist.text_field.placeholder" = "요청 입력...";
+"assist.text_field.placeholder" = "요청을 입력하세요...";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.volume.title" = "음량 조절";
@@ -453,13 +453,13 @@
 "component.alert.dismiss" = "알림 닫기";
 "component.calendar.all_day" = "종일";
 "component.chip.remove" = "제거";
-"component.circular_slider.adjust_lower" = "하한 조정";
-"component.circular_slider.adjust_upper" = "상한 조정";
+"component.circular_slider.adjust_lower" = "하한값 조정";
+"component.circular_slider.adjust_upper" = "상한값 조정";
 "component.collapsible_view.collapse" = "접기";
 "component.collapsible_view.expand" = "확장하기";
-"component.color_picker.less_saturation" = "채도 낮추기";
-"component.color_picker.more_saturation" = "채도 높이기";
-"component.distribution.show_less" = "적게 보기";
+"component.color_picker.less_saturation" = "채도 감소";
+"component.color_picker.more_saturation" = "채도 증가";
+"component.distribution.show_less" = "간략히 보기";
 "component.distribution.show_more" = "더 보기";
 "component.energy_period.compare" = "이전 기간과 비교";
 "component.energy_period.next" = "다음 기간";
@@ -468,7 +468,7 @@
 "component.media_control.pause" = "일시 중지";
 "component.media_control.play" = "재생";
 "component.media_control.previous" = "이전";
-"component.more_information" = "더 많은 정보";
+"component.more_information" = "추가 정보";
 "component.qr_code.failed" = "QR 코드를 생성할 수 없습니다";
 "component.qr_code.label" = "QR 코드";
 "component.qr_scanner.manual_input" = "코드를 수동으로 입력";
@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "앞으로 이동";
 "mac.open_in_safari.accessibility_label" = "Safari에서 열기";
 "mac.paste.accessibility_label" = "붙여넣기";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "동작";
 "magic_item.action.assist.pipeline.title" = "파이프라인";
 "magic_item.action.assist.start_listening.title" = "듣기 시작";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "%1$@ 토글";
 "menu.view.customize_toolbar" = "도구 모음 사용자 지정…";
 "menu.view.find" = "찾기";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "페이지 새로고침";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "이는 베타 기능입니다. 문제가 발생하면 아래 버튼을 사용하여 신고해 주세요.\
 \
 현재 mTLS는 iOS 17 이상에서만 지원됩니다. 알림 첨부 파일 표시, Assist TTS 오디오와 관련된 문제가 발생할 수 있으며 Apple Watch에서는 완전히 작동하지 않습니다.";
@@ -1326,6 +1338,13 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.app_icon_shortcuts.reset.title" = "앱 아이콘 바로가기 재설정";
 "settings.app_icon_shortcuts.subtitle" = "Items To Display When Long Pressing The App Icon. 선택";
 "settings.app_icon_shortcuts.title" = "앱 아이콘 바로가기";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "활성화";
 "settings.connection_section.add_server" = "서버 추가";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "안전하지 않은 연결이 있는 경우 공용 네트워크에서 인증 토큰이 노출될 수 있습니다.";
@@ -1648,6 +1667,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.search.no_results.title" = "“%@”에 대한 결과 없음";
 "settings.search.prompt" = "설정 검색";
 "settings.search_keywords.app_icon_shortcuts" = "빠른 동작, 홈 화면, 길게 누르기, 런처";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "자동차, 차량, 운전, 대시보드";
 "settings.search_keywords.complications" = "시계 페이스, 애플 워치, 한눈에 보기";
 "settings.search_keywords.debugging" = "로그, 진단, 내보내기, 데이터베이스, 문제 해결, 재설정";
@@ -2659,6 +2679,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.calendar.tomorrow" = "내일";
 "widgets.commonly_used_entities.description" = "사용 패턴을 기반으로 자주 사용하는 엔티티를 표시합니다.";
 "widgets.commonly_used_entities.empty.description" = "자주 사용하는 엔티티를 찾을 수 없습니다. Home Assistant를 사용하여 사용 기록을 쌓으세요.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "선택한 도메인의 엔티티는 표시하지 않습니다.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "도메인 제외";
+"widgets.commonly_used_entities.include_domains.param.description" = "도메인을 선택하면 해당 도메인의 엔티티만 표시합니다.";
+"widgets.commonly_used_entities.include_domains.param.title" = "도메인 포함";
 "widgets.commonly_used_entities.title" = "공통 컨트롤";
 "widgets.content_source.complication" = "컴플리케이션";
 "widgets.content_source.entity" = "엔티티";
@@ -2731,7 +2755,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.controls.switch.title" = "스위치";
 "widgets.custom.intent_activate_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_activate_failed.title" = "엔티티 '활성화'에 실패했습니다.";
-"widgets.custom.intent_perform_action_failed.body" = "다시 시도해 주세요";
+"widgets.custom.intent_perform_action_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_perform_action_failed.title" = "액션 실행 실패";
 "widgets.custom.intent_press_failed.body" = "다시 시도하세요";
 "widgets.custom.intent_press_failed.title" = "엔티티 '누르기'에 실패했습니다";
@@ -2743,6 +2767,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.custom.show_last_update_time.param.title" = "마지막 업데이트 시간 표시";
 "widgets.custom.show_states.description" = "최신 상태가 100% 표시되는 것은 보장할 수 없으므로, 시도해 보고 자세한 내용은 앱 문서를 확인하세요.";
 "widgets.custom.show_states.param.title" = "상태 표시 (베타)";
+"widgets.custom.show_states.param.title_no_beta" = "상태 표시";
 "widgets.custom.show_update_time.title" = "마지막 업데이트:";
 "widgets.custom.subtitle" = "나만의 스타일로 위젯 만들기";
 "widgets.custom.title" = "사용자 정의 위젯";
@@ -2756,8 +2781,11 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.details.parameters.server" = "서버";
 "widgets.details.parameters.upper_template" = "상단 텍스트 템플릿";
 "widgets.details.title" = "세부 정보";
+"widgets.energy.battery" = "배터리";
 "widgets.energy.description" = "에너지 대시보드를 한눈에 확인하세요.";
+"widgets.energy.electricity" = "전력망";
 "widgets.energy.electricity_total" = "전력 총계";
+"widgets.energy.gas" = "가스";
 "widgets.energy.grid" = "전력망";
 "widgets.energy.no_connection" = "연결할 수 없습니다. Home Assistant URL 구성을 확인하세요.";
 "widgets.energy.no_data" = "에너지 데이터 없음";
@@ -2770,7 +2798,9 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.refresh_title" = "에너지 새로 고침";
 "widgets.energy.solar" = "태양광";
 "widgets.energy.source.auto" = "자동";
+"widgets.energy.source.battery" = "배터리";
 "widgets.energy.source.consumption" = "소비";
+"widgets.energy.source.gas" = "가스";
 "widgets.energy.source.solar" = "태양광";
 "widgets.energy.source.title" = "소스";
 "widgets.energy.title" = "에너지";
@@ -2799,6 +2829,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.param.server.title" = "서버";
 "widgets.parameters.attribute" = "속성";
 "widgets.parameters.complication" = "컴플리케이션";
+"widgets.parameters.domain" = "도메인";
 "widgets.parameters.entity" = "엔티티";
 "widgets.preview.custom.description" = "앱 내에서 나만의 위젯을 만든 다음 여기에 표시하세요.";
 "widgets.preview.custom.title" = "사용자 정의 위젯";

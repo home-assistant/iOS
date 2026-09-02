@@ -5,12 +5,14 @@ import UIKit
 struct HomeAssistantView: View, WebFrontendView {
     private enum Constants {
         static let launchMessagesFallbackDelay: TimeInterval = 2
+        static let macSidebarWidth: CGFloat = 240
     }
 
     @StateObject private var viewModel: HomeAssistantViewModel
     /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
     /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
+    @ObservedObject private var nativeSidebar = MacNativeSidebarState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
@@ -44,6 +46,26 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     var body: some View {
+        HStack(spacing: 0) {
+            if nativeSidebar.isEnabled, nativeSidebar.isVisible {
+                MacSidebarView(viewModel: viewModel.macSidebar)
+                    .frame(width: Constants.macSidebarWidth)
+                    .transition(.move(edge: .leading))
+                Divider()
+                    .ignoresSafeArea()
+            }
+            frontendContent
+        }
+        .animation(reduceMotion ? nil : DesignSystem.Animation.easeInOutFaster, value: nativeSidebar.isVisible)
+        .onChange(of: nativeSidebar.isEnabled) { _ in
+            // The frontend reads the `hasSidebar` external config once per page load, so a fresh web
+            // view is what applies the new value. Reloading in place keeps the fade/loader state
+            // consistent, unlike swapping the frontend's structural identity.
+            viewModel.resetWebFrontend()
+        }
+    }
+
+    private var frontendContent: some View {
         ZStack {
             // The frontend content group is separate from the standby overlay so it can fade with pull-to-refresh and
             // reloads.

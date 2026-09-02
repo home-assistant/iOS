@@ -30,6 +30,8 @@ final class HomeAssistantViewModel: ObservableObject {
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
+    /// Feeds the App Labs native macOS sidebar; only started once that sidebar is on screen.
+    let macSidebar: MacSidebarViewModel
 
     @Published var webViewResetID = UUID()
     @Published var webViewController: WebViewController?
@@ -73,6 +75,26 @@ final class HomeAssistantViewModel: ObservableObject {
         self.chrome = chrome ?? WebViewChromeState()
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
         self.onWebViewController = onWebViewController
+        self.macSidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
+
+        macSidebar.onNavigate = { [weak self] path in
+            self?.webViewController?.openSidebarPath(path)
+        }
+        macSidebar.onShowNotifications = { [weak self] in
+            self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+                command: .showNotifications,
+                payload: nil
+            )
+        }
+        macSidebar.readLocalStorage = { [weak self] key, completion in
+            guard let webViewController = self?.webViewController else {
+                completion(nil)
+                return
+            }
+            webViewController.evaluateJavaScript("window.localStorage.getItem('\(key)')") { result, _ in
+                completion(result as? String)
+            }
+        }
 
         bindObservableChildren()
         bindOverlayState()

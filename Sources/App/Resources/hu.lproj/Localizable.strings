@@ -951,6 +951,16 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "mac.navigation.go_forward.accessibility_label" = "Előre navigálás";
 "mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Beillesztés";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Művelet";
 "magic_item.action.assist.pipeline.title" = "Folyamat";
 "magic_item.action.assist.start_listening.title" = "Figyelés indítása";
@@ -1017,7 +1027,9 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "menu.status_item.toggle" = "%1$@ kapcsolása";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Keresés";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Oldal újratöltése";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Ez egy béta funkció, ha bármilyen problémát tapasztal, kérjük, jelentse be az alábbi gomb használatával.\
 \
 Jelenleg az mTLS csak iOS 17+ rendszeren támogatott, problémákat okozhat az értesítési mellékletek megjelenítésében, az Assist TTS hanglejátszásában, és nem fog teljesen működni Apple Watch-on.";
@@ -1325,6 +1337,13 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.app_icon_shortcuts.reset.title" = "Alkalmazás ikon parancsikonok visszaállítása";
 "settings.app_icon_shortcuts.subtitle" = "Válassza ki az elemeket, amelyek az alkalmazás ikon hosszú lenyomásakor jelennek meg.";
 "settings.app_icon_shortcuts.title" = "Alkalmazásikon parancsikonok";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktiválás";
 "settings.connection_section.add_server" = "Szerver hozzáadása";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Ha a kapcsolat nem biztonságos, ez nyilvános hálózatokon felfedheti az azonosító tokenjét.";
@@ -1647,6 +1666,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Search settings";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
@@ -2660,6 +2680,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Megjeleníti a gyakran használt entitásokat a használati szokások alapján.";
 "widgets.commonly_used_entities.empty.description" = "Nem találhatók gyakran használt entitások. Használja a Home Assistant-ot a használati előzmények kialakításához.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Gyakori vezérlők";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2744,6 +2768,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "Utolsó frissítés idejének megjelenítése";
 "widgets.custom.show_states.description" = "A legfrissebb állapotok megjelenítése nem garantált 100%-osan, de kipróbálhatja. További információért tekintse meg a társalkalmazás dokumentációját.";
 "widgets.custom.show_states.param.title" = "Állapotok megjelenítése (BÉTA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Utolsó frissítés:";
 "widgets.custom.subtitle" = "Saját stílusú widgetek létrehozása";
 "widgets.custom.title" = "Egyedi widgetek";
@@ -2757,8 +2782,11 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.details.parameters.server" = "Szerver";
 "widgets.details.parameters.upper_template" = "Felső szöveg sablon";
 "widgets.details.title" = "Részletek";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
 "widgets.energy.no_data" = "No energy data";
@@ -2771,7 +2799,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
@@ -2800,6 +2830,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "Szerver";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Hozzon létre saját widgetet az alkalmazáson belül, majd jelenítse meg itt.";
 "widgets.preview.custom.title" = "Egyéni widget";

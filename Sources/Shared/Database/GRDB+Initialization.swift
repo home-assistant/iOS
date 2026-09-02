@@ -76,6 +76,7 @@ public extension DatabaseQueue {
             AssistConfigurationTable(),
             AllowedTagTable(),
             KioskSettingsTable(),
+            AppLabsFeatureStateTable(),
             NotificationSnoozeActionTable(),
             WatchComplicationTable(),
             WatchComplicationConfigTable(),
