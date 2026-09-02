@@ -39,11 +39,6 @@ struct SensorListView: View {
                         viewModel.setPeriodicUpdateInterval(newValue)
                     }
                 }
-                Section(header: Text(L10n.SettingsSensors.PeriodicUpdate.backgroundHeader)) {
-                    Text(L10n.SettingsSensors.PeriodicUpdate.backgroundTitle)
-                        .foregroundStyle(.secondary)
-                        .disabled(true)
-                }
                 if !permissionsViewModel.availablePermissions.isEmpty {
                     Section {
                         NavigationLink {

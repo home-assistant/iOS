@@ -6564,10 +6564,6 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.loading_error.title") }
     }
     public enum PeriodicUpdate {
-      /// When app is in background
-      public static var backgroundHeader: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.background_header") }
-      /// Periodic Define
-      public static var backgroundTitle: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.background_title") }
       /// When enabled, these sensors will update with this frequency while the app is open in the foreground.
       public static var description: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description") }
       /// This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.
