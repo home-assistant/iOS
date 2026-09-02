@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "Перейти вперед";
 "mac.open_in_safari.accessibility_label" = "Открыть в Safari";
 "mac.paste.accessibility_label" = "Вставить";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Действие";
 "magic_item.action.assist.pipeline.title" = "Обработчик";
 "magic_item.action.assist.start_listening.title" = "Начать слушать";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "Переключить %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Найти";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Перезагрузить страницу";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Это бета-версия функции. Если у вас возникнут какие-либо проблемы, пожалуйста, сообщите о них, нажав на кнопку ниже.\
 \
 В настоящее время mTLS поддерживается только на iOS 17 и более поздних версиях. Могут возникать проблемы с отображением вложений в уведомлениях, аудио в Assist TTS, а также с работой на Apple Watch.";
@@ -1326,6 +1338,13 @@ Home Assistant — это приложение с открытым исходн�
 "settings.app_icon_shortcuts.reset.title" = "Сброс ярлыков иконки приложения";
 "settings.app_icon_shortcuts.subtitle" = "Выберите элементы, которые будут отображаться при длительном нажатии на значок приложения.";
 "settings.app_icon_shortcuts.title" = "Ярлыки иконки приложения";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Активировать";
 "settings.connection_section.add_server" = "Добавить сервер";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Если у вас незащищенное соединение, это может привести к раскрытию вашего токена аутентификации в общедоступных сетях.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Поиск настроек";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";

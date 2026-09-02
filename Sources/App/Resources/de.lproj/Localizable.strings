@@ -951,6 +951,16 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "mac.navigation.go_forward.accessibility_label" = "Vorwärts navigieren";
 "mac.open_in_safari.accessibility_label" = "In Safari öffnen";
 "mac.paste.accessibility_label" = "Einsetzen";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Aktion";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Spracheingabe aktivieren";
@@ -1017,7 +1027,9 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.customize_toolbar" = "Symbolleiste anpassen …";
 "menu.view.find" = "Suchen";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Seite neu laden";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Dies ist eine Beta-Funktion. Solltest du Probleme feststellen, melde diese bitte über den Knopf unten. \
 \
 Aktuell wird mTLS nur unter iOS 17 und höher unterstützt. Es kann zu Problemen bei der Anzeige von Benachrichtigungsanhängen und der Assist-Sprachausgabe (TTS) kommen. Auf der Apple Watch ist die Funktion nicht vollständig verfügbar.";
@@ -1326,6 +1338,13 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.app_icon_shortcuts.reset.title" = "Kurzbefehle des App-Symbols zurücksetzen";
 "settings.app_icon_shortcuts.subtitle" = "Wähle Einträge aus, die angezeigt werden sollen, wenn du lange auf das App-Symbol drückst.";
 "settings.app_icon_shortcuts.title" = "Kurzbefehle des App-Symbols";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktivieren";
 "settings.connection_section.add_server" = "Server hinzufügen";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Wenn du eine unsichere Verbindung hast, kann das in öffentlichen Netzen dein Authentifizierungs-Token preisgeben.";
@@ -1648,6 +1667,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.search.no_results.title" = "Keine Ergebnisse für „%@“";
 "settings.search.prompt" = "Sucheinstellungen";
 "settings.search_keywords.app_icon_shortcuts" = "Schnellaktionen, Startbildschirm, langes Drücken, Launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "Auto, Fahrzeug, Fahren, Armaturenbrett";
 "settings.search_keywords.complications" = "Zifferblatt, Apple Watch, Glance";
 "settings.search_keywords.debugging" = "Protokolle, Diagnose, Export, Datenbank, Fehlerbehebung, Zurücksetzen";
@@ -2662,10 +2682,10 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.calendar.tomorrow" = "Morgen";
 "widgets.commonly_used_entities.description" = "Deine häufig verwendeten Entitäten basierend auf deinem Nutzungsverhalten anzeigen.";
 "widgets.commonly_used_entities.empty.description" = "Keine häufig verwendeten Entitäten gefunden. Verwende Home Assistant, um deinen Nutzungsverlauf aufzubauen.";
-"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
-"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
-"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
-"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entitäten der ausgewählten Domänen werden niemals angezeigt.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Domänen ausschließen";
+"widgets.commonly_used_entities.include_domains.param.description" = "Wenn Domänen ausgewählt werden, werden nur Entitäten dieser Domänen angezeigt.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Domänen einschließen";
 "widgets.commonly_used_entities.title" = "Häufig genutzte Steuerelemente";
 "widgets.content_source.complication" = "Komplikation";
 "widgets.content_source.entity" = "Entität";
@@ -2750,7 +2770,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.custom.show_last_update_time.param.title" = "Letzte Aktualisierungszeit anzeigen";
 "widgets.custom.show_states.description" = "Die Anzeige der neuesten Zustände ist nicht zu 100 % garantiert. Du kannst es ausprobieren und in der Dokumentation der Companion-App nachsehen, um weitere Informationen zu erhalten.";
 "widgets.custom.show_states.param.title" = "Zustände anzeigen (BETA)";
-"widgets.custom.show_states.param.title_no_beta" = "Show states";
+"widgets.custom.show_states.param.title_no_beta" = "Zustände anzeigen";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
@@ -2764,9 +2784,9 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template unterer Text";
 "widgets.details.title" = "Details";
-"widgets.energy.battery" = "Battery";
+"widgets.energy.battery" = "Batterie";
 "widgets.energy.description" = "Dein Energie-Dashboard auf einen Blick anzeigen.";
-"widgets.energy.electricity" = "Grid";
+"widgets.energy.electricity" = "Netz";
 "widgets.energy.electricity_total" = "Strom insgesamt";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Netz";
@@ -2781,7 +2801,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.refresh_title" = "Energie aktualisieren";
 "widgets.energy.solar" = "PV";
 "widgets.energy.source.auto" = "Auto";
-"widgets.energy.source.battery" = "Battery";
+"widgets.energy.source.battery" = "Batterie";
 "widgets.energy.source.consumption" = "Verbrauch";
 "widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "PV";
@@ -2812,7 +2832,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribut";
 "widgets.parameters.complication" = "Komplikation";
-"widgets.parameters.domain" = "Domain";
+"widgets.parameters.domain" = "Domäne";
 "widgets.parameters.entity" = "Entität";
 "widgets.preview.custom.description" = "Erstelle dein eigenes Widget innerhalb der App und lasse es dann hier anzeigen.";
 "widgets.preview.custom.title" = "Benutzerdefiniertes Widget";

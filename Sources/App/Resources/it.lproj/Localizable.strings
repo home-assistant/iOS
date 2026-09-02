@@ -951,6 +951,16 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "mac.navigation.go_forward.accessibility_label" = "Navigare in avanti";
 "mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Incolla";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Azione";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Inizia ad ascoltare";
@@ -1017,7 +1027,9 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "menu.status_item.toggle" = "Attiva/disattiva %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Trova";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Ricarica la pagina";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Si tratta di una funzionalità in beta; in caso di problemi, ti preghiamo di segnalarli utilizzando il pulsante qui sotto.\
 \
 Al momento, mTLS è supportato solo su iOS 17 e versioni successive; potrebbero verificarsi problemi relativi alla visualizzazione degli allegati delle notifiche, all'audio di Assist TTS e non funzionerà del tutto su Apple Watch.";
@@ -1326,6 +1338,13 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
 "settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
 "settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Attiva";
 "settings.connection_section.add_server" = "Aggiungi server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Se disponi di una connessione non sicura, il token di autenticazione potrebbe essere esposto sulle reti pubbliche.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Search settings";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
@@ -1945,7 +1965,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privacy";
 "settings_details.thread.delete_credential.confirmation.title" = "Sei sicuro di voler eliminare questa credenziale dal tuo Portachiavi Apple? Questa azione non può essere annullata e dovrebbe essere eseguita solo se sai cosa stai facendo.";
-"settings_details.thread.title" = "Discussione";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Includi versioni beta";
 "settings_details.updates.check_for_updates.title" = "Controlla automaticamente gli aggiornamenti";
 "settings_details.watch.title" = "Apple Watch";
