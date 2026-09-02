@@ -41,6 +41,12 @@ jobs:
     name: "Onboarding"
     runs-on: macos-26
     timeout-minutes: 90
+    # Naming any scope denies the rest, so the failure report has to ask for what it needs:
+    # `issues` to file or update the report, `actions` to read back which step failed.
+    permissions:
+      actions: read
+      contents: read
+      issues: write
     env:
       E2E_HOME_ASSISTANT_URL: http://localhost:8123
       E2E_HOME_ASSISTANT_USERNAME: citest
@@ -224,8 +230,68 @@ jobs:
           name: e2e-artifacts
           if-no-files-found: warn
           # The recording is kept for passing runs too (see the test plan), which puts each run's
-          # artifact around 160 MB. Nightly, that is worth capping well below the 90-day default.
+          # artifact around 200 MB. Nightly, that is worth capping well below the 90-day default.
           retention-days: 14
+
+      # A red run nobody is told about is a nightly nobody trusts: GitHub only emails whoever last
+      # touched the cron line. Only the scheduled run reports, because a manual dispatch is usually
+      # someone iterating on the workflow itself and every red attempt would file a report.
+      - name: Report failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          HOME_ASSISTANT_VERSION: ${{ inputs.home-assistant-version || 'dev' }}
+        with:
+          script: |
+            const title = 'E2E: the nightly onboarding test is failing'
+            const { owner, repo } = context.repo
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
+
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner,
+              repo,
+              run_id: context.runId,
+            })
+            const failed = jobs.flatMap((job) => job.steps || []).find((step) => step.conclusion === 'failure')
+
+            const body = [
+              `The nightly [E2E run](${run}) failed at **${failed ? failed.name : 'an unknown step'}**.`,
+              '',
+              `- Home Assistant version: \`${process.env.HOME_ASSISTANT_VERSION}\``,
+              "- A screen recording of the run and Home Assistant's own log are in that run's",
+              '  `e2e-artifacts` artifact, which is kept for 14 days.',
+              '',
+              'Later failures are added here as comments rather than opening another issue.',
+            ].join('\n')
+
+            // Deduped by title among `automated` issues, so a run of bad nights leaves one thread
+            // to read rather than one issue per night.
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              labels: 'automated',
+              state: 'all',
+              per_page: 100,
+            })
+            const existing = issues.find((issue) => !issue.pull_request && issue.title === title)
+
+            if (!existing) {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['automated'],
+              })
+              core.info(`Opened #${created.data.number}`)
+              return
+            }
+
+            await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body })
+            if (existing.state === 'closed') {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'open' })
+            }
+            core.info(`Updated #${existing.number}`)
           path: |
             ${{ runner.temp }}/hass-stdout.log
             ${{ runner.temp }}/homeassistant-config.json
