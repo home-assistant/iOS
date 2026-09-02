@@ -2781,7 +2781,6 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Visa din energiöversikt med en snabb blick.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "El, totalt";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Elnät";
 "widgets.energy.no_connection" = "Ingen anslutning tillgänglig. Kontrollera inställningarna för Home Assistant-URL:en.";

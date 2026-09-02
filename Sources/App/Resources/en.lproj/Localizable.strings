@@ -2789,7 +2789,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "Electricity total";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";

@@ -9007,8 +9007,6 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "widgets.energy.description") }
       /// Grid
       public static var electricity: String { return L10n.tr("Localizable", "widgets.energy.electricity") }
-      /// Electricity total
-      public static var electricityTotal: String { return L10n.tr("Localizable", "widgets.energy.electricity_total") }
       /// Gas
       public static var gas: String { return L10n.tr("Localizable", "widgets.energy.gas") }
       /// Grid
