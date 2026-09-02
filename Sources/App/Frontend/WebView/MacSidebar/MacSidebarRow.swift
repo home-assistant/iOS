@@ -89,7 +89,7 @@ struct MacSidebarRow: View {
         if isSelected {
             return Color.primary.opacity(Constants.selectedFillOpacity)
         } else if isHovering {
-            return FrontendColors.haButtonPrimaryLightColor.color
+            return Color.haPrimaryLightFill
         } else {
             return .clear
         }
