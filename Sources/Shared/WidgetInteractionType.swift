@@ -3,6 +3,16 @@ import Foundation
 public enum WidgetInteractionType: Hashable, Encodable {
     case widgetURL(URL)
     case appIntent(WidgetIntentType)
+
+    /// Whether this only opens the entity's more-info dialog in the app — the one interaction a
+    /// tile never asks to confirm, since it changes nothing.
+    public var opensMoreInfoDialog: Bool {
+        guard case let .widgetURL(url) = self,
+              let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems else {
+            return false
+        }
+        return queryItems.contains { $0.name == AppConstants.QueryItems.openMoreInfoDialog.rawValue }
+    }
 }
 
 public enum WidgetIntentType: Hashable, Encodable {

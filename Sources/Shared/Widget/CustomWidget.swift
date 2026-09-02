@@ -21,7 +21,16 @@ public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatab
 
     public enum ItemState: String, Codable, FetchableRecord, PersistableRecord, Equatable {
         case idle
+        /// The item's icon — or the whole tile, when it isn't split — was tapped and waits to be
+        /// confirmed.
         case pendingConfirmation
+        /// The rest of a split tile was tapped and waits to be confirmed, so confirming runs the
+        /// tile's tap behavior rather than its icon's.
+        case pendingTapConfirmation
+
+        public var isPendingConfirmation: Bool {
+            self == .pendingConfirmation || self == .pendingTapConfirmation
+        }
     }
 
     public static func widgets() throws -> [CustomWidget]? {

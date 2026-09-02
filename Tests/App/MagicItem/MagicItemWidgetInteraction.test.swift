@@ -389,6 +389,26 @@ struct MagicItemWidgetInteractionTests {
         #expect(ItemAction.defaultName(resolvingTo: ItemAction.moreInfoDialog.name) == "Default (More info)")
     }
 
+    /// Confirmation, when an item requires it, applies to whichever half is tapped — except a tap
+    /// that only opens the entity's more-info dialog, which is the one interaction that changes
+    /// nothing. This is the test the tile runs before asking.
+    @Test func onlyMoreInfoIsExemptFromConfirmation() {
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        #expect(item.widgetInteractionType.opensMoreInfoDialog)
+        #expect(item.widgetTapInteractionType.opensMoreInfoDialog)
+
+        item.action = .toggle
+        #expect(!item.widgetInteractionType.opensMoreInfoDialog)
+        item.tapAction = .turnOff
+        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        item.tapAction = .navigate("/lovelace/0")
+        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        item.tapAction = .url("https://www.home-assistant.io")
+        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        item.tapAction = .moreInfoDialog
+        #expect(item.widgetTapInteractionType.opensMoreInfoDialog)
+    }
+
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still
     /// reaches the web rather than leaving the tile dead.
     @Test func urlActionOpensTheTypedAddress() {

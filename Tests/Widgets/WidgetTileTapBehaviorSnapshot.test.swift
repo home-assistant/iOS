@@ -84,6 +84,22 @@ struct WidgetTileTapBehaviorSnapshotTests {
         )
     }
 
+    /// The rest of a split tile asks for confirmation too when its behavior runs something — here a
+    /// lock told to lock on tap — and the form it turns into looks the same as the icon's.
+    @available(iOS 18, *)
+    @MainActor @Test func customWidgetPendingTapConfirmationSnapshot() {
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        item.action = .toggle
+        item.tapAction = .turnOff
+        item.customization = .init(requiresConfirmation: true)
+        assertCustomWidgetSnapshot(
+            items: [item, .init(id: "light.kitchen", serverId: "1", type: .entity)],
+            itemsStates: ["1-lock.front_door": .pendingTapConfirmation],
+            family: .systemMedium,
+            named: "pendingTapConfirmation"
+        )
+    }
+
     @available(iOS 18, *)
     @MainActor @Test func commonlyUsedEntitiesSystemMediumSnapshot() {
         let size = Self.size(for: .systemMedium)

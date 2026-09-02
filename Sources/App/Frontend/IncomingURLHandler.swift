@@ -350,7 +350,8 @@ class IncomingURLHandler {
     }
 
     private func performAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
-        if item.customization?.requiresConfirmation == true {
+        // Opening the entity's more-info dialog changes nothing, so it is never confirmed first.
+        if item.customization?.requiresConfirmation == true, !item.widgetInteractionType.opensMoreInfoDialog {
             return confirmAppIconShortcut(item, provider: provider)
         } else {
             return runAppIconShortcut(item, provider: provider)
