@@ -93,6 +93,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // restart. Re-read and re-broadcast the live value so reachability recovers on foreground.
         Communicator.shared.refreshConnectivityState()
         HomeAssistantAPI.syncWatchContext()
+
+        // The watch reports its own sensors to Home Assistant as a device of its own; a foreground
+        // is one of the moments it does so (the periodic background refresh is the other).
+        Task {
+            await WatchDeviceReporter.shared.report(trigger: .foreground)
+        }
     }
 
     func applicationWillResignActive() {
@@ -202,11 +208,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
                 }.then { _ -> Promise<Void> in
                     // Refresh the modern watch-rendered complications by fetching their live values
-                    // directly over REST. This path doesn't need the paired iPhone, so a watch on its
-                    // own network (e.g. LTE) still updates as long as the server is reachable.
+                    // directly over REST, and report the watch's own sensors to Home Assistant. Neither
+                    // path needs the paired iPhone, so a watch on its own network (e.g. LTE) still
+                    // updates as long as the server is reachable. Both talk to the network, so they
+                    // run side by side to fit the budget above.
                     Promise { seal in
                         Task {
-                            await WatchWidgetComplicationSnapshotStore.refresh()
+                            async let complications = WatchWidgetComplicationSnapshotStore.refresh()
+                            async let sensors = WatchDeviceReporter.shared.report(trigger: .backgroundRefresh)
+                            _ = await (complications, sensors)
                             seal.fulfill(())
                         }
                     }

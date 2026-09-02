@@ -3,7 +3,6 @@ import ObjectMapper
 import PromiseKit
 #if os(watchOS)
 import ClockKit
-import WatchKit
 #endif
 
 public extension HomeAssistantAPI {
@@ -50,10 +49,8 @@ public extension HomeAssistantAPI {
         content[WatchContext.activeFamilies.rawValue] = activeFamilies
         content[WatchContext.watchModel.rawValue] = Current.device.systemModel()
         content[WatchContext.watchVersion.rawValue] = Current.device.systemVersion()
-        let currentWatchInterfaceDevice = WKInterfaceDevice.current()
-        currentWatchInterfaceDevice.isBatteryMonitoringEnabled = true
-        content[WatchContext.watchBattery.rawValue] = currentWatchInterfaceDevice.batteryLevel
-        content[WatchContext.watchBatteryState.rawValue] = currentWatchInterfaceDevice.batteryState.rawValue
+        // Battery isn't relayed any more: the watch reports it to Home Assistant itself, as a
+        // device of its own (see `WatchDeviceReporter`).
 
         #endif
 
