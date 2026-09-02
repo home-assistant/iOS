@@ -25,13 +25,17 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     static func previewSample(for configuration: WidgetDetailsAppIntent) -> WidgetDetailsEntry {
+        previewSample(showConfirmationNotification: configuration.showConfirmationNotification)
+    }
+
+    static func previewSample(showConfirmationNotification: Bool = true) -> WidgetDetailsEntry {
         .init(
             upperText: L10n.Climate.Control.Temperature.title,
             lowerText: WidgetPreviewSample.temperatureValue,
             detailsText: nil,
             runScript: false,
             script: nil,
-            showConfirmationNotification: configuration.showConfirmationNotification
+            showConfirmationNotification: showConfirmationNotification
         )
     }
 
@@ -60,11 +64,10 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same sample,
+    /// and the card never flips from empty to a reading as it loads.
     func placeholder(in context: Context) -> WidgetDetailsEntry {
-        .init(
-            upperText: nil, lowerText: nil, detailsText: nil,
-            runScript: false, script: nil, showConfirmationNotification: true
-        )
+        Self.previewSample()
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {

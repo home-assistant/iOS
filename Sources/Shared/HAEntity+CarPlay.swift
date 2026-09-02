@@ -17,34 +17,25 @@ public extension HAEntity {
     func getIcon() -> UIImage? {
         let image = getMDI()
         #if os(iOS)
-        return image.carPlayIcon(color: carPlayIconColor())
+        return image.carPlayIcon(color: stateIconColor())
         #else
         return image.image(ofSize: .init(width: 50, height: 50), color: nil)
         #endif
     }
 
-    func carPlayIconColor(activeColorOverride: UIColor? = nil) -> UIColor? {
-        let normalizedState = state.lowercased()
-        if Domain.activeStates.map(\.rawValue).contains(normalizedState),
-           let activeColorOverride {
-            return activeColorOverride
-        }
-
-        let colorAttributes = EntityColorAttributesParser.parse(from: attributes.dictionary)
-        guard let domain = Domain(rawValue: domain) else {
-            return fallbackCarPlayIconColor(
-                for: normalizedState,
-                activeColorOverride: activeColorOverride
-            )
-        }
-
-        return UIColor(
+    /// The icon color home-assistant/frontend gives this entity — its domain's, device class's and
+    /// state's `--state-…` palette, or a light's own color. Shared by CarPlay and the watch so both
+    /// read the same as the widgets and the frontend itself.
+    ///
+    /// - Parameter customColor: a color the user picked for this entity on the calling surface. As
+    ///   in the frontend's tile card, it only applies while the entity is active.
+    func stateIconColor(customColor: UIColor? = nil) -> UIColor? {
+        UIColor(
             EntityIconColorProvider.iconColor(
                 domain: domain,
-                state: normalizedState,
-                colorMode: colorAttributes.colorMode,
-                rgbColor: colorAttributes.rgbColor,
-                hsColor: colorAttributes.hsColor
+                state: state.lowercased(),
+                attributes: attributes.dictionary,
+                customColor: customColor.map(Color.init)
             )
         )
     }
@@ -240,20 +231,5 @@ public extension HAEntity {
 
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
-    }
-
-    private func fallbackCarPlayIconColor(
-        for normalizedState: String,
-        activeColorOverride: UIColor?
-    ) -> UIColor {
-        if Domain.problemStates.map(\.rawValue).contains(normalizedState) {
-            return .red
-        }
-
-        if Domain.activeStates.map(\.rawValue).contains(normalizedState) {
-            return activeColorOverride ?? AppConstants.lighterTintColor
-        }
-
-        return .gray
     }
 }

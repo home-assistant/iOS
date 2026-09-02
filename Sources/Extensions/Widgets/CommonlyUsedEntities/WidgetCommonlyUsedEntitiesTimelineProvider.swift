@@ -25,18 +25,6 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
-    func makePlaceholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
-        .init(
-            date: .now,
-            items: [],
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
-            showLastUpdateTime: false,
-            showStates: false,
-            serverName: nil
-        )
-    }
-
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -109,11 +97,14 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             }
         }
 
-        let filteredEntities = entities.filter { entityId in
-            guard let domain = Domain(entityId: entityId) else { return false }
-            return Domain.commonlyUsedWidgetSupported.contains(domain)
-        }
+        // Filtering happens before the family's tile limit is applied, so an excluded domain frees
+        // its slot for the next predicted entity instead of leaving a gap.
+        let filteredEntities = configuration.domainFilter.filter(entityIds: entities)
 
+        // Every domain the prediction returns is rendered. Domains the widget can act on in place
+        // (a toggle, a press, a scene) keep their in-widget action; everything else falls back to
+        // `MagicItem.widgetInteractionType`'s more-info deeplink, which opens the entity in the app's
+        // web view — the same behavior the custom widget already has for those domains.
         let magicItems = filteredEntities.map { entityId in
             MagicItem(
                 id: entityId,
@@ -122,7 +113,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             )
         }
 
-        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family)))
+        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family, capacity: .tile)))
     }
 
     private func entitiesState(
@@ -172,44 +163,5 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
 enum WidgetCommonlyUsedEntitiesConstants {
     static var expiration: Measurement<UnitDuration> {
         .init(value: 15, unit: .minutes)
-    }
-}
-
-@available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
-struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = .init(
-        "widgets.commonly_used_entities.title",
-        defaultValue: "Common Controls"
-    )
-
-    static var isDiscoverable: Bool = false
-
-    @Parameter(
-        title: .init("widgets.param.server.title", defaultValue: "Server")
-    )
-    var server: IntentServerAppEntity
-
-    @Parameter(
-        title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
-        default: true
-    )
-    var showLastUpdateTime: Bool
-
-    @Parameter(
-        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
-        description: .init(
-            "widgets.custom.show_states.description",
-            defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
-        ),
-        default: true
-    )
-    var showStates: Bool
-
-    static var parameterSummary: some ParameterSummary {
-        Summary()
-    }
-
-    func perform() async throws -> some IntentResult {
-        .result()
     }
 }

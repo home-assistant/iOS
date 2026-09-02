@@ -25,6 +25,24 @@ enum WidgetEnergyPeriod: String, Codable, Sendable, AppEnum {
         Self.caseDisplayRepresentations[self]?.title ?? .init(stringLiteral: rawValue)
     }
 
+    /// Whether the chart draws one bar per day rather than one per hour — the same split as
+    /// `statisticsPeriod`, in the terms the chart is built in.
+    var chartUsesDailyBuckets: Bool {
+        switch self {
+        case .today, .yesterday: false
+        case .thisWeek, .thisMonth: true
+        }
+    }
+
+    /// How many days apart the chart's x-axis labels sit once the buckets are daily. A month of
+    /// daily labels would be unreadable at widget size, so it steps a week at a time.
+    var chartDayStride: Int {
+        switch self {
+        case .thisMonth: 7
+        default: 1
+        }
+    }
+
     /// Statistics bucketing: hourly for single-day windows (for the 24h chart), daily otherwise.
     var statisticsPeriod: String {
         switch self {

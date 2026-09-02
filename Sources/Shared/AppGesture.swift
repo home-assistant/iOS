@@ -1,4 +1,5 @@
 import Foundation
+import SFSafeSymbols
 import UIKit
 
 public enum HAGestureActionCategory: String, CaseIterable {
@@ -105,6 +106,41 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.searchCommands
         case .assist:
             L10n.Gestures.Value.Option.assist
+        }
+    }
+
+    public var icon: SFSymbol {
+        switch self {
+        case .showSidebar:
+            .sidebarLeft
+        case .quickSearch:
+            .magnifyingglass
+        case .searchEntities:
+            .lightbulb
+        case .searchDevices:
+            .cpu
+        case .searchCommands:
+            .command
+        case .assist:
+            .sparkles
+        case .backPage:
+            .chevronBackward
+        case .nextPage:
+            .chevronForward
+        case .openInBrowser:
+            .safari
+        case .showServersList:
+            .serverRack
+        case .nextServer:
+            .arrowRightCircle
+        case .previousServer:
+            .arrowLeftCircle
+        case .showSettings:
+            .gearshape
+        case .openDebug:
+            .ladybug
+        case .none:
+            .nosign
         }
     }
 

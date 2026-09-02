@@ -35,28 +35,26 @@ struct WidgetEnergyView: View {
     }
 
     private var emptyView: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Text(WidgetEnergyStyle.emptyStateText(for: entry))
-                .font(.footnote)
-                .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.8)
-                .foregroundStyle(WidgetEnergyStyle.secondaryText)
-            // A missing energy dashboard is the one empty state a reload can't fix, so it's also the
-            // one that doesn't offer the button. An unreachable server does get it: the URL
-            // configuration, or the network, may have been sorted out since the entry was built.
-            if entry.loadFailed || entry.noConnection {
+        WidgetEnergyEmptyContentView(
+            message: WidgetEnergyStyle.emptyStateText(for: entry),
+            retryControl: retryControl
+        )
+    }
+
+    /// A missing energy dashboard is the one empty state a reload can't fix, so it's also the one
+    /// that doesn't offer the button. An unreachable server does get it: the URL configuration, or
+    /// the network, may have been sorted out since the entry was built.
+    private var retryControl: WidgetEnergyEmptyContentView.ControlContent? {
+        guard entry.loadFailed || entry.noConnection else { return nil }
+        return { label in
+            AnyView(
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
-                    Image(systemSymbol: .arrowClockwiseCircle)
-                        .foregroundStyle(.secondary)
-                        .font(DesignSystem.Font.title)
+                    label
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(L10n.Widgets.Energy.refreshTitle)
-            }
+            )
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .widgetBackground(WidgetEnergyStyle.background)
     }
 }
 

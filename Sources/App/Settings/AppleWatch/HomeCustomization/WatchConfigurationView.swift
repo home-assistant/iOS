@@ -14,15 +14,18 @@ struct WatchConfigurationView: View {
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
-    private let needsNavigationController: Bool
+    /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
+    /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
+    /// leaves it blank and pops it straight back out. Only a modal presentation opts in.
+    private let needsNavigationStack: Bool
 
-    init(needsNavigationController: Bool = false, viewModel: WatchConfigurationViewModel? = nil) {
-        self.needsNavigationController = needsNavigationController
+    init(needsNavigationStack: Bool = false, viewModel: WatchConfigurationViewModel? = nil) {
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: viewModel ?? WatchConfigurationViewModel())
     }
 
     var body: some View {
-        if needsNavigationController {
+        if needsNavigationStack {
             NavigationStack {
                 content
             }

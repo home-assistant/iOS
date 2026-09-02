@@ -9,6 +9,7 @@ enum WKUserContentControllerMessage: String, CaseIterable {
     case getExternalAuth
     case revokeExternalAuth
     case logError
+    case frontendRestored
 }
 
 final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
@@ -24,7 +25,8 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             return
         }
 
-        Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
+        let messageType = messageBody["type"] as? String ?? "unknown"
+        Current.Log.verbose("message \(message.name) type \(messageType) keys \(messageBody.count)")
 
         handle(messageName: message.name, messageBody: messageBody)
     }
@@ -56,6 +58,8 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             handleRevokeExternalAuth(messageBody)
         case .logError:
             handleLogError(messageBody)
+        case .frontendRestored:
+            webView?.handleFrontendRestoredFromPageCache()
         default:
             Current.Log.error("unknown message: \(messageName)")
         }

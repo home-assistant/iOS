@@ -1,4 +1,3 @@
-import AVFoundation
 import Foundation
 import SFSafeSymbols
 import Shared
@@ -10,33 +9,17 @@ struct AssistSettingsView: View {
     @StateObject private var viewModel = AssistSettingsViewModel()
     @Environment(\.dismiss) private var dismiss
 
-    private var supportedSTTLocales: [Locale] {
-        if #available(iOS 17.0, *) {
-            return SpeechTranscriber.supportedLocales
-        } else {
-            return []
-        }
-    }
-
     private var onDeviceSTTLocaleBinding: Binding<String> {
         Binding(
             get: {
                 viewModel.configuration.onDeviceSTTLocaleIdentifier
-                    ?? supportedSTTLocales.first?.identifier
+                    ?? viewModel.supportedSTTLocales.first?.identifier
                     ?? Locale.current.identifier
             },
             set: { newValue in
                 viewModel.configuration.onDeviceSTTLocaleIdentifier = newValue
             }
         )
-    }
-
-    private var selectedVoiceDisplayName: String {
-        guard let id = viewModel.configuration.onDeviceTTSVoiceIdentifier,
-              let voice = AVSpeechSynthesisVoice(identifier: id) else {
-            return L10n.Assist.Settings.OnDeviceTts.defaultVoice
-        }
-        return voice.name
     }
 
     private func localeDisplayName(_ locale: Locale) -> String {
@@ -50,13 +33,14 @@ struct AssistSettingsView: View {
                 muteToggle
                 labs
             }
-            .onChange(of: viewModel.configuration.enableOnDeviceSTT) { isEnabled in
-                guard isEnabled, !supportedSTTLocales.isEmpty else { return }
-                let supportedIdentifiers = Set(supportedSTTLocales.map(\.identifier))
-                let currentIdentifier = viewModel.configuration.onDeviceSTTLocaleIdentifier
-                if currentIdentifier == nil || !supportedIdentifiers.contains(currentIdentifier ?? "") {
-                    viewModel.configuration.onDeviceSTTLocaleIdentifier = supportedSTTLocales.first?.identifier
-                }
+            .task {
+                await viewModel.loadSupportedSTTLocales()
+            }
+            .task(id: viewModel.configuration.onDeviceTTSVoiceIdentifier) {
+                await viewModel.loadSelectedVoiceDisplayName()
+            }
+            .onChange(of: viewModel.configuration.enableOnDeviceSTT) { _ in
+                viewModel.selectDefaultSTTLocaleIfNeeded()
             }
             .navigationTitle(L10n.Assist.Settings.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -103,9 +87,9 @@ struct AssistSettingsView: View {
                     toggleLabel(symbol: .micFill, text: L10n.Assist.Settings.OnDeviceStt.title)
                 }
 
-                if viewModel.configuration.enableOnDeviceSTT, !supportedSTTLocales.isEmpty {
+                if viewModel.configuration.enableOnDeviceSTT, !viewModel.supportedSTTLocales.isEmpty {
                     Picker(L10n.Assist.Settings.OnDeviceStt.language, selection: onDeviceSTTLocaleBinding) {
-                        ForEach(supportedSTTLocales, id: \.identifier) { locale in
+                        ForEach(viewModel.supportedSTTLocales, id: \.identifier) { locale in
                             Text(localeDisplayName(locale).capitalizedFirst)
                                 .tag(locale.identifier)
                         }
@@ -123,7 +107,7 @@ struct AssistSettingsView: View {
                         HStack {
                             Text(L10n.Assist.Settings.OnDeviceTts.voice)
                             Spacer()
-                            Text(selectedVoiceDisplayName)
+                            Text(viewModel.selectedVoiceDisplayName)
                                 .foregroundStyle(.secondary)
                         }
                     }

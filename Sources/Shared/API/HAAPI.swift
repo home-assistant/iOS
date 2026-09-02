@@ -237,6 +237,9 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+
         return Alamofire.Session(
             configuration: configuration,
             delegate: delegate,
@@ -262,13 +265,12 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        #if !os(watchOS)
-        let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? MJPEGCertificateSessionDelegate(server: server)
-            : MJPEGStreamerSessionDelegate()
-        #else
-        let delegate = MJPEGStreamerSessionDelegate()
-        #endif
+        // Attached unconditionally, on every platform, for the same reason the REST session's
+        // delegate is (see `makeCertificateAwareURLSession`): the delegate resolves the certificate
+        // fresh at challenge time, so a streamer built before the server config carries the
+        // certificate still presents it. Gating on the init-time snapshot left the watch's camera
+        // notification stream permanently without a certificate, and an mTLS server refuses it.
+        let delegate = MJPEGStreamerSessionDelegate(server: server)
         return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: delegate,
             interceptor: newInterceptor(),

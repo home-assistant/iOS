@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// A filled, brand-coloured button style.
+///
+/// Frontend counterpart: `ha-button` in its default (filled) variant. The fuller set of variants —
+/// outlined, neutral, negative, critical, plain — is in ``HAButtonStyle`` alongside; this one
+/// predates it and is what the app's existing screens use.
 public struct TextButton: ButtonStyle {
     private let backgroundColor = Color.haPrimary
 
@@ -26,4 +31,9 @@ public extension ButtonStyle where Self == TextButton {
         Text("Hello World")
     }
     .buttonStyle(.textButton)
+}
+
+extension TextButton: FrontendComponent {
+    public static var frontendComponentName: String { "ha-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

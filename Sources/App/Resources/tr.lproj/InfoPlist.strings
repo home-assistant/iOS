@@ -2,8 +2,8 @@
 "NSCameraUsageDescription" = "Fotoğraf çekin ve bunları Home Assistant sunucunuza gönderin.";
 "NSCrossWebsiteTrackingUsageDescription" = "Yapılandırmanız gerektiriyorsa, isteğe bağlı olarak web siteleri arası izlemeyi etkinleştirin.";
 "NSFocusStatusUsageDescription" = "Odak durumunuzu bir sensör olarak bildirin.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Seçilen Apple Sağlık ölçümlerini okuyarak Home Assistant ile sensör olarak paylaşılmasını sağlayın.";
+"NSHealthUpdateUsageDescription" = "Home Assistant, Apple Sağlığa herhangi bir veri yazmaz.";
 "NSLocalNetworkUsageDescription" = "Home Assistant örneğinizi bulun ve onunla iletişim kurun.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Ayrıca, Uygulamanın arka plan işlemlerini gerçekleştirebilmesi için 'Her Zaman' konuma erişim iznine de ihtiyacımız var. \n\n ⚠️ Bu olmadan, Uygulama arka planda hangi bağlantıyı (yerel veya uzak) kullanacağına karar veremez ve her zaman uzak bağlantıyı kullanır.";
 "NSLocationAlwaysUsageDescription" = "iBeacon'lar, coğrafi sınırlar, arka planda konum güncellemeleri ve doğru raporlama gibi özellikler için her zaman konumunuza erişmemiz gerekir.";

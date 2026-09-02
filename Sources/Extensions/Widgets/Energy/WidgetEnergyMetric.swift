@@ -15,11 +15,15 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     enum Kind: String, CaseIterable {
         case solar
         case grid
+        case battery
+        case gas
 
         var icon: MaterialDesignIcons {
             switch self {
             case .solar: .solarPowerIcon
             case .grid: .transmissionTowerIcon
+            case .battery: .batteryHighIcon
+            case .gas: .fireIcon
             }
         }
 
@@ -27,15 +31,20 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             switch self {
             case .solar: L10n.Widgets.Energy.solar
             case .grid: L10n.Widgets.Energy.grid
+            case .battery: L10n.Widgets.Energy.battery
+            case .gas: L10n.Widgets.Energy.gas
             }
         }
 
-        /// Caption for the layouts wide enough to spell out what the figure covers. They summarise a
-        /// whole period, so the grid figure is that period's electricity total rather than "Grid".
-        var totalLabel: String {
+        /// Caption for the layouts wide enough to give a series its own wording. It reads the same
+        /// as ``label`` in English today, and has its own keys so a translation can shorten the
+        /// compact one without dragging the roomy one down with it.
+        var expandedLabel: String {
             switch self {
             case .solar: L10n.Widgets.Energy.solar
-            case .grid: L10n.Widgets.Energy.electricityTotal
+            case .grid: L10n.Widgets.Energy.electricity
+            case .battery: L10n.Widgets.Energy.battery
+            case .gas: L10n.Widgets.Energy.gas
             }
         }
 
@@ -43,6 +52,22 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             switch self {
             case .solar: WidgetEnergyStyle.solar
             case .grid: WidgetEnergyStyle.consumption
+            // The dashboard's battery total row is coloured by the discharge series, whichever way
+            // the period's net went, so a battery that took more than it gave doesn't turn pink.
+            case .battery: WidgetEnergyStyle.batteryOut
+            case .gas: WidgetEnergyStyle.gas
+            }
+        }
+
+        /// The series a source preference leads with, whether or not the server reports it yet.
+        /// `metrics(for:)` can only answer that once there is data; a layout with room for one
+        /// figure needs it before then, to show the right icon while waiting.
+        static func headline(for source: WidgetEnergySource) -> Kind {
+            switch source {
+            case .auto, .consumption: .grid
+            case .solar: .solar
+            case .battery: .battery
+            case .gas: .gas
             }
         }
 
@@ -52,6 +77,8 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             switch self {
             case .solar: .sunMaxFill
             case .grid: .boltFill
+            case .battery: .battery100percent
+            case .gas: .flameFill
             }
         }
     }
@@ -101,15 +128,21 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
         return "\(value) \(unit)"
     }
 
-    /// The series the entry's source preference asks for, in headline order (solar first), skipping
-    /// any the server doesn't report.
+    /// The series the entry's source preference asks for, in headline order — grid, solar, battery,
+    /// gas — skipping any the server doesn't report.
+    ///
+    /// The grid leads because it is the one series every energy dashboard has: a home may have no
+    /// panels, no battery and no gas meter, but if the widget shows anything at all it shows this.
+    /// It is also what the layouts with room for a single figure fall back to.
     static func metrics(
         for entry: WidgetEnergyEntry,
         figure: Figure = .livePowerOrTotals
     ) -> [WidgetEnergyMetric] {
         [
-            entry.source.showsSolar ? solar(for: entry, figure: figure) : nil,
             entry.source.showsGrid ? grid(for: entry, figure: figure) : nil,
+            entry.source.showsSolar ? solar(for: entry, figure: figure) : nil,
+            entry.source.showsBattery ? battery(for: entry, figure: figure) : nil,
+            entry.source.showsGas ? gas(for: entry) : nil,
         ].compactMap { $0 }
     }
 
@@ -124,9 +157,11 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     ) -> [WidgetEnergyMetric] {
         let metrics = metrics(for: entry, figure: figure)
         guard metrics.isEmpty else { return metrics }
+        // Only the two headline series stand in. Blanking battery and gas as well would claim this
+        // home has them, where solar and electricity are what any energy dashboard starts from.
         return [
-            entry.source.showsSolar ? placeholder(kind: .solar) : nil,
             entry.source.showsGrid ? placeholder(kind: .grid) : nil,
+            entry.source.showsSolar ? placeholder(kind: .solar) : nil,
         ].compactMap { $0 }
     }
 
@@ -177,5 +212,63 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
             )
         }
         return nil
+    }
+
+    static func battery(for entry: WidgetEnergyEntry, figure: Figure = .livePowerOrTotals) -> WidgetEnergyMetric? {
+        if figure == .livePowerOrTotals, let watts = entry.livePowerBattery {
+            // Live battery power is net: positive is discharging into the home, negative is
+            // charging — the same orientation as the period total below.
+            let power = WidgetEnergyStyle.power(watts)
+            return .init(
+                kind: .battery,
+                value: power.value,
+                unit: power.unit,
+                direction: WidgetEnergyStyle.direction(ofTotal: watts)
+            )
+        }
+        if let net = entry.batteryNet {
+            // Counted the way the dashboard's "Battery total" is: discharge positive, because a
+            // battery is read as something that supplies the home rather than as a bill.
+            return .init(
+                kind: .battery,
+                value: WidgetEnergyStyle.energy(net),
+                unit: WidgetEnergyStyle.energyUnit,
+                direction: WidgetEnergyStyle.direction(ofTotal: net)
+            )
+        }
+        return nil
+    }
+
+    /// Gas takes no `figure`: a gas meter's live reading is a flow rate in m³/h, which is not a
+    /// power, so there is no instantaneous figure for the compact layouts to prefer.
+    static func gas(for entry: WidgetEnergyEntry) -> WidgetEnergyMetric? {
+        guard let consumed = entry.gasConsumed else { return nil }
+        return .init(
+            kind: .gas,
+            value: WidgetEnergyStyle.quantity(consumed),
+            // Volume as often as energy, so the unit comes from the recorder rather than from here.
+            unit: entry.gasUnit ?? WidgetEnergyStyle.energyUnit,
+            direction: WidgetEnergyStyle.gridDirection(ofTotal: consumed)
+        )
+    }
+}
+
+@available(iOS 17, *)
+extension WidgetEnergyMetric {
+    /// The drawing half of the metric, for the design system's energy components.
+    ///
+    /// `usesExpandedLabel` picks the caption: the layouts with room for it get the series' own
+    /// wording, the compact ones the short form.
+    func designSystemModel(usesExpandedLabel: Bool = false) -> WidgetEnergyStatModel {
+        .init(
+            id: id,
+            icon: icon,
+            value: value,
+            unit: unit,
+            label: usesExpandedLabel ? kind.expandedLabel : label,
+            direction: direction,
+            color: color,
+            accessorySymbol: kind.accessorySymbol
+        )
     }
 }

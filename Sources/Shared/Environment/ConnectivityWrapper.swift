@@ -63,11 +63,56 @@ public class ConnectivityWrapper {
 
     private let stateLock = NSLock()
     private var cachedNetworkState = NetworkState()
+    private var lastPopulatedNetworkStateDate: Date?
+
+    private let notificationLock = NSLock()
+    private var lastNotifiedNetworkType: NetworkType?
+    private var lastNotifiedNetworkState: NetworkState?
+
+    private var pathUpdateTask: Task<Void, Never>?
 
     public func updateLastKnownNetworkState(_ state: NetworkState) {
         stateLock.lock()
         defer { stateLock.unlock() }
         cachedNetworkState = state
+        if state == NetworkState() {
+            // Deliberately resetting to no network leaves nothing for `emptyNetworkStateGrace` to hold on to.
+            lastPopulatedNetworkStateDate = nil
+        }
+    }
+
+    /// Applies a state a fetch actually returned, deciding whether to believe an empty result under the
+    /// same lock as the write: `currentNetworkState()` has many concurrent callers, and deciding against
+    /// one snapshot and writing against another lets an empty result overwrite a populated one that
+    /// landed in between. Returns what the caller should see, and whether the fetched state was dropped
+    /// in favour of the last-known one.
+    private func applyFetchedNetworkState(_ state: NetworkState) -> (state: NetworkState, keptLastKnown: Bool) {
+        guard state == NetworkState() else {
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            cachedNetworkState = state
+            lastPopulatedNetworkStateDate = Current.date()
+            return (state, false)
+        }
+
+        // On cellular there is genuinely no Wi-Fi to report, and switching to the external URL right
+        // away is the correct response to leaving the network. Read before taking the lock: it does not
+        // touch the cache, and the path monitor should not be called with `stateLock` held.
+        let isOnCellular = simpleNetworkType() == .cellular
+
+        stateLock.lock()
+        defer { stateLock.unlock() }
+
+        if !isOnCellular, let lastPopulated = lastPopulatedNetworkStateDate,
+           Current.date().timeIntervalSince(lastPopulated) < emptyNetworkStateGrace {
+            return (cachedNetworkState, true)
+        }
+
+        cachedNetworkState = state
+        // Believing an empty state leaves nothing for the grace to measure from, so the next empty read
+        // is believed straight away rather than preserving a cache that is already empty.
+        lastPopulatedNetworkStateDate = nil
+        return (state, false)
     }
 
     private func readLastKnownNetworkState() -> NetworkState {
@@ -76,9 +121,26 @@ public class ConnectivityWrapper {
         return cachedNetworkState
     }
 
+    /// When the last fetch that reported a network landed, which `emptyNetworkStateGrace` measures from.
+    /// Internal so tests can assert it never disagrees with the cache.
+    func lastPopulatedNetworkStateDateForTests() -> Date? {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return lastPopulatedNetworkStateDate
+    }
+
     /// Maximum time to await a network-info fetch before falling back to the last-known state.
     /// Overridable in tests.
     var networkFetchTimeout: TimeInterval = 3
+
+    /// How long a fetch that reports no network at all keeps deferring to the last-known state while
+    /// the device is not on cellular. `NEHotspotNetwork.fetchCurrent` reports nothing for reasons other
+    /// than being off Wi-Fi, most commonly a roam between access points on the same SSID, which leaves
+    /// the device with no readable network while it re-associates. Believing that flips the active URL
+    /// to the external one and reloads the whole frontend, then reloads it again once the read recovers.
+    /// Bounded rather than indefinite so a read that never recovers (location access denied, say) is
+    /// eventually believed. Overridable in tests.
+    var emptyNetworkStateGrace: TimeInterval = 60
 
     /// The underlying network-info fetch, before the timeout guard in `fetchNetworkState()`.
     /// Overridable in tests to simulate a fetch that never completes.
@@ -116,8 +178,11 @@ public class ConnectivityWrapper {
             return readLastKnownNetworkState()
         }
 
-        updateLastKnownNetworkState(state)
-        return state
+        let applied = applyFetchedNetworkState(state)
+        if applied.keptLastKnown {
+            Current.Log.info("network information came back unreadable; keeping last-known network state")
+        }
+        return applied.state
     }
 
     #if targetEnvironment(macCatalyst)
@@ -245,16 +310,52 @@ public class ConnectivityWrapper {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: NetworkReachability.didChangeNotification,
+            selector: #selector(networkPathDidUpdate(_:)),
+            name: NetworkReachability.pathDidUpdateNotification,
             object: nil
         )
         #endif
     }
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        Task { [weak self] in
-            await self?.refreshNetworkInformation()
+    @objc private func networkPathDidUpdate(_ note: Notification) {
+        // Path updates are posted on the main thread, so chaining onto the previous one here needs no
+        // further synchronization. Chaining keeps a burst of updates during a transition in order: a
+        // fetch can stay suspended for the length of the fetch timeout, and a newer one finishing first
+        // would otherwise be overwritten by an older, staler result.
+        let previousTask = pathUpdateTask
+        pathUpdateTask = Task { [weak self] in
+            await previousTask?.value
+            await self?.handleNetworkPathUpdate()
+        }
+    }
+
+    /// Refreshes network information for a path update and posts the connectivity-changed notification
+    /// when the network type or the Wi-Fi network the device is on actually changed.
+    ///
+    /// Moving straight from one Wi-Fi network to another keeps the network type at `.wifi`, so the path
+    /// update is the only signal that the cached SSID (and with it the internal/external URL decision)
+    /// no longer describes the network the device is on.
+    func handleNetworkPathUpdate() async {
+        await refreshNetworkInformation()
+        let networkState = lastKnownNetworkState()
+        let networkType = simpleNetworkType()
+
+        // Compared against what was last notified rather than against the cache as it was before the
+        // refresh: any other caller refreshing in the meantime would otherwise make the two equal and
+        // swallow the notification for a network that did change.
+        notificationLock.lock()
+        let didChange = networkState != lastNotifiedNetworkState || networkType != lastNotifiedNetworkType
+        lastNotifiedNetworkState = networkState
+        lastNotifiedNetworkType = networkType
+        notificationLock.unlock()
+
+        guard didChange else { return }
+
+        // Observers update SwiftUI state directly in `onReceive`, so the notification has to arrive on
+        // the main thread rather than on whichever thread the refresh finished on.
+        let notificationName = connectivityDidChangeNotification()
+        await MainActor.run {
+            NotificationCenter.default.post(name: notificationName, object: nil)
         }
     }
 }

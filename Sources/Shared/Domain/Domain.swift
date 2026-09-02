@@ -60,6 +60,13 @@ public enum Domain: String, CaseIterable {
     case weather
     case counter
     case timer
+    case aiTask = "ai_task"
+    case configurator
+    case imageProcessing = "image_processing"
+    case infrared
+    case plant
+    case radioFrequency = "radio_frequency"
+    case tag
 
     public init?(entityId: String) {
         let domainString = entityId.components(separatedBy: ".").first ?? ""
@@ -83,30 +90,7 @@ public enum Domain: String, CaseIterable {
 
         case unknown
         case unavailable
-
-        /// States that represent an "active" condition
-        public var isActive: Bool {
-            Domain.activeStates.contains(self)
-        }
     }
-
-    /// States that represent an "active" condition
-    /// such as for displaying accent color for entity tile icon
-    public static var activeStates: [State] = [
-        .on,
-        .open,
-        .unlocked,
-        .unlocking,
-        .locking,
-        .opening,
-        .closing,
-    ]
-
-    /// States that represent a "problem" condition
-    public static var problemStates: [State] = [
-        .jammed,
-        .unavailable,
-    ]
 
     public var states: [State] {
         var states: [State] = []
@@ -387,6 +371,20 @@ public enum Domain: String, CaseIterable {
             image = .counterIcon
         case .timer:
             image = .timerOutlineIcon
+        case .aiTask:
+            image = .starFourPointsIcon
+        case .configurator:
+            image = .cogIcon
+        case .imageProcessing:
+            image = .imageFilterFramesIcon
+        case .infrared:
+            image = .ledOnIcon
+        case .plant:
+            image = .flowerIcon
+        case .radioFrequency:
+            image = .radioTowerIcon
+        case .tag:
+            image = .tagOutlineIcon
         }
         return image
     }
@@ -545,7 +543,17 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentWeatherTitle
         case .timer:
             return CoreStrings.componentTimerTitle
-        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter:
+        case .aiTask:
+            return CoreStrings.componentAiTaskTitle
+        case .configurator:
+            return CoreStrings.componentConfiguratorTitle
+        case .imageProcessing:
+            return CoreStrings.componentImageProcessingTitle
+        case .plant:
+            return CoreStrings.componentPlantTitle
+        case .tag:
+            return CoreStrings.componentTagTitle
+        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter, .infrared, .radioFrequency:
             return rawValue
         }
     }
@@ -677,8 +685,7 @@ public extension Domain {
     static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
     /// Display order of the watch area screens' controllable entities, most commonly used domains
-    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
-    /// domain). Domains not listed sort last.
+    /// first, covering every watch-runnable domain. Domains not listed sort last.
     static let watchAreaControlsOrder: [Domain] = [
         .light,
         .switch,
@@ -705,16 +712,6 @@ public extension Domain {
         return index
     }
 
-    static let commonlyUsedWidgetSupported: [Domain] = [
-        .light,
-        .switch,
-        .cover,
-        .fan,
-        .inputBoolean,
-        .humidifier,
-        .valve,
-    ]
-
     static let sensorWidgetSupported: [Domain] = [
         .sensor,
         .binarySensor,
@@ -731,17 +728,6 @@ public extension Domain {
         .sun,
         .deviceTracker,
         .update,
-    ]
-
-    static let appDatabaseExcluded: [Domain] = [
-        .geoLocation,
-        .conversation,
-        .stt,
-        .tts,
-        .wakeWord,
-        .assistSatellite,
-        .notify,
-        .image,
     ]
 }
 
@@ -767,7 +753,8 @@ public extension Domain {
              .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
-             .weather, .counter, .timer:
+             .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,
+             .radioFrequency, .tag:
             return nil // Read-only or complex domains
         }
     }

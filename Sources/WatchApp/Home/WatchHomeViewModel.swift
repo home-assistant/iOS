@@ -733,6 +733,20 @@ final class WatchHomeViewModel: ObservableObject {
         }
     }
 
+    /// Whether the home screen actually renders area content — the inline area rows or the grouped
+    /// "Areas" navigation row. The empty state text is suppressed when this is true: with no
+    /// configured items the screen still has the areas to browse, so it isn't empty.
+    var showsAreasContent: Bool {
+        switch areasMode {
+        case .hidden:
+            return false
+        case let .inline(areas):
+            return !areas.isEmpty
+        case .grouped:
+            return groupedAreasDestination() != nil
+        }
+    }
+
     /// Where the grouped "Areas" row goes: straight to the single server's areas, or through the
     /// server picker when several servers have them.
     func groupedAreasDestination() -> WatchHomeNavigation? {

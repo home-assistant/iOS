@@ -14,7 +14,7 @@ struct WidgetSensors: Widget {
         ) { timelineEntry in
             WidgetBasicContainerView(
                 emptyViewGenerator: {
-                    AnyView(WidgetEmptyView(message: L10n.Widgets.Sensors.notConfigured))
+                    AnyView(WidgetEmptyStateView(message: L10n.Widgets.Sensors.notConfigured))
                 },
                 contents: timelineEntry.sensorData.map { sensor in
                     WidgetBasicViewModel(

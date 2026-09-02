@@ -177,6 +177,32 @@ public class AppEnvironment {
             $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
             $0.privacyLabel = L10n.privacyLabel
             $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+            $0.tipPrefix = L10n.Component.Tip.prefix
+            $0.dismissAlert = L10n.Component.Alert.dismiss
+            $0.removeChip = L10n.Component.Chip.remove
+            $0.previousPeriod = L10n.Component.EnergyPeriod.previous
+            $0.nextPeriod = L10n.Component.EnergyPeriod.next
+            $0.compareWithPreviousPeriod = L10n.Component.EnergyPeriod.compare
+            $0.moreInformation = L10n.Component.moreInformation
+            $0.clearValue = L10n.Component.TimeInput.clear
+            $0.never = L10n.Component.AbsoluteTime.never
+            $0.qrCode = L10n.Component.QrCode.label
+            $0.qrCodeFailed = L10n.Component.QrCode.failed
+            $0.retry = L10n.Component.QrScanner.retry
+            $0.enterCodeManually = L10n.Component.QrScanner.manualInput
+            $0.submit = L10n.Component.QrScanner.submit
+            $0.allDay = L10n.Component.Calendar.allDay
+            $0.showMore = L10n.Component.Distribution.showMore
+            $0.showLess = L10n.Component.Distribution.showLess
+            $0.previousTrack = L10n.Component.MediaControl.previous
+            $0.nextTrack = L10n.Component.MediaControl.next
+            $0.play = L10n.Component.MediaControl.play
+            $0.pause = L10n.Component.MediaControl.pause
+            $0.deleteDigit = L10n.Component.AlarmPanel.delete
+            $0.moreSaturation = L10n.Component.ColorPicker.moreSaturation
+            $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
+            $0.adjustLowerTarget = L10n.Component.CircularSlider.adjustLower
+            $0.adjustUpperTarget = L10n.Component.CircularSlider.adjustUpper
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 
@@ -441,6 +467,8 @@ public class AppEnvironment {
 
     public lazy var kiosk = KioskModeManager()
 
+    public lazy var appLabs = AppLabsStore()
+
     /// The current kiosk mode configuration. Always available, defaulting to a disabled
     /// configuration when nothing has been persisted yet.
     public var kioskSettings: KioskSettings { kiosk.settings }
@@ -455,9 +483,23 @@ public class AppEnvironment {
         print("⚠️ isTestFlight returns TRUE while debugging")
         return true
         #else
-        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        return AppEnvironment.isTestFlightReceipt()
         #endif
     }()
+
+    /// On iOS a TestFlight build gets a `sandboxReceipt` file. On Mac Catalyst the receipt is always
+    /// `_MASReceipt/receipt`, so the receipt type inside it (`ProductionSandbox` for TestFlight,
+    /// `Production` for the App Store) is what tells them apart; the payload is signed, not encrypted.
+    static func isTestFlightReceipt() -> Bool {
+        guard let url = Bundle.main.appStoreReceiptURL else { return false }
+        #if targetEnvironment(macCatalyst)
+        guard let receipt = try? Data(contentsOf: url),
+              let marker = "ProductionSandbox".data(using: .utf8) else { return false }
+        return receipt.range(of: marker) != nil
+        #else
+        return url.lastPathComponent == "sandboxReceipt"
+        #endif
+    }
 
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
@@ -554,7 +596,7 @@ public class AppEnvironment {
         )
 
         // Create a file log destination
-        let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        let isTestFlight = AppEnvironment.isTestFlightReceipt()
         let fileDestination = AutoRotatingFileDestination(
             writeToFile: logPath,
             identifier: "advancedLogger.fileDestination",

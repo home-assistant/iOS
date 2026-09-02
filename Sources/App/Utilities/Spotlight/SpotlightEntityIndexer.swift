@@ -3,6 +3,7 @@ import CoreSpotlight
 import CryptoKit
 import Foundation
 import Shared
+import UIKit
 
 /// Publishes the entities and calendars cached in the local database to Spotlight, so searching the
 /// system for an entity's name (or its area, device or server) finds it and opens its more-info
@@ -46,7 +47,12 @@ final class SpotlightEntityIndexer: ServerObserver {
     private let index = CSSearchableIndex(name: Constants.indexName)
     private let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
     private var databaseObserver: NSObjectProtocol?
+    private var backgroundObserver: NSObjectProtocol?
+    private var foregroundObserver: NSObjectProtocol?
     private var reindexTask: Task<Void, Never>?
+    /// Set when a pass was cancelled or deferred because the app left the foreground, so the next
+    /// foreground redoes it instead of waiting for another database update.
+    private var needsReindexOnForeground = false
 
     private init() {}
 
@@ -62,8 +68,46 @@ final class SpotlightEntityIndexer: ServerObserver {
                 self?.scheduleReindex(reason: "database updated")
             }
         }
+        // Catalyst is excluded like the rest of its lifecycle handling: it can sit in .background
+        // without a foreground transition ever following, which would defer the reindex forever.
+        if !Current.isCatalyst {
+            backgroundObserver = NotificationCenter.default.addObserver(
+                forName: UIApplication.didEnterBackgroundNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in
+                    self?.cancelPendingReindex()
+                }
+            }
+            foregroundObserver = NotificationCenter.default.addObserver(
+                forName: UIApplication.willEnterForegroundNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in
+                    self?.reindexAfterForegroundIfNeeded()
+                }
+            }
+        }
         Current.servers.add(observer: self)
         scheduleReindex(reason: "app launch")
+    }
+
+    /// A pass running while backgrounded reads the shared-container database with nothing keeping the
+    /// process alive, so a suspension mid-read is caught holding the SQLite file lock (0xdead10cc).
+    /// The index is only visible from Spotlight anyway, so the work can wait for the next foreground.
+    private func cancelPendingReindex() {
+        guard reindexTask != nil else { return }
+        reindexTask?.cancel()
+        reindexTask = nil
+        needsReindexOnForeground = true
+    }
+
+    private func reindexAfterForegroundIfNeeded() {
+        guard needsReindexOnForeground else { return }
+        needsReindexOnForeground = false
+        scheduleReindex(reason: "returned to foreground")
     }
 
     nonisolated func serversDidChange(_ serverManager: ServerManager) {
@@ -80,10 +124,23 @@ final class SpotlightEntityIndexer: ServerObserver {
             try? await Task.sleep(for: Constants.coalescingDelay)
             guard !Task.isCancelled else { return }
             await self?.reindex(reason: reason)
+            // Clear the finished pass so a background transition doesn't mistake it for pending
+            // work and re-arm a reindex. Cancellation is re-checked because a newer schedule may
+            // have replaced the stored task while this one was indexing; both run on the main
+            // actor, so the check and the clear can't interleave with a replacement.
+            guard !Task.isCancelled else { return }
+            self?.reindexTask = nil
         }
     }
 
     private func reindex(reason: String) async {
+        // A trigger fired while backgrounded (background refresh, servers changing) lands here with
+        // the coalescing delay already spent; defer it to the foreground instead of reading the
+        // database from an unprotected background process.
+        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+            needsReindexOnForeground = true
+            return
+        }
         let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value
         guard let snapshot else { return }
 

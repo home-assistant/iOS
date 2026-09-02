@@ -2,110 +2,172 @@ import Foundation
 import HADesignSystem
 import SwiftUI
 
+/// The color an entity's icon is drawn with, following home-assistant/frontend's tile card
+/// (`hui-tile-card`'s `_computeStateColor` plus the neutral defaults its stylesheet sets):
+///
+/// 1. a light's own color, when it reports one;
+/// 2. the `--state-…` palette for the entity's domain, device class and state — see
+///    ``EntityStateColor``;
+/// 3. `--state-icon-color` when active and `--state-inactive-color` when not, for the domains that
+///    take no state color at all (sensors, numbers, scripts, …).
 public enum EntityIconColorProvider {
-    /// Frontend state palette (`color.globals.ts` in home-assistant/frontend), for states that
-    /// have no domain accent or live color of their own.
-    public static let activeColor = Color(hex: "#FFC107") // --state-active-color (amber)
-    public static let lockLockedColor = Color(hex: "#4CAF50") // --state-lock-locked-color (green)
-    public static let lockUnlockedColor = Color(hex: "#F44336") // --state-lock-unlocked/jammed-color (red)
-    public static let lockTransitionColor = Color(hex: "#FF9800") // --state-lock-locking/unlocking-color (orange)
-
+    /// The color for an entity whose live color (if any) has already been resolved.
+    ///
+    /// - Parameters:
+    ///   - domain: the entity's own domain, lowercased.
+    ///   - deviceClass: the raw `device_class` attribute, if any.
+    ///   - state: the raw entity state; case is normalized here.
+    ///   - liveColor: the light's own color, from ``liveColor(domain:rgbColor:hsColor:)``.
+    ///   - groupMemberDomain: for a `group`, the single domain all its members share.
+    ///   - customColor: a color the user picked for this entity on this surface, which takes
+    ///     precedence over everything below it.
     public static func iconColor(
-        domain: Domain,
+        domain: String,
+        deviceClass: String? = nil,
         state: String,
-        colorMode: String?,
+        liveColor: Color? = nil,
+        groupMemberDomain: String? = nil,
+        customColor: Color? = nil
+    ) -> Color {
+        let normalizedState = state.lowercased()
+        let active = EntityStateActive.isActive(domain: domain, state: normalizedState)
+
+        // The tile card's `color` option: a picked color only applies while the entity is active,
+        // so an off light still reads as off.
+        if let customColor {
+            return active ? customColor : neutralColor(active: false)
+        }
+
+        // A light that is on shows its own color rather than the domain accent.
+        if active, let liveColor {
+            return liveColor
+        }
+
+        if let stateColor = EntityStateColor.color(
+            domain: domain,
+            deviceClass: deviceClass,
+            state: normalizedState,
+            groupMemberDomain: groupMemberDomain
+        ) {
+            return stateColor
+        }
+
+        return neutralColor(active: active)
+    }
+
+    /// The same, reading the device class, the light's color and a group's shared domain straight
+    /// out of the entity's attributes.
+    public static func iconColor(
+        domain: String,
+        state: String,
+        attributes: [String: Any]?,
+        customColor: Color? = nil
+    ) -> Color {
+        let colorAttributes = EntityColorAttributesParser.parse(from: attributes)
+        return iconColor(
+            domain: domain,
+            deviceClass: attributes?["device_class"] as? String,
+            state: state,
+            liveColor: liveColor(
+                domain: domain,
+                rgbColor: colorAttributes.rgbColor,
+                hsColor: colorAttributes.hsColor
+            ),
+            groupMemberDomain: domain == Domain.group.rawValue ? groupMemberDomain(attributes: attributes) : nil,
+            customColor: customColor
+        )
+    }
+
+    /// `computeGroupDomain`: the domain every member of a group shares, when they all share one.
+    public static func groupMemberDomain(attributes: [String: Any]?) -> String? {
+        guard let entityIds = attributes?["entity_id"] as? [String] else { return nil }
+        let domains = Set(entityIds.compactMap { $0.split(separator: ".").first.map(String.init) })
+        return domains.count == 1 ? domains.first : nil
+    }
+
+    /// What the tile card falls back to when a domain has no state color of its own:
+    /// `--state-icon-color` while active, `--state-inactive-color` otherwise.
+    public static func neutralColor(active: Bool) -> Color {
+        active ? FrontendColors.stateIconColor.color : FrontendColors.stateInactiveColor.color
+    }
+
+    /// A light's own color, contrast-adjusted the way the tile card does before painting with it:
+    /// nearly unsaturated colors are pushed to 40% saturation, and a white light is dimmed instead,
+    /// so a "white" bulb doesn't render as an invisible icon.
+    ///
+    /// `nil` for every other domain, and for a light that reports no color at all.
+    public static func liveColor(
+        domain: String,
         rgbColor: [Int]?,
         hsColor: [Double]?
-    ) -> Color {
-        // Locks carry their own per-state palette in the frontend; match it before the generic
-        // active/inactive handling ("locked" isn't an active state and would come out gray).
-        if domain == .lock, let lockState = Domain.State(rawValue: state),
-           let lockColor = lockColor(for: lockState) {
-            return lockColor
-        }
-
-        guard Domain.activeStates.map(\.rawValue).contains(state) else {
-            if Domain.problemStates.map(\.rawValue).contains(state) {
-                return .red
-            } else {
-                return .gray
-            }
-        }
-
-        // Check color_mode first if available to prioritize the correct attribute
-        if let colorMode {
-            switch colorMode {
-            case "rgb", "rgbw", "rgbww":
-                if let rgb = rgbColor, rgb.count == 3 {
-                    return Color(
-                        red: Double(rgb[0]) / 255.0,
-                        green: Double(rgb[1]) / 255.0,
-                        blue: Double(rgb[2]) / 255.0
-                    )
-                }
-            case "hs":
-                if let hs = hsColor, hs.count == 2 {
-                    return Color(hue: hs[0] / 360.0, saturation: hs[1] / 100.0, brightness: 1.0)
-                }
-            case "xy", "color_temp":
-                // Home Assistant usually provides rgb_color approximation for xy and color_temp
-                if let rgb = rgbColor, rgb.count == 3 {
-                    return Color(
-                        red: Double(rgb[0]) / 255.0,
-                        green: Double(rgb[1]) / 255.0,
-                        blue: Double(rgb[2]) / 255.0
-                    )
-                }
-            default:
-                break
-            }
-        }
-
-        // Fallback or if color_mode is missing
-        if let rgb = rgbColor, rgb.count == 3 {
-            return Color(
-                red: Double(rgb[0]) / 255.0,
-                green: Double(rgb[1]) / 255.0,
-                blue: Double(rgb[2]) / 255.0
-            )
-        }
-
-        if let hs = hsColor, hs.count == 2 {
-            return Color(hue: hs[0] / 360.0, saturation: hs[1] / 100.0, brightness: 1.0)
-        }
-
-        return domain.accentColor
-    }
-
-    private static func lockColor(for state: Domain.State) -> Color? {
-        switch state {
-        case .locked:
-            return lockLockedColor
-        case .unlocked, .jammed, .open:
-            return lockUnlockedColor
-        case .locking, .unlocking, .opening:
-            return lockTransitionColor
-        default:
-            // Unknown/unavailable fall through to the generic handling.
+    ) -> Color? {
+        guard domain == Domain.light.rawValue else { return nil }
+        guard let rgb = rgbComponents(rgbColor: rgbColor, hsColor: hsColor) else {
             return nil
         }
-    }
-}
 
-public extension Domain {
-    var accentColor: Color {
-        switch self {
-        case .light:
-            Color.Domain.light
-        case .switch:
-            Color.Domain.switch
-        case .fan:
-            Color.Domain.fan
-        case .cover:
-            Color.Domain.cover
-        default:
-            // The frontend's generic active color (--state-active-color).
-            EntityIconColorProvider.activeColor
+        let adjusted = contrastAdjusted(rgb)
+        return Color(
+            .sRGB,
+            red: adjusted[0] / 255,
+            green: adjusted[1] / 255,
+            blue: adjusted[2] / 255
+        )
+    }
+
+    private static func rgbComponents(rgbColor: [Int]?, hsColor: [Double]?) -> [Double]? {
+        // `rgb_color` is the only attribute the frontend reads, and Home Assistant fills it in for
+        // every color mode. `hs_color` is a fallback for the rare light that reports hue and
+        // saturation without the RGB approximation.
+        if let rgbColor, rgbColor.count == 3 {
+            return rgbColor.map(Double.init)
         }
+        if let hsColor, hsColor.count == 2 {
+            return hsv2rgb([hsColor[0], hsColor[1] / 100, 255])
+        }
+        return nil
+    }
+
+    private static func contrastAdjusted(_ rgb: [Double]) -> [Double] {
+        var hsv = rgb2hsv(rgb)
+        if hsv[1] < 0.4 {
+            if hsv[1] < 0.1 {
+                // Special case for a very light color (e.g. white): darken it instead.
+                hsv[2] = 225
+            } else {
+                hsv[1] = 0.4
+            }
+        }
+        return hsv2rgb(hsv)
+    }
+
+    /// `rgb2hsv` from `common/color/convert-color.ts`: hue in degrees, saturation 0-1, value 0-255.
+    static func rgb2hsv(_ rgb: [Double]) -> [Double] {
+        let (red, green, blue) = (rgb[0], rgb[1], rgb[2])
+        let value = max(red, green, blue)
+        let chroma = value - min(red, green, blue)
+
+        var hue: Double = 0
+        if chroma != 0 {
+            if value == red {
+                hue = (green - blue) / chroma
+            } else if value == green {
+                hue = 2 + (blue - red) / chroma
+            } else {
+                hue = 4 + (red - green) / chroma
+            }
+        }
+
+        return [60 * (hue < 0 ? hue + 6 : hue), value == 0 ? 0 : chroma / value, value]
+    }
+
+    /// `hsv2rgb` from `common/color/convert-color.ts`.
+    static func hsv2rgb(_ hsv: [Double]) -> [Double] {
+        let (hue, saturation, value) = (hsv[0], hsv[1], hsv[2])
+        func component(_ n: Double) -> Double {
+            let k = (n + hue / 60).truncatingRemainder(dividingBy: 6)
+            return value - value * saturation * max(min(k, 4 - k, 1), 0)
+        }
+        return [component(5), component(3), component(1)]
     }
 }

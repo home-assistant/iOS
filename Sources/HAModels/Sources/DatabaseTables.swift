@@ -23,6 +23,7 @@ public enum GRDBDatabaseTable: String {
     case assistConfiguration
     case allowedTags
     case kioskSettings
+    case appLabsFeatureState
     case notificationSnoozeAction
     // Legacy (ClockKit-era) watch complications, migrated off Realm.
     case watchComplication
@@ -234,6 +235,7 @@ public enum DatabaseTables {
         case entityDisplayName
         case iconName
         case iconColor
+        case textColor
         case gaugeAttribute
         case valueAttribute
         case valuePrecision
@@ -280,6 +282,12 @@ public enum DatabaseTables {
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver
+    }
+
+    // App Labs feature flags. Column names must match `AppLabsFeatureState`'s stored properties.
+    public enum AppLabsFeatureState: String, CaseIterable {
+        case id
+        case isEnabled
     }
 
     public enum AppZone: String, CaseIterable {

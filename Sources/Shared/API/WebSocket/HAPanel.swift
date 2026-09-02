@@ -19,6 +19,9 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
     /// `default_visible` from core 2026.3+, `nil` on older servers. Sidebar visibility is stored per
     /// user in the frontend, so this is only the default that the sidebar starts from.
     public var defaultVisible: Bool?
+    /// The `title` exactly as the server sent it; `nil` when the server sent none. The frontend hides
+    /// untitled panels from its sidebar, so keep the distinction that `title`'s fallback erases.
+    public var rawTitle: String?
 
     public init(data: HAData) throws {
         let component: String = try data.decode("component_name")
@@ -39,7 +42,9 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
 
         // Servers before 2026.3 don't send a title for dashboards hidden from the sidebar; the
         // frontend falls back to the path for those, which reads better than the component name.
-        let title: String = data.decode("title", fallback: path)
+        let rawTitle: String? = try? data.decode("title")
+        self.rawTitle = rawTitle
+        let title = rawTitle ?? path
 
         let possibleFrontendKey: String
         if path == "lovelace" {
@@ -57,7 +62,8 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
         path: String,
         component: String,
         showInSidebar: Bool,
-        defaultVisible: Bool? = nil
+        defaultVisible: Bool? = nil,
+        rawTitle: String? = nil
     ) {
         self.icon = icon
         self.title = title
@@ -65,6 +71,7 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
         self.component = component
         self.showInSidebar = showInSidebar
         self.defaultVisible = defaultVisible
+        self.rawTitle = rawTitle
     }
 }
 

@@ -427,11 +427,30 @@ class IncomingURLHandler {
         switch action {
         case .default:
             return nil
+        case .toggle:
+            // Running the item already performs its domain's main action, so there is nothing to
+            // override here — falling through keeps the confirmation overlay and error handling.
+            return nil
         case .moreInfoDialog:
             if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
                 _ = handle(url: url)
             }
             return .value(())
+        case let .url(urlString):
+            guard let url = ItemAction.resolvedURL(from: urlString) else {
+                Current.Log.error("App Icon Shortcut url action has no usable URL: \(urlString)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            // The app's own deep links are handled in place; everything else belongs to whichever
+            // app owns the scheme, the way the frontend hands a `url` action to the browser.
+            if let scheme = url.scheme, AppConstants.deeplinkSchemes.contains(scheme) {
+                _ = handle(url: url)
+            } else {
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+            }
+            return .value(())
+        case let .performAction(serverId, actionId, payload):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
         case let .navigate(path):
             if let url = AppConstants.navigateDeeplinkURL(
                 path: path,
@@ -469,6 +488,53 @@ class IncomingURLHandler {
         case .nothing:
             return .value(())
         }
+    }
+
+    /// Calls `domain.service` with the action's stored JSON payload — the same work
+    /// `PerformActionAppIntent` does for Shortcuts, reached through the transport-agnostic API it
+    /// itself calls, since an app icon shortcut runs in the app rather than through App Intents.
+    private func performAction(serverId: String, actionId: String, payload: String) -> Promise<Void> {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+            Current.Log.error("Failed to get server for App Icon Shortcut perform action id: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+        let components = actionId.split(separator: ".")
+        guard components.count == 2 else {
+            Current.Log.error("App Icon Shortcut perform action id is not domain.service: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+
+        return Promise { seal in
+            Task {
+                do {
+                    _ = try await AppIntentServerAPI.callAction(
+                        server: server,
+                        domain: String(components[0]),
+                        service: String(components[1]),
+                        data: Self.actionPayload(from: payload),
+                        returnResponse: false
+                    )
+                    seal.fulfill(())
+                } catch {
+                    Current.Log.error(
+                        "Failed to execute App Icon Shortcut perform action id: \(actionId), error: \(error)"
+                    )
+                    seal.reject(error)
+                }
+            }
+        }
+    }
+
+    /// The action's data, as the JSON object the user typed. Anything unparseable sends no data
+    /// rather than failing the run — the same tolerance the payload field's default `{}` implies.
+    private static func actionPayload(from payload: String) -> [String: Any] {
+        let trimmed = payload.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [:] }
+        guard let object = try? JSONSerialization.jsonObject(with: Data(trimmed.utf8)) as? [String: Any] else {
+            Current.Log.error("App Icon Shortcut perform action payload is not a JSON object, sending no data")
+            return [:]
+        }
+        return object
     }
 
     /// Clears whatever is on screen — SwiftUI sheets included — before handing the frontend to `present`.

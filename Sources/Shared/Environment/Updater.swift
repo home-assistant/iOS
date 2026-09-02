@@ -6,7 +6,6 @@ public struct AvailableUpdate: Codable, Comparable {
     public var htmlUrl: URL
     public var tagName: String
     public var name: String
-    public var body: String
     public var prerelease: Bool
 
     var version: Version {

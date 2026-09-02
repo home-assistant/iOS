@@ -340,12 +340,29 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// `registryEntities` precision slice is upserted (not wiped) so a v1 payload doesn't disturb
     /// registry rows a v2 sync delivered; a carried full `registry` replaces the table outright.
     public func apply() throws {
-        try Current.database().write { db in
+        let counts = try Current.database().write { db -> [String: Int] in
             try applyReferenceTables(in: db)
             try applySettingsTables(in: db)
             try applyComplicationTables(in: db, includeRegistryRows: true)
+            // Counting is only for the log line below, so a failing count must never roll the
+            // applied rows back.
+            return (try? Self.mirroredRowCounts(in: db)) ?? [:]
         }
-        logApplyOutcome()
+        logApplyOutcome(counts: counts)
+    }
+
+    /// Counted inside the apply's own transaction: a second one costs the watch another database
+    /// access — through the suspension machinery — inside the same background budget the apply is
+    /// already spending.
+    private static func mirroredRowCounts(in db: Database) throws -> [String: Int] {
+        try [
+            "entities": HAAppEntity.fetchCount(db),
+            "areas": AppArea.fetchCount(db),
+            "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
+            "devices": AppDeviceRegistry.fetchCount(db),
+            "pipelines": AssistPipelines.fetchCount(db),
+            "notificationSnoozeActions": NotificationSnoozeAction.fetchCount(db),
+        ]
     }
 
     /// Record which tables a payload actually carried and what the database holds afterwards.
@@ -354,18 +371,8 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// retained the rest", and an apply that logs success can still leave a table empty — which is
     /// exactly the shape of the sync problems seen on device. Logging both ends of the operation
     /// makes a watch log enough on its own to tell which side lost the data.
-    private func logApplyOutcome() {
+    private func logApplyOutcome(counts: [String: Int]) {
         let carried = carriedDigestKeys.sorted().joined(separator: "+")
-        let counts = (try? Current.database().read { db in
-            try [
-                "entities": HAAppEntity.fetchCount(db),
-                "areas": AppArea.fetchCount(db),
-                "registry": EntityRegistryListForDisplay.Entity.fetchCount(db),
-                "devices": AppDeviceRegistry.fetchCount(db),
-                "pipelines": AssistPipelines.fetchCount(db),
-                "notificationSnoozeActions": NotificationSnoozeAction.fetchCount(db),
-            ]
-        }) ?? [:]
         let rows = counts.keys.sorted().map { "\($0)=\(counts[$0] ?? 0)" }.joined(separator: " ")
         Current.Log.info("Applied mirror carrying [\(carried.isEmpty ? "nothing" : carried)]; rows now \(rows)")
     }
@@ -448,11 +455,17 @@ public struct WatchDatabaseMirror: WatchCodable {
     // MARK: - Delta sync digests
 
     /// Opaque per-table digests of this snapshot, generated and compared ONLY on the phone
-    /// (property-list encoding isn't guaranteed byte-stable across devices, so the watch never
-    /// computes these — it stores the map verbatim and echoes it on the next sync request).
+    /// (the encoding isn't guaranteed byte-stable across devices, so the watch never computes
+    /// these — it stores the map verbatim and echoes it on the next sync request).
     /// A group that is `nil` produces no digest, can never "match", and is always carried.
+    ///
+    /// Because these bytes never leave the phone, the encoding is free to be the fast one rather
+    /// than the payload's property list: fingerprinting every table on each push cost about as
+    /// much CPU as building the payload itself.
     public func tableDigests() -> [String: String] {
-        let encoder = PropertyListEncoder()
+        let encoder = with(JSONEncoder()) {
+            $0.outputFormatting = [.sortedKeys]
+        }
         var digests: [String: String] = [:]
         if let entities, let data = try? encoder.encode(entities) {
             digests["entities"] = Self.digest(of: [data])

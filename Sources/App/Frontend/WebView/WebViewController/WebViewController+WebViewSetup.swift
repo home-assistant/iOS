@@ -13,6 +13,17 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
         userContentController.add(safeScriptMessageHandler, name: "logError")
+        userContentController.add(safeScriptMessageHandler, name: "frontendRestored")
+
+        // Route clipboard writes through the native bridge so iframe calls update the pasteboard reliably.
+        // Install it in every frame so ingress panels use the same path and receive the native result.
+        userContentController.addScriptMessageHandler(
+            ClipboardWriteMessageHandler(server: server),
+            contentWorld: .page,
+            name: ClipboardWriteMessageHandler.messageName
+        )
+        userContentController.addUserScript(ClipboardWriteMessageHandler.userScript)
+
         return userContentController
     }
 
@@ -60,7 +71,11 @@ extension WebViewController {
             // re-resolved from current connectivity at load time (see `resolvedLoadURL`).
             Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
             if let components = URLComponents(url: cleanURL, resolvingAgainstBaseURL: false) {
-                var relative = components.path.isEmpty ? "/" : components.path
+                let path = components.path.isEmpty ? "/" : components.path
+                Task { @MainActor [weak overlayState] in
+                    overlayState?.currentPath = path
+                }
+                var relative = path
                 if let query = components.query {
                     relative += "?\(query)"
                 }

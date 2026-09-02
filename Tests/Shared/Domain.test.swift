@@ -63,6 +63,13 @@ struct DomainTests {
             .weather: "weather",
             .counter: "counter",
             .timer: "timer",
+            .aiTask: "ai_task",
+            .configurator: "configurator",
+            .imageProcessing: "image_processing",
+            .infrared: "infrared",
+            .plant: "plant",
+            .radioFrequency: "radio_frequency",
+            .tag: "tag",
         ]
 
         #expect(
@@ -309,8 +316,7 @@ struct DomainMappingTests {
 }
 
 struct MagicItemWidgetInteractionTests {
-    private func interactionKind(forEntityId id: String) -> String {
-        let item = MagicItem(id: id, serverId: "server-1", type: .entity)
+    private func interactionKind(for item: MagicItem) -> String {
         guard case let .appIntent(intent) = item.widgetInteractionType else {
             return "widgetURL"
         }
@@ -319,8 +325,19 @@ struct MagicItemWidgetInteractionTests {
         case .press: return "press"
         case .activate: return "activate"
         case .script: return "script"
+        case .performAction: return "performAction"
         case .refresh: return "refresh"
         }
+    }
+
+    private func interactionKind(forEntityId id: String) -> String {
+        interactionKind(for: MagicItem(id: id, serverId: "server-1", type: .entity))
+    }
+
+    /// `openEntityDeeplinkURL` needs widget authenticity, which isn't available in every test
+    /// environment, so a more-info route is either the deeplink or the `refresh` no-op fallback.
+    private func isMoreInfoRoute(_ kind: String) -> Bool {
+        kind == "widgetURL" || kind == "refresh"
     }
 
     @Test func widgetInteractionRoutesByMainAction() {
@@ -330,8 +347,48 @@ struct MagicItemWidgetInteractionTests {
         #expect(interactionKind(forEntityId: "scene.movie") == "activate")
         #expect(interactionKind(forEntityId: "script.open_gate") == "activate")
         #expect(interactionKind(forEntityId: "automation.wakeup") == "toggle")
-        let readOnly = interactionKind(forEntityId: "sensor.temperature")
-        #expect(readOnly == "widgetURL" || readOnly == "refresh")
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "sensor.temperature")))
+    }
+
+    /// Widgets render entities of every domain, so a domain without a single main action must still
+    /// route somewhere — its more-info dialog in the web view — rather than producing an inert tile.
+    @Test func domainsWithoutMainActionOpenMoreInfo() {
+        for domain in Domain.allCases where domain.mainAction == nil {
+            let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
+            #expect(isMoreInfoRoute(kind), "Domain.\(domain) should open more-info, got \(kind)")
+        }
+    }
+
+    /// Entities from custom integrations have domains this enum doesn't model; they still have a
+    /// more-info dialog, so they get the same route as any other non-actionable entity.
+    @Test func unmodeledDomainEntityOpensMoreInfo() {
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "some_custom_integration.thing")))
+    }
+
+    /// Non-entity items keyed by a UUID have no entity id to open, so they stay a no-op.
+    @Test func nonEntityItemWithoutDomainDoesNothing() {
+        let folder = MagicItem(id: "9C4E0A2E-0000-0000-0000-000000000000", serverId: "server-1", type: .folder)
+        #expect(interactionKind(for: folder) == "refresh")
+    }
+
+    /// An explicit action override is resolved before the domain, so it applies to entities whose
+    /// domain isn't modeled here too.
+    @Test func actionOverrideWinsOverUnmodeledDomain() {
+        let doNothing = MagicItem(
+            id: "some_custom_integration.thing",
+            serverId: "server-1",
+            type: .entity,
+            action: .nothing
+        )
+        #expect(interactionKind(for: doNothing) == "refresh")
+
+        let runScript = MagicItem(
+            id: "some_custom_integration.thing",
+            serverId: "server-1",
+            type: .entity,
+            action: .runScript("server-1", "script.open_gate")
+        )
+        #expect(interactionKind(for: runScript) == "activate")
     }
 }
 
@@ -447,24 +504,12 @@ struct DomainFeatureSupportTests {
         }
     }
 
-    @Test func commonlyUsedWidgetSupportedMembership() {
-        let expected: Set<Domain> = [.light, .switch, .cover, .fan, .inputBoolean, .humidifier, .valve]
-        #expect(Set(Domain.commonlyUsedWidgetSupported) == expected, "Domain.commonlyUsedWidgetSupported changed")
-    }
-
     @Test func sensorWidgetSupportedMembership() {
         let expected: Set<Domain> = [
             .sensor, .binarySensor, .inputBoolean, .person, .lock, .number, .inputNumber,
             .inputText, .inputSelect, .select, .climate, .weather, .sun, .deviceTracker, .update,
         ]
         #expect(Set(Domain.sensorWidgetSupported) == expected, "Domain.sensorWidgetSupported membership changed")
-    }
-
-    @Test func appDatabaseExcludedMembership() {
-        let expected: Set<Domain> = [
-            .geoLocation, .conversation, .stt, .tts, .wakeWord, .assistSatellite, .notify, .image,
-        ]
-        #expect(Set(Domain.appDatabaseExcluded) == expected, "Domain.appDatabaseExcluded membership changed")
     }
 
     @Test func groupsHaveNoDuplicates() {
@@ -474,29 +519,10 @@ struct DomainFeatureSupportTests {
             ("watchDisplayOnly", Domain.watchDisplayOnly),
             ("watchAddable", Domain.watchAddable),
             ("controlScreenDomains", Domain.controlScreenDomains),
-            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-            ("appDatabaseExcluded", Domain.appDatabaseExcluded),
         ]
         for (name, group) in groups {
             #expect(group.count == Set(group).count, "\(name) contains duplicate domains")
-        }
-    }
-
-    @Test func supportedDomainsAreNotExcludedFromPersistence() {
-        let excluded = Set(Domain.appDatabaseExcluded)
-        let featureLists: [(String, [Domain])] = [
-            ("carPlaySupported", Domain.carPlaySupported),
-            ("watchSupported", Domain.watchSupported),
-            ("watchAddable", Domain.watchAddable),
-            ("controlScreenDomains", Domain.controlScreenDomains),
-            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
-            ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-        ]
-        for (name, list) in featureLists {
-            for domain in list {
-                #expect(!excluded.contains(domain), "\(name) domain \(domain) must not be in appDatabaseExcluded")
-            }
         }
     }
 }

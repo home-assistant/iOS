@@ -41,7 +41,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "frontend/reload_and_clear_cache"
         )
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 25)
+        XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
+
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 26)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -67,7 +69,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "kiosk_mode/set"
         )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 9)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
@@ -76,6 +80,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
         let expectedKeys: Set<String> = [
             "hasSettingsScreen",
+            "hasSidebar",
             "canWriteTag",
             "canCommissionMatter",
             "hasMatterStatusReport",
