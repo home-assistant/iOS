@@ -17,7 +17,6 @@ struct MacSidebarRow: View {
         static let rowHeight: CGFloat = 32
         static let pinnedRowHeight: CGFloat = 40
         static let selectedFillOpacity: CGFloat = 0.12
-        static let hoverFillOpacity: CGFloat = 0.06
         static let badgeMinWidth: CGFloat = 28
     }
 
@@ -77,7 +76,7 @@ struct MacSidebarRow: View {
             .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one, style: .continuous)
-                    .fill(Color.primary.opacity(fillOpacity))
+                    .fill(fillColor)
             )
             .contentShape(Rectangle())
         }
@@ -85,13 +84,14 @@ struct MacSidebarRow: View {
         .onHover { isHovering = $0 }
     }
 
-    private var fillOpacity: CGFloat {
+    /// Hover uses the frontend's translucent primary tint so the sidebar reads like the web one.
+    private var fillColor: Color {
         if isSelected {
-            return Constants.selectedFillOpacity
+            return Color.primary.opacity(Constants.selectedFillOpacity)
         } else if isHovering {
-            return Constants.hoverFillOpacity
+            return FrontendColors.haButtonPrimaryLightColor.color
         } else {
-            return 0
+            return .clear
         }
     }
 }
