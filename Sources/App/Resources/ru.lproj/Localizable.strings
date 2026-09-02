@@ -2786,7 +2786,6 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Показывайте свою панель управления энергопотреблением одним взглядом.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "Всего электроэнергии";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Сетка";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";

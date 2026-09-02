@@ -2787,7 +2787,6 @@ Companion 應用程式相關資料以獲得更詳細資訊。";
 "widgets.energy.battery" = "電池";
 "widgets.energy.description" = "一目了然的查看您的能源儀表板。";
 "widgets.energy.electricity" = "電網";
-"widgets.energy.electricity_total" = "電力總計";
 "widgets.energy.gas" = "瓦斯";
 "widgets.energy.grid" = "電網";
 "widgets.energy.no_connection" = "無法連線，請檢查您的 Home Assistant 網址設定";

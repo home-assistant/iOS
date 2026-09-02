@@ -2784,7 +2784,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.battery" = "배터리";
 "widgets.energy.description" = "에너지 대시보드를 한눈에 확인하세요.";
 "widgets.energy.electricity" = "전력망";
-"widgets.energy.electricity_total" = "전력 총계";
 "widgets.energy.gas" = "가스";
 "widgets.energy.grid" = "전력망";
 "widgets.energy.no_connection" = "연결할 수 없습니다. Home Assistant URL 구성을 확인하세요.";

@@ -2786,7 +2786,6 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
 "widgets.energy.electricity" = "Grid";
-"widgets.energy.electricity_total" = "Electricity total";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Şebeke";
 "widgets.energy.no_connection" = "Bağlantı yok, Home Assistant URL yapılandırmanızı gözden geçirin";

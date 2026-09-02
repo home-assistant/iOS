@@ -2786,7 +2786,6 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.energy.battery" = "Baterie";
 "widgets.energy.description" = "Zobrazí ovládací panel Energie.";
 "widgets.energy.electricity" = "Síť";
-"widgets.energy.electricity_total" = "Celkem elektřina";
 "widgets.energy.gas" = "Plyn";
 "widgets.energy.grid" = "Síť";
 "widgets.energy.no_connection" = "Není k dispozici žádné připojení, zkontrolujte nastavení URL Home Assistanta";
