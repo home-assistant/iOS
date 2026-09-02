@@ -25,17 +25,18 @@ struct WidgetsBundle17: WidgetBundle {
             HALiveActivityConfiguration()
         }
         #endif
+        WidgetEntities()
+        WidgetEnergy()
         WidgetCommonlyUsedEntities()
-        WidgetCustom()
-        WidgetAssist()
-        WidgetTodoList()
         WidgetCalendar()
         WidgetOpenPage()
+        WidgetCustom()
+        WidgetTodoList()
+        WidgetAssist()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
-        WidgetEnergy()
     }
 }
 
@@ -64,16 +65,17 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenEntity()
         ControlOpenCamera()
         // Widgets
+        WidgetEntities()
+        WidgetEnergy()
         WidgetCommonlyUsedEntities()
-        WidgetCustom()
-        WidgetAssist()
-        WidgetTodoList()
         WidgetCalendar()
         WidgetOpenPage()
+        WidgetCustom()
+        WidgetTodoList()
+        WidgetAssist()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
         WidgetScripts()
-        WidgetEnergy()
     }
 }
