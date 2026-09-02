@@ -115,6 +115,11 @@ public extension ShapeStyle where Self == Color {
         )
     }
 
+    /// The frontend's `--ha-button-primary-light-color` (`#4082a040`): a translucent primary tint for
+    /// hover states. The frontend declares it once, in its dark theme block, so it is the same in
+    /// both appearances here too.
+    static var haPrimaryLightFill: Color { srgb(0x40, 0x82, 0xA0, opacity: 0x40 / 255) }
+
     /// The frontend's `--disabled-color`: the unfilled part of a control's track, and the fill of a
     /// control that is off. The `ha-control-*` components draw it at 20%.
     static var haDisabled: Color {

@@ -92,7 +92,7 @@ struct MacSidebarView: View {
             }
             .background(.bar)
         }
-        .background(Color(uiColor: .secondarySystemBackground).ignoresSafeArea())
+        .background(Color(uiColor: .systemBackground).ignoresSafeArea())
         .onAppear { viewModel.start() }
         .onDisappear { viewModel.stop() }
     }
