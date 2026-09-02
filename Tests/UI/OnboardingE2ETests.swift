@@ -128,6 +128,15 @@ final class OnboardingE2ETests: XCTestCase {
     }
 
     private func openNativeSettingsFromFrontend() {
+        // Relaunched because asking the frontend for the settings screen in the same session that just
+        // onboarded crashes the app: SwiftUI raises an unexpected error from
+        // `NavigationColumnState.boundPathChange` the moment `AppSettingsPresenter.pushPath` gains its
+        // first element. Onboarding runs its own `NavigationStack` inside the container's, and the
+        // container's stack does not survive that nesting. Reproduces on iOS 26.5 and iOS 27; a
+        // relaunched app pushes the same screen without complaint.
+        app.terminate()
+        app.launch()
+
         tapWebElement(labelContaining: "sidebar toggle", timeout: Timeout.frontend, "frontend sidebar toggle")
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
