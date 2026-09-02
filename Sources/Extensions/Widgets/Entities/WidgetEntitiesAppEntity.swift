@@ -64,6 +64,12 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
         self.icon = icon
     }
 
+    /// Whether the row has somewhere to say the entity is — an area or a device — rather than only
+    /// its entity id on the context line.
+    var hasContext: Bool {
+        areaName?.isEmpty == false || deviceName?.isEmpty == false
+    }
+
     /// The item the widget renders and acts on for this pick.
     var magicItem: MagicItem {
         MagicItem(id: entityId, serverId: serverId, type: .entity)

@@ -23,21 +23,23 @@ struct WidgetEntitiesAppEntityQueryTests {
     }
 
     /// Without a search the picker lists each server's entities by name, with the area the entity
-    /// belongs to on its context line.
+    /// belongs to on its context line — and the entities that have no area or device to show, whose
+    /// context line would only repeat their id, after all of the ones that do.
     @available(iOS 17, *)
-    @Test func entitiesAreListedByNameWithTheirArea() async throws {
+    @Test func entitiesAreListedByNameWithTheirAreaAndContextlessOnesLast() async throws {
         try await withSeededDatabase {
             let query = WidgetEntitiesAppEntityQuery()
 
             let perServer = query.entitiesPerServer()
 
             #expect(perServer.map(\.0.identifier.rawValue) == ["A", "B"])
-            #expect(perServer[0].1.map(\.displayString) == ["Kitchen light", "Porch", "Temperature"])
+            #expect(perServer[0].1.map(\.displayString) == ["Kitchen light", "Temperature", "Porch"])
             #expect(perServer[0].1.first?.areaName == "Kitchen")
             #expect(perServer[0].1.first?.icon == "mdi:lightbulb-group")
-            // No icon of its own and no frontend default, so the domain's icon stands in.
-            #expect(perServer[0].1.last?.icon == Domain.sensor.icon().name)
             #expect(perServer[0].1.first?.contextSubtitle?.contains("Kitchen") == true)
+            // No icon of its own and no frontend default, so the domain's icon stands in.
+            #expect(perServer[0].1[1].icon == Domain.sensor.icon().name)
+            #expect(perServer[0].1.last?.hasContext == false)
             #expect(perServer[1].1.map(\.entityId) == ["light.office"])
         }
     }
@@ -81,6 +83,7 @@ struct WidgetEntitiesAppEntityQueryTests {
 
         #expect(pick.magicItem == MagicItem(id: "light.kitchen", serverId: "A", type: .entity))
         #expect(pick.contextSubtitle == "light.kitchen")
+        #expect(!pick.hasContext)
         #expect(pick.displayRepresentation.image != nil)
     }
 
@@ -98,7 +101,7 @@ struct WidgetEntitiesAppEntityQueryTests {
         #expect(pick.displayRepresentation.image != nil)
     }
 
-    /// Two servers, "A" with three entities (one in an area) and "B" with one, in an in-memory
+    /// Two servers, "A" with three entities (two in areas) and "B" with one, in an in-memory
     /// database that stands in for the app's for the duration of `body`.
     private func withSeededDatabase(_ body: () async throws -> Void) async throws {
         let previousDatabase = Current.database
@@ -135,6 +138,17 @@ struct WidgetEntitiesAppEntityQueryTests {
                 icon: nil,
                 sortOrder: nil,
                 entities: ["light.kitchen"]
+            ).insert(db)
+            try AppArea(
+                id: "A-living_room",
+                serverId: "A",
+                areaId: "living_room",
+                name: "Living room",
+                aliases: [],
+                picture: nil,
+                icon: nil,
+                sortOrder: nil,
+                entities: ["sensor.temperature"]
             ).insert(db)
         }
 
