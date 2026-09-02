@@ -11,6 +11,12 @@ struct MagicItemActionSelectionView: View {
     /// The server the item belongs to. A "perform action" behavior runs against it, so it is the
     /// only server whose actions the picker offers.
     let serverId: String
+    /// What leaving the picker on "Default" does for this item, so the entry can say so — "Default
+    /// (More info)", "Default (Toggle)" — the way the frontend's action editor labels its own.
+    let defaultAction: ItemAction
+    /// Whether the item's domain has a main action a tap can run. "Toggle" is only offered when it
+    /// does, the way the frontend's action editor drops it for an entity that can't be toggled.
+    let canToggle: Bool
     @Binding var action: ItemAction?
 
     /// Prefilling reads the database for the chosen script, so the extra rows wait for it rather
@@ -29,24 +35,28 @@ struct MagicItemActionSelectionView: View {
         action ?? .default
     }
 
+    private var offeredActions: [ItemAction] {
+        ItemAction.offered(canToggle: canToggle, selected: selected)
+    }
+
     var body: some View {
         HStack {
             Text(verbatim: title)
             Spacer()
             Menu {
-                ForEach(ItemAction.allCases, id: \.id) { itemAction in
+                ForEach(offeredActions, id: \.id) { itemAction in
                     Button {
                         action = hydrated(itemAction)
                     } label: {
                         if selected.id == itemAction.id {
-                            Label(itemAction.name, systemSymbol: .checkmark)
+                            Label(name(of: itemAction), systemSymbol: .checkmark)
                         } else {
-                            Text(itemAction.name)
+                            Text(name(of: itemAction))
                         }
                     }
                 }
             } label: {
-                Text(selected.name)
+                Text(name(of: selected))
             }
         }
         .onAppear {
@@ -144,6 +154,15 @@ struct MagicItemActionSelectionView: View {
         }
     }
 
+    /// "Default" alone says nothing about what a tap will do, so it carries the resolved behavior
+    /// along; every other behavior is its own name.
+    private func name(of itemAction: ItemAction) -> String {
+        if itemAction.id == ItemAction.default.id {
+            return ItemAction.defaultName(resolvingTo: defaultAction)
+        }
+        return itemAction.name
+    }
+
     /// Carries the details already on screen into a freshly picked behavior, so switching away and
     /// back doesn't blank the path or the pipeline the user typed.
     private func hydrated(_ itemAction: ItemAction) -> ItemAction {
@@ -203,17 +222,32 @@ struct MagicItemActionSelectionView: View {
 }
 
 #Preview {
+    let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+    let sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
     List {
         Section(L10n.MagicItem.action) {
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.tapBehavior,
-                serverId: "1",
+                serverId: light.serverId,
+                defaultAction: light.defaultTapAction,
+                canToggle: light.canToggle,
                 action: .constant(.default)
             )
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.iconTapBehavior,
-                serverId: "1",
+                serverId: light.serverId,
+                defaultAction: light.defaultIconAction,
+                canToggle: light.canToggle,
                 action: .constant(.navigate("/lovelace/0"))
+            )
+        }
+        Section(L10n.MagicItem.action) {
+            MagicItemActionSelectionView(
+                title: L10n.MagicItem.Action.iconTapBehavior,
+                serverId: sensor.serverId,
+                defaultAction: sensor.defaultIconAction,
+                canToggle: sensor.canToggle,
+                action: .constant(.default)
             )
         }
     }

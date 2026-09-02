@@ -168,12 +168,17 @@ struct MagicItemCustomizationView: View {
                     MagicItemActionSelectionView(
                         title: L10n.MagicItem.Action.tapBehavior,
                         serverId: viewModel.item.serverId,
+                        defaultAction: viewModel.item.defaultTapAction,
+                        canToggle: viewModel.item.canToggle,
                         action: $viewModel.item.tapAction
                     )
                 }
+                // An app icon shortcut runs what the widget icon would, so both name the same default.
                 MagicItemActionSelectionView(
                     title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
                     serverId: viewModel.item.serverId,
+                    defaultAction: viewModel.item.defaultIconAction,
+                    canToggle: viewModel.item.canToggle,
                     action: $viewModel.item.action
                 )
             } header: {

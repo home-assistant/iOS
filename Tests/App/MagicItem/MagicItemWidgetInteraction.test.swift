@@ -121,6 +121,64 @@ struct MagicItemWidgetInteractionTests {
         #expect(!sensor.controlsEntityFromWidget)
     }
 
+    /// "Toggle" is only worth offering to an item whose domain the app can run in one tap — the
+    /// frontend's action editor drops it the same way for an entity that can't be toggled. A lock is
+    /// state-aware and a sensor read-only, so neither gets it; a script or scene runs, so both do.
+    @Test func toggleIsOnlyOfferedToItemsTheAppCanToggle() {
+        #expect(MagicItem(id: "light.kitchen", serverId: "1", type: .entity).canToggle)
+        #expect(MagicItem(id: "switch.fan", serverId: "1", type: .entity).canToggle)
+        #expect(MagicItem(id: "button.doorbell", serverId: "1", type: .entity).canToggle)
+        #expect(MagicItem(id: "automation.night", serverId: "1", type: .entity).canToggle)
+        #expect(MagicItem(id: "script.morning", serverId: "1", type: .script).canToggle)
+        #expect(MagicItem(id: "scene.movie", serverId: "1", type: .scene).canToggle)
+
+        #expect(!MagicItem(id: "sensor.temperature", serverId: "1", type: .entity).canToggle)
+        #expect(!MagicItem(id: "lock.front_door", serverId: "1", type: .entity).canToggle)
+        #expect(!MagicItem(id: "climate.living_room", serverId: "1", type: .entity).canToggle)
+        #expect(!MagicItem(id: "media_player.tv", serverId: "1", type: .entity).canToggle)
+        #expect(!MagicItem(id: "custom.thing", serverId: "1", type: .entity).canToggle)
+        #expect(!MagicItem(id: "pipeline-1", serverId: "1", type: .assistPipeline).canToggle)
+
+        let offered = ItemAction.offered(canToggle: false, selected: .default).map(\.id)
+        #expect(!offered.contains(ItemAction.toggle.id))
+        #expect(offered == ItemAction.allCases.map(\.id).filter { $0 != ItemAction.toggle.id })
+        #expect(ItemAction.offered(canToggle: true, selected: .default).map(\.id) == ItemAction.allCases.map(\.id))
+        // A choice already stored stays on screen even when it would no longer be offered.
+        #expect(ItemAction.offered(canToggle: false, selected: .toggle).map(\.id).contains(ItemAction.toggle.id))
+    }
+
+    /// "Default" on the customization screen names what it stands for, and that name is the behavior
+    /// the tile actually runs: the icon of a controllable entity toggles, everything else opens the
+    /// entity, and the rest of the tile always opens it.
+    @Test func defaultActionsNameWhatTheTileDoes() {
+        let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(light.defaultIconAction == .toggle)
+        #expect(light.defaultTapAction == .moreInfoDialog)
+
+        let script = MagicItem(id: "script.morning", serverId: "1", type: .script)
+        #expect(script.defaultIconAction == .toggle)
+        #expect(script.defaultTapAction == .moreInfoDialog)
+
+        let sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
+        #expect(sensor.defaultIconAction == .moreInfoDialog)
+        #expect(sensor.defaultTapAction == .moreInfoDialog)
+
+        let lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        #expect(lock.defaultIconAction == .moreInfoDialog)
+
+        let unknownDomain = MagicItem(id: "custom.thing", serverId: "1", type: .entity)
+        #expect(unknownDomain.defaultIconAction == .moreInfoDialog)
+
+        // No entity behind a pipeline, so both halves of the tile start Assist.
+        var pipeline = MagicItem(id: "pipeline-1", serverId: "1", type: .assistPipeline)
+        pipeline.assistPipelineId = "pipeline-1"
+        #expect(pipeline.defaultIconAction == .assist("1", "pipeline-1", true))
+        #expect(pipeline.defaultTapAction == .assist("1", "pipeline-1", true))
+
+        #expect(ItemAction.defaultName(resolvingTo: .toggle) == "Default (Toggle)")
+        #expect(ItemAction.defaultName(resolvingTo: .moreInfoDialog) == "Default (More info)")
+    }
+
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still
     /// reaches the web rather than leaving the tile dead.
     @Test func urlActionOpensTheTypedAddress() {

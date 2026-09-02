@@ -8568,6 +8568,10 @@ public enum L10n {
         public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
         /// Default
         public static var `default`: String { return L10n.tr("Localizable", "widgets.action.name.default") }
+        /// Default (%@)
+        public static func defaultAction(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.action.name.default_action_%@", String(describing: p1))
+        }
         /// More info
         public static var moreInfoDialog: String { return L10n.tr("Localizable", "widgets.action.name.moreInfoDialog") }
         /// Navigate

@@ -276,34 +276,52 @@ public struct MagicItem: Codable, Equatable, Hashable {
         displayText ?? info.name
     }
 
+    /// Whether the "toggle" behavior can do anything for this item: its domain has a main action
+    /// the app runs in one tap (`light.toggle`, `button.press`, `scene.turn_on`…).
+    ///
+    /// The frontend's action editor drops "toggle" from its list when the entity's domain can't be
+    /// toggled (`canToggleDomain`). The app narrows that further to the domains its toggle intent
+    /// knows how to run — a lock is toggleable there but state-aware here, and a group is toggled
+    /// there but has no main action here — so the picker only offers what a tap will actually do.
+    public var canToggle: Bool {
+        mainActionIntent() != nil
+    }
+
+    /// What `.default` stands for on a widget tile's icon — and on an app icon shortcut, which
+    /// runs the same thing: the domain's main action when there is one, otherwise the entity's
+    /// more-info dialog. The frontend's tile card leaves an uncontrollable entity's icon inert
+    /// instead; here there is always an entity to open, so the icon opens it.
+    public var defaultIconAction: ItemAction {
+        if type == .assistPipeline {
+            return .assist(serverId, assistPipelineId ?? id, true)
+        }
+        if canToggle {
+            return .toggle
+        }
+        // An entity whose domain isn't modeled here (one from a custom integration, say) still has
+        // a more-info dialog, so open that instead of leaving the tile inert. Non-entity items have
+        // no entity id to open.
+        return hasMoreInfoDialog ? .moreInfoDialog : .nothing
+    }
+
+    /// What `.default` stands for on the rest of a widget tile: the entity's more-info dialog, the
+    /// way the frontend's tile card opens the entity. Items with no entity behind them — an Assist
+    /// pipeline, a folder — have no dialog to open, so the whole tile keeps what the icon does.
+    public var defaultTapAction: ItemAction {
+        hasMoreInfoDialog ? .moreInfoDialog : defaultIconAction
+    }
+
     /// What tapping the item — or, on a split widget tile, its icon — does.
     public var widgetInteractionType: WidgetInteractionType {
-        let magicItem = self
-
-        if magicItem.type == .assistPipeline {
-            return assistIntent(
-                serverId: magicItem.serverId,
-                pipelineId: magicItem.assistPipelineId ?? magicItem.id,
-                startListening: true
-            )
-        }
-
-        // An explicit action override wins over whatever the item's domain would do by default.
-        // None of these branches need the domain, so they're resolved before it.
-        if let magicItemAction = magicItem.action, let interaction = interactionType(for: magicItemAction) {
+        // An explicit action override wins over whatever the item would do by default; a pipeline
+        // is the one item with nothing to override, since starting it is all it can do.
+        if type != .assistPipeline, let action, let interaction = interactionType(for: action) {
             return interaction
         }
 
-        guard magicItem.domain != nil else {
-            // An entity whose domain isn't modeled here (one from a custom integration, say) still
-            // has a more-info dialog, so open that instead of leaving the tile inert. Non-entity
-            // items have no entity id to open.
-            return magicItem.type == .entity ? moreInfoIntent() : .appIntent(.refresh)
-        }
-
-        // Domains without a single main action — sensors, media players, locks, anything read-only
-        // or too complex for one tap — open their more-info dialog in the web view instead.
-        return mainActionIntent() ?? moreInfoIntent()
+        // Resolved through the same action the customization screen names as the default, so
+        // what the picker says "Default" does and what the tile does can't drift apart.
+        return interactionType(for: defaultIconAction) ?? .appIntent(.refresh)
     }
 
     /// What tapping a widget tile outside its icon does.
@@ -485,6 +503,16 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
     case nothing
 
+    /// The behaviors a picker offers one item: every case, minus `.toggle` for an item that can't
+    /// (see `MagicItem.canToggle`) — the way the frontend's action editor filters its own list.
+    /// A stored `.toggle` stays listed even then, so the choice on screen never vanishes from
+    /// under the user; it falls back at tap time the way it always has.
+    public static func offered(canToggle: Bool, selected: ItemAction) -> [ItemAction] {
+        allCases.filter { itemAction in
+            itemAction.id != ItemAction.toggle.id || canToggle || selected.id == ItemAction.toggle.id
+        }
+    }
+
     public var id: String {
         switch self {
         case .default:
@@ -506,6 +534,12 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         case .nothing:
             return "nothing"
         }
+    }
+
+    /// The picker's label for `.default`, naming what it stands in for — "Default (More info)",
+    /// "Default (Toggle)" — the way the frontend's action editor labels its default entry.
+    public static func defaultName(resolvingTo action: ItemAction) -> String {
+        L10n.Widgets.Action.Name.defaultAction(action.name)
     }
 
     public var name: String {

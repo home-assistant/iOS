@@ -72,6 +72,12 @@ struct MagicItemCustomizationViewTests {
         assertSnapshots(context: .widget, item: item)
     }
 
+    /// An entity the app can't toggle — a sensor — names "More info" as the default for both halves
+    /// of the tile, since there is no main action for its icon to run.
+    @Test func widgetNamesMoreInfoAsTheDefaultForAnEntityThatCannotToggle() {
+        assertSnapshots(context: .widget, item: .init(id: "sensor.temperature", serverId: "1", type: .entity))
+    }
+
     /// `Current` is a shared global, so the mocked provider is put back as soon as the snapshot is
     /// taken — left in place it would follow whichever suite runs next.
     private func assertSnapshots(

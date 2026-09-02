@@ -2651,6 +2651,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.default_action_%@" = "Default (%@)";
 "widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
