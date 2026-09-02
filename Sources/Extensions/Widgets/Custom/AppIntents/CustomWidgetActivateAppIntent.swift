@@ -41,22 +41,11 @@ struct CustomWidgetActivateAppIntent: AppIntent {
         }
         AppIntentHaptics.notify()
 
-        guard let request: HATypedRequest<HAResponseVoid> = {
-            switch domain {
-            case .script:
-                return .runScript(entityId: entityId)
-            case .scene:
-                return .applyScene(entityId: entityId)
-            case .automation:
-                return .trigger(entityId: entityId)
-            default:
-                Current.Log
-                    .error(
-                        "ActivateAppIntent: unsupported domain \(domain), entityId: \(entityId), serverId: \(serverId)"
-                    )
-                return nil
-            }
-        }() else {
+        guard let request = HATypedRequest<HAResponseVoid>.activate(domain: domain, entityId: entityId) else {
+            Current.Log
+                .error(
+                    "ActivateAppIntent: unsupported domain \(domain), entityId: \(entityId), serverId: \(serverId)"
+                )
             return .result()
         }
 

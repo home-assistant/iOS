@@ -78,6 +78,22 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Runs an entity outright — a script, a scene, or an automation's trigger — the way a magic
+    /// item's "activate" behavior does from a widget tile or an app icon shortcut. `nil` for a
+    /// domain with nothing to run.
+    static func activate(domain: Domain, entityId: String) -> HATypedRequest<HAResponseVoid>? {
+        switch domain {
+        case .script:
+            return .runScript(entityId: entityId)
+        case .scene:
+            return .applyScene(entityId: entityId)
+        case .automation:
+            return .trigger(entityId: entityId)
+        default:
+            return nil
+        }
+    }
+
     static func runScript(
         entityId: String
     ) -> HATypedRequest<HAResponseVoid> {

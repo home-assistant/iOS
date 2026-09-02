@@ -1,6 +1,8 @@
 import CallbackURLKit
 import CoreSpotlight
 import Foundation
+import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SafariServices
 import Shared
@@ -421,6 +423,16 @@ class IncomingURLHandler {
                 return .init(error: HomeAssistantAPI.APIError.notConfigured)
             }
             return EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+        case let .appIntent(.activate(entityId, domainString, _)):
+            // The same request a widget tile's "Run" or "Trigger" sends, rather than the item's
+            // own run, so a script, scene, or automation behaves the same from either place.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection,
+                  let request = HATypedRequest<HAResponseVoid>.activate(domain: domain, entityId: entityId) else {
+                Current.Log.error("Cannot activate App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return connection.send(request).promise.asVoid()
         case let .appIntent(.performAction(serverId, actionId, payload)):
             return performAction(serverId: serverId, actionId: actionId, payload: payload)
         case .appIntent(.refresh):
