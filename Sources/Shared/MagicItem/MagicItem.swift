@@ -279,15 +279,27 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// Whether "toggle" can do anything for this item: it stands for an entity whose domain has
     /// the on/off service pair the frontend's `canToggleDomain` looks for. The frontend's action
     /// editor drops "toggle" from its list otherwise, and so does the customization screen.
+    ///
+    /// Without the entity's `supported_features` this is the domain-level answer; pass them to
+    /// get the frontend's `canToggleState`, which also asks a climate, cover, camera, media
+    /// player, or siren whether it supports turning on and off at all.
     public var canToggle: Bool {
-        hasMoreInfoDialog && domain?.canToggle == true
+        canToggle(supportedFeatures: nil)
+    }
+
+    public func canToggle(supportedFeatures: Int?) -> Bool {
+        hasMoreInfoDialog && domain?.canToggle(supportedFeatures: supportedFeatures) == true
     }
 
     /// Whether the explicit on/off behaviors — "Lock" and "Unlock", "Open" and "Close", "Turn on"
     /// and "Turn off" — mean anything for this item: it toggles, and between two different
     /// services. A button or a scene has only the one, and "toggle" already runs it.
     public var hasOnOffActions: Bool {
-        canToggle && domain?.toggleIsStateAware == true
+        hasOnOffActions(supportedFeatures: nil)
+    }
+
+    public func hasOnOffActions(supportedFeatures: Int?) -> Bool {
+        canToggle(supportedFeatures: supportedFeatures) && domain?.toggleIsStateAware == true
     }
 
     /// Whether the item's domain has a main action worth its own entry — "Press" for a button,
@@ -363,14 +375,15 @@ public struct MagicItem: Codable, Equatable, Hashable {
     }
 
     /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
-    /// `.toggle` or an on/off behavior the item's domain can't perform, for a more-info dialog an
-    /// item without an entity can't open, and for the retired `.nothing` — all of which leave the
-    /// choice to whatever the caller falls back on.
+    /// `.toggle` or an on/off behavior the item's domain can't perform, and for a more-info dialog
+    /// an item without an entity can't open — all of which leave the choice to whatever the caller
+    /// falls back on. The retired `.nothing` opens the more-info dialog: an icon that was told to
+    /// do nothing must not start controlling the entity after an update.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
-        case .default, .nothing:
+        case .default:
             return nil
-        case .moreInfoDialog:
+        case .moreInfoDialog, .nothing:
             return hasMoreInfoDialog ? moreInfoIntent() : nil
         case .toggle:
             return toggleIntent()
@@ -542,37 +555,43 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
-    /// Retired: the picker no longer offers it, and an item stored with it behaves as `.default`.
-    /// The case stays only so configurations saved while it was offered still decode — dropping
-    /// it would fail every item in such a configuration, not just this one's choice.
+    /// Retired: the picker no longer offers it, and an item stored with it opens the more-info
+    /// dialog — the one behavior that, like doing nothing, never controls the entity. The case
+    /// stays only so configurations saved while it was offered still decode — dropping it would
+    /// fail every item in such a configuration, not just this one's choice.
     case nothing
 
     /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
     /// perform — "toggle" for an entity with nothing to toggle, the explicit on/off pair for one
     /// with a single service — the way the frontend's action editor filters "toggle" out of its
-    /// own list. A stored choice stays listed even then, so it never vanishes from under the user;
-    /// it falls back at tap time the way it always has. The retired `.nothing` is the exception:
-    /// it reads as the default, so it is never listed.
-    public static func offered(for item: MagicItem, selected: ItemAction) -> [ItemAction] {
+    /// own list. `supportedFeatures`, when known, narrows "toggle" the way the frontend's
+    /// `canToggleState` does. A stored choice stays listed even then, so it never vanishes from
+    /// under the user; it falls back at tap time the way it always has. The retired `.nothing` is
+    /// the exception: it reads as "more info", so it is never listed.
+    public static func offered(
+        for item: MagicItem,
+        supportedFeatures: Int? = nil,
+        selected: ItemAction
+    ) -> [ItemAction] {
         allCases.filter { itemAction in
             if itemAction.id == selected.id {
                 return true
             }
             switch itemAction {
             case .toggle:
-                return item.canToggle
+                return item.canToggle(supportedFeatures: supportedFeatures)
             case .mainAction:
                 return item.hasExplicitMainAction
             case .turnOn, .turnOff:
-                return item.hasOnOffActions
+                return item.hasOnOffActions(supportedFeatures: supportedFeatures)
             default:
                 return true
             }
         }
     }
 
-    /// Whether this is a stored choice the picker should treat as the default: the retired
-    /// `.nothing`, which no longer means anything on its own.
+    /// Whether this is a stored choice the picker should show as "more info": the retired
+    /// `.nothing`, which now behaves that way.
     public var isRetired: Bool {
         self == .nothing
     }

@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -53,29 +52,23 @@ struct CustomWidgetToggleAppIntent: AppIntent {
             "ToggleAppIntent: toggling, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
         )
         AppIntentHaptics.notify()
-        await withCheckedContinuation { continuation in
+        do {
             // The frontend's toggle: the entity's state decides between the domain's on and off
             // services, so a locked lock unlocks and a running script stops.
-            EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection).pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.verbose(
-                        "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
-                    )
-                    continuation.resume()
-                case let .rejected(error):
-                    Current.Log
-                        .error(
-                            "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
-                        )
-                    Current.notificationDispatcher.send(.init(
-                        id: .intentToggleFailed,
-                        title: L10n.Widgets.Custom.IntentToggleFailed.title,
-                        body: L10n.Widgets.Custom.IntentToggleFailed.body
-                    ))
-                    continuation.resume()
-                }
-            }
+            try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+            Current.Log.verbose(
+                "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            )
+        } catch {
+            Current.Log
+                .error(
+                    "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
+                )
+            Current.notificationDispatcher.send(.init(
+                id: .intentToggleFailed,
+                title: L10n.Widgets.Custom.IntentToggleFailed.title,
+                body: L10n.Widgets.Custom.IntentToggleFailed.body
+            ))
         }
         _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
         if widgetShowingStates {

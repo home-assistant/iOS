@@ -60,6 +60,26 @@ struct DomainToggleTests {
         #expect(Domain.sensor.toggleService(state: "21.5") == nil)
     }
 
+    /// `canToggleState`: the domains whose on/off pair depends on `supported_features` need those
+    /// bits; every other domain toggles regardless, and an unread state leaves it to the domain.
+    @Test func supportedFeaturesGateTheDependentDomains() {
+        #expect(Domain.camera.toggleRequiredFeatures == 1)
+        #expect(Domain.climate.toggleRequiredFeatures == 128 | 256)
+        #expect(Domain.cover.toggleRequiredFeatures == 1 | 2)
+        #expect(Domain.mediaPlayer.toggleRequiredFeatures == 128 | 256)
+        #expect(Domain.siren.toggleRequiredFeatures == 1 | 2)
+        #expect(Domain.light.toggleRequiredFeatures == nil)
+        #expect(Domain.lock.toggleRequiredFeatures == nil)
+
+        #expect(Domain.mediaPlayer.canToggle(supportedFeatures: nil))
+        #expect(Domain.mediaPlayer.canToggle(supportedFeatures: 128 | 256 | 4))
+        #expect(!Domain.mediaPlayer.canToggle(supportedFeatures: 128))
+        #expect(Domain.siren.canToggle(supportedFeatures: 3))
+        #expect(!Domain.siren.canToggle(supportedFeatures: 4))
+        #expect(Domain.light.canToggle(supportedFeatures: 0))
+        #expect(!Domain.sensor.canToggle(supportedFeatures: 0))
+    }
+
     /// `turnOnOffEntity`: a group is toggled through `homeassistant`, every other domain through
     /// its own services.
     @Test func groupIsToggledThroughHomeAssistant() {

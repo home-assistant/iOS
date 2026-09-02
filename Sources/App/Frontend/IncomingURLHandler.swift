@@ -422,7 +422,17 @@ class IncomingURLHandler {
                 Current.Log.error("No connection to toggle App Icon Shortcut magic item id: \(item.id)")
                 return .init(error: HomeAssistantAPI.APIError.notConfigured)
             }
-            return EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+            return Promise { seal in
+                Task {
+                    do {
+                        try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+                        seal.fulfill(())
+                    } catch {
+                        Current.Log.error("Failed to toggle App Icon Shortcut magic item id: \(item.id), error: \(error)")
+                        seal.reject(error)
+                    }
+                }
+            }
         case let .appIntent(.activate(entityId, domainString, _)):
             // The same request a widget tile's "Press", "Run" or "Trigger" sends, rather than the
             // item's own run, so an entity behaves the same from either place.
@@ -455,7 +465,7 @@ class IncomingURLHandler {
 
         switch action {
         case .default, .nothing:
-            // The retired "nothing" behaves as the default.
+            // The retired "nothing" resolves through the interaction type, to the more-info dialog.
             return nil
         case .toggle, .mainAction, .turnOn, .turnOff:
             // These resolve through the item's interaction type, the way a widget tile's do, so

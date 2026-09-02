@@ -106,9 +106,10 @@ struct MagicItemWidgetInteractionTests {
         #expect(!moreInfo.controlsEntityFromWidget)
     }
 
-    /// "Nothing" was retired: an item saved with it still decodes, behaves as the default, and the
-    /// picker neither offers nor shows it.
-    @Test func retiredNothingBehavesAsTheDefault() throws {
+    /// "Nothing" was retired: an item saved with it still decodes and opens the entity instead —
+    /// never its toggle, which an icon told to do nothing must not start running — and the picker
+    /// neither offers nor shows it.
+    @Test func retiredNothingOpensMoreInfo() throws {
         let stored = Data("""
         {"id":"light.kitchen","serverId":"1","type":"entity","action":{"nothing":{}},"tapAction":{"nothing":{}}}
         """.utf8)
@@ -117,11 +118,8 @@ struct MagicItemWidgetInteractionTests {
 
         #expect(item.action == .nothing)
         #expect(item.action?.isRetired == true)
-        #expect(item.widgetInteractionType == .appIntent(.toggle(
-            entityId: "light.kitchen",
-            domain: "light",
-            serverId: "1"
-        )))
+        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "light.kitchen"))
+        #expect(!item.controlsEntityFromWidget)
         #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "light.kitchen"))
         #expect(!ItemAction.allCases.map(\.id).contains(ItemAction.nothing.id))
         #expect(!ItemAction.offered(for: item, selected: .default).map(\.id).contains(ItemAction.nothing.id))
@@ -210,6 +208,32 @@ struct MagicItemWidgetInteractionTests {
 
         // A choice already stored stays on screen even when it would no longer be offered.
         #expect(ItemAction.offered(for: sensor, selected: .toggle).map(\.id).contains(ItemAction.toggle.id))
+    }
+
+    /// A cover, climate, camera, media player, or siren only toggles when its `supported_features`
+    /// say it can turn on and off — the frontend's `canToggleState`. Until the features are read
+    /// the domain decides, the way the frontend does without a state object.
+    @Test func supportedFeaturesNarrowToggleTheWayTheFrontendDoes() {
+        let cover = MagicItem(id: "cover.garage", serverId: "1", type: .entity)
+        let openAndClose = CoverCapabilities.Feature.open.rawValue | CoverCapabilities.Feature.close.rawValue
+        #expect(cover.canToggle(supportedFeatures: nil))
+        #expect(cover.canToggle(supportedFeatures: openAndClose | CoverCapabilities.Feature.stop.rawValue))
+        #expect(!cover.canToggle(supportedFeatures: CoverCapabilities.Feature.setPosition.rawValue))
+        #expect(!cover.hasOnOffActions(supportedFeatures: CoverCapabilities.Feature.open.rawValue))
+
+        let offered = ItemAction.offered(for: cover, supportedFeatures: 0, selected: .default).map(\.id)
+        #expect(!offered.contains(ItemAction.toggle.id))
+        #expect(!offered.contains(ItemAction.turnOn.id))
+        let offeredWithFeatures = ItemAction.offered(for: cover, supportedFeatures: openAndClose, selected: .default)
+        #expect(offeredWithFeatures.map(\.id).contains(ItemAction.toggle.id))
+
+        let climate = MagicItem(id: "climate.living_room", serverId: "1", type: .entity)
+        #expect(climate.canToggle(supportedFeatures: ClimateEntityFeature([.turnOn, .turnOff]).rawValue))
+        #expect(!climate.canToggle(supportedFeatures: ClimateEntityFeature.targetTemperature.rawValue))
+
+        // A light needs no feature to toggle, whatever it reports.
+        let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(light.canToggle(supportedFeatures: 0))
     }
 
     /// The explicit on/off behaviors only make sense where "on" and "off" are different services:

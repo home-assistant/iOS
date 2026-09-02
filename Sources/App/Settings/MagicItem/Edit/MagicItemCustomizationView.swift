@@ -67,6 +67,9 @@ struct MagicItemCustomizationView: View {
             preventNilCustomization()
             viewModel.loadMagicInfo()
         }
+        .task {
+            await viewModel.loadSupportedFeatures()
+        }
     }
 
     private func save() {
@@ -168,6 +171,7 @@ struct MagicItemCustomizationView: View {
                     MagicItemActionSelectionView(
                         title: L10n.MagicItem.Action.tapBehavior,
                         item: viewModel.item,
+                        supportedFeatures: viewModel.supportedFeatures,
                         defaultAction: viewModel.item.defaultTapAction,
                         action: $viewModel.item.tapAction
                     )
@@ -176,6 +180,7 @@ struct MagicItemCustomizationView: View {
                 MagicItemActionSelectionView(
                     title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
                     item: viewModel.item,
+                    supportedFeatures: viewModel.supportedFeatures,
                     defaultAction: viewModel.item.defaultIconAction,
                     action: $viewModel.item.action
                 )

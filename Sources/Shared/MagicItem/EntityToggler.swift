@@ -1,7 +1,5 @@
 import Foundation
 import HAKit
-import HAKit_PromiseKit
-import PromiseKit
 
 /// Toggles an entity the way the frontend's `toggleEntity` does: reads its state, then calls the
 /// domain's "on" service when that state is one of `STATES_OFF` and its "off" service otherwise —
@@ -24,49 +22,59 @@ public enum EntityToggler {
         }
     }
 
-    public static func toggle(domain: Domain, entityId: String, connection: HAConnection) -> Promise<Void> {
+    public static func toggle(domain: Domain, entityId: String, connection: HAConnection) async throws {
         guard let services = domain.toggleServices else {
-            return Promise(error: ToggleError.domainNotToggleable(domain))
+            throw ToggleError.domainNotToggleable(domain)
         }
 
-        let service: Promise<Service>
+        let service: Service
         if domain.toggleIsStateAware {
-            service = currentState(of: entityId, connection: connection).map { state in
-                domain.toggleService(state: state) ?? services.off
-            }
+            let state = try await currentState(of: entityId, connection: connection)
+            service = domain.toggleService(state: state) ?? services.off
         } else {
-            service = .value(services.on)
+            service = services.on
         }
 
-        return service.then { service -> Promise<Void> in
-            Current.Log.verbose("Toggling \(entityId): \(domain.toggleServiceDomain).\(service.rawValue)")
-            let request = HATypedRequest<HAResponseVoid>(request: .init(
-                type: "call_service",
-                data: [
-                    "domain": domain.toggleServiceDomain,
-                    "service": service.rawValue,
-                    "service_data": [
-                        "entity_id": entityId,
-                    ],
-                ]
-            ))
-            return connection.send(request).promise.asVoid()
-        }
+        Current.Log.verbose("Toggling \(entityId): \(domain.toggleServiceDomain).\(service.rawValue)")
+        let request = HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": domain.toggleServiceDomain,
+                "service": service.rawValue,
+                "service_data": [
+                    "entity_id": entityId,
+                ],
+            ]
+        ))
+        try await send(request, over: connection)
     }
 
     /// `GET /api/states/{entity_id}`, reduced to the state string a toggle decides on.
-    private static func currentState(of entityId: String, connection: HAConnection) -> Promise<String> {
-        Promise { seal in
+    private static func currentState(of entityId: String, connection: HAConnection) async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
             connection.send(.init(type: .rest(.get, "states/\(entityId)"))) { result in
                 switch result {
                 case let .success(data):
                     if let state: String = data.decode("state", fallback: nil) {
-                        seal.fulfill(state)
+                        continuation.resume(returning: state)
                     } else {
-                        seal.reject(ToggleError.stateUnavailable(entityId))
+                        continuation.resume(throwing: ToggleError.stateUnavailable(entityId))
                     }
                 case let .failure(error):
-                    seal.reject(error)
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    private static func send(_ request: HATypedRequest<HAResponseVoid>, over connection: HAConnection) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            _ = connection.send(request) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case let .failure(error):
+                    continuation.resume(throwing: error)
                 }
             }
         }

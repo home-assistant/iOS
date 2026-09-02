@@ -36,11 +36,8 @@ public extension Domain {
     /// `getToggleAction`, narrowed by `canToggleDomain`: the service a toggle calls to turn an
     /// entity of this domain on, and the one to turn it off. A button or a scene has only the one,
     /// which the frontend uses for both. `nil` for a domain Home Assistant registers no such pair
-    /// for, which is what leaves "toggle" out of the frontend's action list.
-    ///
-    /// The frontend also checks the entity's supported features for a camera, climate, cover,
-    /// media player, or siren; the app's entity registry doesn't carry them, so that is left to
-    /// the server.
+    /// for, which is what leaves "toggle" out of the frontend's action list. Whether one entity
+    /// supports the pair is `canToggle(supportedFeatures:)`.
     var toggleServices: (on: Service, off: Service)? {
         switch self {
         case .button, .inputButton:
@@ -64,6 +61,39 @@ public extension Domain {
     /// `canToggleDomain`: whether a toggle can do anything for this domain.
     var canToggle: Bool {
         toggleServices != nil
+    }
+
+    /// The `supported_features` bits an entity of this domain must carry for its on/off pair to
+    /// work — `getToggleAction`'s feature requirement: a camera's on/off, a climate's, media
+    /// player's, or siren's turn on and off, a cover's open and close. `nil` for a domain whose
+    /// services always exist.
+    var toggleRequiredFeatures: Int? {
+        switch self {
+        case .camera:
+            // CameraEntityFeature.ON_OFF
+            return 1 << 0
+        case .climate:
+            return ClimateEntityFeature.turnOn.rawValue | ClimateEntityFeature.turnOff.rawValue
+        case .cover:
+            return CoverCapabilities.Feature.open.rawValue | CoverCapabilities.Feature.close.rawValue
+        case .mediaPlayer:
+            // MediaPlayerEntityFeature.TURN_ON | TURN_OFF
+            return 1 << 7 | 1 << 8
+        case .siren:
+            // SirenEntityFeature.TURN_ON | TURN_OFF
+            return 1 << 0 | 1 << 1
+        default:
+            return nil
+        }
+    }
+
+    /// `canToggleState`: whether an entity of this domain with these `supported_features` can be
+    /// toggled. With no features to go on — the state hasn't been read — this is `canToggle`,
+    /// the way the frontend falls back to `canToggleDomain` without a state object.
+    func canToggle(supportedFeatures: Int?) -> Bool {
+        guard canToggle else { return false }
+        guard let required = toggleRequiredFeatures, let supportedFeatures else { return true }
+        return supportedFeatures & required == required
     }
 
     /// Whether a toggle has to read the entity's state to know which service to call. A button

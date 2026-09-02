@@ -14,6 +14,10 @@ struct MagicItemActionSelectionView: View {
     /// "Unlock" for a lock). A "perform action" behavior runs against its server, so that is the
     /// only server whose actions the picker offers.
     let item: MagicItem
+    /// The entity's `supported_features`, once read from the server, which is what tells a
+    /// climate, cover, camera, media player, or siren apart from one that can't turn on and off.
+    /// `nil` until then, and for every other domain, in which case the domain decides.
+    let supportedFeatures: Int?
     /// What leaving the picker on "Default" does for this item, so the entry can say so — "Default
     /// (More info)", "Default (Toggle)" — the way the frontend's action editor labels its own.
     let defaultAction: ItemAction
@@ -31,15 +35,15 @@ struct MagicItemActionSelectionView: View {
     @State private var performActionId: String?
     @State private var performActionPayload = ""
 
-    /// A retired choice — "nothing", which items saved with it still carry — reads as the default
-    /// it now behaves as, so the picker never shows a behavior it no longer offers.
+    /// A retired choice — "nothing", which items saved with it still carry — reads as the "more
+    /// info" it now behaves as, so the picker never shows a behavior it no longer offers.
     private var selected: ItemAction {
-        guard let action, !action.isRetired else { return .default }
-        return action
+        guard let action else { return .default }
+        return action.isRetired ? .moreInfoDialog : action
     }
 
     private var offeredActions: [ItemAction] {
-        ItemAction.offered(for: item, selected: selected)
+        ItemAction.offered(for: item, supportedFeatures: supportedFeatures, selected: selected)
     }
 
     var body: some View {
@@ -232,12 +236,14 @@ struct MagicItemActionSelectionView: View {
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.tapBehavior,
                 item: light,
+                supportedFeatures: nil,
                 defaultAction: light.defaultTapAction,
                 action: .constant(.default)
             )
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.iconTapBehavior,
                 item: light,
+                supportedFeatures: nil,
                 defaultAction: light.defaultIconAction,
                 action: .constant(.navigate("/lovelace/0"))
             )
@@ -246,6 +252,7 @@ struct MagicItemActionSelectionView: View {
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.iconTapBehavior,
                 item: lock,
+                supportedFeatures: nil,
                 defaultAction: lock.defaultIconAction,
                 action: .constant(.turnOff)
             )
