@@ -23,6 +23,26 @@ python3 Tools/detect_unused_strings.py
 - `0`: No unused strings found
 - `1`: Unused strings detected (normal for reporting)
 
+### xccov_to_lcov.py
+
+Converts Xcode code coverage from an `.xcresult` bundle into an LCOV tracefile, which is
+what Codecov consumes. CI runs it after `fastlane test` so pull requests get a coverage
+report; the uploader's own Swift plugin cannot read Xcode result bundles reliably.
+
+**Usage:**
+```bash
+python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult --lcov coverage.lcov
+```
+
+**What it does:**
+1. Dumps per-line execution counts with `xcrun xccov view --archive --json`
+2. Rewrites absolute source paths as repository-relative paths, dropping anything outside the repository
+3. Writes an LCOV tracefile, and optionally appends a Markdown coverage summary to `--summary`
+
+**Exit codes:**
+- `0`: Coverage written
+- `1`: `xccov` failed, or the bundle covered no repository sources
+
 ## Shell Scripts
 
 ### BuildMaterialDesignIconsFont.sh
