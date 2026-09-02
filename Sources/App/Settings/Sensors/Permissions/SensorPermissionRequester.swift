@@ -1,6 +1,5 @@
 import AVFoundation
 import CoreBluetooth
-import CoreLocation
 import CoreMotion
 import Foundation
 import PromiseKit
@@ -47,7 +46,7 @@ final class SensorPermissionRequester {
         case .focus:
             return .init(Current.focusStatus.authorizationStatus())
         case .location:
-            return .init(CLLocationManager().authorizationStatus)
+            return .init(Current.location.permissionStatus())
         case .camera:
             return .init(AVCaptureDevice.authorizationStatus(for: .video))
         case .microphone:
@@ -115,7 +114,10 @@ final class SensorPermissionRequester {
     private func refreshSensors() {
         HomeAssistantAPI.manuallyUpdate(
             applicationState: UIApplication.shared.applicationState,
-            type: .userRequested
+            // Not `.userRequested`: this follows a permission prompt on its own, and that type also
+            // asks for temporary full location accuracy, which has nothing to do with the sensor
+            // the user just switched on.
+            type: .programmatic
         ).catch { error in
             Current.Log.error("sensor update after a permission request failed: \(error)")
         }
