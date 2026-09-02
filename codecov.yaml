@@ -12,9 +12,21 @@ coverage:
     patch:
       default:
         informational: true
+
+# Report coverage on every pull request, updating one comment in place rather
+# than adding a new one per push.
+comment:
+  layout: "condensed_header, diff, files, condensed_footer"
+  behavior: default
+  require_changes: false
+
+# Statuses and the comment carry the report; per-line annotations on the diff
+# are pure noise while most of the project is uncovered.
+github_checks:
+  annotations: false
+
 ignore:
   - Sources/Shared/Resources
   - Sources/App/Resources
   - Sources/SharedTesting
   - Tests
-  - Pods

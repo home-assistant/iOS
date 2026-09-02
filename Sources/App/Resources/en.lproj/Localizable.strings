@@ -953,6 +953,16 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Paste";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Action";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Start listening";
@@ -1019,7 +1029,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Find";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Reload Page";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
 \
 Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
@@ -1328,6 +1340,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
 "settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
 "settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
@@ -1650,6 +1669,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Search settings";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
@@ -2664,6 +2684,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2748,6 +2772,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
 "widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
@@ -2764,6 +2789,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
 "widgets.energy.electricity" = "Grid";
+"widgets.energy.electricity_total" = "Electricity total";
 "widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
@@ -2808,6 +2834,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";

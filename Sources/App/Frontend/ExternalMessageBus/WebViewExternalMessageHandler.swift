@@ -204,6 +204,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
+            case .sidebarShow:
+                MacNativeSidebarState.shared.show()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")

@@ -12,11 +12,17 @@ public struct FocusStatusState: Codable, Equatable {
     /// When iOS last said every Focus had ended, kept across later updates. A name the filter
     /// reported before that moment belongs to a Focus that is over; one reported after it doesn't.
     public var lastEndedDate: Date?
+    /// When iOS last said a Focus was running, kept across later updates. iOS reports "not
+    /// focused" for a Focus whose status the user doesn't share, so this is what says whether it
+    /// can see the running Focus at all: without it, a status saying nothing is running is
+    /// silence rather than an ending.
+    public var lastStartedDate: Date?
 
-    public init(isFocused: Bool?, date: Date, lastEndedDate: Date?) {
+    public init(isFocused: Bool?, date: Date, lastEndedDate: Date?, lastStartedDate: Date? = nil) {
         self.isFocused = isFocused
         self.date = date
         self.lastEndedDate = lastEndedDate
+        self.lastStartedDate = lastStartedDate
     }
 }
 
@@ -101,6 +107,12 @@ public class FocusStatusWrapper {
 
         let now = Current.date()
         let isFocused = lastStatus?.isFocused
+        let previous = receivedStatus.value
+
+        // State persisted before `lastStartedDate` existed still carries the same evidence in its
+        // own `isFocused`: a status that said a Focus was running is the confirmation, so the
+        // first status after an upgrade doesn't have to be the one that establishes it.
+        let previousStartedDate = previous?.lastStartedDate ?? (previous?.isFocused == true ? previous?.date : nil)
 
         // Recorded rather than acted on: iOS runs the next Focus' filter before it tells us the
         // previous one ended, so which of the two is current is decided when they are read back
@@ -108,7 +120,8 @@ public class FocusStatusWrapper {
         receivedStatus.value = FocusStatusState(
             isFocused: isFocused,
             date: now,
-            lastEndedDate: isFocused == false ? now : receivedStatus.value?.lastEndedDate
+            lastEndedDate: isFocused == false ? now : previous?.lastEndedDate,
+            lastStartedDate: isFocused == true ? now : previousStartedDate
         )
     }
 

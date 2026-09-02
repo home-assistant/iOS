@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "向前导航";
 "mac.open_in_safari.accessibility_label" = "在 Safari 浏览器中打开";
 "mac.paste.accessibility_label" = "粘贴";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "动作";
 "magic_item.action.assist.pipeline.title" = "管道";
 "magic_item.action.assist.start_listening.title" = "开始聆听";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "切换%1$@";
 "menu.view.customize_toolbar" = "自定义工具栏…";
 "menu.view.find" = "查找";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "重新加载页面";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "这是一个测试版功能，如果您遇到任何问题，请使用下面的按钮报告。\
 \
 目前，mTLS 仅支持 iOS 17 版本，可能会出现与显示通知附件、语音助手 TTS 音频相关的问题，并且在 Apple Watch 上无法完全正常工作。";
@@ -1323,6 +1335,13 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.app_icon_shortcuts.reset.title" = "重置应用图标快捷方式";
 "settings.app_icon_shortcuts.subtitle" = "选择长按应用图标时要显示的项目。";
 "settings.app_icon_shortcuts.title" = "应用图标快捷方式";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "激活";
 "settings.connection_section.add_server" = "添加服务器";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "如果您的连接不安全，这可能会在公共网络上暴露您的身份验证令牌。";
@@ -1645,6 +1664,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "No results for “%@”";
 "settings.search.prompt" = "Search settings";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
 "settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
@@ -2659,6 +2679,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.calendar.tomorrow" = "明天";
 "widgets.commonly_used_entities.description" = "根据您的使用习惯显示常用实体。";
 "widgets.commonly_used_entities.empty.description" = "未找到常用实体。使用 Home Assistant 可构建您的使用历史记录。";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "通用控制";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "实体";
@@ -2743,6 +2767,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "显示上次更新时间";
 "widgets.custom.show_states.description" = "不能 100% 保证显示最新状态，您可以尝试一下，查看配套应用文档可获取更多信息。";
 "widgets.custom.show_states.param.title" = "显示状态（测试版）";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "上次更新：";
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
 "widgets.custom.title" = "自定义小部件";
@@ -2756,8 +2781,11 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.details.parameters.server" = "服务器";
 "widgets.details.parameters.upper_template" = "上部文本模板";
 "widgets.details.title" = "详情";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "无法连接，请检查您的 Home Assistant 网页配置";
 "widgets.energy.no_data" = "No energy data";
@@ -2770,7 +2798,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "自动";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
@@ -2799,6 +2829,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "服务器";
 "widgets.parameters.attribute" = "属性";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "实体";
 "widgets.preview.custom.description" = "在应用程序内部创建您自己的小部件，然后在此处显示它。";
 "widgets.preview.custom.title" = "自定义小部件";

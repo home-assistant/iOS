@@ -951,6 +951,16 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "mac.navigation.go_forward.accessibility_label" = "Navigeer vooruit";
 "mac.open_in_safari.accessibility_label" = "Openen in Safari";
 "mac.paste.accessibility_label" = "Plakken";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Actie";
 "magic_item.action.assist.pipeline.title" = "Pijplijn";
 "magic_item.action.assist.start_listening.title" = "Begin met luisteren";
@@ -1017,7 +1027,9 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.customize_toolbar" = "Werkbalk aanpassen…";
 "menu.view.find" = "Vinden";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Herlaad pagina";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Dit is een bètafunctie. Als je problemen ondervindt, meld ze dan via de knop hieronder. \
 \
 Momenteel wordt mTLS alleen ondersteund op iOS 17+, kunnen er problemen optreden met het weergeven van bijlagen in meldingen, Assist TTS-audio werkt niet volledig op Apple Watch.";
@@ -1326,6 +1338,13 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.app_icon_shortcuts.reset.title" = "Snelkoppelingen achter app-icoon opnieuw instellen";
 "settings.app_icon_shortcuts.subtitle" = "Kies items die worden weergegeven wanneer je lang op het app-icoon drukt.";
 "settings.app_icon_shortcuts.title" = "Snelkoppelingen achter app-icoon";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Activeer";
 "settings.connection_section.add_server" = "Voeg server toe";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Als je een onbeveiligde verbinding hebt, kan dit je authenticatietoken blootstellen op openbare netwerken.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "Geen resultaten voor '%@'";
 "settings.search.prompt" = "Instellingen zoeken";
 "settings.search_keywords.app_icon_shortcuts" = "snelle acties, startscherm, lang indrukken, launcher";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "auto, voertuig, rijden, dashboard";
 "settings.search_keywords.complications" = "wijzerplaat, Apple Watch, Glance";
 "settings.search_keywords.debugging" = "logboeken, diagnostiek, exporteren, database, probleemoplossing, resetten";
@@ -2661,6 +2681,10 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.calendar.tomorrow" = "Tomorrow";
 "widgets.commonly_used_entities.description" = "Toon de entiteiten die je het meest gebruikt op basis van je gebruik.";
 "widgets.commonly_used_entities.empty.description" = "Geen veelgebruikte entiteiten gevonden. Gebruik Home Assistant om je gebruiksgeschiedenis op te bouwen.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Veelgebruikte entiteiten";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entiteit";
@@ -2745,6 +2769,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.custom.show_last_update_time.param.title" = "Toon laatste updatetijd";
 "widgets.custom.show_states.description" = "Er is geen 100% garantie dat de laatste status wordt weergegeven. Je kunt het proberen en de documentatie van de companion app raadplegen voor meer informatie.";
 "widgets.custom.show_states.param.title" = "Statussen weergeven (BETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Laatst bijgewerkt:";
 "widgets.custom.subtitle" = "Maak widgets in je eigen stijl";
 "widgets.custom.title" = "Aangepaste widgets";
@@ -2758,8 +2783,11 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Bovenste tekstsjabloon";
 "widgets.details.title" = "Details";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
 "widgets.energy.no_data" = "No energy data";
@@ -2772,7 +2800,9 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
@@ -2801,6 +2831,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribuut";
 "widgets.parameters.complication" = "Complication";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entiteit";
 "widgets.preview.custom.description" = "Maak je eigen widget in de app en toon hem hier.";
 "widgets.preview.custom.title" = "Aangepaste widget";

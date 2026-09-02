@@ -60,6 +60,13 @@ public enum Domain: String, CaseIterable {
     case weather
     case counter
     case timer
+    case aiTask = "ai_task"
+    case configurator
+    case imageProcessing = "image_processing"
+    case infrared
+    case plant
+    case radioFrequency = "radio_frequency"
+    case tag
 
     public init?(entityId: String) {
         let domainString = entityId.components(separatedBy: ".").first ?? ""
@@ -364,6 +371,20 @@ public enum Domain: String, CaseIterable {
             image = .counterIcon
         case .timer:
             image = .timerOutlineIcon
+        case .aiTask:
+            image = .starFourPointsIcon
+        case .configurator:
+            image = .cogIcon
+        case .imageProcessing:
+            image = .imageFilterFramesIcon
+        case .infrared:
+            image = .ledOnIcon
+        case .plant:
+            image = .flowerIcon
+        case .radioFrequency:
+            image = .radioTowerIcon
+        case .tag:
+            image = .tagOutlineIcon
         }
         return image
     }
@@ -522,7 +543,17 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentWeatherTitle
         case .timer:
             return CoreStrings.componentTimerTitle
-        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter:
+        case .aiTask:
+            return CoreStrings.componentAiTaskTitle
+        case .configurator:
+            return CoreStrings.componentConfiguratorTitle
+        case .imageProcessing:
+            return CoreStrings.componentImageProcessingTitle
+        case .plant:
+            return CoreStrings.componentPlantTitle
+        case .tag:
+            return CoreStrings.componentTagTitle
+        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter, .infrared, .radioFrequency:
             return rawValue
         }
     }
@@ -698,17 +729,6 @@ public extension Domain {
         .deviceTracker,
         .update,
     ]
-
-    static let appDatabaseExcluded: [Domain] = [
-        .geoLocation,
-        .conversation,
-        .stt,
-        .tts,
-        .wakeWord,
-        .assistSatellite,
-        .notify,
-        .image,
-    ]
 }
 
 // MARK: - Main Action
@@ -733,7 +753,8 @@ public extension Domain {
              .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
-             .weather, .counter, .timer:
+             .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,
+             .radioFrequency, .tag:
             return nil // Read-only or complex domains
         }
     }

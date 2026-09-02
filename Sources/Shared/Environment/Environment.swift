@@ -467,6 +467,8 @@ public class AppEnvironment {
 
     public lazy var kiosk = KioskModeManager()
 
+    public lazy var appLabs = AppLabsStore()
+
     /// The current kiosk mode configuration. Always available, defaulting to a disabled
     /// configuration when nothing has been persisted yet.
     public var kioskSettings: KioskSettings { kiosk.settings }
@@ -481,9 +483,23 @@ public class AppEnvironment {
         print("⚠️ isTestFlight returns TRUE while debugging")
         return true
         #else
-        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        return AppEnvironment.isTestFlightReceipt()
         #endif
     }()
+
+    /// On iOS a TestFlight build gets a `sandboxReceipt` file. On Mac Catalyst the receipt is always
+    /// `_MASReceipt/receipt`, so the receipt type inside it (`ProductionSandbox` for TestFlight,
+    /// `Production` for the App Store) is what tells them apart; the payload is signed, not encrypted.
+    static func isTestFlightReceipt() -> Bool {
+        guard let url = Bundle.main.appStoreReceiptURL else { return false }
+        #if targetEnvironment(macCatalyst)
+        guard let receipt = try? Data(contentsOf: url),
+              let marker = "ProductionSandbox".data(using: .utf8) else { return false }
+        return receipt.range(of: marker) != nil
+        #else
+        return url.lastPathComponent == "sandboxReceipt"
+        #endif
+    }
 
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
@@ -580,7 +596,7 @@ public class AppEnvironment {
         )
 
         // Create a file log destination
-        let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        let isTestFlight = AppEnvironment.isTestFlightReceipt()
         let fileDestination = AutoRotatingFileDestination(
             writeToFile: logPath,
             identifier: "advancedLogger.fileDestination",

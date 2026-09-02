@@ -951,6 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "Liigu edasi";
 "mac.open_in_safari.accessibility_label" = "Ava Safaris";
 "mac.paste.accessibility_label" = "Aseta";
+"mac.sidebar.done" = "Done";
+"mac.sidebar.edit" = "Edit Sidebar";
+"mac.sidebar.hidden_section.header" = "Hidden";
+"mac.sidebar.hide" = "Hide";
+"mac.sidebar.notifications" = "Notifications";
+"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
+"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
+"mac.sidebar.settings" = "Settings";
+"mac.sidebar.show" = "Show";
+"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
 "magic_item.action" = "Toiming";
 "magic_item.action.assist.pipeline.title" = "Voog";
 "magic_item.action.assist.start_listening.title" = "Alusta kuulamist";
@@ -1017,7 +1027,9 @@
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
 "menu.view.customize_toolbar" = "Tööriistariba kohandamine…";
 "menu.view.find" = "Otsi";
+"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Taaslae vaade";
+"menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "See on beetafunktsioon, kui tekib probleeme, teata neist alloleva nupu abil. \
  \
  Praegu toetatakse mTLS-i ainult iOS 17+ versioonides ning see võib põhjustada probleeme teavitusmanuste kuvamise ja Assist TTS-heli kuvamisega ning see ei tööta täielikult Apple Watchis.";
@@ -1326,6 +1338,13 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.app_icon_shortcuts.reset.title" = "Rakenduse ikooni otseteede lähtestamine";
 "settings.app_icon_shortcuts.subtitle" = "Vali üksused mis kuvatakse rakenduse ikooni pikal vajutamisel.";
 "settings.app_icon_shortcuts.title" = "Rakenduse ikoonide otseteed";
+"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
+"settings.app_labs.features_section.header" = "Experimental features";
+"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
+"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
+"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
+"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktiveeri";
 "settings.connection_section.add_server" = "Lisa server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Kui teil on ebaturvaline ühendus võib see paljastada teie autentimistõendi avalikes võrkudes.";
@@ -1648,6 +1667,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "Pole tulemusi päringule „%@\"";
 "settings.search.prompt" = "Otsingu seaded";
 "settings.search_keywords.app_icon_shortcuts" = "kiirtoimingud, avakuva, pikk vajutus, käivitusrakendus";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "auto, sõiduk, juhtimine, kuvapaneel";
 "settings.search_keywords.complications" = "kella sihverplaat, Apple Watch, glance";
 "settings.search_keywords.debugging" = "logid, diagnostika, eksport, andmebaas, tõrkeotsing, lähtestamine";
@@ -2661,6 +2681,10 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.calendar.tomorrow" = "Homme";
 "widgets.commonly_used_entities.description" = "Kuva sagedamini kasutatavaid üksusi vastavalt kasutusmustritele.";
 "widgets.commonly_used_entities.empty.description" = "Ühtegi sageli kasutatavat üksust ei leitud. Kasuta oma kasutusajaloo loomiseks Home Assistantit.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
 "widgets.commonly_used_entities.title" = "Tüüpilised juhtseaded";
 "widgets.content_source.complication" = "Komplikatsioon";
 "widgets.content_source.entity" = "Olem";
@@ -2745,6 +2769,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.custom.show_last_update_time.param.title" = "Kuva viimase värskenduse aeg";
 "widgets.custom.show_states.description" = "Viimaste olekute kuvamine ei ole 100% tagatud, võid proovida ja vaadata lisateavet kaasrakenduse dokumentatsioonist.";
 "widgets.custom.show_states.param.title" = "Kuva olekud (BEETA)";
+"widgets.custom.show_states.param.title_no_beta" = "Show states";
 "widgets.custom.show_update_time.title" = "Viimati uuendatud:";
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";
@@ -2758,8 +2783,11 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Suurema teksti mall";
 "widgets.details.title" = "Üksikasjad";
+"widgets.energy.battery" = "Battery";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
+"widgets.energy.electricity" = "Grid";
 "widgets.energy.electricity_total" = "Electricity total";
+"widgets.energy.gas" = "Gas";
 "widgets.energy.grid" = "Grid";
 "widgets.energy.no_connection" = "Ühendus pole saadaval, kontrolli oma Home Assistant’i URL-i seadeid";
 "widgets.energy.no_data" = "No energy data";
@@ -2772,7 +2800,9 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.refresh_title" = "Värskenda energiat";
 "widgets.energy.solar" = "Päikeseenergia";
 "widgets.energy.source.auto" = "Automaatne";
+"widgets.energy.source.battery" = "Battery";
 "widgets.energy.source.consumption" = "Tarbimine";
+"widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Päikeseenergia";
 "widgets.energy.source.title" = "Allikas";
 "widgets.energy.title" = "Energia";
@@ -2801,6 +2831,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Atribuut";
 "widgets.parameters.complication" = "Komplikatsioon";
+"widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Olem";
 "widgets.preview.custom.description" = "Loo rakenduses oma vidin ja kuva see siis siin.";
 "widgets.preview.custom.title" = "Kohandatud vidin";
