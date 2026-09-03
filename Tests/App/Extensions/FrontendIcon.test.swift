@@ -18,6 +18,8 @@ struct FrontendIconTests {
     func resolvesBrandIconsPerPrefix() {
         // `MDI_PREFIXES` in the frontend's `data/iconsets.ts`; the brand logos sit behind that gate.
         #expect(FrontendIcon(serversideValueNamed: "hass:matter", fallback: .puzzleIcon) == .brand(.matter))
+        #expect(FrontendIcon(serversideValueNamed: "hassio:matter", fallback: .puzzleIcon) == .brand(.matter))
+        #expect(FrontendIcon(serversideValueNamed: "hademo:matter", fallback: .puzzleIcon) == .brand(.matter))
         #expect(FrontendIcon(serversideValueNamed: "hacs:matter", fallback: .puzzleIcon) == .material(.puzzleIcon))
     }
 
@@ -25,6 +27,7 @@ struct FrontendIconTests {
     func resolvesMaterialDesignIcons() {
         #expect(FrontendIcon(serversideValueNamed: "mdi:zigbee", fallback: .puzzleIcon) == .material(.zigbeeIcon))
         #expect(FrontendIcon(serversideValueNamed: "hass:cog", fallback: .puzzleIcon) == .material(.cogIcon))
+        #expect(FrontendIcon(serversideValueNamed: "hassio:cog", fallback: .puzzleIcon) == .material(.cogIcon))
         #expect(FrontendIcon(serversideValueNamed: "hacs:hacs", fallback: .puzzleIcon) == .material(.puzzleIcon))
     }
 
