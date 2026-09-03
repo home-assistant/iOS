@@ -951,16 +951,16 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "mac.navigation.go_forward.accessibility_label" = "Vorwärts navigieren";
 "mac.open_in_safari.accessibility_label" = "In Safari öffnen";
 "mac.paste.accessibility_label" = "Einsetzen";
-"mac.sidebar.done" = "Done";
-"mac.sidebar.edit" = "Edit Sidebar";
-"mac.sidebar.hidden_section.header" = "Hidden";
-"mac.sidebar.hide" = "Hide";
-"mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
-"mac.sidebar.settings" = "Settings";
-"mac.sidebar.show" = "Show";
-"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
+"mac.sidebar.done" = "Fertig";
+"mac.sidebar.edit" = "Seitenleiste bearbeiten";
+"mac.sidebar.hidden_section.header" = "Ausgeblendet";
+"mac.sidebar.hide" = "Ausblenden";
+"mac.sidebar.notifications" = "Benachrichtigungen";
+"mac.sidebar.reset_to_defaults" = "Auf Standard zurücksetzen";
+"mac.sidebar.set_default_dashboard" = "Als Standard-Dashboard festlegen";
+"mac.sidebar.settings" = "Einstellungen";
+"mac.sidebar.show" = "Einblenden";
+"mac.toggle_sidebar.accessibility_label" = "Seitenleiste ein-/ausblenden";
 "magic_item.action" = "Aktion";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Spracheingabe aktivieren";
@@ -1027,9 +1027,9 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.customize_toolbar" = "Symbolleiste anpassen …";
 "menu.view.find" = "Suchen";
-"menu.view.hide_sidebar" = "Hide Sidebar";
+"menu.view.hide_sidebar" = "Seitenleiste ausblenden";
 "menu.view.reload_page" = "Seite neu laden";
-"menu.view.show_sidebar" = "Show Sidebar";
+"menu.view.show_sidebar" = "Seitenleiste einblenden";
 "mtls.beta.info" = "Dies ist eine Beta-Funktion. Solltest du Probleme feststellen, melde diese bitte über den Knopf unten. \
 \
 Aktuell wird mTLS nur unter iOS 17 und höher unterstützt. Es kann zu Problemen bei der Anzeige von Benachrichtigungsanhängen und der Assist-Sprachausgabe (TTS) kommen. Auf der Apple Watch ist die Funktion nicht vollständig verfügbar.";
@@ -1338,12 +1338,12 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.app_icon_shortcuts.reset.title" = "Kurzbefehle des App-Symbols zurücksetzen";
 "settings.app_icon_shortcuts.subtitle" = "Wähle Einträge aus, die angezeigt werden sollen, wenn du lange auf das App-Symbol drückst.";
 "settings.app_icon_shortcuts.title" = "Kurzbefehle des App-Symbols";
-"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
-"settings.app_labs.features_section.header" = "Experimental features";
-"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
-"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
-"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.empty_state" = "Auf diesem Gerät sind derzeit keine experimentellen Funktionen verfügbar.";
+"settings.app_labs.features_section.header" = "Experimentelle Funktionen";
+"settings.app_labs.header.subtitle" = "App Labs sind experimentelle Funktionen, die jederzeit geändert oder entfernt werden können. Die Nutzung erfolgt auf eigene Gefahr.";
+"settings.app_labs.mac_native_sidebar.footer" = "Ersetzt die Home Assistant-Seitenleiste durch eine native macOS-Seitenleiste. Die Seite wird neu geladen, wenn du diese Einstellung änderst.";
+"settings.app_labs.mac_native_sidebar.title" = "Native Seitenleiste";
+"settings.app_labs.testflight_only.body" = "App Labs ist nur in TestFlight-Builds verfügbar.";
 "settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Aktivieren";
 "settings.connection_section.add_server" = "Server hinzufügen";
@@ -1667,7 +1667,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.search.no_results.title" = "Keine Ergebnisse für „%@“";
 "settings.search.prompt" = "Sucheinstellungen";
 "settings.search_keywords.app_icon_shortcuts" = "Schnellaktionen, Startbildschirm, langes Drücken, Launcher";
-"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
+"settings.search_keywords.app_labs" = "experimentell, Beta, Labs, Funktionen, TestFlight, Seitenleiste";
 "settings.search_keywords.car_play" = "Auto, Fahrzeug, Fahren, Armaturenbrett";
 "settings.search_keywords.complications" = "Zifferblatt, Apple Watch, Glance";
 "settings.search_keywords.debugging" = "Protokolle, Diagnose, Export, Datenbank, Fehlerbehebung, Zurücksetzen";
@@ -2007,6 +2007,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings_sensors.periodic_update.description" = "Wenn diese Option aktiviert ist, werden diese Sensoren mit dieser Frequenz aktualisiert, während die App im Vordergrund geöffnet ist.";
 "settings_sensors.periodic_update.description_foreground" = "Diese Frequenz gilt nur, solange die App auf dem Bildschirm geöffnet ist. Läuft die App im Hintergrund, entscheidet iOS, wann die Sensoren aktualisiert werden können.";
 "settings_sensors.periodic_update.description_mac" = "Aktivieren, damit sich diese Sensoren mit dieser Aktualisierungsfrequenz aktualisieren während die App geöffnet ist. Manche Sensoren aktualisieren automatisch öfter.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Aus";
 "settings_sensors.periodic_update.title" = "Regelmäßige Aktualisierung";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2806,6 +2807,10 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "widgets.energy.source.solar" = "PV";
 "widgets.energy.source.title" = "Quelle";
 "widgets.energy.title" = "Energie";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entitätszustand";
 "widgets.gauge.description" = "Numerische Zustände von Home Assistant in einer Analoganzeige darstellen";
 "widgets.gauge.gallery_description" = "Eine Entität, eine Watch-Komplikation oder ein Template aus Home Assistant als Analoganzeige anzeigen";

@@ -2007,6 +2007,7 @@ Importen erstatter alle kategorier, der vises på denne skærm, herunder appinds
 "settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, med denne frekvens, når appen er åben.";
 "settings_sensors.periodic_update.description_foreground" = "Denne frekvens gælder kun, mens appen er åben på skærmen. Når appen kører i baggrunden, er det iOS, der bestemmer, hvornår den kan opdatere sensorerne.";
 "settings_sensors.periodic_update.description_mac" = "Når dette er aktiveret, opdateres sensorer med den angivne frekvens, mens appen er åben. Nogle sensorer opdateres automatisk hyppigere.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Fra";
 "settings_sensors.periodic_update.title" = "Periodisk opdatering";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Solenergi";
 "widgets.energy.source.title" = "Kilde";
 "widgets.energy.title" = "Energi";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entitettilstand";
 "widgets.gauge.description" = "Vis numeriske tilstande fra Home Assistant i en måler";
 "widgets.gauge.gallery_description" = "Vis en enhed, en urkomplikation eller en skabelon fra Home Assistant i en måler";

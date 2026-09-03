@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update with this frequency while the app is open in the foreground.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Pois päältä";
 "settings_sensors.periodic_update.title" = "Säännöllinen päivitys";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entiteetin tila";
 "widgets.gauge.description" = "Home Assistantin numeeristen tilojen näyttäminen mittarissa";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
