@@ -80,8 +80,11 @@ final class IconImageCache: @unchecked Sendable {
         return nil
     }
 
+    /// Capped at the whole budget, both because no single entry can be worth more than that and because an
+    /// unbounded `Int` conversion would trap.
     private static func cost(of image: UIImage) -> Int {
         let bytes = image.size.width * image.scale * image.size.height * image.scale * 4
-        return bytes.isFinite ? Int(bytes) : 0
+        guard bytes.isFinite, bytes > 0 else { return 0 }
+        return Int(min(bytes, CGFloat(totalCostLimit)))
     }
 }

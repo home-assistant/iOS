@@ -8,7 +8,7 @@ import Shared
 final class MacSidebarSnapshotStore {
     static let shared = MacSidebarSnapshotStore()
 
-    private static let storageKey = "macSidebarSnapshots"
+    static let storageKey = "macSidebarSnapshots"
 
     private let userDefaults: UserDefaults
     private var snapshots: [String: MacSidebarSnapshot]
@@ -34,6 +34,9 @@ final class MacSidebarSnapshotStore {
             return try JSONDecoder().decode([String: MacSidebarSnapshot].self, from: data)
         } catch {
             Current.Log.error("Failed to decode cached native sidebar snapshots: \(error)")
+            // Dropped rather than left behind, so the cache heals on the next write instead of failing to
+            // decode for every window from here on.
+            userDefaults.removeObject(forKey: storageKey)
             return [:]
         }
     }

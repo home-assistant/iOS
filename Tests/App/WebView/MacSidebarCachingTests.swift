@@ -101,4 +101,15 @@ struct MacSidebarCachingTests {
         #expect(restored.snapshot(for: "server-1") == snapshot)
         #expect(restored.snapshot(for: "server-2") == nil)
     }
+
+    @Test("A cache that cannot be decoded is dropped rather than kept around failing")
+    func undecodableCacheIsDiscarded() {
+        let defaults = makeUserDefaults("undecodable")
+        defaults.set(Data("not a snapshot".utf8), forKey: MacSidebarSnapshotStore.storageKey)
+
+        let store = MacSidebarSnapshotStore(userDefaults: defaults)
+
+        #expect(store.snapshot(for: "server-1") == nil)
+        #expect(defaults.data(forKey: MacSidebarSnapshotStore.storageKey) == nil)
+    }
 }
