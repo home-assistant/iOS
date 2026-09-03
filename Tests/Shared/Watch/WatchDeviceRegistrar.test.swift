@@ -40,6 +40,73 @@ struct WatchDeviceRegistrarTests {
         #expect(WatchDeviceIdentity.deviceName(companionDeviceName: "   ", watchName: "Apple Watch") == "Apple Watch")
     }
 
+    @Test func numberedDeviceNames() {
+        #expect(WatchDeviceIdentity.deviceName("My Apple Watch", attempt: 1) == "My Apple Watch")
+        #expect(WatchDeviceIdentity.deviceName("My Apple Watch", attempt: 2) == "My Apple Watch 2")
+        #expect(WatchDeviceIdentity.deviceName("My Apple Watch", attempt: 10) == "My Apple Watch 10")
+    }
+
+    @Test func recognizesNumberedVariantsOfADeviceName() {
+        #expect(WatchDeviceIdentity.isDeviceName("My Apple Watch", variantOf: "My Apple Watch"))
+        #expect(WatchDeviceIdentity.isDeviceName("My Apple Watch 2", variantOf: "My Apple Watch"))
+        #expect(WatchDeviceIdentity.isDeviceName("My Apple Watch 12", variantOf: "My Apple Watch"))
+        #expect(!WatchDeviceIdentity.isDeviceName("My Apple Watch Pro", variantOf: "My Apple Watch"))
+        #expect(!WatchDeviceIdentity.isDeviceName("Apple Watch", variantOf: "My Apple Watch"))
+        #expect(!WatchDeviceIdentity.isDeviceName(nil, variantOf: "My Apple Watch"))
+    }
+
+    @Test func recognizesATakenName() {
+        #expect(WatchDeviceRegistrar.isNameTaken(HomeAssistantRESTError.unacceptableStatus(code: 409, body: nil)))
+        #expect(WatchDeviceRegistrar.isNameTaken(HomeAssistantRESTError.unacceptableStatus(
+            code: 400,
+            body: #"{"message": "A device with this name already exists"}"#
+        )))
+        #expect(!WatchDeviceRegistrar.isNameTaken(HomeAssistantRESTError.unacceptableStatus(code: 400, body: "Bad")))
+        #expect(!WatchDeviceRegistrar.isNameTaken(HomeAssistantRESTError.unacceptableStatus(
+            code: 500,
+            body: "already exists"
+        )))
+        #expect(!WatchDeviceRegistrar.isNameTaken(URLError(.timedOut)))
+    }
+
+    @Test func registerAppendsANumberWhileTheNameIsTaken() async throws {
+        let store = FakeWatchDeviceRegistrationStore()
+        Current.watchDeviceRegistrations = store
+        let server = Server.fake()
+        let capture = BodyCapture()
+
+        let registration = try await WatchDeviceRegistrar.register(
+            server: server,
+            identity: identity,
+            send: { _, body, _ in
+                capture.names.append(body["device_name"] as? String ?? "")
+                guard capture.names.count == 3 else {
+                    throw HomeAssistantRESTError.unacceptableStatus(code: 409, body: "already exists")
+                }
+                return ["webhook_id": "new-hook"]
+            }
+        )
+
+        #expect(capture.names == ["My Apple Watch", "My Apple Watch 2", "My Apple Watch 3"])
+        #expect(registration.deviceName == "My Apple Watch 3")
+        #expect(store.registration(for: server.identifier)?.deviceName == "My Apple Watch 3")
+    }
+
+    @Test func registerGivesUpAfterTheLastNumber() async {
+        Current.watchDeviceRegistrations = FakeWatchDeviceRegistrationStore()
+        let capture = BodyCapture()
+
+        await #expect(throws: HomeAssistantRESTError.unacceptableStatus(code: 409, body: nil)) {
+            try await WatchDeviceRegistrar.register(server: Server.fake(), identity: identity, send: { _, body, _ in
+                capture.names.append(body["device_name"] as? String ?? "")
+                throw HomeAssistantRESTError.unacceptableStatus(code: 409, body: nil)
+            })
+        }
+
+        #expect(capture.names.count == WatchDeviceRegistrar.maximumNameAttempts)
+        #expect(capture.names.last == "My Apple Watch \(WatchDeviceRegistrar.maximumNameAttempts)")
+    }
+
     @Test func deviceNameForAServerReadsThePhonesStampedName() {
         let deviceName = Current.device.deviceName
         defer { Current.device.deviceName = deviceName }
@@ -265,4 +332,5 @@ struct WatchDeviceRegistrarTests {
 private final class BodyCapture: @unchecked Sendable {
     var body: [String: Any]?
     var timeout: TimeInterval?
+    var names = [String]()
 }

@@ -46,6 +46,19 @@ public struct WatchDeviceIdentity: Equatable {
         return "\(companion) \(watchName)"
     }
 
+    /// `base` with `attempt` appended, e.g. "My iPhone Apple Watch 2"; the first attempt is `base` itself.
+    public static func deviceName(_ base: String, attempt: Int) -> String {
+        attempt <= 1 ? base : "\(base) \(attempt)"
+    }
+
+    /// Whether `name` is `base` or `base` with a number appended.
+    public static func isDeviceName(_ name: String?, variantOf base: String) -> Bool {
+        guard let name else { return false }
+        if name == base { return true }
+        guard name.hasPrefix(base + " ") else { return false }
+        return Int(name.dropFirst(base.count + 1)) != nil
+    }
+
     /// The `device_name` the watch registers with `server`.
     public static func deviceName(for server: Server) -> String {
         deviceName(

@@ -285,6 +285,19 @@ struct WatchDeviceReporterTests {
         #expect(store.registration(for: server.identifier)?.deviceName == "My iPhone Apple Watch")
     }
 
+    @Test func aNumberedRegistrationIsNotRenamed() async throws {
+        var known = registration
+        known.deviceName = "My iPhone Apple Watch 2"
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.isEmpty)
+    }
+
     @Test func aRegistrationWithTheRightNameIsNotRenamed() async throws {
         var known = registration
         known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]

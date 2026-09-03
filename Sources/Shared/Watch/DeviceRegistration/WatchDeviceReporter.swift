@@ -206,7 +206,9 @@ public actor WatchDeviceReporter {
         timeout: TimeInterval
     ) async throws -> WatchDeviceRegistration {
         let identity = dependencies.identity(server)
-        guard registration.deviceName != identity.deviceName else { return registration }
+        guard !WatchDeviceIdentity.isDeviceName(registration.deviceName, variantOf: identity.deviceName) else {
+            return registration
+        }
 
         Current.Log.info("renaming watch registration with \(server.info.name) to \"\(identity.deviceName)\"")
         _ = try await send(
