@@ -60,28 +60,42 @@ import Shared
 /// )
 /// ```
 enum WhatsNewCatalog {
+    // Live Activities are iOS-only (the widget bundle skips them on Catalyst) and need iOS 17.2, so the
+    // release targets the phone and tablet from that version up. The Energy widget also ships on the Mac,
+    // which has no release of its own because the catalog holds a single one.
     static let release: WhatsNewRelease? = WhatsNewRelease(
-        id: WhatsNewReleaseId("drop-support-2026.7.1"),
-        version: WhatsNewAppVersion(major: 2026, minor: 7, patch: 1),
-        targetPlatforms: [.iPhone, .iPad, .mac],
+        id: WhatsNewReleaseId("live-activities-energy-widget-2026.9.1"),
+        version: WhatsNewAppVersion(major: 2026, minor: 9, patch: 1),
+        targetPlatforms: [.iPhone, .iPad],
         osRequirements: WhatsNewOSRequirements(
-            iOS: WhatsNewOSVersionRange(
-                minimum: WhatsNewOSVersion(major: 15),
-                maximum: .init(major: 16, minor: 3, patch: 9)
-            ),
-            macOS: WhatsNewOSVersionRange(
-                minimum: WhatsNewOSVersion(major: 10),
-                maximum: .init(major: 11, minor: 9, patch: 9)
-            )
+            iOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 17, minor: 2))
         ),
-        title: L10n.WhatsNew.AppSupportUpdate.title,
         items: [
             .init(
-                id: "drop-support",
-                title: L10n.WhatsNew.AppSupportUpdate.itemTitle,
-                body: L10n.WhatsNew.AppSupportUpdate.itemBody,
-                icon: .sfSymbol(.iphoneSlash),
-                destination: .link(AppConstants.WebURLs.appleDropSupportiOS15)
+                id: "live-activities",
+                title: L10n.WhatsNew.LiveActivities.itemTitle,
+                body: L10n.WhatsNew.LiveActivities.itemBody,
+                icon: .sfSymbol(.timer),
+                destination: .article(ArticleMessage(
+                    icon: .sfSymbol(.timer),
+                    title: L10n.WhatsNew.LiveActivities.itemTitle,
+                    body: L10n.WhatsNew.LiveActivities.articleBody,
+                    action: .init(
+                        title: L10n.WhatsNew.LiveActivities.articleAction,
+                        url: AppConstants.WebURLs.liveActivitiesDocs
+                    )
+                ))
+            ),
+            .init(
+                id: "energy-widget",
+                title: L10n.WhatsNew.EnergyWidget.itemTitle,
+                body: L10n.WhatsNew.EnergyWidget.itemBody,
+                icon: .sfSymbol(.boltFill),
+                destination: .article(ArticleMessage(
+                    icon: .sfSymbol(.boltFill),
+                    title: L10n.WhatsNew.EnergyWidget.itemTitle,
+                    body: L10n.WhatsNew.EnergyWidget.articleBody
+                ))
             ),
         ]
     )

@@ -2651,8 +2651,19 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
 "whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget brings your energy dashboard to your Home Screen and Lock Screen. Grid, solar, battery, and gas totals for the period you choose, and live power on the smaller sizes when you have power sensors set up.\
+\
+To add it, touch and hold your Home Screen, tap the add button, and search for Home Assistant. The widget needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
+"whats_new.live_activities.article_action" = "Read the documentation";
+"whats_new.live_activities.article_body" = "A notification from Home Assistant can now start a **Live Activity**: a card on your Lock Screen and in the Dynamic Island that stays up to date while something is in progress.\
+\
+Show a message, a progress bar, or a live countdown, pick an icon and colors, and update it in place as things change. Tapping it opens the dashboard you choose. Live Activities need iOS 17.2 or later.";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how to start one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Activate";

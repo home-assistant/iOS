@@ -8569,11 +8569,33 @@ public enum L10n {
       /// App support update
       public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
     }
+    public enum EnergyWidget {
+      /// The new **Energy** widget brings your energy dashboard to your Home Screen and Lock Screen. Grid, solar, battery, and gas totals for the period you choose, and live power on the smaller sizes when you have power sensors set up.
+      /// 
+      /// To add it, touch and hold your Home Screen, tap the add button, and search for Home Assistant. The widget needs an energy dashboard configured in Home Assistant.
+      public static var articleBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.article_body") }
+      /// See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.item_body") }
+      /// Energy widget
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.energy_widget.item_title") }
+    }
     public enum Item {
       /// Opens an article
       public static var opensArticleHint: String { return L10n.tr("Localizable", "whats_new.item.opens_article_hint") }
       /// Opens a link
       public static var opensLinkHint: String { return L10n.tr("Localizable", "whats_new.item.opens_link_hint") }
+    }
+    public enum LiveActivities {
+      /// Read the documentation
+      public static var articleAction: String { return L10n.tr("Localizable", "whats_new.live_activities.article_action") }
+      /// A notification from Home Assistant can now start a **Live Activity**: a card on your Lock Screen and in the Dynamic Island that stays up to date while something is in progress.
+      /// 
+      /// Show a message, a progress bar, or a live countdown, pick an icon and colors, and update it in place as things change. Tapping it opens the dashboard you choose. Live Activities need iOS 17.2 or later.
+      public static var articleBody: String { return L10n.tr("Localizable", "whats_new.live_activities.article_body") }
+      /// Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how to start one.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.live_activities.item_body") }
+      /// Live Activities
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.live_activities.item_title") }
     }
   }
 
