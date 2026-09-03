@@ -59,6 +59,10 @@ final class WatchHomeViewModel: ObservableObject {
 
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
+    /// Keeps the app running through a wrist-down while a sync is in flight: the chunked pull is a
+    /// long series of interactive round-trips that would otherwise stall the moment the process
+    /// suspends, leaving the user to raise their wrist and reload again.
+    private let runtimeSessions: WatchExtendedRuntimeSessionHolding
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
     /// through numbers too fast to read.
@@ -91,7 +95,8 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + (Self.minStatusDisplay - elapsed), execute: work)
     }
 
-    init() {
+    init(runtimeSessions: WatchExtendedRuntimeSessionHolding = WatchExtendedRuntimeSessionManager.shared) {
+        self.runtimeSessions = runtimeSessions
         // The phone answers a background config pull with a guaranteed message; route it through the
         // same conflict-aware reconcile as the interactive reply so offline edits aren't clobbered.
         self.guaranteedObserver = Communicator.shared.guaranteedMessage.observe { [weak self] message in
@@ -182,6 +187,9 @@ final class WatchHomeViewModel: ObservableObject {
         }
         isSyncInFlight = true
         isSyncUserInitiated = userInitiated
+        // Released wherever the sync reaches a terminal state (`updateLoading(isLoading: false)` or
+        // the background-pull fallback).
+        runtimeSessions.begin(.databaseSync)
         isLoading = true
         clearError()
         setLoadingStatus(L10n.Watch.Sync.starting)
@@ -207,6 +215,7 @@ final class WatchHomeViewModel: ObservableObject {
         // keeps this abandoned sync from blocking a later reload.
         isLoading = false
         isSyncInFlight = false
+        runtimeSessions.end(.databaseSync)
         loadCache()
         setLoadingStatus(L10n.Watch.Home.Sync.waiting)
         enqueueGuaranteedConfigPull()
@@ -823,6 +832,7 @@ final class WatchHomeViewModel: ObservableObject {
                 // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
                 // start.
                 self?.isSyncInFlight = false
+                self?.runtimeSessions.end(.databaseSync)
                 self?.syncProgress = nil
                 if clearStatus {
                     // Cancel any pending throttled status update and clear immediately.

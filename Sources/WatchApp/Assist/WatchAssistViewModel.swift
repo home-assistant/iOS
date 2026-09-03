@@ -34,6 +34,9 @@ final class WatchAssistViewModel: ObservableObject {
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
     private let immediateCommunicatorService: ImmediateCommunicatorService
+    /// Keeps the app running through a wrist-down while the Assist screen is up, so a pipeline
+    /// round-trip finishes (and TTS plays) even when the display has gone dark.
+    private let runtimeSessions: WatchExtendedRuntimeSessionHolding
     /// Written prompt of an Assist prompt item: the session sends it instead of listening. `nil`
     /// for a regular voice session.
     private let prompt: String?
@@ -45,10 +48,12 @@ final class WatchAssistViewModel: ObservableObject {
         audioRecorder: any WatchAudioRecorderProtocol,
         audioPlayer: any AudioPlayerProtocol,
         immediateCommunicatorService: ImmediateCommunicatorService,
+        runtimeSessions: WatchExtendedRuntimeSessionHolding = WatchExtendedRuntimeSessionManager.shared,
         prompt: String? = nil
     ) {
         self.audioRecorder = audioRecorder
         self.immediateCommunicatorService = immediateCommunicatorService
+        self.runtimeSessions = runtimeSessions
         self.assistService = assistService
         self.audioPlayer = audioPlayer
         self.prompt = prompt
@@ -96,11 +101,18 @@ final class WatchAssistViewModel: ObservableObject {
         immediateCommunicatorService.addObserver(.init(delegate: self))
     }
 
+    /// Hold the extended runtime session for as long as the screen is showing. Called on every
+    /// appearance, as `endRoutine()` releases it whenever the screen goes away (volume push included).
+    func beginExtendedRuntime() {
+        runtimeSessions.begin(.assist)
+    }
+
     func endRoutine() {
         stopRecording()
         assistService.endRoutine()
         timer?.invalidate()
         immediateCommunicatorService.removeObserver(self)
+        runtimeSessions.end(.assist)
     }
 
     func assist() {
