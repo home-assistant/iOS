@@ -61,11 +61,33 @@ public enum WatchDeviceRegistrar {
         )
     }
 
+    /// Posts a registration body to a server's `mobile_app/registrations` and returns the JSON reply.
+    public typealias Send = (Server, [String: Any], TimeInterval) async throws -> Any
+
+    /// The real transport: the server's REST API.
+    public static func sendRegistration(
+        server: Server,
+        body: [String: Any],
+        timeout: TimeInterval
+    ) async throws -> Any {
+        try await HomeAssistantRESTClient.sendForJSON(
+            server: server,
+            method: .post,
+            path: ["mobile_app", "registrations"],
+            body: body,
+            timeout: timeout
+        )
+    }
+
     /// Registers with `server` and remembers the result in `Current.watchDeviceRegistrations`.
+    ///
+    /// - Parameter send: how the registration reaches the server; REST unless a test substitutes
+    ///   a fake.
     public static func register(
         server: Server,
         identity: WatchDeviceIdentity = .current(),
-        timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout
+        timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout,
+        send: Send = WatchDeviceRegistrar.sendRegistration
     ) async throws -> WatchDeviceRegistration {
         Current.Log.info(
             "registering watch with \(server.info.name) as \"\(identity.appName)\" on \"\(identity.deviceName)\""
@@ -73,12 +95,10 @@ public enum WatchDeviceRegistrar {
 
         let json: Any
         do {
-            json = try await HomeAssistantRESTClient.sendForJSON(
-                server: server,
-                method: .post,
-                path: ["mobile_app", "registrations"],
-                body: registrationBody(identity: identity, serverVersion: server.info.version),
-                timeout: timeout
+            json = try await send(
+                server,
+                registrationBody(identity: identity, serverVersion: server.info.version),
+                timeout
             )
         } catch let HomeAssistantRESTError.unacceptableStatus(code, _) where code == 404 {
             throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded

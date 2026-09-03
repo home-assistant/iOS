@@ -7,11 +7,13 @@ import KeychainAccess
 public final class KeychainWatchDeviceRegistrationStore: WatchDeviceRegistrationStore {
     public static let service = "\(AppConstants.BundleID).watch-device-registration"
 
-    private let keychain: KeychainAccess.Keychain
+    private let keychain: ServerManagerKeychain
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
-    public init(keychain: KeychainAccess.Keychain = .init(service: KeychainWatchDeviceRegistrationStore.service)) {
+    /// - Parameter keychain: the store to keep registrations in; the Keychain unless a test
+    ///   substitutes an in-memory one.
+    public init(keychain: ServerManagerKeychain = Keychain(service: KeychainWatchDeviceRegistrationStore.service)) {
         self.keychain = keychain
     }
 

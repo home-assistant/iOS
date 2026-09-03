@@ -29,7 +29,7 @@ public enum WatchUserDefaultsKey: String {
     case sensorReportLastError
 }
 
-public final class WatchUserDefaults {
+public final class WatchUserDefaults: WatchSensorSettings {
     public static var shared = WatchUserDefaults()
 
     private let userDefaults = UserDefaults()

@@ -1,6 +1,5 @@
 import Foundation
 
-#if os(watchOS)
 /// Reports the watch's own sensors to every server, registering the watch as a `mobile_app` device
 /// of its own first.
 ///
@@ -9,8 +8,47 @@ import Foundation
 /// running. Runs are coalesced: a trigger that lands while a run is in flight waits for it rather
 /// than starting another, because two runs that both find no registration would each register,
 /// and Home Assistant creates a new device for every registration request.
+///
+/// Everything it touches comes in through `Dependencies`, so the orchestration — first
+/// registration, enablement changes, a deleted registration, per-server failures — is exercised by
+/// unit tests on every platform, with the watch supplying the real pieces in `shared`.
 public actor WatchDeviceReporter {
-    public static let shared = WatchDeviceReporter()
+    /// What a run needs from the outside world.
+    public struct Dependencies {
+        public var settings: WatchSensorSettings
+        public var registrations: WatchDeviceRegistrationStore
+        public var servers: () -> [Server]
+        /// Whether the server currently resolves to a URL the watch can reach.
+        public var hasActiveURL: (Server) -> Bool
+        public var currentSensors: () -> [WebhookSensor]
+        public var register: (Server, TimeInterval) async throws -> WatchDeviceRegistration
+        public var send: (String, Any, Server, WatchDeviceRegistration, TimeInterval) async throws -> Any
+        public var now: () -> Date
+
+        public init(
+            settings: WatchSensorSettings,
+            registrations: WatchDeviceRegistrationStore,
+            servers: @escaping () -> [Server],
+            hasActiveURL: @escaping (Server) -> Bool,
+            currentSensors: @escaping () -> [WebhookSensor],
+            register: @escaping (Server, TimeInterval) async throws -> WatchDeviceRegistration,
+            send: @escaping (String, Any, Server, WatchDeviceRegistration, TimeInterval) async throws -> Any,
+            now: @escaping () -> Date
+        ) {
+            self.settings = settings
+            self.registrations = registrations
+            self.servers = servers
+            self.hasActiveURL = hasActiveURL
+            self.currentSensors = currentSensors
+            self.register = register
+            self.send = send
+            self.now = now
+        }
+    }
+
+    #if os(watchOS)
+    public static let shared = WatchDeviceReporter(dependencies: .live)
+    #endif
 
     /// Posted on the main queue once a run finishes, so an open settings screen refreshes its status.
     public static let didFinishNotification = Notification.Name("WatchDeviceReporterDidFinish")
@@ -48,11 +86,15 @@ public actor WatchDeviceReporter {
         }
     }
 
+    private let dependencies: Dependencies
+
     /// The run in progress, if any. Actor isolation alone doesn't serialize runs — every network
     /// `await` lets another trigger in — so a new trigger joins this one instead.
     private var inFlight: Task<[Report], Never>?
 
-    public init() {}
+    public init(dependencies: Dependencies) {
+        self.dependencies = dependencies
+    }
 
     /// Reports to every configured server and returns what happened for each. A trigger that
     /// arrives during a run waits for that run and then runs itself, so a settings change made
@@ -64,10 +106,9 @@ public actor WatchDeviceReporter {
             _ = await inFlight.value
         }
 
-        let defaults = WatchUserDefaults.shared
         if trigger == .foreground,
-           let lastSuccess = defaults.lastSensorReportAt,
-           Current.date().timeIntervalSince(lastSuccess) < Self.minimumForegroundInterval {
+           let lastSuccess = dependencies.settings.lastSensorReportAt,
+           dependencies.now().timeIntervalSince(lastSuccess) < Self.minimumForegroundInterval {
             Current.Log.verbose("skipping watch sensor report on foreground; reported \(lastSuccess)")
             return []
         }
@@ -85,7 +126,7 @@ public actor WatchDeviceReporter {
         Current.Log.info("reporting watch sensors (\(trigger.rawValue))")
 
         // Servers are independent, and the background budget is too short to take them in turn.
-        let servers = Current.servers.all
+        let servers = dependencies.servers()
         let reports = await withTaskGroup(of: (Int, Report).self) { group -> [Report] in
             for (index, server) in servers.enumerated() {
                 group.addTask {
@@ -109,11 +150,10 @@ public actor WatchDeviceReporter {
             if case .reported = report.outcome { return true }
             return false
         }
-        let defaults = WatchUserDefaults.shared
         if anyReported {
-            defaults.lastSensorReportAt = Current.date()
+            dependencies.settings.lastSensorReportAt = dependencies.now()
         }
-        defaults.lastSensorReportError = failures.first
+        dependencies.settings.lastSensorReportError = failures.first
 
         await MainActor.run {
             NotificationCenter.default.post(name: Self.didFinishNotification, object: nil)
@@ -123,7 +163,7 @@ public actor WatchDeviceReporter {
     }
 
     private func report(server: Server, trigger: Trigger) async -> Outcome {
-        guard server.activeURLUsingLastKnownNetworkState() != nil else {
+        guard dependencies.hasActiveURL(server) else {
             return .skipped(reason: "no active URL")
         }
 
@@ -136,12 +176,12 @@ public actor WatchDeviceReporter {
     }
 
     private func report(server: Server, timeout: TimeInterval, allowingReregistration: Bool) async throws -> Outcome {
-        let store = Current.watchDeviceRegistrations
+        let store = dependencies.registrations
         let registration: WatchDeviceRegistration
         if let existing = store.registration(for: server.identifier) {
             registration = existing
         } else {
-            registration = try await WatchDeviceRegistrar.register(server: server, timeout: timeout)
+            registration = try await dependencies.register(server, timeout)
         }
 
         do {
@@ -162,8 +202,8 @@ public actor WatchDeviceReporter {
         registration: WatchDeviceRegistration,
         timeout: TimeInterval
     ) async throws -> Outcome {
-        let sensors = WatchDeviceSensors.current()
-        let enabledIDs = WatchUserDefaults.shared.enabledSensorIDs
+        let sensors = dependencies.currentSensors()
+        let enabledIDs = dependencies.settings.enabledSensorIDs
 
         let outdated = sensors.filter { sensor in
             guard let uniqueID = sensor.UniqueID else { return false }
@@ -223,7 +263,7 @@ public actor WatchDeviceReporter {
 
         // Re-read rather than mutate the caller's copy: each successful registration is written back
         // right away, so a failure part-way through keeps what did get through.
-        let store = Current.watchDeviceRegistrations
+        let store = dependencies.registrations
         for sensor in sensors {
             guard let uniqueID = sensor.UniqueID else { continue }
             let enabled = enabledIDs.contains(uniqueID)
@@ -239,17 +279,11 @@ public actor WatchDeviceReporter {
     /// Sends through the stored registration, reading it fresh so a re-registration earlier in the
     /// run is what gets used. An empty body means Home Assistant no longer knows the webhook.
     private func send(type: String, data: Any, server: Server, timeout: TimeInterval) async throws -> Any {
-        guard let registration = Current.watchDeviceRegistrations.registration(for: server.identifier) else {
+        guard let registration = dependencies.registrations.registration(for: server.identifier) else {
             throw WatchWebhookClient.WebhookError.registrationGone
         }
 
-        let response = try await WatchWebhookClient.send(
-            type: type,
-            data: data,
-            server: server,
-            registration: registration,
-            timeout: timeout
-        )
+        let response = try await dependencies.send(type, data, server, registration, timeout)
 
         // Home Assistant answers a deleted registration with 200 and no body (the cloudhook, with a
         // 404, which `WatchWebhookClient` already maps). Any other shape is a real answer.
@@ -257,6 +291,33 @@ public actor WatchDeviceReporter {
             throw WatchWebhookClient.WebhookError.registrationGone
         }
         return response
+    }
+}
+
+#if os(watchOS)
+public extension WatchDeviceReporter.Dependencies {
+    /// The real watch: its settings, Keychain, servers, sensors and network.
+    static var live: WatchDeviceReporter.Dependencies {
+        WatchDeviceReporter.Dependencies(
+            settings: WatchUserDefaults.shared,
+            registrations: Current.watchDeviceRegistrations,
+            servers: { Current.servers.all },
+            hasActiveURL: { server in server.activeURLUsingLastKnownNetworkState() != nil },
+            currentSensors: WatchDeviceSensors.current,
+            register: { server, timeout in
+                try await WatchDeviceRegistrar.register(server: server, timeout: timeout)
+            },
+            send: { type, data, server, registration, timeout in
+                try await WatchWebhookClient.send(
+                    type: type,
+                    data: data,
+                    server: server,
+                    registration: registration,
+                    timeout: timeout
+                )
+            },
+            now: Current.date
+        )
     }
 }
 #endif

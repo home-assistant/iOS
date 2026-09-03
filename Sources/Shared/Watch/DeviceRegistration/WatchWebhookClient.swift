@@ -67,13 +67,20 @@ public enum WatchWebhookClient {
         return try WebhookPayloadCrypto.decrypt(encoded, secret: secret)
     }
 
+    /// Performs a request against the server's mTLS-aware session and returns the raw response.
+    public typealias Perform = (URLRequest, Server) async throws -> (Data, HTTPURLResponse)
+
     /// Posts one webhook request and returns the decoded response.
+    ///
+    /// - Parameter perform: how the request reaches the network; the server's certificate-aware
+    ///   `URLSession` unless a test substitutes a fake.
     public static func send(
         type: String,
         data: Any,
         server: Server,
         registration: WatchDeviceRegistration,
-        timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout
+        timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout,
+        perform: Perform = WatchWebhookClient.perform
     ) async throws -> Any {
         // Synchronous URL evaluation on purpose — see `MagicItem.executeViaREST`. Evaluating also
         // writes the chosen URL type back to the server, which is what's read next.
@@ -99,7 +106,7 @@ public enum WatchWebhookClient {
         )
 
         Current.Log.info("sending \(type) to \(server.info.name) through the watch registration")
-        let (responseData, response) = try await self.data(for: request, server: server)
+        let (responseData, response) = try await perform(request, server)
 
         switch response.statusCode {
         case 404, 410:
@@ -111,7 +118,7 @@ public enum WatchWebhookClient {
         }
     }
 
-    private static func data(for request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
+    static func perform(_ request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         // The session strongly retains its delegate until invalidated; do it once the task ends.
         defer { session.finishTasksAndInvalidate() }
