@@ -11,6 +11,7 @@ enum MacSidebarItemsBuilder {
 
     private static let fixedPanelPaths: Set<String> = [profilePanelPath, settingsPanelPath, "notfound"]
     private static let lovelaceComponent = "lovelace"
+    private static let ingressComponent = "app"
     private static let sortValueByPath: [String: Int] = [
         "energy": 1,
         "map": 2,
@@ -173,8 +174,14 @@ enum MacSidebarItemsBuilder {
         if let icon = iconByPath[panel.path] {
             return icon
         }
-        let fallback: MaterialDesignIcons = panel
-            .component == lovelaceComponent ? .viewDashboardIcon : .viewDashboardOutlineIcon
+        let fallback: MaterialDesignIcons
+        switch panel.component {
+        case lovelaceComponent: fallback = .viewDashboardIcon
+        // The frontend draws add-on ingress panels with a puzzle piece, see
+        // `computeIngressNavigationPathInfo` in `data/compute-navigation-path-info.ts`.
+        case ingressComponent: fallback = .puzzleIcon
+        default: fallback = .viewDashboardOutlineIcon
+        }
         guard let iconName = panel.icon, !iconName.isEmpty else { return fallback }
         return MaterialDesignIcons(serversideValueNamed: iconName, fallback: fallback)
     }
