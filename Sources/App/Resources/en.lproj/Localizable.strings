@@ -2601,6 +2601,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
 "watch.settings.restart_app.title" = "Restart App";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";

@@ -1,6 +1,5 @@
 import Foundation
 import ObjectMapper
-import Sodium
 
 public enum WebhookRequestContext: MapContext, Equatable {
     case server(Server)
@@ -60,31 +59,11 @@ public struct WebhookRequest: ImmutableMappable {
             return nil
         }
 
-        let sodium = Sodium()
-
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [.sortedKeys]) else {
-            Current.Log.error("Unable to convert JSON dictionary to data!")
+        do {
+            return try WebhookPayloadCrypto.encrypt(data, secret: secret)
+        } catch {
+            Current.Log.error("Unable to generate encrypted webhook payload: \(error)")
             return nil
         }
-
-        guard let jsonStr = String(data: jsonData, encoding: .utf8) else {
-            Current.Log.error("Unable to convert JSON data to string!")
-            return nil
-        }
-
-        guard let encryptedData: Bytes = sodium.secretBox.seal(
-            message: jsonStr.bytes,
-            secretKey: .init(secret)
-        ) else {
-            Current.Log.error("Unable to generate encrypted webhook payload! Secret: \(secret), JSON: \(jsonStr)")
-            return nil
-        }
-
-        guard let b64payload = sodium.utils.bin2base64(encryptedData, variant: .ORIGINAL) else {
-            Current.Log.error("Unable to encode encrypted payload to base64!")
-            return nil
-        }
-
-        return b64payload
     }
 }

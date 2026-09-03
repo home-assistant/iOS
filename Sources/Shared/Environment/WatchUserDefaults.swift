@@ -21,9 +21,15 @@ public enum WatchUserDefaultsKey: String {
     /// shared app group (unlike the other keys) so the watch widget extension's own self fetch can
     /// read it too.
     case complicationRefreshNotificationsEnabled
+    /// Unique IDs of the sensors the watch reports about itself that the user switched on.
+    case enabledSensorIDs
+    /// When the watch last sent its sensors successfully, to any server.
+    case sensorReportLastSuccessAt
+    /// What the last failed sensor report said, cleared by the next run that has no failure.
+    case sensorReportLastError
 }
 
-public final class WatchUserDefaults {
+public final class WatchUserDefaults: WatchSensorSettings {
     public static var shared = WatchUserDefaults()
 
     private let userDefaults = UserDefaults()
@@ -143,6 +149,41 @@ public final class WatchUserDefaults {
         } else {
             userDefaults.removeObject(forKey: key)
         }
+    }
+
+    // MARK: - Watch sensors (reported by the watch as a device of its own)
+
+    /// Unique IDs of the sensors the user switched on. Every sensor is opt-in, so an ID that isn't
+    /// here is off and nothing about it is sent.
+    public var enabledSensorIDs: Set<String> {
+        get { Set(userDefaults.stringArray(forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue) ?? []) }
+        set { userDefaults.set(newValue.sorted(), forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue) }
+    }
+
+    public func isSensorEnabled(uniqueID: String) -> Bool {
+        enabledSensorIDs.contains(uniqueID)
+    }
+
+    public func setSensorEnabled(_ enabled: Bool, uniqueID: String) {
+        var ids = enabledSensorIDs
+        if enabled {
+            ids.insert(uniqueID)
+        } else {
+            ids.remove(uniqueID)
+        }
+        enabledSensorIDs = ids
+    }
+
+    /// When the watch last sent its sensors successfully. `nil` until the first success.
+    public var lastSensorReportAt: Date? {
+        get { date(for: .sensorReportLastSuccessAt) }
+        set { set(newValue, key: .sensorReportLastSuccessAt) }
+    }
+
+    /// What the most recent run's first failure said, or `nil` when it had none.
+    public var lastSensorReportError: String? {
+        get { string(for: .sensorReportLastError) }
+        set { set(newValue, key: .sensorReportLastError) }
     }
 
     // MARK: - Assist pipeline display name

@@ -119,22 +119,7 @@ extension Promise where T == Data {
                 throw WebhookJsonParseError.missingKey
             }
 
-            guard let decoded = sodium.utils.base642bin(encoded, variant: .ORIGINAL, ignore: nil) else {
-                throw WebhookJsonParseError.base64
-            }
-
-            guard let decrypted = sodium.secretBox.open(
-                nonceAndAuthenticatedCipherText: decoded,
-                secretKey: .init(secret)
-            ) else {
-                throw WebhookJsonParseError.decrypt
-            }
-
-            if decrypted.isEmpty {
-                return ()
-            } else {
-                return try JSONSerialization.jsonObject(with: Data(decrypted), options: options)
-            }
+            return try WebhookPayloadCrypto.decrypt(encoded, secret: secret, sodium: sodium, options: options)
         }
     }
 }

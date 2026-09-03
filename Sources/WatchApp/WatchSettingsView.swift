@@ -17,6 +17,7 @@ struct WatchSettingsView: View {
                 serversSection
                 networkSection
                 configurationSection
+                sensorsSection
                 layoutSection
                 troubleshootingSection
                 deleteLocalDataSection
@@ -83,6 +84,16 @@ struct WatchSettingsView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
                 viewModel.reload()
+            }
+        }
+    }
+
+    private var sensorsSection: some View {
+        Section {
+            NavigationLink {
+                WatchSensorsSettingsView()
+            } label: {
+                Label(L10n.Watch.Settings.Sensors.title, systemSymbol: .battery100)
             }
         }
     }
