@@ -35,14 +35,19 @@ final class WhatsNewEngine {
         }
     }
 
-    /// The highest-versioned catalog release this device can show, whether or not it has been seen.
-    /// Ties keep catalog order.
+    /// The highest-versioned catalog release this device can show, whether or not it has been seen. When
+    /// several share that version, the first in catalog order wins.
     func latestRelease() -> WhatsNewRelease? {
         let platform = currentPlatform()
         let osVersion = currentOSVersion()
-        return releases
-            .filter { $0.matches(platform: platform, osVersion: osVersion) }
-            .max { $0.version < $1.version }
+        var latest: WhatsNewRelease?
+        for release in releases where release.matches(platform: platform, osVersion: osVersion) {
+            if let current = latest, release.version <= current.version {
+                continue
+            }
+            latest = release
+        }
+        return latest
     }
 
     func markSeen(_ release: WhatsNewRelease) {

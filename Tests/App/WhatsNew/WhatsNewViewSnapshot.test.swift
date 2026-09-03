@@ -1,13 +1,21 @@
 @testable import HomeAssistant
+import Shared
 import SharedTesting
 import SwiftUI
 import Testing
 
-/// Pins every release currently shipping in `WhatsNewCatalog`, so the screen a user sees after updating is
-/// reviewed as an image and not only as copy. Re-record the references whenever the catalog changes.
+/// Pins the What's New screen: once on the sample release, which is always there, and once per release
+/// currently shipping in `WhatsNewCatalog`, so the screen a user sees after updating is reviewed as an
+/// image and not only as copy. An empty catalog leaves only the sample. Re-record the references whenever
+/// the catalog changes.
 struct WhatsNewViewSnapshotTests {
-    @MainActor @Test func catalogReleases() throws {
-        try #require(!WhatsNewCatalog.releases.isEmpty, "The catalog has no release to snapshot")
+    @MainActor @Test func sampleRelease() {
+        MaterialDesignIcons.register()
+        assertLightDarkSnapshots(of: WhatsNewView(release: WhatsNewCatalog.mock, onViewed: {}))
+    }
+
+    @MainActor @Test func catalogReleases() {
+        MaterialDesignIcons.register()
         for release in WhatsNewCatalog.releases {
             assertLightDarkSnapshots(
                 of: WhatsNewView(release: release, onViewed: {}),

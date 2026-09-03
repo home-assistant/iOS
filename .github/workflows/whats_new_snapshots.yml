@@ -5,12 +5,10 @@ name: What's New snapshots (temporary)
 # Records the reference images for `WhatsNewViewSnapshotTests` on the same runner and Xcode that `ci.yml`
 # uses, checks that a second run passes against them, uploads them for review, and commits them back to the
 # branch. The change was authored where no iOS Simulator is available, so this is how the references land
-# in the PR. A push made with the workflow token does not start another run of this or of `ci.yml`, so
+# in the PR. It only runs when dispatched by hand, on the branch chosen at dispatch, so a workflow with
+# write access never starts on its own. A push made with the workflow token does not start `ci.yml`, so
 # re-run CI on the branch once the commit is there.
 on:
-  push:
-    branches:
-      - whats-new-2026-9
   workflow_dispatch:
 
 concurrency:
@@ -95,4 +93,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Record What's New snapshot references"
+          # The branch may have moved on while the build ran; replay the commit on its current tip.
+          git pull --rebase origin "${{ github.ref_name }}"
           git push origin "HEAD:${{ github.ref_name }}"

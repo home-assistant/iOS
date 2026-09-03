@@ -341,6 +341,28 @@ struct WhatsNewEngineTests {
         #expect(engine.latestRelease() == newer)
     }
 
+    @Test func latestReleaseKeepsCatalogOrderWhenVersionsTie() {
+        let first = Self.release(
+            id: WhatsNewReleaseId("first"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+        let second = Self.release(
+            id: WhatsNewReleaseId("second"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+
+        let engine = WhatsNewEngine(
+            releases: [first, second],
+            currentVersion: { Version(major: 2026, minor: 9, patch: 1) },
+            currentPlatform: { .iPhone },
+            hasSeenRelease: { _ in true }
+        )
+
+        #expect(engine.latestRelease() == first)
+    }
+
     @Test func catalogReleasesHaveUniqueIDs() {
         let ids = WhatsNewCatalog.releases.map(\.id)
         #expect(Set(ids).count == ids.count)
