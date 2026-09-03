@@ -10,7 +10,7 @@ struct WatchDeviceRegistrationTests {
             cloudhookURL: URL(string: "https://hooks.nabu.casa/hook"),
             registeredAt: Date(timeIntervalSince1970: 1_700_000_000),
             registeredSensorEnablement: ["battery_level": true, "battery_state": false],
-            deviceName: "Bruno's iPhone Apple Watch"
+            deviceName: "My iPhone Apple Watch"
         )
 
         let data = try JSONEncoder().encode(registration)

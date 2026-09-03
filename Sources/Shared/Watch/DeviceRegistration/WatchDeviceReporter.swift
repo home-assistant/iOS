@@ -21,8 +21,7 @@ public actor WatchDeviceReporter {
         /// Whether the server currently resolves to a URL the watch can reach.
         public var hasActiveURL: (Server) -> Bool
         public var currentSensors: () -> [WebhookSensor]
-        /// What the watch registers as with the server right now; a stored registration whose
-        /// device name differs is renamed before it is reported through.
+        /// What the watch registers as right now; a stored registration named otherwise is renamed.
         public var identity: (Server) -> WatchDeviceIdentity
         public var register: (Server, TimeInterval) async throws -> WatchDeviceRegistration
         public var send: (String, Any, Server, WatchDeviceRegistration, TimeInterval) async throws -> Any
@@ -200,10 +199,7 @@ public actor WatchDeviceReporter {
         }
     }
 
-    /// Renames the registration when the device name the watch registers with has moved since —
-    /// the phone's device name was edited, or the watch registered before the phone had sent it
-    /// (a registration from before the name was tracked counts as moved). The stored registration
-    /// is written back with the name Home Assistant took, so the rename is sent once.
+    /// Sends `update_registration` when the device name changed since the registration was made.
     private func renamedIfNeeded(
         _ registration: WatchDeviceRegistration,
         server: Server,

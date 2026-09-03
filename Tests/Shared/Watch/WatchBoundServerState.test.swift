@@ -18,12 +18,11 @@ struct WatchBoundServerStateTests {
         let state = try encoded(["one": plain, "two": overridden])
 
         let stamped = try decoded(WatchBoundServerState.stamp(state) { info in
-            info.setting(for: .overrideDeviceName) ?? "Bruno's iPhone"
+            info.setting(for: .overrideDeviceName) ?? "My iPhone"
         })
 
-        #expect(stamped["one"]?.setting(for: .companionDeviceName) == "Bruno's iPhone")
+        #expect(stamped["one"]?.setting(for: .companionDeviceName) == "My iPhone")
         #expect(stamped["two"]?.setting(for: .companionDeviceName) == "Kitchen Phone")
-        // Nothing else about the servers moved.
         #expect(stamped["two"]?.setting(for: .overrideDeviceName) == "Kitchen Phone")
         #expect(stamped["one"]?.remoteName == plain.remoteName)
         #expect(stamped["one"]?.connection == plain.connection)
@@ -38,7 +37,7 @@ struct WatchBoundServerStateTests {
             Current.servers = previousServers
             Current.device.deviceName = previousDeviceName
         }
-        Current.device.deviceName = { "Bruno's iPhone" }
+        Current.device.deviceName = { "My iPhone" }
         var overridden = ServerInfo.fake()
         overridden.setSetting(value: "Kitchen Phone", for: .overrideDeviceName)
         let state = try encoded(["plain": .fake(), "named": overridden])
@@ -46,21 +45,20 @@ struct WatchBoundServerStateTests {
 
         let stamped = try decoded(WatchBoundServerState.encoded())
 
-        #expect(stamped["plain"]?.setting(for: .companionDeviceName) == "Bruno's iPhone")
+        #expect(stamped["plain"]?.setting(for: .companionDeviceName) == "My iPhone")
         #expect(stamped["named"]?.setting(for: .companionDeviceName) == "Kitchen Phone")
     }
 
     @Test func passesUnreadableStateThrough() {
         let empty = Data()
-        #expect(WatchBoundServerState.stamp(empty) { _ in "Bruno's iPhone" } == empty)
+        #expect(WatchBoundServerState.stamp(empty) { _ in "My iPhone" } == empty)
 
         let garbage = Data("not servers".utf8)
-        #expect(WatchBoundServerState.stamp(garbage) { _ in "Bruno's iPhone" } == garbage)
+        #expect(WatchBoundServerState.stamp(garbage) { _ in "My iPhone" } == garbage)
     }
 }
 
-/// A fake server manager whose `restorableState()` is a given encoding, for exercising the
-/// watch-bound stamping end to end.
+/// A fake server manager with a given `restorableState()`.
 private final class StatefulFakeServerManager: FakeServerManager {
     private let state: Data
 

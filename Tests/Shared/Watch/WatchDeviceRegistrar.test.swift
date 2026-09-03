@@ -9,7 +9,7 @@ struct WatchDeviceRegistrarTests {
         appID: "io.robbie.HomeAssistant.watchkitapp",
         appName: WatchDeviceIdentity.appName(companionAppName: "Home Assistant"),
         appVersion: "2026.1 (1)",
-        deviceName: "Bruno's Apple Watch",
+        deviceName: "My Apple Watch",
         deviceID: "watch-device-id",
         model: "Watch7,1",
         osName: "watchOS",
@@ -25,9 +25,9 @@ struct WatchDeviceRegistrarTests {
 
     @Test func deviceNameIsCompanionDeviceNamePlusWatchName() {
         #expect(WatchDeviceIdentity.deviceName(
-            companionDeviceName: "Bruno's iPhone",
+            companionDeviceName: "My iPhone",
             watchName: "Apple Watch"
-        ) == "Bruno's iPhone Apple Watch")
+        ) == "My iPhone Apple Watch")
         #expect(WatchDeviceIdentity.deviceName(
             companionDeviceName: "  Kitchen Phone \n",
             watchName: "Apple Watch"
@@ -45,8 +45,8 @@ struct WatchDeviceRegistrarTests {
         defer { Current.device.deviceName = deviceName }
         Current.device.deviceName = { "Apple Watch" }
 
-        let stamped = Server.fake { $0.setSetting(value: "Bruno's iPhone", for: .companionDeviceName) }
-        #expect(WatchDeviceIdentity.deviceName(for: stamped) == "Bruno's iPhone Apple Watch")
+        let stamped = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
+        #expect(WatchDeviceIdentity.deviceName(for: stamped) == "My iPhone Apple Watch")
 
         let unstamped = Server.fake()
         #expect(WatchDeviceIdentity.deviceName(for: unstamped) == "Apple Watch")
@@ -55,7 +55,7 @@ struct WatchDeviceRegistrarTests {
     @Test func updateRegistrationBodyCarriesWhatHomeAssistantRequires() {
         let body = WatchDeviceRegistrar.updateRegistrationBody(identity: identity)
 
-        #expect(body["device_name"] as? String == "Bruno's Apple Watch")
+        #expect(body["device_name"] as? String == "My Apple Watch")
         #expect(body["app_version"] as? String == "2026.1 (1)")
         #expect(body["manufacturer"] as? String == "Apple")
         #expect(body["model"] as? String == "Watch7,1")
@@ -70,7 +70,7 @@ struct WatchDeviceRegistrarTests {
         #expect(body["app_id"] as? String == "io.robbie.HomeAssistant.watchkitapp")
         #expect(body["app_name"] as? String == "Home Assistant Watch")
         #expect(body["app_version"] as? String == "2026.1 (1)")
-        #expect(body["device_name"] as? String == "Bruno's Apple Watch")
+        #expect(body["device_name"] as? String == "My Apple Watch")
         #expect(body["device_id"] as? String == "watch-device-id")
         #expect(body["manufacturer"] as? String == "Apple")
         #expect(body["model"] as? String == "Watch7,1")
@@ -85,7 +85,7 @@ struct WatchDeviceRegistrarTests {
         let body = WatchDeviceRegistrar.registrationBody(identity: identity, serverVersion: old)
 
         #expect(body["device_id"] == nil)
-        #expect(body["device_name"] as? String == "Bruno's Apple Watch")
+        #expect(body["device_name"] as? String == "My Apple Watch")
     }
 
     @Test func parsesRegistrationResponse() throws {
@@ -106,7 +106,7 @@ struct WatchDeviceRegistrarTests {
         #expect(registration.cloudhookURL == URL(string: "https://hooks.nabu.casa/abc"))
         #expect(registration.registeredAt == registeredAt)
         #expect(registration.registeredSensorEnablement.isEmpty)
-        #expect(registration.deviceName == "Bruno's Apple Watch")
+        #expect(registration.deviceName == "My Apple Watch")
     }
 
     @Test func parsesRegistrationResponseWithoutCloudOrSecret() throws {
@@ -146,7 +146,7 @@ struct WatchDeviceRegistrarTests {
         #expect(registration.cloudhookURL == URL(string: "https://hooks.nabu.casa/new"))
         #expect(registration.registeredAt == Date(timeIntervalSince1970: 1_700_000_000))
         #expect(store.registration(for: server.identifier) == registration)
-        #expect(registration.deviceName == "Bruno's Apple Watch")
+        #expect(registration.deviceName == "My Apple Watch")
         #expect(capture.body?["app_name"] as? String == "Home Assistant Watch")
         #expect(capture.timeout == 5)
     }
@@ -156,7 +156,7 @@ struct WatchDeviceRegistrarTests {
         let deviceName = Current.device.deviceName
         defer { Current.device.deviceName = deviceName }
         Current.device.deviceName = { "Apple Watch" }
-        let server = Server.fake { $0.setSetting(value: "Bruno's iPhone", for: .companionDeviceName) }
+        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
         let capture = BodyCapture()
 
         let registration = try await WatchDeviceRegistrar.register(
@@ -167,8 +167,8 @@ struct WatchDeviceRegistrarTests {
             }
         )
 
-        #expect(capture.body?["device_name"] as? String == "Bruno's iPhone Apple Watch")
-        #expect(registration.deviceName == "Bruno's iPhone Apple Watch")
+        #expect(capture.body?["device_name"] as? String == "My iPhone Apple Watch")
+        #expect(registration.deviceName == "My iPhone Apple Watch")
     }
 
     @Test func registerReportsAMissingMobileAppIntegration() async {
@@ -233,13 +233,13 @@ struct WatchDeviceRegistrarTests {
         Current.device.systemName = { "watchOS" }
         Current.device.systemVersion = { "26.0" }
         Current.device.identifierForVendor = { "vendor-id" }
-        let server = Server.fake { $0.setSetting(value: "Bruno's iPhone", for: .companionDeviceName) }
+        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
 
         let identity = WatchDeviceIdentity.current(for: server)
 
         #expect(identity.appName.hasSuffix(" Watch"))
         #expect(identity.appVersion == HomeAssistantAPI.clientVersionDescription)
-        #expect(identity.deviceName == "Bruno's iPhone Apple Watch")
+        #expect(identity.deviceName == "My iPhone Apple Watch")
         #expect(identity.deviceID.hasSuffix("vendor-id"))
         #expect(identity.model == "Watch7,1")
         #expect(identity.osName == "watchOS")

@@ -45,10 +45,7 @@ public enum WatchDeviceRegistrar {
         return body
     }
 
-    /// The `update_registration` webhook payload: what Home Assistant lets a registration change
-    /// after the fact, all of which it requires on every update. Sent when the name the watch
-    /// registers with moved — the phone's device name was edited, or the watch registered before
-    /// the phone had told it that name.
+    /// The `update_registration` payload; Home Assistant requires every field on each update.
     public static func updateRegistrationBody(identity: WatchDeviceIdentity) -> [String: Any] {
         [
             "app_data": [String: Any](),
@@ -101,7 +98,6 @@ public enum WatchDeviceRegistrar {
 
     /// Registers with `server` and remembers the result in `Current.watchDeviceRegistrations`.
     ///
-    /// - Parameter identity: what to register as; this watch, named for `server`, unless given.
     /// - Parameter send: how the registration reaches the server; REST unless a test substitutes
     ///   a fake.
     public static func register(

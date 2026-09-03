@@ -37,11 +37,7 @@ public struct WatchDeviceIdentity: Equatable {
         "\(companionAppName) Watch"
     }
 
-    /// The paired iPhone's `mobile_app` device name in front of the watch's own, e.g.
-    /// "Bruno's iPhone Apple Watch". watchOS names every watch "Apple Watch", so on its own the
-    /// registration is indistinguishable from any other watch's; the phone's name — the one the
-    /// integration already shows for the phone — is what tells them apart and pairs them up.
-    /// Without a companion name (the phone hasn't sent one yet) the watch's own name stands.
+    /// The phone's device name in front of the watch's, e.g. "My iPhone Apple Watch".
     public static func deviceName(companionDeviceName: String?, watchName: String) -> String {
         guard let companion = companionDeviceName?.trimmingCharacters(in: .whitespacesAndNewlines),
               !companion.isEmpty else {
@@ -50,8 +46,7 @@ public struct WatchDeviceIdentity: Equatable {
         return "\(companion) \(watchName)"
     }
 
-    /// What the watch registers as `device_name` with `server`: its own name behind the companion
-    /// device name the phone stamped on the server (`ServerSettingKey.companionDeviceName`).
+    /// The `device_name` the watch registers with `server`.
     public static func deviceName(for server: Server) -> String {
         deviceName(
             companionDeviceName: server.info.setting(for: .companionDeviceName),
@@ -59,9 +54,7 @@ public struct WatchDeviceIdentity: Equatable {
         )
     }
 
-    /// This watch, as it is right now, for a registration with `server`. The watch app carries the
-    /// same display name as the phone app, which is what the app-name prefix comes from; the
-    /// device-name prefix is the phone's name for that server.
+    /// This watch, as it is right now, for a registration with `server`.
     public static func current(for server: Server, bundle: Bundle = .main) -> WatchDeviceIdentity {
         let displayName = bundle.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
         return WatchDeviceIdentity(
