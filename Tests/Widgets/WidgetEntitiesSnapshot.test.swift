@@ -13,26 +13,31 @@ import WidgetKit
 /// Rendered without the last update footer, so nothing in these images depends on the clock or the
 /// time zone of the machine recording them.
 struct WidgetEntitiesSnapshotTests {
-    /// One of each shape a tile can take, in the order they appear on the widget.
+    /// One of each shape a tile can take, in the order they appear on the widget, built the way
+    /// the widget itself builds them so the references stay faithful to what ships.
     private static var items: [MagicItem] {
         [
             // Controllable: the icon toggles, the rest of the tile opens the entity.
-            .init(id: "light.kitchen", serverId: "1", type: .entity),
+            "light.kitchen",
             // Read-only: both halves open the entity, so the icon is not a control.
-            .init(id: "sensor.temperature", serverId: "1", type: .entity),
-            // Not a toggle domain on the frontend's tile card, so its icon opens the entity too.
-            .init(id: "lock.front_door", serverId: "1", type: .entity),
-            // Controllable: a scene's toggle activates it, which the widget does in place.
-            .init(id: "scene.movie_night", serverId: "1", type: .entity),
-            .init(id: "switch.porch", serverId: "1", type: .entity),
-            .init(id: "cover.garage", serverId: "1", type: .entity),
-            .init(id: "fan.bedroom", serverId: "1", type: .entity),
-            .init(id: "media_player.living_room", serverId: "1", type: .entity),
-            .init(id: "button.doorbell", serverId: "1", type: .entity),
-            .init(id: "climate.hallway", serverId: "1", type: .entity),
-            .init(id: "script.good_morning", serverId: "1", type: .entity),
-            .init(id: "binary_sensor.motion", serverId: "1", type: .entity),
-        ]
+            "sensor.temperature",
+            // A lock always confirms first and this widget has nowhere to ask, so its icon
+            // opens the entity too.
+            "lock.front_door",
+            // Controllable: a scene's icon activates it in place.
+            "scene.movie_night",
+            "switch.porch",
+            // Controllable now: a cover's icon opens or closes it by state.
+            "cover.garage",
+            "fan.bedroom",
+            // Read-only here: turning a media player on and off is not what its icon offers.
+            "media_player.living_room",
+            "button.doorbell",
+            "climate.hallway",
+            // Controllable now: a script's icon runs it.
+            "script.good_morning",
+            "binary_sensor.motion",
+        ].map { MagicItem.entityTile(entityId: $0, serverId: "1", canConfirm: false) }
     }
 
     /// States are always shown on this widget, so every tile that has one carries it — and the

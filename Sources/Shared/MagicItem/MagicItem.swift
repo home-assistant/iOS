@@ -313,7 +313,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// `Domain.isActionable` domain the domain's own action — its main action where it names one
     /// ("Press", "Activate", "Run", "Trigger"), its toggle otherwise, which covers the
     /// state-aware pairs so a locked lock unlocks and a closed cover opens. Every other entity
-    /// opens its more-info dialog, and an Assist pipeline starts Assist.
+    /// only opens: its more-info dialog, or the native camera player for a camera. An Assist
+    /// pipeline starts Assist.
     public var defaultIconAction: ItemAction {
         if type == .assistPipeline {
             return .assist(serverId, assistPipelineId ?? id, true)
