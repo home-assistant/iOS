@@ -421,6 +421,14 @@ public struct ConnectionInfo: Codable, Equatable {
 
     /// Secret as byte array
     public func webhookSecretBytes(version: Version) -> [UInt8]? {
+        Self.webhookSecretBytes(secret: webhookSecret, version: version)
+    }
+
+    /// The secretbox key a registration's webhook secret stands for: the secret's first 32 bytes
+    /// as they are on servers older than `fullWebhookSecretKey`, the hex-decoded secret otherwise.
+    /// Static so the watch's own registration, which keeps its secret outside `ConnectionInfo`,
+    /// derives its key the same way.
+    public static func webhookSecretBytes(secret webhookSecret: String?, version: Version) -> [UInt8]? {
         guard let webhookSecret, webhookSecret.count.isMultiple(of: 2) else {
             return nil
         }

@@ -62,7 +62,11 @@ public struct LegacyComplicationRender: Equatable {
 
     public init(complication: WatchComplication) {
         let data = complication.Data
-        let icon = data["icon"] as? [String: String]
+        // Only the templates that ever drew an icon get one. The editor used to store an icon for the
+        // rectangular "Standard Body" / "Text Gauge" and the Modular Large templates as well, but ClockKit
+        // never rendered it for them, so honoring that stored icon now would give those complications an
+        // icon they never had — and shove their text over to make room for it.
+        let icon = complication.Template.hasImage ? data["icon"] as? [String: String] : nil
         self.iconName = icon?["icon"]
         self.iconColor = icon?["icon_color"]
 

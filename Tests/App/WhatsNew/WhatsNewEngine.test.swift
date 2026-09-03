@@ -13,7 +13,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPad },
             hasSeenRelease: { _ in false }
@@ -24,7 +24,7 @@ struct WhatsNewEngineTests {
 
     @Test func releaseToShowReturnsNilWhenNoReleaseIsConfigured() {
         let engine = WhatsNewEngine(
-            release: nil,
+            releases: [],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             hasSeenRelease: { _ in false }
@@ -40,7 +40,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             hasSeenRelease: { _ in false }
@@ -58,7 +58,7 @@ struct WhatsNewEngineTests {
 
         var queriedReleaseID: String?
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             hasSeenRelease: {
@@ -78,7 +78,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             hasSeenRelease: { _ in false }
@@ -94,7 +94,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 7, patch: 0) },
             currentPlatform: { .iPad },
             hasSeenRelease: { _ in true }
@@ -110,7 +110,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 7, patch: 0) },
             currentPlatform: { .iPad },
             hasSeenRelease: { _ in true }
@@ -148,7 +148,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             currentOSVersion: { WhatsNewOSVersion(major: 26, minor: 1) },
@@ -166,7 +166,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             currentOSVersion: { WhatsNewOSVersion(major: 18, minor: 4) },
@@ -184,7 +184,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPhone },
             currentOSVersion: { WhatsNewOSVersion(major: 26) },
@@ -203,7 +203,7 @@ struct WhatsNewEngineTests {
 
         // Mac is unconstrained by the iOS requirement, so an older macOS still matches.
         let macEngine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .mac },
             currentOSVersion: { WhatsNewOSVersion(major: 15) },
@@ -213,7 +213,7 @@ struct WhatsNewEngineTests {
 
         // iPad below the iOS minimum is filtered out.
         let iPadEngine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .iPad },
             currentOSVersion: { WhatsNewOSVersion(major: 18) },
@@ -230,7 +230,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
             currentPlatform: { .mac },
             currentOSVersion: { WhatsNewOSVersion(major: 14, minor: 6) },
@@ -248,7 +248,7 @@ struct WhatsNewEngineTests {
         )
 
         let engine = WhatsNewEngine(
-            release: release,
+            releases: [release],
             currentVersion: { Version(major: 2026, minor: 7, patch: 0) },
             currentPlatform: { .iPhone },
             currentOSVersion: { WhatsNewOSVersion(major: 18) },
@@ -268,6 +268,104 @@ struct WhatsNewEngineTests {
         #expect(range.contains(WhatsNewOSVersion(major: 18, minor: 1)))
         #expect(range.contains(WhatsNewOSVersion(major: 26)))
         #expect(!range.contains(WhatsNewOSVersion(major: 26, minor: 1)))
+    }
+
+    @Test func releaseToShowPicksTheReleaseTargetingTheCurrentPlatform() {
+        let iOSRelease = Self.release(
+            id: WhatsNewReleaseId("ios"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone, .iPad]
+        )
+        let macRelease = Self.release(
+            id: WhatsNewReleaseId("mac"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.mac]
+        )
+
+        let engine = WhatsNewEngine(
+            releases: [iOSRelease, macRelease],
+            currentVersion: { Version(major: 2026, minor: 9, patch: 1) },
+            currentPlatform: { .mac },
+            hasSeenRelease: { _ in false }
+        )
+
+        #expect(engine.releaseToShow() == macRelease)
+    }
+
+    @Test func releaseToShowSkipsSeenReleasesAndReturnsTheNextUnseenOne() {
+        let seen = Self.release(
+            id: WhatsNewReleaseId("seen"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+        let unseen = Self.release(
+            id: WhatsNewReleaseId("unseen"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+
+        let engine = WhatsNewEngine(
+            releases: [seen, unseen],
+            currentVersion: { Version(major: 2026, minor: 9, patch: 1) },
+            currentPlatform: { .iPhone },
+            hasSeenRelease: { $0 == "seen" }
+        )
+
+        #expect(engine.releaseToShow() == unseen)
+    }
+
+    @Test func latestReleaseReturnsTheHighestVersionAmongReleasesForTheCurrentPlatform() {
+        let older = Self.release(
+            id: WhatsNewReleaseId("older"),
+            version: .init(major: 2026, minor: 8, patch: 0),
+            targetPlatforms: [.iPhone]
+        )
+        let newer = Self.release(
+            id: WhatsNewReleaseId("newer"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+        let newestButMacOnly = Self.release(
+            id: WhatsNewReleaseId("mac"),
+            version: .init(major: 2026, minor: 10, patch: 0),
+            targetPlatforms: [.mac]
+        )
+
+        let engine = WhatsNewEngine(
+            releases: [newestButMacOnly, older, newer],
+            currentVersion: { Version(major: 2026, minor: 9, patch: 1) },
+            currentPlatform: { .iPhone },
+            hasSeenRelease: { _ in true }
+        )
+
+        #expect(engine.latestRelease() == newer)
+    }
+
+    @Test func latestReleaseKeepsCatalogOrderWhenVersionsTie() {
+        let first = Self.release(
+            id: WhatsNewReleaseId("first"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+        let second = Self.release(
+            id: WhatsNewReleaseId("second"),
+            version: .init(major: 2026, minor: 9, patch: 1),
+            targetPlatforms: [.iPhone]
+        )
+
+        let engine = WhatsNewEngine(
+            releases: [first, second],
+            currentVersion: { Version(major: 2026, minor: 9, patch: 1) },
+            currentPlatform: { .iPhone },
+            hasSeenRelease: { _ in true }
+        )
+
+        #expect(engine.latestRelease() == first)
+    }
+
+    @Test func catalogReleasesHaveUniqueIDs() {
+        let ids = WhatsNewCatalog.releases.map(\.id)
+        #expect(Set(ids).count == ids.count)
     }
 
     private static func release(

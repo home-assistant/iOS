@@ -87,10 +87,28 @@ struct HALiveActivityConfigurationSupplemental: Widget {
 } contentStates: {
     HALiveActivityAttributes.ContentState(
         message: "Washing cycle",
-        progress: 100,
+        progress: 40,
         progressMax: 100,
         icon: "washing-machine",
         color: "#03A9F4"
+    )
+    HALiveActivityAttributes.ContentState(
+        message: "Pasta",
+        chronometer: true,
+        countdownEnd: Current.date().addingTimeInterval(1500),
+        icon: "timer",
+        color: "#FF9800"
+    )
+    HALiveActivityAttributes.ContentState(
+        message: "Charging paused",
+        criticalText: "20%",
+        icon: "battery-alert",
+        color: "#F44336"
+    )
+    HALiveActivityAttributes.ContentState(
+        message: "Front door unlocked",
+        icon: "door-open",
+        color: "#4CAF50"
     )
 }
 #endif

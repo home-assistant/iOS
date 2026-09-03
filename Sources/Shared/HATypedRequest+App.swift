@@ -12,7 +12,7 @@ public extension HATypedRequest {
         return HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": domain.rawValue,
+                "domain": domain.serviceDomain,
                 "service": action.rawValue,
                 "target": [
                     "entity_id": entityId,

@@ -11,6 +11,7 @@ enum MacSidebarItemsBuilder {
 
     private static let fixedPanelPaths: Set<String> = [profilePanelPath, settingsPanelPath, "notfound"]
     private static let lovelaceComponent = "lovelace"
+    private static let ingressComponent = "app"
     private static let sortValueByPath: [String: Int] = [
         "energy": 1,
         "map": 2,
@@ -116,14 +117,14 @@ enum MacSidebarItemsBuilder {
                 id: settingsPanelPath,
                 kind: .panel(path: "/" + settingsPanelPath),
                 title: panels.first(where: { $0.path == settingsPanelPath })?.title ?? L10n.Mac.Sidebar.settings,
-                icon: .cogIcon
+                icon: .material(.cogIcon)
             ))
         }
         items.append(MacSidebarItem(
             id: notificationsItemId,
             kind: .notifications,
             title: L10n.Mac.Sidebar.notifications,
-            icon: .bellIcon,
+            icon: .material(.bellIcon),
             badge: notificationsCount
         ))
         let profileTitle = userName?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -134,7 +135,7 @@ enum MacSidebarItemsBuilder {
                 ?? panels.first(where: { $0.path == profilePanelPath })?.title
                 ?? Current.localized.frontend("panel::profile")
                 ?? profilePanelPath,
-            icon: .accountIcon
+            icon: .material(.accountIcon)
         ))
         return items
     }
@@ -169,13 +170,19 @@ enum MacSidebarItemsBuilder {
         lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
     }
 
-    private static func icon(for panel: HAPanel) -> MaterialDesignIcons {
+    private static func icon(for panel: HAPanel) -> FrontendIcon {
         if let icon = iconByPath[panel.path] {
-            return icon
+            return .material(icon)
         }
-        let fallback: MaterialDesignIcons = panel
-            .component == lovelaceComponent ? .viewDashboardIcon : .viewDashboardOutlineIcon
-        guard let iconName = panel.icon, !iconName.isEmpty else { return fallback }
-        return MaterialDesignIcons(serversideValueNamed: iconName, fallback: fallback)
+        let fallback: MaterialDesignIcons
+        switch panel.component {
+        case lovelaceComponent: fallback = .viewDashboardIcon
+        // The frontend draws add-on ingress panels with a puzzle piece, see
+        // `computeIngressNavigationPathInfo` in `data/compute-navigation-path-info.ts`.
+        case ingressComponent: fallback = .puzzleIcon
+        default: fallback = .viewDashboardOutlineIcon
+        }
+        guard let iconName = panel.icon, !iconName.isEmpty else { return .material(fallback) }
+        return FrontendIcon(serversideValueNamed: iconName, fallback: fallback)
     }
 }

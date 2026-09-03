@@ -42,6 +42,8 @@ public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, Setting
 public extension ServerSettingKey {
     static var localName: ServerSettingKey<String?> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
+    /// The `device_name` the phone's `mobile_app` registration last sent; the watch reads it from the mirrored servers.
+    static var registeredDeviceName: ServerSettingKey<String?> { "registered_device_name" }
     static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
     static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
 }

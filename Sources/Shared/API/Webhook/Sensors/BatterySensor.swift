@@ -30,7 +30,9 @@ public class BatterySensor: SensorProvider {
         )
     }
 
-    private static func sensors(battery: DeviceBattery) -> [WebhookSensor] {
+    /// The level and state sensors for one battery. Also what the watch reports about its own
+    /// battery, so both devices describe theirs the same way.
+    static func sensors(battery: DeviceBattery) -> [WebhookSensor] {
         let icon: String = BatteryIcon.forBatteryLevel(battery.level, state: battery.state)
         let isLowPowerMode = Current.device.isLowPowerMode()
         let sensorNamePrefix = battery.name ?? "Battery"

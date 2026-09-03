@@ -609,6 +609,7 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
         }
     }
@@ -620,7 +621,16 @@ public class HomeAssistantAPI {
                 type: "update_registration",
                 data: buildMobileAppUpdateRegistration()
             )
-        )
+        ).get { [self] _ in
+            rememberRegisteredDeviceName()
+        }
+    }
+
+    /// Keeps the device name the registration carries on the server, for the watch to name itself after.
+    private func rememberRegisteredDeviceName() {
+        let name = server.info.mobileAppDeviceName
+        guard server.info.setting(for: .registeredDeviceName) != name else { return }
+        server.update { $0.setSetting(value: name, for: .registeredDeviceName) }
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
@@ -691,7 +701,7 @@ public class HomeAssistantAPI {
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
-            $0.DeviceName = server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName()
+            $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
             $0.OSName = Current.device.systemName()
@@ -826,7 +836,7 @@ public class HomeAssistantAPI {
     public var sharedEventDeviceInfo: [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
-            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceName": server.info.mobileAppDeviceName,
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
     }
