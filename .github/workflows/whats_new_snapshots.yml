@@ -85,6 +85,9 @@ jobs:
 
       - name: Commit snapshots
         run: |
+          # The build dirties tracked files (generated sources); list them for the log, then stage
+          # only the references so nothing else rides along.
+          git status --short
           git add "$SNAPSHOT_DIR"
           if git diff --cached --quiet; then
             echo "Reference images are unchanged; nothing to commit."
@@ -94,5 +97,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Record What's New snapshot references"
           # The branch may have moved on while the build ran; replay the commit on its current tip.
-          git pull --rebase origin "${{ github.ref_name }}"
+          git pull --rebase --autostash origin "${{ github.ref_name }}"
           git push origin "HEAD:${{ github.ref_name }}"
