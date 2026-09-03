@@ -29,8 +29,10 @@ struct WhatsNewViewSnapshotTests {
         for release in WhatsNewCatalog.releases {
             for item in release.items {
                 guard case let .article(article) = item.destination else { continue }
+                // Rendered without the navigation stack that pushes it in the app: the bar's scroll-edge
+                // appearance is not settled at capture time and made the reference flap between runs.
                 assertLightDarkSnapshots(
-                    of: NavigationView { WhatsNewArticleView(article: article) }.navigationViewStyle(.stack),
+                    of: WhatsNewArticleView(article: article),
                     named: "\(release.id.rawValue)-\(item.id)"
                 )
             }
