@@ -63,7 +63,7 @@ struct MacSidebarItemsBuilderTests {
 
         #expect(items.map(\.id) == ["home", "energy", "core_matter_server", "45df7312_zigbee2mqtt"])
         #expect(items.last?.navigationPath == "/45df7312_zigbee2mqtt")
-        #expect(items.last?.icon == .puzzleIcon)
+        #expect(items.last?.icon == .material(.puzzleIcon))
         #expect(items.last?.isDashboard == false)
     }
 
