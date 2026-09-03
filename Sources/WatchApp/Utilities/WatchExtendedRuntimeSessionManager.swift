@@ -31,10 +31,10 @@ final class WatchExtendedRuntimeSessionManager: NSObject {
     private func startSessionIfNeeded() {
         guard !holders.isEmpty, session == nil else { return }
         guard WKApplication.shared().applicationState == .active else {
-            Current.Log.info("Extended runtime session deferred until the app is active")
             observeActivation()
             return
         }
+        stopObservingActivation()
         let session = makeSession()
         session.delegate = self
         self.session = session
@@ -44,6 +44,7 @@ final class WatchExtendedRuntimeSessionManager: NSObject {
 
     private func observeActivation() {
         guard didBecomeActiveObserver == nil else { return }
+        Current.Log.info("Extended runtime session deferred until the app is active")
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
             forName: WKApplication.didBecomeActiveNotification,
             object: nil,
@@ -51,6 +52,12 @@ final class WatchExtendedRuntimeSessionManager: NSObject {
         ) { [weak self] _ in
             self?.startSessionIfNeeded()
         }
+    }
+
+    private func stopObservingActivation() {
+        guard let didBecomeActiveObserver else { return }
+        NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        self.didBecomeActiveObserver = nil
     }
 
     private var heldReasons: [String] {
@@ -79,11 +86,15 @@ extension WatchExtendedRuntimeSessionManager: WatchExtendedRuntimeSessionHolding
 
 extension WatchExtendedRuntimeSessionManager: WKExtendedRuntimeSessionDelegate {
     func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
-        Current.Log.info("Extended runtime session started for \(heldReasons)")
+        onMain { [self] in
+            Current.Log.info("Extended runtime session started for \(heldReasons)")
+        }
     }
 
     func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
-        Current.Log.info("Extended runtime session about to expire; held by \(heldReasons)")
+        onMain { [self] in
+            Current.Log.info("Extended runtime session about to expire; held by \(heldReasons)")
+        }
     }
 
     func extendedRuntimeSession(
@@ -91,9 +102,12 @@ extension WatchExtendedRuntimeSessionManager: WKExtendedRuntimeSessionDelegate {
         didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason,
         error: Error?
     ) {
-        guard extendedRuntimeSession === session else { return }
-        session = nil
-        let detail = error.map { " (\($0.localizedDescription))" } ?? ""
-        Current.Log.info("Extended runtime session invalidated: \(reason.rawValue)\(detail); held by \(heldReasons)")
+        onMain { [self] in
+            guard extendedRuntimeSession === session else { return }
+            session = nil
+            let detail = error.map { " (\($0.localizedDescription))" } ?? ""
+            Current.Log
+                .info("Extended runtime session invalidated: \(reason.rawValue)\(detail); held by \(heldReasons)")
+        }
     }
 }
