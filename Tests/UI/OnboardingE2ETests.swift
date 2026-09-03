@@ -132,8 +132,12 @@ final class OnboardingE2ETests: XCTestCase {
     }
 
     private func grantNotificationPermission() {
+        // The sheet is posted a few seconds after the frontend paints, so the wait for it starts
+        // once that has happened rather than covering both and stalling if it never arrives.
+        wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend")
+
         let request = app.buttons[.notificationPermissionRequestPrimary]
-        guard request.waitForExistence(timeout: Timeout.frontend) else { return }
+        guard request.waitForExistence(timeout: Timeout.screen) else { return }
 
         dismiss(request, "notification permission sheet")
         // Both of the sheet's buttons ask iOS the same question, so the alert always follows.
@@ -272,10 +276,6 @@ final class OnboardingE2ETests: XCTestCase {
         element.tap()
     }
 
-    /// Answers a system permission alert with its denial button.
-    ///
-    /// The alert's buttons are whatever the permission offers ("Allow Once", "Allow While Using
-    /// App", "Allow"), plus one that declines, which is the only one not offering access.
     /// Taps a control until the screen carrying it goes away.
     ///
     /// `waitForExistence` returns on the first frame of a presentation, where the tap lands on the
@@ -321,7 +321,9 @@ final class OnboardingE2ETests: XCTestCase {
             return hosted
         }
 
-        // Not every iOS version presents these out of SpringBoard.
+        // Not every iOS version presents these out of SpringBoard. An alert shown in-app has been
+        // up since the wait above began, so this only needs long enough to resolve, not to wait for
+        // it a second time.
         let inApp = app.alerts.firstMatch.buttons.matching(predicate).firstMatch
         return inApp.waitForExistence(timeout: Timeout.optional) ? inApp : nil
     }
