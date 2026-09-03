@@ -109,24 +109,18 @@ enum WhatsNewCatalog {
 
     private static let releaseVersion = WhatsNewAppVersion(major: 2026, minor: 9, patch: 1)
 
+    /// Tapping opens the Live Activities documentation, which explains how a notification starts one.
     private static let liveActivitiesItem = WhatsNewItem(
         id: "live-activities",
         title: L10n.WhatsNew.LiveActivities.itemTitle,
         body: L10n.WhatsNew.LiveActivities.itemBody,
         icon: .sfSymbol(.timer),
-        destination: .article(ArticleMessage(
-            icon: .sfSymbol(.timer),
-            title: L10n.WhatsNew.LiveActivities.itemTitle,
-            body: L10n.WhatsNew.LiveActivities.articleBody,
-            action: .init(
-                title: L10n.WhatsNew.LiveActivities.articleAction,
-                url: AppConstants.WebURLs.liveActivitiesDocs
-            )
-        ))
+        destination: .link(AppConstants.WebURLs.liveActivitiesDocs)
     )
 
-    /// The Energy widget highlight, with the copy of the platform it is shown on: widgets live on the Home
-    /// Screen and Lock Screen on iOS, and on the desktop and in Notification Center on the Mac.
+    /// The Energy widget highlight. Tapping opens an in-app article on what the widget shows and how to
+    /// add it, with the copy of the platform it is shown on: widgets live on the Home Screen and Lock
+    /// Screen on iOS, and on the desktop and in Notification Center on the Mac.
     private static func energyWidgetItem(body: String, articleBody: String) -> WhatsNewItem {
         WhatsNewItem(
             id: "energy-widget",

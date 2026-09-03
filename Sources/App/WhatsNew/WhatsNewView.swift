@@ -51,8 +51,8 @@ struct WhatsNewView: View {
 
     private var items: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
-            ForEach(Array(release.items.enumerated()), id: \.element.id) { offset, item in
-                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset))
+            ForEach(release.items) { item in
+                WhatsNewItemRow(item: item)
             }
         }
     }
@@ -76,7 +76,6 @@ struct WhatsNewView: View {
 
 private struct WhatsNewItemRow: View {
     let item: WhatsNewItem
-    let iconColor: UIColor
 
     @State private var presentedURL: IdentifiableURL?
 
@@ -113,7 +112,7 @@ private struct WhatsNewItemRow: View {
 
     private func content(showsLinkAffordance: Bool) -> some View {
         HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
-            WhatsNewIconView(icon: item.icon, color: iconColor)
+            WhatsNewIconView(icon: item.icon, color: .haPrimary)
                 .frame(width: 46, height: 46)
                 .accessibilityHidden(true)
 
@@ -139,99 +138,6 @@ private struct WhatsNewItemRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
-    }
-}
-
-private struct WhatsNewArticleView: View {
-    let article: ArticleMessage
-
-    @State private var presentedURL: IdentifiableURL?
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
-                WhatsNewIconView(icon: article.icon, color: .haPrimary)
-                    .frame(width: 56, height: 56)
-                    .accessibilityHidden(true)
-
-                Text(article.title)
-                    .font(.title2.bold())
-                    .foregroundStyle(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                articleBody
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, DesignSystem.Spaces.four)
-            .padding(.top, DesignSystem.Spaces.two)
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .safeAreaInset(edge: .bottom) {
-            if let action = article.action {
-                Button {
-                    presentedURL = IdentifiableURL(url: action.url)
-                } label: {
-                    Text(action.title)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.primaryButton)
-                .padding([.horizontal, .bottom])
-            }
-        }
-        .sheet(item: $presentedURL) { item in
-            SafariWebView(url: item.url)
-                .ignoresSafeArea()
-        }
-    }
-
-    private var articleBody: Text {
-        if let attributed = try? AttributedString(
-            markdown: article.body,
-            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
-        ) {
-            return Text(attributed)
-        }
-        return Text(article.body)
-    }
-}
-
-private struct IdentifiableURL: Identifiable {
-    let url: URL
-    var id: String { url.absoluteString }
-}
-
-private struct WhatsNewIconView: View {
-    let icon: WhatsNewIcon
-    let color: UIColor
-
-    var body: some View {
-        switch icon {
-        case let .sfSymbol(symbol):
-            Image(systemSymbol: symbol)
-                .font(.system(size: 38, weight: .regular))
-                .foregroundStyle(Color(uiColor: color))
-        case let .materialDesign(icon):
-            Image(uiImage: icon.image(ofSize: CGSize(width: 38, height: 38), color: color))
-                .renderingMode(.template)
-                .foregroundStyle(Color(uiColor: color))
-        }
-    }
-}
-
-private enum WhatsNewColors {
-    private static let colors: [UIColor] = [
-        .haPrimary,
-        .systemRed,
-        .systemGreen,
-        .systemBlue,
-        .systemOrange,
-    ]
-
-    static func iconColor(for index: Int) -> UIColor {
-        colors[index % colors.count]
     }
 }
 
