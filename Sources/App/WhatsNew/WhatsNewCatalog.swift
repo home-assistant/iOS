@@ -89,8 +89,8 @@ enum WhatsNewCatalog {
                 ),
             ]
         ),
-        // The Mac gets the Energy widget alone, with copy that talks about the desktop and Notification
-        // Center. The widget needs the iOS 17 WidgetKit feature set, which Catalyst has from macOS 14.
+        // The Mac gets the Energy widget alone, with copy that talks about the desktop. The widget needs the
+        // iOS 17 WidgetKit feature set, which Catalyst has from macOS 14.
         WhatsNewRelease(
             id: WhatsNewReleaseId("energy-widget-mac-2026.9.1"),
             version: releaseVersion,
@@ -120,7 +120,7 @@ enum WhatsNewCatalog {
 
     /// The Energy widget highlight. Tapping opens an in-app article on what the widget shows and how to
     /// add it, with the copy of the platform it is shown on: widgets live on the Home Screen and Lock
-    /// Screen on iOS, and on the desktop and in Notification Center on the Mac.
+    /// Screen on iOS, and on the desktop on the Mac.
     private static func energyWidgetItem(body: String, articleBody: String) -> WhatsNewItem {
         WhatsNewItem(
             id: "energy-widget",

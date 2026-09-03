@@ -8583,7 +8583,7 @@ public enum L10n {
       /// Energy widget
       public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.energy_widget.item_title") }
       public enum Mac {
-        /// The new **Energy** widget puts your energy dashboard on your desktop and in Notification Center.
+        /// The new **Energy** widget puts your energy dashboard on your desktop.
         /// 
         /// **What it shows**
         /// Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.
@@ -8591,7 +8591,7 @@ public enum L10n {
         /// **How to add it**
         /// Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.
         public static var articleBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.mac.article_body") }
-        /// See how much energy your home is using, producing, and storing at a glance on your desktop and in Notification Center. Tap to learn more.
+        /// See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.
         public static var itemBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.mac.item_body") }
       }
     }
