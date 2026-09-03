@@ -30,16 +30,23 @@ struct HADynamicIslandSnapshotTests {
         }
     }
 
-    /// `.sizeThatFits` at a fixed width is the point of these references: the image height is the
-    /// height the expanded regions ask for, so a state that leaves a region empty records a shorter
-    /// island than one that fills every region, and padding around an empty region shows up as a
-    /// taller image.
+    /// The expanded presentation is one view in one full-width region, so these references are the
+    /// layout itself rather than a re-composition of it. `.sizeThatFits` is what makes them useful:
+    /// the image height is the height the island asks for, so a state with no progress bar records
+    /// a visibly shorter image than one with a bar.
+    ///
+    /// The width is the island's content width on an iPhone 17 Pro, and the ideal height is taken
+    /// explicitly because `.sizeThatFits` proposes a compressed size in both axes — a `Text`
+    /// measured that way is squeezed onto one truncated line instead of wrapping.
     @available(iOS 26.0, *)
     @MainActor @Test func expandedSnapshots() {
         MaterialDesignIcons.register()
         for sample in Self.makeExpandedSamples() {
             assertSnapshot(
-                of: ExpandedRegions(attributes: Self.attributes, state: sample.state)
+                of: HAExpandedContentView(attributes: Self.attributes, state: sample.state)
+                    .frame(width: Self.expandedContentWidth, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .background(.black)
                     .environment(\.locale, Locale(identifier: "en_US")),
                 layout: .sizeThatFits,
                 named: sample.name
@@ -47,42 +54,7 @@ struct HADynamicIslandSnapshotTests {
         }
     }
 
-    /// Stand-in for the way the system composes the four expanded regions: leading, center and
-    /// trailing on one row, bottom underneath. The system owns the real geometry and content
-    /// margins, so this pins each region's content and height, not the island's exact pixels.
-    ///
-    /// The center column is given a definite width and its ideal height because `.sizeThatFits`
-    /// proposes a compressed size in both axes: a `Text` measured that way is squeezed onto one
-    /// truncated line, where the real region has the width and height to wrap into.
-    @available(iOS 17.2, *)
-    private struct ExpandedRegions: View {
-        let attributes: HALiveActivityAttributes
-        let state: HALiveActivityAttributes.ContentState
-
-        private static let width: CGFloat = 340
-        private static let centerWidth: CGFloat = 200
-
-        var body: some View {
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    HADynamicIslandIconContainerView(slug: state.icon, color: state.color)
-
-                    HAExpandedCenterView(attributes: attributes, state: state)
-                        .frame(width: Self.centerWidth, alignment: .leading)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Spacer(minLength: 0)
-
-                    HAExpandedTrailingView(state: state)
-                }
-
-                HAExpandedBottomView(state: state)
-            }
-            .padding(DesignSystem.Spaces.oneAndHalf)
-            .frame(width: Self.width)
-            .background(.black)
-        }
-    }
+    private static let expandedContentWidth: CGFloat = 336
 
     @available(iOS 17.2, *)
     private static var attributes: HALiveActivityAttributes {

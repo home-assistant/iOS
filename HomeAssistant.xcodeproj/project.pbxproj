@@ -192,6 +192,7 @@
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
 		42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C8112FFE4DB2008DAEE5 /* XCGLogger */; };
+		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
 		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42EDB6173002F8380051FC9B /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = 42EDB6163002F8380051FC9B /* HAModels */; };
@@ -239,7 +240,6 @@
 		B627CB151D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
-		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; };
 		B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -650,6 +650,7 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
+		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
@@ -684,7 +685,6 @@
 		B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-UI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
-		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B67CE82422200D420034C1D0 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -854,7 +854,8 @@
 				Widgets/LiveActivity/HADynamicIslandIconContainerView.swift,
 				Widgets/LiveActivity/HADynamicIslandIconView.swift,
 				Widgets/LiveActivity/HAExpandedBottomView.swift,
-				Widgets/LiveActivity/HAExpandedCenterView.swift,
+				Widgets/LiveActivity/HAExpandedContentView.swift,
+				Widgets/LiveActivity/HAExpandedTitleView.swift,
 				Widgets/LiveActivity/HAExpandedTrailingView.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
@@ -2334,8 +2335,8 @@
 		42DF4F00302CACC600589E49 /* Templating */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Templating; sourceTree = "<group>"; };
 		42DF4F03302CACD000589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
 		42DF4F06302CACD400589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
-		42E2E0000000000000000006 /* Accessibility */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Accessibility; sourceTree = "<group>"; };
 		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
+		42E2E0000000000000000006 /* Accessibility */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Accessibility; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
 		42EDB6453002FB9A0051FC9B /* CarPlay */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CarPlay; sourceTree = "<group>"; };
@@ -3310,10 +3311,10 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4283E0D53004DCF4004D1061 /* Resources */,
-				42E2E0000000000000000006 /* Accessibility */,
 				42DF4EE5302CACB600589E49 /* FlightGreetings */,
 				42DF4EF6302CACC200589E49 /* Templating */,
 				42DF4F03302CACD000589E49 /* ServerSwitching */,
+				42E2E0000000000000000006 /* Accessibility */,
 				42EDB6203002FB9A0051FC9B /* Improv */,
 				42EDB6453002FB9A0051FC9B /* CarPlay */,
 				42EDB66D3002FB9A0051FC9B /* Thread */,

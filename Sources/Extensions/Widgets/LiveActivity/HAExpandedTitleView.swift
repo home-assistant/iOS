@@ -2,10 +2,10 @@
 import Shared
 import SwiftUI
 
-/// Center slot of the expanded Dynamic Island: the title, with the message underneath when the
-/// content state carries one.
+/// Title and message block of the expanded Dynamic Island. The message is dropped when the
+/// content state has none.
 @available(iOS 17.2, *)
-struct HAExpandedCenterView: View {
+struct HAExpandedTitleView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
@@ -29,7 +29,7 @@ struct HAExpandedCenterView: View {
 
 @available(iOS 17.2, *)
 #Preview {
-    HAExpandedCenterView(
+    HAExpandedTitleView(
         attributes: .init(tag: "preview", title: "Laundry"),
         state: .init(message: "Washing cycle", progress: 40, progressMax: 100, icon: "washing-machine")
     )
