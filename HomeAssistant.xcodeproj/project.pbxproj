@@ -842,6 +842,12 @@
 				Widgets/Energy/WidgetEnergySmallView.swift,
 				Widgets/Energy/WidgetEnergyStyle.swift,
 				Widgets/Energy/WidgetEnergyView.swift,
+				Widgets/Entities/WidgetEntities.swift,
+				Widgets/Entities/WidgetEntitiesAppEntity.swift,
+				Widgets/Entities/WidgetEntitiesAppEntityQuery.swift,
+				Widgets/Entities/WidgetEntitiesAppIntent.swift,
+				Widgets/Entities/WidgetEntitiesEntry.swift,
+				Widgets/Entities/WidgetEntitiesTimelineProvider.swift,
 				Widgets/HAAppEntityAppIntentEntity.swift,
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
@@ -5423,7 +5429,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Debug;
 		};
@@ -5437,7 +5443,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Release;
 		};

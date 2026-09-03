@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "Cuando están activados, estos sensores se actualizarán con esta frecuencia mientras la aplicación esté abierta en primer plano.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "Cuando estén activados, estos sensores se actualizarán con esta frecuencia mientras la aplicación esté abierta. Algunos sensores se actualizarán automáticamente con mayor frecuencia.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Apagada";
 "settings_sensors.periodic_update.title" = "Actualización periódica";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Fuente";
 "widgets.energy.title" = "Energía";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Estado de la entidad";
 "widgets.gauge.description" = "Mostrar valores numéricos de Home Assistant en un indicador";
 "widgets.gauge.gallery_description" = "Muestra una entidad, una complicación del reloj, o una plantilla de Home Assistant en un medidor";

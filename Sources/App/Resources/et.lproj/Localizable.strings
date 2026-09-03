@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "Kui see on lubatud, värskendatakse neid andureid selle sagedusega kui rakendus on esiplaanil avatud.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "Kui see on lubatud, värskendatakse neid andureid selle sagedusega, kui rakendus on avatud. Mõned andurid värskendatakse automaatselt sagedamini.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Väljas";
 "settings_sensors.periodic_update.title" = "Perioodiline värskendus";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "widgets.energy.source.solar" = "Päikeseenergia";
 "widgets.energy.source.title" = "Allikas";
 "widgets.energy.title" = "Energia";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Üksuse olek";
 "widgets.gauge.description" = "Kuva Home Assistanti numbrilised olekud mõõturis";
 "widgets.gauge.gallery_description" = "Kuva mõõdikul olemit, kella komplikatsiooni või Home Assistantist pärit malli";

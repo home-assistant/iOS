@@ -951,16 +951,16 @@
 "mac.navigation.go_forward.accessibility_label" = "앞으로 이동";
 "mac.open_in_safari.accessibility_label" = "Safari에서 열기";
 "mac.paste.accessibility_label" = "붙여넣기";
-"mac.sidebar.done" = "Done";
-"mac.sidebar.edit" = "Edit Sidebar";
-"mac.sidebar.hidden_section.header" = "Hidden";
-"mac.sidebar.hide" = "Hide";
-"mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
-"mac.sidebar.settings" = "Settings";
-"mac.sidebar.show" = "Show";
-"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
+"mac.sidebar.done" = "완료";
+"mac.sidebar.edit" = "사이드바 편집";
+"mac.sidebar.hidden_section.header" = "숨김";
+"mac.sidebar.hide" = "숨기기";
+"mac.sidebar.notifications" = "알림";
+"mac.sidebar.reset_to_defaults" = "기본값으로 재설정";
+"mac.sidebar.set_default_dashboard" = "기본 대시보드로 설정";
+"mac.sidebar.settings" = "설정";
+"mac.sidebar.show" = "표시";
+"mac.toggle_sidebar.accessibility_label" = "사이드바 전환";
 "magic_item.action" = "동작";
 "magic_item.action.assist.pipeline.title" = "파이프라인";
 "magic_item.action.assist.start_listening.title" = "듣기 시작";
@@ -1027,9 +1027,9 @@
 "menu.status_item.toggle" = "%1$@ 토글";
 "menu.view.customize_toolbar" = "도구 모음 사용자 지정…";
 "menu.view.find" = "찾기";
-"menu.view.hide_sidebar" = "Hide Sidebar";
+"menu.view.hide_sidebar" = "사이드바 숨기기";
 "menu.view.reload_page" = "페이지 새로고침";
-"menu.view.show_sidebar" = "Show Sidebar";
+"menu.view.show_sidebar" = "사이드바 표시";
 "mtls.beta.info" = "이는 베타 기능입니다. 문제가 발생하면 아래 버튼을 사용하여 신고해 주세요.\
 \
 현재 mTLS는 iOS 17 이상에서만 지원됩니다. 알림 첨부 파일 표시, Assist TTS 오디오와 관련된 문제가 발생할 수 있으며 Apple Watch에서는 완전히 작동하지 않습니다.";
@@ -1338,12 +1338,12 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.app_icon_shortcuts.reset.title" = "앱 아이콘 바로가기 재설정";
 "settings.app_icon_shortcuts.subtitle" = "Items To Display When Long Pressing The App Icon. 선택";
 "settings.app_icon_shortcuts.title" = "앱 아이콘 바로가기";
-"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
-"settings.app_labs.features_section.header" = "Experimental features";
-"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
-"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
-"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.empty_state" = "현재 이 기기에서 사용할 수 있는 실험적 기능이 없습니다.";
+"settings.app_labs.features_section.header" = "실험적 기능";
+"settings.app_labs.header.subtitle" = "App Labs의 실험적 기능은 언제든지 변경되거나 제거될 수 있습니다. 사용에 따른 책임은 사용자에게 있습니다.";
+"settings.app_labs.mac_native_sidebar.footer" = "Home Assistant 사이드바를 macOS 네이티브 사이드바로 대체합니다. 이 설정을 변경하면 페이지가 다시 로드됩니다.";
+"settings.app_labs.mac_native_sidebar.title" = "네이티브 사이드바";
+"settings.app_labs.testflight_only.body" = "App Labs는 TestFlight 빌드에서만 사용할 수 있습니다.";
 "settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "활성화";
 "settings.connection_section.add_server" = "서버 추가";
@@ -1667,7 +1667,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.search.no_results.title" = "“%@”에 대한 결과 없음";
 "settings.search.prompt" = "설정 검색";
 "settings.search_keywords.app_icon_shortcuts" = "빠른 동작, 홈 화면, 길게 누르기, 런처";
-"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
+"settings.search_keywords.app_labs" = "실험적, 베타, 랩, 기능, TestFlight, 사이드바";
 "settings.search_keywords.car_play" = "자동차, 차량, 운전, 대시보드";
 "settings.search_keywords.complications" = "시계 페이스, 애플 워치, 한눈에 보기";
 "settings.search_keywords.debugging" = "로그, 진단, 내보내기, 데이터베이스, 문제 해결, 재설정";
@@ -2007,6 +2007,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_sensors.periodic_update.description" = "활성화하면 앱이 화면에서 열려 있는 동안 이러한 센서가 이 주기로 업데이트됩니다.";
 "settings_sensors.periodic_update.description_foreground" = "이 빈도는 앱이 화면에 열려 있을 때만 적용됩니다. 앱이 백그라운드에 있는 동안에는 iOS가 센서를 업데이트할 수 있는 시점을 결정합니다.";
 "settings_sensors.periodic_update.description_mac" = "활성화하면 앱이 열려 있는 동안 이러한 센서가 이 주기로 업데이트됩니다. 일부 센서는 더 자주 자동으로 업데이트됩니다.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "꺼짐";
 "settings_sensors.periodic_update.title" = "정기 업데이트";
 "settings_sensors.permissions.bluetooth.title" = "블루투스";
@@ -2803,6 +2804,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.energy.source.solar" = "태양광";
 "widgets.energy.source.title" = "소스";
 "widgets.energy.title" = "에너지";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "엔티티 상태";
 "widgets.gauge.description" = "Home Assistant의 숫자 상태를 게이지에 표시";
 "widgets.gauge.gallery_description" = "Home Assistant의 엔티티, 시계 컴플리케이션 또는 템플릿을 게이지로 표시합니다";

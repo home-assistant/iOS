@@ -2004,6 +2004,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "启用后，这些传感器将在应用程序打开时以该频率更新。";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "启用后，应用程序打开时，将以该频率更新传感器。一些传感器将更频繁地自动更新。";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "关闭";
 "settings_sensors.periodic_update.title" = "定时更新";
 "settings_sensors.permissions.bluetooth.title" = "蓝牙";
@@ -2803,6 +2804,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "实体状态";
 "widgets.gauge.description" = "以仪表方式显示 Home Assistant 中的数字状态";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
