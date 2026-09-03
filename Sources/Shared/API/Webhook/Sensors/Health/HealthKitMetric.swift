@@ -1,15 +1,17 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import Foundation
 
-/// Describes one Apple Health quantity type and how it becomes a Home Assistant sensor.
+/// Describes one Apple Health sample type and how it becomes a Home Assistant sensor.
 ///
 /// The catalog in `HealthKitMetric+…` files is plain data: `identifier` holds the raw
-/// `HKQuantityTypeIdentifier` string so metrics introduced by newer versions of iOS can be listed
-/// unconditionally — `HealthKitService` simply skips the ones the running OS doesn't know about.
+/// `HKQuantityTypeIdentifier` (or, for sleep, `HKCategoryTypeIdentifier`) string so metrics
+/// introduced by newer versions of iOS can be listed unconditionally — `HealthKitService` simply
+/// skips the ones the running OS doesn't know about.
 public struct HealthKitMetric: Equatable, Hashable, Sendable {
     /// Stable sensor ID sent to Home Assistant. Never change one that has already shipped.
     public let uniqueID: String
-    /// Raw value of the `HKQuantityTypeIdentifier` this metric reads.
+    /// Raw value of the `HKQuantityTypeIdentifier` this metric reads, or of the
+    /// `HKCategoryTypeIdentifier` for a `.sleep` metric. Several sleep metrics share the one type.
     public let identifier: String
     /// Entity name sent to Home Assistant. Not localized, matching the other webhook sensors.
     public let name: String
@@ -17,13 +19,15 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
     public let icon: String
     /// Unit of measurement reported to Home Assistant, `nil` for unitless metrics.
     public let unit: String?
-    /// Unit the samples are read in, which is also what `unit` describes.
+    /// Unit the samples are read in, which is also what `unit` describes. A `.sleep` metric has no
+    /// samples to convert; its `.minute` only names what the summed durations are reported in.
     public let queryUnit: HealthKitMetricUnit
     public let aggregation: HealthKitMetricAggregation
     public let category: HealthKitMetricCategory
     public let deviceClass: DeviceClass?
     public let stateClass: SensorStateClass?
-    /// How far back a `.mostRecent` metric looks for a sample. Ignored for `.cumulativeSum`.
+    /// How far back a `.mostRecent` metric looks for a sample, or a `.sleep` metric for a night.
+    /// Ignored for `.cumulativeSum`.
     public let lookbackDays: Int
     /// Multiplier applied to the raw HealthKit value, e.g. 100 to turn a 0…1 fraction into a percentage.
     public let scale: Double
