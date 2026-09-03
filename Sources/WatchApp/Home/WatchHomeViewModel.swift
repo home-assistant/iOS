@@ -59,9 +59,6 @@ final class WatchHomeViewModel: ObservableObject {
 
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
-    /// Keeps the app running through a wrist-down while a sync is in flight: the chunked pull is a
-    /// long series of interactive round-trips that would otherwise stall the moment the process
-    /// suspends, leaving the user to raise their wrist and reload again.
     private let runtimeSessions: WatchExtendedRuntimeSessionHolding
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
@@ -187,8 +184,6 @@ final class WatchHomeViewModel: ObservableObject {
         }
         isSyncInFlight = true
         isSyncUserInitiated = userInitiated
-        // Released wherever the sync reaches a terminal state (`updateLoading(isLoading: false)` or
-        // the background-pull fallback).
         runtimeSessions.begin(.databaseSync)
         isLoading = true
         clearError()
