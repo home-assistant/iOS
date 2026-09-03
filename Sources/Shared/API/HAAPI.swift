@@ -581,6 +581,7 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
         }
     }
@@ -592,7 +593,16 @@ public class HomeAssistantAPI {
                 type: "update_registration",
                 data: buildMobileAppUpdateRegistration()
             )
-        )
+        ).get { [self] _ in
+            rememberRegisteredDeviceName()
+        }
+    }
+
+    /// Keeps the device name the registration carries on the server, for the watch to name itself after.
+    private func rememberRegisteredDeviceName() {
+        let name = server.info.mobileAppDeviceName
+        guard server.info.setting(for: .registeredDeviceName) != name else { return }
+        server.update { $0.setSetting(value: name, for: .registeredDeviceName) }
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {

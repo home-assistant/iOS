@@ -59,10 +59,10 @@ public struct WatchDeviceIdentity: Equatable {
         return Int(name.dropFirst(base.count + 1)) != nil
     }
 
-    /// The `device_name` the watch registers with `server`.
+    /// The `device_name` the watch registers with `server`: the phone's registered name, then its own.
     public static func deviceName(for server: Server) -> String {
         deviceName(
-            companionDeviceName: server.info.setting(for: .companionDeviceName),
+            companionDeviceName: server.info.setting(for: .registeredDeviceName),
             watchName: Current.device.deviceName()
         )
     }

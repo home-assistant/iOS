@@ -112,7 +112,7 @@ struct WatchDeviceRegistrarTests {
         defer { Current.device.deviceName = deviceName }
         Current.device.deviceName = { "Apple Watch" }
 
-        let stamped = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
+        let stamped = Server.fake { $0.setSetting(value: "My iPhone", for: .registeredDeviceName) }
         #expect(WatchDeviceIdentity.deviceName(for: stamped) == "My iPhone Apple Watch")
 
         let unstamped = Server.fake()
@@ -223,7 +223,7 @@ struct WatchDeviceRegistrarTests {
         let deviceName = Current.device.deviceName
         defer { Current.device.deviceName = deviceName }
         Current.device.deviceName = { "Apple Watch" }
-        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
+        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .registeredDeviceName) }
         let capture = BodyCapture()
 
         let registration = try await WatchDeviceRegistrar.register(
@@ -300,7 +300,7 @@ struct WatchDeviceRegistrarTests {
         Current.device.systemName = { "watchOS" }
         Current.device.systemVersion = { "26.0" }
         Current.device.identifierForVendor = { "vendor-id" }
-        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .companionDeviceName) }
+        let server = Server.fake { $0.setSetting(value: "My iPhone", for: .registeredDeviceName) }
 
         let identity = WatchDeviceIdentity.current(for: server)
 

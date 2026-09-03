@@ -79,7 +79,7 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// `nil` still means "not carried" — a delta sync, or a payload from a build that predates this
     /// field — and the watch retains what it has.
     public var notificationSnoozeActions: [NotificationSnoozeAction]?
-    /// The phone's servers (`WatchBoundServerState.encoded()`), so every sync — the chunked
+    /// The phone's servers (`ServerManager.restorableState()` encoding), so every sync — the chunked
     /// pull and the proactive background push — also refreshes the watch's servers *in addition to*
     /// the on-demand `serversConfigSync` interactive exchange (which additionally carries the mTLS
     /// client-certificate bundles; those Keychain materials stay off the mirror on purpose).
@@ -270,7 +270,7 @@ public struct WatchDatabaseMirror: WatchCodable {
         registry.sort { ($0.serverId, $0.entityId) < ($1.serverId, $1.entityId) }
         let snoozeActions = snoozeActionsSnapshot()
         // Resolved outside the GRDB read: servers live in their own store, not the database.
-        let servers = WatchBoundServerState.encoded()
+        let servers = Current.servers.restorableState()
 
         return try Current.database().read { db in
             let entities: [HAAppEntity]
