@@ -265,7 +265,7 @@ struct DomainMappingTests {
     }
 
     @Test func mainActionMatchesExpectedGrouping() {
-        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve]
+        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group]
         let press: Set<Domain> = [.button, .inputButton]
         let turnOn: Set<Domain> = [.scene, .script]
         let trigger: Set<Domain> = [.automation]
@@ -333,30 +333,43 @@ struct MagicItemWidgetInteractionTests {
         interactionKind(for: MagicItem(id: id, serverId: "server-1", type: .entity))
     }
 
-    /// `openEntityDeeplinkURL` needs widget authenticity, which isn't available in every test
+    /// `openEntityDestinationURL` needs widget authenticity, which isn't available in every test
     /// environment, so a more-info route is either the deeplink or the `refresh` no-op fallback.
     private func isMoreInfoRoute(_ kind: String) -> Bool {
         kind == "widgetURL" || kind == "refresh"
     }
 
-    /// The icon toggles for the domains the frontend's tile card makes it a control for — a button
-    /// or scene included, whose "toggle" presses or activates — and opens the entity otherwise.
+    /// The icon runs the domain's own action for every `isActionable` domain — its toggle, or the
+    /// main action where the domain names one — and opens the entity otherwise.
     @Test func widgetInteractionRoutesByTileIconDefault() {
         #expect(interactionKind(forEntityId: "light.kitchen") == "toggle")
         #expect(interactionKind(forEntityId: "switch.porch") == "toggle")
-        #expect(interactionKind(forEntityId: "button.doorbell") == "toggle")
-        #expect(interactionKind(forEntityId: "scene.movie") == "toggle")
-        #expect(interactionKind(forEntityId: "automation.wakeup") == "toggle")
-        #expect(isMoreInfoRoute(interactionKind(forEntityId: "script.open_gate")))
+        #expect(interactionKind(forEntityId: "cover.garage") == "toggle")
+        #expect(interactionKind(forEntityId: "lock.front_door") == "toggle")
+        #expect(interactionKind(forEntityId: "group.downstairs") == "toggle")
+        #expect(interactionKind(forEntityId: "button.doorbell") == "activate")
+        #expect(interactionKind(forEntityId: "scene.movie") == "activate")
+        #expect(interactionKind(forEntityId: "automation.wakeup") == "activate")
+        #expect(interactionKind(forEntityId: "script.open_gate") == "activate")
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "media_player.tv")))
         #expect(isMoreInfoRoute(interactionKind(forEntityId: "sensor.temperature")))
     }
 
     /// Widgets render entities of every domain, so a domain whose icon isn't a control must still
     /// route somewhere — its more-info dialog in the web view — rather than producing an inert tile.
-    @Test func domainsWithoutTileIconToggleOpenMoreInfo() {
-        for domain in Domain.allCases where !domain.togglesFromTileIcon {
+    @Test func nonActionableDomainsOpenMoreInfo() {
+        for domain in Domain.allCases where !domain.isActionable {
             let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
             #expect(isMoreInfoRoute(kind), "Domain.\(domain) should open more-info, got \(kind)")
+        }
+    }
+
+    /// And every actionable domain runs from its icon instead of opening the app.
+    @Test func actionableDomainsRunFromTheIcon() {
+        for domain in Domain.allCases where domain.isActionable {
+            let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
+            let expected = domain.explicitMainAction != nil ? "activate" : "toggle"
+            #expect(kind == expected, "Domain.\(domain) should route to \(expected), got \(kind)")
         }
     }
 

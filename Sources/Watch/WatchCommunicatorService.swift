@@ -820,10 +820,9 @@ final class WatchCommunicatorService {
             Current.Log.error("No API available to call service")
             return
         }
-        let domain = domain.rawValue
-        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain).", with: "")
+        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain.rawValue).", with: "")
         api.CallService(
-            domain: domain,
+            domain: domain.serviceDomain,
             service: serviceName,
             serviceData: serviceData,
             triggerSource: .Watch,

@@ -29,44 +29,62 @@ struct MagicItemWidgetInteractionTests {
         #expect(!item.controlsEntityFromWidget)
     }
 
-    /// A lock is not one of the frontend's toggle-by-default domains, so its icon opens it until
-    /// told otherwise — but it can be told to toggle, which locks or unlocks by its state.
-    @Test func lockOpensMoreInfoByDefaultButCanToggle() {
-        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+    /// A lock is actionable, so its icon locks or unlocks it by state. It is the one domain that
+    /// always confirms first, whether or not the item asked for confirmation.
+    @Test func lockTogglesFromItsIconAndAlwaysConfirms() {
+        let item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
 
-        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "lock.front_door"))
-        #expect(!item.controlsEntityFromWidget)
-
-        item.action = .toggle
         #expect(item.widgetInteractionType == .appIntent(.toggle(
             entityId: "lock.front_door",
             domain: "lock",
             serverId: "1"
         )))
         #expect(item.controlsEntityFromWidget)
+        #expect(item.requiresConfirmation)
+        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "lock.front_door"))
+
+        var light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        #expect(!light.requiresConfirmation)
+        light.customization = .init(requiresConfirmation: true)
+        #expect(light.requiresConfirmation)
     }
 
-    /// A script isn't in the frontend's toggle-by-default set either: its tile opens the script,
-    /// and only an explicit "toggle" runs it from the icon.
-    @Test func scriptOpensMoreInfoUntilToldToToggle() {
-        var item = MagicItem(id: "script.morning", serverId: "1", type: .script)
+    /// A widget with nowhere to hold a pending confirmation can't run a lock at all, so its tile
+    /// opens the entity instead. Every other domain keeps its default there.
+    @Test func aWidgetThatCannotConfirmDoesNotRunALock() {
+        let lock = MagicItem.entityTile(entityId: "lock.front_door", serverId: "1", canConfirm: false)
+        #expect(lock.action == .moreInfoDialog)
+        #expect(Self.opensMoreInfo(lock.widgetInteractionType, entityId: "lock.front_door"))
+        #expect(!lock.controlsEntityFromWidget)
 
-        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "script.morning"))
-        #expect(!item.controlsEntityFromWidget)
-        #expect(item.widgetInteractionType == item.widgetTapInteractionType)
+        let confirmable = MagicItem.entityTile(entityId: "lock.front_door", serverId: "1", canConfirm: true)
+        #expect(confirmable.action == .default)
+        #expect(confirmable.controlsEntityFromWidget)
 
-        item.action = .toggle
-        #expect(item.widgetInteractionType == .appIntent(.toggle(
+        let light = MagicItem.entityTile(entityId: "light.kitchen", serverId: "1", canConfirm: false)
+        #expect(light.action == .default)
+        #expect(light.controlsEntityFromWidget)
+    }
+
+    /// A script's state says nothing about it, so its icon runs it rather than toggling it — the
+    /// same "Run" the customization screen offers.
+    @Test func scriptRunsFromItsIconByDefault() {
+        let item = MagicItem(id: "script.morning", serverId: "1", type: .script)
+
+        #expect(item.widgetInteractionType == .appIntent(.activate(
             entityId: "script.morning",
             domain: "script",
             serverId: "1"
         )))
+        #expect(item.controlsEntityFromWidget)
+        #expect(!item.requiresConfirmation)
+        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "script.morning"))
     }
 
-    /// A scene is one of the domains whose icon runs by default, like a button.
+    /// A scene activates and a button presses, both through the domain's main action.
     @Test func sceneAndButtonIconsActivateByDefault() {
         let scene = MagicItem(id: "scene.movie", serverId: "1", type: .scene)
-        #expect(scene.widgetInteractionType == .appIntent(.toggle(
+        #expect(scene.widgetInteractionType == .appIntent(.activate(
             entityId: "scene.movie",
             domain: "scene",
             serverId: "1"
@@ -74,7 +92,7 @@ struct MagicItemWidgetInteractionTests {
         #expect(scene.controlsEntityFromWidget)
 
         let button = MagicItem(id: "button.doorbell", serverId: "1", type: .entity)
-        #expect(button.widgetInteractionType == .appIntent(.toggle(
+        #expect(button.widgetInteractionType == .appIntent(.activate(
             entityId: "button.doorbell",
             domain: "button",
             serverId: "1"
@@ -357,22 +375,35 @@ struct MagicItemWidgetInteractionTests {
     }
 
     /// "Default" on the customization screen names what it stands for, and that name is what the
-    /// tile runs — the frontend tile card's defaults, with more-info where the card would do
-    /// nothing: the icon toggles for the toggle domains and opens the entity otherwise, and the
-    /// rest of the tile always opens the entity.
+    /// tile runs: the icon runs the domain's own action, and the rest of the tile opens the entity.
     @Test func defaultActionsNameWhatTheTileDoes() {
         let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
         #expect(light.defaultIconAction == .toggle)
         #expect(light.defaultTapAction == .moreInfoDialog)
 
-        let scene = MagicItem(id: "scene.movie", serverId: "1", type: .scene)
-        #expect(scene.defaultIconAction == .toggle)
-
         for item in [
-            MagicItem(id: "script.morning", serverId: "1", type: .script),
-            MagicItem(id: "sensor.temperature", serverId: "1", type: .entity),
             MagicItem(id: "lock.front_door", serverId: "1", type: .entity),
             MagicItem(id: "cover.garage", serverId: "1", type: .entity),
+            MagicItem(id: "group.downstairs", serverId: "1", type: .entity),
+            MagicItem(id: "valve.water", serverId: "1", type: .entity),
+        ] {
+            #expect(item.defaultIconAction == .toggle, "\(item.id)")
+            #expect(item.defaultTapAction == .moreInfoDialog, "\(item.id)")
+        }
+
+        for item in [
+            MagicItem(id: "scene.movie", serverId: "1", type: .scene),
+            MagicItem(id: "script.morning", serverId: "1", type: .script),
+            MagicItem(id: "button.doorbell", serverId: "1", type: .entity),
+            MagicItem(id: "automation.night", serverId: "1", type: .entity),
+        ] {
+            #expect(item.defaultIconAction == .mainAction, "\(item.id)")
+            #expect(item.defaultTapAction == .moreInfoDialog, "\(item.id)")
+        }
+
+        for item in [
+            MagicItem(id: "sensor.temperature", serverId: "1", type: .entity),
+            MagicItem(id: "media_player.tv", serverId: "1", type: .entity),
             MagicItem(id: "custom.thing", serverId: "1", type: .entity),
         ] {
             #expect(item.defaultIconAction == .moreInfoDialog, "\(item.id)")
@@ -387,26 +418,51 @@ struct MagicItemWidgetInteractionTests {
 
         #expect(ItemAction.defaultName(resolvingTo: ItemAction.toggle.name) == "Default (Toggle)")
         #expect(ItemAction.defaultName(resolvingTo: ItemAction.moreInfoDialog.name) == "Default (More info)")
+        #expect(ItemAction.defaultName(resolvingTo: ItemAction.mainAction.name(for: .script)) == "Default (Run)")
+        #expect(
+            ItemAction.defaultName(resolvingTo: ItemAction.mainAction.name(for: .automation)) ==
+                "Default (Trigger)"
+        )
     }
 
     /// Confirmation, when an item requires it, applies to whichever half is tapped — except a tap
-    /// that only opens the entity's more-info dialog, which is the one interaction that changes
-    /// nothing. This is the test the tile runs before asking.
-    @Test func onlyMoreInfoIsExemptFromConfirmation() {
-        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
-        #expect(item.widgetInteractionType.opensMoreInfoDialog)
-        #expect(item.widgetTapInteractionType.opensMoreInfoDialog)
+    /// that only opens the entity, which is the one interaction that changes nothing. This is the
+    /// test the tile runs before asking.
+    @Test func onlyOpeningTheEntityIsExemptFromConfirmation() {
+        let sensor = MagicItem(id: "sensor.temperature", serverId: "1", type: .entity)
+        #expect(sensor.widgetInteractionType.opensEntityInApp)
+        #expect(sensor.widgetTapInteractionType.opensEntityInApp)
 
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        #expect(item.widgetTapInteractionType.opensEntityInApp)
         item.action = .toggle
-        #expect(!item.widgetInteractionType.opensMoreInfoDialog)
+        #expect(!item.widgetInteractionType.opensEntityInApp)
         item.tapAction = .turnOff
-        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        #expect(!item.widgetTapInteractionType.opensEntityInApp)
         item.tapAction = .navigate("/lovelace/0")
-        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        #expect(!item.widgetTapInteractionType.opensEntityInApp)
         item.tapAction = .url("https://www.home-assistant.io")
-        #expect(!item.widgetTapInteractionType.opensMoreInfoDialog)
+        #expect(!item.widgetTapInteractionType.opensEntityInApp)
         item.tapAction = .moreInfoDialog
-        #expect(item.widgetTapInteractionType.opensMoreInfoDialog)
+        #expect(item.widgetTapInteractionType.opensEntityInApp)
+    }
+
+    /// A camera opens in the app's own player rather than the frontend's more-info dialog, and that
+    /// is still only opening the entity, so it is exempt from confirmation too.
+    @Test func cameraOpensTheNativePlayer() {
+        let camera = MagicItem(id: "camera.porch", serverId: "1", type: .entity)
+
+        #expect(camera.defaultIconAction == .moreInfoDialog)
+        #expect(!camera.controlsEntityFromWidget)
+        #expect(camera.widgetInteractionType == camera.widgetTapInteractionType)
+        #expect(camera.widgetInteractionType.opensEntityInApp)
+
+        guard case let .widgetURL(url) = camera.widgetInteractionType else {
+            Issue.record("Expected a deep link, got \(camera.widgetInteractionType)")
+            return
+        }
+        #expect(url.host == AppConstants.cameraDeeplinkHost)
+        #expect(url.absoluteString.contains("entityId=camera.porch"))
     }
 
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still

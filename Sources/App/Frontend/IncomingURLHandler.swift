@@ -350,8 +350,8 @@ class IncomingURLHandler {
     }
 
     private func performAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
-        // Opening the entity's more-info dialog changes nothing, so it is never confirmed first.
-        if item.customization?.requiresConfirmation == true, !item.widgetInteractionType.opensMoreInfoDialog {
+        // Opening the entity changes nothing, so it is never confirmed first.
+        if item.requiresConfirmation, !item.widgetInteractionType.opensEntityInApp {
             return confirmAppIconShortcut(item, provider: provider)
         } else {
             return runAppIconShortcut(item, provider: provider)
@@ -475,7 +475,7 @@ class IncomingURLHandler {
             // falling through keeps the confirmation overlay and error handling.
             return nil
         case .moreInfoDialog:
-            if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
+            if let url = AppConstants.openEntityDestinationURL(entityId: item.id, serverId: item.serverId) {
                 _ = handle(url: url)
             }
             return .value(())

@@ -106,10 +106,10 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         // `MagicItem.widgetInteractionType`'s more-info deeplink, which opens the entity in the app's
         // web view — the same behavior the custom widget already has for those domains.
         let magicItems = filteredEntities.map { entityId in
-            MagicItem(
-                id: entityId,
+            MagicItem.entityTile(
+                entityId: entityId,
                 serverId: server.identifier.rawValue,
-                type: .entity
+                canConfirm: false
             )
         }
 

@@ -3,35 +3,15 @@ import Foundation
 /// The frontend's toggle model, ported so a widget tile behaves the way a tile card does.
 ///
 /// Each member names the home-assistant/frontend source it mirrors, all under `src/`:
-/// - `common/const.ts`: `DOMAINS_TOGGLE` and `STATES_OFF`
+/// - `common/const.ts`: `STATES_OFF`
 /// - `common/entity/get_toggle_action.ts`: the on and off service each domain toggles between
 /// - `common/entity/can_toggle_domain.ts`: a domain toggles when it has both of those services
 /// - `panels/lovelace/common/entity/toggle-entity.ts` and `turn-on-off-entity.ts`: the call a
 ///   toggle makes
-/// - `panels/lovelace/cards/hui-tile-card.ts`: `getEntityDefaultTileIconAction`
 public extension Domain {
-    /// `DOMAINS_TOGGLE`: the domains whose tile card icon toggles the entity by default.
-    static let tileIconToggleDomains: [Domain] = [
-        .fan,
-        .inputBoolean,
-        .light,
-        .switch,
-        .group,
-        .automation,
-        .humidifier,
-        .valve,
-    ]
-
     /// `STATES_OFF`: a toggle turns an entity in one of these states on, and one in any other
     /// state off.
     static let statesOff: [String] = ["closed", "locked", "off"]
-
-    /// `getEntityDefaultTileIconAction`: whether a tile card's icon runs "toggle" for this domain
-    /// when nothing else was chosen. Every other domain's icon does nothing, and the rest of the
-    /// tile opens the entity.
-    var togglesFromTileIcon: Bool {
-        Self.tileIconToggleDomains.contains(self) || [.button, .inputButton, .scene].contains(self)
-    }
 
     /// `getToggleAction`, narrowed by `canToggleDomain`: the service a toggle calls to turn an
     /// entity of this domain on, and the one to turn it off. A button or a scene has only the one,
@@ -103,9 +83,10 @@ public extension Domain {
         return services.on != services.off
     }
 
-    /// `turnOnOffEntity`: the domain the toggle's service is called on. A group has no on/off
-    /// services of its own, so it is toggled through `homeassistant.turn_on` and `turn_off`.
-    var toggleServiceDomain: String {
+    /// `turnOnOffEntity`: the domain any service call for this entity is addressed to. A group
+    /// has no services of its own (the integration registers only `reload`, `set` and
+    /// `remove`), so it is controlled through `homeassistant.turn_on`, `turn_off` and `toggle`.
+    var serviceDomain: String {
         self == .group ? "homeassistant" : rawValue
     }
 
