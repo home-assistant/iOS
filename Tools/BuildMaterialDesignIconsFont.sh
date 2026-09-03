@@ -70,12 +70,14 @@ else
 	if [ -n "$LATEST" ] && [ "$LATEST" != "$MDI_VERSION" ]; then
 		echo "A newer version ($LATEST) is available; run with --bump to update."
 	fi
+	# The font HAIconic bundles has to match too, otherwise a stale copy there
+	# survives every run that finds the artifacts in this directory intact.
 	if [[ \
 			-f MaterialDesignIcons.ttf && \
-			-f "$FONT_RESOURCE" && \
 			-f MaterialDesignIcons-$MDI_VERSION.ttf && \
 			-f MaterialDesignIcons.json && \
-			-f MaterialDesignIcons-$MDI_VERSION.json ]]; then
+			-f MaterialDesignIcons-$MDI_VERSION.json ]] && \
+			cmp -s MaterialDesignIcons.ttf "$FONT_RESOURCE"; then
 		echo "Up-to-date"
 		exit
 	fi
