@@ -20,7 +20,8 @@ struct HAExpandedTitleView: View {
                 Text(state.message)
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.7))
-                    .lineLimit(2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -12,17 +12,16 @@ struct HAExpandedContentView: View {
     let state: HALiveActivityAttributes.ContentState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
+            HStack(spacing: DesignSystem.Spaces.one) {
                 HADynamicIslandIconContainerView(slug: state.icon, color: state.color)
-
                 HAExpandedTitleView(attributes: attributes, state: state)
-
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 HAExpandedTrailingView(state: state)
             }
-
             HAExpandedBottomView(state: state)
         }
+        .padding([.horizontal, .bottom], DesignSystem.Spaces.one)
     }
 }
 
