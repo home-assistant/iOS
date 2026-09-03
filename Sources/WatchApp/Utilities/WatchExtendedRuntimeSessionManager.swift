@@ -10,7 +10,7 @@ final class WatchExtendedRuntimeSessionManager: NSObject {
 
     static let shared = WatchExtendedRuntimeSessionManager()
 
-    private var holders: Set<Reason> = []
+    private var holders: [Reason: Int] = [:]
     private var session: WKExtendedRuntimeSession?
     private let makeSession: () -> WKExtendedRuntimeSession
     private var didBecomeActiveObserver: NSObjectProtocol?
@@ -61,22 +61,25 @@ final class WatchExtendedRuntimeSessionManager: NSObject {
     }
 
     private var heldReasons: [String] {
-        holders.map(\.rawValue).sorted()
+        holders.keys.map(\.rawValue).sorted()
     }
 }
 
 extension WatchExtendedRuntimeSessionManager: WatchExtendedRuntimeSessionHolding {
     func begin(_ reason: Reason) {
         onMain { [self] in
-            holders.insert(reason)
+            holders[reason, default: 0] += 1
             startSessionIfNeeded()
         }
     }
 
     func end(_ reason: Reason) {
         onMain { [self] in
-            holders.remove(reason)
-            guard holders.isEmpty, let session else { return }
+            guard let count = holders[reason] else { return }
+            holders[reason] = count > 1 ? count - 1 : nil
+            guard holders.isEmpty else { return }
+            stopObservingActivation()
+            guard let session else { return }
             Current.Log.info("Ending extended runtime session after \(reason.rawValue)")
             self.session = nil
             session.invalidate()

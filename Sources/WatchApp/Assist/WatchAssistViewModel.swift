@@ -35,6 +35,7 @@ final class WatchAssistViewModel: ObservableObject {
     private let audioPlayer: any AudioPlayerProtocol
     private let immediateCommunicatorService: ImmediateCommunicatorService
     private let runtimeSessions: WatchExtendedRuntimeSessionHolding
+    private var isHoldingRuntimeSession = false
     /// Written prompt of an Assist prompt item: the session sends it instead of listening. `nil`
     /// for a regular voice session.
     private let prompt: String?
@@ -100,6 +101,8 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func beginExtendedRuntime() {
+        guard !isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = true
         runtimeSessions.begin(.assist)
     }
 
@@ -108,6 +111,12 @@ final class WatchAssistViewModel: ObservableObject {
         assistService.endRoutine()
         timer?.invalidate()
         immediateCommunicatorService.removeObserver(self)
+        endExtendedRuntime()
+    }
+
+    private func endExtendedRuntime() {
+        guard isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = false
         runtimeSessions.end(.assist)
     }
 

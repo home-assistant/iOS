@@ -60,6 +60,7 @@ final class WatchHomeViewModel: ObservableObject {
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
     private let runtimeSessions: WatchExtendedRuntimeSessionHolding
+    private var isHoldingRuntimeSession = false
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
     /// through numbers too fast to read.
@@ -105,6 +106,19 @@ final class WatchHomeViewModel: ObservableObject {
         if let guaranteedObserver {
             Communicator.shared.guaranteedMessage.unobserve(guaranteedObserver)
         }
+        endExtendedRuntime()
+    }
+
+    private func beginExtendedRuntime() {
+        guard !isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = true
+        runtimeSessions.begin(.databaseSync)
+    }
+
+    private func endExtendedRuntime() {
+        guard isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = false
+        runtimeSessions.end(.databaseSync)
     }
 
     @MainActor
@@ -184,7 +198,7 @@ final class WatchHomeViewModel: ObservableObject {
         }
         isSyncInFlight = true
         isSyncUserInitiated = userInitiated
-        runtimeSessions.begin(.databaseSync)
+        beginExtendedRuntime()
         isLoading = true
         clearError()
         setLoadingStatus(L10n.Watch.Sync.starting)
@@ -210,7 +224,7 @@ final class WatchHomeViewModel: ObservableObject {
         // keeps this abandoned sync from blocking a later reload.
         isLoading = false
         isSyncInFlight = false
-        runtimeSessions.end(.databaseSync)
+        endExtendedRuntime()
         loadCache()
         setLoadingStatus(L10n.Watch.Home.Sync.waiting)
         enqueueGuaranteedConfigPull()
@@ -827,7 +841,7 @@ final class WatchHomeViewModel: ObservableObject {
                 // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
                 // start.
                 self?.isSyncInFlight = false
-                self?.runtimeSessions.end(.databaseSync)
+                self?.endExtendedRuntime()
                 self?.syncProgress = nil
                 if clearStatus {
                     // Cancel any pending throttled status update and clear immediately.
