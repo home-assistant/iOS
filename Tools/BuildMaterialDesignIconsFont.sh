@@ -9,6 +9,7 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 SELF="$DIR/$(basename "$0")"
+FONT_RESOURCE="$DIR/../Sources/HAIconic/Sources/Resources/MaterialDesignIcons.ttf"
 
 pushd "$DIR" >/dev/null
 
@@ -71,6 +72,7 @@ else
 	fi
 	if [[ \
 			-f MaterialDesignIcons.ttf && \
+			-f "$FONT_RESOURCE" && \
 			-f MaterialDesignIcons-$MDI_VERSION.ttf && \
 			-f MaterialDesignIcons.json && \
 			-f MaterialDesignIcons-$MDI_VERSION.json ]]; then
@@ -113,6 +115,10 @@ python3 fontname-$FONT_RENAME_COMMIT.py MaterialDesignIcons MaterialDesignIcons-
 echo "Creating links..."
 ln -f MaterialDesignIcons-$MDI_VERSION.ttf MaterialDesignIcons.ttf
 ln -f MaterialDesignIcons-$MDI_VERSION.json MaterialDesignIcons.json
+
+# The font the app ships is the one HAIconic bundles, so install it there too.
+echo "Installing the font into HAIconic..."
+cp MaterialDesignIcons.ttf "$FONT_RESOURCE"
 
 echo "Successfully built MaterialDesignIcons at version $MDI_VERSION"
 echo "Running Swiftgen..."
