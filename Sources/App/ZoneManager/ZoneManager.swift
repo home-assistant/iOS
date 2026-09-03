@@ -380,17 +380,13 @@ class ZoneManager {
                 )
             }
             */
-            Current.notificationDispatcher.send(.init(
-                id: .debug,
-                title: "DEBUG: Failed to fire ZoneManager",
-                body: message
-            ))
             scheduleZoneEventRetry()
         }
     }
 
     private func flushPendingZoneEvents() {
-        guard let pending = zoneEventOutbox.pendingEvents.first else {
+        let pendingEvents = zoneEventOutbox.pendingEvents
+        guard !pendingEvents.isEmpty else {
             zoneEventRetryAttempt = 0
             zoneEventRetryWorkItem?.cancel()
             zoneEventRetryWorkItem = nil
@@ -399,26 +395,35 @@ class ZoneManager {
         // A newer Beacon transition may replace an in-flight event in the Outbox. Keep delivery serial until the
         // existing upload completes, then drain the newest remaining state.
         guard drainingZoneEventIDs.isEmpty else { return }
-        guard let eventData = pending.decodedEventData else {
-            logZoneEventDrainBlocked(pending, reason: "Event data is unreadable")
-            return
-        }
-        guard let server = Current.servers.server(forServerIdentifier: pending.serverIdentifier) else {
-            logZoneEventDrainBlocked(pending, reason: "Server is unavailable")
-            scheduleZoneEventRetry()
-            return
-        }
-        guard let api = Current.api(for: server) else {
-            logZoneEventDrainBlocked(pending, reason: "Home Assistant API is unavailable")
-            scheduleZoneEventRetry()
+
+        for pending in pendingEvents {
+            guard let eventData = pending.decodedEventData else {
+                logZoneEventDrainBlocked(pending, reason: "Event data is unreadable")
+                zoneEventOutbox.remove(id: pending.id)
+                continue
+            }
+            guard let server = Current.servers.server(forServerIdentifier: pending.serverIdentifier) else {
+                logZoneEventDrainBlocked(pending, reason: "Server is unavailable")
+                scheduleZoneEventRetry()
+                return
+            }
+            guard let api = Current.api(for: server) else {
+                logZoneEventDrainBlocked(pending, reason: "Home Assistant API is unavailable")
+                scheduleZoneEventRetry()
+                return
+            }
+
+            _ = startZoneEvent(
+                api: api,
+                pendingEvent: pending,
+                eventData: eventData
+            )
             return
         }
 
-        _ = startZoneEvent(
-            api: api,
-            pendingEvent: pending,
-            eventData: eventData
-        )
+        zoneEventRetryAttempt = 0
+        zoneEventRetryWorkItem?.cancel()
+        zoneEventRetryWorkItem = nil
     }
 
     private func scheduleZoneEventRetry() {

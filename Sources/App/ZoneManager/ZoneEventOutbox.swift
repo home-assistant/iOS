@@ -40,7 +40,7 @@ final class UserDefaultsZoneEventOutbox: ZoneEventOutbox {
     private let defaults: UserDefaults
     private let key: String
     private let date: () -> Date
-    private let queue = DispatchQueue(label: "io.robbie.HomeAssistant.ZoneEventOutbox")
+    private let queue = DispatchQueue(label: "io.home-assistant.ZoneEventOutbox")
     private let maximumEventCount = 100
     private let maximumEventAge: TimeInterval = 2 * 60
 

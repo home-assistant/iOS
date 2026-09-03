@@ -144,14 +144,18 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func stopForegroundBeaconScanning(manager: CLLocationManager) {
-        for (identifier, entry) in foregroundBeaconEntries
+        let entries = foregroundBeaconEntries
+        foregroundBeaconEntries.removeAll()
+
+        for identifier in entries.keys
             where pendingBeaconEntries[identifier] == nil && opportunisticBeaconEntries[identifier] == nil {
-            manager.stopRangingBeacons(satisfying: entry.constraint)
+            foregroundBeaconIdentifiersInside.remove(identifier)
+            beaconReconciliationStates.removeValue(forKey: identifier)
         }
 
-        foregroundBeaconEntries.removeAll()
-        foregroundBeaconIdentifiersInside.removeAll()
-        beaconReconciliationStates.removeAll()
+        for constraint in Set(entries.values.map(\.constraint)) where !hasActiveRangingEntry(for: constraint) {
+            manager.stopRangingBeacons(satisfying: constraint)
+        }
     }
 
     func startOpportunisticBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {

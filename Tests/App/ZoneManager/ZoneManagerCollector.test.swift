@@ -338,6 +338,94 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
     }
 
+    func testStoppingForegroundScanPreservesOverlappingOpportunisticScan() throws {
+        let server = Server.fake()
+        let zone = AppZone(
+            entityId: "beacon_region",
+            serverIdentifier: server.identifier.rawValue,
+            inRegion: false
+        )
+        try database.write { db in
+            try zone.save(db)
+        }
+        let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
+        let beacon = CLBeacon(
+            uuid: region.uuid,
+            major: 0,
+            minor: 0,
+            proximity: .near,
+            accuracy: 1,
+            rssi: -60,
+            timestamp: Date()
+        )
+
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.stopForegroundBeaconScanning(manager: locationManager)
+
+        XCTAssertTrue(locationManager.stoppedRangingConstraints.isEmpty)
+
+        collector.locationManager(
+            locationManager,
+            didRange: [beacon],
+            satisfying: region.beaconIdentityConstraint
+        )
+
+        XCTAssertEqual(delegate.events, [
+            .init(eventType: .region(region, .inside), associatedZone: zone),
+        ])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+    }
+
+    func testStoppingForegroundScanPreservesOpportunisticScanWithSharedConstraint() throws {
+        let server = Server.fake()
+        let uuid = UUID()
+        let foregroundZone = AppZone(
+            entityId: "foreground_beacon",
+            serverIdentifier: server.identifier.rawValue,
+            inRegion: false,
+            beaconUUID: uuid.uuidString
+        )
+        let opportunisticZone = AppZone(
+            entityId: "opportunistic_beacon",
+            serverIdentifier: server.identifier.rawValue,
+            inRegion: false,
+            beaconUUID: uuid.uuidString
+        )
+        try database.write { db in
+            try foregroundZone.save(db)
+            try opportunisticZone.save(db)
+        }
+        let foregroundRegion = CLBeaconRegion(uuid: uuid, identifier: foregroundZone.identifier)
+        let opportunisticRegion = CLBeaconRegion(uuid: uuid, identifier: opportunisticZone.identifier)
+        let beacon = CLBeacon(
+            uuid: uuid,
+            major: 0,
+            minor: 0,
+            proximity: .near,
+            accuracy: 1,
+            rssi: -60,
+            timestamp: Date()
+        )
+
+        collector.startOpportunisticBeaconScanning(in: [opportunisticRegion], manager: locationManager)
+        collector.startForegroundBeaconScanning(in: [foregroundRegion], manager: locationManager)
+        collector.stopForegroundBeaconScanning(manager: locationManager)
+
+        XCTAssertTrue(locationManager.stoppedRangingConstraints.isEmpty)
+
+        collector.locationManager(
+            locationManager,
+            didRange: [beacon],
+            satisfying: foregroundRegion.beaconIdentityConstraint
+        )
+
+        XCTAssertEqual(delegate.events, [
+            .init(eventType: .region(opportunisticRegion, .inside), associatedZone: opportunisticZone),
+        ])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [foregroundRegion.beaconIdentityConstraint])
+    }
+
     func testForegroundScanCollectsEntryOnceUntilExit() throws {
         let server = Server.fake()
         let zone = AppZone(

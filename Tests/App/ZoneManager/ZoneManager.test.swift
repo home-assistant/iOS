@@ -614,6 +614,38 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertFalse(notificationDispatcher.notifications.contains { $0.id == .beaconEventQueued })
     }
 
+    func testUnreadableZoneEventIsRemovedAndFollowingEventDrains() throws {
+        let api = apis[1]
+        let malformedID = UUID()
+        let encodedMalformedEvent = try JSONSerialization.data(withJSONObject: [
+            "id": malformedID.uuidString,
+            "serverIdentifier": api.server.identifier.rawValue,
+            "eventType": "ios.zone_entered",
+            "eventData": Data("not-json".utf8).base64EncodedString(),
+            "createdAt": Date().timeIntervalSinceReferenceDate,
+            "isBeacon": false,
+        ])
+        let malformedEvent = try JSONDecoder().decode(PendingZoneEvent.self, from: encodedMalformedEvent)
+        let validEvent = try PendingZoneEvent(
+            serverIdentifier: api.server.identifier.rawValue,
+            eventType: "ios.zone_exited",
+            eventData: ["zone": "zone.zid"]
+        )
+        let outbox = FakeZoneEventOutbox()
+        outbox.pendingEvents = [malformedEvent, validEvent]
+
+        let manager = newZoneManager(zoneEventOutbox: outbox)
+
+        let drained = expectation(
+            for: NSPredicate(block: { _, _ in outbox.pendingEvents.isEmpty }),
+            evaluatedWith: nil
+        )
+        wait(for: [drained], timeout: 1)
+        XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_exited"])
+        XCTAssertTrue(loggedEvents.contains { $0.text.contains("Event data is unreadable") })
+        withExtendedLifetime(manager) { /* retain during drain */ }
+    }
+
     func testRejectedZoneEventRetriesAutomaticallyAndThenDrainsFollowingEvent() throws {
         let outbox = FakeZoneEventOutbox()
         let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 0 })
@@ -655,6 +687,7 @@ class ZoneManagerTests: XCTestCase {
             api.createdEvents.map(\.eventType),
             ["ios.zone_entered", "ios.zone_entered", "ios.zone_exited"]
         )
+        XCTAssertFalse(notificationDispatcher.notifications.contains { $0.id == .debug })
     }
 
     func testFailedZoneEventIsQueuedAndRetriedWhenAppBecomesActive() throws {
