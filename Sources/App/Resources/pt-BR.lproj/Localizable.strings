@@ -2007,6 +2007,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "settings_sensors.periodic_update.description" = "Quando habilitados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto em primeiro plano.";
 "settings_sensors.periodic_update.description_foreground" = "Essa frequência só se aplica enquanto o aplicativo está aberto na tela. Enquanto o aplicativo está em segundo plano, o iOS decide quando pode atualizar os sensores.";
 "settings_sensors.periodic_update.description_mac" = "Quando habilitados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto. Alguns sensores serão atualizados automaticamente com mais frequência.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Desligado";
 "settings_sensors.periodic_update.title" = "Atualização periódica";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Fonte";
 "widgets.energy.title" = "Energia";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Estado da entidade";
 "widgets.gauge.description" = "Exibir estados numéricos do Home Assistant em um medidor";
 "widgets.gauge.gallery_description" = "Exibir uma entidade, uma complicação de relógio ou um template do Home Assistant em um medidor";

@@ -2002,6 +2002,7 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings_sensors.periodic_update.description" = "Om aktiverad kommer de här sensorerna att uppdateras med den här frekvensen medan appen är öppen i förgrunden.";
 "settings_sensors.periodic_update.description_foreground" = "Denna frekvens gäller endast så länge appen är öppen på skärmen. När appen körs i bakgrunden är det iOS som avgör när sensorerna ska uppdateras.";
 "settings_sensors.periodic_update.description_mac" = "Om aktiverad uppdateras de här sensorerna med denna frekvens medan appen är öppen. Några sensorer kommer automatiskt att uppdateras oftare.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Av";
 "settings_sensors.periodic_update.title" = "Periodisk uppdatering";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2800,6 +2801,10 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.energy.source.solar" = "Solenergi";
 "widgets.energy.source.title" = "Källa";
 "widgets.energy.title" = "Energi";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entitetstillstånd";
 "widgets.gauge.description" = "Visa numeriska tillstånd från Home Assistant i en mätare";
 "widgets.gauge.gallery_description" = "Visa en enhet, en klockkomplikation eller en mall från Home Assistant i en mätare";

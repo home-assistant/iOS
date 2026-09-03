@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "Коли увімкнено, ці сенсори будуть оновлюватись поки застосунок відкритий на передньому плані.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "Якщо увімкнено, ці датчики оновлюватимуться з такою частотою під час роботи програми. Деякі датчики оновлюються автоматично частіше.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Вимкнено";
 "settings_sensors.periodic_update.title" = "Періодичне оновлення";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Сонячна енергія";
 "widgets.energy.source.title" = "Джерело";
 "widgets.energy.title" = "Енергія";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entity state";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
 "widgets.gauge.gallery_description" = "Відображення об'єкта, ускладнення годинника або шаблону з Home Assistant на індикаторі";

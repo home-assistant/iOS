@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "Если этот параметр включен, эти датчики будут обновляться с данной частотой, пока приложение открыто на переднем плане.";
 "settings_sensors.periodic_update.description_foreground" = "Эта частота применяется только тогда, когда приложение открыто на экране. Пока приложение работает в фоновом режиме, iOS сама решает, когда можно обновлять датчики.";
 "settings_sensors.periodic_update.description_mac" = "При включении эти датчики будут обновляться с указанной частотой, пока приложение открыто. Некоторые датчики будут автоматически обновляться чаще.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Выкл";
 "settings_sensors.periodic_update.title" = "Период обновления";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.energy.source.solar" = "Солнечная";
 "widgets.energy.source.title" = "Источник";
 "widgets.energy.title" = "Энергия";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Состояние объекта";
 "widgets.gauge.description" = "Отображение числовых состояний из Home Assistant в виде датчика";
 "widgets.gauge.gallery_description" = "Отображение объекта, расширения для часов или шаблона из Home Assistant в виде шкалы";

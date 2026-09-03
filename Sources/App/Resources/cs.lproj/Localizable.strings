@@ -951,16 +951,16 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "mac.navigation.go_forward.accessibility_label" = "Přejít vpřed";
 "mac.open_in_safari.accessibility_label" = "Otevřít v Safari";
 "mac.paste.accessibility_label" = "Vložit";
-"mac.sidebar.done" = "Done";
-"mac.sidebar.edit" = "Edit Sidebar";
-"mac.sidebar.hidden_section.header" = "Hidden";
-"mac.sidebar.hide" = "Hide";
-"mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
-"mac.sidebar.settings" = "Settings";
-"mac.sidebar.show" = "Show";
-"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
+"mac.sidebar.done" = "Hotovo";
+"mac.sidebar.edit" = "Upravit postranní panel";
+"mac.sidebar.hidden_section.header" = "Skrytý";
+"mac.sidebar.hide" = "Skrýt";
+"mac.sidebar.notifications" = "Oznámení";
+"mac.sidebar.reset_to_defaults" = "Obnovit na výchozí nastavení";
+"mac.sidebar.set_default_dashboard" = "Nastavit jako výchozí ovládací panel";
+"mac.sidebar.settings" = "Nastavení";
+"mac.sidebar.show" = "Zobrazit";
+"mac.toggle_sidebar.accessibility_label" = "Přepnout postranní panel";
 "magic_item.action" = "Akce";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Začít poslouchat";
@@ -1027,9 +1027,9 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "menu.status_item.toggle" = "Přepnout %1$@";
 "menu.view.customize_toolbar" = "Přizpůsobit panel nástrojů...";
 "menu.view.find" = "Najít";
-"menu.view.hide_sidebar" = "Hide Sidebar";
+"menu.view.hide_sidebar" = "Skrýt postranní panel";
 "menu.view.reload_page" = "Znovu načíst stránku";
-"menu.view.show_sidebar" = "Show Sidebar";
+"menu.view.show_sidebar" = "Zobrazit postranní panel";
 "mtls.beta.info" = "Toto je beta verze. Pokud narazíte na nějaké problémy, nahlaste je pomocí tlačítka níže.\
  \
 Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat problémy se zobrazováním příloh oznámení, zvukem asistence TTS a nebude plně fungovat na Apple Watch.";
@@ -1338,13 +1338,13 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.app_icon_shortcuts.reset.title" = "Resetovat zkratky ikon aplikací";
 "settings.app_icon_shortcuts.subtitle" = "Vyberte položky, které se zobrazí po dlouhém stisknutí ikony aplikace.";
 "settings.app_icon_shortcuts.title" = "Zkratky ikon aplikací";
-"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
-"settings.app_labs.features_section.header" = "Experimental features";
-"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
-"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
-"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
-"settings.app_labs.title" = "App Labs";
+"settings.app_labs.empty_state" = "Na tomto zařízení aktuálně nejsou dostupné žádné experimentální funkce.";
+"settings.app_labs.features_section.header" = "Experimentální funkce";
+"settings.app_labs.header.subtitle" = "Laboratoř je experimentální funkce, která se může kdykoli změnit nebo odebrat. Používáte ji na vlastní nebezpečí.";
+"settings.app_labs.mac_native_sidebar.footer" = "Nahradí postranní panel Home Assistanta nativním postranním panelem macOS. Když toto nastavení změníte, stránka se znovu načte.";
+"settings.app_labs.mac_native_sidebar.title" = "Nativní postranní panel";
+"settings.app_labs.testflight_only.body" = "Laboratoř je dostupná jen v sestaveních TestFlight.";
+"settings.app_labs.title" = "Laboratoř";
 "settings.connection_section.activate_server" = "Aktivovat";
 "settings.connection_section.add_server" = "Přidat server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Pokud máte nezabezpečené připojení, může to odhalit váš ověřovací token ve veřejných sítích.";
@@ -1667,7 +1667,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings.search.no_results.title" = "Žádné výsledky pro \"%@\"";
 "settings.search.prompt" = "Nastavení vyhledávání";
 "settings.search_keywords.app_icon_shortcuts" = "rychlé akce, domovská obrazovka, dlouhé stisknutí, spouštěč";
-"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
+"settings.search_keywords.app_labs" = "experimentální, beta, laboratoře, funkce, testovací verze, postranní panel";
 "settings.search_keywords.car_play" = "auto, vozidlo, řízení, palubní deska";
 "settings.search_keywords.complications" = "ciferník, apple watch, glance";
 "settings.search_keywords.debugging" = "protokoly, diagnostika, export, databáze, řešení problémů, reset";
@@ -2007,6 +2007,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings_sensors.periodic_update.description" = "Pokud je tato funkce povolena a aplikace je otevřená v popředí, budou se tyto senzory aktualizovat s touto frekvencí.";
 "settings_sensors.periodic_update.description_foreground" = "Tato frekvence platí jen tehdy, když je aplikace otevřená na obrazovce. Když je aplikace na pozadí, systém iOS rozhoduje, kdy může aktualizovat senzory.";
 "settings_sensors.periodic_update.description_mac" = "Pokud je tato funkce povolena a aplikace je otevřená, budou se tyto senzory aktualizovat s touto frekvencí. Některé senzory se budou automaticky aktualizovat častěji.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Vypnuto";
 "settings_sensors.periodic_update.title" = "Pravidelná aktualizace";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2805,6 +2806,10 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.energy.source.solar" = "Solární";
 "widgets.energy.source.title" = "Zdroj";
 "widgets.energy.title" = "Energie";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Stav entity";
 "widgets.gauge.description" = "Zobrazí číselné stavy z Home Assistanta na ukazateli.";
 "widgets.gauge.gallery_description" = "Zobrazí entitu, komplikaci hodinek nebo šablony z Home Assistanta v ukazateli.";
