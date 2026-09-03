@@ -45,8 +45,24 @@ public enum WatchDeviceRegistrar {
         return body
     }
 
-    /// What the watch keeps from a registration response.
-    public static func registration(from json: Any, registeredAt: Date) throws -> WatchDeviceRegistration {
+    /// The `update_registration` payload; Home Assistant requires every field on each update.
+    public static func updateRegistrationBody(identity: WatchDeviceIdentity) -> [String: Any] {
+        [
+            "app_data": [String: Any](),
+            "app_version": identity.appVersion,
+            "device_name": identity.deviceName,
+            "manufacturer": "Apple",
+            "model": identity.model,
+            "os_version": identity.osVersion,
+        ]
+    }
+
+    /// What the watch keeps from a registration response, made under `identity`.
+    public static func registration(
+        from json: Any,
+        identity: WatchDeviceIdentity,
+        registeredAt: Date
+    ) throws -> WatchDeviceRegistration {
         guard let dictionary = json as? [String: Any],
               dictionary["webhook_id"] is String,
               let response = Mapper<MobileAppRegistrationResponse>().map(JSON: dictionary) else {
@@ -57,8 +73,20 @@ public enum WatchDeviceRegistrar {
             webhookID: response.WebhookID,
             webhookSecret: response.WebhookSecret,
             cloudhookURL: response.CloudhookURL,
-            registeredAt: registeredAt
+            registeredAt: registeredAt,
+            deviceName: identity.deviceName
         )
+    }
+
+    /// How many names to try when the server already has a device with the name: the plain one, then numbered.
+    public static let maximumNameAttempts = 10
+
+    /// Whether the server turned the registration away because a device with that name exists.
+    public static func isNameTaken(_ error: Error) -> Bool {
+        guard case let HomeAssistantRESTError.unacceptableStatus(code, body) = error else { return false }
+        if code == 409 { return true }
+        guard (400 ..< 500).contains(code), let body else { return false }
+        return body.lowercased().contains("already exist")
     }
 
     /// Posts a registration body to a server's `mobile_app/registrations` and returns the JSON reply.
@@ -79,32 +107,54 @@ public enum WatchDeviceRegistrar {
         )
     }
 
+    /// Sends the registration, appending a number to the device name while the server says it is taken.
+    private static func sendUntilNameIsFree(
+        server: Server,
+        identity: WatchDeviceIdentity,
+        timeout: TimeInterval,
+        send: Send
+    ) async throws -> (Any, WatchDeviceIdentity) {
+        var attempted = identity
+        for attempt in 1 ... maximumNameAttempts {
+            attempted.deviceName = WatchDeviceIdentity.deviceName(identity.deviceName, attempt: attempt)
+            do {
+                let json = try await send(
+                    server,
+                    registrationBody(identity: attempted, serverVersion: server.info.version),
+                    timeout
+                )
+                return (json, attempted)
+            } catch let HomeAssistantRESTError.unacceptableStatus(code, _) where code == 404 {
+                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
+            } catch where isNameTaken(error) && attempt < maximumNameAttempts {
+                Current.Log.info("\"\(attempted.deviceName)\" is taken on \(server.info.name); trying the next number")
+            }
+        }
+        preconditionFailure("every attempt either returned or threw")
+    }
+
     /// Registers with `server` and remembers the result in `Current.watchDeviceRegistrations`.
     ///
     /// - Parameter send: how the registration reaches the server; REST unless a test substitutes
     ///   a fake.
     public static func register(
         server: Server,
-        identity: WatchDeviceIdentity = .current(),
+        identity: WatchDeviceIdentity? = nil,
         timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout,
         send: Send = WatchDeviceRegistrar.sendRegistration
     ) async throws -> WatchDeviceRegistration {
+        let identity = identity ?? .current(for: server)
         Current.Log.info(
             "registering watch with \(server.info.name) as \"\(identity.appName)\" on \"\(identity.deviceName)\""
         )
 
-        let json: Any
-        do {
-            json = try await send(
-                server,
-                registrationBody(identity: identity, serverVersion: server.info.version),
-                timeout
-            )
-        } catch let HomeAssistantRESTError.unacceptableStatus(code, _) where code == 404 {
-            throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
-        }
-
-        let registration = try registration(from: json, registeredAt: Current.date())
+        let (json, registered) = try await sendUntilNameIsFree(
+            server: server,
+            identity: identity,
+            timeout: timeout,
+            send: send
+        )
+        let registration = try registration(from: json, identity: registered, registeredAt: Current.date())
         do {
             try Current.watchDeviceRegistrations.set(registration, for: server.identifier)
         } catch {
