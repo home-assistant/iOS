@@ -310,7 +310,7 @@ struct WatchDeviceReporterTests {
         #expect(log.sends.isEmpty)
     }
 
-    @Test func aRenameTheServerNoLongerKnowsRegistersAgain() async throws {
+    @Test func registersAgainWhenTheRenameFindsTheDeviceGone() async throws {
         var known = registration
         known.deviceName = "Apple Watch"
         try store.set(known, for: server.identifier)

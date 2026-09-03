@@ -9,18 +9,21 @@ public enum WatchBoundServerState {
     /// Unreadable state is passed through untouched rather than dropped.
     static func stamp(_ state: Data, deviceName: (ServerInfo) -> String) -> Data {
         guard !state.isEmpty,
-              var servers = try? JSONDecoder().decode([String: ServerInfo].self, from: state) else {
+              let servers = try? JSONDecoder().decode([String: ServerInfo].self, from: state) else {
             return state
         }
 
-        for (identifier, info) in servers {
+        let stamped = servers.mapValues { info in
             var stamped = info
             stamped.setSetting(value: deviceName(info), for: .companionDeviceName)
-            servers[identifier] = stamped
+            return stamped
         }
 
         do {
-            return try JSONEncoder().encode(servers)
+            // Sorted keys keep the bytes, and so the mirror's digest, stable across snapshots.
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .sortedKeys
+            return try encoder.encode(stamped)
         } catch {
             Current.Log.error("failed encoding watch-bound servers: \(error)")
             return state
