@@ -57,6 +57,6 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
 
     /// The item the widget renders and acts on for this pick.
     var magicItem: MagicItem {
-        MagicItem.entityTile(entityId: entityId, serverId: serverId, canConfirm: false)
+        MagicItem(id: entityId, serverId: serverId, type: .entity)
     }
 }

@@ -216,12 +216,7 @@ struct MagicItemCustomizationView: View {
     /// service, so asking for confirmation first has nothing to confirm — and `MagicItemProvider`
     /// clears the flag on both Assist types anyway.
     private static func skipsConfirmation(context: MagicItemAddView.Context, item: MagicItem) -> Bool {
-        if [.carPlay, .watch].contains(context), item.isAssist {
-            return true
-        }
-        // A widget tile and an app icon shortcut both confirm a lock on their own, so the
-        // per-item switch has nothing left to decide.
-        return [.widget, .appIconShortcut].contains(context) && item.domain?.hasBuiltInConfirmation == true
+        [.carPlay, .watch].contains(context) && item.isAssist
     }
 
     private func preventNilCustomization() {

@@ -374,28 +374,6 @@ public struct MagicItem: Codable, Equatable, Hashable {
         [.entity, .script, .scene].contains(type)
     }
 
-    /// Whether running this item has to be confirmed first: the user asked for it, or the item's
-    /// domain always confirms on its own (`Domain.hasBuiltInConfirmation`).
-    public var requiresConfirmation: Bool {
-        if customization?.requiresConfirmation == true {
-            return true
-        }
-        return hasMoreInfoDialog && domain?.hasBuiltInConfirmation == true
-    }
-
-    /// One entity as a widget tile. `canConfirm` is whether the widget has per-item state to hold
-    /// a pending confirmation in — only the custom widget does — because a domain that always
-    /// confirms must open the entity rather than run from a tile that can never ask.
-    public static func entityTile(entityId: String, serverId: String, canConfirm: Bool) -> MagicItem {
-        let alwaysConfirms = Domain(entityId: entityId)?.hasBuiltInConfirmation == true
-        return MagicItem(
-            id: entityId,
-            serverId: serverId,
-            type: .entity,
-            action: alwaysConfirms && !canConfirm ? .moreInfoDialog : .default
-        )
-    }
-
     /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
     /// `.toggle` or an on/off behavior the item's domain can't perform, and for a more-info dialog
     /// an item without an entity can't open — all of which leave the choice to whatever the caller

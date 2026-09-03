@@ -143,8 +143,7 @@ struct WidgetCustom: Widget {
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
                 confirmsTapAction: itemState == .pendingTapConfirmation,
-                requiresConfirmation: (magicItem.customization?.requiresConfirmation ?? true)
-                    || magicItem.requiresConfirmation,
+                requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
                 disabled: !widget.itemsStates.isEmpty
             )

@@ -29,9 +29,9 @@ struct MagicItemWidgetInteractionTests {
         #expect(!item.controlsEntityFromWidget)
     }
 
-    /// A lock is actionable, so its icon locks or unlocks it by state. It is the one domain that
-    /// always confirms first, whether or not the item asked for confirmation.
-    @Test func lockTogglesFromItsIconAndAlwaysConfirms() {
+    /// A lock is actionable, so its icon locks or unlocks it by state, and the rest of the tile
+    /// opens it. Whether it asks first is the item's own "require confirmation" choice.
+    @Test func lockTogglesFromItsIconByDefault() {
         let item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
 
         #expect(item.widgetInteractionType == .appIntent(.toggle(
@@ -40,30 +40,7 @@ struct MagicItemWidgetInteractionTests {
             serverId: "1"
         )))
         #expect(item.controlsEntityFromWidget)
-        #expect(item.requiresConfirmation)
         #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "lock.front_door"))
-
-        var light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
-        #expect(!light.requiresConfirmation)
-        light.customization = .init(requiresConfirmation: true)
-        #expect(light.requiresConfirmation)
-    }
-
-    /// A widget with nowhere to hold a pending confirmation can't run a lock at all, so its tile
-    /// opens the entity instead. Every other domain keeps its default there.
-    @Test func aWidgetThatCannotConfirmDoesNotRunALock() {
-        let lock = MagicItem.entityTile(entityId: "lock.front_door", serverId: "1", canConfirm: false)
-        #expect(lock.action == .moreInfoDialog)
-        #expect(Self.opensMoreInfo(lock.widgetInteractionType, entityId: "lock.front_door"))
-        #expect(!lock.controlsEntityFromWidget)
-
-        let confirmable = MagicItem.entityTile(entityId: "lock.front_door", serverId: "1", canConfirm: true)
-        #expect(confirmable.action == .default)
-        #expect(confirmable.controlsEntityFromWidget)
-
-        let light = MagicItem.entityTile(entityId: "light.kitchen", serverId: "1", canConfirm: false)
-        #expect(light.action == .default)
-        #expect(light.controlsEntityFromWidget)
     }
 
     /// A script's state says nothing about it, so its icon runs it rather than toggling it — the
@@ -77,7 +54,6 @@ struct MagicItemWidgetInteractionTests {
             serverId: "1"
         )))
         #expect(item.controlsEntityFromWidget)
-        #expect(!item.requiresConfirmation)
         #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "script.morning"))
     }
 
