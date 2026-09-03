@@ -1,0 +1,98 @@
+name: What's New snapshots (temporary)
+
+# TEMPORARY — delete this file before the What's New PR merges.
+#
+# Records the reference images for `WhatsNewViewSnapshotTests` on the same runner and Xcode that `ci.yml`
+# uses, checks that a second run passes against them, uploads them for review, and commits them back to the
+# branch. The change was authored where no iOS Simulator is available, so this is how the references land
+# in the PR. A push made with the workflow token does not start another run of this or of `ci.yml`, so
+# re-run CI on the branch once the commit is there.
+on:
+  push:
+    branches:
+      - whats-new-2026-9
+  workflow_dispatch:
+
+concurrency:
+  group: whats-new-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  SNAPSHOT_DIR: Tests/App/WhatsNew/__Snapshots__
+  # Same destination as the `test` lane in fastlane/lanes/testing.rb, so the images match what CI compares.
+  XCODEBUILD_ARGS: >-
+    -project HomeAssistant.xcodeproj
+    -scheme Tests-Unit
+    -destination "platform=iOS Simulator,name=iPhone 17,OS=latest"
+    -only-testing:Tests-App/WhatsNewViewSnapshotTests
+    COMPILER_INDEX_STORE_ENABLE=NO
+
+jobs:
+  snapshots:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+
+      # Read-only reuse of the DerivedData `ci.yml` warms on `main`; nothing is saved from here.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      # `xcodebuild` forwards TEST_RUNNER_-prefixed variables into the test process with the prefix
+      # stripped; swift-snapshot-testing reads SNAPSHOT_TESTING_RECORD from there. Recording always fails
+      # the assertion by design, so this step is allowed to fail: the verify step is the one that counts.
+      - name: Record snapshots
+        continue-on-error: true
+        env:
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: all
+        run: |
+          set -o pipefail
+          eval xcodebuild test $XCODEBUILD_ARGS 2>&1 \
+            | tee record.log \
+            | (command -v xcbeautify >/dev/null && xcbeautify || cat)
+
+      - name: Verify snapshots
+        run: |
+          set -o pipefail
+          eval xcodebuild test $XCODEBUILD_ARGS 2>&1 \
+            | tee verify.log \
+            | (command -v xcbeautify >/dev/null && xcbeautify || cat)
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload snapshots"
+        if: ${{ always() }}
+        with:
+          name: whats-new-snapshots
+          path: |
+            Tests/App/WhatsNew/__Snapshots__
+            record.log
+            verify.log
+
+      - name: Commit snapshots
+        run: |
+          git add "$SNAPSHOT_DIR"
+          if git diff --cached --quiet; then
+            echo "Reference images are unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record What's New snapshot references"
+          git push origin "HEAD:${{ github.ref_name }}"
