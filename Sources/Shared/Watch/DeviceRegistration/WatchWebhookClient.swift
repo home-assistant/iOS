@@ -118,7 +118,8 @@ public enum WatchWebhookClient {
         }
     }
 
-    static func perform(_ request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
+    /// The real transport: the server's certificate-aware session.
+    public static func perform(_ request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         // The session strongly retains its delegate until invalidated; do it once the task ends.
         defer { session.finishTasksAndInvalidate() }
