@@ -2656,6 +2656,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 To add it, touch and hold your Home Screen, tap the add button, and search for Home Assistant. The widget needs an energy dashboard configured in Home Assistant.";
 "whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
 "whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget brings your energy dashboard to your desktop and Notification Center. Grid, solar, battery, and gas totals for the period you choose, with a chart on the wider sizes.\
+\
+To add it, right-click your desktop, choose Edit Widgets, and search for Home Assistant. The widget needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop and in Notification Center. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
 "whats_new.live_activities.article_action" = "Read the documentation";
