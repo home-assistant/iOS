@@ -117,14 +117,14 @@ enum MacSidebarItemsBuilder {
                 id: settingsPanelPath,
                 kind: .panel(path: "/" + settingsPanelPath),
                 title: panels.first(where: { $0.path == settingsPanelPath })?.title ?? L10n.Mac.Sidebar.settings,
-                icon: .cogIcon
+                icon: .material(.cogIcon)
             ))
         }
         items.append(MacSidebarItem(
             id: notificationsItemId,
             kind: .notifications,
             title: L10n.Mac.Sidebar.notifications,
-            icon: .bellIcon,
+            icon: .material(.bellIcon),
             badge: notificationsCount
         ))
         let profileTitle = userName?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -135,7 +135,7 @@ enum MacSidebarItemsBuilder {
                 ?? panels.first(where: { $0.path == profilePanelPath })?.title
                 ?? Current.localized.frontend("panel::profile")
                 ?? profilePanelPath,
-            icon: .accountIcon
+            icon: .material(.accountIcon)
         ))
         return items
     }
@@ -170,9 +170,9 @@ enum MacSidebarItemsBuilder {
         lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
     }
 
-    private static func icon(for panel: HAPanel) -> MaterialDesignIcons {
+    private static func icon(for panel: HAPanel) -> FrontendIcon {
         if let icon = iconByPath[panel.path] {
-            return icon
+            return .material(icon)
         }
         let fallback: MaterialDesignIcons
         switch panel.component {
@@ -182,7 +182,7 @@ enum MacSidebarItemsBuilder {
         case ingressComponent: fallback = .puzzleIcon
         default: fallback = .viewDashboardOutlineIcon
         }
-        guard let iconName = panel.icon, !iconName.isEmpty else { return fallback }
-        return MaterialDesignIcons(serversideValueNamed: iconName, fallback: fallback)
+        guard let iconName = panel.icon, !iconName.isEmpty else { return .material(fallback) }
+        return FrontendIcon(serversideValueNamed: iconName, fallback: fallback)
     }
 }
