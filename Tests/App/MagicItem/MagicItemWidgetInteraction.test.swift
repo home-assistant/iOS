@@ -364,10 +364,11 @@ struct MagicItemWidgetInteractionTests {
         #expect(ItemAction.turnOn.name(for: .light) == "Turn on")
         #expect(ItemAction.turnOff.name(for: .light) == "Turn off")
 
-        // A button has no "off" to call, so the choice falls back to the icon's default.
+        // A button has no "off" to call, so the choice falls back to the icon's default, which
+        // presses it.
         var button = MagicItem(id: "button.doorbell", serverId: "1", type: .entity)
         button.action = .turnOff
-        #expect(button.widgetInteractionType == .appIntent(.toggle(
+        #expect(button.widgetInteractionType == .appIntent(.activate(
             entityId: "button.doorbell",
             domain: "button",
             serverId: "1"
