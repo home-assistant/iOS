@@ -33,5 +33,45 @@ import Shared
 /// )
 /// ```
 enum TestFlightCommunicationCatalog {
-    static let message: TestFlightMessage? = nil
+    static let message: TestFlightMessage? = TestFlightMessage(
+        id: .releaseNotes,
+        title: "What's new in the 2026.9.1 beta",
+        items: [
+            WhatsNewItem(
+                id: "widgets",
+                title: "Widgets",
+                body: "New Entities widget, with tap behavior and filtering that match the frontend.",
+                icon: .sfSymbol(.squareGrid2x2Fill)
+            ),
+            WhatsNewItem(
+                id: "app-labs",
+                title: "App Labs",
+                body: "Try out experimental features from Settings.",
+                icon: .sfSymbol(.testtube2)
+            ),
+            WhatsNewItem(
+                id: "sensors",
+                title: "Sensors are opt-in",
+                body: "Every sensor is listed and only reports once you switch it on.",
+                icon: .sfSymbol(.antennaRadiowavesLeftAndRight)
+            ),
+            WhatsNewItem(
+                id: "watch",
+                title: "Apple Watch",
+                body: "Registers as its own device and reports its own battery.",
+                icon: .sfSymbol(.applewatch)
+            ),
+            WhatsNewItem(
+                id: "fixes",
+                title: "Fixes",
+                body: "Mac sidebar, add-on panels, missing icons and watch complications.",
+                icon: .sfSymbol(.checkmarkCircleFill)
+            ),
+        ],
+        version: WhatsNewAppVersion(major: 2026, minor: 9, patch: 1)
+    )
+}
+
+extension TestFlightMessageId {
+    static let releaseNotes = TestFlightMessageId("release-notes-2026.9.1")
 }
