@@ -6,21 +6,21 @@ import SwiftUI
 struct HADynamicIslandIconContainerView: View {
     let slug: String?
     let color: String?
-    let size: CGFloat
+
+    private static let iconSize: CGFloat = 24
 
     var body: some View {
-        if slug != nil {
-            ZStack {
-                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                    .fill(accentColor.opacity(0.2))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                            .strokeBorder(accentColor.opacity(0.28))
-                    }
-
-                HADynamicIslandIconView(slug: slug, color: color, size: size)
-            }
-            .frame(width: 44, height: 44)
+        if let slug {
+            HADynamicIslandIconView(slug: slug, color: color, size: Self.iconSize)
+                .padding(DesignSystem.Spaces.one)
+                .background {
+                    RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                        .fill(accentColor.opacity(0.2))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                                .strokeBorder(accentColor.opacity(0.28))
+                        }
+                }
         }
     }
 
@@ -31,7 +31,7 @@ struct HADynamicIslandIconContainerView: View {
 
 @available(iOS 17.2, *)
 #Preview {
-    HADynamicIslandIconContainerView(slug: "washing-machine", color: "#03A9F4", size: 28)
+    HADynamicIslandIconContainerView(slug: "washing-machine", color: "#03A9F4")
         .padding(DesignSystem.Spaces.two)
         .background(.black)
 }

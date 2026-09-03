@@ -2,13 +2,21 @@
 import Shared
 import SwiftUI
 
+/// Trailing slot of the expanded Dynamic Island: the chronometer, the critical text or the progress
+/// percentage, whichever the content state carries, in the order the compact trailing slot uses.
 @available(iOS 17.2, *)
 struct HAExpandedTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
     private let minimumScaleFactor: CGFloat = 0.7
 
     var body: some View {
-        if let critical = state.criticalText {
+        if state.chronometer == true, let end = state.countdownEnd {
+            HAActivityChronometerText(end: end, start: state.chronometerStart)
+                .font(.title3.monospacedDigit().weight(.medium))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(minimumScaleFactor)
+        } else if let critical = state.criticalText {
             Text(critical)
                 .font(.headline)
                 .foregroundStyle(.white)
