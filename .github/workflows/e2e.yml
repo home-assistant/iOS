@@ -232,6 +232,13 @@ jobs:
           # The recording is kept for passing runs too (see the test plan), which puts each run's
           # artifact around 200 MB. Nightly, that is worth capping well below the 90-day default.
           retention-days: 14
+          path: |
+            ${{ runner.temp }}/hass-stdout.log
+            ${{ runner.temp }}/homeassistant-config.json
+            ${{ runner.temp }}/homeassistant/home-assistant.log
+            ${{ runner.temp }}/e2e-recording
+            fastlane/test_output/e2e
+            ~/Library/Logs/scan
 
       # A red run nobody is told about is a nightly nobody trusts: GitHub only emails whoever last
       # touched the cron line. Only the scheduled run reports, because a manual dispatch is usually
@@ -292,10 +299,3 @@ jobs:
               await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'open' })
             }
             core.info(`Updated #${existing.number}`)
-          path: |
-            ${{ runner.temp }}/hass-stdout.log
-            ${{ runner.temp }}/homeassistant-config.json
-            ${{ runner.temp }}/homeassistant/home-assistant.log
-            ${{ runner.temp }}/e2e-recording
-            fastlane/test_output/e2e
-            ~/Library/Logs/scan
