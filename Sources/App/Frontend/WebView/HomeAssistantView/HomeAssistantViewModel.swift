@@ -38,6 +38,9 @@ final class HomeAssistantViewModel: ObservableObject {
     @Published var contentOpacity: Double = 0
     @Published var isFullScreenLoaderMounted = true
     @Published var isFullScreenLoaderVisible = true
+    /// Separate from `isFullScreenLoaderVisible` so `HomeAssistantView` can uncover the frontend without
+    /// animating its opacity, which the overlay's own fade already covers for.
+    @Published var isWebViewCoveredByStandBy = true
     @Published var loaderMinimumDurationElapsed = false
     @Published var pullToRefreshProgress: CGFloat = 0
     @Published var isPullToRefreshActive = false
@@ -115,7 +118,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     var webViewContentOpacity: Double {
-        if overlayState.emptyState != nil || isFullScreenLoaderVisible || isPullToRefreshActive {
+        if overlayState.emptyState != nil || isWebViewCoveredByStandBy || isPullToRefreshActive {
             return 0
         }
 
@@ -265,6 +268,7 @@ final class HomeAssistantViewModel: ObservableObject {
         isFullScreenLoaderMounted = true
         withAnimation(DesignSystem.Animation.default) {
             isFullScreenLoaderVisible = true
+            isWebViewCoveredByStandBy = true
         }
         loaderMinimumDurationElapsed = false
         overlayState.connectionState = .unknown
@@ -288,6 +292,7 @@ final class HomeAssistantViewModel: ObservableObject {
         if hasEmptyState ?? (overlayState.emptyState != nil) {
             withAnimation(DesignSystem.Animation.default) {
                 isFullScreenLoaderVisible = true
+                isWebViewCoveredByStandBy = true
             }
             return
         }
@@ -296,6 +301,7 @@ final class HomeAssistantViewModel: ObservableObject {
               didReachLoaderReadyState(connectionState ?? overlayState.connectionState) else { return }
 
         let finishingCycleID = loaderCycleID
+        isWebViewCoveredByStandBy = false
         withAnimation(DesignSystem.Animation.default) {
             isFullScreenLoaderVisible = false
         }
@@ -339,6 +345,7 @@ final class HomeAssistantViewModel: ObservableObject {
         loaderMinimumDurationTask?.cancel()
         loaderWatchdogTask?.cancel()
         loaderMinimumDurationElapsed = true
+        isWebViewCoveredByStandBy = false
         withAnimation(DesignSystem.Animation.default) {
             isFullScreenLoaderVisible = false
         }

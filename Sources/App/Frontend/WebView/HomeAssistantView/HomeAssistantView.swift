@@ -76,8 +76,13 @@ struct HomeAssistantView: View, WebFrontendView {
                     .opacity(viewModel.webViewContentOpacity)
                 pullToRefreshIndicator
                 macTitleBar
-                    .opacity(viewModel.webViewContentOpacity)
             }
+            // Covering fades, uncovering does not: the overlay is opaque, so a second full-screen opacity
+            // animation over a web view buys nothing and is what makes the hand-off stutter on Mac.
+            .animation(
+                viewModel.isWebViewCoveredByStandBy ? DesignSystem.Animation.default : nil,
+                value: viewModel.isWebViewCoveredByStandBy
+            )
             noActiveURLState
             standByView
         }
