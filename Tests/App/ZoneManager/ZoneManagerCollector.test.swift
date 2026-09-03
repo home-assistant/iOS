@@ -314,7 +314,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         try database.write { db in
             try zone.save(db)
         }
-        return CLBeaconRegion(uuid: try XCTUnwrap(UUID(uuidString: zone.beaconUUID!)), identifier: zone.identifier)
+        return try CLBeaconRegion(uuid: XCTUnwrap(UUID(uuidString: zone.beaconUUID!)), identifier: zone.identifier)
     }
 
     func testDidDetermineStateWithNoZoneInDatabase() {

@@ -37,7 +37,7 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
             let now = date()
             guard isFresh(event, at: now) else { return }
 
-            var events = freshEvents(from: try load(), at: now)
+            var events = try freshEvents(from: load(), at: now)
             guard !events.contains(where: { $0.id == event.id }) else { return }
             if event.isBeacon == true,
                let previous = events.last,

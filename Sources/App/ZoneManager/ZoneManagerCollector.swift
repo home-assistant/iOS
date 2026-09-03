@@ -171,8 +171,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         let timeout = DispatchWorkItem { [weak self, weak manager] in
             guard let self, let manager else { return }
-            self.reconcileBeaconExits(manager: manager)
-            self.stopOpportunisticBeaconScanning(manager: manager)
+            reconcileBeaconExits(manager: manager)
+            stopOpportunisticBeaconScanning(manager: manager)
         }
         opportunisticBeaconScanTimeout = timeout
         DispatchQueue.main.asyncAfter(
@@ -234,8 +234,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         beaconRangingRetryCounts[beaconConstraint, default: 0] += 1
         let retry = DispatchWorkItem { [weak self, weak manager] in
             guard let self else { return }
-            self.beaconRangingRetryWorkItems.removeValue(forKey: beaconConstraint)
-            guard self.hasActiveRangingEntry(for: beaconConstraint) else { return }
+            beaconRangingRetryWorkItems.removeValue(forKey: beaconConstraint)
+            guard hasActiveRangingEntry(for: beaconConstraint) else { return }
             manager?.startRangingBeacons(satisfying: beaconConstraint)
         }
         beaconRangingRetryWorkItems[beaconConstraint] = retry
@@ -247,7 +247,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         didStartMonitoringFor region: CLRegion
     ) {
         delegate?.collector(self, didLog: .didStartMonitoring(region))
-
     }
 
     func locationManager(
@@ -325,7 +324,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             rssi: detectedBeacon.rssi,
             isAppActive: UIApplication.shared.applicationState == .active
         )
-        events.forEach { event in
+        for event in events {
             var event = event
             event.beaconDiagnostic = diagnostic
             delegate?.collector(self, didCollect: event)
@@ -360,13 +359,13 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         let timeout = DispatchWorkItem { [weak self, weak manager] in
             guard let self,
-                  let pending = self.pendingBeaconEntries.removeValue(forKey: identifier) else { return }
+                  let pending = pendingBeaconEntries.removeValue(forKey: identifier) else { return }
 
             if let manager {
-                self.stopRangingIfUnused(pending.constraint, manager: manager)
+                stopRangingIfUnused(pending.constraint, manager: manager)
             }
-            self.endBackgroundScanExecutionIfIdle()
-            self.delegate?.collector(
+            endBackgroundScanExecutionIfIdle()
+            delegate?.collector(
                 self,
                 didLog: .didIgnore(event, ZoneManagerIgnoreReason.beaconEntryNotVerified)
             )
@@ -404,15 +403,15 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         backgroundExecution.begin { [weak self, weak manager] in
             guard let self, let manager else { return }
 
-            let constraints = Set(self.pendingBeaconEntries.values.map(\.constraint))
-            for pending in self.pendingBeaconEntries.values {
+            let constraints = Set(pendingBeaconEntries.values.map(\.constraint))
+            for pending in pendingBeaconEntries.values {
                 pending.timeout.cancel()
             }
-            self.pendingBeaconEntries.removeAll()
+            pendingBeaconEntries.removeAll()
             for constraint in constraints {
-                self.stopRangingIfUnused(constraint, manager: manager)
+                stopRangingIfUnused(constraint, manager: manager)
             }
-            self.stopOpportunisticBeaconScanning(manager: manager)
+            stopOpportunisticBeaconScanning(manager: manager)
         }
     }
 
@@ -442,16 +441,14 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
                   let firstEmptySampleAt = state.firstEmptySampleAt,
                   now.timeIntervalSince(firstEmptySampleAt) >= beaconExitReconciliationDuration,
                   foregroundBeaconIdentifiersInside.contains(identifier),
-                  foregroundBeaconEntries[identifier] != nil || opportunisticBeaconEntries[identifier] != nil
-            else { return nil }
+                  foregroundBeaconEntries[identifier] != nil || opportunisticBeaconEntries[identifier] != nil else { return nil }
 
             return identifier
         }
 
         for identifier in identifiersToExit {
             guard foregroundBeaconIdentifiersInside.remove(identifier) != nil,
-                  let entry = foregroundBeaconEntries[identifier] ?? opportunisticBeaconEntries[identifier]
-            else { continue }
+                  let entry = foregroundBeaconEntries[identifier] ?? opportunisticBeaconEntries[identifier] else { continue }
 
             beaconReconciliationStates.removeValue(forKey: identifier)
             delegate?.collector(
@@ -519,7 +516,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         for identifier in identifiers {
             guard let opportunistic = opportunisticBeaconEntries.removeValue(forKey: identifier) else { continue }
             acceptCurrentSample(for: identifier, event: opportunistic.event, events: &events)
-            if foregroundBeaconEntries[identifier] == nil && pendingBeaconEntries[identifier] == nil {
+            if foregroundBeaconEntries[identifier] == nil, pendingBeaconEntries[identifier] == nil {
                 foregroundBeaconIdentifiersInside.remove(identifier)
                 beaconReconciliationStates.removeValue(forKey: identifier)
             }

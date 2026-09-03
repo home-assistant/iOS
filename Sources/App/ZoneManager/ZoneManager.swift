@@ -255,30 +255,30 @@ class ZoneManager {
             try zoneEventOutbox.append(pending)
             logBeaconDeliveryStage("outbox_persisted", pendingEvent: pending)
             /* DEBUG TESTING ONLY
-            if pending.isBeacon == true {
-                sendBeaconStageNotification(
-                    id: .beaconEventPersisted,
-                    title: "Beacon event persisted to outbox",
-                    pendingEvent: pending
-                )
-            }
-            */
+             if pending.isBeacon == true {
+                 sendBeaconStageNotification(
+                     id: .beaconEventPersisted,
+                     title: "Beacon event persisted to outbox",
+                     pendingEvent: pending
+                 )
+             }
+             */
             flushPendingZoneEvents()
         } catch {
             let message = "Failed to persist ZoneManager event before delivery: \(error.localizedDescription)"
             Current.Log.error(message)
             Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
             /* DEBUG TESTING ONLY
-            if isBeacon {
-                sendBeaconDeliveryNotification(
-                    id: .beaconEventQueued,
-                    title: "Beacon event could not be persisted",
-                    eventType: eventType,
-                    eventData: eventData,
-                    detail: error.localizedDescription
-                )
-            }
-            */
+             if isBeacon {
+                 sendBeaconDeliveryNotification(
+                     id: .beaconEventQueued,
+                     title: "Beacon event could not be persisted",
+                     eventType: eventType,
+                     eventData: eventData,
+                     detail: error.localizedDescription
+                 )
+             }
+             */
         }
     }
 
@@ -300,16 +300,16 @@ class ZoneManager {
                 Current.Log.error(message)
                 Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
                 /* DEBUG TESTING ONLY
-                if pendingEvent.isBeacon == true {
-                    sendBeaconDeliveryNotification(
-                        id: .beaconEventQueued,
-                        title: "Beacon event is waiting for Home Assistant",
-                        eventType: pendingEvent.eventType,
-                        eventData: eventData,
-                        detail: "Upload did not start; retry scheduled"
-                    )
-                }
-                */
+                 if pendingEvent.isBeacon == true {
+                     sendBeaconDeliveryNotification(
+                         id: .beaconEventQueued,
+                         title: "Beacon event is waiting for Home Assistant",
+                         eventType: pendingEvent.eventType,
+                         eventData: eventData,
+                         detail: "Upload did not start; retry scheduled"
+                     )
+                 }
+                 */
             }
             clearDeliveryStarted(for: pendingEvent)
             scheduleZoneEventRetry()
@@ -333,16 +333,16 @@ class ZoneManager {
             confirmedZoneEventIDs.insert(pendingEvent.id)
             removeConfirmedZoneEvent(pendingEvent)
             Current.Log.info("Fired ZoneManager event")
-            /* DEBUG TESTING ONLY
-            if pendingEvent.isBeacon == true {
-                sendBeaconDeliveryNotification(
-                    id: .beaconEventDelivered,
-                    title: "Beacon event delivered to Home Assistant",
-                    eventType: pendingEvent.eventType,
-                    eventData: pendingEvent.decodedEventData ?? [:]
-                )
-            }
-            */
+        /* DEBUG TESTING ONLY
+         if pendingEvent.isBeacon == true {
+             sendBeaconDeliveryNotification(
+                 id: .beaconEventDelivered,
+                 title: "Beacon event delivered to Home Assistant",
+                 eventType: pendingEvent.eventType,
+                 eventData: pendingEvent.decodedEventData ?? [:]
+             )
+         }
+         */
         case let .rejected(error):
             logBeaconDeliveryStage(
                 "webhook_failed",
@@ -354,16 +354,16 @@ class ZoneManager {
             Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
             clearDeliveryStarted(for: pendingEvent)
             /* DEBUG TESTING ONLY
-            if pendingEvent.isBeacon == true {
-                sendBeaconDeliveryNotification(
-                    id: .beaconEventQueued,
-                    title: "Beacon event is waiting for Home Assistant",
-                    eventType: pendingEvent.eventType,
-                    eventData: pendingEvent.decodedEventData ?? [:],
-                    detail: "Delivery failed; retry scheduled"
-                )
-            }
-            */
+             if pendingEvent.isBeacon == true {
+                 sendBeaconDeliveryNotification(
+                     id: .beaconEventQueued,
+                     title: "Beacon event is waiting for Home Assistant",
+                     eventType: pendingEvent.eventType,
+                     eventData: pendingEvent.decodedEventData ?? [:],
+                     detail: "Delivery failed; retry scheduled"
+                 )
+             }
+             */
             scheduleZoneEventRetry()
         }
     }
@@ -527,8 +527,8 @@ class ZoneManager {
         let delay = zoneEventRetryDelay(zoneEventRetryAttempt)
         let workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
-            self.zoneEventRetryWorkItem = nil
-            self.flushPendingZoneEvents()
+            zoneEventRetryWorkItem = nil
+            flushPendingZoneEvents()
         }
         zoneEventRetryWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
@@ -540,13 +540,13 @@ class ZoneManager {
         Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
         guard pendingEvent.isBeacon == true else { return }
         /* DEBUG TESTING ONLY
-        sendBeaconStageNotification(
-            id: .beaconEventQueued,
-            title: "Beacon event is waiting for Home Assistant",
-            pendingEvent: pendingEvent,
-            detail: reason
-        )
-        */
+         sendBeaconStageNotification(
+             id: .beaconEventQueued,
+             title: "Beacon event is waiting for Home Assistant",
+             pendingEvent: pendingEvent,
+             detail: reason
+         )
+         */
     }
 
     // DEBUG TESTING ONLY: call sites are disabled for production while retaining the diagnostic helpers.
@@ -625,23 +625,22 @@ class ZoneManager {
     private func scheduleBeaconUploadWatchdog(for pendingEvent: PendingZoneEvent) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
             guard let self,
-                  self.drainingZoneEventIDs.contains(pendingEvent.id),
-                  (try? self.zoneEventOutbox.pendingEvents())?.contains(where: { $0.id == pendingEvent.id }) == true
-            else { return }
+                  drainingZoneEventIDs.contains(pendingEvent.id),
+                  (try? self.zoneEventOutbox.pendingEvents())?.contains(where: { $0.id == pendingEvent.id }) == true else { return }
 
-            self.logBeaconDeliveryStage(
+            logBeaconDeliveryStage(
                 "webhook_stalled",
                 pendingEvent: pendingEvent,
                 detail: "No completion after 15 seconds"
             )
             /* DEBUG TESTING ONLY
-            self.sendBeaconStageNotification(
-                id: .beaconEventUploadStalled,
-                title: "Beacon upload has no response",
-                pendingEvent: pendingEvent,
-                detail: ">15 seconds"
-            )
-            */
+             self.sendBeaconStageNotification(
+                 id: .beaconEventUploadStalled,
+                 title: "Beacon upload has no response",
+                 pendingEvent: pendingEvent,
+                 detail: ">15 seconds"
+             )
+             */
         }
     }
 
@@ -776,7 +775,6 @@ class ZoneManager {
             ]
             return info.joined(separator: ", ")
         }
-
     }
 
     private static func runOnMain(_ work: () -> Void) {
