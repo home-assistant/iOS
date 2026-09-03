@@ -45,8 +45,27 @@ public enum WatchDeviceRegistrar {
         return body
     }
 
-    /// What the watch keeps from a registration response.
-    public static func registration(from json: Any, registeredAt: Date) throws -> WatchDeviceRegistration {
+    /// The `update_registration` webhook payload: what Home Assistant lets a registration change
+    /// after the fact, all of which it requires on every update. Sent when the name the watch
+    /// registers with moved — the phone's device name was edited, or the watch registered before
+    /// the phone had told it that name.
+    public static func updateRegistrationBody(identity: WatchDeviceIdentity) -> [String: Any] {
+        [
+            "app_data": [String: Any](),
+            "app_version": identity.appVersion,
+            "device_name": identity.deviceName,
+            "manufacturer": "Apple",
+            "model": identity.model,
+            "os_version": identity.osVersion,
+        ]
+    }
+
+    /// What the watch keeps from a registration response, made under `identity`.
+    public static func registration(
+        from json: Any,
+        identity: WatchDeviceIdentity,
+        registeredAt: Date
+    ) throws -> WatchDeviceRegistration {
         guard let dictionary = json as? [String: Any],
               dictionary["webhook_id"] is String,
               let response = Mapper<MobileAppRegistrationResponse>().map(JSON: dictionary) else {
@@ -57,7 +76,8 @@ public enum WatchDeviceRegistrar {
             webhookID: response.WebhookID,
             webhookSecret: response.WebhookSecret,
             cloudhookURL: response.CloudhookURL,
-            registeredAt: registeredAt
+            registeredAt: registeredAt,
+            deviceName: identity.deviceName
         )
     }
 
@@ -81,14 +101,16 @@ public enum WatchDeviceRegistrar {
 
     /// Registers with `server` and remembers the result in `Current.watchDeviceRegistrations`.
     ///
+    /// - Parameter identity: what to register as; this watch, named for `server`, unless given.
     /// - Parameter send: how the registration reaches the server; REST unless a test substitutes
     ///   a fake.
     public static func register(
         server: Server,
-        identity: WatchDeviceIdentity = .current(),
+        identity: WatchDeviceIdentity? = nil,
         timeout: TimeInterval = HomeAssistantRESTClient.defaultTimeout,
         send: Send = WatchDeviceRegistrar.sendRegistration
     ) async throws -> WatchDeviceRegistration {
+        let identity = identity ?? .current(for: server)
         Current.Log.info(
             "registering watch with \(server.info.name) as \"\(identity.appName)\" on \"\(identity.deviceName)\""
         )
@@ -104,7 +126,7 @@ public enum WatchDeviceRegistrar {
             throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
         }
 
-        let registration = try registration(from: json, registeredAt: Current.date())
+        let registration = try registration(from: json, identity: identity, registeredAt: Current.date())
         do {
             try Current.watchDeviceRegistrations.set(registration, for: server.identifier)
         } catch {

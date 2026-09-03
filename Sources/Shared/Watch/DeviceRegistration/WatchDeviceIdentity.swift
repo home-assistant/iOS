@@ -37,15 +37,38 @@ public struct WatchDeviceIdentity: Equatable {
         "\(companionAppName) Watch"
     }
 
-    /// This watch, as it is right now. The watch app carries the same display name as the phone
-    /// app, which is what the prefix comes from.
-    public static func current(bundle: Bundle = .main) -> WatchDeviceIdentity {
+    /// The paired iPhone's `mobile_app` device name in front of the watch's own, e.g.
+    /// "Bruno's iPhone Apple Watch". watchOS names every watch "Apple Watch", so on its own the
+    /// registration is indistinguishable from any other watch's; the phone's name — the one the
+    /// integration already shows for the phone — is what tells them apart and pairs them up.
+    /// Without a companion name (the phone hasn't sent one yet) the watch's own name stands.
+    public static func deviceName(companionDeviceName: String?, watchName: String) -> String {
+        guard let companion = companionDeviceName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !companion.isEmpty else {
+            return watchName
+        }
+        return "\(companion) \(watchName)"
+    }
+
+    /// What the watch registers as `device_name` with `server`: its own name behind the companion
+    /// device name the phone stamped on the server (`ServerSettingKey.companionDeviceName`).
+    public static func deviceName(for server: Server) -> String {
+        deviceName(
+            companionDeviceName: server.info.setting(for: .companionDeviceName),
+            watchName: Current.device.deviceName()
+        )
+    }
+
+    /// This watch, as it is right now, for a registration with `server`. The watch app carries the
+    /// same display name as the phone app, which is what the app-name prefix comes from; the
+    /// device-name prefix is the phone's name for that server.
+    public static func current(for server: Server, bundle: Bundle = .main) -> WatchDeviceIdentity {
         let displayName = bundle.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
         return WatchDeviceIdentity(
             appID: bundle.bundleIdentifier ?? AppConstants.BundleID,
             appName: appName(companionAppName: displayName),
             appVersion: HomeAssistantAPI.clientVersionDescription,
-            deviceName: Current.device.deviceName(),
+            deviceName: deviceName(for: server),
             deviceID: Current.settingsStore.integrationDeviceID,
             model: Current.device.systemModel(),
             osName: Current.device.systemName(),

@@ -663,7 +663,7 @@ public class HomeAssistantAPI {
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
-            $0.DeviceName = server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName()
+            $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
             $0.OSName = Current.device.systemName()
@@ -798,7 +798,7 @@ public class HomeAssistantAPI {
     public var sharedEventDeviceInfo: [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
-            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceName": server.info.mobileAppDeviceName,
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
     }

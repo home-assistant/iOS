@@ -42,6 +42,11 @@ public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, Setting
 public extension ServerSettingKey {
     static var localName: ServerSettingKey<String?> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
+    /// Set only on the servers the iPhone hands to its paired watch: the device name the iPhone's
+    /// own `mobile_app` registration with the server carries (its override, or the phone's name).
+    /// The watch puts it in front of its own name when it registers as a device of its own, so the
+    /// two read as a pair in Home Assistant. Never written to the phone's own server store.
+    static var companionDeviceName: ServerSettingKey<String?> { "companion_device_name" }
     static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
     static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
 }

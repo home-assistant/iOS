@@ -11,19 +11,25 @@ public struct WatchDeviceRegistration: Codable, Equatable {
     /// `register_sensor` carries enablement to Home Assistant, so a sensor whose switch changed
     /// since — or that isn't in here at all — needs registering before its state is sent.
     public var registeredSensorEnablement: [String: Bool]
+    /// The `device_name` Home Assistant last took for this registration. `nil` for a registration
+    /// made before the name was tracked; either way, a name that differs from what the watch would
+    /// register with now is sent through `update_registration` before the next report.
+    public var deviceName: String?
 
     public init(
         webhookID: String,
         webhookSecret: String?,
         cloudhookURL: URL?,
         registeredAt: Date,
-        registeredSensorEnablement: [String: Bool] = [:]
+        registeredSensorEnablement: [String: Bool] = [:],
+        deviceName: String? = nil
     ) {
         self.webhookID = webhookID
         self.webhookSecret = webhookSecret
         self.cloudhookURL = cloudhookURL
         self.registeredAt = registeredAt
         self.registeredSensorEnablement = registeredSensorEnablement
+        self.deviceName = deviceName
     }
 
     public var webhookPath: String {

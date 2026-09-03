@@ -21,6 +21,9 @@ public actor WatchDeviceReporter {
         /// Whether the server currently resolves to a URL the watch can reach.
         public var hasActiveURL: (Server) -> Bool
         public var currentSensors: () -> [WebhookSensor]
+        /// What the watch registers as with the server right now; a stored registration whose
+        /// device name differs is renamed before it is reported through.
+        public var identity: (Server) -> WatchDeviceIdentity
         public var register: (Server, TimeInterval) async throws -> WatchDeviceRegistration
         public var send: (String, Any, Server, WatchDeviceRegistration, TimeInterval) async throws -> Any
         public var now: () -> Date
@@ -31,6 +34,7 @@ public actor WatchDeviceReporter {
             servers: @escaping () -> [Server],
             hasActiveURL: @escaping (Server) -> Bool,
             currentSensors: @escaping () -> [WebhookSensor],
+            identity: @escaping (Server) -> WatchDeviceIdentity,
             register: @escaping (Server, TimeInterval) async throws -> WatchDeviceRegistration,
             send: @escaping (String, Any, Server, WatchDeviceRegistration, TimeInterval) async throws -> Any,
             now: @escaping () -> Date
@@ -40,6 +44,7 @@ public actor WatchDeviceReporter {
             self.servers = servers
             self.hasActiveURL = hasActiveURL
             self.currentSensors = currentSensors
+            self.identity = identity
             self.register = register
             self.send = send
             self.now = now
@@ -177,14 +182,14 @@ public actor WatchDeviceReporter {
 
     private func report(server: Server, timeout: TimeInterval, allowingReregistration: Bool) async throws -> Outcome {
         let store = dependencies.registrations
-        let registration: WatchDeviceRegistration
-        if let existing = store.registration(for: server.identifier) {
-            registration = existing
-        } else {
-            registration = try await dependencies.register(server, timeout)
-        }
 
         do {
+            let registration: WatchDeviceRegistration
+            if let existing = store.registration(for: server.identifier) {
+                registration = try await renamedIfNeeded(existing, server: server, timeout: timeout)
+            } else {
+                registration = try await dependencies.register(server, timeout)
+            }
             return try await sync(server: server, registration: registration, timeout: timeout)
         } catch WatchWebhookClient.WebhookError.registrationGone where allowingReregistration {
             // The device was deleted in Home Assistant: forget the registration and start over,
@@ -193,6 +198,32 @@ public actor WatchDeviceReporter {
             try store.set(nil, for: server.identifier)
             return try await report(server: server, timeout: timeout, allowingReregistration: false)
         }
+    }
+
+    /// Renames the registration when the device name the watch registers with has moved since —
+    /// the phone's device name was edited, or the watch registered before the phone had sent it
+    /// (a registration from before the name was tracked counts as moved). The stored registration
+    /// is written back with the name Home Assistant took, so the rename is sent once.
+    private func renamedIfNeeded(
+        _ registration: WatchDeviceRegistration,
+        server: Server,
+        timeout: TimeInterval
+    ) async throws -> WatchDeviceRegistration {
+        let identity = dependencies.identity(server)
+        guard registration.deviceName != identity.deviceName else { return registration }
+
+        Current.Log.info("renaming watch registration with \(server.info.name) to \"\(identity.deviceName)\"")
+        _ = try await send(
+            type: "update_registration",
+            data: WatchDeviceRegistrar.updateRegistrationBody(identity: identity),
+            server: server,
+            timeout: timeout
+        )
+
+        var renamed = dependencies.registrations.registration(for: server.identifier) ?? registration
+        renamed.deviceName = identity.deviceName
+        try dependencies.registrations.set(renamed, for: server.identifier)
+        return renamed
     }
 
     /// Registers whichever sensors Home Assistant doesn't know with their current enablement, then
@@ -304,6 +335,7 @@ public extension WatchDeviceReporter.Dependencies {
             servers: { Current.servers.all },
             hasActiveURL: { server in server.activeURLUsingLastKnownNetworkState() != nil },
             currentSensors: WatchDeviceSensors.current,
+            identity: { server in .current(for: server) },
             register: { server, timeout in
                 try await WatchDeviceRegistrar.register(server: server, timeout: timeout)
             },

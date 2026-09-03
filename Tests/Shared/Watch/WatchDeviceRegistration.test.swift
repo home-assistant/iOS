@@ -9,7 +9,8 @@ struct WatchDeviceRegistrationTests {
             webhookSecret: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
             cloudhookURL: URL(string: "https://hooks.nabu.casa/hook"),
             registeredAt: Date(timeIntervalSince1970: 1_700_000_000),
-            registeredSensorEnablement: ["battery_level": true, "battery_state": false]
+            registeredSensorEnablement: ["battery_level": true, "battery_state": false],
+            deviceName: "Bruno's iPhone Apple Watch"
         )
 
         let data = try JSONEncoder().encode(registration)
@@ -17,6 +18,17 @@ struct WatchDeviceRegistrationTests {
 
         #expect(decoded == registration)
         #expect(decoded.webhookPath == "api/webhook/hook")
+    }
+
+    @Test func decodesARegistrationSavedBeforeTheNameWasTracked() throws {
+        let json = """
+        {"webhookID":"hook","registeredAt":0,"registeredSensorEnablement":{"battery_level":true}}
+        """
+        let decoded = try JSONDecoder().decode(WatchDeviceRegistration.self, from: Data(json.utf8))
+
+        #expect(decoded.webhookID == "hook")
+        #expect(decoded.deviceName == nil)
+        #expect(decoded.registeredSensorEnablement == ["battery_level": true])
     }
 
     @Test func derivesTheSecretKeyLikeConnectionInfo() {
