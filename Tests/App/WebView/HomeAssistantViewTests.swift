@@ -194,6 +194,54 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(sut.isFullScreenLoaderVisible)
     }
 
+    func testDismissingStandbyLoaderUncoversTheFrontendWebView() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.fade(to: 1, reduceMotion: true)
+        sut.loaderMinimumDurationElapsed = true
+        XCTAssertTrue(sut.isWebViewCoveredByStandBy)
+        XCTAssertEqual(sut.webViewContentOpacity, 0)
+
+        overlayState.connectionState = .loaded
+
+        XCTAssertFalse(sut.isWebViewCoveredByStandBy)
+        XCTAssertEqual(sut.webViewContentOpacity, 1)
+    }
+
+    func testANewLoadCycleCoversTheFrontendWebViewAgain() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.fade(to: 1, reduceMotion: true)
+        sut.loaderMinimumDurationElapsed = true
+        overlayState.connectionState = .loaded
+        XCTAssertFalse(sut.isWebViewCoveredByStandBy)
+
+        overlayState.isLoading = true
+
+        XCTAssertTrue(sut.isWebViewCoveredByStandBy)
+        XCTAssertEqual(sut.webViewContentOpacity, 0)
+    }
+
+    func testForceDismissUncoversTheFrontendWebView() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.fade(to: 1, reduceMotion: true)
+
+        sut.forceDismissStandByView()
+
+        XCTAssertFalse(sut.isWebViewCoveredByStandBy)
+        XCTAssertEqual(sut.webViewContentOpacity, 1)
+    }
+
     func testForceDismissHidesStandbyLoaderRegardlessOfConnectionState() {
         let overlayState = WebFrontendOverlayState()
         let sut = HomeAssistantViewModel(

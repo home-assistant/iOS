@@ -83,13 +83,20 @@ extension MacWebViewTitleBar {
         private var server: Server?
         private var macToolbarItems: [MagicItem] = []
         private var macToolbarConfigObserver: NSObjectProtocol?
+        private var serverPickerSignature: String?
 
+        /// Runs on every SwiftUI update of the host view, and the frontend publishes state throughout a page
+        /// load, so anything expensive here (a database read, a re-rendered toolbar item) has to be skipped
+        /// when nothing changed rather than landing on top of the stand-by fade.
         func update(server: Server, webViewController: WebViewController?) {
+            let isFirstUpdate = self.server == nil
             self.server = server
             self.webViewController = webViewController
 
-            loadMacToolbarItems()
-            observeMacToolbarConfigChanges()
+            if isFirstUpdate {
+                loadMacToolbarItems()
+                observeMacToolbarConfigChanges()
+            }
 
             refreshToolbarState()
         }
@@ -362,6 +369,7 @@ extension MacWebViewTitleBar {
             }
 
             serverPickerItem = item
+            serverPickerSignature = nil
             updateServerPicker()
             return item
         }
@@ -369,6 +377,13 @@ extension MacWebViewTitleBar {
         private func updateServerPicker() {
             guard let serverPickerItem else { return }
             let title = server?.info.name ?? L10n.WebView.ServerSelection.title
+            let signature = (
+                [server?.identifier.rawValue ?? "", title]
+                    + Current.servers.all.map { "\($0.identifier.rawValue)\t\($0.info.name)" }
+            )
+            .joined(separator: "\n")
+            guard serverPickerSignature != signature else { return }
+            serverPickerSignature = signature
             serverPickerItem.label = title
             serverPickerItem.paletteLabel = L10n.ServersSelection.title
             serverPickerItem.toolTip = title

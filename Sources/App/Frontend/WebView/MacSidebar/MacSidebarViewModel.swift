@@ -34,15 +34,26 @@ final class MacSidebarViewModel: ObservableObject {
     private var legacyHiddenPanels: [String]?
     private var legacyDefaultPanel: String?
     private var coreUserData = FrontendDefaultPanelData()
-    private var userDefaultPanel: String? { coreUserData.defaultPanel }
+    /// Stands in for `coreUserData.defaultPanel` until the live `core` value arrives, which is the only thing
+    /// that clears it: a cached default must not outlive one the user has since removed.
+    private var cachedUserDefaultPanel: String?
+    private var userDefaultPanel: String? { coreUserData.defaultPanel ?? cachedUserDefaultPanel }
     private var systemDefaultPanel: String?
+    private var isAdmin = false
+    private var userName: String?
     private var notificationIds: Set<String> = []
     private var currentPath: String?
     private var tokens: [HACancellable] = []
     private var cancellables = Set<AnyCancellable>()
+    private let snapshotStore: MacSidebarSnapshotStore
 
-    init(server: Server, overlayState: WebFrontendOverlayState) {
+    init(
+        server: Server,
+        overlayState: WebFrontendOverlayState,
+        snapshotStore: MacSidebarSnapshotStore = .shared
+    ) {
         self.server = server
+        self.snapshotStore = snapshotStore
 
         overlayState.$currentPath
             .receive(on: DispatchQueue.main)
@@ -60,7 +71,7 @@ final class MacSidebarViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        loadCachedPanels()
+        restoreSnapshot()
         rebuild()
     }
 
@@ -81,6 +92,8 @@ final class MacSidebarViewModel: ObservableObject {
         tokens.append(connection.caches.user.subscribe { [weak self] _, user in
             Task { @MainActor [weak self] in
                 self?.user = user
+                self?.isAdmin = user.isAdmin
+                self?.userName = user.name
                 self?.rebuild()
             }
         })
@@ -108,6 +121,7 @@ final class MacSidebarViewModel: ObservableObject {
             guard case let .success(data) = result else { return }
             Task { @MainActor [weak self] in
                 self?.coreUserData = data
+                self?.cachedUserDefaultPanel = nil
                 self?.rebuild()
             }
         })
@@ -272,6 +286,44 @@ final class MacSidebarViewModel: ObservableObject {
         })
     }
 
+    private func restoreSnapshot() {
+        if let snapshot = snapshotStore.snapshot(for: server.identifier.rawValue) {
+            panels = snapshot.panels
+            sidebarUserData = FrontendSidebarUserData(
+                panelOrder: snapshot.panelOrder,
+                hiddenPanels: snapshot.hiddenPanels
+            )
+            legacyPanelOrder = snapshot.legacyPanelOrder
+            legacyHiddenPanels = snapshot.legacyHiddenPanels
+            legacyDefaultPanel = snapshot.legacyDefaultPanel
+            cachedUserDefaultPanel = snapshot.userDefaultPanel
+            systemDefaultPanel = snapshot.systemDefaultPanel
+            isAdmin = snapshot.isAdmin
+            userName = snapshot.userName
+        }
+        if panels.isEmpty {
+            loadCachedPanels()
+        }
+    }
+
+    private func storeSnapshot() {
+        snapshotStore.store(
+            MacSidebarSnapshot(
+                panels: panels,
+                panelOrder: sidebarUserData.panelOrder,
+                hiddenPanels: sidebarUserData.hiddenPanels,
+                legacyPanelOrder: legacyPanelOrder,
+                legacyHiddenPanels: legacyHiddenPanels,
+                legacyDefaultPanel: legacyDefaultPanel,
+                userDefaultPanel: userDefaultPanel,
+                systemDefaultPanel: systemDefaultPanel,
+                isAdmin: isAdmin,
+                userName: userName
+            ),
+            for: server.identifier.rawValue
+        )
+    }
+
     private func loadCachedPanels() {
         do {
             panels = try AppPanel.panels(serverId: server.identifier.rawValue)?.map { panel in
@@ -295,30 +347,42 @@ final class MacSidebarViewModel: ObservableObject {
             panels: panels
         )
         let userData = effectiveUserData
-        mainItems = MacSidebarItemsBuilder.mainItems(
+        let mainItems = MacSidebarItemsBuilder.mainItems(
             panels: panels,
             defaultPanelPath: defaultPanelPath,
             panelOrder: userData.panelOrder ?? [],
             hiddenPanels: userData.hiddenPanels ?? []
         )
-        hiddenItems = MacSidebarItemsBuilder.hiddenItems(
+        let hiddenItems = MacSidebarItemsBuilder.hiddenItems(
             panels: panels,
             defaultPanelPath: defaultPanelPath,
             panelOrder: userData.panelOrder ?? [],
             hiddenPanels: userData.hiddenPanels ?? []
         )
-        fixedItems = MacSidebarItemsBuilder.fixedItems(
+        let fixedItems = MacSidebarItemsBuilder.fixedItems(
             panels: panels,
-            isAdmin: user?.isAdmin ?? false,
-            userName: user?.name,
+            isAdmin: isAdmin,
+            userName: userName,
             notificationsCount: notificationIds.count
         )
+        if self.mainItems != mainItems {
+            self.mainItems = mainItems
+        }
+        if self.hiddenItems != hiddenItems {
+            self.hiddenItems = hiddenItems
+        }
+        if self.fixedItems != fixedItems {
+            self.fixedItems = fixedItems
+        }
         updateSelection()
+        storeSnapshot()
     }
 
     private func updateSelection() {
         let itemId = MacSidebarItemsBuilder.itemId(forPath: currentPath)
         let knownIds = Set((mainItems + fixedItems).map(\.id))
-        selectedItemId = itemId.flatMap { knownIds.contains($0) ? $0 : nil }
+        let selectedItemId = itemId.flatMap { knownIds.contains($0) ? $0 : nil }
+        guard self.selectedItemId != selectedItemId else { return }
+        self.selectedItemId = selectedItemId
     }
 }
