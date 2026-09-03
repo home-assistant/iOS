@@ -41,6 +41,12 @@ jobs:
     name: "Onboarding"
     runs-on: macos-26
     timeout-minutes: 90
+    # Naming any scope denies the rest, so the failure report has to ask for what it needs:
+    # `issues` to file or update the report, `actions` to read back which step failed.
+    permissions:
+      actions: read
+      contents: read
+      issues: write
     env:
       E2E_HOME_ASSISTANT_URL: http://localhost:8123
       E2E_HOME_ASSISTANT_USERNAME: citest
@@ -86,9 +92,13 @@ jobs:
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
 
+      # Spelled as core's own `requires-python`, which both `dev` and the current releases put at
+      # 3.14.2: installing Home Assistant on an older interpreter fails outright while resolving.
+      # A range rather than a pin, so the newest patch is picked up but a future 3.15 core has not
+      # been tested against is not.
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v5.3.0
         with:
-          python-version: "3.13"
+          python-version: ">=3.14.2 <3.15"
 
       # Scheduled runs track core's `dev` branch, the same as home-assistant/android, so a
       # regression there is caught before it reaches a release. The branch is cloned shallow
@@ -169,15 +179,123 @@ jobs:
             kill "$(cat "$RUNNER_TEMP/hass.pid")" 2>/dev/null || true
           fi
 
+      # XCUITest records the run and attaches it to the result bundle, but it lands inside the
+      # .xcresult under an opaque UUID filename. Exporting it puts the recording one click away in
+      # the artifact instead, which is the fastest way to see where a flow went wrong. Xcode keeps
+      # the recording only when the test fails, so a passing run exports nothing.
+      - name: Export screen recording
+        if: always()
+        run: |
+          XCRESULT=fastlane/test_output/e2e/Tests-UI.xcresult
+          if [ ! -d "$XCRESULT" ]; then
+            echo "No result bundle at $XCRESULT, nothing to export"
+            exit 0
+          fi
+
+          OUT="$RUNNER_TEMP/e2e-recording"
+          mkdir -p "$OUT"
+          xcrun xcresulttool export attachments --path "$XCRESULT" --output-path "$OUT" >/dev/null
+
+          # Name the exports after what they are. Anything that is not a recording or a screenshot
+          # is dropped, so the artifact stays small enough to download for a quick look.
+          python3 - "$OUT" <<'PY'
+          import json, pathlib, shutil, sys
+
+          out = pathlib.Path(sys.argv[1])
+          manifest = out / "manifest.json"
+          kept = 0
+
+          for group in json.loads(manifest.read_text()) if manifest.exists() else []:
+              for attachment in group.get("attachments", []):
+                  source = out / attachment["exportedFileName"]
+                  name = attachment.get("suggestedHumanReadableName", source.name)
+                  if not source.exists() or not name.lower().endswith((".mp4", ".png", ".jpeg", ".jpg")):
+                      continue
+                  shutil.move(source, out / name.replace("/", "-"))
+                  kept += 1
+
+          for leftover in out.iterdir():
+              if leftover.is_file() and leftover.suffix.lower() not in {".mp4", ".png", ".jpeg", ".jpg"}:
+                  leftover.unlink()
+              elif leftover.is_dir():
+                  shutil.rmtree(leftover)
+
+          print(f"Exported {kept} recording/screenshot attachment(s)")
+          PY
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload E2E Artifacts"
         if: always()
         with:
           name: e2e-artifacts
           if-no-files-found: warn
+          # The recording is kept for passing runs too (see the test plan), which puts each run's
+          # artifact around 200 MB. Nightly, that is worth capping well below the 90-day default.
+          retention-days: 14
+
+      # A red run nobody is told about is a nightly nobody trusts: GitHub only emails whoever last
+      # touched the cron line. Only the scheduled run reports, because a manual dispatch is usually
+      # someone iterating on the workflow itself and every red attempt would file a report.
+      - name: Report failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          HOME_ASSISTANT_VERSION: ${{ inputs.home-assistant-version || 'dev' }}
+        with:
+          script: |
+            const title = 'E2E: the nightly onboarding test is failing'
+            const { owner, repo } = context.repo
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
+
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner,
+              repo,
+              run_id: context.runId,
+            })
+            const failed = jobs.flatMap((job) => job.steps || []).find((step) => step.conclusion === 'failure')
+
+            const body = [
+              `The nightly [E2E run](${run}) failed at **${failed ? failed.name : 'an unknown step'}**.`,
+              '',
+              `- Home Assistant version: \`${process.env.HOME_ASSISTANT_VERSION}\``,
+              "- A screen recording of the run and Home Assistant's own log are in that run's",
+              '  `e2e-artifacts` artifact, which is kept for 14 days.',
+              '',
+              'Later failures are added here as comments rather than opening another issue.',
+            ].join('\n')
+
+            // Deduped by title among `automated` issues, so a run of bad nights leaves one thread
+            // to read rather than one issue per night.
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              labels: 'automated',
+              state: 'all',
+              per_page: 100,
+            })
+            const existing = issues.find((issue) => !issue.pull_request && issue.title === title)
+
+            if (!existing) {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['automated'],
+              })
+              core.info(`Opened #${created.data.number}`)
+              return
+            }
+
+            await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body })
+            if (existing.state === 'closed') {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'open' })
+            }
+            core.info(`Updated #${existing.number}`)
           path: |
             ${{ runner.temp }}/hass-stdout.log
             ${{ runner.temp }}/homeassistant-config.json
             ${{ runner.temp }}/homeassistant/home-assistant.log
+            ${{ runner.temp }}/e2e-recording
             fastlane/test_output/e2e
             ~/Library/Logs/scan

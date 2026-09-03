@@ -5429,7 +5429,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Debug;
 		};
@@ -5443,7 +5443,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Release;
 		};

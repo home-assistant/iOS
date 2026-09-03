@@ -22,10 +22,12 @@ in step means both apps are tested against the same instance, with the same enti
 ## Running it locally
 
 Start an instance. Use a copy: Home Assistant rewrites `.storage` and writes its database and logs
-into whichever config dir it is given.
+into whichever config dir it is given. The interpreter has to satisfy core's `requires-python`,
+which is 3.14.2 or newer; `pip` refuses the install and names the version it wanted if it is older,
+so there is no need to check the patch level up front.
 
 ```bash
-cp -R .github/e2e/homeassistant /tmp/homeassistant && python3 -m venv /tmp/ha && /tmp/ha/bin/pip install homeassistant && /tmp/ha/bin/hass --config /tmp/homeassistant
+cp -R .github/e2e/homeassistant /tmp/homeassistant && python3.14 -m venv /tmp/ha && /tmp/ha/bin/pip install homeassistant && /tmp/ha/bin/hass --config /tmp/homeassistant
 ```
 
 Then run the flow. The lane checks the instance first, walking the same login exchange the app
@@ -57,6 +59,25 @@ for f in $(cd .github/e2e/homeassistant/.storage && ls); do curl -fsS "https://r
 ```
 
 `core.config_entries` is expected to differ: the `go2rtc` entry is deliberately removed here.
+
+## When a run fails
+
+A failing nightly opens an issue titled "E2E: the nightly onboarding test is failing", labelled
+`automated`, naming the step that failed and linking the run. Later failures are added to that same
+issue as comments, and a closed one is reopened, so a bad week leaves one thread to read rather than
+seven issues. Only the scheduled run reports: a manual dispatch is usually someone working on the
+workflow itself. GitHub's own notification for a failing schedule reaches only whoever last edited
+the cron line, which is why this exists.
+
+
+The `e2e-artifacts` artifact carries a screen recording of the run under `e2e-recording/`, which is
+usually the quickest way to see where the flow went wrong. Alongside it are Home Assistant's own log,
+the `/api/config` it reported, and the full `.xcresult`.
+
+Recordings are kept for passing runs as well, through `uiTestingScreenshotsLifetime` in
+[`Tests-UI.xctestplan`](../../Tests/UI/Tests-UI.xctestplan); Xcode would otherwise discard them on
+success. That is what the test plan exists for. It costs roughly 160 MB per run, so the artifact is
+kept for 14 days rather than the 90-day default.
 
 ## Notes
 

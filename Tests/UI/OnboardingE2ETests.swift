@@ -36,6 +36,12 @@ final class OnboardingE2ETests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
+        // Onboards with the release client ID rather than the debug one. Home Assistant allows the
+        // release iOS callback offline, but has to fetch `https://home-assistant.io/iOS/dev-auth`
+        // to allow the debug one, and it reads only the first 10 KB of that page, which no longer
+        // reaches the `redirect_uri` link tag. The debug pair is rejected with "Invalid redirect
+        // URI", so the flow could never log in.
+        app.launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
         app.launch()
     }
 
@@ -56,8 +62,7 @@ final class OnboardingE2ETests: XCTestCase {
 
         let urlField = app.textFields.firstMatch
         wait(for: urlField, timeout: Timeout.screen, "manual URL entry field")
-        urlField.tap()
-        urlField.typeText(Instance.url)
+        type(Instance.url, into: urlField, "manual URL entry field")
 
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
     }
@@ -66,17 +71,26 @@ final class OnboardingE2ETests: XCTestCase {
         let webView = app.webViews.firstMatch
         wait(for: webView, timeout: Timeout.frontend, "login web view")
 
+        // Both fields are checked after typing: text aimed at a web view field lands wherever the
+        // keyboard happens to be focused, and a miss otherwise surfaces only as a rejected login.
         let username = webView.textFields.firstMatch
         wait(for: username, timeout: Timeout.frontend, "username field")
-        username.tap()
-        username.typeText(Instance.username)
+        type(Instance.username, into: username, "username field")
+        XCTAssertEqual(username.value as? String, Instance.username, "Username field did not receive the username")
 
         let password = webView.secureTextFields.firstMatch
         wait(for: password, timeout: Timeout.frontend, "password field")
-        password.tap()
+        type(Instance.password, into: password, "password field")
+        // Secure fields report one bullet per character rather than the text itself.
+        XCTAssertEqual(
+            (password.value as? String)?.count,
+            Instance.password.count,
+            "Password field did not receive the whole password"
+        )
+
         // Submitting from the field avoids matching the login button, whose label the frontend
         // renders inside a shadow root.
-        password.typeText("\(Instance.password)\n")
+        password.typeText("\n")
 
         // Shown only when Home Assistant asks to confirm the redirect back to the app.
         tapIfPresent(webElement(labelContaining: "authorize"), timeout: Timeout.optional)
@@ -114,6 +128,15 @@ final class OnboardingE2ETests: XCTestCase {
     }
 
     private func openNativeSettingsFromFrontend() {
+        // Relaunched because asking the frontend for the settings screen in the same session that just
+        // onboarded crashes the app: SwiftUI raises an unexpected error from
+        // `NavigationColumnState.boundPathChange` the moment `AppSettingsPresenter.pushPath` gains its
+        // first element. Onboarding runs its own `NavigationStack` inside the container's, and the
+        // container's stack does not survive that nesting. Reproduces on iOS 26.5 and iOS 27; a
+        // relaunched app pushes the same screen without complaint.
+        app.terminate()
+        app.launch()
+
         tapWebElement(labelContaining: "sidebar toggle", timeout: Timeout.frontend, "frontend sidebar toggle")
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
@@ -138,6 +161,24 @@ final class OnboardingE2ETests: XCTestCase {
         element.tap()
     }
 
+    /// Types into a field, waiting for it to actually take keyboard focus first.
+    ///
+    /// A tap on a web view field does not focus it synchronously: the page has to handle the touch
+    /// and move focus itself. Typing before that fails outright with "Neither element nor any
+    /// descendant has keyboard focus", so the tap is repeated until the keyboard is up.
+    private func type(_ text: String, into element: XCUIElement, _ description: String) {
+        // Always taps at least once, even when the keyboard is already up for a previous field,
+        // since that tap is what moves focus to this one.
+        var attempts = 0
+        repeat {
+            element.tap()
+            attempts += 1
+        } while !app.keyboards.element.waitForExistence(timeout: Timeout.optional) && attempts < 3
+
+        XCTAssertTrue(app.keyboards.element.exists, "Keyboard never came up for the \(description)")
+        element.typeText(text)
+    }
+
     @discardableResult
     private func tapIfPresent(_ element: XCUIElement, timeout: TimeInterval) -> Bool {
         guard element.waitForExistence(timeout: timeout) else { return false }
@@ -151,7 +192,18 @@ final class OnboardingE2ETests: XCTestCase {
     /// carries a badge when there are pending updates or repairs, and an exact label would miss it.
     private func webElement(labelContaining text: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
-        return app.webViews.firstMatch.descendants(matching: .any).matching(predicate).firstMatch
+        let webView = app.webViews.firstMatch
+
+        // Links and buttons first: a row's label usually also matches the static text inside it,
+        // and tapping that does not activate the row.
+        for query in [webView.links, webView.buttons] {
+            let element = query.matching(predicate).firstMatch
+            if element.exists {
+                return element
+            }
+        }
+
+        return webView.descendants(matching: .any).matching(predicate).firstMatch
     }
 
     /// Taps an element of the frontend, scrolling it into reach first when the page is long enough

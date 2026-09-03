@@ -125,13 +125,17 @@ lane :e2e do |options|
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_USERNAME'] = username
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_PASSWORD'] = password
 
+  # Unlike the unit test lanes, this one builds: a UI test bundle is run against a separate app,
+  # and the bare `test` action cannot resolve `UITargetAppPath` for an app that was never built.
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-UI',
+    # The scheme also holds `HomeAssistantUITests`, the fastlane screenshot flow, which expects
+    # notification fixtures this lane does not set up.
+    only_testing: ['Tests-UI/OnboardingE2ETests'],
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,
-    skip_build: true,
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
     destination: "platform=iOS Simulator,id=#{udid}",
     output_directory: 'fastlane/test_output/e2e'
