@@ -45,6 +45,28 @@ struct MacSidebarItemsBuilderTests {
         #expect(items.first?.navigationPath == "/home")
     }
 
+    @Test("Add-on ingress panels are listed like any other panel, with a puzzle fallback icon")
+    func addOnIngressPanels() {
+        let panels = [
+            panel("home", component: "home", title: "Overview"),
+            panel("45df7312_zigbee2mqtt", component: "app", title: "Zigbee2MQTT"),
+            panel("core_matter_server", component: "app", title: "Matter Server"),
+            panel("energy", component: "energy", title: "Energy"),
+        ]
+
+        let items = MacSidebarItemsBuilder.mainItems(
+            panels: panels,
+            defaultPanelPath: "home",
+            panelOrder: [],
+            hiddenPanels: []
+        )
+
+        #expect(items.map(\.id) == ["home", "energy", "core_matter_server", "45df7312_zigbee2mqtt"])
+        #expect(items.last?.navigationPath == "/45df7312_zigbee2mqtt")
+        #expect(items.last?.icon == .material(.puzzleIcon))
+        #expect(items.last?.isDashboard == false)
+    }
+
     @Test("User panel order wins over the default order")
     func userOrder() {
         let panels = [

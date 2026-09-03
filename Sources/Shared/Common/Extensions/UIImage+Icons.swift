@@ -27,9 +27,16 @@ public extension MaterialDesignIcons {
     }
 }
 
+/// The prefixes the frontend answers with a Material Design icon; `MDI_PREFIXES` in its
+/// `data/iconsets.ts`.
+private let materialDesignIconPrefixes = ["mdi:", "hass:", "hassio:", "hademo:"]
+
 public extension String {
     var normalizingIconString: String {
-        let base = replacingOccurrences(of: "mdi:|hass:", with: "", options: .regularExpression)
+        let named = materialDesignIconPrefixes
+            .first(where: { hasPrefix($0) })
+            .map { String(dropFirst($0.count)) } ?? self
+        let base = named
             .replacingOccurrences(of: ":", with: "_")
             .replacingOccurrences(of: "-", with: "_")
         return MDIMigration.migrate(icon: base)

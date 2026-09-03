@@ -9,6 +9,7 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 SELF="$DIR/$(basename "$0")"
+FONT_RESOURCE="$DIR/../Sources/HAIconic/Sources/Resources/MaterialDesignIcons.ttf"
 
 pushd "$DIR" >/dev/null
 
@@ -69,11 +70,14 @@ else
 	if [ -n "$LATEST" ] && [ "$LATEST" != "$MDI_VERSION" ]; then
 		echo "A newer version ($LATEST) is available; run with --bump to update."
 	fi
+	# The font HAIconic bundles has to match too, otherwise a stale copy there
+	# survives every run that finds the artifacts in this directory intact.
 	if [[ \
 			-f MaterialDesignIcons.ttf && \
 			-f MaterialDesignIcons-$MDI_VERSION.ttf && \
 			-f MaterialDesignIcons.json && \
-			-f MaterialDesignIcons-$MDI_VERSION.json ]]; then
+			-f MaterialDesignIcons-$MDI_VERSION.json ]] && \
+			cmp -s MaterialDesignIcons.ttf "$FONT_RESOURCE"; then
 		echo "Up-to-date"
 		exit
 	fi
@@ -113,6 +117,10 @@ python3 fontname-$FONT_RENAME_COMMIT.py MaterialDesignIcons MaterialDesignIcons-
 echo "Creating links..."
 ln -f MaterialDesignIcons-$MDI_VERSION.ttf MaterialDesignIcons.ttf
 ln -f MaterialDesignIcons-$MDI_VERSION.json MaterialDesignIcons.json
+
+# The font the app ships is the one HAIconic bundles, so install it there too.
+echo "Installing the font into HAIconic..."
+cp MaterialDesignIcons.ttf "$FONT_RESOURCE"
 
 echo "Successfully built MaterialDesignIcons at version $MDI_VERSION"
 echo "Running Swiftgen..."

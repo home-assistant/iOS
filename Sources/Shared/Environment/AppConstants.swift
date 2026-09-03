@@ -188,9 +188,12 @@ public enum AppConstants {
         return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
     }
 
+    /// The deep link host that opens the native camera player.
+    public static let cameraDeeplinkHost = "camera"
+
     public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
         URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+            string: "\(AppConstants.deeplinkURL.absoluteString)\(cameraDeeplinkHost)/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
     }
 

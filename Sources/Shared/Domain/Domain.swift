@@ -736,6 +736,7 @@ public extension Domain {
 public extension Domain {
     /// The primary service to call when activating this domain.
     /// Returns nil for domains that don't have a single main action (e.g., sensors).
+    /// A group has no services of its own, so its toggle is addressed to `serviceDomain`.
     var mainAction: Service? {
         switch self {
         case .automation:
@@ -744,13 +745,13 @@ public extension Domain {
             return .press
         case .scene, .script:
             return .turnOn
-        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve:
+        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group:
             return .toggle
         case .lock:
             return nil // Lock requires state-aware action (lock/unlock)
         case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate,
              .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
-             .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
+             .dateTime, .deviceTracker, .event, .geoLocation, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
              .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,

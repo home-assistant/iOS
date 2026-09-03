@@ -1,0 +1,47 @@
+name: Update Brand Icons
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly. Regenerates BrandIcon.swift from the logos the frontend `dev` branch
+    # bundles and opens a PR when they changed.
+    - cron: '0 8 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  update_brand_icons:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v5.3.0
+        with:
+          python-version: '3.x'
+
+      - name: Regenerate BrandIcon.swift
+        run: python3 Tools/BuildBrandIcons.py
+
+      - name: Commit changes
+        id: commit
+        run: |
+          git config --global user.name 'Home Assistant Bot'
+          git config --global user.email 'hello@home-assistant.io'
+          git add Sources/HAIconic/Sources/BrandIcon.swift
+          if ! git diff --cached --quiet; then
+            git commit -m "Update brand icons"
+          fi
+          echo "pr_title=$(git log -1 --pretty='%s')" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          base: main
+          branch: create-pull-request/update_brand_icons
+          title: ${{ steps.commit.outputs.pr_title }}
+          body: "Automatically created by ${{ github.actor }}."

@@ -79,11 +79,24 @@ struct HAPanelsTests {
         let panels = try HAPanels(data: HAData(value: [
             "_my_redirect": panel(component: "my", urlPath: "_my_redirect"),
             "notfound": panel(component: "notfound", urlPath: "notfound"),
-            "core_ssh": panel(component: "app", urlPath: "core_ssh", title: "Terminal"),
+            "app": panel(component: "app", urlPath: "app"),
             "lovelace": panel(component: "lovelace", urlPath: "lovelace", title: "Overview"),
         ]))
 
         #expect(panels.allPanels.map(\.path) == ["lovelace"])
+    }
+
+    @Test("Keeps the add-on panels the supervisor registers as ingress")
+    func keepsAddOnIngressPanels() throws {
+        let panels = try HAPanels(data: HAData(value: [
+            "app": panel(component: "app", urlPath: "app"),
+            "core_matter_server": panel(component: "app", urlPath: "core_matter_server", title: "Matter Server"),
+            "45df7312_zigbee2mqtt": panel(component: "app", urlPath: "45df7312_zigbee2mqtt", title: "Zigbee2MQTT"),
+            "lovelace": panel(component: "lovelace", urlPath: "lovelace", title: "Overview"),
+        ]))
+
+        #expect(panels.allPanels.map(\.path) == ["lovelace", "core_matter_server", "45df7312_zigbee2mqtt"])
+        #expect(panels.panelsByPath["core_matter_server"]?.title == "Matter Server")
     }
 
     @Test("A panel that can't be decoded doesn't drop the rest")
@@ -103,6 +116,16 @@ struct HAPanelsTests {
         ]))
 
         #expect(panels.panelsByPath["hidden-dashboard"]?.title == "hidden-dashboard")
+    }
+
+    @Test("An empty title counts as no title, so the sidebar leaves the panel out")
+    func treatsEmptyTitleAsMissing() throws {
+        let panels = try HAPanels(data: HAData(value: [
+            "blank": panel(component: "lovelace", urlPath: "blank", title: ""),
+        ]))
+
+        #expect(panels.panelsByPath["blank"]?.rawTitle == nil)
+        #expect(panels.panelsByPath["blank"]?.title == "blank")
     }
 
     @Test("Decodes default_visible, which older servers don't send")

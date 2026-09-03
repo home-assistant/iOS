@@ -309,20 +309,20 @@ public struct MagicItem: Codable, Equatable, Hashable {
         hasMoreInfoDialog && domain?.explicitMainAction != nil
     }
 
-    /// What `.default` stands for on a widget tile's icon — and on an app icon shortcut, which
-    /// runs the same thing: "toggle" for the domains the frontend's tile card makes the icon a
-    /// control for (`DOMAINS_TOGGLE`, plus a button, input button, or scene), and the entity's
-    /// more-info dialog for every other entity. The tile card leaves those icons inert instead;
-    /// here there is always an entity to open, so the icon opens it. An Assist pipeline has no
-    /// entity, so its icon starts Assist.
+    /// What `.default` stands for on a widget tile's icon, and on an app icon shortcut: for every
+    /// `Domain.isActionable` domain the domain's own action — its main action where it names one
+    /// ("Press", "Activate", "Run", "Trigger"), its toggle otherwise, which covers the
+    /// state-aware pairs so a locked lock unlocks and a closed cover opens. Every other entity
+    /// only opens: its more-info dialog, or the native camera player for a camera. An Assist
+    /// pipeline starts Assist.
     public var defaultIconAction: ItemAction {
         if type == .assistPipeline {
             return .assist(serverId, assistPipelineId ?? id, true)
         }
-        if hasMoreInfoDialog, let domain, domain.togglesFromTileIcon {
-            return .toggle
+        guard hasMoreInfoDialog, let domain, domain.isActionable else {
+            return .moreInfoDialog
         }
-        return .moreInfoDialog
+        return domain.explicitMainAction != nil ? .mainAction : .toggle
     }
 
     /// What `.default` stands for on the rest of a widget tile: the entity's more-info dialog, the
@@ -354,7 +354,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         if let tapAction, let interaction = interactionType(for: tapAction) {
             return interaction
         }
-        return hasMoreInfoDialog ? moreInfoIntent() : widgetInteractionType
+        return hasMoreInfoDialog ? openEntityIntent() : widgetInteractionType
     }
 
     /// Whether tapping the item's icon on a widget controls the entity where it stands, rather than
@@ -384,7 +384,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case .default:
             return nil
         case .moreInfoDialog, .nothing:
-            return hasMoreInfoDialog ? moreInfoIntent() : nil
+            return hasMoreInfoDialog ? openEntityIntent() : nil
         case .toggle:
             return toggleIntent()
         case .mainAction:
@@ -441,7 +441,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         let service = turnOn ? services.on : services.off
         return .appIntent(.performAction(
             serverId: serverId,
-            actionId: "\(domain.toggleServiceDomain).\(service.rawValue)",
+            actionId: "\(domain.serviceDomain).\(service.rawValue)",
             payload: "{\"entity_id\": \"\(id)\"}"
         ))
     }
@@ -455,9 +455,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         return .widgetURL(url)
     }
 
-    /// Opens this item's entity more-info dialog in the app's web view.
-    private func moreInfoIntent() -> WidgetInteractionType {
-        navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+    /// Opens this item's entity where tapping it lands: the native camera player for a camera,
+    /// its more-info dialog in the app's web view for everything else.
+    private func openEntityIntent() -> WidgetInteractionType {
+        navigateIntent(url: AppConstants.openEntityDestinationURL(
             entityId: id,
             serverId: serverId
         ))
@@ -1026,7 +1027,11 @@ public extension MagicItem {
                 }
             } else {
                 guard let action = domain.mainAction else { return nil }
-                return WatchServiceCall(domain: domain.rawValue, service: action.rawValue, data: ["entity_id": id])
+                return WatchServiceCall(
+                    domain: domain.serviceDomain,
+                    service: action.rawValue,
+                    data: ["entity_id": id]
+                )
             }
         case .folder, .area, .complication, .assistPipeline, .assistPrompt, .unsupported:
             return nil

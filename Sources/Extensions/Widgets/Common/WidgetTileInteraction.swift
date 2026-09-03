@@ -24,7 +24,7 @@ struct WidgetTileInteraction {
                 // Already interactive: `regions` wrapped each half on the way in.
                 return tile
             } else if case .widgetURL = model.interactionType {
-                if model.requiresConfirmation, !model.interactionType.opensMoreInfoDialog {
+                if model.requiresConfirmation, !model.interactionType.opensEntityInApp {
                     return AnyView(linkThatRequiresConfirmation(model: model, sizeStyle: sizeStyle, tile: tile))
                 } else {
                     return AnyView(legacyLinkContent(model: model, sizeStyle: sizeStyle, tile: tile))
@@ -86,7 +86,7 @@ struct WidgetTileInteraction {
         isIcon: Bool,
         content: AnyView
     ) -> some View {
-        if model.requiresConfirmation, !interactionType.opensMoreInfoDialog {
+        if model.requiresConfirmation, !interactionType.opensEntityInApp {
             Button(intent: confirmationStateIntent(for: model, confirmsTapAction: !isIcon)) {
                 content
             }

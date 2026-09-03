@@ -19,9 +19,9 @@ struct WidgetTileTapBehaviorSnapshotTests {
             .init(id: "light.kitchen", serverId: "1", type: .entity),
             // Read-only: both halves open the entity, so the icon is not a control.
             .init(id: "sensor.temperature", serverId: "1", type: .entity),
-            // Not a toggle domain on the frontend's tile card, so its icon opens the entity too.
+            // A lock's icon unlocks or locks it by state, and always confirms before it runs.
             .init(id: "lock.front_door", serverId: "1", type: .entity),
-            // Neither is a script: its icon only runs it once told to.
+            // A script's icon runs it.
             .init(id: "script.morning", serverId: "1", type: .script),
             // Told to open a dashboard instead, which leaves nothing to control.
             .init(
