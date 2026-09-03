@@ -50,7 +50,7 @@ final class OnboardingE2ETests: XCTestCase {
         logIn()
         nameDevice()
         answerPermissions()
-        dismissNotificationPermissionRequest()
+        grantNotificationPermission()
         openNativeSettingsFromFrontend()
     }
 
@@ -107,24 +107,37 @@ final class OnboardingE2ETests: XCTestCase {
             timeout: Timeout.frontend,
             "local access disclaimer"
         )
-        tap(app.buttons[.onboardingLocationSkip], timeout: Timeout.screen, "location permission screen")
 
+        tap(app.buttons[.onboardingLocationShare], timeout: Timeout.screen, "location permission screen")
+        allowSystemAlert(timeout: Timeout.screen, "location permission alert")
+
+        // Granting "while using" makes the app ask for "always" on top of it, which iOS raises as a
+        // second alert over the next screen. The flow has already moved on by then so either answer
+        // will do, but it has to be cleared before anything below it can be tapped.
+        answerSystemAlertIfPresent(timeout: Timeout.optional)
+
+        // The secure level is what keeps the home network step in the flow: the less secure one
+        // settles the decision on the spot and jumps straight to completion.
         tap(
-            app.buttons[.onboardingLocalAccessLessSecureOption],
+            app.buttons[.onboardingLocalAccessSecureOption],
             timeout: Timeout.screen,
-            "less secure local access option"
+            "most secure local access option"
         )
+        // No alert follows: location is already granted, so this step has nothing left to ask.
         tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button")
 
-        // Choosing the less secure level still asks iOS for location so the decision is recorded.
-        // Denying it is what carries the flow past the home network step and into the frontend.
-        denySystemAlert(timeout: Timeout.screen, "location permission alert")
+        // Prefilled from the network the device reports, which is always "Simulator" here, so the
+        // name only has to be accepted. Leaving it empty would stall the flow on a validation alert.
+        tap(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen, "home network screen")
     }
 
-    private func dismissNotificationPermissionRequest() {
-        let request = app.buttons[.notificationPermissionRequestSecondary]
-        guard tapIfPresent(request, timeout: Timeout.frontend) else { return }
-        denySystemAlert(timeout: Timeout.screen, "notification permission alert")
+    private func grantNotificationPermission() {
+        let request = app.buttons[.notificationPermissionRequestPrimary]
+        guard request.waitForExistence(timeout: Timeout.frontend) else { return }
+
+        dismiss(request, "notification permission sheet")
+        // Both of the sheet's buttons ask iOS the same question, so the alert always follows.
+        allowSystemAlert(timeout: Timeout.screen, "notification permission alert")
     }
 
     private func openNativeSettingsFromFrontend() {
@@ -137,7 +150,14 @@ final class OnboardingE2ETests: XCTestCase {
         app.terminate()
         app.launch()
 
-        tapWebElement(labelContaining: "sidebar toggle", timeout: Timeout.frontend, "frontend sidebar toggle")
+        // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
+        // is the only thing worth believing.
+        tapWebElement(
+            labelContaining: "sidebar toggle",
+            until: webElement(labelContaining: "settings"),
+            timeout: Timeout.frontend,
+            "frontend sidebar"
+        )
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
         // The app's own settings screen is opened by the frontend over the external message bus, so
@@ -190,6 +210,37 @@ final class OnboardingE2ETests: XCTestCase {
     ///
     /// The frontend's own copy is the only handle here, so matching stays loose: a sidebar entry
     /// carries a badge when there are pending updates or repairs, and an exact label would miss it.
+    /// Taps a web element until whatever it opens is actually on screen.
+    ///
+    /// A tap aimed at the frontend is swallowed while the page is still settling, and the element
+    /// stays exactly where it was rather than reporting anything, so the tap has to be repeated
+    /// until its effect shows up.
+    private func tapWebElement(
+        labelContaining text: String,
+        until target: XCUIElement,
+        timeout: TimeInterval,
+        _ description: String
+    ) {
+        let element = webElement(labelContaining: text)
+        wait(for: element, timeout: timeout, description)
+
+        for _ in 0 ..< 3 {
+            if element.isHittable {
+                element.tap()
+            }
+            if isHittable(target, within: Timeout.optional) {
+                return
+            }
+        }
+
+        XCTFail("The \(description) did not open")
+    }
+
+    private func isHittable(_ element: XCUIElement, within timeout: TimeInterval) -> Bool {
+        let hittable = expectation(for: NSPredicate(format: "isHittable == true"), evaluatedWith: element)
+        return XCTWaiter().wait(for: [hittable], timeout: timeout) == .completed
+    }
+
     private func webElement(labelContaining text: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
         let webView = app.webViews.firstMatch
@@ -225,17 +276,54 @@ final class OnboardingE2ETests: XCTestCase {
     ///
     /// The alert's buttons are whatever the permission offers ("Allow Once", "Allow While Using
     /// App", "Allow"), plus one that declines, which is the only one not offering access.
-    private func denySystemAlert(timeout: TimeInterval, _ description: String) {
-        let deny = NSPredicate(format: "NOT label BEGINSWITH[c] 'Allow'")
+    /// Taps a control until the screen carrying it goes away.
+    ///
+    /// `waitForExistence` returns on the first frame of a presentation, where the tap lands on the
+    /// backdrop behind the still-moving screen and is swallowed. The tap reports success either way,
+    /// so the only reliable signal is the screen actually leaving.
+    private func dismiss(_ element: XCUIElement, _ description: String) {
+        for _ in 0 ..< 3 {
+            guard element.exists else { return }
+            if element.isHittable {
+                element.tap()
+            }
+            if element.waitForNonExistence(timeout: Timeout.optional) {
+                return
+            }
+        }
 
-        let hosted = springboard.alerts.firstMatch.buttons.matching(deny).firstMatch
-        if hosted.waitForExistence(timeout: timeout) {
-            hosted.tap()
+        XCTFail("The \(description) stayed on screen")
+    }
+
+    private func allowSystemAlert(timeout: TimeInterval, _ description: String) {
+        let allow = NSPredicate(format: "label BEGINSWITH[c] 'Allow'")
+        guard let button = systemAlertButton(matching: allow, timeout: timeout) else {
+            XCTFail("Timed out waiting for the \(description)")
             return
+        }
+        button.tap()
+    }
+
+    /// Answers an alert whichever way it offers, for prompts the flow does not depend on the answer
+    /// to and which only have to be off the screen.
+    @discardableResult
+    private func answerSystemAlertIfPresent(timeout: TimeInterval) -> Bool {
+        guard let button = systemAlertButton(matching: NSPredicate(value: true), timeout: timeout) else {
+            return false
+        }
+        button.tap()
+        return true
+    }
+
+    private func systemAlertButton(matching predicate: NSPredicate, timeout: TimeInterval) -> XCUIElement? {
+        let hosted = springboard.alerts.firstMatch.buttons.matching(predicate).firstMatch
+        if hosted.waitForExistence(timeout: timeout) {
+            return hosted
         }
 
         // Not every iOS version presents these out of SpringBoard.
-        tap(app.alerts.firstMatch.buttons.matching(deny).firstMatch, timeout: Timeout.optional, description)
+        let inApp = app.alerts.firstMatch.buttons.matching(predicate).firstMatch
+        return inApp.waitForExistence(timeout: Timeout.optional) ? inApp : nil
     }
 }
 
