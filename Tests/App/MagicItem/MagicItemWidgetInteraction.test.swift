@@ -443,6 +443,12 @@ struct MagicItemWidgetInteractionTests {
         #expect(!item.widgetTapInteractionType.opensEntityInApp)
         item.tapAction = .url("https://www.home-assistant.io")
         #expect(!item.widgetTapInteractionType.opensEntityInApp)
+        // An address on the web is never an in-app destination, however it is shaped: only the
+        // app's own deep links open the entity.
+        item.tapAction = .url("https://camera/porch")
+        #expect(!item.widgetTapInteractionType.opensEntityInApp)
+        item.tapAction = .url("https://example.com/?more-info-entity-id=light.kitchen")
+        #expect(!item.widgetTapInteractionType.opensEntityInApp)
         item.tapAction = .moreInfoDialog
         #expect(item.widgetTapInteractionType.opensEntityInApp)
     }

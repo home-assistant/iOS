@@ -9,7 +9,9 @@ public enum WidgetInteractionType: Hashable, Encodable {
     /// it changes nothing.
     public var opensEntityInApp: Bool {
         guard case let .widgetURL(url) = self,
-              let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let scheme = components.scheme,
+              AppConstants.deeplinkSchemes.contains(scheme) else {
             return false
         }
         if components.host == AppConstants.cameraDeeplinkHost {
