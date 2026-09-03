@@ -404,6 +404,15 @@ public final class ClientCertificateManager {
         (try? retrieveIdentity(for: certificate)) != nil
     }
 
+    /// Returns true if the P12 this certificate was imported from carried certificates beyond the
+    /// leaf (an intermediate and/or root CA), which `urlCredential(for:)` presents alongside it.
+    ///
+    /// A server that only trusts the root CA can't verify the leaf without those, so a transport
+    /// that presents the bare identity fails the handshake for exactly these certificates.
+    public func hasIntermediateCertificates(for certificate: ClientCertificate) -> Bool {
+        retrieveIntermediateCertificates(for: certificate.keychainIdentifier).isEmpty == false
+    }
+
     /// Import transfer material (received from the paired iPhone) into the local Keychain.
     /// The fingerprint-derived identifier is recomputed from the bundle, so it matches the
     /// `ClientCertificate.keychainIdentifier` already synced in the server configuration.
