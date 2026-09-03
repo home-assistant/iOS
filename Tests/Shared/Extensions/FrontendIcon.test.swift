@@ -14,6 +14,13 @@ struct FrontendIconTests {
         #expect(FrontendIcon(serversideValueNamed: "mdi:mqtt", fallback: .puzzleIcon) == .brand(.mqtt))
     }
 
+    @Test("Every prefix Material Design Icons answers to reaches the logos, and no other one does")
+    func resolvesBrandIconsPerPrefix() {
+        // `MDI_PREFIXES` in the frontend's `data/iconsets.ts`; the brand logos sit behind that gate.
+        #expect(FrontendIcon(serversideValueNamed: "hass:matter", fallback: .puzzleIcon) == .brand(.matter))
+        #expect(FrontendIcon(serversideValueNamed: "hacs:matter", fallback: .puzzleIcon) == .material(.puzzleIcon))
+    }
+
     @Test("Everything else stays a Material Design icon")
     func resolvesMaterialDesignIcons() {
         #expect(FrontendIcon(serversideValueNamed: "mdi:zigbee", fallback: .puzzleIcon) == .material(.zigbeeIcon))
