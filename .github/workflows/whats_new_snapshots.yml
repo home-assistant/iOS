@@ -28,7 +28,7 @@ env:
     -project HomeAssistant.xcodeproj
     -scheme Tests-Unit
     -destination "platform=iOS Simulator,name=iPhone 17,OS=latest"
-    -only-testing:HomeAssistant-Tests-App/WhatsNewViewSnapshotTests
+    -only-testing:Tests-App/WhatsNewViewSnapshotTests
     COMPILER_INDEX_STORE_ENABLE=NO
 
 jobs:
