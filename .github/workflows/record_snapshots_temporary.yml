@@ -1,0 +1,99 @@
+# TEMPORARY — delete this workflow before the branch is merged.
+#
+# The client certificate empty-state snapshot tests were written on a machine without Xcode, so their
+# reference images have to be recorded on the runner image and simulator CI compares against. This
+# runs just those tests (a missing reference is recorded and reported as a failure, which is why the
+# step is allowed to fail) together with the WebViewController unit tests, then commits the recorded
+# images back to the branch.
+name: Record Snapshots (temporary)
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/mtls-certificate-empty-state-nyainx
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+
+concurrency:
+  group: record-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      # Same cache CI warms on `main`, so pinned SPM dependencies are not compiled from scratch.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Record snapshots
+        id: record
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:Tests-App/WebViewEmptyStateViewSnapshotTests \
+            -only-testing:Tests-App/WebViewControllerTests \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee xcodebuild.log | grep -E 'error:|Test Case|Test Suite|Executed|\*\* TEST' || true
+
+      - name: Summarize
+        if: ${{ always() }}
+        run: |
+          {
+            echo '## Compiler errors'
+            echo '```'
+            grep -E 'error:' xcodebuild.log | sort -u | head -n 100 || true
+            echo '```'
+            echo '## Test results'
+            echo '```'
+            grep -E 'Test Case|Test Suite .* (passed|failed)|Executed|✘|✔|recorded' xcodebuild.log | head -n 200 || true
+            echo '```'
+            echo '## Recorded snapshots'
+            echo '```'
+            git status --porcelain -- Tests || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload xcodebuild log"
+        if: ${{ always() }}
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log
+
+      - name: Commit recorded snapshots
+        run: |
+          # Only the recorded reference images are new under Tests/.
+          git add -A -- Tests
+          if git diff --cached --quiet; then
+            echo "No new snapshots to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record client certificate empty-state snapshots"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

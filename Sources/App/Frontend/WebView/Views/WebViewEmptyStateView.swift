@@ -15,6 +15,7 @@ struct WebViewEmptyStateView: View {
     let errorDetailsAction: (() -> Void)?
     let reauthAction: ((ConnectionInfo.URLType) -> Void)?
     let recoveredServerReauthAction: ((ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void)?
+    let clientCertificateAction: (() -> Void)?
     let serverSelectionAction: ((Server) -> Void)?
     let dismissAction: (() -> Void)?
 
@@ -32,6 +33,7 @@ struct WebViewEmptyStateView: View {
             (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void
         )? =
             nil,
+        clientCertificateAction: (() -> Void)? = nil,
         serverSelectionAction: ((Server) -> Void)? = nil,
         dismissAction: (() -> Void)? = nil
     ) {
@@ -45,6 +47,7 @@ struct WebViewEmptyStateView: View {
         self.errorDetailsAction = errorDetailsAction
         self.reauthAction = reauthAction
         self.recoveredServerReauthAction = recoveredServerReauthAction
+        self.clientCertificateAction = clientCertificateAction
         self.serverSelectionAction = serverSelectionAction
         self.dismissAction = dismissAction
     }
@@ -84,7 +87,8 @@ struct WebViewEmptyStateView: View {
                 settingsAction: { settingsAction?() },
                 errorDetailsAction: { errorDetailsAction?() },
                 reauthAction: { reauthAction?($0) },
-                recoveredServerReauthAction: recoveredServerReauthAction
+                recoveredServerReauthAction: recoveredServerReauthAction,
+                clientCertificateAction: { clientCertificateAction?() }
             )
         }
     }
@@ -144,6 +148,20 @@ struct WebViewEmptyStateView: View {
     )
 }
 
+#Preview("Client Certificate Required") {
+    WebViewEmptyStatePreview.view(
+        style: .clientCertificateRequired,
+        clientCertificateAction: {}
+    )
+}
+
+#Preview("Client Certificate Rejected") {
+    WebViewEmptyStatePreview.view(
+        style: .clientCertificateRejected,
+        clientCertificateAction: {}
+    )
+}
+
 #Preview("Recovered Server Reauthentication") {
     WebViewEmptyStatePreview.view(
         style: .recoveredServerNeedingReauthentication,
@@ -180,7 +198,8 @@ private enum WebViewEmptyStatePreview {
         recoveredServerReauthAction: ((
             ConnectionInfo.URLType,
             @escaping (Swift.Result<Void, Error>) -> Void
-        ) -> Void)? = nil
+        ) -> Void)? = nil,
+        clientCertificateAction: (() -> Void)? = nil
     ) -> some View {
         WebViewEmptyStateView(
             style: style,
@@ -193,6 +212,7 @@ private enum WebViewEmptyStatePreview {
             errorDetailsAction: errorDetailsAction,
             reauthAction: reauthAction,
             recoveredServerReauthAction: recoveredServerReauthAction,
+            clientCertificateAction: clientCertificateAction,
             serverSelectionAction: { _ in },
             dismissAction: {}
         )

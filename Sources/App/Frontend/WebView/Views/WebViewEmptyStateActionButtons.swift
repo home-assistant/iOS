@@ -20,6 +20,8 @@ struct WebViewEmptyStateActionButtons: View {
         ConnectionInfo.URLType,
         @escaping (Swift.Result<Void, Error>) -> Void
     ) -> Void)?
+    /// Primary action of the client certificate styles: opens the certificate import flow.
+    let clientCertificateAction: () -> Void
 
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
@@ -37,7 +39,8 @@ struct WebViewEmptyStateActionButtons: View {
         recoveredServerReauthAction: ((
             ConnectionInfo.URLType,
             @escaping (Swift.Result<Void, Error>) -> Void
-        ) -> Void)? = nil
+        ) -> Void)? = nil,
+        clientCertificateAction: @escaping () -> Void = {}
     ) {
         self.style = style
         self.availableReauthURLTypes = availableReauthURLTypes
@@ -47,6 +50,7 @@ struct WebViewEmptyStateActionButtons: View {
         self.errorDetailsAction = errorDetailsAction
         self.reauthAction = reauthAction
         self.recoveredServerReauthAction = recoveredServerReauthAction
+        self.clientCertificateAction = clientCertificateAction
         self._selectedReauthURLType = State(initialValue: availableReauthURLTypes.first ?? .external)
     }
 
@@ -155,6 +159,8 @@ struct WebViewEmptyStateActionButtons: View {
             } else {
                 beginRecoveredServerReauthentication()
             }
+        case .clientCertificateRequired, .clientCertificateRejected:
+            clientCertificateAction()
         }
     }
 
@@ -208,6 +214,18 @@ struct WebViewEmptyStateActionButtons: View {
         settingsAction: {},
         errorDetailsAction: {},
         reauthAction: { _ in }
+    )
+}
+
+#Preview("Client Certificate Required") {
+    WebViewEmptyStateActionButtons(
+        style: .clientCertificateRequired,
+        availableReauthURLTypes: [],
+        retryAction: {},
+        settingsAction: {},
+        errorDetailsAction: {},
+        reauthAction: { _ in },
+        clientCertificateAction: {}
     )
 }
 

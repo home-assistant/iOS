@@ -467,6 +467,177 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
     }
 
+    // MARK: - Client certificate (mTLS)
+
+    /// A certificate problem is a dead end for retries and re-authentication alike, so it wins over the
+    /// connection state; only a deliberate log out still reads as "log back in".
+    func testEmptyStateStyleUsesClientCertificateVariantsWhenAnIssueIsRecorded() {
+        let sut = makeSUT()
+
+        sut.clientCertificateIssue = .required
+        XCTAssertEqual(sut.emptyStateStyle(for: .disconnected), .clientCertificateRequired)
+        XCTAssertEqual(sut.emptyStateStyle(for: .authInvalid), .clientCertificateRequired)
+
+        sut.clientCertificateIssue = .rejected
+        XCTAssertEqual(sut.emptyStateStyle(for: .disconnected), .clientCertificateRejected)
+
+        sut.didLogOut = true
+        XCTAssertEqual(sut.emptyStateStyle(for: .disconnected), .loggedOut)
+    }
+
+    func testClientCertificateIssueDependsOnWhetherTheDeviceHasACertificate() {
+        for code in [URLError.Code.clientCertificateRequired, .clientCertificateRejected] {
+            XCTAssertEqual(
+                WebViewController.clientCertificateIssue(
+                    for: URLError(code),
+                    receivedClientCertificateChallenge: false,
+                    hasClientCertificate: false
+                ),
+                .required,
+                "expected a missing certificate to be required for \(code)"
+            )
+            XCTAssertEqual(
+                WebViewController.clientCertificateIssue(
+                    for: URLError(code),
+                    receivedClientCertificateChallenge: false,
+                    hasClientCertificate: true
+                ),
+                .rejected,
+                "expected a configured certificate to be rejected for \(code)"
+            )
+        }
+    }
+
+    /// A dropped handshake or a cancelled challenge is only a certificate problem when the server actually
+    /// asked for a certificate on this navigation; otherwise it stays the connectivity failure it looks like.
+    func testClientCertificateIssueForHandshakeFailuresRequiresAChallenge() {
+        for code in [URLError.Code.secureConnectionFailed, .userCancelledAuthentication] {
+            XCTAssertEqual(
+                WebViewController.clientCertificateIssue(
+                    for: URLError(code),
+                    receivedClientCertificateChallenge: true,
+                    hasClientCertificate: true
+                ),
+                .rejected
+            )
+            XCTAssertNil(WebViewController.clientCertificateIssue(
+                for: URLError(code),
+                receivedClientCertificateChallenge: false,
+                hasClientCertificate: true
+            ))
+        }
+    }
+
+    func testClientCertificateIssueIgnoresUnrelatedErrors() {
+        XCTAssertNil(WebViewController.clientCertificateIssue(
+            for: URLError(.timedOut),
+            receivedClientCertificateChallenge: true,
+            hasClientCertificate: true
+        ))
+        XCTAssertNil(WebViewController.clientCertificateIssue(
+            for: NSError(domain: "Test", code: 1),
+            receivedClientCertificateChallenge: true,
+            hasClientCertificate: false
+        ))
+    }
+
+    func testClientCertificateRefusalNeedsA400AndAChallenge() {
+        XCTAssertTrue(WebViewController.isClientCertificateRefusal(
+            statusCode: 400,
+            receivedClientCertificateChallenge: true
+        ))
+        XCTAssertFalse(WebViewController.isClientCertificateRefusal(
+            statusCode: 400,
+            receivedClientCertificateChallenge: false
+        ))
+        XCTAssertFalse(WebViewController.isClientCertificateRefusal(
+            statusCode: 403,
+            receivedClientCertificateChallenge: true
+        ))
+    }
+
+    func testProvisionalNavigationFailureOverClientCertificateShowsCertificateEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.clientCertificateRequired))
+
+        XCTAssertEqual(sut.clientCertificateIssue, .required)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    func testProvisionalNavigationFailureWithAConfiguredCertificateShowsRejectedEmptyState() {
+        let sut = makeSUT(server: .fake(update: { info in
+            info.connection.clientCertificate = ClientCertificate(keychainIdentifier: "id", displayName: "Test")
+        }))
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.clientCertificateRejected))
+
+        XCTAssertEqual(sut.clientCertificateIssue, .rejected)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRejected)
+    }
+
+    func testProvisionalNavigationFailureWithoutCertificateProblemKeepsDisconnectedEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.timedOut))
+
+        XCTAssertNil(sut.clientCertificateIssue)
+        XCTAssertEqual(overlayState.emptyState?.style, .disconnected)
+    }
+
+    /// The token request goes through the app's own session, so the certificate problem there only
+    /// shows in the error code.
+    func testExternalAuthFailureOverClientCertificateRecordsIssue() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.handleExternalAuthFailure(error: URLError(.clientCertificateRequired))
+
+        XCTAssertEqual(sut.clientCertificateIssue, .required)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    func testExternalAuthFailureOverClientCertificateSwapsAnEmptyStateAlreadyShowing() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertEqual(overlayState.emptyState?.style, .disconnected)
+
+        sut.handleExternalAuthFailure(error: URLError(.clientCertificateRequired))
+
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    func testHideEmptyStateClearsClientCertificateIssue() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.clientCertificateIssue = .rejected
+
+        sut.hideEmptyState()
+
+        XCTAssertNil(sut.clientCertificateIssue)
+    }
+
+    func testFinishedNavigationClearsClientCertificateIssue() {
+        let sut = makeSUT()
+        // Finishing a navigation applies the web view settings, so it needs a real web view.
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        sut.clientCertificateIssue = .required
+
+        sut.webView(WKWebView(), didFinish: nil)
+
+        XCTAssertNil(sut.clientCertificateIssue)
+    }
+
     func testRestoredURLRebuildsSavedPathOntoLiveBaseIgnoringSavedHost() throws {
         // A path saved on the internal base is restored against whatever base is active now (e.g. remote
         // UI), so only path/query/fragment carry over -- never the host.
