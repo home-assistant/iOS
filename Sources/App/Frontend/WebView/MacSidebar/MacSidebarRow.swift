@@ -99,7 +99,12 @@ struct MacSidebarRow: View {
 #Preview {
     VStack(spacing: DesignSystem.Spaces.micro) {
         MacSidebarRow(
-            item: .init(id: "home", kind: .panel(path: "/home"), title: "Overview", icon: .material(.viewDashboardIcon)),
+            item: .init(
+                id: "home",
+                kind: .panel(path: "/home"),
+                title: "Overview",
+                icon: .material(.viewDashboardIcon)
+            ),
             isSelected: true,
             server: ServerFixture.standard,
             user: nil
@@ -112,13 +117,24 @@ struct MacSidebarRow: View {
             isPinned: true
         ) {}
         MacSidebarRow(
-            item: .init(id: "notifications", kind: .notifications, title: "Notifications", icon: .material(.bellIcon), badge: 3),
+            item: .init(
+                id: "notifications",
+                kind: .notifications,
+                title: "Notifications",
+                icon: .material(.bellIcon),
+                badge: 3
+            ),
             isSelected: false,
             server: ServerFixture.standard,
             user: nil
         ) {}
         MacSidebarRow(
-            item: .init(id: "energy", kind: .panel(path: "/energy"), title: "Energy", icon: .material(.lightningBoltIcon)),
+            item: .init(
+                id: "energy",
+                kind: .panel(path: "/energy"),
+                title: "Energy",
+                icon: .material(.lightningBoltIcon)
+            ),
             isSelected: false,
             server: ServerFixture.standard,
             user: nil,
