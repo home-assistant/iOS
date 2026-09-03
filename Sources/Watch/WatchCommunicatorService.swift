@@ -222,7 +222,7 @@ final class WatchCommunicatorService {
     private func handleServersConfigSync(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         // Reply with the server configuration AND any mTLS client certificate bundles inline,
         // mirroring how the watch configuration is delivered — a single, synchronous round-trip.
-        var content: [String: Any] = ["servers": Current.servers.restorableState()]
+        var content: [String: Any] = ["servers": WatchBoundServerState.encoded()]
         if let certificates = clientCertificateTransferData() {
             content["clientCertificates"] = certificates
         }

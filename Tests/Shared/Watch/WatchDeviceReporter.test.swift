@@ -42,8 +42,25 @@ struct WatchDeviceReporterTests {
     private let log = ReporterCallLog()
     private let now = Date(timeIntervalSince1970: 1_800_000_000)
 
+    private let identity = WatchDeviceIdentity(
+        appID: "io.robbie.HomeAssistant.watchkitapp",
+        appName: "Home Assistant Watch",
+        appVersion: "2026.1 (1)",
+        deviceName: "My iPhone Apple Watch",
+        deviceID: "watch-device-id",
+        model: "Watch7,1",
+        osName: "watchOS",
+        osVersion: "26.0"
+    )
+
     private var registration: WatchDeviceRegistration {
-        WatchDeviceRegistration(webhookID: "watch-hook", webhookSecret: nil, cloudhookURL: nil, registeredAt: now)
+        WatchDeviceRegistration(
+            webhookID: "watch-hook",
+            webhookSecret: nil,
+            cloudhookURL: nil,
+            registeredAt: now,
+            deviceName: identity.deviceName
+        )
     }
 
     private var sensors: [WebhookSensor] {
@@ -69,6 +86,7 @@ struct WatchDeviceReporterTests {
             servers: { [server] },
             hasActiveURL: { _ in hasActiveURL },
             currentSensors: { sensors },
+            identity: { _ in identity },
             register: { server, _ in
                 log.recordRegistration()
                 if registerDelay > 0 {
@@ -227,6 +245,101 @@ struct WatchDeviceReporterTests {
         #expect(log.registerCount == 1)
         #expect(log.sends.isEmpty)
         #expect(settings.lastSensorReportError == description)
+    }
+
+    @Test func renamesARegistrationWhoseDeviceNameMoved() async throws {
+        var known = registration
+        known.deviceName = "Apple Watch"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level"]
+        let reporter = reporter(responses: [["device_name": identity.deviceName], Self.accepted])
+
+        let reports = await reporter.report(trigger: .backgroundRefresh)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 1))
+        #expect(log.registerCount == 0)
+        let sends = log.sends
+        #expect(sends.map(\.type) == ["update_registration", "update_sensor_states"])
+        let update = try #require(sends.first?.data as? [String: Any])
+        #expect(update["device_name"] as? String == "My iPhone Apple Watch")
+        #expect(update["app_version"] as? String == "2026.1 (1)")
+        #expect(update["model"] as? String == "Watch7,1")
+        let stored = try #require(store.registration(for: server.identifier))
+        #expect(stored.deviceName == "My iPhone Apple Watch")
+        #expect(stored.webhookID == "watch-hook")
+        #expect(stored.registeredSensorEnablement == ["battery_level": true, "battery_state": false])
+    }
+
+    @Test func renamesARegistrationMadeBeforeTheNameWasTracked() async throws {
+        var known = registration
+        known.deviceName = nil
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [["device_name": identity.deviceName]])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.map(\.type) == ["update_registration"])
+        #expect(store.registration(for: server.identifier)?.deviceName == "My iPhone Apple Watch")
+    }
+
+    @Test func aNumberedRegistrationIsNotRenamed() async throws {
+        var known = registration
+        known.deviceName = "My iPhone Apple Watch 2"
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.isEmpty)
+    }
+
+    @Test func aRegistrationWithTheRightNameIsNotRenamed() async throws {
+        var known = registration
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.isEmpty)
+    }
+
+    @Test func aRenameTheServerNoLongerKnowsRegistersAgain() async throws {
+        var known = registration
+        known.deviceName = "Apple Watch"
+        try store.set(known, for: server.identifier)
+        // Empty body to the rename: the device was deleted in Home Assistant.
+        let reporter = reporter(responses: [(), ["success": true], ["success": true]])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.registerCount == 1)
+        #expect(log.sends.map(\.type) == ["update_registration", "register_sensor", "register_sensor"])
+        #expect(store.registration(for: server.identifier)?.deviceName == "My iPhone Apple Watch")
+    }
+
+    @Test func aFailedRenameFailsTheRun() async throws {
+        var known = registration
+        known.deviceName = "Apple Watch"
+        try store.set(known, for: server.identifier)
+        store.writeError = CocoaError(.fileWriteUnknown)
+        let reporter = reporter(responses: [["device_name": identity.deviceName]])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        guard case .failed? = reports.first?.outcome else {
+            Issue.record("expected a failure, got \(String(describing: reports.first?.outcome))")
+            return
+        }
+        #expect(log.sends.map(\.type) == ["update_registration"])
+        #expect(store.registration(for: server.identifier)?.deviceName == "Apple Watch")
     }
 
     @Test func skipsAServerWithoutAURL() async {

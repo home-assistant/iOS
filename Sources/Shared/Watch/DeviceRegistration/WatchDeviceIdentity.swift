@@ -37,15 +37,44 @@ public struct WatchDeviceIdentity: Equatable {
         "\(companionAppName) Watch"
     }
 
-    /// This watch, as it is right now. The watch app carries the same display name as the phone
-    /// app, which is what the prefix comes from.
-    public static func current(bundle: Bundle = .main) -> WatchDeviceIdentity {
+    /// The phone's device name in front of the watch's, e.g. "My iPhone Apple Watch".
+    public static func deviceName(companionDeviceName: String?, watchName: String) -> String {
+        guard let companion = companionDeviceName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !companion.isEmpty else {
+            return watchName
+        }
+        return "\(companion) \(watchName)"
+    }
+
+    /// `base` with `attempt` appended, e.g. "My iPhone Apple Watch 2"; the first attempt is `base` itself.
+    public static func deviceName(_ base: String, attempt: Int) -> String {
+        attempt <= 1 ? base : "\(base) \(attempt)"
+    }
+
+    /// Whether `name` is `base` or `base` with a number appended.
+    public static func isDeviceName(_ name: String?, variantOf base: String) -> Bool {
+        guard let name else { return false }
+        if name == base { return true }
+        guard name.hasPrefix(base + " ") else { return false }
+        return Int(name.dropFirst(base.count + 1)) != nil
+    }
+
+    /// The `device_name` the watch registers with `server`.
+    public static func deviceName(for server: Server) -> String {
+        deviceName(
+            companionDeviceName: server.info.setting(for: .companionDeviceName),
+            watchName: Current.device.deviceName()
+        )
+    }
+
+    /// This watch, as it is right now, for a registration with `server`.
+    public static func current(for server: Server, bundle: Bundle = .main) -> WatchDeviceIdentity {
         let displayName = bundle.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
         return WatchDeviceIdentity(
             appID: bundle.bundleIdentifier ?? AppConstants.BundleID,
             appName: appName(companionAppName: displayName),
             appVersion: HomeAssistantAPI.clientVersionDescription,
-            deviceName: Current.device.deviceName(),
+            deviceName: deviceName(for: server),
             deviceID: Current.settingsStore.integrationDeviceID,
             model: Current.device.systemModel(),
             osName: Current.device.systemName(),
