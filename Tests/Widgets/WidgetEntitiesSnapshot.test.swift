@@ -20,9 +20,9 @@ struct WidgetEntitiesSnapshotTests {
             .init(id: "light.kitchen", serverId: "1", type: .entity),
             // Read-only: both halves open the entity, so the icon is not a control.
             .init(id: "sensor.temperature", serverId: "1", type: .entity),
-            // No single main action, so it opens the entity too.
+            // Not a toggle domain on the frontend's tile card, so its icon opens the entity too.
             .init(id: "lock.front_door", serverId: "1", type: .entity),
-            // Controllable: activating a scene is something the widget does in place.
+            // Controllable: a scene's toggle activates it, which the widget does in place.
             .init(id: "scene.movie_night", serverId: "1", type: .entity),
             .init(id: "switch.porch", serverId: "1", type: .entity),
             .init(id: "cover.garage", serverId: "1", type: .entity),

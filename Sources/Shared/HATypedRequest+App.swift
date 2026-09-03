@@ -78,6 +78,15 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Runs the domain's main action outright — press a button, activate a scene, run a script,
+    /// trigger an automation — the way a magic item's main-action behavior does from a widget tile
+    /// or an app icon shortcut. `nil` for a domain whose main action is its toggle, or that has
+    /// none; see `Domain.explicitMainAction`.
+    static func mainAction(domain: Domain, entityId: String) -> HATypedRequest<HAResponseVoid>? {
+        guard domain.explicitMainAction != nil else { return nil }
+        return executeMainAction(domain: domain, entityId: entityId)
+    }
+
     static func runScript(
         entityId: String
     ) -> HATypedRequest<HAResponseVoid> {

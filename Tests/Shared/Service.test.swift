@@ -13,6 +13,8 @@ struct ServiceTests {
         #expect(Service.open.rawValue == "open", "Service.open raw value should be 'open'")
         #expect(Service.openCover.rawValue == "open_cover", "Service.openCover raw value should be 'open_cover'")
         #expect(Service.closeCover.rawValue == "close_cover", "Service.closeCover raw value should be 'close_cover'")
+        #expect(Service.openValve.rawValue == "open_valve", "Service.openValve raw value should be 'open_valve'")
+        #expect(Service.closeValve.rawValue == "close_valve", "Service.closeValve raw value should be 'close_valve'")
         #expect(Service.trigger.rawValue == "trigger", "Service.trigger raw value should be 'trigger'")
         #expect(
             Service.setTemperature.rawValue == "set_temperature",
@@ -97,8 +99,8 @@ struct ServiceTests {
 
         // Test case count
         #expect(
-            Service.allCases.count == 27,
-            "Service enum should have 27 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
+            Service.allCases.count == 29,
+            "Service enum should have 29 cases, but has \(Service.allCases.count). Cases: \(Service.allCases.map(\.rawValue).joined(separator: ", "))"
         )
     }
 }

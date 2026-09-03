@@ -36,7 +36,7 @@ struct MagicItemComplicationTests {
         #expect(item.customization?.icon == nil)
         // Nothing happens on tap, so a confirmation would be asking about nothing.
         #expect(item.customization?.requiresConfirmation == false)
-        #expect(item.action == .nothing)
+        #expect(item.action == .default)
     }
 
     @Test("Info resolves the complication's name, and drops the item once its config is gone")

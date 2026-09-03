@@ -9,7 +9,8 @@ import WidgetKit
 
 /// The tiles the custom and commonly-used-entities widgets draw once the icon became a control of
 /// its own: an entity the widget can act on keeps its icon background, and anything that only opens
-/// the app — a sensor, a lock, an item told to navigate — draws its icon plain.
+/// the app — a sensor, a lock, a script left on its default, an item told to navigate — draws its
+/// icon plain.
 struct WidgetTileTapBehaviorSnapshotTests {
     /// One of each shape a tile can take, in the order they appear on the widget.
     private static var items: [MagicItem] {
@@ -18,9 +19,9 @@ struct WidgetTileTapBehaviorSnapshotTests {
             .init(id: "light.kitchen", serverId: "1", type: .entity),
             // Read-only: both halves open the entity, so the icon is not a control.
             .init(id: "sensor.temperature", serverId: "1", type: .entity),
-            // No single main action, so it opens the entity too.
+            // Not a toggle domain on the frontend's tile card, so its icon opens the entity too.
             .init(id: "lock.front_door", serverId: "1", type: .entity),
-            // Controllable: running a script is something the widget does in place.
+            // Neither is a script: its icon only runs it once told to.
             .init(id: "script.morning", serverId: "1", type: .script),
             // Told to open a dashboard instead, which leaves nothing to control.
             .init(
@@ -29,8 +30,8 @@ struct WidgetTileTapBehaviorSnapshotTests {
                 type: .entity,
                 action: .navigate("/lovelace/0")
             ),
-            // Told to do nothing at all.
-            .init(id: "switch.porch", serverId: "1", type: .entity, action: .nothing),
+            // Told only to open the entity, though it could toggle.
+            .init(id: "switch.porch", serverId: "1", type: .entity, action: .moreInfoDialog),
         ]
     }
 
@@ -80,6 +81,22 @@ struct WidgetTileTapBehaviorSnapshotTests {
             itemsStates: ["1-light.kitchen": .pendingConfirmation],
             family: .systemMedium,
             named: "pendingConfirmation"
+        )
+    }
+
+    /// The rest of a split tile asks for confirmation too when its behavior runs something — here a
+    /// lock told to lock on tap — and the form it turns into looks the same as the icon's.
+    @available(iOS 18, *)
+    @MainActor @Test func customWidgetPendingTapConfirmationSnapshot() {
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        item.action = .toggle
+        item.tapAction = .turnOff
+        item.customization = .init(requiresConfirmation: true)
+        assertCustomWidgetSnapshot(
+            items: [item, .init(id: "light.kitchen", serverId: "1", type: .entity)],
+            itemsStates: ["1-lock.front_door": .pendingTapConfirmation],
+            family: .systemMedium,
+            named: "pendingTapConfirmation"
         )
     }
 

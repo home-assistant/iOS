@@ -104,13 +104,8 @@ struct WidgetCustom: Widget {
 
             let useCustomColors = backgroundColor != nil || textColor != nil
 
-            let showConfirmation = {
-                if let itemState = widget.itemsStates.first(where: { $0.key == magicItem.serverUniqueId })?.value {
-                    return itemState == .pendingConfirmation
-                } else {
-                    return false
-                }
-            }()
+            let itemState = widget.itemsStates[magicItem.serverUniqueId]
+            let showConfirmation = itemState?.isPendingConfirmation == true
 
             // The icon is the entity's control and the rest of the tile opens it, the way the
             // frontend's tile card behaves. When both halves would run the same thing there is
@@ -147,6 +142,7 @@ struct WidgetCustom: Widget {
                 backgroundColor: backgroundColor ?? Color.tileBackground,
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
+                confirmsTapAction: itemState == .pendingTapConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
                 disabled: !widget.itemsStates.isEmpty

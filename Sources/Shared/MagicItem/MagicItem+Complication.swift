@@ -5,7 +5,8 @@ public extension MagicItem {
     ///
     /// Unlike every other item type the id is the complication's own config id, not an entity id —
     /// a complication can be backed by a template and have no entity at all. Confirmation is turned
-    /// off because the row runs nothing when tapped; it is there to be read.
+    /// off because the row runs nothing when tapped — the type itself has no action, whatever the
+    /// item's `action` says; it is there to be read.
     ///
     /// The icon is deliberately left out of the customization: the config stores a server-side name
     /// ("mdi:battery") that `Customization.icon` doesn't normalize, so it resolves through
@@ -16,8 +17,7 @@ public extension MagicItem {
             id: config.id,
             serverId: config.serverId,
             type: .complication,
-            customization: .init(iconColor: config.iconColor, requiresConfirmation: false),
-            action: .nothing
+            customization: .init(iconColor: config.iconColor, requiresConfirmation: false)
         )
     }
 }

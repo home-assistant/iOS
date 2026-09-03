@@ -8564,22 +8564,48 @@ public enum L10n {
     public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.refresh_title") }
     public enum Action {
       public enum Name {
+        /// Activate
+        public static var activate: String { return L10n.tr("Localizable", "widgets.action.name.activate") }
         /// Assist
         public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
+        /// Close
+        public static var close: String { return L10n.tr("Localizable", "widgets.action.name.close") }
         /// Default
         public static var `default`: String { return L10n.tr("Localizable", "widgets.action.name.default") }
+        /// Default (%@)
+        public static func defaultAction(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.action.name.default_action_%@", String(describing: p1))
+        }
+        /// Lock
+        public static var lock: String { return L10n.tr("Localizable", "widgets.action.name.lock") }
+        /// Main action
+        public static var mainAction: String { return L10n.tr("Localizable", "widgets.action.name.main_action") }
         /// More info
         public static var moreInfoDialog: String { return L10n.tr("Localizable", "widgets.action.name.moreInfoDialog") }
         /// Navigate
         public static var navigate: String { return L10n.tr("Localizable", "widgets.action.name.navigate") }
         /// Nothing
         public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
+        /// Open
+        public static var open: String { return L10n.tr("Localizable", "widgets.action.name.open") }
         /// Perform action
         public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
+        /// Press
+        public static var press: String { return L10n.tr("Localizable", "widgets.action.name.press") }
+        /// Run
+        public static var run: String { return L10n.tr("Localizable", "widgets.action.name.run") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
         /// Toggle
         public static var toggle: String { return L10n.tr("Localizable", "widgets.action.name.toggle") }
+        /// Trigger
+        public static var trigger: String { return L10n.tr("Localizable", "widgets.action.name.trigger") }
+        /// Turn off
+        public static var turnOff: String { return L10n.tr("Localizable", "widgets.action.name.turn_off") }
+        /// Turn on
+        public static var turnOn: String { return L10n.tr("Localizable", "widgets.action.name.turn_on") }
+        /// Unlock
+        public static var unlock: String { return L10n.tr("Localizable", "widgets.action.name.unlock") }
         /// URL
         public static var url: String { return L10n.tr("Localizable", "widgets.action.name.url") }
       }

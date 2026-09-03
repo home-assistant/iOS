@@ -67,6 +67,9 @@ struct MagicItemCustomizationView: View {
             preventNilCustomization()
             viewModel.loadMagicInfo()
         }
+        .task {
+            await viewModel.loadSupportedFeatures()
+        }
     }
 
     private func save() {
@@ -167,13 +170,18 @@ struct MagicItemCustomizationView: View {
                 if context == .widget {
                     MagicItemActionSelectionView(
                         title: L10n.MagicItem.Action.tapBehavior,
-                        serverId: viewModel.item.serverId,
+                        item: viewModel.item,
+                        supportedFeatures: viewModel.supportedFeatures,
+                        defaultAction: viewModel.item.defaultTapAction,
                         action: $viewModel.item.tapAction
                     )
                 }
+                // An app icon shortcut runs what the widget icon would, so both name the same default.
                 MagicItemActionSelectionView(
                     title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
-                    serverId: viewModel.item.serverId,
+                    item: viewModel.item,
+                    supportedFeatures: viewModel.supportedFeatures,
+                    defaultAction: viewModel.item.defaultIconAction,
                     action: $viewModel.item.action
                 )
             } header: {
