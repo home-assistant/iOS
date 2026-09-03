@@ -1,23 +1,9 @@
 @testable import Shared
 import Testing
 
-/// The frontend's toggle tables, as ported: which domains toggle from a tile icon by default, which
-/// services a toggle picks between, and how the entity's state picks one.
+/// The frontend's toggle tables, as ported: which services a toggle picks between, and how the
+/// entity's state picks one.
 struct DomainToggleTests {
-    /// `DOMAINS_TOGGLE`, plus the button, input button, and scene the tile card adds to it.
-    @Test func tileIconTogglesForTheFrontendsToggleDomains() {
-        let toggling: [Domain] = [
-            .fan, .inputBoolean, .light, .switch, .group, .automation, .humidifier, .valve,
-            .button, .inputButton, .scene,
-        ]
-        for domain in toggling {
-            #expect(domain.togglesFromTileIcon, "\(domain.rawValue)")
-        }
-        for domain in [Domain.script, .cover, .lock, .climate, .mediaPlayer, .sensor, .vacuum] {
-            #expect(!domain.togglesFromTileIcon, "\(domain.rawValue)")
-        }
-    }
-
     /// `getToggleAction`: the special-cased pairs, and `turn_on`/`turn_off` for everything else.
     @Test func toggleServicesFollowTheFrontendsTable() {
         #expect(Domain.lock.toggleServices! == (on: .unlock, off: .lock))
@@ -80,11 +66,11 @@ struct DomainToggleTests {
         #expect(!Domain.sensor.canToggle(supportedFeatures: 0))
     }
 
-    /// `turnOnOffEntity`: a group is toggled through `homeassistant`, every other domain through
-    /// its own services.
-    @Test func groupIsToggledThroughHomeAssistant() {
-        #expect(Domain.group.toggleServiceDomain == "homeassistant")
-        #expect(Domain.light.toggleServiceDomain == "light")
-        #expect(Domain.lock.toggleServiceDomain == "lock")
+    /// `turnOnOffEntity`: a group has no services of its own, so every call for it is addressed
+    /// to `homeassistant`; every other domain answers for itself.
+    @Test func groupIsControlledThroughHomeAssistant() {
+        #expect(Domain.group.serviceDomain == "homeassistant")
+        #expect(Domain.light.serviceDomain == "light")
+        #expect(Domain.lock.serviceDomain == "lock")
     }
 }

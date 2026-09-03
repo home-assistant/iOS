@@ -35,11 +35,11 @@ public enum EntityToggler {
             service = services.on
         }
 
-        Current.Log.verbose("Toggling \(entityId): \(domain.toggleServiceDomain).\(service.rawValue)")
+        Current.Log.verbose("Toggling \(entityId): \(domain.serviceDomain).\(service.rawValue)")
         let request = HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": domain.toggleServiceDomain,
+                "domain": domain.serviceDomain,
                 "service": service.rawValue,
                 "service_data": [
                     "entity_id": entityId,
