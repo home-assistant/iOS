@@ -81,7 +81,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
-        switch configuration.source {
+        switch configuration.resolvedSource {
         case .entity:
             return try await entityEntry(for: configuration)
         case .complication:

@@ -140,6 +140,18 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var showConfirmationNotification: Bool
 
+    /// The source the timeline provider renders. A configuration saved before the `source` parameter
+    /// existed carries templates but no entity, and resolves to `.template` so it keeps working; see
+    /// `WidgetContentSourceAppEnum.resolved`.
+    var resolvedSource: WidgetContentSourceAppEnum {
+        WidgetContentSourceAppEnum.resolved(
+            configured: source,
+            hasEntity: entity != nil,
+            hasTemplates: [valueTemplate, valueLabelTemplate, labelTemplate, minTemplate, maxTemplate]
+                .contains { !$0.isEmpty }
+        )
+    }
+
     static var parameterSummary: some ParameterSummary {
         Switch(\.$source) {
             Case(.entity) {

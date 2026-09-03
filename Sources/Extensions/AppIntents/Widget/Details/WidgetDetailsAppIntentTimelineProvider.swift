@@ -71,7 +71,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {
-        switch configuration.source {
+        switch configuration.resolvedSource {
         case .entity:
             return try await entityEntry(for: configuration)
         case .complication:
