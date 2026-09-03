@@ -3,12 +3,6 @@ import Foundation
 import Shared
 
 struct ZoneManagerEvent: Equatable, CustomStringConvertible {
-    struct BeaconDiagnostic: Equatable {
-        let proximity: String
-        let rssi: Int
-        let isAppActive: Bool
-    }
-
     enum EventType: Equatable, CustomStringConvertible {
         case region(CLRegion, CLRegionState)
         case locationChange([CLLocation])

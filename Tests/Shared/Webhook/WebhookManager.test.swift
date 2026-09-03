@@ -7,6 +7,20 @@ import PromiseKit
 import XCTest
 
 class WebhookManagerTests: XCTestCase {
+    private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        private(set) var names = [String]()
+        private(set) var invocationsWereOnMainThread = [Bool]()
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            names.append(name)
+            invocationsWereOnMainThread.append(Thread.isMainThread)
+            return wrapping(nil)
+        }
+    }
+
     private var manager: WebhookManager!
     private var api1: FakeHassAPI!
     private var api2: FakeHassAPI!
@@ -811,7 +825,11 @@ class WebhookManagerTests: XCTestCase {
         wait(for: [networkExpectation], timeout: 10.0)
     }
 
-    func testStartPersistedBackgroundCreatesUploadTaskBeforeReturning() throws {
+    func testStartPersistedBackgroundCreatesUploadTaskBeforeReturning() async throws {
+        let previousBackgroundTask = Current.backgroundTask
+        let backgroundTask = RecordingBackgroundTaskRunner()
+        Current.backgroundTask = backgroundTask
+        defer { Current.backgroundTask = previousBackgroundTask }
         let request = WebhookRequest(type: "webhook_name", data: ["json": true])
         let networkSemaphore = DispatchSemaphore(value: 0)
         stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
@@ -819,13 +837,16 @@ class WebhookManagerTests: XCTestCase {
             return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
         })
 
-        let result = manager.startPersistedBackground(
-            identifier: .unhandled,
-            server: api1.server,
-            request: request,
-            requestTimeout: 30
-        )
-        guard case let .success(promise) = result else {
+        let result = await MainActor.run {
+            manager.startPersistedBackground(
+                identifier: .unhandled,
+                server: api1.server,
+                request: request,
+                requestIdentifier: "zone-event-id",
+                requestTimeout: 30
+            )
+        }
+        guard case let .success(delivery) = result else {
             return XCTFail("Expected a background upload task to start synchronously")
         }
 
@@ -836,15 +857,38 @@ class WebhookManagerTests: XCTestCase {
             XCTAssertEqual(tasks.first?.state, .running)
             XCTAssertEqual(tasks.first?.originalRequest?.timeoutInterval, 30)
             XCTAssertEqual(tasks.first?.webhookPersisted?.request.type, "webhook_name")
+            XCTAssertEqual(tasks.first?.webhookPersisted?.requestIdentifier, "zone-event-id")
             taskCreated.fulfill()
         }
-        wait(for: [taskCreated], timeout: 1)
+        await fulfillment(of: [taskCreated], timeout: 1)
+        XCTAssertEqual(backgroundTask.names, [BackgroundTask.webhookSend.rawValue])
+        XCTAssertEqual(backgroundTask.invocationsWereOnMainThread, [true])
 
         networkSemaphore.signal()
-        XCTAssertNoThrow(try hang(promise))
+        try await delivery.value
     }
 
-    func testStartPersistedBackgroundPrefersRemoteURLWhenCachedNetworkStateIsInternal() throws {
+    func testStartPersistedBackgroundOffMainReturnsTypedFailure() async {
+        let manager = manager!
+        let server = api1.server
+        let receivedExpectedError: Bool = await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                let result = manager.startPersistedBackground(
+                    server: server,
+                    request: WebhookRequest(type: "webhook_name", data: ["json": true])
+                )
+                guard case let .failure(error) = result else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                continuation.resume(returning: error as? WebhookError == .requiresMainThread)
+            }
+        }
+
+        XCTAssertTrue(receivedExpectedError)
+    }
+
+    func testStartPersistedBackgroundPrefersRemoteURLWhenCachedNetworkStateIsInternal() async throws {
         let internalURL = URL(string: "http://homeassistant.local:8123")!
         let externalURL = URL(string: "https://ha.example.com")!
         let server = Server.fake { info in
@@ -862,17 +906,87 @@ class WebhookManagerTests: XCTestCase {
             return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
         })
 
-        let result = manager.startPersistedBackground(
-            identifier: .unhandled,
-            server: server,
-            request: WebhookRequest(type: "webhook_name", data: ["json": true])
-        )
-        guard case let .success(promise) = result else {
+        let result = await MainActor.run {
+            manager.startPersistedBackground(
+                identifier: .unhandled,
+                server: server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true])
+            )
+        }
+        guard case let .success(delivery) = result else {
             return XCTFail("Expected the remote background upload to start")
         }
 
-        wait(for: [networkExpectation], timeout: 1)
-        XCTAssertNoThrow(try hang(promise))
+        await fulfillment(of: [networkExpectation], timeout: 1)
+        try await delivery.value
+    }
+
+    func testReconcilePersistedBackgroundReturnsSameActiveRequestWithoutReplacement() async throws {
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let startResult = await MainActor.run {
+            manager.startPersistedBackground(
+                server: api1.server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true]),
+                requestIdentifier: "stable-zone-event"
+            )
+        }
+        guard case let .success(originalDelivery) = startResult else {
+            return XCTFail("Expected a background upload task to start")
+        }
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "stable-zone-event")
+        guard case let .running(adoptedDelivery) = state else {
+            networkSemaphore.signal()
+            return XCTFail("Expected the existing task to be adopted")
+        }
+
+        let tasksExpectation = expectation(description: "one persisted task remains")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            XCTAssertEqual(tasks.filter {
+                $0.webhookPersisted?.requestIdentifier == "stable-zone-event"
+            }.count, 1)
+            tasksExpectation.fulfill()
+        }
+        await fulfillment(of: [tasksExpectation], timeout: 1)
+
+        networkSemaphore.signal()
+        try await originalDelivery.value
+        try await adoptedDelivery.value
+    }
+
+    func testReconcilePersistedBackgroundAdoptsRestoredSessionTask() async throws {
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let webhookRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        var urlRequest = URLRequest(url: webhookURL1)
+        urlRequest.httpMethod = "POST"
+        let task = manager.currentBackgroundSessionInfo.session.uploadTask(with: urlRequest, from: Data())
+        task.webhookPersisted = WebhookPersisted(
+            server: api1.server.identifier,
+            request: webhookRequest,
+            identifier: .unhandled,
+            requestIdentifier: "restored-zone-event"
+        )
+        manager.serverCache[api1.server.identifier] = api1.server
+        task.resume()
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "restored-zone-event")
+        guard case let .running(delivery) = state else {
+            networkSemaphore.signal()
+            return XCTFail("Expected the restored task to be adopted")
+        }
+
+        networkSemaphore.signal()
+        try await delivery.value
     }
 
     func testSendPersistentProtectionSpace() throws {
@@ -992,18 +1106,6 @@ private func XCTAssertEqualWebhookRequest(
 }
 
 private class FakeHassAPI: HomeAssistantAPI {}
-
-private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
-    private(set) var names = [String]()
-
-    func callAsFunction<PromiseValue>(
-        withName name: String,
-        wrapping: (TimeInterval?) -> Promise<PromiseValue>
-    ) -> Promise<PromiseValue> {
-        names.append(name)
-        return wrapping(nil)
-    }
-}
 
 class ReplacingTestHandler: WebhookResponseHandler {
     static var returnedResult: WebhookResponseHandlerResult?

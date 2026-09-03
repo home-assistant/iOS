@@ -1,37 +1,6 @@
 import CoreLocation
-import PromiseKit
 import Shared
 import UIKit
-
-protocol BeaconScanBackgroundExecution: AnyObject {
-    func begin(expirationHandler: @escaping () -> Void)
-    func end()
-}
-
-final class UIApplicationBeaconScanBackgroundExecution: BeaconScanBackgroundExecution {
-    private var identifier = UIBackgroundTaskIdentifier.invalid
-
-    func begin(expirationHandler: @escaping () -> Void) {
-        guard UIApplication.shared.applicationState != .active,
-              identifier == .invalid else { return }
-
-        identifier = UIApplication.shared.beginBackgroundTask(
-            withName: "ZoneManagerBeaconScan",
-            expirationHandler: { [weak self] in
-                expirationHandler()
-                self?.end()
-            }
-        )
-    }
-
-    func end() {
-        guard identifier != .invalid else { return }
-
-        let identifierToEnd = identifier
-        identifier = .invalid
-        UIApplication.shared.endBackgroundTask(identifierToEnd)
-    }
-}
 
 protocol ZoneManagerCollectorDelegate: AnyObject {
     func collector(_ collector: ZoneManagerCollector, didLog state: ZoneManagerState)
@@ -73,7 +42,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     private var foregroundBeaconEntries = [String: ForegroundBeaconEntry]()
     private var foregroundBeaconIdentifiersInside = Set<String>()
     private var opportunisticBeaconEntries = [String: ForegroundBeaconEntry]()
-    private var backgroundBeaconMonitoringActive = false
+    private var backgroundBeaconRegions = [String: CLBeaconRegion]()
     private var beaconReconciliationStates = [String: BeaconReconciliationState]()
     private var beaconRangingRetryCounts = [CLBeaconIdentityConstraint: Int]()
     private var beaconRangingRetryWorkItems = [CLBeaconIdentityConstraint: DispatchWorkItem]()
@@ -112,35 +81,60 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
-        stopForegroundBeaconScanning(manager: manager)
+        let desiredEntries = beaconEntries(in: regions)
+        let identifiersToRemove = foregroundBeaconEntries.compactMap { identifier, entry in
+            desiredEntries[identifier]?.constraint == entry.constraint ? nil : identifier
+        }
+        let removedConstraints = identifiersToRemove.compactMap { identifier in
+            foregroundBeaconEntries.removeValue(forKey: identifier)?.constraint
+        }
 
-        for region in regions.compactMap({ $0 as? CLBeaconRegion }) {
-            let event = Self.event(for: region, state: .inside)
-            guard event.associatedZone != nil else { continue }
+        for identifier in identifiersToRemove
+            where pendingBeaconEntries[identifier] == nil && opportunisticBeaconEntries[identifier] == nil {
+            foregroundBeaconIdentifiersInside.remove(identifier)
+            beaconReconciliationStates.removeValue(forKey: identifier)
+        }
+        for constraint in Set(removedConstraints) {
+            stopRangingIfUnused(constraint, manager: manager)
+        }
 
-            foregroundBeaconEntries[region.identifier] = ForegroundBeaconEntry(
-                event: event,
-                region: region,
-                constraint: region.beaconIdentityConstraint
-            )
-            manager.startRangingBeacons(satisfying: region.beaconIdentityConstraint)
+        for (identifier, entry) in desiredEntries where foregroundBeaconEntries[identifier] == nil {
+            let wasActive = hasActiveRangingEntry(for: entry.constraint)
+            foregroundBeaconEntries[identifier] = entry
+            startRangingIfNeeded(entry.constraint, wasActive: wasActive, manager: manager)
         }
     }
 
     func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager) {
-        guard regions.contains(where: { $0 is CLBeaconRegion }), !backgroundBeaconMonitoringActive else { return }
+        let desiredRegions = Dictionary(
+            uniqueKeysWithValues: regions.compactMap { region -> (String, CLBeaconRegion)? in
+                guard let beaconRegion = region as? CLBeaconRegion else { return nil }
+                return (beaconRegion.identifier, beaconRegion)
+            }
+        )
+        if desiredRegions.isEmpty {
+            backgroundBeaconRegions.removeAll()
+            stopOpportunisticBeaconScanning(manager: manager)
+            return
+        }
+        let regionsAreUnchanged = sameBeaconRegions(backgroundBeaconRegions, desiredRegions)
+        guard !regionsAreUnchanged || opportunisticBeaconEntries.isEmpty else { return }
 
-        backgroundBeaconMonitoringActive = true
-        startForegroundBeaconScanning(in: regions, manager: manager)
-        recordBeaconBackgroundEvent("Started continuous background beacon ranging without GPS")
+        backgroundBeaconRegions = desiredRegions
+        startOpportunisticBeaconScanning(
+            in: Set(desiredRegions.values.map { $0 as CLRegion }),
+            manager: manager
+        )
+        recordBeaconBackgroundEvent("Reconciled bounded background beacon ranging")
     }
 
     func stopBackgroundBeaconMonitoring(manager: CLLocationManager) {
-        guard backgroundBeaconMonitoringActive else { return }
-
-        backgroundBeaconMonitoringActive = false
-        stopForegroundBeaconScanning(manager: manager)
-        recordBeaconBackgroundEvent("Stopped continuous background beacon ranging without GPS")
+        let wasMonitoring = !backgroundBeaconRegions.isEmpty
+        backgroundBeaconRegions.removeAll()
+        stopOpportunisticBeaconScanning(manager: manager)
+        if wasMonitoring {
+            recordBeaconBackgroundEvent("Stopped bounded background beacon ranging")
+        }
     }
 
     func stopForegroundBeaconScanning(manager: CLLocationManager) {
@@ -153,8 +147,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
 
-        for constraint in Set(entries.values.map(\.constraint)) where !hasActiveRangingEntry(for: constraint) {
-            manager.stopRangingBeacons(satisfying: constraint)
+        for constraint in Set(entries.values.map(\.constraint)) {
+            stopRangingIfUnused(constraint, manager: manager)
         }
     }
 
@@ -165,16 +159,10 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         stopOpportunisticBeaconScanning(manager: manager)
 
-        for region in regions.compactMap({ $0 as? CLBeaconRegion }) {
-            let event = Self.event(for: region, state: .inside)
-            guard event.associatedZone != nil else { continue }
-
-            opportunisticBeaconEntries[region.identifier] = ForegroundBeaconEntry(
-                event: event,
-                region: region,
-                constraint: region.beaconIdentityConstraint
-            )
-            manager.startRangingBeacons(satisfying: region.beaconIdentityConstraint)
+        for (identifier, entry) in beaconEntries(in: regions) {
+            let wasActive = hasActiveRangingEntry(for: entry.constraint)
+            opportunisticBeaconEntries[identifier] = entry
+            startRangingIfNeeded(entry.constraint, wasActive: wasActive, manager: manager)
         }
 
         guard !opportunisticBeaconEntries.isEmpty else { return }
@@ -197,13 +185,17 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         opportunisticBeaconScanTimeout?.cancel()
         opportunisticBeaconScanTimeout = nil
 
-        for (identifier, entry) in opportunisticBeaconEntries
+        let entries = opportunisticBeaconEntries
+        opportunisticBeaconEntries.removeAll()
+
+        for identifier in entries.keys
             where foregroundBeaconEntries[identifier] == nil && pendingBeaconEntries[identifier] == nil {
-            manager.stopRangingBeacons(satisfying: entry.constraint)
             foregroundBeaconIdentifiersInside.remove(identifier)
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
-        opportunisticBeaconEntries.removeAll()
+        for constraint in Set(entries.values.map(\.constraint)) {
+            stopRangingIfUnused(constraint, manager: manager)
+        }
         endBackgroundScanExecutionIfIdle()
     }
 
@@ -293,69 +285,42 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         didRange beacons: [CLBeacon],
         satisfying beaconConstraint: CLBeaconIdentityConstraint
     ) {
+        didRange(
+            samples: beacons.map { RangedBeaconSample(proximity: $0.proximity, rssi: $0.rssi) },
+            satisfying: beaconConstraint,
+            manager: manager
+        )
+    }
+
+    func didRange(
+        samples: [RangedBeaconSample],
+        satisfying beaconConstraint: CLBeaconIdentityConstraint,
+        manager: CLLocationManager
+    ) {
         beaconRangingRetryCounts.removeValue(forKey: beaconConstraint)
         beaconRangingRetryWorkItems.removeValue(forKey: beaconConstraint)?.cancel()
 
-        let pendingIdentifiers = pendingBeaconEntries.compactMap {
-            $0.value.constraint == beaconConstraint ? $0.key : nil
-        }
-        let foregroundIdentifiers = foregroundBeaconEntries.compactMap {
-            $0.value.constraint == beaconConstraint ? $0.key : nil
-        }
-        let opportunisticIdentifiers = opportunisticBeaconEntries.compactMap {
-            $0.value.constraint == beaconConstraint ? $0.key : nil
-        }
+        let pendingIdentifiers = identifiers(in: pendingBeaconEntries, matching: beaconConstraint)
+        let foregroundIdentifiers = identifiers(in: foregroundBeaconEntries, matching: beaconConstraint)
+        let opportunisticIdentifiers = identifiers(in: opportunisticBeaconEntries, matching: beaconConstraint)
         let identifiers = Set(pendingIdentifiers + foregroundIdentifiers + opportunisticIdentifiers)
 
-        guard let detectedBeacon = beacons.first(where: isBeaconInsideRange) else {
+        guard let detectedBeacon = samples.first(where: isBeaconInsideRange) else {
             reconcileEmptyBeaconSample(identifiers: Array(identifiers), manager: manager)
             return
         }
 
         identifiers.forEach { beaconReconciliationStates.removeValue(forKey: $0) }
-
         var events = [ZoneManagerEvent]()
-        for pendingIdentifier in pendingIdentifiers {
-            guard let pending = pendingBeaconEntries.removeValue(forKey: pendingIdentifier) else { continue }
-            pending.timeout.cancel()
-            if !foregroundIdentifiers.contains(pendingIdentifier) ||
-                !foregroundBeaconIdentifiersInside.contains(pendingIdentifier) {
-                if !events.contains(pending.event) {
-                    events.append(pending.event)
-                }
-            }
-        }
+        acceptPendingSamples(for: pendingIdentifiers, events: &events)
+        acceptForegroundSamples(for: foregroundIdentifiers, events: &events)
+        acceptOpportunisticSamples(for: opportunisticIdentifiers, events: &events)
 
-        for foregroundIdentifier in foregroundIdentifiers
-            where !foregroundBeaconIdentifiersInside.contains(foregroundIdentifier) {
-            guard let foreground = foregroundBeaconEntries[foregroundIdentifier] else { continue }
-            foregroundBeaconIdentifiersInside.insert(foregroundIdentifier)
-            if !events.contains(foreground.event) {
-                events.append(foreground.event)
-            }
-        }
-
-        for opportunisticIdentifier in opportunisticIdentifiers {
-            guard let opportunistic = opportunisticBeaconEntries.removeValue(forKey: opportunisticIdentifier) else {
-                continue
-            }
-            if !events.contains(opportunistic.event) {
-                events.append(opportunistic.event)
-            }
-            if !foregroundIdentifiers.contains(opportunisticIdentifier) &&
-                pendingBeaconEntries[opportunisticIdentifier] == nil {
-                foregroundBeaconIdentifiersInside.remove(opportunisticIdentifier)
-                beaconReconciliationStates.removeValue(forKey: opportunisticIdentifier)
-            }
-        }
-
-        if !hasActiveRangingEntry(for: beaconConstraint) {
-            manager.stopRangingBeacons(satisfying: beaconConstraint)
-        }
+        stopRangingIfUnused(beaconConstraint, manager: manager)
 
         endBackgroundScanExecutionIfIdle()
 
-        let diagnostic = ZoneManagerEvent.BeaconDiagnostic(
+        let diagnostic = BeaconDiagnostic(
             proximity: Self.diagnosticProximity(detectedBeacon.proximity),
             rssi: detectedBeacon.rssi,
             isAppActive: UIApplication.shared.applicationState == .active
@@ -390,17 +355,15 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         if let pending = pendingBeaconEntries.removeValue(forKey: identifier) {
             pending.timeout.cancel()
-            if !hasActiveRangingEntry(for: pending.constraint) {
-                manager.stopRangingBeacons(satisfying: pending.constraint)
-            }
+            stopRangingIfUnused(pending.constraint, manager: manager)
         }
 
         let timeout = DispatchWorkItem { [weak self, weak manager] in
             guard let self,
                   let pending = self.pendingBeaconEntries.removeValue(forKey: identifier) else { return }
 
-            if !self.hasActiveRangingEntry(for: pending.constraint) {
-                manager?.stopRangingBeacons(satisfying: pending.constraint)
+            if let manager {
+                self.stopRangingIfUnused(pending.constraint, manager: manager)
             }
             self.endBackgroundScanExecutionIfIdle()
             self.delegate?.collector(
@@ -409,13 +372,14 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             )
         }
 
+        let wasActive = hasActiveRangingEntry(for: constraint)
         pendingBeaconEntries[identifier] = PendingBeaconEntry(
             event: event,
             constraint: constraint,
             timeout: timeout
         )
         beginBackgroundScanExecution(manager: manager)
-        manager.startRangingBeacons(satisfying: constraint)
+        startRangingIfNeeded(constraint, wasActive: wasActive, manager: manager)
         DispatchQueue.main.asyncAfter(deadline: .now() + beaconVerificationTimeout, execute: timeout)
     }
 
@@ -423,18 +387,14 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         guard let pending = pendingBeaconEntries.removeValue(forKey: region.identifier) else { return }
 
         pending.timeout.cancel()
-        if !hasActiveRangingEntry(for: pending.constraint) {
-            manager.stopRangingBeacons(satisfying: pending.constraint)
-        }
+        stopRangingIfUnused(pending.constraint, manager: manager)
         endBackgroundScanExecutionIfIdle()
     }
 
     private func cancelOpportunisticBeaconEntry(for region: CLBeaconRegion, manager: CLLocationManager) {
         guard let entry = opportunisticBeaconEntries.removeValue(forKey: region.identifier) else { return }
 
-        if !hasActiveRangingEntry(for: entry.constraint) {
-            manager.stopRangingBeacons(satisfying: entry.constraint)
-        }
+        stopRangingIfUnused(entry.constraint, manager: manager)
         endBackgroundScanExecutionIfIdle()
     }
 
@@ -444,11 +404,14 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         backgroundExecution.begin { [weak self, weak manager] in
             guard let self, let manager else { return }
 
+            let constraints = Set(self.pendingBeaconEntries.values.map(\.constraint))
             for pending in self.pendingBeaconEntries.values {
                 pending.timeout.cancel()
-                manager.stopRangingBeacons(satisfying: pending.constraint)
             }
             self.pendingBeaconEntries.removeAll()
+            for constraint in constraints {
+                self.stopRangingIfUnused(constraint, manager: manager)
+            }
             self.stopOpportunisticBeaconScanning(manager: manager)
         }
     }
@@ -498,7 +461,109 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         }
     }
 
-    private func isBeaconInsideRange(_ beacon: CLBeacon) -> Bool {
+    private func beaconEntries(in regions: Set<CLRegion>) -> [String: ForegroundBeaconEntry] {
+        Dictionary(uniqueKeysWithValues: regions.compactMap { region -> (String, ForegroundBeaconEntry)? in
+            guard let beaconRegion = region as? CLBeaconRegion else { return nil }
+            let event = Self.event(for: beaconRegion, state: .inside)
+            guard event.associatedZone != nil else { return nil }
+            return (
+                beaconRegion.identifier,
+                ForegroundBeaconEntry(
+                    event: event,
+                    region: beaconRegion,
+                    constraint: beaconRegion.beaconIdentityConstraint
+                )
+            )
+        })
+    }
+
+    private func sameBeaconRegions(
+        _ lhs: [String: CLBeaconRegion],
+        _ rhs: [String: CLBeaconRegion]
+    ) -> Bool {
+        lhs.count == rhs.count && lhs.allSatisfy { identifier, region in
+            rhs[identifier]?.beaconIdentityConstraint == region.beaconIdentityConstraint
+        }
+    }
+
+    private func identifiers(
+        in entries: [String: PendingBeaconEntry],
+        matching constraint: CLBeaconIdentityConstraint
+    ) -> [String] {
+        entries.compactMap { $0.value.constraint == constraint ? $0.key : nil }
+    }
+
+    private func identifiers(
+        in entries: [String: ForegroundBeaconEntry],
+        matching constraint: CLBeaconIdentityConstraint
+    ) -> [String] {
+        entries.compactMap { $0.value.constraint == constraint ? $0.key : nil }
+    }
+
+    private func acceptPendingSamples(for identifiers: [String], events: inout [ZoneManagerEvent]) {
+        for identifier in identifiers {
+            guard let pending = pendingBeaconEntries.removeValue(forKey: identifier) else { continue }
+            pending.timeout.cancel()
+            acceptCurrentSample(for: identifier, event: pending.event, events: &events)
+        }
+    }
+
+    private func acceptForegroundSamples(for identifiers: [String], events: inout [ZoneManagerEvent]) {
+        for identifier in identifiers {
+            guard let foreground = foregroundBeaconEntries[identifier] else { continue }
+            acceptCurrentSample(for: identifier, event: foreground.event, events: &events)
+        }
+    }
+
+    private func acceptOpportunisticSamples(for identifiers: [String], events: inout [ZoneManagerEvent]) {
+        for identifier in identifiers {
+            guard let opportunistic = opportunisticBeaconEntries.removeValue(forKey: identifier) else { continue }
+            acceptCurrentSample(for: identifier, event: opportunistic.event, events: &events)
+            if foregroundBeaconEntries[identifier] == nil && pendingBeaconEntries[identifier] == nil {
+                foregroundBeaconIdentifiersInside.remove(identifier)
+                beaconReconciliationStates.removeValue(forKey: identifier)
+            }
+        }
+    }
+
+    private func acceptCurrentSample(
+        for identifier: String,
+        event: ZoneManagerEvent,
+        events: inout [ZoneManagerEvent]
+    ) {
+        let wasInside = foregroundBeaconIdentifiersInside.contains(identifier)
+        foregroundBeaconIdentifiersInside.insert(identifier)
+        guard !wasInside,
+              event.associatedZone?.inRegion != true,
+              !events.contains(event) else { return }
+        events.append(event)
+    }
+
+    private func startRangingIfNeeded(
+        _ constraint: CLBeaconIdentityConstraint,
+        wasActive: Bool,
+        manager: CLLocationManager
+    ) {
+        guard !wasActive else { return }
+        clearRangingRetryState(for: constraint)
+        manager.startRangingBeacons(satisfying: constraint)
+    }
+
+    private func stopRangingIfUnused(
+        _ constraint: CLBeaconIdentityConstraint,
+        manager: CLLocationManager
+    ) {
+        guard !hasActiveRangingEntry(for: constraint) else { return }
+        clearRangingRetryState(for: constraint)
+        manager.stopRangingBeacons(satisfying: constraint)
+    }
+
+    private func clearRangingRetryState(for constraint: CLBeaconIdentityConstraint) {
+        beaconRangingRetryCounts.removeValue(forKey: constraint)
+        beaconRangingRetryWorkItems.removeValue(forKey: constraint)?.cancel()
+    }
+
+    private func isBeaconInsideRange(_ beacon: RangedBeaconSample) -> Bool {
         guard beacon.rssi != 0 else { return false }
 
         switch beacon.proximity {
