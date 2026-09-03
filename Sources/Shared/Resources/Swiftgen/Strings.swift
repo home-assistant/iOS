@@ -8569,11 +8569,43 @@ public enum L10n {
       /// App support update
       public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
     }
+    public enum EnergyWidget {
+      /// The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.
+      /// 
+      /// **What it shows**
+      /// Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.
+      /// 
+      /// **How to add it**
+      /// Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.
+      public static var articleBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.article_body") }
+      /// See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.item_body") }
+      /// Energy widget
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.energy_widget.item_title") }
+      public enum Mac {
+        /// The new **Energy** widget puts your energy dashboard on your desktop.
+        /// 
+        /// **What it shows**
+        /// Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.
+        /// 
+        /// **How to add it**
+        /// Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.
+        public static var articleBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.mac.article_body") }
+        /// See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.
+        public static var itemBody: String { return L10n.tr("Localizable", "whats_new.energy_widget.mac.item_body") }
+      }
+    }
     public enum Item {
       /// Opens an article
       public static var opensArticleHint: String { return L10n.tr("Localizable", "whats_new.item.opens_article_hint") }
       /// Opens a link
       public static var opensLinkHint: String { return L10n.tr("Localizable", "whats_new.item.opens_link_hint") }
+    }
+    public enum LiveActivities {
+      /// Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.live_activities.item_body") }
+      /// Live Activities
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.live_activities.item_title") }
     }
   }
 
