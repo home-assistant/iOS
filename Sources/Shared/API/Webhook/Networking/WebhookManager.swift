@@ -649,7 +649,7 @@ public class WebhookManager: NSObject {
                 request: request,
                 result: .init(error: error),
                 resolver: seal,
-                requestIdentifier: persisted.requestIdentifier
+                requestIdentifier: nil
             )
         }.finally {
             if !waitForResponse {
