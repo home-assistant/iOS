@@ -33,6 +33,24 @@ struct HomeAssistantStandByViewSnapshotTests {
         assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "stand-by-client-certificate-rejected")
     }
 
+    /// The app builds the view with its default fade; that configuration has to host and lay out too.
+    @MainActor @Test func defaultConfigurationLaysOut() async throws {
+        let server = HomeAssistantStandByView.previewServer(
+            name: "mTLS Server",
+            configuredURLTypes: [.external],
+            activeURLType: .external
+        )
+        let controller = UIHostingController(rootView: HomeAssistantStandByView(
+            server: server,
+            emptyState: HomeAssistantStandByView.previewEmptyState(style: .clientCertificateRequired, server: server)
+        ))
+        controller.view.frame = CGRect(origin: .zero, size: CGSize(width: 390, height: 844))
+
+        controller.view.layoutIfNeeded()
+
+        #expect(controller.view.bounds.size == CGSize(width: 390, height: 844))
+    }
+
     @MainActor
     private func assertLightDarkWindowSnapshots(
         style: WebViewEmptyStateStyle,

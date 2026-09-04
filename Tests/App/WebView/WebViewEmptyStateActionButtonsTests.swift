@@ -27,6 +27,26 @@ final class WebViewEmptyStateActionButtonsTests: XCTestCase {
         }
     }
 
+    /// Surfaces that show the certificate styles without wiring an import (previews, the recovered-server
+    /// screen) get a primary button that does nothing rather than one that retries or re-authenticates.
+    func testClientCertificateStylesWithoutAnImportActionDoNothing() {
+        var retried = false
+        var reauthenticated = false
+        let sut = WebViewEmptyStateActionButtons(
+            style: .clientCertificateRequired,
+            availableReauthURLTypes: [.external],
+            retryAction: { retried = true },
+            settingsAction: {},
+            errorDetailsAction: {},
+            reauthAction: { _ in reauthenticated = true }
+        )
+
+        sut.performPrimaryAction()
+
+        XCTAssertFalse(retried)
+        XCTAssertFalse(reauthenticated)
+    }
+
     func testDisconnectedStyleRetriesWithoutNeedingAnImportAction() {
         var retried = false
         let sut = WebViewEmptyStateActionButtons(

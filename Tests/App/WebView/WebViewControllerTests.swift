@@ -745,6 +745,34 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.overlayState?.emptyState)
     }
 
+    func testMainFrameCertificateRefusalResponseIsReplacedByTheCertificateEmptyState() throws {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.didReceiveClientCertificateChallenge = true
+        var decision: WKNavigationResponsePolicy?
+
+        sut.webView(WKWebView(), decidePolicyFor: try FakeNavigationResponse(statusCode: 400)) { decision = $0 }
+
+        XCTAssertEqual(decision, .cancel)
+        XCTAssertTrue(sut.lastNavigationWasServerError)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    /// The frontend's own 400s keep rendering as pages; only a refusal behind a certificate challenge is
+    /// taken over.
+    func testMainFrameClientErrorResponseWithoutAChallengeStillRenders() throws {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        var decision: WKNavigationResponsePolicy?
+
+        sut.webView(WKWebView(), decidePolicyFor: try FakeNavigationResponse(statusCode: 400)) { decision = $0 }
+
+        XCTAssertEqual(decision, .allow)
+        XCTAssertNil(sut.clientCertificateIssue)
+        XCTAssertNil(sut.overlayState?.emptyState)
+    }
+
     func testPresentClientCertificateImportPresentsTheImportSheet() async {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
@@ -901,6 +929,24 @@ final class WebViewControllerTests: XCTestCase {
         }
         XCTAssertTrue(condition(), "condition not met within \(timeout)s", file: file, line: line)
     }
+}
+
+/// A main-frame navigation response with the given status, for the response-policy delegate.
+private final class FakeNavigationResponse: WKNavigationResponse {
+    private let fakeResponse: HTTPURLResponse
+
+    init(statusCode: Int) throws {
+        fakeResponse = try XCTUnwrap(HTTPURLResponse(
+            url: XCTUnwrap(URL(string: "https://example.com/lovelace")),
+            statusCode: statusCode,
+            httpVersion: nil,
+            headerFields: nil
+        ))
+        super.init()
+    }
+
+    override var isForMainFrame: Bool { true }
+    override var response: URLResponse { fakeResponse }
 }
 
 private final class FakeChallengeSender: NSObject, URLAuthenticationChallengeSender {
