@@ -2633,6 +2633,11 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";
+"web_view.empty_state.client_certificate.import_button" = "Import certificate";
+"web_view.empty_state.client_certificate.rejected.body" = "%@ refused the client certificate configured on this device. It may have expired, been revoked or been replaced on the server. Import a valid certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.rejected.title" = "Certificate rejected";
+"web_view.empty_state.client_certificate.required.body" = "%@ requires a client certificate (mTLS), but none is configured for this server on this device. Import your certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.required.title" = "Certificate required";
 "web_view.empty_state.logged_out.body" = "You have been signed out of this server. Log in again to continue using it on this device.";
 "web_view.empty_state.logged_out.login_button" = "Log in";
 "web_view.empty_state.logged_out.title" = "You're logged out";

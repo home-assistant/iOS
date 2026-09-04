@@ -298,6 +298,7 @@ final class HomeAssistantViewTests: XCTestCase {
             settingsAction: {},
             errorDetailsAction: {},
             reauthAction: { _ in },
+            clientCertificateAction: {},
             dismissAction: {}
         )
     }

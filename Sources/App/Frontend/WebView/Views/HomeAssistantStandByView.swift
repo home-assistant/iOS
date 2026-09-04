@@ -214,7 +214,8 @@ struct HomeAssistantStandByView: View {
                     retryAction: emptyState.retryAction,
                     settingsAction: emptyState.settingsAction,
                     errorDetailsAction: emptyState.errorDetailsAction,
-                    reauthAction: emptyState.reauthAction
+                    reauthAction: emptyState.reauthAction,
+                    clientCertificateAction: emptyState.clientCertificateAction
                 )
                 .opacity(contentOpacity)
             } else if showsCleanCacheAndReloadButton {
@@ -595,6 +596,7 @@ private extension HomeAssistantStandByView {
             settingsAction: {},
             errorDetailsAction: {},
             reauthAction: { _ in },
+            clientCertificateAction: {},
             dismissAction: {}
         )
     }
@@ -755,6 +757,36 @@ private extension HomeAssistantStandByView {
             style: .recoveredServerNeedingReauthentication,
             server: server,
             availableReauthURLTypes: [.external, .internal]
+        )
+    )
+}
+
+#Preview("Client Certificate Required") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "mTLS Server",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .clientCertificateRequired,
+            server: server
+        )
+    )
+}
+
+#Preview("Client Certificate Rejected") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "mTLS Server",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .clientCertificateRejected,
+            server: server
         )
     )
 }

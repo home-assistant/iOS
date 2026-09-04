@@ -12,6 +12,7 @@ extension WebViewController {
         // frontend (via the external bus) or a hard reload (`reload()`/`refresh()`) sets disconnected.
         overlayState?.isLoading = true
         didHandleServerErrorResponse = false
+        didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 
@@ -20,6 +21,10 @@ extension WebViewController {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            // Remembered so a TLS failure or proxy refusal behind it is reported as a certificate problem.
+            didReceiveClientCertificateChallenge = true
+        }
         let result = server.info.connection.evaluate(challenge)
         completionHandler(result.0, result.1)
     }
@@ -53,6 +58,7 @@ extension WebViewController {
 
             if !error.isCancelled {
                 latestLoadError = error
+                recordClientCertificateIssueIfNeeded(for: error)
                 showEmptyState()
             }
         }
@@ -89,6 +95,7 @@ extension WebViewController {
 
         if shouldShowError {
             latestLoadError = error
+            recordClientCertificateIssueIfNeeded(for: error)
             showEmptyState()
         }
     }
@@ -96,6 +103,8 @@ extension WebViewController {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         overlayState?.isLoading = false
         latestLoadError = nil
+        // A page that loaded got through the handshake, so whatever certificate problem there was is gone.
+        clientCertificateIssue = nil
 
         // in case the view appears again, don't reload
         initialURL = nil
@@ -139,6 +148,25 @@ extension WebViewController {
         Current.Log.error(
             "Main frame HTTP \(httpResponse.statusCode) at \(navigationResponse.response.url?.absoluteString ?? "?"), cf-ray=\(cfRay), cf-mitigated=\(cfMitigated ?? "-")"
         )
+
+        // A proxy refusing the request over the client certificate gets no navigation error, only this
+        // response, so it is the one place the certificate empty state can come from. A connection that
+        // already failed over the certificate is reused without a new handshake (and so without a new
+        // challenge), which is why a known problem counts as much as a challenge on this navigation.
+        if Self.isClientCertificateRefusal(
+            statusCode: httpResponse.statusCode,
+            receivedClientCertificateChallenge: didReceiveClientCertificateChallenge || clientCertificateIssue != nil
+        ) {
+            let issue = clientCertificateIssueForRefusal
+            Current.Log.error("[mTLS] Main frame refused over the client certificate (\(issue))")
+            clientCertificateIssue = issue
+            didHandleServerErrorResponse = true
+            decisionHandler(.cancel)
+            latestLoadError = Self.serverErrorLoadError(for: navigationResponse.response.url)
+            connectionState = Self.connectionStateForInterceptedServerError(current: connectionState)
+            showEmptyState()
+            return
+        }
 
         switch Self.decisionForMainFrameErrorResponse(
             statusCode: httpResponse.statusCode,
