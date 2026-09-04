@@ -11,23 +11,26 @@ import UIKit
 /// The loading logo behind the empty state is a web view, which the snapshot library waits on before
 /// rendering a view and which never finishes loading in a test, so the view is drawn from a live window
 /// instead of going through the library's view renderer.
+/// The test and image names carry a "stand-by" prefix: Xcode copies every reference image into the
+/// test bundle, so file names have to be unique across suites, and the `WebViewEmptyStateView` suite
+/// already records the plain certificate names.
 struct HomeAssistantStandByViewSnapshotTests {
-    @MainActor @Test func clientCertificateRequiredSnapshot() async throws {
+    @MainActor @Test func standByClientCertificateRequiredSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
 
-        assertLightDarkWindowSnapshots(style: .clientCertificateRequired, named: "client-certificate-required")
+        assertLightDarkWindowSnapshots(style: .clientCertificateRequired, named: "stand-by-client-certificate-required")
     }
 
-    @MainActor @Test func clientCertificateRejectedSnapshot() async throws {
+    @MainActor @Test func standByClientCertificateRejectedSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
 
-        assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "client-certificate-rejected")
+        assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "stand-by-client-certificate-rejected")
     }
 
     @MainActor
