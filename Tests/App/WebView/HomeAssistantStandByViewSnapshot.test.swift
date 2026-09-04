@@ -66,22 +66,23 @@ struct HomeAssistantStandByViewSnapshotTests {
                 server: server,
                 emptyState: HomeAssistantStandByView.previewEmptyState(style: style, server: server)
             )
-            // The stand-by content fades in on appear; snapshot its settled state rather than the fade.
+            // The stand-by content fades in on appear; render its settled state rather than the fade.
             .transaction { $0.disablesAnimations = true }
         )
         controller.overrideUserInterfaceStyle = interfaceStyle
-
-        // The size the other empty-state snapshots use (an iPhone 13 portrait layout).
         let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 390, height: 844)))
         window.overrideUserInterfaceStyle = interfaceStyle
         window.rootViewController = controller
         window.makeKeyAndVisible()
         window.layoutIfNeeded()
-        // Appearing is what reveals the content, and that state change needs a turn of the run loop.
+        // Let the appear-driven state changes (the content fade-in) apply before drawing.
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+        window.layoutIfNeeded()
 
-        let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
-            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+        // A test window is not on a display, so `drawHierarchy` has nothing to draw; the layer tree
+        // renders the same content without one.
+        let image = UIGraphicsImageRenderer(bounds: window.bounds).image { context in
+            window.layer.render(in: context.cgContext)
         }
         window.isHidden = true
         return image
