@@ -747,6 +747,8 @@ final class WebViewControllerTests: XCTestCase {
 
     func testPresentClientCertificateImportPresentsTheImportSheet() async {
         let sut = makeSUT()
+        // Attaching to a window changes traits, which the controller forwards to its web view.
+        sut.webView = WKWebView(frame: .zero)
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = sut
         window.makeKeyAndVisible()
