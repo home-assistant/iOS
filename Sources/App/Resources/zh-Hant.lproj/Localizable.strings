@@ -2007,7 +2007,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.periodic_update.description" = "啟用後、感測器將會依設定於 App 於背景開啟時持續更新。";
 "settings_sensors.periodic_update.description_foreground" = "此頻率僅在應用程式於螢幕上開啟時適用。當應用程式在背景執行時，iOS 會決定何時可以更新感測器。";
 "settings_sensors.periodic_update.description_mac" = "啟用後、感測器將會依設定於 App 開啟時持續更新，部分感測器更新頻率將更密集。";
-"settings_sensors.periodic_update.foreground_header" = "When app is open";
+"settings_sensors.periodic_update.foreground_header" = "應用程式開啟時";
 "settings_sensors.periodic_update.off" = "關閉";
 "settings_sensors.periodic_update.title" = "週期更新";
 "settings_sensors.permissions.bluetooth.title" = "藍牙";
@@ -2601,6 +2601,12 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.settings.refresh" = "更新";
 "watch.settings.restart_app.footer" = "將立即關閉應用程式。需要手動重新開啟它。";
 "watch.settings.restart_app.title" = "重啟 App";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "需要注意";
 "watch.settings.servers.header" = "伺服器";
 "watch.settings.title" = "設定";
@@ -2645,18 +2651,49 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "whats_new.app_support_update.item_body" = "這是針對 iOS 15、watchOS 8 及 macOS 11 和更早版本的最後一次更新。點選以閱讀更詳細內容。";
 "whats_new.app_support_update.item_title" = "針對 iOS 15、watchOS 8 和 macOS 11 的支援即將終止";
 "whats_new.app_support_update.title" = "應用程式支援更新";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "開啟文章";
 "whats_new.item.opens_link_hint" = "開啟連結";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "Companion App 新增功能";
 "whats_new.version_format" = "%@ 版";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "助理";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "預設";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "更多資訊";
 "widgets.action.name.navigate" = "導航至";
 "widgets.action.name.nothing" = "沒有動作";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "執行操作";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "執行腳本";
 "widgets.action.name.toggle" = "開關";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "網址";
 "widgets.actions.description" = "執行 Home Assistant 操作。";
 "widgets.actions.not_configured" = "未設定操作";
@@ -2807,10 +2844,10 @@ Companion 應用程式相關資料以獲得更詳細資訊。";
 "widgets.energy.source.solar" = "太陽能";
 "widgets.energy.source.title" = "來源";
 "widgets.energy.title" = "能源";
-"widgets.entities.description" = "Show and control the entities you choose.";
-"widgets.entities.not_configured" = "Edit the widget to choose entities.";
-"widgets.entities.param.entities.title" = "Entities";
-"widgets.entities.title" = "Entities";
+"widgets.entities.description" = "顯示並控制所選擇的實體。";
+"widgets.entities.not_configured" = "編輯小工具以選擇實體。";
+"widgets.entities.param.entities.title" = "實體";
+"widgets.entities.title" = "實體";
 "widgets.entity_state.placeholder" = "實體狀態";
 "widgets.gauge.description" = "在量表面板中顯示來自 Home Assistant 的數字狀態";
 "widgets.gauge.gallery_description" = "在儀表板中顯示來自 Home Assistant 的實體、手錶複雜功能或模板";

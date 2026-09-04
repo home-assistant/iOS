@@ -68,7 +68,7 @@
 "component::counter::entity_component::_::state_attributes::editable::state::true" = "Ano";
 "component::cover::entity_component::_::state::closed" = "Zavřeno";
 "component::cover::entity_component::_::state::open" = "Otevřeno";
-"component::cover::title" = "Roleta";
+"component::cover::title" = "Kryt";
 "component::date::title" = "Datum";
 "component::datetime::title" = "Datum/Čas";
 "component::deluge::entity::sensor::status::state::idle" = "Nečinný";
