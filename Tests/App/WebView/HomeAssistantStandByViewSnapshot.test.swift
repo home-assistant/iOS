@@ -33,6 +33,23 @@ struct HomeAssistantStandByViewSnapshotTests {
         assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "stand-by-client-certificate-rejected")
     }
 
+    /// The web view's failures arrive while the loading state is already up, so the empty state usually
+    /// comes in through a change rather than on appear. It has to settle to the same screen either way.
+    @MainActor @Test func standByEmptyStateArrivingAfterAppearRendersLikeStartingWithIt() async throws {
+        guard #available(iOS 18.0, *) else {
+            assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
+            return
+        }
+
+        let fromTheStart = render(style: .clientCertificateRequired, interfaceStyle: .light)
+        let afterLoading = render(style: .clientCertificateRequired, interfaceStyle: .light, startsLoading: true)
+
+        let diffing = Diffing<UIImage>.image(precision: 0.96, perceptualPrecision: 0.96)
+        if let difference = diffing.diff(fromTheStart, afterLoading) {
+            Issue.record("The late-arriving empty state rendered differently: \(difference.0)")
+        }
+    }
+
     /// The app builds the view with its default fade; that configuration has to host and lay out too.
     @MainActor @Test func defaultConfigurationLaysOut() async throws {
         let server = HomeAssistantStandByView.previewServer(
@@ -75,21 +92,29 @@ struct HomeAssistantStandByViewSnapshotTests {
         }
     }
 
+    /// Draws the stand-by view showing `style`, either from the start or, with `startsLoading`, arriving
+    /// after the loading state has already appeared.
     @MainActor
-    private func render(style: WebViewEmptyStateStyle, interfaceStyle: UIUserInterfaceStyle) -> UIImage {
+    private func render(
+        style: WebViewEmptyStateStyle,
+        interfaceStyle: UIUserInterfaceStyle,
+        startsLoading: Bool = false
+    ) -> UIImage {
         let server = HomeAssistantStandByView.previewServer(
             name: "mTLS Server",
             configuredURLTypes: [.external],
             activeURLType: .external
         )
-        let controller = UIHostingController(
-            rootView: HomeAssistantStandByView(
+        let emptyState = HomeAssistantStandByView.previewEmptyState(style: style, server: server)
+        func makeView(emptyState: WebFrontendOverlayState.EmptyStateContent?) -> HomeAssistantStandByView {
+            HomeAssistantStandByView(
                 server: server,
-                emptyState: HomeAssistantStandByView.previewEmptyState(style: style, server: server),
-                // The content fades in on appear; render its settled state rather than the fade.
+                emptyState: emptyState,
+                // The content fades in on appear and on change; render its settled state rather than the fade.
                 contentFadeAnimation: nil
             )
-        )
+        }
+        let controller = UIHostingController(rootView: makeView(emptyState: startsLoading ? nil : emptyState))
         controller.overrideUserInterfaceStyle = interfaceStyle
         // On the host app's scene, so the window is a real one that reports appearance; a window
         // without a scene never appears, and the content (which fades in on appear) stays hidden.
@@ -105,6 +130,14 @@ struct HomeAssistantStandByViewSnapshotTests {
         // Let the appear-driven state changes (the content fade-in) apply before drawing.
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
         window.layoutIfNeeded()
+
+        if startsLoading {
+            // Same view identity, so the change handler moves it from loading to the empty state.
+            controller.rootView = makeView(emptyState: emptyState)
+            window.layoutIfNeeded()
+            RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
+            window.layoutIfNeeded()
+        }
 
         // A test window is not on a display, so `drawHierarchy` has nothing to draw; the layer tree
         // renders the same content without one.
