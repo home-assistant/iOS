@@ -943,6 +943,9 @@ private final class FakeNavigationResponse: WKNavigationResponse {
             headerFields: nil
         ))
         super.init()
+        // Kept alive for the rest of the run: WebKit's `dealloc` retains the API object that only its
+        // own initialisers create, so releasing a plainly initialised instance crashes.
+        _ = Unmanaged.passRetained(self)
     }
 
     override var isForMainFrame: Bool { true }
