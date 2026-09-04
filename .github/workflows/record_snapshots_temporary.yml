@@ -61,7 +61,8 @@ jobs:
             -only-testing:Tests-App/WebViewEmptyStateStyleTests \
             -only-testing:Tests-App/WebViewEmptyStateActionButtonsTests \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | tee xcodebuild.log | grep -E 'error:|Test Case|Test Suite|Executed|\*\* TEST' || true
+            2>&1 | tee xcodebuild.log \
+            | grep -E 'error:|Test Case|Test Suite|Executed|\*\* TEST|✘|✔|◇|Issue|napshot|imeout|eference' || true
 
       - name: Summarize
         if: ${{ always() }}
