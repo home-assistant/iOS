@@ -752,7 +752,7 @@ final class WebViewControllerTests: XCTestCase {
         sut.didReceiveClientCertificateChallenge = true
         var decision: WKNavigationResponsePolicy?
 
-        sut.webView(WKWebView(), decidePolicyFor: try FakeNavigationResponse(statusCode: 400)) { decision = $0 }
+        try sut.webView(WKWebView(), decidePolicyFor: FakeNavigationResponse(statusCode: 400)) { decision = $0 }
 
         XCTAssertEqual(decision, .cancel)
         XCTAssertTrue(sut.lastNavigationWasServerError)
@@ -766,7 +766,7 @@ final class WebViewControllerTests: XCTestCase {
         sut.overlayState = WebFrontendOverlayState()
         var decision: WKNavigationResponsePolicy?
 
-        sut.webView(WKWebView(), decidePolicyFor: try FakeNavigationResponse(statusCode: 400)) { decision = $0 }
+        try sut.webView(WKWebView(), decidePolicyFor: FakeNavigationResponse(statusCode: 400)) { decision = $0 }
 
         XCTAssertEqual(decision, .allow)
         XCTAssertNil(sut.clientCertificateIssue)
@@ -936,7 +936,7 @@ private final class FakeNavigationResponse: WKNavigationResponse {
     private let fakeResponse: HTTPURLResponse
 
     init(statusCode: Int) throws {
-        fakeResponse = try XCTUnwrap(HTTPURLResponse(
+        self.fakeResponse = try XCTUnwrap(HTTPURLResponse(
             url: XCTUnwrap(URL(string: "https://example.com/lovelace")),
             statusCode: statusCode,
             httpVersion: nil,
