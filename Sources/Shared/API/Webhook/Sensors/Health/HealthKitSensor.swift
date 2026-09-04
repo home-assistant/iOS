@@ -112,6 +112,10 @@ public final class HealthKitSensor: SensorProvider {
         case .mostRecent:
             start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: now)
                 ?? calendar.startOfDay(for: now)
+        case .sleep:
+            // Whole sleep days, so the night found is never one cut in half by the window's start.
+            let sleepDay = HealthKitSleepSummary.sleepDayStart(containing: now, calendar: calendar)
+            start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: sleepDay) ?? sleepDay
         }
 
         do {
