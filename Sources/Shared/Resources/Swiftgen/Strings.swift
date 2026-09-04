@@ -8637,7 +8637,7 @@ public enum L10n {
         /// Nothing
         public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
         /// Open
-        public static var open: String { return L10n.tr("Localizable", "widgets.action.name.open") }
+        public static var `open`: String { return L10n.tr("Localizable", "widgets.action.name.open") }
         /// Perform action
         public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
         /// Press
