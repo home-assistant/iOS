@@ -70,13 +70,19 @@ struct HomeAssistantStandByViewSnapshotTests {
             .transaction { $0.disablesAnimations = true }
         )
         controller.overrideUserInterfaceStyle = interfaceStyle
-        let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 390, height: 844)))
+        // On the host app's scene, so the window is a real one that reports appearance; a window
+        // without a scene never appears, and the content (which fades in on appear) stays hidden.
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
+        let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow()
+        window.frame = CGRect(origin: .zero, size: CGSize(width: 390, height: 844))
         window.overrideUserInterfaceStyle = interfaceStyle
         window.rootViewController = controller
         window.makeKeyAndVisible()
+        controller.beginAppearanceTransition(true, animated: false)
+        controller.endAppearanceTransition()
         window.layoutIfNeeded()
         // Let the appear-driven state changes (the content fade-in) apply before drawing.
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
         window.layoutIfNeeded()
 
         // A test window is not on a display, so `drawHierarchy` has nothing to draw; the layer tree
