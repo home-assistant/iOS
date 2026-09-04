@@ -21,10 +21,13 @@ extension WebViewController {
         receivedClientCertificateChallenge: Bool,
         hasClientCertificate: Bool
     ) -> ClientCertificateIssue? {
-        guard let urlError = error as? URLError else { return nil }
+        // Matched on domain and code rather than on the `URLError` type, so a failure that arrives as a
+        // plain `NSError` in `NSURLErrorDomain` (WebKit hands those over as `Error`) classifies the same.
+        let nsError = error as NSError
+        guard nsError.domain == NSURLErrorDomain else { return nil }
         let issueForThisDevice: ClientCertificateIssue = hasClientCertificate ? .rejected : .required
 
-        switch urlError.code {
+        switch URLError.Code(rawValue: nsError.code) {
         case .clientCertificateRequired, .clientCertificateRejected:
             return issueForThisDevice
         case .secureConnectionFailed, .userCancelledAuthentication:

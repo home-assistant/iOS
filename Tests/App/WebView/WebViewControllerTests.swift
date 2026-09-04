@@ -528,6 +528,26 @@ final class WebViewControllerTests: XCTestCase {
         }
     }
 
+    /// WebKit hands failures over as plain `Error`s; one carried as an `NSError` in `NSURLErrorDomain`
+    /// has to classify exactly like its `URLError` counterpart.
+    func testClientCertificateIssueClassifiesNSURLErrorDomainErrors() {
+        let error = NSError(domain: NSURLErrorDomain, code: URLError.Code.clientCertificateRequired.rawValue)
+
+        XCTAssertEqual(
+            WebViewController.clientCertificateIssue(
+                for: error,
+                receivedClientCertificateChallenge: false,
+                hasClientCertificate: false
+            ),
+            .required
+        )
+        XCTAssertNil(WebViewController.clientCertificateIssue(
+            for: NSError(domain: NSCocoaErrorDomain, code: URLError.Code.clientCertificateRequired.rawValue),
+            receivedClientCertificateChallenge: true,
+            hasClientCertificate: false
+        ))
+    }
+
     func testClientCertificateIssueIgnoresUnrelatedErrors() {
         XCTAssertNil(WebViewController.clientCertificateIssue(
             for: URLError(.timedOut),
