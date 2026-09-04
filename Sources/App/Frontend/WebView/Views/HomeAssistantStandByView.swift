@@ -24,6 +24,10 @@ struct HomeAssistantStandByView: View {
 
     private let delayedSettingsButtonDelay: Duration
     private let cleanCacheButtonDelay: Duration
+    /// Animates the content fading in on appear (and the move between loading and empty state). `nil`
+    /// renders the settled state straight away, which is what a snapshot needs: the fade is driven
+    /// frame by frame, and a test window gets no frames.
+    private let contentFadeAnimation: Animation?
 
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
@@ -87,7 +91,8 @@ struct HomeAssistantStandByView: View {
         onLogoDismiss: (() -> Void)? = nil,
         onCleanCacheAndReload: (() -> Void)? = nil,
         delayedSettingsButtonDelay: Duration = .seconds(5),
-        cleanCacheButtonDelay: Duration = .seconds(15)
+        cleanCacheButtonDelay: Duration = .seconds(15),
+        contentFadeAnimation: Animation? = DesignSystem.Animation.default
     ) {
         self.server = server
         self.emptyState = emptyState
@@ -99,6 +104,7 @@ struct HomeAssistantStandByView: View {
         self.onCleanCacheAndReload = onCleanCacheAndReload
         self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
         self.cleanCacheButtonDelay = cleanCacheButtonDelay
+        self.contentFadeAnimation = contentFadeAnimation
         self._showsAnimatedLogo = State(initialValue: emptyState == nil)
     }
 
@@ -223,10 +229,10 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
             }
         }
-        .animation(DesignSystem.Animation.default, value: standByContentOpacity)
-        .animation(DesignSystem.Animation.default, value: showsEmptyState)
+        .animation(contentFadeAnimation, value: standByContentOpacity)
+        .animation(contentFadeAnimation, value: showsEmptyState)
         .onAppear {
-            withAnimation(DesignSystem.Animation.default) {
+            withAnimation(contentFadeAnimation) {
                 hasAppeared = true
                 showsEmptyStateContent = emptyState != nil
             }
@@ -261,7 +267,7 @@ struct HomeAssistantStandByView: View {
             // the webview can't track animated frame changes and would show a second logo.
             showsAnimatedLogo = false
         }
-        withAnimation(DesignSystem.Animation.default) {
+        withAnimation(contentFadeAnimation) {
             showsEmptyStateContent = showsEmptyState
         }
     }

@@ -64,10 +64,10 @@ struct HomeAssistantStandByViewSnapshotTests {
         let controller = UIHostingController(
             rootView: HomeAssistantStandByView(
                 server: server,
-                emptyState: HomeAssistantStandByView.previewEmptyState(style: style, server: server)
+                emptyState: HomeAssistantStandByView.previewEmptyState(style: style, server: server),
+                // The content fades in on appear; render its settled state rather than the fade.
+                contentFadeAnimation: nil
             )
-            // The stand-by content fades in on appear; render its settled state rather than the fade.
-            .transaction { $0.disablesAnimations = true }
         )
         controller.overrideUserInterfaceStyle = interfaceStyle
         // On the host app's scene, so the window is a real one that reports appearance; a window
