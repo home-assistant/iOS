@@ -187,7 +187,8 @@ struct WebViewEmptyStateView: View {
     .preferredColorScheme(.dark)
 }
 
-private enum WebViewEmptyStatePreview {
+/// Builds the previews' configurations; shared with the snapshot tests so they render the same thing.
+enum WebViewEmptyStatePreview {
     static func view(
         style: WebViewEmptyStateStyle,
         isLoading: Bool = false,

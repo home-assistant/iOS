@@ -658,6 +658,160 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.clientCertificateIssue)
     }
 
+    func testClientCertificateChallengeIsRememberedUntilTheNextNavigationStarts() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        var disposition: URLSession.AuthChallengeDisposition?
+
+        sut.webView(WKWebView(), didReceive: clientCertificateChallenge()) { result, _ in
+            disposition = result
+        }
+
+        XCTAssertTrue(sut.didReceiveClientCertificateChallenge)
+        // Without a certificate the challenge is left to the default handling, which is what fails later.
+        XCTAssertEqual(disposition, .performDefaultHandling)
+
+        sut.webView(WKWebView(), didStartProvisionalNavigation: nil)
+
+        XCTAssertFalse(sut.didReceiveClientCertificateChallenge)
+    }
+
+    func testFailedNavigationOverClientCertificateShowsCertificateEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.webView(WKWebView(), didFail: nil, withError: URLError(.clientCertificateRequired))
+
+        XCTAssertEqual(sut.clientCertificateIssue, .required)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    /// nginx answers 400 instead of failing the handshake, so the refusal has to be taken over from
+    /// the response: cancel the page and show the certificate empty state in its place.
+    func testClientCertificateRefusalCancelsTheNavigationAndShowsCertificateEmptyState() throws {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.didReceiveClientCertificateChallenge = true
+        let url = try XCTUnwrap(URL(string: "https://example.com/lovelace"))
+        var decision: WKNavigationResponsePolicy?
+
+        let handled = sut.handleClientCertificateRefusalIfNeeded(statusCode: 400, responseURL: url) {
+            decision = $0
+        }
+
+        XCTAssertTrue(handled)
+        XCTAssertEqual(decision, .cancel)
+        XCTAssertTrue(sut.didHandleServerErrorResponse)
+        XCTAssertEqual(sut.clientCertificateIssue, .required)
+        XCTAssertEqual(sut.connectionState, .disconnected)
+        XCTAssertEqual((sut.latestLoadError as? URLError)?.failingURL, url)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    /// A connection that already failed over the certificate is reused without a new handshake, so a
+    /// known problem stands in for the challenge the reused connection never repeats.
+    func testClientCertificateRefusalIsRecognisedFromAKnownIssueWithoutANewChallenge() {
+        let sut = makeSUT(server: .fake(update: { info in
+            info.connection.clientCertificate = ClientCertificate(keychainIdentifier: "id", displayName: "Test")
+        }))
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.clientCertificateIssue = .rejected
+
+        let handled = sut.handleClientCertificateRefusalIfNeeded(statusCode: 400, responseURL: nil) { _ in }
+
+        XCTAssertTrue(handled)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRejected)
+    }
+
+    func testErrorResponsesThatAreNotCertificateRefusalsAreLeftToTheRegularHandling() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        var decisions = [WKNavigationResponsePolicy]()
+
+        // A 400 without a challenge is the frontend's own answer, not the proxy's.
+        XCTAssertFalse(sut.handleClientCertificateRefusalIfNeeded(statusCode: 400, responseURL: nil) {
+            decisions.append($0)
+        })
+        sut.didReceiveClientCertificateChallenge = true
+        XCTAssertFalse(sut.handleClientCertificateRefusalIfNeeded(statusCode: 503, responseURL: nil) {
+            decisions.append($0)
+        })
+
+        XCTAssertTrue(decisions.isEmpty)
+        XCTAssertNil(sut.clientCertificateIssue)
+        XCTAssertNil(sut.overlayState?.emptyState)
+    }
+
+    func testPresentClientCertificateImportPresentsTheImportSheet() async {
+        let sut = makeSUT()
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.presentClientCertificateImport()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    func testImportedClientCertificateIsStoredAndTheFrontendReloads() {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        // Reloading goes through the web view, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.clientCertificateIssue = .required
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+        let certificate = ClientCertificate(keychainIdentifier: "id", displayName: "Test")
+
+        sut.makeClientCertificateImportView().onImport(certificate)
+
+        XCTAssertEqual(server.info.connection.clientCertificate, certificate)
+        XCTAssertNil(sut.clientCertificateIssue)
+        XCTAssertEqual(sut.connectionState, .unknown)
+        XCTAssertEqual(overlayState.connectionState, .unknown)
+        XCTAssertNil(overlayState.emptyState)
+    }
+
+    func testCancellingClientCertificateImportKeepsTheEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.clientCertificateIssue = .required
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.makeClientCertificateImportView().onCancel()
+
+        XCTAssertEqual(sut.clientCertificateIssue, .required)
+        XCTAssertEqual(overlayState.emptyState?.style, .clientCertificateRequired)
+    }
+
+    private func clientCertificateChallenge() -> URLAuthenticationChallenge {
+        URLAuthenticationChallenge(
+            protectionSpace: URLProtectionSpace(
+                host: "example.com",
+                port: 443,
+                protocol: "https",
+                realm: nil,
+                authenticationMethod: NSURLAuthenticationMethodClientCertificate
+            ),
+            proposedCredential: nil,
+            previousFailureCount: 0,
+            failureResponse: nil,
+            error: nil,
+            sender: FakeChallengeSender()
+        )
+    }
+
     func testRestoredURLRebuildsSavedPathOntoLiveBaseIgnoringSavedHost() throws {
         // A path saved on the internal base is restored against whatever base is active now (e.g. remote
         // UI), so only path/query/fragment carry over -- never the host.
@@ -745,6 +899,12 @@ final class WebViewControllerTests: XCTestCase {
         }
         XCTAssertTrue(condition(), "condition not met within \(timeout)s", file: file, line: line)
     }
+}
+
+private final class FakeChallengeSender: NSObject, URLAuthenticationChallengeSender {
+    func use(_ credential: URLCredential, for challenge: URLAuthenticationChallenge) {}
+    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {}
+    func cancel(_ challenge: URLAuthenticationChallenge) {}
 }
 
 private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {

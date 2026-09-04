@@ -147,7 +147,8 @@ struct WebViewEmptyStateActionButtons: View {
         return availableReauthURLTypes.count > 1
     }
 
-    private func performPrimaryAction() {
+    /// Runs the primary button's action for the style. Internal so tests can drive it without a tap.
+    func performPrimaryAction() {
         switch style {
         case .disconnected, .inFlight:
             retryAction()

@@ -4,7 +4,9 @@ import SnapshotTesting
 import SwiftUI
 import Testing
 
-struct WebViewEmptyStateViewSnapshotTests {
+/// The stand-by view is what the app actually shows over the web view, so the certificate empty states
+/// are snapshotted here as the user sees them, on top of the `WebViewEmptyStateView` variants.
+struct HomeAssistantStandByViewSnapshotTests {
     @MainActor @Test func clientCertificateRequiredSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
@@ -31,7 +33,16 @@ struct WebViewEmptyStateViewSnapshotTests {
 
     @MainActor
     private func makeView(style: WebViewEmptyStateStyle) -> some View {
-        // The same configuration the previews show.
-        WebViewEmptyStatePreview.view(style: style, clientCertificateAction: {})
+        let server = HomeAssistantStandByView.previewServer(
+            name: "mTLS Server",
+            configuredURLTypes: [.external],
+            activeURLType: .external
+        )
+        return HomeAssistantStandByView(
+            server: server,
+            emptyState: HomeAssistantStandByView.previewEmptyState(style: style, server: server)
+        )
+        // The stand-by content fades in on appear; snapshot its settled state rather than the fade.
+        .transaction { $0.disablesAnimations = true }
     }
 }

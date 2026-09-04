@@ -1,6 +1,7 @@
 import Shared
 import SwiftUI
 import UIKit
+import WebKit
 
 // MARK: - Client certificate (mTLS)
 
@@ -63,10 +64,48 @@ extension WebViewController {
         server.info.connection.clientCertificate != nil ? .rejected : .required
     }
 
+    /// Takes over an intercepted main-frame error response when it is a proxy refusing the request over
+    /// the client certificate (see `isClientCertificateRefusal`): cancels the navigation and shows the
+    /// certificate empty state. Returns whether it did, so the caller can fall through to the regular
+    /// error-response handling otherwise.
+    ///
+    /// A connection that already failed over the certificate is reused without a new handshake (and so
+    /// without a new challenge), which is why a known problem counts as much as a challenge on this
+    /// navigation.
+    func handleClientCertificateRefusalIfNeeded(
+        statusCode: Int,
+        responseURL: URL?,
+        decisionHandler: (WKNavigationResponsePolicy) -> Void
+    ) -> Bool {
+        guard Self.isClientCertificateRefusal(
+            statusCode: statusCode,
+            receivedClientCertificateChallenge: didReceiveClientCertificateChallenge || clientCertificateIssue != nil
+        ) else { return false }
+
+        let issue = clientCertificateIssueForRefusal
+        Current.Log.error("[mTLS] Main frame refused over the client certificate (\(issue))")
+        clientCertificateIssue = issue
+        didHandleServerErrorResponse = true
+        decisionHandler(.cancel)
+        latestLoadError = Self.serverErrorLoadError(for: responseURL)
+        connectionState = Self.connectionStateForInterceptedServerError(current: connectionState)
+        showEmptyState()
+        return true
+    }
+
     /// Opens the same certificate import the onboarding uses, over the empty state. Importing stores the
     /// certificate on the server and reloads; cancelling leaves the empty state up.
     func presentClientCertificateImport() {
-        let importView = ClientCertificateOnboardingView(
+        let controller = UIHostingController(
+            rootView: NavigationView { makeClientCertificateImportView() }.navigationViewStyle(.stack)
+        )
+        controller.modalPresentationStyle = .formSheet
+        presentOverlayController(controller: controller, animated: true)
+    }
+
+    /// The import sheet's content, with its outcomes wired back into this controller.
+    func makeClientCertificateImportView() -> ClientCertificateOnboardingView {
+        ClientCertificateOnboardingView(
             onImport: { [weak self] certificate in
                 self?.applyImportedClientCertificate(certificate)
             },
@@ -74,14 +113,10 @@ extension WebViewController {
                 self?.dismissOverlayController(animated: true, completion: nil)
             }
         )
-        let controller = UIHostingController(
-            rootView: NavigationView { importView }.navigationViewStyle(.stack)
-        )
-        controller.modalPresentationStyle = .formSheet
-        presentOverlayController(controller: controller, animated: true)
     }
 
-    private func applyImportedClientCertificate(_ certificate: ClientCertificate) {
+    /// Stores the imported certificate on the server and reloads the frontend with it.
+    func applyImportedClientCertificate(_ certificate: ClientCertificate) {
         Current.Log.info("[mTLS] Imported client certificate for \(server.identifier): \(certificate.displayName)")
         server.update { info in
             info.connection.clientCertificate = certificate

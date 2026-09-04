@@ -542,7 +542,8 @@ struct HomeAssistantStandByView: View {
     }
 }
 
-private extension HomeAssistantStandByView {
+/// Preview fixtures, shared with the snapshot tests so they render the same configurations.
+extension HomeAssistantStandByView {
     static func previewServer(
         name: String,
         configuredURLTypes: [ConnectionInfo.URLType],

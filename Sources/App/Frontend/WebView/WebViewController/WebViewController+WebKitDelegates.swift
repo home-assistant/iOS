@@ -150,21 +150,12 @@ extension WebViewController {
         )
 
         // A proxy refusing the request over the client certificate gets no navigation error, only this
-        // response, so it is the one place the certificate empty state can come from. A connection that
-        // already failed over the certificate is reused without a new handshake (and so without a new
-        // challenge), which is why a known problem counts as much as a challenge on this navigation.
-        if Self.isClientCertificateRefusal(
+        // response, so it is the one place the certificate empty state can come from.
+        if handleClientCertificateRefusalIfNeeded(
             statusCode: httpResponse.statusCode,
-            receivedClientCertificateChallenge: didReceiveClientCertificateChallenge || clientCertificateIssue != nil
+            responseURL: navigationResponse.response.url,
+            decisionHandler: decisionHandler
         ) {
-            let issue = clientCertificateIssueForRefusal
-            Current.Log.error("[mTLS] Main frame refused over the client certificate (\(issue))")
-            clientCertificateIssue = issue
-            didHandleServerErrorResponse = true
-            decisionHandler(.cancel)
-            latestLoadError = Self.serverErrorLoadError(for: navigationResponse.response.url)
-            connectionState = Self.connectionStateForInterceptedServerError(current: connectionState)
-            showEmptyState()
             return
         }
 
