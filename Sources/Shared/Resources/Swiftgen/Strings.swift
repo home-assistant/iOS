@@ -6526,6 +6526,12 @@ public enum L10n {
         /// Apple Health is not available on this device.
         public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.error.unavailable") }
       }
+      public enum Metric {
+        public enum InBed {
+          /// Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.in_bed.footer") }
+        }
+      }
       public enum Sensors {
         /// Enable all Apple Health sensors
         public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.health.sensors.enable_all") }
