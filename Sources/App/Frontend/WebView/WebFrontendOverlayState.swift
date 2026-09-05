@@ -28,7 +28,7 @@ final class WebFrontendOverlayState: ObservableObject {
 
     /// Data + actions to render the empty state as a SwiftUI overlay in `HomeAssistantStandByView`. Built by
     /// `WebViewController`, which owns the connection state and the actions (retry / settings / error
-    /// details / re-auth).
+    /// details / re-auth / certificate import).
     struct EmptyStateContent {
         let style: WebViewEmptyStateStyle
         let server: Server
@@ -38,6 +38,8 @@ final class WebFrontendOverlayState: ObservableObject {
         let settingsAction: () -> Void
         let errorDetailsAction: () -> Void
         let reauthAction: (ConnectionInfo.URLType) -> Void
+        /// Opens the client certificate import flow; the primary action of the client certificate styles.
+        let clientCertificateAction: () -> Void
         let dismissAction: () -> Void
     }
 }
