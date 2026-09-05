@@ -15,11 +15,11 @@ struct CoverIntent: SetValueIntent {
     @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
     var toggle: Bool
 
-    func perform() async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId }),
               let connection = Current.api(for: server)?.connection else {
-            return .result()
+            return .result(dialog: .init(stringLiteral: L10n.AppIntents.Error.noServer))
         }
 
         var service = Service.toggle.rawValue
@@ -34,11 +34,19 @@ struct CoverIntent: SetValueIntent {
                 data: [
                     "entity_id": entity.entityId,
                 ]
-            )).promise.pipe { result in
-                print(result)
+            )).promise.pipe { _ in
                 continuation.resume()
             }
         }
-        return .result()
+
+        let dialog: String
+        if toggle {
+            dialog = L10n.AppIntents.Dialog.toggled(entity.displayString)
+        } else {
+            dialog = value
+                ? L10n.AppIntents.Dialog.opened(entity.displayString)
+                : L10n.AppIntents.Dialog.closed(entity.displayString)
+        }
+        return .result(dialog: .init(stringLiteral: dialog))
     }
 }

@@ -1,0 +1,25 @@
+/* Spoken phrases for the App Shortcuts. Keys match the phrases written in code. */
+
+"Run ${script} in ${applicationName}" = "Run ${script} in ${applicationName}";
+"Run the ${script} script in ${applicationName}" = "Run the ${script} script in ${applicationName}";
+"Run a script in ${applicationName}" = "Run a script in ${applicationName}";
+
+"Activate ${scene} in ${applicationName}" = "Activate ${scene} in ${applicationName}";
+"Activate the ${scene} scene in ${applicationName}" = "Activate the ${scene} scene in ${applicationName}";
+"Activate a scene in ${applicationName}" = "Activate a scene in ${applicationName}";
+
+"Trigger ${automation} in ${applicationName}" = "Trigger ${automation} in ${applicationName}";
+"Trigger the ${automation} automation in ${applicationName}" = "Trigger the ${automation} automation in ${applicationName}";
+"Trigger an automation in ${applicationName}" = "Trigger an automation in ${applicationName}";
+
+"Check an entity in ${applicationName}" = "Check an entity in ${applicationName}";
+"Get an entity state from ${applicationName}" = "Get an entity state from ${applicationName}";
+
+"Ask ${applicationName}" = "Ask ${applicationName}";
+"Ask ${applicationName} Assist" = "Ask ${applicationName} Assist";
+"Talk to ${applicationName}" = "Talk to ${applicationName}";
+
+"Get a camera snapshot from ${applicationName}" = "Get a camera snapshot from ${applicationName}";
+"Show me a camera in ${applicationName}" = "Show me a camera in ${applicationName}";
+
+"Perform an action in ${applicationName}" = "Perform an action in ${applicationName}";

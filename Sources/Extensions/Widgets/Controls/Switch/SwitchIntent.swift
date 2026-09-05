@@ -15,11 +15,11 @@ struct SwitchIntent: SetValueIntent {
     @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
     var toggle: Bool
 
-    func perform() async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId }),
               let connection = Current.api(for: server)?.connection else {
-            return .result()
+            return .result(dialog: .init(stringLiteral: L10n.AppIntents.Error.noServer))
         }
 
         var service = Service.toggle.rawValue
@@ -41,6 +41,10 @@ struct SwitchIntent: SetValueIntent {
                 continuation.resume()
             }
         }
-        return .result()
+        return .result(dialog: .init(stringLiteral: OnOffIntentDialog.text(
+            entityName: entity.displayString,
+            toggle: toggle,
+            value: value
+        )))
     }
 }

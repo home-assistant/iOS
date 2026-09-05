@@ -71,6 +71,15 @@ public enum AppIntentServerAPI {
         #endif
     }
 
+    /// The live state of a single entity, with its attributes.
+    public static func entityState(server: Server, entityId: String) async throws -> HAEntity {
+        #if os(watchOS)
+        return try await entityStateViaREST(server: server, entityId: entityId)
+        #else
+        return try await entityStateViaWebSocket(server: server, entityId: entityId)
+        #endif
+    }
+
     /// Runs a written prompt through Assist and returns the spoken answer.
     ///
     /// The WebSocket build runs the selected Assist pipeline end to end. REST has no pipeline

@@ -144,6 +144,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
         }
+        if #available(iOS 17.0, *) {
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
+        }
 
         return true
     }

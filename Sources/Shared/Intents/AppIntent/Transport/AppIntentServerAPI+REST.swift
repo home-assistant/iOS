@@ -61,6 +61,15 @@ extension AppIntentServerAPI {
         return entities(fromRESTStates: json, domain: domain)
     }
 
+    static func entityStateViaREST(server: Server, entityId: String) async throws -> HAEntity {
+        let json = try await HomeAssistantRESTClient.sendForJSON(
+            server: server,
+            path: ["states", entityId],
+            timeout: requestTimeout
+        )
+        return try entityState(fromRESTState: json)
+    }
+
     static func assistViaREST(server: Server, prompt: String, pipelineId: String?) async throws -> String {
         // REST has no pipeline runner, so the pipeline's own conversation agent and language are
         // used — the same ones its intent stage would have run with. "Preferred" (no id) leaves both
@@ -153,6 +162,14 @@ extension AppIntentServerAPI {
             return try? HAEntity(data: HAData(value: state))
         }
         return sortedByDisplayName(entities)
+    }
+
+    /// Decodes a `GET /api/states/{entity_id}` body with the same HAKit model the WebSocket path uses.
+    public static func entityState(fromRESTState json: Any) throws -> HAEntity {
+        guard let state = json as? [String: Any] else {
+            throw HomeAssistantRESTError.invalidResponse
+        }
+        return try HAEntity(data: HAData(value: state))
     }
 
     /// Extracts the spoken answer from a `POST /api/conversation/process` body, throwing when the

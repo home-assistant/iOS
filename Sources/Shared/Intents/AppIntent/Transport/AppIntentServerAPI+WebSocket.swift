@@ -98,6 +98,15 @@ extension AppIntentServerAPI {
             .asyncValue(timeout: requestTimeout)
     }
 
+    static func entityStateViaWebSocket(server: Server, entityId: String) async throws -> HAEntity {
+        // REST over the socket, not the states cache: the cache is a subscription for one read.
+        let data = try await haConnection(for: server)
+            .send(HARequest(type: .rest(.get, "states/\(entityId)"), shouldRetry: true))
+            .promise
+            .asyncValue(timeout: requestTimeout)
+        return try HAEntity(data: data)
+    }
+
     static func assistViaWebSocket(server: Server, prompt: String, pipelineId: String?) async throws -> String {
         try await AssistPromptRunner(server: server).assist(prompt: prompt, pipelineId: pipelineId)
     }
