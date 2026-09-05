@@ -6,7 +6,14 @@ import Shared
 /// The Focus Filter the user adds to a Focus in Settings › Focus, picking one of the names they
 /// created in the app. iOS runs this when that Focus activates, which is the only moment it tells
 /// us anything about _which_ Focus is running.
-struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
+///
+/// `LiveActivityIntent` is not about Live Activities here: a plain `SetFocusFilterIntent` is only
+/// reliably performed while the app is in the foreground, and silently skipped when iOS would have
+/// to launch the app to run it — which is every Focus that starts with the app closed, so the
+/// filter misses exactly the moments it exists for. The conformance opts the intent into being run
+/// in the app's process in the background, which is what makes it run at all.
+@available(iOS 17.0, *)
+struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent, LiveActivityIntent {
     static let title: LocalizedStringResource = .init(
         "app_intents.focus_filter.title",
         defaultValue: "Report Focus name"
