@@ -290,9 +290,10 @@ jobs:
           path: fastlane/test_output
 
       # Coverage that could not be measured must not block: when the conversion or the
-      # artifact is missing, this step is skipped, no output is set, and every step
-      # below no-ops rather than requesting changes nobody can act on. The step itself
-      # is `continue-on-error` because the script exits nonzero to report the shortfall.
+      # artifact is missing, this step is skipped and sets no output, which leaves the
+      # gate reporting nothing and dismisses any request an earlier run left behind,
+      # rather than blocking on a number nobody can act on. The step itself is
+      # `continue-on-error` because the script exits nonzero to report the shortfall.
       - name: Measure patch coverage
         id: coverage
         if: steps.tracefile.outcome == 'success'
@@ -364,9 +365,12 @@ jobs:
             await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'REQUEST_CHANGES', body })
             core.info(`Requested changes: patch coverage ${process.env.COVERAGE}% is below ${threshold}%`)
 
-      - name: Dismiss the coverage review once it is met
+      # Runs whether coverage met the bar or could not be measured at all, so a
+      # request from an earlier run is never left blocking a pull request whose
+      # coverage this run has no number for.
+      - name: Dismiss an outstanding coverage review
         if: >-
-          steps.coverage.outputs.passed == 'true' &&
+          steps.coverage.outputs.passed != 'false' &&
           github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
@@ -387,9 +391,11 @@ jobs:
               (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
             )
 
-            const message =
-              `Patch coverage is now ${process.env.COVERAGE}%, at or above the ` +
-              `${process.env.COVERAGE_THRESHOLD}% threshold.`
+            const coverage = process.env.COVERAGE
+            const message = coverage
+              ? `Patch coverage is now ${coverage}%, at or above the ` +
+                `${process.env.COVERAGE_THRESHOLD}% threshold.`
+              : 'Patch coverage could not be measured on this run, so the gate no longer applies.'
 
             for (const review of outstanding) {
               await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })

@@ -83,6 +83,8 @@ What counts, and what does not:
 - `Tests`, `Sources/SharedTesting` and the `Resources` directories are excluded, matching
   the `ignore` list in `codecov.yaml`. Keep the two lists in step.
 - A pull request that changes nothing coverable (docs, assets, project settings) passes.
+- A run with no tracefile to read, because the tests or the conversion failed, skips the
+  gate and dismisses any request an earlier run left behind.
 
 Pushing tests that cover the missing lines dismisses the review automatically. When new
 code genuinely cannot be unit tested — UIKit plumbing, a system framework wrapper — a

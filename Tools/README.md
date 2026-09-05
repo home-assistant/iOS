@@ -47,7 +47,9 @@ python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult --lcov c
 
 Measures how much of a pull request's own diff the unit tests cover, out of the LCOV
 tracefile `xccov_to_lcov.py` writes. CI's `patch-coverage` job gates on it: below 90%, it
-fails and requests changes on the pull request.
+fails and requests changes on the pull request. When the tracefile is missing, because the
+test run or the conversion failed, that job skips the gate instead of blocking on a number
+it could not measure.
 
 **Usage:**
 ```bash
