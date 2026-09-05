@@ -32,10 +32,7 @@ public enum WidgetGalleryFamilyMetrics {
     /// Whether the family lives on the lock screen, where the system renders everything on a dark,
     /// desaturated backdrop rather than on a card.
     public static func isAccessory(_ family: WidgetFamily) -> Bool {
-        switch family {
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline: return true
-        default: return false
-        }
+        family.isLockScreenAccessory
     }
 
     public static func title(for family: WidgetFamily) -> String {
