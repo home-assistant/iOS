@@ -27,16 +27,16 @@ struct FanIntent: SetValueIntent {
             service = value ? Service.turnOn.rawValue : Service.turnOff.rawValue
         }
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
+        do {
+            try await connection.send(.callService(
                 domain: .init(stringLiteral: Domain.fan.rawValue),
                 service: .init(stringLiteral: service),
                 data: [
                     "entity_id": fan.entityId,
                 ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+            )).promise.async()
+        } catch {
+            throw ShortcutAppIntentError(error.localizedDescription)
         }
         return .result(dialog: .init(stringLiteral: OnOffIntentDialog.text(
             entityName: fan.displayString,

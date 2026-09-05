@@ -39,6 +39,35 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "bolt"
         )
         AppShortcut(
+            intent: TurnOnEntityAppIntent(),
+            phrases: [
+                "Turn on \(\.$entity) in \(.applicationName)",
+                "Open \(\.$entity) in \(.applicationName)",
+                "Turn something on in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.turn_on.title", defaultValue: "Turn On"),
+            systemImageName: "power"
+        )
+        AppShortcut(
+            intent: TurnOffEntityAppIntent(),
+            phrases: [
+                "Turn off \(\.$entity) in \(.applicationName)",
+                "Close \(\.$entity) in \(.applicationName)",
+                "Turn something off in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.turn_off.title", defaultValue: "Turn Off"),
+            systemImageName: "power"
+        )
+        AppShortcut(
+            intent: ToggleEntityAppIntent(),
+            phrases: [
+                "Toggle \(\.$entity) in \(.applicationName)",
+                "Toggle something in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.toggle.title", defaultValue: "Toggle"),
+            systemImageName: "switch.2"
+        )
+        AppShortcut(
             intent: GetEntityStateAppIntent(),
             phrases: [
                 "Check an entity in \(.applicationName)",

@@ -2,6 +2,7 @@ import HADesignSystem
 import SFSafeSymbols
 import Shared
 import SwiftUI
+import UIKit
 
 /// The card Siri and the Shortcuts app show under the spoken answer of `GetEntityStateAppIntent`.
 @available(macOS 13.0, *)
@@ -38,18 +39,25 @@ struct EntityStateSnippetView: View {
 
     @ViewBuilder
     private var icon: some View {
+        // The icon is a Material Design name, an SF Symbol name, or something neither renders.
         if let image = MaterialDesignIcons.pngData(forServersideValue: state.iconName).flatMap(UIImage.init(data:)) {
-            Image(uiImage: image)
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(iconColor)
+            templateIcon(image)
+        } else if let symbol = UIImage(systemName: state.iconName) {
+            templateIcon(symbol)
         } else {
-            Image(systemSymbol: SFSymbol(rawValue: state.iconName))
+            Image(systemSymbol: .powerCircleFill)
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(iconColor)
         }
+    }
+
+    private func templateIcon(_ image: UIImage) -> some View {
+        Image(uiImage: image)
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .foregroundStyle(iconColor)
     }
 
     /// `Floor • Area • Device`, whichever of the three are known.

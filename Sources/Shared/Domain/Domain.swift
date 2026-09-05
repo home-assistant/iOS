@@ -672,6 +672,13 @@ public extension Domain {
         .vacuum,
     ]
 
+    /// Domains a spoken command can switch on and off. Narrowed to the domains whose on and off
+    /// services differ, so "turn off" never re-activates a scene, and excluding locks, which carry
+    /// their own confirmation rather than answering a phrase.
+    static var voiceControllable: [Domain] {
+        allCases.filter { $0.toggleIsStateAware && $0 != .lock }
+    }
+
     /// Domains that always show their own confirmation when tapped (state-aware lock handling),
     /// making the per-item "require confirmation" customization irrelevant.
     static let builtInConfirmationDomains: [Domain] = [

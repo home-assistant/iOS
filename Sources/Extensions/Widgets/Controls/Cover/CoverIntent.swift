@@ -27,16 +27,16 @@ struct CoverIntent: SetValueIntent {
             service = value ? Service.openCover.rawValue : Service.closeCover.rawValue
         }
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
+        do {
+            try await connection.send(.callService(
                 domain: .init(stringLiteral: Domain.cover.rawValue),
                 service: .init(stringLiteral: service),
                 data: [
                     "entity_id": entity.entityId,
                 ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+            )).promise.async()
+        } catch {
+            throw ShortcutAppIntentError(error.localizedDescription)
         }
 
         let dialog: String

@@ -27,16 +27,16 @@ struct LightIntent: SetValueIntent {
             service = value ? Service.turnOn.rawValue : Service.turnOff.rawValue
         }
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
+        do {
+            try await connection.send(.callService(
                 domain: .init(stringLiteral: Domain.light.rawValue),
                 service: .init(stringLiteral: service),
                 data: [
                     "entity_id": light.entityId,
                 ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+            )).promise.async()
+        } catch {
+            throw ShortcutAppIntentError(error.localizedDescription)
         }
         return .result(dialog: .init(stringLiteral: OnOffIntentDialog.text(
             entityName: light.displayString,

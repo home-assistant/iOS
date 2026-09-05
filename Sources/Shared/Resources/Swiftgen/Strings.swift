@@ -449,6 +449,24 @@ public enum L10n {
       /// Icon for closed state
       public static var title: String { return L10n.tr("Localizable", "app_intents.closed_state_icon.title") }
     }
+    public enum Control {
+      public enum Error {
+        /// %@ can't be turned on or off
+        public static func unsupported(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.control.error.unsupported", String(describing: p1))
+        }
+      }
+    }
+    public enum ControllableEntity {
+      public enum Entity {
+        /// Controllable Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.controllable_entity.entity.name") }
+      }
+      public enum Parameter {
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "app_intents.controllable_entity.parameter.entity") }
+      }
+    }
     public enum Controls {
       public enum Assist {
         /// Assist in app
@@ -863,6 +881,24 @@ public enum L10n {
       /// Switch
       public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
     }
+    public enum Toggle {
+      /// Flips an entity to its opposite state
+      public static var description: String { return L10n.tr("Localizable", "app_intents.toggle.description") }
+      /// Toggle
+      public static var title: String { return L10n.tr("Localizable", "app_intents.toggle.title") }
+    }
+    public enum TurnOff {
+      /// Turns off a light, switch or fan, or closes a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_off.description") }
+      /// Turn off
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_off.title") }
+    }
+    public enum TurnOn {
+      /// Turns on a light, switch or fan, or opens a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on.description") }
+      /// Turn on
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_on.title") }
+    }
     public enum UpdateLocation {
       /// Send a location update to Home Assistant
       public static var description: String { return L10n.tr("Localizable", "app_intents.update_location.description") }
@@ -898,9 +934,17 @@ public enum L10n {
       /// Camera Snapshot
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.camera_snapshot.title") }
     }
+    public enum Close {
+      /// Close
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.close.title") }
+    }
     public enum GetEntityState {
       /// Get Entity State
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.get_entity_state.title") }
+    }
+    public enum Open {
+      /// Open
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
     }
     public enum PerformAction {
       /// Perform Action
@@ -910,9 +954,21 @@ public enum L10n {
       /// Run Script
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.run_script.title") }
     }
+    public enum Toggle {
+      /// Toggle
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.toggle.title") }
+    }
     public enum TriggerAutomation {
       /// Trigger Automation
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.trigger_automation.title") }
+    }
+    public enum TurnOff {
+      /// Turn Off
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.turn_off.title") }
+    }
+    public enum TurnOn {
+      /// Turn On
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.turn_on.title") }
     }
   }
 

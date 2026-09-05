@@ -19,16 +19,16 @@ struct ButtonIntent: AppIntent {
         // Button domains use the "press" service
         let domain = Domain(entityId: entity.entityId) ?? .button
 
-        await withCheckedContinuation { continuation in
-            connection.send(.callService(
+        do {
+            try await connection.send(.callService(
                 domain: .init(stringLiteral: domain.rawValue),
                 service: .init(stringLiteral: "press"),
                 data: [
                     "entity_id": entity.entityId,
                 ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+            )).promise.async()
+        } catch {
+            throw ShortcutAppIntentError(error.localizedDescription)
         }
         return .result(dialog: .init(stringLiteral: L10n.AppIntents.Dialog.pressed(entity.displayString)))
     }

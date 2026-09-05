@@ -1,4 +1,6 @@
-/* Spoken phrases for the App Shortcuts. Keys match the phrases written in code. */
+/* Spoken phrases for the App Shortcuts. The key is the English phrase exactly as written in code.
+   ${applicationName} is the app name and must stay in every phrase; ${entity}, ${script}, ${scene}
+   and ${automation} are replaced by the name the person says. Translate the wording around them. */
 
 "Run ${script} in ${applicationName}" = "Run ${script} in ${applicationName}";
 "Run the ${script} script in ${applicationName}" = "Run the ${script} script in ${applicationName}";
@@ -23,3 +25,14 @@
 "Show me a camera in ${applicationName}" = "Show me a camera in ${applicationName}";
 
 "Perform an action in ${applicationName}" = "Perform an action in ${applicationName}";
+
+"Turn on ${entity} in ${applicationName}" = "Turn on ${entity} in ${applicationName}";
+"Open ${entity} in ${applicationName}" = "Open ${entity} in ${applicationName}";
+"Turn something on in ${applicationName}" = "Turn something on in ${applicationName}";
+
+"Turn off ${entity} in ${applicationName}" = "Turn off ${entity} in ${applicationName}";
+"Close ${entity} in ${applicationName}" = "Close ${entity} in ${applicationName}";
+"Turn something off in ${applicationName}" = "Turn something off in ${applicationName}";
+
+"Toggle ${entity} in ${applicationName}" = "Toggle ${entity} in ${applicationName}";
+"Toggle something in ${applicationName}" = "Toggle something in ${applicationName}";
