@@ -51,5 +51,42 @@ CI runs on GitHub Actions (`.github/workflows/ci.yml`):
 - **Linting**: SwiftFormat, SwiftLint, Rubocop, YamlLint
 - **Unit Tests**: Runs the `Tests-Unit` scheme
 - **Build Verification**: Ensures the app builds cleanly
+- **Patch coverage**: At least 90% of the lines a PR changes must be covered by the unit tests
 
 All lint checks and tests must pass before a PR can be merged.
+
+### The 90% patch coverage gate
+
+The `patch-coverage` job measures how much of a pull request's *own* diff the unit tests
+execute — not the coverage of the project as a whole, which is tracked separately by the
+Codecov statuses in `codecov.yaml`. Below 90%, the job fails and `github-actions[bot]`
+submits a **changes-requested review** naming the shortfall; the per-file breakdown and the
+list of changed lines no test runs are in the run's job summary.
+
+`Tools/diff_coverage.py` computes the number from the LCOV tracefile that
+`Tools/xccov_to_lcov.py` writes out of the test run's `.xcresult`, and the same script
+reproduces the CI verdict locally:
+
+```bash
+bundle exec fastlane test
+python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult \
+  --lcov fastlane/test_output/coverage.lcov
+python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov --base origin/main
+```
+
+What counts, and what does not:
+
+- Only lines the coverage report marks executable count, so comments, declarations and
+  braces never drag the number down.
+- Files no target in the `Tests-Unit` scheme builds have no coverage data and are skipped
+  entirely — a watchOS-only or widget-only file cannot fail the gate.
+- `Tests`, `Sources/SharedTesting` and the `Resources` directories are excluded, matching
+  the `ignore` list in `codecov.yaml`. Keep the two lists in step.
+- A pull request that changes nothing coverable (docs, assets, project settings) passes.
+- A run with no tracefile to read, because the tests or the conversion failed, skips the
+  gate and dismisses any request an earlier run left behind.
+
+Pushing tests that cover the missing lines dismisses the review automatically. When new
+code genuinely cannot be unit tested — UIKit plumbing, a system framework wrapper — a
+maintainer dismisses the review to let the change land; write the reason into the PR
+description so the next reader knows why.
