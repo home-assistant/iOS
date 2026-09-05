@@ -7,7 +7,8 @@ public extension WidgetFamily {
     var isLockScreenAccessory: Bool {
         switch self {
         case .accessoryCircular, .accessoryRectangular, .accessoryInline: return true
-        default: return false
+        case .systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: return false
+        @unknown default: return false
         }
     }
 }

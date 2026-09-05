@@ -11,11 +11,11 @@ import WidgetKit
 /// The Run Scripts widget on the lock screen, drawn the way the widget draws it: the script's
 /// glyph, wrapped in the intent button that runs it, on the system's accessory background.
 ///
-/// What these pin is the arrangement, not just the look. The button's label has to be the whole
-/// slot — a tap on the lock screen only runs the intent when it lands on the label, and lands on the
-/// app otherwise (home-assistant/iOS#5642). `controlOutlined` draws that label's bounds so the
-/// snapshot shows the control covering the slot, and `deepLink` is the same accessory when it is a
-/// link rather than a button, which is what the Open Page widget draws.
+/// These pin the arrangement, not just the look. The button's label has to be the whole slot: a tap
+/// on the lock screen only runs the intent when it lands on the label, and launches the app
+/// otherwise (home-assistant/iOS#5642). `controlOutlined` draws that label's bounds so the snapshot
+/// shows the control covering the slot, and `deepLink` is the same accessory when it is a link
+/// rather than a button, which is what the Open Page widget draws.
 struct WidgetScriptsLockScreenSnapshotTests {
     /// One script, the way the scripts widget hands its single accessory item over.
     private static var script: WidgetBasicViewModel {
