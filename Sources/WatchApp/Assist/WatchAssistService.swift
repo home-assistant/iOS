@@ -26,6 +26,19 @@ final class WatchAssistService: ObservableObject {
     private var reachabilityObservation: HAWatchConnectivity.ObservationToken?
     private var cancellable: Cancellable?
 
+    /// The recording being streamed to the phone, if any. Created by the first `streamAudio` of a
+    /// recording and released once it ended. Audio arrives on the capture queue while the
+    /// recording is started and ended from the main queue, hence the lock.
+    private var audioStreamer: WatchAssistAudioStreamer?
+    private var isCapturingAudio = false
+    private let audioStreamLock = NSLock()
+    /// Fires when the pipeline stopped taking audio for the streamed recording: the recorder's
+    /// cue to stop. Called on an arbitrary queue.
+    var onAudioStreamStopListening: (() -> Void)?
+    /// Fires when the streamed recording could not be delivered; the session is over. Called on
+    /// an arbitrary queue.
+    var onAudioStreamError: ((Error) -> Void)?
+
     init(serverId: String, pipelineId: String) {
         self.serverId = serverId
         self.pipelineId = pipelineId
@@ -72,6 +85,68 @@ final class WatchAssistService: ObservableObject {
         })
     }
 
+    /// Stream audio of the recording in progress to the phone. The first call of a recording
+    /// starts the stream (and, on the phone, the pipeline run); the phone answers every chunk with
+    /// whether the pipeline still listens, reported through `onAudioStreamStopListening`.
+    func streamAudio(_ data: Data, sampleRate: Double) {
+        audioStreamLock.lock()
+        // A capture buffer can still land after the recording ended (the tap is removed without
+        // waiting for one in flight): it must not open a new stream, and with it a new run.
+        guard isCapturingAudio else {
+            audioStreamLock.unlock()
+            return
+        }
+        if audioStreamer == nil {
+            guard Communicator.shared.currentReachability == .immediatelyReachable else {
+                isCapturingAudio = false
+                audioStreamLock.unlock()
+                onAudioStreamError?(WatchSendError.notImmediate)
+                return
+            }
+            Current.Log.verbose("Starting Assist audio stream")
+            let streamer = WatchAssistAudioStreamer(
+                serverId: serverId,
+                pipelineId: pipelineId,
+                sampleRate: sampleRate,
+                sender: Communicator.shared
+            )
+            streamer.onStopListening = { [weak self] in
+                self?.onAudioStreamStopListening?()
+            }
+            streamer.onError = { [weak self] error in
+                self?.onAudioStreamError?(error)
+            }
+            audioStreamer = streamer
+        }
+        let streamer = audioStreamer
+        audioStreamLock.unlock()
+        streamer?.enqueue(audio: data)
+    }
+
+    /// The recorder started: audio handed to `streamAudio` from now until `endAudioStream`
+    /// belongs to one recording.
+    func beginAudioCapture() {
+        audioStreamLock.lock()
+        isCapturingAudio = true
+        audioStreamer = nil
+        audioStreamLock.unlock()
+    }
+
+    /// The recording ended on the watch: flush what is left and tell the phone the audio is
+    /// complete. A no-op when nothing was streamed.
+    func endAudioStream() {
+        audioStreamLock.lock()
+        isCapturingAudio = false
+        let streamer = audioStreamer
+        audioStreamer = nil
+        audioStreamLock.unlock()
+        streamer?.end()
+    }
+
+    /// Upload a finished recording in one go.
+    ///
+    /// - Note: Deprecated: `streamAudio` sends the audio while it is captured, so the pipeline's
+    ///   own voice-activity detection ends the recording. Goes away with the ungating change.
     func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
         cancellable?.cancel()
         guard Communicator.shared.currentReachability == .immediatelyReachable else {

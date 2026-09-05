@@ -12,10 +12,19 @@ extension WatchAssistView {
         // observer from its init.
         WatchAssistView(viewModel: WatchAssistViewModel(
             assistService: WatchAssistService(serverId: serverId, pipelineId: pipelineId),
-            audioRecorder: WatchAudioRecorder(),
+            audioRecorder: makeAudioRecorder(),
             audioPlayer: AudioPlayer(),
             immediateCommunicatorService: .shared,
             prompt: prompt
         ))
+    }
+
+    private static func makeAudioRecorder() -> any WatchAudioRecorderProtocol {
+        // Streaming lets the pipeline's own voice-activity detection end the recording. Limited to
+        // TestFlight while the live capture path proves itself on real watches.
+        if Current.isTestFlight {
+            return WatchStreamingAudioRecorder()
+        }
+        return WatchAudioRecorder()
     }
 }

@@ -57,6 +57,19 @@ final class WatchAssistViewModel: ObservableObject {
         self.audioPlayer = audioPlayer
         self.prompt = prompt
         audioRecorder.delegate = self
+        assistService.onAudioStreamStopListening = { [weak self] in
+            // The pipeline heard the end of the command: stop capturing. `didStopRecording` then
+            // ends the stream and moves the session on to waiting for the response.
+            self?.runInMainThread { self?.stopRecording() }
+        }
+        assistService.onAudioStreamError = { [weak self] error in
+            Current.Log.error("Failed to stream Assist audio from watch: \(error.localizedDescription)")
+            self?.runInMainThread {
+                self?.stopRecording()
+                self?.appendChatItem(.init(content: L10n.Assist.Watch.NotReachable.title, itemType: .error))
+                self?.updateState(state: .idle)
+            }
+        }
         immediateCommunicatorService.addObserver(.init(delegate: self))
     }
 
@@ -212,6 +225,7 @@ final class WatchAssistViewModel: ObservableObject {
 extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     @MainActor
     func didStartRecording() {
+        assistService.beginAudioCapture()
         runInMainThread { [weak self] in
             self?.state = .recording
         }
@@ -219,10 +233,17 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
 
     @MainActor
     func didStopRecording() {
+        // Streaming recordings: whatever is still buffered goes out, then the phone learns the
+        // audio is complete. A file recording has no stream, so this is a no-op for it.
+        assistService.endAudioStream()
         runInMainThread { [weak self] in
             self?.state = .waitingForPipelineResponse
             self?.audioLevel = 0
         }
+    }
+
+    func didOutputAudio(_ data: Data, sampleRate: Double) {
+        assistService.streamAudio(data, sampleRate: sampleRate)
     }
 
     func didUpdateAudioLevel(_ level: Float) {

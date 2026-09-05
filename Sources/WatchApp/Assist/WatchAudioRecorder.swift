@@ -5,6 +5,11 @@ import Shared
 protocol WatchAudioRecorderDelegate: AnyObject {
     func didStartRecording()
     func didStopRecording()
+    /// Streaming recorders (`WatchStreamingAudioRecorder`): the 16-bit mono PCM captured since the
+    /// previous call, delivered while the recording is still in progress. Arrives on the capture
+    /// queue.
+    func didOutputAudio(_ data: Data, sampleRate: Double)
+    /// File recorders (`WatchAudioRecorder`): the whole recording, once it ended.
     func didFinishRecording(audioURL: URL, audioSampleRate: Double)
     func didFailRecording(error: Error)
     /// Normalized microphone input level (0...1) emitted while recording, for UI feedback.
@@ -12,6 +17,8 @@ protocol WatchAudioRecorderDelegate: AnyObject {
 }
 
 extension WatchAudioRecorderDelegate {
+    func didOutputAudio(_ data: Data, sampleRate: Double) {}
+    func didFinishRecording(audioURL: URL, audioSampleRate: Double) {}
     func didUpdateAudioLevel(_ level: Float) {}
 }
 
@@ -21,6 +28,11 @@ protocol WatchAudioRecorderProtocol: ObservableObject {
     func stopRecording()
 }
 
+/// Records Assist audio to a file and ends the recording itself after a stretch of silence.
+///
+/// - Note: Deprecated. `WatchStreamingAudioRecorder` streams the audio while it is captured so the
+///   Assist pipeline's own voice-activity detection ends the recording; this recorder stays in use
+///   outside TestFlight only until streaming graduates, and goes away with the ungating change.
 final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private enum Constants {
         /// Window of microphone average power (dBFS) mapped onto the 0...1 level, the same one the

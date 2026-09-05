@@ -12,7 +12,17 @@ final class WatchCommunicatorService {
 
     // Assist
     private var assistService: AssistServiceProtocol?
+    /// A whole recording uploaded by a watch build that predates streaming, sent to the pipeline
+    /// once it takes audio. Goes away with the legacy `assistAudioDataChunked` handler.
     private var pendingAudioData: Data?
+
+    /// The recording currently streamed live from the watch, relayed into the pipeline as it
+    /// arrives. Replaced by the next recording and dropped once its run ended. Only touched on the
+    /// main queue: chunks are delivered there, and so are HAKit's pipeline events.
+    private var activeAudioStream: WatchAssistAudioStream?
+    /// Finishes the streamed recording's audio when its chunks stop arriving (see
+    /// `WatchAssistAudioStream.staleTimeout`). Re-armed by every chunk.
+    private var audioStreamStaleCheck: DispatchWorkItem?
 
     /// One in-progress chunked audio upload from the watch.
     private struct AudioChunkSession {
@@ -170,6 +180,10 @@ final class WatchCommunicatorService {
                     assistPipelinesFetch(message: message)
                 case .assistAudioDataChunked:
                     handleAssistAudioChunkedMessage(message)
+                case .assistAudioStreamChunk:
+                    handleAssistAudioStreamChunk(message)
+                case .assistAudioStreamEnd:
+                    handleAssistAudioStreamEnd(message)
                 case .assistTextInput:
                     handleAssistTextInputMessage(message)
                 case .magicItemPressed:
@@ -188,9 +202,10 @@ final class WatchCommunicatorService {
     /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
     /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
     private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
-        // Skip keepalives and per-chunk pulls (the sync start already toasts) to avoid spamming.
-        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk else { return }
-        guard #available(iOS 18, *) else { return }
+        // Skip keepalives and per-chunk traffic (the sync start already toasts, and a streamed
+        // recording toasts once, when it starts) to avoid spamming.
+        guard ![.ping, .watchDatabaseMirrorChunk, .assistAudioStreamChunk, .assistAudioStreamEnd]
+            .contains(messageId) else { return }
 
         let message: String
         switch messageId {
@@ -205,7 +220,11 @@ final class WatchCommunicatorService {
         default:
             message = L10n.Watch.Interaction.Toast.generic
         }
+        presentWatchInteractionToast(message: message)
+    }
 
+    private func presentWatchInteractionToast(message: String) {
+        guard #available(iOS 18, *) else { return }
         Task { @MainActor in
             guard UIApplication.shared.applicationState == .active else { return }
             ToastPresenter.shared.show(
@@ -400,6 +419,115 @@ final class WatchCommunicatorService {
             audioChunkSessions.removeValue(forKey: sessionKey)
             assistAudioData(payload: payload, data: combinedData)
         }
+    }
+
+    /// One chunk of a recording streamed live from the watch. The first chunk of a recording
+    /// starts the pipeline run; every chunk is acknowledged with whether the pipeline still
+    /// listens, which the watch uses to stop recording (see `WatchAssistAudioStream`).
+    private func handleAssistAudioStreamChunk(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamChunkPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream chunk data")
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.assistAudioStreamChunkAck.rawValue,
+                content: AssistAudioStreamChunkAckPayload(chunkIndex: -1, keepListening: false).content
+            ))
+            return
+        }
+        let acknowledge: (Bool) -> Void = { keepListening in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.assistAudioStreamChunkAck.rawValue,
+                content: AssistAudioStreamChunkAckPayload(
+                    chunkIndex: payload.chunkIndex,
+                    keepListening: keepListening
+                ).content
+            ))
+        }
+
+        let stream: WatchAssistAudioStream
+        if let activeAudioStream, activeAudioStream.recordingId == payload.recordingId {
+            stream = activeAudioStream
+        } else {
+            guard let started = startAssistAudioStream(for: payload) else {
+                acknowledge(false)
+                return
+            }
+            stream = started
+        }
+
+        acknowledge(stream.receive(chunk: payload.chunkData, now: Current.date()))
+        scheduleAudioStreamStaleCheck(for: stream)
+    }
+
+    /// Start the pipeline run a new streamed recording feeds, replacing whatever recording was
+    /// active. `nil` (after telling the watch) when the target server is unknown.
+    private func startAssistAudioStream(for payload: AssistAudioStreamChunkPayload) -> WatchAssistAudioStream? {
+        // A new recording while another is still relayed means the watch moved on: give the
+        // pipeline what it got so the old run completes instead of hanging.
+        activeAudioStream?.watchDidEnd()
+        activeAudioStream = nil
+
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist audio stream targets unknown server \(payload.serverId)")
+            // Tell the watch instead of dropping the session on the floor — it routes assistError
+            // to the chat UI, so the user sees a failure rather than an endless spinner.
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(
+                    code: "unknown_server",
+                    message: "Server not found on iPhone"
+                ).content
+            ))
+            return nil
+        }
+
+        Current.Log.info("Starting Assist pipeline for streamed watch recording \(payload.recordingId)")
+        presentWatchInteractionToast(message: L10n.Watch.Interaction.Toast.generic)
+        let service = initAssistServiceIfNeeded(server: server)
+        let stream = WatchAssistAudioStream(
+            recordingId: payload.recordingId,
+            now: Current.date(),
+            sendAudio: { [weak self] data in self?.assistService?.sendAudioData(data) },
+            finishAudio: { [weak self] in self?.assistService?.finishSendingAudio() }
+        )
+        activeAudioStream = stream
+        service.assist(source: .audio(
+            pipelineId: payload.pipelineId,
+            audioSampleRate: payload.sampleRate,
+            tts: true
+        ))
+        return stream
+    }
+
+    /// The watch ended the streamed recording: the pipeline is told the audio is complete.
+    private func handleAssistAudioStreamEnd(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        defer {
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.assistAudioStreamEndAck.rawValue,
+                content: message.content
+            ))
+        }
+        guard let payload = AssistAudioStreamEndPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream end data")
+            return
+        }
+        guard let activeAudioStream, activeAudioStream.recordingId == payload.recordingId else {
+            Current.Log.warning("Assist audio stream end for unknown recording \(payload.recordingId)")
+            return
+        }
+        audioStreamStaleCheck?.cancel()
+        audioStreamStaleCheck = nil
+        activeAudioStream.watchDidEnd()
+    }
+
+    private func scheduleAudioStreamStaleCheck(for stream: WatchAssistAudioStream) {
+        audioStreamStaleCheck?.cancel()
+        let check = DispatchWorkItem { [weak self, weak stream] in
+            guard let self, let stream, activeAudioStream === stream, !stream.isFinished else { return }
+            Current.Log.warning("Assist audio stream \(stream.recordingId) went quiet; finishing its audio")
+            stream.watchDidEnd()
+        }
+        audioStreamStaleCheck = check
+        DispatchQueue.main.asyncAfter(deadline: .now() + WatchAssistAudioStream.staleTimeout, execute: check)
     }
 
     private func watchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
@@ -1011,6 +1139,19 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
     func didReceiveEvent(_ event: Shared.AssistEvent) {
         Current.Log.info("Watch Assist received event: \(event)")
+        switch event {
+        case .sttVadEnd, .sttEnd:
+            // The pipeline heard the end of the command: the streamed recording's next
+            // acknowledgement tells the watch to stop.
+            activeAudioStream?.pipelineDidStopListening()
+        case .runEnd, .error:
+            activeAudioStream?.pipelineDidStopListening()
+            activeAudioStream = nil
+            audioStreamStaleCheck?.cancel()
+            audioStreamStaleCheck = nil
+        default:
+            break
+        }
     }
 
     func didReceiveSttContent(_ content: String) {
@@ -1031,6 +1172,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
     func didReceiveGreenLightForAudioInput() {
         sendPendingAudioData()
+        activeAudioStream?.pipelineDidStartAcceptingAudio()
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {

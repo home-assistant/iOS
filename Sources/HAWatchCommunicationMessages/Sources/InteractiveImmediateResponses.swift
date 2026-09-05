@@ -12,6 +12,14 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     /// `{acknowledged, chunkIndex, totalChunks}`. The watch sends the next chunk only after
     /// receiving this, so audio streams with backpressure instead of flooding the session.
     case assistAudioChunkAck
+    /// Phone → watch: reply to `assistAudioStreamChunk`, carrying `{chunkIndex, keepListening}`.
+    /// `keepListening` is false once the pipeline stopped taking audio (its voice-activity
+    /// detection ended the command, speech-to-text finished, or the run failed), which is the
+    /// watch's cue to stop recording.
+    case assistAudioStreamChunkAck
+    /// Phone → watch: reply to `assistAudioStreamEnd`, `{recordingId}`; the pipeline was told the
+    /// audio is complete.
+    case assistAudioStreamEndAck
     /// Phone → watch: acknowledgement that an `assistTextInput` prompt was handed to the pipeline.
     /// The pipeline's own output follows through `assistIntentEndResponse` / `assistTTSResponse`.
     case assistTextInputAck

@@ -7,7 +7,26 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case magicItemPressed
     case pushAction = "PushAction"
     case assistPipelinesFetch
+    /// Watch → phone: one chunk of a finished recording, `{chunkData, chunkIndex, totalChunks, ...}`
+    /// (see `AssistAudioChunkPayload`). The phone runs the pipeline once every chunk arrived.
+    ///
+    /// - Note: Deprecated wire flow. The watch streams live audio through `assistAudioStreamChunk`
+    ///   instead, so the pipeline's own voice-activity detection ends the recording. The phone
+    ///   handler stays for one release cycle so watch builds that predate streaming keep working;
+    ///   after that, remove this case, `assistAudioChunkAck`, `AssistAudioChunkPayload`,
+    ///   `AssistAudioChunkAckPayload` and the phone handler together.
     case assistAudioDataChunked
+    /// Watch → phone: audio captured since the previous chunk of a recording that is still in
+    /// progress (see `AssistAudioStreamChunkPayload`). The first chunk of a new `recordingId`
+    /// starts the pipeline; the phone forwards each chunk as it arrives and replies with
+    /// `assistAudioStreamChunkAck`, whose `keepListening` tells the watch whether the pipeline is
+    /// still taking audio — the watch sends the next chunk only after that reply, so the exchange
+    /// doubles as flow control and as the signal that ends the recording.
+    case assistAudioStreamChunk
+    /// Watch → phone: the recording of `recordingId` ended on the watch (user action, duration cap
+    /// or a failure), `{recordingId}`. The phone tells the pipeline the audio is complete and
+    /// replies with `assistAudioStreamEndAck`.
+    case assistAudioStreamEnd
     /// Watch → phone: run an Assist pipeline with a written prompt instead of a recording,
     /// `{text, pipelineId, serverId}`. The phone runs the pipeline and streams the result back
     /// through the same `assistIntentEndResponse`/`assistTTSResponse`/`assistError` messages the
