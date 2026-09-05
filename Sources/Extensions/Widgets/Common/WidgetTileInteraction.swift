@@ -107,16 +107,27 @@ struct WidgetTileInteraction {
         }
     }
 
-    /// The tile drawn without the widget's accent tint, for the versions of iOS that only tinted
-    /// buttons and left links in full colour.
-    private func plainTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle) -> some View {
-        WidgetTileView(
-            model: model.tileModel,
-            sizeStyle: sizeStyle,
-            family: family,
-            kind: type.tileKind,
-            tinted: false
-        )
+    /// The tile a link shows: as drawn, except on the versions of iOS that only tinted buttons and
+    /// left links in full colour, where it is redrawn without the widget's accent tint.
+    ///
+    /// A lock screen accessory is never redrawn. It is not tinted in the first place, and what the
+    /// container hands over for the circular family is the glyph alone — the system background is
+    /// drawn around the link, not inside it — so redrawing it as a tile would paint a second one.
+    @ViewBuilder
+    private func linkTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> some View {
+        if #available(iOS 18.0, *) {
+            tile
+        } else if family.isLockScreenAccessory {
+            tile
+        } else {
+            WidgetTileView(
+                model: model.tileModel,
+                sizeStyle: sizeStyle,
+                family: family,
+                kind: type.tileKind,
+                tinted: false
+            )
+        }
     }
 
     /// The intent that flips the tile into its confirmation state. `confirmsTapAction` records which
@@ -240,11 +251,7 @@ struct WidgetTileInteraction {
         tile: AnyView
     ) -> some View {
         Button(intent: confirmationStateIntent(for: model)) {
-            if #available(iOS 18.0, *) {
-                tile
-            } else {
-                plainTile(model: model, sizeStyle: sizeStyle)
-            }
+            linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
         }
         .buttonStyle(.plain)
     }
@@ -258,11 +265,7 @@ struct WidgetTileInteraction {
     ) -> some View {
         if case let .widgetURL(url) = model.interactionType {
             Link(destination: url.withWidgetAuthenticity()) {
-                if #available(iOS 18.0, *) {
-                    tile
-                } else {
-                    plainTile(model: model, sizeStyle: sizeStyle)
-                }
+                linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
             }
         } else {
             Text(verbatim: "Unknown widget configuration")
