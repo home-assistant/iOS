@@ -2248,6 +2248,8 @@ public enum L10n {
       public enum GroupBy {
         /// Group by Area
         public static var area: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.area") }
+        /// Group by Device
+        public static var device: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.device") }
         /// Group by Domain
         public static var domain: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.domain") }
         /// Group by
@@ -2263,6 +2265,12 @@ public enum L10n {
         public enum NoArea {
           /// No area
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
+        }
+      }
+      public enum Device {
+        public enum NoDevice {
+          /// No device
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.list.device.no_device.title") }
         }
       }
     }
@@ -7875,6 +7883,10 @@ public enum L10n {
       public enum Device {
         /// There are no compatible entities for this device.
         public static var empty: String { return L10n.tr("Localizable", "watch.home.device.empty") }
+        /// Part of %@
+        public static func partOf(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.home.device.part_of", String(describing: p1))
+        }
       }
       public enum Loading {
         public enum Skip {

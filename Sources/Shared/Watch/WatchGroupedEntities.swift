@@ -12,13 +12,24 @@ public struct WatchGroupedEntities {
     public struct DeviceGroup: Identifiable {
         public let deviceId: String
         public let name: String
+        /// The device this one is a part of, when it is a child device.
+        public let parentDeviceId: String?
+        public let parentName: String?
         public let entries: [WatchEntityEntry]
 
         public var id: String { deviceId }
 
-        public init(deviceId: String, name: String, entries: [WatchEntityEntry]) {
+        public init(
+            deviceId: String,
+            name: String,
+            parentDeviceId: String? = nil,
+            parentName: String? = nil,
+            entries: [WatchEntityEntry]
+        ) {
             self.deviceId = deviceId
             self.name = name
+            self.parentDeviceId = parentDeviceId
+            self.parentName = parentName
             self.entries = entries
         }
     }
@@ -29,11 +40,6 @@ public struct WatchGroupedEntities {
     public let deviceGroups: [DeviceGroup]
 
     public var isEmpty: Bool { ungrouped.isEmpty && deviceGroups.isEmpty }
-
-    /// Every entry, grouping undone — for screens that are already scoped to a single device, where
-    /// re-stating that device as a section header would say nothing. Loose rows come first, then
-    /// each group's rows; on a single-device screen that is exactly the original order.
-    public var allEntries: [WatchEntityEntry] { ungrouped + deviceGroups.flatMap(\.entries) }
 
     public static let empty = WatchGroupedEntities(ungrouped: [], deviceGroups: [])
 
@@ -57,14 +63,14 @@ public struct WatchGroupedEntities {
         }
 
         var ungrouped: [WatchEntityEntry] = []
-        var namePerDevice: [String: String] = [:]
+        var devicePerId: [String: WatchEntityEntry.Device] = [:]
         var entriesPerDevice: [String: [WatchEntityEntry]] = [:]
         for entry in entries {
             guard let device = entry.device, entryCountPerDevice[device.id, default: 0] > 1 else {
                 ungrouped.append(entry)
                 continue
             }
-            namePerDevice[device.id] = device.name
+            devicePerId[device.id] = device
             entriesPerDevice[device.id, default: []].append(entry)
         }
 
@@ -74,13 +80,40 @@ public struct WatchGroupedEntities {
             // sharing a name could swap places between two builds of the same data.
             deviceGroups: entriesPerDevice
                 .map { deviceId, entries in
-                    DeviceGroup(deviceId: deviceId, name: namePerDevice[deviceId] ?? deviceId, entries: entries)
+                    let device = devicePerId[deviceId]
+                    return DeviceGroup(
+                        deviceId: deviceId,
+                        name: device?.name ?? deviceId,
+                        parentDeviceId: device?.parentId,
+                        parentName: device?.parentName,
+                        entries: entries
+                    )
                 }
+                // A child device's section follows its parent's rather than sorting on its own name.
+                // The parent's id is part of the key, so two parents sharing a name keep their own
+                // children with them.
                 .sorted { lhs, rhs in
-                    let comparison = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
+                    let comparison = (lhs.parentName ?? lhs.name)
+                        .localizedCaseInsensitiveCompare(rhs.parentName ?? rhs.name)
                     if comparison != .orderedSame { return comparison == .orderedAscending }
+                    let lhsFamily = lhs.parentDeviceId ?? lhs.deviceId
+                    let rhsFamily = rhs.parentDeviceId ?? rhs.deviceId
+                    if lhsFamily != rhsFamily { return lhsFamily < rhsFamily }
+                    if (lhs.parentName == nil) != (rhs.parentName == nil) { return lhs.parentName == nil }
+                    let nameComparison = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
+                    if nameComparison != .orderedSame { return nameComparison == .orderedAscending }
                     return lhs.deviceId < rhs.deviceId
                 }
         )
+    }
+
+    /// The same sections with one device's group folded back into the loose rows, leading them —
+    /// for a screen already named after that device. Any other device that earned a section keeps
+    /// it.
+    public func flatteningGroup(deviceId: String) -> WatchGroupedEntities {
+        guard let index = deviceGroups.firstIndex(where: { $0.deviceId == deviceId }) else { return self }
+        var groups = deviceGroups
+        let group = groups.remove(at: index)
+        return .init(ungrouped: group.entries + ungrouped, deviceGroups: groups)
     }
 }

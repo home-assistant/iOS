@@ -24,6 +24,7 @@ extension HAAppEntityAppIntentEntity: IndexedEntity {
         Self.deduplicated([
             areaName,
             deviceName,
+            parentDeviceName,
             floorName,
             serverName,
             Domain(entityId: entityId)?.localizedDescription,
@@ -36,7 +37,7 @@ extension HAAppEntityAppIntentEntity: IndexedEntity {
     /// "Light living room" for a "Light" in the living room — matches a single field with the same
     /// weight as the name alone, rather than relying on Spotlight to combine name and keyword hits.
     private var contextualNames: [String] {
-        Self.deduplicated([areaName, deviceName, floorName, serverName])
+        Self.deduplicated([areaName, deviceName, parentDeviceName, floorName, serverName])
             .flatMap { ["\(displayString) \($0)", "\($0) \(displayString)"] }
     }
 

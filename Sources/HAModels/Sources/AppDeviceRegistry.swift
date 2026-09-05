@@ -26,6 +26,9 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
     public let modifiedAt: Double?
     public let nameByUser: String?
     public let name: String?
+    /// Identifier of the device this one is a logical part of (e.g. one outlet of a power strip),
+    /// `nil` for regular top-level devices.
+    public let parentDeviceId: String?
     public let primaryConfigEntry: String?
     public let serialNumber: String?
     public let swVersion: String?
@@ -51,6 +54,7 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
         modifiedAt: Double?,
         nameByUser: String?,
         name: String?,
+        parentDeviceId: String?,
         primaryConfigEntry: String?,
         serialNumber: String?,
         swVersion: String?,
@@ -75,6 +79,7 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
         self.modifiedAt = modifiedAt
         self.nameByUser = nameByUser
         self.name = name
+        self.parentDeviceId = parentDeviceId
         self.primaryConfigEntry = primaryConfigEntry
         self.serialNumber = serialNumber
         self.swVersion = swVersion
@@ -86,9 +91,34 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
     }
 
     // Computed helpers (same as DeviceRegistryEntry)
+    /// The device's name as a person reads it, or `nil` when the registry carries none. Blank names
+    /// count as none: integrations do send `""` (e.g. UniFi clients), and a blank must not win over
+    /// the fields after it.
+    public var resolvedName: String? {
+        for candidate in [nameByUser, name, model] {
+            if let candidate, !candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return candidate
+            }
+        }
+        return nil
+    }
+
     public var displayName: String {
-        nameByUser ?? name ?? model ?? deviceId
+        resolvedName ?? deviceId
     }
 
     public var isDisabled: Bool { disabledBy != nil }
+
+    /// Whether this device is a logical part of another device.
+    public var isChildDevice: Bool { parentDeviceId != nil }
+
+    /// The area this device belongs to, falling back to its parent's when a child has none of its
+    /// own (mirroring core's `async_get_effective_area_id`).
+    public func effectiveAreaId(in devicesById: [String: AppDeviceRegistry]) -> String? {
+        if let areaId {
+            return areaId
+        }
+        guard let parentDeviceId else { return nil }
+        return devicesById[parentDeviceId]?.areaId
+    }
 }

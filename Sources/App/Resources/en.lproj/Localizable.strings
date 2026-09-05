@@ -616,10 +616,12 @@
 "entity_picker.filter.domain.all.title" = "All domains";
 "entity_picker.filter.domain.title" = "Domain";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Pick entity";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -2413,6 +2415,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";

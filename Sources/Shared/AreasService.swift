@@ -125,10 +125,14 @@ final class AreasService: AreasServiceProtocol {
         var areasAndDevicesDict: [String: Set<String>] = [:]
         /// device_id : area_id (reverse lookup for O(1) access)
         var deviceToAreaMap: [String: String] = [:]
+        let devicesById = Dictionary(
+            devicesAndAreas.map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
 
         // Build area->devices mapping and device->area reverse lookup
         for device in devicesAndAreas {
-            if let areaId = device.areaId {
+            if let areaId = device.effectiveAreaId(in: devicesById) {
                 areasAndDevicesDict[areaId, default: []].insert(device.deviceId)
                 deviceToAreaMap[device.deviceId] = areaId
             }
@@ -143,9 +147,10 @@ final class AreasService: AreasServiceProtocol {
         for entity in entitiesAndAreas {
             let entityId = entity.entityId
 
-            // Add entity directly to its area
+            // An entity's own area overrides its device's, so it never inherits as well
             if let areaId = entity.areaId {
                 areasAndEntitiesDict[areaId, default: []].insert(entityId)
+                continue
             }
 
             // Build device->entities mapping for later

@@ -39,7 +39,7 @@ public struct WatchEntitySections {
             let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
             let serverEntities = entitiesPerServer[serverId] ?? []
             // One registry + device-registry read for the whole screen, rather than one per row.
-            let devices = serverEntities.devicesMap(for: serverId)
+            let (devices, devicesById) = serverEntities.deviceMaps(for: serverId)
             let entries: [WatchEntityEntry] = serverEntities
                 .filter { entity in
                     entity.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded)
@@ -52,7 +52,18 @@ public struct WatchEntitySections {
                     return WatchEntityEntry(
                         item: item,
                         info: info,
-                        device: devices[entity.entityId].map { .init(id: $0.deviceId, name: $0.displayName) }
+                        // A device the registry gives no name to has nothing to title a section
+                        // with, so its entities stay loose rows rather than sitting under an id.
+                        device: devices[entity.entityId].flatMap { device in
+                            device.resolvedName.map { name in
+                                WatchEntityEntry.Device(
+                                    id: device.deviceId,
+                                    name: name,
+                                    parentId: device.parentDeviceId,
+                                    parentName: device.parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
+                                )
+                            }
+                        }
                     )
                 }
             // Controllable entities come first, ordered by most commonly used domain (then name —

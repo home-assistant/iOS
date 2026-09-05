@@ -145,6 +145,14 @@ public extension HAAppEntity {
         }
     }
 
+    /// The glyph shown next to the entity: its own icon override, then the frontend-matching default
+    /// resolved from the backend `entity_component` map at sync time, then the domain fallback.
+    var materialDesignIcon: MaterialDesignIcons {
+        let fallback = Domain(entityId: entityId)?.icon(deviceClass: rawDeviceClass) ?? .dotsGridIcon
+        let iconName = icon?.isEmpty == false ? icon : resolvedIcon
+        return MaterialDesignIcons(serversideValueNamed: iconName.orEmpty, fallback: fallback)
+    }
+
     /// The secondary context line shown under the entity name (`Floor • Area • Device`).
     var contextualSubtitle: String? {
         let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
@@ -261,10 +269,41 @@ public extension [HAAppEntity] {
         }
     }
 
+    /// The `Floor • Area • Device` line for every entity, built from one pass over the area, floor
+    /// and device lookups instead of the per-entity database reads `contextualSubtitle` performs.
+    func contextualSubtitles(for serverId: String) -> [String: String] {
+        let areas = areasMap(for: serverId)
+        let floorNames = floorNamesMap(for: serverId)
+        let devices = devicesMap(for: serverId)
+
+        var subtitles: [String: String] = [:]
+        for entity in self {
+            guard let subtitle = EntityContextSubtitle.make(
+                floorName: floorNames[entity.entityId],
+                areaName: areas[entity.entityId]?.name,
+                deviceName: devices[entity.entityId]?.resolvedName,
+                entityName: entity.name,
+                entityId: entity.entityId,
+                domain: Domain(rawValue: entity.domain)
+            ) else { continue }
+            subtitles[entity.entityId] = subtitle
+        }
+        return subtitles
+    }
+
     /// Creates a mapping from entity IDs to their associated devices for a given server.
     /// - Parameter serverId: The server identifier to filter entities and devices by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppDeviceRegistry` objects.
     func devicesMap(for serverId: String) -> [String: AppDeviceRegistry] {
+        deviceMaps(for: serverId).byEntityId
+    }
+
+    /// The server's devices keyed both ways in a single pair of database reads: by the id of every
+    /// entity they own, and by their own device id (which also covers devices owning no entity, such
+    /// as a parent whose entities all live on its children).
+    func deviceMaps(
+        for serverId: String
+    ) -> (byEntityId: [String: AppDeviceRegistry], byDeviceId: [String: AppDeviceRegistry]) {
         do {
             // Fetch all entity registries for the server
             let entityRegistries = try Current.database().read { db in
@@ -294,10 +333,10 @@ public extension [HAAppEntity] {
                 entityToDeviceMap[entityRegistry.entityId] = device
             }
 
-            return entityToDeviceMap
+            return (entityToDeviceMap, devicesByDeviceId)
         } catch {
             Current.Log.error("Failed to fetch devices for mapping: \(error)")
-            return [:]
+            return ([:], [:])
         }
     }
 }
