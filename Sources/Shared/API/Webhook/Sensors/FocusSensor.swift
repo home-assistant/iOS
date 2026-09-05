@@ -56,7 +56,6 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 
 final class FocusSensor: SensorProvider {
     public enum FocusError: Error, Equatable {
-        case unauthorized
         case unavailable
     }
 
@@ -73,14 +72,19 @@ final class FocusSensor: SensorProvider {
         let report = FocusReport.current()
 
         if report.isFocused == nil {
-            // Only when nothing can answer do the old reasons apply, so the sensor still explains
-            // itself when the permission is missing.
+            // Only when nothing can answer does why it can't matter: a device without Focus has no
+            // sensor to offer, while a missing permission is one switching the sensor on will ask
+            // for, so that one stays listed.
             guard Current.focusStatus.isAvailable() else {
                 return .init(error: FocusError.unavailable)
             }
 
             guard Current.focusStatus.authorizationStatus() == .authorized else {
-                return .init(error: FocusError.unauthorized)
+                return .value([WebhookSensor(
+                    awaitingPermissionNamed: "Focus",
+                    uniqueID: WebhookSensorId.focus.rawValue,
+                    type: "binary_sensor"
+                )])
             }
         }
 

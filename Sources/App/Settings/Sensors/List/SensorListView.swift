@@ -22,7 +22,10 @@ struct SensorListView: View {
                     title: L10n.SettingsSensors.title,
                     subtitle: L10n.SettingsSensors.body
                 )
-                Section(footer: Text(periodicUpdateFooter)) {
+                Section(
+                    header: Text(L10n.SettingsSensors.PeriodicUpdate.foregroundHeader),
+                    footer: Text(periodicUpdateFooter)
+                ) {
                     Picker(
                         selection: $viewModel.periodicUpdateInterval,
                         label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
@@ -83,7 +86,7 @@ struct SensorListView: View {
                     Toggle(isOn: .init(get: {
                         Current.sensors.isEnabled(sensor: sensor)
                     }, set: { newValue in
-                        Current.sensors.setEnabled(newValue, for: sensor)
+                        viewModel.setEnabled(newValue, for: sensor)
                     })) {
                         SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
                     }

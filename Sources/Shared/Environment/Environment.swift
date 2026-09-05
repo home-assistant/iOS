@@ -295,6 +295,12 @@ public class AppEnvironment {
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
 
+    /// Asks iOS for the permissions the given sensors need, at the moment the user switches them on.
+    ///
+    /// Sensors are opt-in, so the toggle is the only place the app learns someone wants one. The app
+    /// points this at `SensorPermissionRequester`; everywhere else, tests included, it does nothing.
+    public var requestSensorPermissions: ([String]) -> Void = { _ in }
+
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
@@ -407,7 +413,6 @@ public class AppEnvironment {
         $0.register(provider: FocusNameSensor.self)
         #endif
         $0.register(provider: LastUpdateSensor.self)
-        $0.register(provider: WatchBatterySensor.self)
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
@@ -437,6 +442,10 @@ public class AppEnvironment {
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
     #endif
+
+    /// The watch's own `mobile_app` registrations, one per server. Compiled everywhere so the
+    /// reporting built on it stays testable from the iOS unit-test target.
+    public var watchDeviceRegistrations: WatchDeviceRegistrationStore = KeychainWatchDeviceRegistrationStore()
 
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {

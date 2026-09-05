@@ -20,6 +20,18 @@ Or in Xcode: use the `Tests-Unit` scheme with ⌘U.
 - Use `Sources/SharedTesting/` for shared test utilities
 - Tests are excluded from SwiftLint enforcement
 
+## End-to-End Testing
+
+`Tests/UI/OnboardingE2ETests.swift` drives onboarding against a real Home Assistant, from the
+welcome screen to the native settings screen the frontend opens over the external message bus. It
+runs nightly through the `E2E` workflow, never through `fastlane test`.
+
+- Elements it drives carry an identifier from `AccessibilityIdentifier`
+  (`Sources/App/Accessibility/`), which is compiled into both the app and the UI test bundle. Add a
+  case there rather than matching on user-facing copy, which translation would break.
+- Run it locally with `bundle exec fastlane e2e` against an instance started from
+  `.github/e2e/homeassistant`. See [that directory's README](../../../.github/e2e/README.md).
+
 ## Snapshot Testing
 
 New SwiftUI views should have snapshot tests using helpers from `SharedTesting`:

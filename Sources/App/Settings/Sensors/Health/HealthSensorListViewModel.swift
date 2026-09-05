@@ -60,6 +60,8 @@ class HealthSensorListViewModel: ObservableObject {
     func setEnabled(_ isEnabled: Bool, for metric: HealthKitMetric) {
         Current.sensors.setEnabled(isEnabled, forUniqueID: metric.uniqueID)
         enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        guard isEnabled else { return }
+        Task { await requestAuthorization() }
     }
 
     func setAllEnabled(_ isEnabled: Bool) {
@@ -70,6 +72,7 @@ class HealthSensorListViewModel: ObservableObject {
     func enableAll(in category: HealthKitMetricCategory) {
         Current.sensors.setEnabled(true, forUniqueIDs: metrics(in: category).map(\.uniqueID))
         enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        Task { await requestAuthorization() }
     }
 
     /// HealthKit only prompts for types it hasn't been asked about, so asking again after switching

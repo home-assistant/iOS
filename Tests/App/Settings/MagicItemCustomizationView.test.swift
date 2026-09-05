@@ -72,6 +72,27 @@ struct MagicItemCustomizationViewTests {
         assertSnapshots(context: .widget, item: item)
     }
 
+    /// An entity whose icon isn't a control on the frontend's tile card — a sensor — names "More
+    /// info" as the default for both halves of the tile, since there is nothing for its icon to run.
+    @Test func widgetNamesMoreInfoAsTheDefaultForAnEntityThatCannotToggle() {
+        assertSnapshots(context: .widget, item: .init(id: "sensor.temperature", serverId: "1", type: .entity))
+    }
+
+    /// An automation's own behavior is "Trigger", and it reads that way on the row once chosen.
+    @Test func widgetNamesAnAutomationsOwnBehaviorTrigger() {
+        var item = MagicItem(id: "automation.night", serverId: "1", type: .entity)
+        item.action = .mainAction
+        assertSnapshots(context: .widget, item: item)
+    }
+
+    /// A lock's explicit behaviors are named in its own words, "Lock" and "Unlock", and the chosen
+    /// one reads that way on the row.
+    @Test func widgetNamesALocksOnOffBehaviorsAsLockAndUnlock() {
+        var item = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
+        item.action = .turnOff
+        assertSnapshots(context: .widget, item: item)
+    }
+
     /// `Current` is a shared global, so the mocked provider is put back as soon as the snapshot is
     /// taken — left in place it would follow whichever suite runs next.
     private func assertSnapshots(

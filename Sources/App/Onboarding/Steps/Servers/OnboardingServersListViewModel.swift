@@ -135,19 +135,19 @@ final class OnboardingServersListViewModel: ObservableObject {
     private func authenticationSucceeded(server: Server) {
         discovery.stop()
         onboardingServer = server
-        applyDefaultSensorSelection()
+        clearSensorSelectionForFirstRun()
         // Advance the pushed auth flow directly into the permissions steps.
         authPresenter?.push(.permissions(server))
     }
 
-    /// Sensors are enabled individually rather than all at once, so a first-time install only needs
-    /// to be pointed at the default selection — there is nothing left here to switch off.
-    private func applyDefaultSensorSelection() {
+    /// Every sensor is opt-in, so a first-time install starts with an empty selection and reports
+    /// only what the user switches on afterwards.
+    private func clearSensorSelectionForFirstRun() {
         guard Current.servers.all.count == 1 else {
             Current.Log.verbose("Avoid overriding sensors if user has already servers setup in place.")
             return
         }
-        Current.sensors.applyFirstRunSensorDefaults()
+        Current.sensors.resetSensorsForFirstRun()
     }
 }
 

@@ -42,7 +42,8 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
 
         // Servers before 2026.3 don't send a title for dashboards hidden from the sidebar; the
         // frontend falls back to the path for those, which reads better than the component name.
-        let rawTitle: String? = try? data.decode("title")
+        // An empty title counts as no title, the way the frontend's `!panel.title` check does.
+        let rawTitle: String? = (try? data.decode("title") as String).flatMap { $0.isEmpty ? nil : $0 }
         self.rawTitle = rawTitle
         let title = rawTitle ?? path
 
@@ -81,9 +82,11 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
 
     /// Panels the frontend never offers as a navigation target.
     /// `SYSTEM_PANELS` in https://github.com/home-assistant/frontend/blob/dev/src/data/panel.ts
-    private static let systemPanelPaths: Set<String> = ["_my_redirect", "notfound"]
-    /// Add-on ingress panels, which the frontend lists separately from its own panels.
-    private static let ingressPanelComponent = "app"
+    ///
+    /// `app` is the supervisor's untitled ingress host panel, which only serves `/app/<add-on slug>`.
+    /// Every add-on panel _also_ has `component_name: "app"`, but its url path is the add-on slug and
+    /// the frontend lists it in the sidebar like any other panel.
+    private static let systemPanelPaths: Set<String> = ["_my_redirect", "notfound", "app"]
     /// The built-in dashboard the frontend defaults to since core 2026.3.
     private static let overviewPath = "home"
     /// The other dashboards core 2026.3+ registers built in, none of which are in the sidebar.
@@ -105,7 +108,6 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
 
             do {
                 let panel = try HAPanel(data: .init(value: value))
-                guard panel.component != Self.ingressPanelComponent else { return nil }
                 return (key, panel)
             } catch {
                 Current.Log.error("Failed to decode panel \(key): \(error)")

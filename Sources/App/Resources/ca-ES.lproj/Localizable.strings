@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "Quan està activada, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta en primer pla.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "Quan estigui habilitat, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta. Alguns sensors s'actualitzaran automàticament amb més freqüència.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Desactivat";
 "settings_sensors.periodic_update.title" = "Actualització periòdica";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2600,6 +2601,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
 "watch.settings.restart_app.title" = "Restart App";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";
@@ -2644,18 +2651,49 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
 "whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "Més informació";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "Perform action";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "Run Script";
 "widgets.action.name.toggle" = "Toggle";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Realitza accions del Home Assistant.";
 "widgets.actions.not_configured" = "No hi ha accions configurades";
@@ -2682,9 +2720,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
 "widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
-"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclou dominis";
 "widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
-"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
+"widgets.commonly_used_entities.include_domains.param.title" = "Inclou dominis";
 "widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.content_source.complication" = "Complication";
 "widgets.content_source.entity" = "Entity";
@@ -2769,7 +2807,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
 "widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
-"widgets.custom.show_states.param.title_no_beta" = "Show states";
+"widgets.custom.show_states.param.title_no_beta" = "Mostra estats";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
@@ -2783,28 +2821,32 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Upper Text Template";
 "widgets.details.title" = "Details";
-"widgets.energy.battery" = "Battery";
+"widgets.energy.battery" = "Bateria";
 "widgets.energy.description" = "Show your energy dashboard at a glance.";
-"widgets.energy.electricity" = "Grid";
+"widgets.energy.electricity" = "Xarxa";
 "widgets.energy.gas" = "Gas";
-"widgets.energy.grid" = "Grid";
+"widgets.energy.grid" = "Xarxa";
 "widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
-"widgets.energy.no_data" = "No energy data";
-"widgets.energy.not_configured" = "No energy dashboard configured";
-"widgets.energy.period.this_month" = "This month";
-"widgets.energy.period.this_week" = "This week";
-"widgets.energy.period.title" = "Period";
-"widgets.energy.period.today" = "Today";
-"widgets.energy.period.yesterday" = "Yesterday";
+"widgets.energy.no_data" = "Sense dades d'energia";
+"widgets.energy.not_configured" = "Cap panell d'energia configurat";
+"widgets.energy.period.this_month" = "Aquest mes";
+"widgets.energy.period.this_week" = "Aquesta setmana";
+"widgets.energy.period.title" = "Període";
+"widgets.energy.period.today" = "Avui";
+"widgets.energy.period.yesterday" = "Ahir";
 "widgets.energy.refresh_title" = "Refresh Energy";
 "widgets.energy.solar" = "Solar";
-"widgets.energy.source.auto" = "Auto";
-"widgets.energy.source.battery" = "Battery";
-"widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.auto" = "Automàtic";
+"widgets.energy.source.battery" = "Bateria";
+"widgets.energy.source.consumption" = "Consum";
 "widgets.energy.source.gas" = "Gas";
 "widgets.energy.source.solar" = "Solar";
-"widgets.energy.source.title" = "Source";
-"widgets.energy.title" = "Energy";
+"widgets.energy.source.title" = "Font";
+"widgets.energy.title" = "Energia";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entity state";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
@@ -2830,7 +2872,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.param.server.title" = "Servidor";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
-"widgets.parameters.domain" = "Domain";
+"widgets.parameters.domain" = "Domini";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";

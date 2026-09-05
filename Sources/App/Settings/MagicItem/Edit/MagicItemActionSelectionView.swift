@@ -8,9 +8,19 @@ import SwiftUI
 /// so the rows are laid out for a `Section` the caller owns rather than bringing their own.
 struct MagicItemActionSelectionView: View {
     let title: String
-    /// The server the item belongs to. A "perform action" behavior runs against it, so it is the
+    /// The item the behavior is for. Its domain decides which behaviors are offered — "Toggle" and
+    /// the on/off pair only where they can do something, the way the frontend's action editor
+    /// drops "toggle" for an entity that can't be toggled — and what they are called ("Lock" and
+    /// "Unlock" for a lock). A "perform action" behavior runs against its server, so that is the
     /// only server whose actions the picker offers.
-    let serverId: String
+    let item: MagicItem
+    /// The entity's `supported_features`, once read from the server, which is what tells a
+    /// climate, cover, camera, media player, or siren apart from one that can't turn on and off.
+    /// `nil` until then, and for every other domain, in which case the domain decides.
+    let supportedFeatures: Int?
+    /// What leaving the picker on "Default" does for this item, so the entry can say so — "Default
+    /// (More info)", "Default (Toggle)" — the way the frontend's action editor labels its own.
+    let defaultAction: ItemAction
     @Binding var action: ItemAction?
 
     /// Prefilling reads the database for the chosen script, so the extra rows wait for it rather
@@ -25,8 +35,15 @@ struct MagicItemActionSelectionView: View {
     @State private var performActionId: String?
     @State private var performActionPayload = ""
 
+    /// A retired choice — "nothing", which items saved with it still carry — reads as the "more
+    /// info" it now behaves as, so the picker never shows a behavior it no longer offers.
     private var selected: ItemAction {
-        action ?? .default
+        guard let action else { return .default }
+        return action.isRetired ? .moreInfoDialog : action
+    }
+
+    private var offeredActions: [ItemAction] {
+        ItemAction.offered(for: item, supportedFeatures: supportedFeatures, selected: selected)
     }
 
     var body: some View {
@@ -34,19 +51,19 @@ struct MagicItemActionSelectionView: View {
             Text(verbatim: title)
             Spacer()
             Menu {
-                ForEach(ItemAction.allCases, id: \.id) { itemAction in
+                ForEach(offeredActions, id: \.id) { itemAction in
                     Button {
                         action = hydrated(itemAction)
                     } label: {
                         if selected.id == itemAction.id {
-                            Label(itemAction.name, systemSymbol: .checkmark)
+                            Label(name(of: itemAction), systemSymbol: .checkmark)
                         } else {
-                            Text(itemAction.name)
+                            Text(name(of: itemAction))
                         }
                     }
                 }
             } label: {
-                Text(selected.name)
+                Text(name(of: selected))
             }
         }
         .onAppear {
@@ -81,7 +98,7 @@ struct MagicItemActionSelectionView: View {
             HStack {
                 Text(verbatim: L10n.MagicItem.Action.PerformAction.title)
                 ServerActionPicker(
-                    serverId: serverId,
+                    serverId: item.serverId,
                     selectedActionId: $performActionId
                 )
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -144,6 +161,15 @@ struct MagicItemActionSelectionView: View {
         }
     }
 
+    /// "Default" alone says nothing about what a tap will do, so it carries the resolved behavior
+    /// along; every other behavior is its own name, in the item's domain's words.
+    private func name(of itemAction: ItemAction) -> String {
+        if itemAction.id == ItemAction.default.id {
+            return ItemAction.defaultName(resolvingTo: defaultAction.name(for: item.domain))
+        }
+        return itemAction.name(for: item.domain)
+    }
+
     /// Carries the details already on screen into a freshly picked behavior, so switching away and
     /// back doesn't blank the path or the pipeline the user typed.
     private func hydrated(_ itemAction: ItemAction) -> ItemAction {
@@ -153,12 +179,12 @@ struct MagicItemActionSelectionView: View {
         case .url:
             return .url(urlPath)
         case .performAction:
-            return .performAction(serverId, performActionId ?? "", performActionPayload)
+            return .performAction(item.serverId, performActionId ?? "", performActionPayload)
         case .assist:
             return .assist(pipelineServerId ?? "", pipelineId ?? "", startListening)
         case .runScript:
             return .runScript(script?.serverId ?? "", script?.entityId ?? "")
-        case .default, .moreInfoDialog, .toggle, .nothing:
+        case .default, .moreInfoDialog, .toggle, .mainAction, .turnOn, .turnOff, .nothing:
             return itemAction
         }
     }
@@ -171,7 +197,7 @@ struct MagicItemActionSelectionView: View {
     /// Written even before an action is picked, so data typed first survives the trip back — the
     /// same half-filled state `hydrated(_:)` already stores the moment the behavior is chosen.
     private func updatePerformAction() {
-        action = .performAction(serverId, performActionId ?? "", performActionPayload)
+        action = .performAction(item.serverId, performActionId ?? "", performActionPayload)
     }
 
     private func prefill() {
@@ -196,24 +222,39 @@ struct MagicItemActionSelectionView: View {
             pipelineServerId = assistServerId
             self.pipelineId = pipelineId
             self.startListening = startListening
-        case .default, .nothing, .moreInfoDialog, .toggle:
+        case .default, .nothing, .moreInfoDialog, .toggle, .mainAction, .turnOn, .turnOff:
             break
         }
     }
 }
 
 #Preview {
+    let light = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+    let lock = MagicItem(id: "lock.front_door", serverId: "1", type: .entity)
     List {
         Section(L10n.MagicItem.action) {
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.tapBehavior,
-                serverId: "1",
+                item: light,
+                supportedFeatures: nil,
+                defaultAction: light.defaultTapAction,
                 action: .constant(.default)
             )
             MagicItemActionSelectionView(
                 title: L10n.MagicItem.Action.iconTapBehavior,
-                serverId: "1",
+                item: light,
+                supportedFeatures: nil,
+                defaultAction: light.defaultIconAction,
                 action: .constant(.navigate("/lovelace/0"))
+            )
+        }
+        Section(L10n.MagicItem.action) {
+            MagicItemActionSelectionView(
+                title: L10n.MagicItem.Action.iconTapBehavior,
+                item: lock,
+                supportedFeatures: nil,
+                defaultAction: lock.defaultIconAction,
+                action: .constant(.turnOff)
             )
         }
     }

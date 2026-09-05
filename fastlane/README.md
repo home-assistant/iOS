@@ -165,6 +165,14 @@ Update the test cases from the fcm repo
 
 Run tests
 
+### e2e
+
+```sh
+[bundle exec] fastlane e2e
+```
+
+Run the end-to-end onboarding test against a running Home Assistant
+
 ----
 
 

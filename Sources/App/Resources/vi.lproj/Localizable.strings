@@ -2007,6 +2007,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update with this frequency while the app is open in the foreground.";
 "settings_sensors.periodic_update.description_foreground" = "This frequency only applies while the app is open on screen. While the app is in the background, iOS decides when it can update sensors.";
 "settings_sensors.periodic_update.description_mac" = "Khi được bật, các cảm biến này sẽ cập nhật với tần suất này khi ứng dụng đang mở. Một số cảm biến sẽ tự động được cập nhật thường xuyên hơn.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Off";
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2600,6 +2601,12 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
 "watch.settings.restart_app.title" = "Restart App";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";
@@ -2644,18 +2651,49 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
 "whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "Thông tin thêm";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "Perform action";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "Run Script";
 "widgets.action.name.toggle" = "Toggle";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Thực hiện các tác vụ của Home Assistant.";
 "widgets.actions.not_configured" = "Không có Hành động nào được Cấu hình";
@@ -2805,6 +2843,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Source";
 "widgets.energy.title" = "Energy";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entity state";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";

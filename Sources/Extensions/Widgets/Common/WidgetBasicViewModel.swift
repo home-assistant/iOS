@@ -22,6 +22,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         backgroundColor: Color = .tileBackground,
         useCustomColors: Bool = false,
         showConfirmation: Bool = false,
+        confirmsTapAction: Bool = false,
         requiresConfirmation: Bool = false,
         widgetId: String? = nil,
         disabled: Bool = false
@@ -39,6 +40,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.backgroundColor = backgroundColor
         self.useCustomColors = useCustomColors
         self.showConfirmation = showConfirmation
+        self.confirmsTapAction = confirmsTapAction
         self.requiresConfirmation = requiresConfirmation
         self.widgetId = widgetId
         self.disabled = disabled
@@ -67,6 +69,9 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     // When widget requires confirmation before execution this is true
     // and we show confirmation buttons instead of the widget item data
     var showConfirmation: Bool
+    /// Which half the pending confirmation is for: the rest of a split tile (`interactionType`)
+    /// when true, otherwise its icon — or the whole tile, when it isn't split.
+    var confirmsTapAction: Bool
     // This will first display confirmation form
     // the intent of the forms in this button will run or not the real intent
     var requiresConfirmation: Bool

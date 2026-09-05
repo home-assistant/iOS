@@ -56,14 +56,14 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 /// and restores the same name. Only knowing every Focus ended blanks it; not being able to tell
 /// keeps the last name rather than inventing a state.
 ///
+/// The sensor is always listed, never erroring out while nothing is configured: its detail screen
+/// is the only route to the Focus names, so a sensor that dropped out of the list until a name
+/// existed left a new user with no way to create their first one.
+///
 /// Labs feature, limited to TestFlight builds while it matures, matching the Focus settings screen
 /// where the names are created.
 final class FocusNameSensor: SensorProvider {
     public enum FocusNameError: Error, Equatable {
-        /// No Focus name has been created and none was ever reported, so there is nothing this
-        /// sensor could ever say. An errored provider drops out of the sensors list entirely, so
-        /// this must only fire while the feature is genuinely unused.
-        case unconfigured
         /// Labs feature, limited to TestFlight builds while it matures.
         case unavailable
     }
@@ -80,14 +80,10 @@ final class FocusNameSensor: SensorProvider {
 
         let report = FocusReport.current()
 
-        guard report.name != nil || !FocusName.all().isEmpty else {
-            return .init(error: FocusNameError.unconfigured)
-        }
-
         // iOS does tell us when every Focus ends (the pushed status and the filter's reset run),
         // so the name is blanked then; an inconclusive status keeps the last name rather than
-        // inventing a state. Empty is also the state before the first named filter run, which is
-        // what keeps the sensor registered from the moment the user creates their names.
+        // inventing a state. Empty is also the state before any name exists, which is what keeps
+        // the sensor in the list for a user who has yet to configure it.
         let state: String
         if let name = report.name, report.isFocused != false {
             state = name

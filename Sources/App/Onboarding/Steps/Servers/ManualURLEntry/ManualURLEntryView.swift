@@ -61,7 +61,7 @@ struct ManualURLEntryView: View, KeyboardReadable {
 
                 httpOrHttpsSection
             }
-        }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title) {
+        }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title, primaryAction: {
             guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
             if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
                 connectAction(url)
@@ -69,20 +69,20 @@ struct ManualURLEntryView: View, KeyboardReadable {
             } else {
                 showInvalidURLError = true
             }
-        }
-        .hideOnboardingTitle(isKeyboardVisible)
-        .hideOnboardingIcon(isKeyboardVisible)
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(isPresented: $showInvalidURLError) {
-            Alert(
-                title: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.title),
-                message: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.message),
-                dismissButton: .default(Text(verbatim: L10n.okLabel))
-            )
-        }
-        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
-            isKeyboardVisible = newIsKeyboardVisible
-        }
+        }, primaryActionIdentifier: AccessibilityIdentifier.onboardingManualEntryConnect.rawValue)
+            .hideOnboardingTitle(isKeyboardVisible)
+            .hideOnboardingIcon(isKeyboardVisible)
+            .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $showInvalidURLError) {
+                Alert(
+                    title: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.title),
+                    message: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.message),
+                    dismissButton: .default(Text(verbatim: L10n.okLabel))
+                )
+            }
+            .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+                isKeyboardVisible = newIsKeyboardVisible
+            }
     }
 
     // View which displays helpers to add http or https to the URL

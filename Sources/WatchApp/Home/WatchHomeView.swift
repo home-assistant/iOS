@@ -470,7 +470,8 @@ struct WatchHomeView: View {
             WatchMagicViewRow(
                 item: item,
                 itemInfo: viewModel.info(for: item),
-                subtitle: viewModel.serverName(for: item)
+                subtitle: viewModel.serverName(for: item),
+                areaName: viewModel.areaName(for: item)
             )
         }
     }

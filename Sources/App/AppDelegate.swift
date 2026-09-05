@@ -85,6 +85,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared
         }
 
+        Current.requestSensorPermissions = { uniqueIDs in
+            Task { @MainActor in
+                SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
+            }
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
@@ -137,6 +143,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RemindersSyncManager.shared.start()
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
+        }
+        if #available(iOS 17.0, *) {
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
         }
 
         return true

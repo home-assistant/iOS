@@ -951,16 +951,16 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "mac.navigation.go_forward.accessibility_label" = "Navegar para a frente";
 "mac.open_in_safari.accessibility_label" = "Abrir no Safari";
 "mac.paste.accessibility_label" = "Colar";
-"mac.sidebar.done" = "Done";
-"mac.sidebar.edit" = "Edit Sidebar";
-"mac.sidebar.hidden_section.header" = "Hidden";
-"mac.sidebar.hide" = "Hide";
-"mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
-"mac.sidebar.settings" = "Settings";
-"mac.sidebar.show" = "Show";
-"mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
+"mac.sidebar.done" = "Feito";
+"mac.sidebar.edit" = "Editar barra lateral";
+"mac.sidebar.hidden_section.header" = "Ocultos";
+"mac.sidebar.hide" = "Ocultar";
+"mac.sidebar.notifications" = "Notificações";
+"mac.sidebar.reset_to_defaults" = "Restaurar padrões";
+"mac.sidebar.set_default_dashboard" = "Definir como dashboard padrão";
+"mac.sidebar.settings" = "Configurações";
+"mac.sidebar.show" = "Mostrar";
+"mac.toggle_sidebar.accessibility_label" = "Alternar barra lateral";
 "magic_item.action" = "Ação";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Começar a escutar";
@@ -1027,9 +1027,9 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "menu.status_item.toggle" = "Alternar %1$@";
 "menu.view.customize_toolbar" = "Personalizar barra de ferramentas…";
 "menu.view.find" = "Localizar";
-"menu.view.hide_sidebar" = "Hide Sidebar";
+"menu.view.hide_sidebar" = "Ocultar barra lateral";
 "menu.view.reload_page" = "Recarregar página";
-"menu.view.show_sidebar" = "Show Sidebar";
+"menu.view.show_sidebar" = "Mostrar barra lateral";
 "mtls.beta.info" = "Este é um recurso beta. Se você tiver algum problema, relate-o usando o botão abaixo.\
 \
 Atualmente, o mTLS é compatível apenas com iOS 17+, pode apresentar problemas relacionados à exibição de anexos de notificação e ao áudio de TTS do Assist, e não funcionará totalmente no Apple Watch.";
@@ -1338,12 +1338,12 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.app_icon_shortcuts.reset.title" = "Redefinir atalhos do ícone do aplicativo";
 "settings.app_icon_shortcuts.subtitle" = "Escolha os itens a serem exibidos ao pressionar e segurar o ícone do aplicativo.";
 "settings.app_icon_shortcuts.title" = "Atalhos do ícone do aplicativo";
-"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
-"settings.app_labs.features_section.header" = "Experimental features";
-"settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
-"settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
-"settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.empty_state" = "Não há recursos experimentais disponíveis neste dispositivo no momento.";
+"settings.app_labs.features_section.header" = "Recursos experimentais";
+"settings.app_labs.header.subtitle" = "App Labs são recursos experimentais que podem mudar ou ser removidos a qualquer momento. Use-os por sua conta e risco.";
+"settings.app_labs.mac_native_sidebar.footer" = "Substitui a barra lateral do Home Assistant por uma barra lateral nativa do macOS. A página é recarregada quando você altera essa configuração.";
+"settings.app_labs.mac_native_sidebar.title" = "Barra lateral nativa";
+"settings.app_labs.testflight_only.body" = "O App Labs está disponível apenas em versões do TestFlight.";
 "settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Ativar";
 "settings.connection_section.add_server" = "Adicionar servidor";
@@ -1667,7 +1667,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "settings.search.no_results.title" = "Nenhum resultado para “%@”";
 "settings.search.prompt" = "Pesquisar configurações";
 "settings.search_keywords.app_icon_shortcuts" = "ações rápidas, tela inicial, pressionamento longo, iniciador";
-"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
+"settings.search_keywords.app_labs" = "experimental, beta, labs, recursos, testflight, barra lateral";
 "settings.search_keywords.car_play" = "carro, veículo, direção, dashboard";
 "settings.search_keywords.complications" = "mostrador do relógio, apple watch, visão rápida";
 "settings.search_keywords.debugging" = "logs, diagnóstico, exportar, banco de dados, solução de problemas, redefinir";
@@ -2007,6 +2007,7 @@ Importar substitui todas as categorias listadas nesta tela, incluindo as configu
 "settings_sensors.periodic_update.description" = "Quando habilitados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto em primeiro plano.";
 "settings_sensors.periodic_update.description_foreground" = "Essa frequência só se aplica enquanto o aplicativo está aberto na tela. Enquanto o aplicativo está em segundo plano, o iOS decide quando pode atualizar os sensores.";
 "settings_sensors.periodic_update.description_mac" = "Quando habilitados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto. Alguns sensores serão atualizados automaticamente com mais frequência.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Desligado";
 "settings_sensors.periodic_update.title" = "Atualização periódica";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2600,6 +2601,12 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "watch.settings.refresh" = "Atualizar";
 "watch.settings.restart_app.footer" = "Isso fecha o aplicativo imediatamente. Você precisará reabri-lo manualmente.";
 "watch.settings.restart_app.title" = "Reiniciar o aplicativo";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "Precisa de atenção";
 "watch.settings.servers.header" = "Servidores";
 "watch.settings.title" = "Configurações";
@@ -2644,18 +2651,49 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "whats_new.app_support_update.item_body" = "Esta é a última atualização para iOS 15, watchOS 8 e macOS 11 e anteriores. Toque para ler mais.";
 "whats_new.app_support_update.item_title" = "O suporte para iOS 15, watchOS 8 e macOS 11 será encerrado";
 "whats_new.app_support_update.title" = "Atualização de suporte do aplicativo";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Abre um artigo";
 "whats_new.item.opens_link_hint" = "Abre um link";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "O que há de novo no aplicativo complementar";
 "whats_new.version_format" = "Versão %@";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "Padrão";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "Mais informações";
 "widgets.action.name.navigate" = "Navegar";
 "widgets.action.name.nothing" = "Nada";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "Executar ação";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "Executar script";
 "widgets.action.name.toggle" = "Alternar";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Execute as ações do Home Assistant.";
 "widgets.actions.not_configured" = "Nenhuma ação configurada";
@@ -2681,10 +2719,10 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.calendar.tomorrow" = "Amanhã";
 "widgets.commonly_used_entities.description" = "Exiba suas entidades usadas com frequência com base nos seus padrões de uso.";
 "widgets.commonly_used_entities.empty.description" = "Nenhuma entidade de uso frequente encontrada. Use o Home Assistant para criar seu histórico de uso.";
-"widgets.commonly_used_entities.exclude_domains.param.description" = "Entities of the selected domains are never displayed.";
-"widgets.commonly_used_entities.exclude_domains.param.title" = "Exclude domains";
-"widgets.commonly_used_entities.include_domains.param.description" = "When domains are selected, only entities of those domains are displayed.";
-"widgets.commonly_used_entities.include_domains.param.title" = "Include domains";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entidades dos domínios selecionados nunca são exibidas.";
+"widgets.commonly_used_entities.exclude_domains.param.title" = "Excluir domínios";
+"widgets.commonly_used_entities.include_domains.param.description" = "Quando domínios são selecionados, apenas entidades desses domínios são exibidas.";
+"widgets.commonly_used_entities.include_domains.param.title" = "Incluir domínios";
 "widgets.commonly_used_entities.title" = "Controles comuns";
 "widgets.content_source.complication" = "Complicação";
 "widgets.content_source.entity" = "Entidade";
@@ -2769,7 +2807,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.custom.show_last_update_time.param.title" = "Mostrar hora da última atualização";
 "widgets.custom.show_states.description" = "A exibição dos estados mais recentes não é 100% garantida. Você pode tentar e verificar a documentação do aplicativo complementar para obter mais informações.";
 "widgets.custom.show_states.param.title" = "Mostrar estados (BETA)";
-"widgets.custom.show_states.param.title_no_beta" = "Show states";
+"widgets.custom.show_states.param.title_no_beta" = "Mostrar estados";
 "widgets.custom.show_update_time.title" = "Última atualização:";
 "widgets.custom.subtitle" = "Crie widgets com seu próprio estilo";
 "widgets.custom.title" = "Widgets personalizados";
@@ -2783,10 +2821,10 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.details.parameters.server" = "Servidor";
 "widgets.details.parameters.upper_template" = "Template de texto superior";
 "widgets.details.title" = "Detalhes";
-"widgets.energy.battery" = "Battery";
+"widgets.energy.battery" = "Bateria";
 "widgets.energy.description" = "Veja seu dashboard de energia rapidamente.";
-"widgets.energy.electricity" = "Grid";
-"widgets.energy.gas" = "Gas";
+"widgets.energy.electricity" = "Rede elétrica";
+"widgets.energy.gas" = "Gás";
 "widgets.energy.grid" = "Rede";
 "widgets.energy.no_connection" = "Nenhuma conexão disponível, revise a configuração da URL do Home Assistant";
 "widgets.energy.no_data" = "Sem dados de energia";
@@ -2799,12 +2837,16 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.energy.refresh_title" = "Atualizar energia";
 "widgets.energy.solar" = "Solar";
 "widgets.energy.source.auto" = "Auto";
-"widgets.energy.source.battery" = "Battery";
+"widgets.energy.source.battery" = "Bateria";
 "widgets.energy.source.consumption" = "Consumo";
-"widgets.energy.source.gas" = "Gas";
+"widgets.energy.source.gas" = "Gás";
 "widgets.energy.source.solar" = "Solar";
 "widgets.energy.source.title" = "Fonte";
 "widgets.energy.title" = "Energia";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Estado da entidade";
 "widgets.gauge.description" = "Exibir estados numéricos do Home Assistant em um medidor";
 "widgets.gauge.gallery_description" = "Exibir uma entidade, uma complicação de relógio ou um template do Home Assistant em um medidor";
@@ -2830,7 +2872,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "widgets.param.server.title" = "Servidor";
 "widgets.parameters.attribute" = "Atributo";
 "widgets.parameters.complication" = "Complicação";
-"widgets.parameters.domain" = "Domain";
+"widgets.parameters.domain" = "Domínio";
 "widgets.parameters.entity" = "Entidade";
 "widgets.preview.custom.description" = "Crie seu próprio widget dentro do aplicativo e exiba-o aqui.";
 "widgets.preview.custom.title" = "Widget personalizado";

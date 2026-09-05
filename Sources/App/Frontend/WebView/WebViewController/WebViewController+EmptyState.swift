@@ -12,6 +12,11 @@ extension WebViewController {
         if didLogOut {
             return .loggedOut
         }
+        // A certificate problem is a dead end for retries and re-authentication alike: the handshake never
+        // completes, so whatever the connection state says, the way back in is importing a certificate.
+        if let clientCertificateIssue {
+            return WebViewEmptyStateStyle(clientCertificateIssue: clientCertificateIssue)
+        }
         switch connectionState {
         case .authInvalid:
             return .unauthenticated
@@ -26,7 +31,9 @@ extension WebViewController {
         withAnimation(DesignSystem.Animation.easeInOutFaster) {
             overlayState?.emptyState = makeEmptyStateContent()
         }
-        if connectionState == .disconnected || connectionState == .unknown {
+        // Automatic reconnection only makes sense for a connection that might come back on its own; a
+        // missing or refused certificate fails the same way every time until the user imports one.
+        if connectionState == .disconnected || connectionState == .unknown, clientCertificateIssue == nil {
             reconnectManager?.start { [weak self] in
                 self?.recoverDisconnectedFrontend()
             }
@@ -58,6 +65,8 @@ extension WebViewController {
             overlayState?.emptyState = nil
         }
         reconnectManager?.stop()
+        // The next failed load re-derives it; the next successful one has nothing to derive.
+        clientCertificateIssue = nil
     }
 
     var shouldShowErrorDetailsButton: Bool {
@@ -82,7 +91,21 @@ extension WebViewController {
     /// load instead: keep the error for the details screen and fall back to the empty state.
     func handleExternalAuthFailure(error: Error) {
         guard !connectionState.isReadyForDisplay else { return }
-        latestLoadError = Self.presentableExternalAuthError(for: error)
+        let presentableError = Self.presentableExternalAuthError(for: error)
+        latestLoadError = presentableError
+        // The token request goes through the app's own session, whose challenges this controller never
+        // sees, so only the error code can tell a certificate problem apart from a connectivity one.
+        if let issue = Self.clientCertificateIssue(
+            for: presentableError,
+            receivedClientCertificateChallenge: false,
+            hasClientCertificate: server.info.connection.clientCertificate != nil
+        ) {
+            clientCertificateIssue = issue
+            if overlayState?.emptyState != nil {
+                // Already up as a connectivity failure; swap in the certificate copy and action.
+                showEmptyState()
+            }
+        }
 
         // The frontend retries in a tight loop, so only the first failure arms the grace period; an
         // empty state that is already up must not be pushed back by the retries behind it.
@@ -148,6 +171,7 @@ extension WebViewController {
             settingsAction: { [weak self] in self?.showSettingsViewController() },
             errorDetailsAction: { [weak self] in self?.presentLatestLoadErrorDetails() },
             reauthAction: { [weak self] urlType in self?.performReauthentication(using: urlType) },
+            clientCertificateAction: { [weak self] in self?.presentClientCertificateImport() },
             dismissAction: { [weak self] in self?.hideEmptyState() }
         )
     }

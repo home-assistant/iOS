@@ -1,0 +1,301 @@
+name: E2E
+
+on:
+  schedule:
+    # Every morning at 05:00 UTC, on the default branch, matching home-assistant/android.
+    - cron: "0 5 * * *"
+  # Manual run on any branch carrying this workflow.
+  workflow_dispatch:
+    inputs:
+      home-assistant-version:
+        description: "Version to test against: a PyPI version, `dev` for core's dev branch, or `latest` for stable"
+        required: false
+        default: "dev"
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  FASTLANE_XCODE_LIST_TIMEOUT: 80
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
+  BUNDLE_PATH: vendor/bundle
+
+# Runs the onboarding flow against a real Home Assistant, from the welcome screen through to the
+# native settings screen the frontend opens over the external message bus. Nightly rather than per
+# PR: macOS minutes are billed at ten times the Linux rate, and the point is catching regressions
+# in Home Assistant and in the app's own onboarding, neither of which needs per-commit resolution.
+#
+# home-assistant/android boots the `dev` container through ludeeus/setup-homeassistant. GitHub's
+# macOS runners have no Docker daemon, so core is installed from PyPI into a virtualenv on the
+# runner instead. The upside is networking: the iOS Simulator shares the host's network stack, so
+# the app reaches http://localhost:8123 directly, with none of the egress tunnelling and DNS
+# overrides the Android emulators need.
+jobs:
+  onboarding:
+    name: "Onboarding"
+    runs-on: macos-26
+    timeout-minutes: 90
+    # Naming any scope denies the rest, so the failure report has to ask for what it needs:
+    # `issues` to file or update the report, `actions` to read back which step failed.
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    env:
+      E2E_HOME_ASSISTANT_URL: http://localhost:8123
+      E2E_HOME_ASSISTANT_USERNAME: citest
+      E2E_HOME_ASSISTANT_PASSWORD: "h7jk99&U"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Cache: Gems"
+        id: cache_gems
+        with:
+          path: vendor/bundle
+          key: >-
+            ${{ format('{0}-gems-{1}-{2}-{3}',
+            runner.os,
+            env.ImageVersion,
+            env.DEVELOPER_DIR,
+            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
+
+      # Restore-only, sharing the key the CI workflow warms on `main`, so the app is not rebuilt
+      # from scratch every night. This workflow never saves, so it cannot evict that cache.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Install Gems
+        if: steps.cache_gems.outputs.cache-hit != 'true'
+        run: bundle install --jobs 4 --retry 3
+
+      # Spelled as core's own `requires-python`, which both `dev` and the current releases put at
+      # 3.14.2: installing Home Assistant on an older interpreter fails outright while resolving.
+      # A range rather than a pin, so the newest patch is picked up but a future 3.15 core has not
+      # been tested against is not.
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v5.3.0
+        with:
+          python-version: ">=3.14.2 <3.15"
+
+      # Scheduled runs track core's `dev` branch, the same as home-assistant/android, so a
+      # regression there is caught before it reaches a release. The branch is cloned shallow
+      # because pip would otherwise fetch the whole history of core to install from it.
+      - name: Install Home Assistant
+        env:
+          VERSION: ${{ inputs.home-assistant-version || 'dev' }}
+        run: |
+          case "$VERSION" in
+            dev)
+              git clone --depth 1 --branch dev https://github.com/home-assistant/core "$RUNNER_TEMP/core"
+              SPEC="$RUNNER_TEMP/core"
+              ;;
+            latest) SPEC="homeassistant" ;;
+            *) SPEC="homeassistant==$VERSION" ;;
+          esac
+
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --upgrade pip wheel
+          "$RUNNER_TEMP/venv/bin/pip" install "$SPEC"
+          "$RUNNER_TEMP/venv/bin/hass" --version
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+
+      # Runs against a copy: Home Assistant rewrites `.storage` and drops a database, logs and a
+      # lock file into its config dir, so pointing it at the checkout would leave the fixture
+      # dirty and make it look like the run had changed it.
+      - name: Start Home Assistant
+        run: |
+          cp -R .github/e2e/homeassistant "$RUNNER_TEMP/homeassistant"
+          nohup hass --config "$RUNNER_TEMP/homeassistant" > "$RUNNER_TEMP/hass-stdout.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/hass.pid"
+
+      # Generous: the first start installs the requirements of every integration in
+      # `default_config`, none of which are cached on a fresh runner.
+      - name: Wait for Home Assistant
+        run: |
+          for _ in $(seq 1 120); do
+            if ! kill -0 "$(cat "$RUNNER_TEMP/hass.pid")" 2>/dev/null; then
+              echo "::error::Home Assistant exited before it became reachable"
+              exit 1
+            fi
+            if curl -fsS -o /dev/null "$E2E_HOME_ASSISTANT_URL/manifest.json"; then
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "::error::Home Assistant did not become reachable at $E2E_HOME_ASSISTANT_URL"
+          exit 1
+
+      # The same login flow the app performs during onboarding, so a pass here means the seeded
+      # credentials and the auth endpoints the app depends on are both good. Polls because the
+      # step above only waits for the frontend: integrations keep setting up behind it. Running it
+      # before the build keeps a broken instance from costing a full compile to discover.
+      - name: Verify Home Assistant setup
+        run: >-
+          python3 Tools/home_assistant_e2e_auth.py
+          --url "$E2E_HOME_ASSISTANT_URL"
+          --username "$E2E_HOME_ASSISTANT_USERNAME"
+          --password "$E2E_HOME_ASSISTANT_PASSWORD"
+          --timeout 300
+          --require-component mobile_app
+          --require-component websocket_api
+          --output "$RUNNER_TEMP/homeassistant-config.json"
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Run onboarding flow
+        run: >-
+          bundle exec fastlane e2e
+          url:"$E2E_HOME_ASSISTANT_URL"
+          username:"$E2E_HOME_ASSISTANT_USERNAME"
+          password:"$E2E_HOME_ASSISTANT_PASSWORD"
+
+      - name: Stop Home Assistant
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/hass.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/hass.pid")" 2>/dev/null || true
+          fi
+
+      # XCUITest records the run and attaches it to the result bundle, but it lands inside the
+      # .xcresult under an opaque UUID filename. Exporting it puts the recording one click away in
+      # the artifact instead, which is the fastest way to see where a flow went wrong. Xcode keeps
+      # the recording only when the test fails, so a passing run exports nothing.
+      - name: Export screen recording
+        if: always()
+        run: |
+          XCRESULT=fastlane/test_output/e2e/Tests-UI.xcresult
+          if [ ! -d "$XCRESULT" ]; then
+            echo "No result bundle at $XCRESULT, nothing to export"
+            exit 0
+          fi
+
+          OUT="$RUNNER_TEMP/e2e-recording"
+          mkdir -p "$OUT"
+          xcrun xcresulttool export attachments --path "$XCRESULT" --output-path "$OUT" >/dev/null
+
+          # Name the exports after what they are. Anything that is not a recording or a screenshot
+          # is dropped, so the artifact stays small enough to download for a quick look.
+          python3 - "$OUT" <<'PY'
+          import json, pathlib, shutil, sys
+
+          out = pathlib.Path(sys.argv[1])
+          manifest = out / "manifest.json"
+          kept = 0
+
+          for group in json.loads(manifest.read_text()) if manifest.exists() else []:
+              for attachment in group.get("attachments", []):
+                  source = out / attachment["exportedFileName"]
+                  name = attachment.get("suggestedHumanReadableName", source.name)
+                  if not source.exists() or not name.lower().endswith((".mp4", ".png", ".jpeg", ".jpg")):
+                      continue
+                  shutil.move(source, out / name.replace("/", "-"))
+                  kept += 1
+
+          for leftover in out.iterdir():
+              if leftover.is_file() and leftover.suffix.lower() not in {".mp4", ".png", ".jpeg", ".jpg"}:
+                  leftover.unlink()
+              elif leftover.is_dir():
+                  shutil.rmtree(leftover)
+
+          print(f"Exported {kept} recording/screenshot attachment(s)")
+          PY
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload E2E Artifacts"
+        if: always()
+        with:
+          name: e2e-artifacts
+          if-no-files-found: warn
+          # The recording is kept for passing runs too (see the test plan), which puts each run's
+          # artifact around 200 MB. Nightly, that is worth capping well below the 90-day default.
+          retention-days: 14
+          path: |
+            ${{ runner.temp }}/hass-stdout.log
+            ${{ runner.temp }}/homeassistant-config.json
+            ${{ runner.temp }}/homeassistant/home-assistant.log
+            ${{ runner.temp }}/e2e-recording
+            fastlane/test_output/e2e
+            ~/Library/Logs/scan
+
+      # A red run nobody is told about is a nightly nobody trusts: GitHub only emails whoever last
+      # touched the cron line. Only the scheduled run reports, because a manual dispatch is usually
+      # someone iterating on the workflow itself and every red attempt would file a report.
+      - name: Report failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          HOME_ASSISTANT_VERSION: ${{ inputs.home-assistant-version || 'dev' }}
+        with:
+          script: |
+            const title = 'E2E: the nightly onboarding test is failing'
+            const { owner, repo } = context.repo
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
+
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner,
+              repo,
+              run_id: context.runId,
+            })
+            const failed = jobs.flatMap((job) => job.steps || []).find((step) => step.conclusion === 'failure')
+
+            const body = [
+              `The nightly [E2E run](${run}) failed at **${failed ? failed.name : 'an unknown step'}**.`,
+              '',
+              `- Home Assistant version: \`${process.env.HOME_ASSISTANT_VERSION}\``,
+              "- A screen recording of the run and Home Assistant's own log are in that run's",
+              '  `e2e-artifacts` artifact, which is kept for 14 days.',
+              '',
+              'Later failures are added here as comments rather than opening another issue.',
+            ].join('\n')
+
+            // Deduped by title among `automated` issues, so a run of bad nights leaves one thread
+            // to read rather than one issue per night.
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              labels: 'automated',
+              state: 'all',
+              per_page: 100,
+            })
+            const existing = issues.find((issue) => !issue.pull_request && issue.title === title)
+
+            if (!existing) {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['automated'],
+              })
+              core.info(`Opened #${created.data.number}`)
+              return
+            }
+
+            await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body })
+            if (existing.state === 'closed') {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'open' })
+            }
+            core.info(`Updated #${existing.number}`)

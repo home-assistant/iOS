@@ -11,14 +11,20 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     static let defaultQuery = HAAppEntityAppIntentEntityQuery()
 
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
+    @Property(title: .init("app_intents.entity.property.area", defaultValue: "Area"))
     var areaName: String?
+    @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
     /// Name of the hardware a child device belongs to. Only the Spotlight index sets it.
     var parentDeviceName: String?
+    @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
     /// Whether the server name leads the context line. Only the Spotlight index sets this, and only
@@ -63,16 +69,16 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         includesServerContext: Bool = false
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
+        self.iconName = iconName
+        self.includesServerContext = includesServerContext
+        self.entityId = entityId
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
         self.parentDeviceName = parentDeviceName
         self.floorName = floorName
         self.displayString = displayString
-        self.iconName = iconName
-        self.includesServerContext = includesServerContext
     }
 }
 

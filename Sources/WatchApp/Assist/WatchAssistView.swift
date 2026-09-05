@@ -69,6 +69,7 @@ struct WatchAssistView: View {
             // unsubscribes the view model from responses, and without this the screen comes back
             // permanently deaf: TTS may still play elsewhere but the chat never updates.
             viewModel.reconnectObserver()
+            viewModel.beginExtendedRuntime()
             // Avoid re-trigger when coming back from audio volume screen
             if isInitialAppearance {
                 isInitialAppearance = false

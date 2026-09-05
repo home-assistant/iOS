@@ -110,6 +110,23 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.UniqueID = uniqueID
     }
 
+    /// A sensor the app knows but cannot read, because the user has not granted the permission it
+    /// needs.
+    ///
+    /// Reported rather than left out: sensors are opt-in, and switching one on is what asks for its
+    /// permission, so a sensor that disappeared until the permission was granted would have no row
+    /// left to switch on. Explicitly unavailable rather than a value it hasn't read.
+    convenience init(awaitingPermissionNamed name: String, uniqueID: String, type: String? = nil) {
+        self.init()
+        self.Name = name
+        self.UniqueID = uniqueID
+        self.State = "unavailable"
+        self.Icon = "mdi:dots-square"
+        if let type {
+            self.Type = type
+        }
+    }
+
     convenience init(
         name: String,
         uniqueID: String,

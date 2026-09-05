@@ -24,7 +24,7 @@ struct WidgetTileInteraction {
                 // Already interactive: `regions` wrapped each half on the way in.
                 return tile
             } else if case .widgetURL = model.interactionType {
-                if model.requiresConfirmation {
+                if model.requiresConfirmation, !model.interactionType.opensEntityInApp {
                     return AnyView(linkThatRequiresConfirmation(model: model, sizeStyle: sizeStyle, tile: tile))
                 } else {
                     return AnyView(legacyLinkContent(model: model, sizeStyle: sizeStyle, tile: tile))
@@ -66,14 +66,18 @@ struct WidgetTileInteraction {
     }
 
     /// The action a tap runs when the whole tile — or the confirmation standing in for it — is what
-    /// was tapped. On a split tile that is the icon's action: the body only opens the item, which is
-    /// nothing to confirm and nothing to run in place.
+    /// was tapped. On a split tile that is the icon's action, unless the confirmation on screen was
+    /// asked for by the rest of the tile, whose own behavior it then runs.
     private func actionInteractionType(for model: WidgetBasicViewModel) -> WidgetInteractionType {
-        model.iconInteractionType ?? model.interactionType
+        if model.confirmsTapAction {
+            return model.interactionType
+        }
+        return model.iconInteractionType ?? model.interactionType
     }
 
-    /// One half of a split tile, wrapped in whatever runs it. Only the icon asks for confirmation:
-    /// opening the item in the app changes nothing, so there is nothing to confirm first.
+    /// One half of a split tile, wrapped in whatever runs it. Either half asks for confirmation when
+    /// the item requires it, except a tap that only opens the entity's more-info dialog: that
+    /// changes nothing, so there is nothing to confirm first.
     @available(iOS 17.0, *)
     @ViewBuilder
     private func control(
@@ -82,8 +86,8 @@ struct WidgetTileInteraction {
         isIcon: Bool,
         content: AnyView
     ) -> some View {
-        if isIcon, model.requiresConfirmation {
-            Button(intent: confirmationStateIntent(for: model)) {
+        if model.requiresConfirmation, !interactionType.opensEntityInApp {
+            Button(intent: confirmationStateIntent(for: model, confirmsTapAction: !isIcon)) {
                 content
             }
             .buttonStyle(.plain)
@@ -103,24 +107,40 @@ struct WidgetTileInteraction {
         }
     }
 
-    /// The tile drawn without the widget's accent tint, for the versions of iOS that only tinted
-    /// buttons and left links in full colour.
-    private func plainTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle) -> some View {
-        WidgetTileView(
-            model: model.tileModel,
-            sizeStyle: sizeStyle,
-            family: family,
-            kind: type.tileKind,
-            tinted: false
-        )
+    /// The tile a link shows: as drawn, except on the versions of iOS that only tinted buttons and
+    /// left links in full colour, where it is redrawn without the widget's accent tint.
+    ///
+    /// A lock screen accessory is never redrawn. It is not tinted in the first place, and what the
+    /// container hands over for the circular family is the glyph alone — the system background is
+    /// drawn around the link, not inside it — so redrawing it as a tile would paint a second one.
+    @ViewBuilder
+    private func linkTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> some View {
+        if #available(iOS 18.0, *) {
+            tile
+        } else if family.isLockScreenAccessory {
+            tile
+        } else {
+            WidgetTileView(
+                model: model.tileModel,
+                sizeStyle: sizeStyle,
+                family: family,
+                kind: type.tileKind,
+                tinted: false
+            )
+        }
     }
 
+    /// The intent that flips the tile into its confirmation state. `confirmsTapAction` records which
+    /// half asked, so confirming runs that half's behavior.
     @available(iOS 17.0, *)
-    private func confirmationStateIntent(for model: WidgetBasicViewModel)
-        -> UpdateWidgetItemConfirmationStateAppIntent {
+    private func confirmationStateIntent(
+        for model: WidgetBasicViewModel,
+        confirmsTapAction: Bool = false
+    ) -> UpdateWidgetItemConfirmationStateAppIntent {
         let intent = UpdateWidgetItemConfirmationStateAppIntent()
         intent.widgetId = model.widgetId
         intent.serverUniqueId = model.id
+        intent.confirmsTapAction = confirmsTapAction
         return intent
     }
 
@@ -172,12 +192,6 @@ struct WidgetTileInteraction {
                 return intent
             case let .activate(entityId, domain, serverId):
                 let intent = CustomWidgetActivateAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            case let .press(entityId, domain, serverId):
-                let intent = CustomWidgetPressButtonAppIntent()
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
@@ -237,11 +251,7 @@ struct WidgetTileInteraction {
         tile: AnyView
     ) -> some View {
         Button(intent: confirmationStateIntent(for: model)) {
-            if #available(iOS 18.0, *) {
-                tile
-            } else {
-                plainTile(model: model, sizeStyle: sizeStyle)
-            }
+            linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
         }
         .buttonStyle(.plain)
     }
@@ -255,11 +265,7 @@ struct WidgetTileInteraction {
     ) -> some View {
         if case let .widgetURL(url) = model.interactionType {
             Link(destination: url.withWidgetAuthenticity()) {
-                if #available(iOS 18.0, *) {
-                    tile
-                } else {
-                    plainTile(model: model, sizeStyle: sizeStyle)
-                }
+                linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
             }
         } else {
             Text(verbatim: "Unknown widget configuration")

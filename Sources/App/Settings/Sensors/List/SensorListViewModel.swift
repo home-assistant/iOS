@@ -81,8 +81,22 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
+    /// Switches one sensor on or off, asking iOS for whatever permission it needs as it goes on.
+    func setEnabled(_ isEnabled: Bool, for sensor: WebhookSensor) {
+        Current.sensors.setEnabled(isEnabled, for: sensor)
+        guard let uniqueID = sensor.UniqueID else { return }
+        requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: [uniqueID])
+    }
+
     func updateAllSensors(isEnabled: Bool) {
-        Current.sensors.setEnabled(isEnabled, forUniqueIDs: sensors.compactMap(\.UniqueID))
+        let uniqueIDs = sensors.compactMap(\.UniqueID)
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: uniqueIDs)
+        requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: uniqueIDs)
+    }
+
+    private func requestPermissionsIfNeeded(isEnabled: Bool, uniqueIDs: [String]) {
+        guard isEnabled, !uniqueIDs.isEmpty else { return }
+        Current.requestSensorPermissions(uniqueIDs)
     }
 
     /// Apple Health metrics are managed on their own screen — there are over a hundred of them, so

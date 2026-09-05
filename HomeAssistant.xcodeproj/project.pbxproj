@@ -192,6 +192,7 @@
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
 		42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C8112FFE4DB2008DAEE5 /* XCGLogger */; };
+		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
 		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42EDB6173002F8380051FC9B /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = 42EDB6163002F8380051FC9B /* HAModels */; };
@@ -649,6 +650,7 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
+		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
@@ -733,6 +735,18 @@
 				AppIntents/Assist/AssistPipelineEntity.swift,
 				AppIntents/Assist/AssistPipelineEntityQuery.swift,
 				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/Control/ControlEntityIntentRunner.swift,
+				AppIntents/Control/ControllableEntityAppEntity.swift,
+				AppIntents/Control/ControllableEntityAppEntityQuery.swift,
+				AppIntents/Control/ToggleEntityAppIntent.swift,
+				AppIntents/Control/TurnOffEntityAppIntent.swift,
+				AppIntents/Control/TurnOnEntityAppIntent.swift,
+				AppIntents/EntityState/ActiveEntitiesFilterAppEnum.swift,
+				AppIntents/EntityState/ActiveEntitiesFinder.swift,
+				AppIntents/EntityState/EntityStateSnippetView.swift,
+				AppIntents/EntityState/GetActiveEntitiesAppIntent.swift,
+				AppIntents/EntityState/GetEntityStateAppIntent.swift,
+				AppIntents/EntityState/HAEntityStateAppEntity.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
@@ -806,6 +820,8 @@
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntitiesAppIntent.swift,
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntitiesTimelineProvider.swift,
+				Widgets/Controls/Automation/AutomationAppIntent.swift,
+				Widgets/Controls/Automation/IntentAutomationEntity.swift,
 				Widgets/Controls/Cover/CoverIntent.swift,
 				Widgets/Controls/Cover/IntentCoverEntity.swift,
 				Widgets/Controls/Fan/FanIntent.swift,
@@ -817,13 +833,13 @@
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntity.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntityValueProvider.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/OpenEntityAppIntent.swift,
+				Widgets/Controls/OnOffIntentDialog.swift,
 				Widgets/Controls/Switch/IntentSwitchEntity.swift,
 				Widgets/Controls/Switch/SwitchIntent.swift,
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
 				Widgets/Custom/AppIntents/CustomWidgetActivateAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetIntentHelper.swift,
 				Widgets/Custom/AppIntents/CustomWidgetPerformActionAppIntent.swift,
-				Widgets/Custom/AppIntents/CustomWidgetPressButtonAppIntent.swift,
 				Widgets/Custom/AppIntents/CustomWidgetToggleAppIntent.swift,
 				Widgets/Custom/AppIntents/ResetAllCustomWidgetConfirmationAppIntent.swift,
 				Widgets/Custom/AppIntents/UpdateWidgetItemConfirmationStateAppIntent.swift,
@@ -840,10 +856,22 @@
 				Widgets/Energy/WidgetEnergySmallView.swift,
 				Widgets/Energy/WidgetEnergyStyle.swift,
 				Widgets/Energy/WidgetEnergyView.swift,
+				Widgets/Entities/WidgetEntities.swift,
+				Widgets/Entities/WidgetEntitiesAppEntity.swift,
+				Widgets/Entities/WidgetEntitiesAppEntityQuery.swift,
+				Widgets/Entities/WidgetEntitiesAppIntent.swift,
+				Widgets/Entities/WidgetEntitiesEntry.swift,
+				Widgets/Entities/WidgetEntitiesTimelineProvider.swift,
 				Widgets/HAAppEntityAppIntentEntity.swift,
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
 				Widgets/LiveActivity/HACompactTrailingView.swift,
+				Widgets/LiveActivity/HADynamicIslandIconContainerView.swift,
+				Widgets/LiveActivity/HADynamicIslandIconView.swift,
+				Widgets/LiveActivity/HAExpandedBottomView.swift,
+				Widgets/LiveActivity/HAExpandedContentView.swift,
+				Widgets/LiveActivity/HAExpandedTitleView.swift,
+				Widgets/LiveActivity/HAExpandedTrailingView.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
 				"Widgets/Lockscreen/Gauge/GaugeTypeAppEnum+DesignSystem.swift",
@@ -853,6 +881,8 @@
 				Widgets/OpenPage/Control/ControlOpenPageValueProvider.swift,
 				Widgets/OpenPage/OpenPageAppIntent.swift,
 				Widgets/OpenPage/PageAppEntity.swift,
+				Widgets/Scene/Control/IntentSceneEntity.swift,
+				Widgets/Scene/SceneAppIntent.swift,
 				Widgets/Script/Control/SFSymbolEntity.swift,
 				Widgets/TodoList/TodoItemCompleteAppIntent.swift,
 				Widgets/TodoList/TodoListAppEntity.swift,
@@ -1029,6 +1059,12 @@
 				AppIntents/Assist/AssistPipelineEntity.swift,
 				AppIntents/Assist/AssistPipelineEntityQuery.swift,
 				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/Control/ControlEntityIntentRunner.swift,
+				AppIntents/Control/ControllableEntityAppEntity.swift,
+				AppIntents/Control/ControllableEntityAppEntityQuery.swift,
+				AppIntents/Control/ToggleEntityAppIntent.swift,
+				AppIntents/Control/TurnOffEntityAppIntent.swift,
+				AppIntents/Control/TurnOnEntityAppIntent.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
@@ -1456,7 +1492,9 @@
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
+				Sensors/Permissions/BluetoothAuthorizationRequester.swift,
 				Sensors/Permissions/SensorPermission.swift,
+				Sensors/Permissions/SensorPermissionRequester.swift,
 				Sensors/Permissions/SensorPermissionStatus.swift,
 				Sensors/Permissions/SensorPermissionsView.swift,
 				Sensors/Permissions/SensorPermissionsViewModel.swift,
@@ -1652,7 +1690,9 @@
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
+				Sensors/Permissions/BluetoothAuthorizationRequester.swift,
 				Sensors/Permissions/SensorPermission.swift,
+				Sensors/Permissions/SensorPermissionRequester.swift,
 				Sensors/Permissions/SensorPermissionStatus.swift,
 				Sensors/Permissions/SensorPermissionsView.swift,
 				Sensors/Permissions/SensorPermissionsViewModel.swift,
@@ -2262,6 +2302,7 @@
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-only.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.zero-fraction.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.flat-outer-text-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.full-fraction.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-block-sparkline.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
@@ -2319,6 +2360,7 @@
 		42DF4F03302CACD000589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
 		42DF4F06302CACD400589E49 /* ServerSwitching */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ServerSwitching; sourceTree = "<group>"; };
 		42DF4F8E302CADA700589E49 /* WatchComplications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchComplications; sourceTree = "<group>"; };
+		42E2E0000000000000000006 /* Accessibility */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Accessibility; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
 		42EDB6453002FB9A0051FC9B /* CarPlay */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CarPlay; sourceTree = "<group>"; };
@@ -2736,6 +2778,7 @@
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
+				42E2E0000000000000000006 /* Accessibility */,
 				42EDE685300315A50051FC9B /* Assist */,
 				42EDE68E300315A50051FC9B /* BarcodeScanner */,
 				42EDE699300315A50051FC9B /* Cameras */,
@@ -2861,6 +2904,7 @@
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
+				42E2E0000000000000000002 /* OnboardingE2ETests.swift */,
 				42EDBC3A3002FBD90051FC9B /* Resources */,
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 				119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */,
@@ -3294,6 +3338,7 @@
 				42DF4EE5302CACB600589E49 /* FlightGreetings */,
 				42DF4EF6302CACC200589E49 /* Templating */,
 				42DF4F03302CACD000589E49 /* ServerSwitching */,
+				42E2E0000000000000000006 /* Accessibility */,
 				42EDB6203002FB9A0051FC9B /* Improv */,
 				42EDB6453002FB9A0051FC9B /* CarPlay */,
 				42EDB66D3002FB9A0051FC9B /* Thread */,
@@ -3409,6 +3454,9 @@
 			);
 			dependencies = (
 				B657A9091CA646EB00121384 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				42E2E0000000000000000006 /* Accessibility */,
 			);
 			name = "Tests-UI";
 			productName = HomeAssistantUITests;
@@ -4324,6 +4372,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */,
 				B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */,
 				B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */,
 			);
@@ -5409,7 +5458,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Debug;
 		};
@@ -5423,7 +5472,7 @@
 					"@loader_path/Frameworks",
 				);
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
-				TEST_TARGET_NAME = HomeAssistant;
+				TEST_TARGET_NAME = App;
 			};
 			name = Release;
 		};

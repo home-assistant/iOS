@@ -600,10 +600,12 @@ public enum Domain: String, CaseIterable {
         [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
     }
 
-    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report
-    /// their last-triggered time.
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report their
+    /// last-triggered time, and an automation reports whether it is *enabled*, never the state of
+    /// the light or fan it actually drives. Rows for these domains show where the item lives
+    /// (server, area) instead of a state the user can't read anything into.
     public var hasIrrelevantState: Bool {
-        [.script, .scene].contains(self)
+        [.automation, .scene, .script].contains(self)
     }
 
     public func localizedState(for state: String) -> String {
@@ -672,6 +674,60 @@ public extension Domain {
         .vacuum,
     ]
 
+    /// Domains a spoken command can reach, kept to what people actually name out loud.
+    ///
+    /// Deliberately absent: locks and sirens, where a misheard phrase has real consequences;
+    /// scripts, automations and buttons, which have their own actions and read oddly as "off"; and
+    /// cameras, remotes and water heaters, which are rarely asked for by name.
+    static let voiceControllable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .climate,
+        .mediaPlayer,
+        .humidifier,
+        .group,
+        .scene,
+    ]
+
+    /// Domains a spoken *question* can report on. Wider than `voiceControllable`, because reading a
+    /// state is safe where changing it is not, and because "what is on" should not quietly skip a
+    /// running vacuum or an unlocked door.
+    static let voiceReadable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .climate,
+        .mediaPlayer,
+        .humidifier,
+        .group,
+        .lock,
+        .valve,
+        .waterHeater,
+        .siren,
+        .vacuum,
+        .lawnMower,
+        .remote,
+        .alarmControlPanel,
+        .camera,
+    ]
+
+    /// Whether a spoken command can turn an entity of this domain *off*. A scene has one service for
+    /// both directions, so "turn off the movie scene" would activate it — those are on-only.
+    var isVoiceSwitchable: Bool {
+        Domain.voiceControllable.contains(self) && toggleIsStateAware
+    }
+
+    /// Whether an entity of this domain is expected to sit in a room. A scene or a group is named by
+    /// whoever made it, so it is worth offering with no area at all.
+    var expectsAnArea: Bool {
+        self != .scene && self != .group
+    }
+
     /// Domains that always show their own confirmation when tapped (state-aware lock handling),
     /// making the per-item "require confirmation" customization irrelevant.
     static let builtInConfirmationDomains: [Domain] = [
@@ -736,6 +792,7 @@ public extension Domain {
 public extension Domain {
     /// The primary service to call when activating this domain.
     /// Returns nil for domains that don't have a single main action (e.g., sensors).
+    /// A group has no services of its own, so its toggle is addressed to `serviceDomain`.
     var mainAction: Service? {
         switch self {
         case .automation:
@@ -744,13 +801,13 @@ public extension Domain {
             return .press
         case .scene, .script:
             return .turnOn
-        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve:
+        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group:
             return .toggle
         case .lock:
             return nil // Lock requires state-aware action (lock/unlock)
         case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate,
              .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
-             .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
+             .dateTime, .deviceTracker, .event, .geoLocation, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
              .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,

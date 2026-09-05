@@ -31,8 +31,7 @@ struct ContainerView: View {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
-                // Pushing lands on `ConditionalContainerView`'s compact-only navigation stack, so the
-                // decision reads the same size class it does — from the window, at presentation time.
+                // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
                 if pushOntoNavigationStack, sizeClass == .compact {
                     AppSettingsPresenter.shared.isPushPresented = true

@@ -185,6 +185,8 @@ final class SpotlightEntityIndexer: ServerObserver {
                 entityIds: indexedIds,
                 calendarIds: indexedCalendarIds
             ))
+            // The entities that changed are the ones App Shortcut phrases name.
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
             Current.Log
                 .info(
                     "Spotlight entity index updated (\(reason)): \(indexedIds.count) entities, \(indexedCalendarIds.count) calendars, \(staleIds.count + staleCalendarIds.count) removed"

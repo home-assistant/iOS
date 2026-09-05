@@ -265,7 +265,7 @@ struct DomainMappingTests {
     }
 
     @Test func mainActionMatchesExpectedGrouping() {
-        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve]
+        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group]
         let press: Set<Domain> = [.button, .inputButton]
         let turnOn: Set<Domain> = [.scene, .script]
         let trigger: Set<Domain> = [.automation]
@@ -305,7 +305,7 @@ struct DomainMappingTests {
     }
 
     @Test func irrelevantStateMembership() {
-        let expected: Set<Domain> = [.script, .scene]
+        let expected: Set<Domain> = [.automation, .scene, .script]
         for domain in Domain.allCases {
             #expect(
                 domain.hasIrrelevantState == expected.contains(domain),
@@ -322,7 +322,6 @@ struct MagicItemWidgetInteractionTests {
         }
         switch intent {
         case .toggle: return "toggle"
-        case .press: return "press"
         case .activate: return "activate"
         case .script: return "script"
         case .performAction: return "performAction"
@@ -334,28 +333,43 @@ struct MagicItemWidgetInteractionTests {
         interactionKind(for: MagicItem(id: id, serverId: "server-1", type: .entity))
     }
 
-    /// `openEntityDeeplinkURL` needs widget authenticity, which isn't available in every test
+    /// `openEntityDestinationURL` needs widget authenticity, which isn't available in every test
     /// environment, so a more-info route is either the deeplink or the `refresh` no-op fallback.
     private func isMoreInfoRoute(_ kind: String) -> Bool {
         kind == "widgetURL" || kind == "refresh"
     }
 
-    @Test func widgetInteractionRoutesByMainAction() {
+    /// The icon runs the domain's own action for every `isActionable` domain — its toggle, or the
+    /// main action where the domain names one — and opens the entity otherwise.
+    @Test func widgetInteractionRoutesByTileIconDefault() {
         #expect(interactionKind(forEntityId: "light.kitchen") == "toggle")
         #expect(interactionKind(forEntityId: "switch.porch") == "toggle")
-        #expect(interactionKind(forEntityId: "button.doorbell") == "press")
+        #expect(interactionKind(forEntityId: "cover.garage") == "toggle")
+        #expect(interactionKind(forEntityId: "lock.front_door") == "toggle")
+        #expect(interactionKind(forEntityId: "group.downstairs") == "toggle")
+        #expect(interactionKind(forEntityId: "button.doorbell") == "activate")
         #expect(interactionKind(forEntityId: "scene.movie") == "activate")
+        #expect(interactionKind(forEntityId: "automation.wakeup") == "activate")
         #expect(interactionKind(forEntityId: "script.open_gate") == "activate")
-        #expect(interactionKind(forEntityId: "automation.wakeup") == "toggle")
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "media_player.tv")))
         #expect(isMoreInfoRoute(interactionKind(forEntityId: "sensor.temperature")))
     }
 
-    /// Widgets render entities of every domain, so a domain without a single main action must still
+    /// Widgets render entities of every domain, so a domain whose icon isn't a control must still
     /// route somewhere — its more-info dialog in the web view — rather than producing an inert tile.
-    @Test func domainsWithoutMainActionOpenMoreInfo() {
-        for domain in Domain.allCases where domain.mainAction == nil {
+    @Test func nonActionableDomainsOpenMoreInfo() {
+        for domain in Domain.allCases where !domain.isActionable {
             let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
             #expect(isMoreInfoRoute(kind), "Domain.\(domain) should open more-info, got \(kind)")
+        }
+    }
+
+    /// And every actionable domain runs from its icon instead of opening the app.
+    @Test func actionableDomainsRunFromTheIcon() {
+        for domain in Domain.allCases where domain.isActionable {
+            let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
+            let expected = domain.explicitMainAction != nil ? "activate" : "toggle"
+            #expect(kind == expected, "Domain.\(domain) should route to \(expected), got \(kind)")
         }
     }
 
@@ -374,13 +388,13 @@ struct MagicItemWidgetInteractionTests {
     /// An explicit action override is resolved before the domain, so it applies to entities whose
     /// domain isn't modeled here too.
     @Test func actionOverrideWinsOverUnmodeledDomain() {
-        let doNothing = MagicItem(
+        let performAction = MagicItem(
             id: "some_custom_integration.thing",
             serverId: "server-1",
             type: .entity,
-            action: .nothing
+            action: .performAction("server-1", "notify.notify", "{}")
         )
-        #expect(interactionKind(for: doNothing) == "refresh")
+        #expect(interactionKind(for: performAction) == "performAction")
 
         let runScript = MagicItem(
             id: "some_custom_integration.thing",

@@ -2002,6 +2002,7 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings_sensors.periodic_update.description" = "Om aktiverad kommer de här sensorerna att uppdateras med den här frekvensen medan appen är öppen i förgrunden.";
 "settings_sensors.periodic_update.description_foreground" = "Denna frekvens gäller endast så länge appen är öppen på skärmen. När appen körs i bakgrunden är det iOS som avgör när sensorerna ska uppdateras.";
 "settings_sensors.periodic_update.description_mac" = "Om aktiverad uppdateras de här sensorerna med denna frekvens medan appen är öppen. Några sensorer kommer automatiskt att uppdateras oftare.";
+"settings_sensors.periodic_update.foreground_header" = "When app is open";
 "settings_sensors.periodic_update.off" = "Av";
 "settings_sensors.periodic_update.title" = "Periodisk uppdatering";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2595,6 +2596,12 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "watch.settings.refresh" = "Uppdatera";
 "watch.settings.restart_app.footer" = "Detta stänger appen omedelbart. Du måste öppna den igen manuellt.";
 "watch.settings.restart_app.title" = "Starta om app";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "Behöver uppmärksamhet";
 "watch.settings.servers.header" = "Servrar";
 "watch.settings.title" = "Inställningar";
@@ -2639,18 +2646,49 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "whats_new.app_support_update.item_body" = "Detta är den sista uppdateringen för iOS 15, watchOS 8 och macOS 11 samt tidigare versioner. Tryck här för att läsa mer.";
 "whats_new.app_support_update.item_title" = "Stöd för iOS 15, Watch OS 8 och macOS 11 upphör";
 "whats_new.app_support_update.title" = "Uppdatering av app-support";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Öppnar en artikel";
 "whats_new.item.opens_link_hint" = "Öppnar en länk";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "Vad är nytt i Companion-appen?";
 "whats_new.version_format" = "Version %@";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "Standard";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "Mer information";
 "widgets.action.name.navigate" = "Navigera";
 "widgets.action.name.nothing" = "Ingenting";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "Utför åtgärd";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "Kör skript";
 "widgets.action.name.toggle" = "Växla";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Utför Home Assistant-åtgärder.";
 "widgets.actions.not_configured" = "Inga åtgärder konfigurerade";
@@ -2800,6 +2838,10 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "widgets.energy.source.solar" = "Solenergi";
 "widgets.energy.source.title" = "Källa";
 "widgets.energy.title" = "Energi";
+"widgets.entities.description" = "Show and control the entities you choose.";
+"widgets.entities.not_configured" = "Edit the widget to choose entities.";
+"widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entitetstillstånd";
 "widgets.gauge.description" = "Visa numeriska tillstånd från Home Assistant i en mätare";
 "widgets.gauge.gallery_description" = "Visa en enhet, en klockkomplikation eller en mall från Home Assistant i en mätare";

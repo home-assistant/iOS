@@ -7,12 +7,20 @@ struct SelectionOption: Identifiable, Hashable {
     let title: String
     let subtitle: String?
     let isRecommended: Bool
+    let accessibilityIdentifier: String?
 
-    init(value: String, title: String, subtitle: String? = nil, isRecommended: Bool = false) {
+    init(
+        value: String,
+        title: String,
+        subtitle: String? = nil,
+        isRecommended: Bool = false,
+        accessibilityIdentifier: String? = nil
+    ) {
         self.value = value
         self.title = title
         self.subtitle = subtitle
         self.isRecommended = isRecommended
+        self.accessibilityIdentifier = accessibilityIdentifier
     }
 }
 
@@ -127,6 +135,7 @@ private struct SelectionOptionRow: View {
             )
         }
         .buttonStyle(PlainButtonStyle())
+        .accessibilityIdentifier(option.accessibilityIdentifier ?? "")
     }
 }
 

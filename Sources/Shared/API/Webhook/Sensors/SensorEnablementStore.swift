@@ -26,8 +26,8 @@ public final class SensorEnablementStore {
         /// An existing install's selection has been carried across for every statically-known ID.
         /// Dynamic IDs — one per battery, SIM or audio device — still need picking up.
         case upgradeAwaitingDynamicIDs
-        /// A first-time install has been seeded with the default selection, likewise still waiting
-        /// on dynamic IDs.
+        /// Written by the version that seeded a first-time install with default sensors. Kept so an
+        /// install left mid-migration by it still decodes; nothing defaults on any more.
         case freshInstallAwaitingDynamicIDs
         case complete
     }
@@ -94,7 +94,7 @@ public final class SensorEnablementStore {
     /// An upgrade is assumed rather than detected, because nothing available at this point reliably
     /// separates one from a first-time install, and guessing wrong in the other direction would
     /// silently switch off every sensor the user relies on. A genuine first-time install corrects
-    /// the assumption from onboarding, via `applyFirstRunDefaults()`.
+    /// the assumption from onboarding, via `resetForFirstRun()`.
     private func prepareIfNeeded() {
         migrationLock.lock()
         defer { migrationLock.unlock() }
@@ -105,7 +105,7 @@ public final class SensorEnablementStore {
         // what to enable is decided by the safe assumption above, not by this.
         prefs.set(hasEvidenceOfPriorInstall, forKey: Key.upgradeDetected)
 
-        enabledSensorIDs = SensorRegistry.staticSensorIDs
+        enabledSensorIDs = SensorRegistry.legacyEraSensorIDs
             .subtracting(legacyDisabledSensorIDs)
             .filter { uniqueID in
                 guard SensorRegistry.optInSensorIDs.contains(uniqueID) else { return true }
@@ -127,25 +127,27 @@ public final class SensorEnablementStore {
         }
     }
 
-    /// Seeds a first-time install with the sensors that are on out of the box.
+    /// Empties the selection `prepareIfNeeded()` assumed for a first-time install, which has no
+    /// prior choices to carry across: every sensor is opt-in, so a new install reports nothing
+    /// until the user switches something on.
     ///
     /// Runs at most once per install, and never for an install that arrived here by upgrading, so
     /// setting a server up again later can't overwrite the user's choices.
     ///
     /// - Returns: whether the stored selection actually changed.
     @discardableResult
-    public func applyFirstRunDefaults() -> Bool {
+    public func resetForFirstRun() -> Bool {
         prepareIfNeeded()
         guard !prefs.bool(forKey: Key.firstRunDefaultsApplied), !prefs.bool(forKey: Key.upgradeDetected) else {
             return false
         }
         prefs.set(true, forKey: Key.firstRunDefaultsApplied)
 
-        enabledSensorIDs = enabledSensorIDs.filter(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID:))
-        // Reopened so the pass below still picks up this device's battery sensors, whose IDs
-        // depend on the hardware.
-        migrationState = .freshInstallAwaitingDynamicIDs
-        return true
+        let didChangeSelection = !enabledSensorIDs.isEmpty
+        enabledSensorIDs = []
+        migrationState = .complete
+        removeLegacyKeys()
+        return didChangeSelection
     }
 
     /// Applies the migration to sensors whose unique IDs only exist at runtime — one per battery,
@@ -164,7 +166,9 @@ public final class SensorEnablementStore {
         case .upgradeAwaitingDynamicIDs:
             enabled.formUnion(dynamicIDs.subtracting(legacyDisabledSensorIDs))
         case .freshInstallAwaitingDynamicIDs:
-            enabled.formUnion(dynamicIDs.filter(SensorRegistry.isEnabledByDefaultOnFirstRun(uniqueID:)))
+            // Nothing to seed: an install left in this state by the version that had first-run
+            // defaults keeps the sensors those defaults switched on, and the rest are opt-in.
+            break
         case .complete:
             return
         }
