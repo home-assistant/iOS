@@ -205,7 +205,13 @@ public extension [HAAppEntity] {
     func userFacingInAreas(serverId: String) -> [HAAppEntity] {
         let areas = areasMap(for: serverId)
         return filter { entity in
-            entity.entityCategory == nil && entity.isHidden != true && areas[entity.entityId] != nil
+            guard entity.entityCategory == nil, entity.isHidden != true else {
+                return false
+            }
+            guard Domain(entityId: entity.entityId)?.expectsAnArea ?? true else {
+                return true
+            }
+            return areas[entity.entityId] != nil
         }
     }
 

@@ -37,7 +37,7 @@ enum ActiveEntitiesFilterAppEnum: String, Codable, Sendable, AppEnum {
     /// The domains this filter reads. `all` covers everything a person would call "on".
     var domains: [Domain] {
         switch self {
-        case .all: [.light, .switch, .fan, .cover, .lock, .mediaPlayer, .climate, .inputBoolean, .humidifier, .valve]
+        case .all: Domain.voiceReadable
         case .light: [.light]
         case .switchEntity: [.switch, .inputBoolean]
         case .fan: [.fan]

@@ -499,6 +499,10 @@ public enum L10n {
     }
     public enum Control {
       public enum Error {
+        /// %@ can only be turned on
+        public static func onlyTurnsOn(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.control.error.only_turns_on", String(describing: p1))
+        }
         /// %@ can't be turned on or off
         public static func unsupported(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.control.error.unsupported", String(describing: p1))

@@ -118,6 +118,7 @@
 "app_intents.calendar.repeat.weekly" = "Weekly";
 "app_intents.calendar.repeat.yearly" = "Yearly";
 "app_intents.closed_state_icon.title" = "Icon for closed state";
+"app_intents.control.error.only_turns_on" = "%@ can only be turned on";
 "app_intents.control.error.unsupported" = "%@ can't be turned on or off";
 "app_intents.controllable_entity.entity.name" = "Controllable Entity";
 "app_intents.controllable_entity.parameter.entity" = "Entity";

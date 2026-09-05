@@ -41,6 +41,11 @@ enum ControlEntityIntentRunner {
         server: Server,
         services: (on: Service, off: Service)
     ) async throws -> Service {
+        // A scene's off service is its on service, so anything but "turn on" would activate it.
+        if action != .turnOn, !domain.isVoiceSwitchable {
+            throw ShortcutAppIntentError(L10n.AppIntents.Control.Error.onlyTurnsOn(entity.displayString))
+        }
+
         switch action {
         case .turnOn:
             return services.on

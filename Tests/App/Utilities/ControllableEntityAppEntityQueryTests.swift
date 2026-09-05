@@ -91,9 +91,10 @@ struct ControllableEntityAppEntityQueryTests {
 
             #expect(ids.contains("light.kitchen"))
             #expect(ids.contains("cover.garage"))
-            // A sensor cannot be switched, and a scene's "off" would re-activate it.
+            // A scene is offered, though only "turn on" reaches it.
+            #expect(ids.contains("scene.movie"))
+            // Nothing to switch on a sensor.
             #expect(!ids.contains("sensor.humidity"))
-            #expect(!ids.contains("scene.movie"))
         }
     }
 
@@ -172,6 +173,26 @@ struct ControllableEntityAppEntityQueryTests {
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids == ["light.kitchen"])
+        }
+    }
+
+    /// A scene is named by whoever made it, so it belongs in the list with no room at all.
+    @Test func keepsScenesAndGroupsThatHaveNoArea() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "scene.movie_time", name: "Movie time"),
+                Self.makeEntity(serverId: serverId, entityId: "group.downstairs", name: "Downstairs"),
+                Self.makeEntity(serverId: serverId, entityId: "light.nowhere", name: "Nowhere"),
+            ])
+            try await seedArea(serverId: serverId, name: "Hall", entities: [])
+
+            let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
+
+            #expect(ids.contains("scene.movie_time"))
+            #expect(ids.contains("group.downstairs"))
+            // A light with no room stays out.
+            #expect(!ids.contains("light.nowhere"))
         }
     }
 }
