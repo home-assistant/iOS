@@ -61,6 +61,15 @@ extension AppIntentServerAPI {
         return entities(fromRESTStates: json, domain: domain)
     }
 
+    static func entitiesViaREST(server: Server, domains: [Domain]) async throws -> [HAEntity] {
+        let json = try await HomeAssistantRESTClient.sendForJSON(
+            server: server,
+            path: ["states"],
+            timeout: requestTimeout
+        )
+        return entities(fromRESTStates: json, domains: domains)
+    }
+
     static func entityStateViaREST(server: Server, entityId: String) async throws -> HAEntity {
         let json = try await HomeAssistantRESTClient.sendForJSON(
             server: server,
@@ -152,11 +161,16 @@ extension AppIntentServerAPI {
     /// Maps a `GET /api/states` body, keeping only `domain` and decoding with the same HAKit model
     /// the WebSocket pipeline uses.
     public static func entities(fromRESTStates json: Any, domain: Domain) -> [HAEntity] {
+        entities(fromRESTStates: json, domains: [domain])
+    }
+
+    public static func entities(fromRESTStates json: Any, domains: [Domain]) -> [HAEntity] {
         guard let states = json as? [[String: Any]] else { return [] }
 
-        let prefix = "\(domain.rawValue)."
+        let prefixes = domains.map { "\($0.rawValue)." }
         let entities = states.compactMap { state -> HAEntity? in
-            guard let entityId = state["entity_id"] as? String, entityId.hasPrefix(prefix) else {
+            guard let entityId = state["entity_id"] as? String,
+                  prefixes.contains(where: { entityId.hasPrefix($0) }) else {
                 return nil
             }
             return try? HAEntity(data: HAData(value: state))

@@ -32,9 +32,18 @@ struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
-        let selectedServer = pipeline.flatMap { Current.servers.server(for: .init(rawValue: $0.serverId)) }
-        guard let server = selectedServer ?? Current.servers.all.first else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+        // A saved pipeline outlives its server, and its id means nothing to a different one.
+        let server: Server
+        if let pipeline {
+            guard let pipelineServer = Current.servers.server(for: .init(rawValue: pipeline.serverId)) else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+            }
+            server = pipelineServer
+        } else {
+            guard let firstServer = Current.servers.all.first else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+            }
+            server = firstServer
         }
 
         guard server.info.version >= .conversationWebhook else {

@@ -13,8 +13,27 @@ struct EntityStateSnippetView: View {
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
-            icon
-                .frame(width: Self.iconSize, height: Self.iconSize)
+            Group {
+                // The icon is a Material Design name, an SF Symbol name, or something neither renders.
+                if let image = MaterialDesignIcons.pngData(forServersideValue: state.iconName)
+                    .flatMap(UIImage.init(data:)) {
+                    Image(uiImage: image)
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                } else if let symbol = UIImage(systemName: state.iconName) {
+                    Image(uiImage: symbol)
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Image(systemSymbol: .powerCircleFill)
+                        .resizable()
+                        .scaledToFit()
+                }
+            }
+            .foregroundStyle(iconColor)
+            .frame(width: Self.iconSize, height: Self.iconSize)
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                 Text(state.name)
                     .font(.headline)
@@ -35,29 +54,6 @@ struct EntityStateSnippetView: View {
     /// The frontend's state color, so the card reads the same as the dashboard.
     private var iconColor: Color {
         EntityStateColor.color(domain: state.domain, deviceClass: state.deviceClass, state: state.state) ?? .secondary
-    }
-
-    @ViewBuilder
-    private var icon: some View {
-        // The icon is a Material Design name, an SF Symbol name, or something neither renders.
-        if let image = MaterialDesignIcons.pngData(forServersideValue: state.iconName).flatMap(UIImage.init(data:)) {
-            templateIcon(image)
-        } else if let symbol = UIImage(systemName: state.iconName) {
-            templateIcon(symbol)
-        } else {
-            Image(systemSymbol: .powerCircleFill)
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(iconColor)
-        }
-    }
-
-    private func templateIcon(_ image: UIImage) -> some View {
-        Image(uiImage: image)
-            .renderingMode(.template)
-            .resizable()
-            .scaledToFit()
-            .foregroundStyle(iconColor)
     }
 
     /// `Floor • Area • Device`, whichever of the three are known.

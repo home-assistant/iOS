@@ -71,6 +71,15 @@ public enum AppIntentServerAPI {
         #endif
     }
 
+    /// Every entity in `domains`, with its state, in one round trip.
+    public static func entities(server: Server, domains: [Domain]) async throws -> [HAEntity] {
+        #if os(watchOS)
+        return try await entitiesViaREST(server: server, domains: domains)
+        #else
+        return try await entitiesViaWebSocket(server: server, domains: domains)
+        #endif
+    }
+
     /// The live state of a single entity, with its attributes.
     public static func entityState(server: Server, entityId: String) async throws -> HAEntity {
         #if os(watchOS)

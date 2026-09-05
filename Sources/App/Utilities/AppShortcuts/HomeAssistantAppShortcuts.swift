@@ -72,6 +72,8 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             phrases: [
                 "Check an entity in \(.applicationName)",
                 "Get an entity state from \(.applicationName)",
+                "Is \(\.$entity) on in \(.applicationName)",
+                "What is the state of \(\.$entity) in \(.applicationName)",
             ],
             shortTitle: .init("app_shortcuts.get_entity_state.title", defaultValue: "Get Entity State"),
             systemImageName: "info.circle"
@@ -96,12 +98,15 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "camera"
         )
         AppShortcut(
-            intent: PerformActionAppIntent(),
+            intent: GetActiveEntitiesAppIntent(),
             phrases: [
-                "Perform an action in \(.applicationName)",
+                "What \(\.$filter) are on in \(.applicationName)",
+                "Which \(\.$filter) are on in \(.applicationName)",
+                "What is on in \(.applicationName)",
+                "What is still on in \(.applicationName)",
             ],
-            shortTitle: .init("app_shortcuts.perform_action.title", defaultValue: "Perform Action"),
-            systemImageName: "wand.and.stars"
+            shortTitle: .init("app_shortcuts.what_is_on.title", defaultValue: "What Is On"),
+            systemImageName: "lightbulb"
         )
     }
 }
