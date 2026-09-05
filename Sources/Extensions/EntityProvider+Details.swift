@@ -199,6 +199,22 @@ public extension [HAAppEntity] {
     /// Creates a mapping from entity IDs to their associated areas for a given server.
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppArea` objects.
+    /// The entities worth offering to a spoken command: user-facing rather than configuration or
+    /// diagnostic, not hidden, and in an area. An entity with no room is one nobody asks for by name,
+    /// and an entity inherits its device's area, which `areasMap` already resolves.
+    func userFacingInAreas(serverId: String) -> [HAAppEntity] {
+        let areas = areasMap(for: serverId)
+        return filter { entity in
+            guard entity.entityCategory == nil, entity.isHidden != true else {
+                return false
+            }
+            guard Domain(entityId: entity.entityId)?.expectsAnArea ?? true else {
+                return true
+            }
+            return areas[entity.entityId] != nil
+        }
+    }
+
     func areasMap(for serverId: String) -> [String: AppArea] {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)
