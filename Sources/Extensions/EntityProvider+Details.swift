@@ -109,6 +109,25 @@ public extension EntityContextRepresentable {
     }
 }
 
+public extension EntityContextRepresentable {
+    /// The context line, led by the server when more than one is configured: a picker groups by
+    /// server, but a row stands alone in Siri's disambiguation, where two homes can share a name.
+    func contextSubtitle(serverName: String) -> String? {
+        guard Current.servers.all.count > 1 else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            floorName: floorName,
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
 public extension HAAppEntity {
     var area: AppArea? {
         do {

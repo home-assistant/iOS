@@ -11,6 +11,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: SceneAppIntent(),
             phrases: [
+                "\(.applicationName) activate \(\.$scene)",
                 "Activate \(\.$scene) in \(.applicationName)",
                 "Activate the \(\.$scene) scene in \(.applicationName)",
                 "Activate a scene in \(.applicationName)",
@@ -21,6 +22,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: TurnOnEntityAppIntent(),
             phrases: [
+                "\(.applicationName) turn on \(\.$entity)",
                 "Turn on \(\.$entity) in \(.applicationName)",
                 "Open \(\.$entity) in \(.applicationName)",
                 "Turn something on in \(.applicationName)",
@@ -31,6 +33,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: TurnOffEntityAppIntent(),
             phrases: [
+                "\(.applicationName) turn off \(\.$entity)",
                 "Turn off \(\.$entity) in \(.applicationName)",
                 "Close \(\.$entity) in \(.applicationName)",
                 "Turn something off in \(.applicationName)",
@@ -41,6 +44,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: GetEntityStateAppIntent(),
             phrases: [
+                "\(.applicationName) is \(\.$entity) on",
                 "Check an entity in \(.applicationName)",
                 "Get an entity state from \(.applicationName)",
                 "Is \(\.$entity) on in \(.applicationName)",
@@ -52,6 +56,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: AssistPromptAppIntent(),
             phrases: [
+                "\(.applicationName) assist",
                 "Ask \(.applicationName)",
                 "Ask \(.applicationName) Assist",
                 "Talk to \(.applicationName)",
@@ -60,8 +65,39 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "bubble.left.and.text.bubble.right"
         )
         AppShortcut(
+            intent: LockEntityAppIntent(),
+            phrases: [
+                "\(.applicationName) lock \(\.$entity)",
+                "Lock \(\.$entity) in \(.applicationName)",
+                "Lock something in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.lock.title", defaultValue: "Lock"),
+            systemImageName: "lock"
+        )
+        AppShortcut(
+            intent: SetTemperatureAppIntent(),
+            phrases: [
+                "\(.applicationName) set a temperature",
+                "Set a temperature in \(.applicationName)",
+                "Set \(\.$entity) temperature in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.set_temperature.title", defaultValue: "Set Temperature"),
+            systemImageName: "thermometer"
+        )
+        AppShortcut(
+            intent: SetBrightnessAppIntent(),
+            phrases: [
+                "\(.applicationName) dim \(\.$light)",
+                "Set a brightness in \(.applicationName)",
+                "Dim \(\.$light) in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.set_brightness.title", defaultValue: "Set Brightness"),
+            systemImageName: "sun.max"
+        )
+        AppShortcut(
             intent: GetActiveEntitiesAppIntent(),
             phrases: [
+                "\(.applicationName) what \(\.$filter) are on",
                 "What \(\.$filter) are on in \(.applicationName)",
                 "Which \(\.$filter) are on in \(.applicationName)",
                 "What is on in \(.applicationName)",
