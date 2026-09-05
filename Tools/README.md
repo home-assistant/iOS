@@ -43,6 +43,27 @@ python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult --lcov c
 - `0`: Coverage written
 - `1`: `xccov` failed, or the bundle covered no repository sources
 
+### diff_coverage.py
+
+Measures how much of a pull request's own diff the unit tests cover, out of the LCOV
+tracefile `xccov_to_lcov.py` writes. CI's `patch-coverage` job gates on it: below 90%, it
+fails and requests changes on the pull request.
+
+**Usage:**
+```bash
+python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov --base origin/main
+```
+
+**What it does:**
+1. Reads the LCOV tracefile as per-line execution counts
+2. Takes the lines the branch adds or changes from `git diff --unified=0 <base>...HEAD`
+3. Keeps the changed lines that coverage marks executable, dropping ignored paths
+4. Reports the covered share, a per-file table, and which changed lines no test runs
+
+**Exit codes:**
+- `0`: Coverage of the changed lines is at or above `--threshold` (default 90%)
+- `1`: Coverage is below the threshold, or the tracefile is missing
+
 ## Shell Scripts
 
 ### BuildMaterialDesignIconsFont.sh
