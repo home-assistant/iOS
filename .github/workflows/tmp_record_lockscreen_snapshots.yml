@@ -59,7 +59,8 @@ jobs:
             echo '## Test results'
             echo
             echo '```'
-            grep -E '(✔|✘|◇ Suite|Test Case|passed|failed)' test_output.log | grep -vi "warning" | tail -60 || true
+            grep -E '(✔|✘|◇ Suite|Test Case|passed|failed)' test_output.log \
+              | grep -vi "warning" | tail -60 || true
             echo '```'
             echo
             echo '## Recorded images'
@@ -68,6 +69,17 @@ jobs:
             find Tests/Widgets/__Snapshots__/WidgetScriptsLockScreenSnapshot.test -type f 2>/dev/null || echo "none"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # The artifact store is not reachable from where this run is being driven, so the images
+      # also go into the log, base64, where the API can read them back.
+      - name: Dump recorded snapshots
+        if: ${{ always() }}
+        run: |
+          for f in Tests/Widgets/__Snapshots__/WidgetScriptsLockScreenSnapshot.test/*.png; do
+            echo "BEGIN_PNG $(basename "$f")"
+            base64 -i "$f"
+            echo "END_PNG $(basename "$f")"
+          done
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload recorded snapshots"
