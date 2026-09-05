@@ -12,10 +12,16 @@ struct WidgetFamilyLockScreenTests {
         #expect(family.isLockScreenAccessory)
     }
 
-    @Test(arguments: [
-        WidgetFamily.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .systemExtraLargePortrait,
-    ])
+    @Test(arguments: [WidgetFamily.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
     func homeScreenFamiliesAreNot(family: WidgetFamily) {
         #expect(!family.isLockScreenAccessory)
+    }
+
+    /// The portrait extra large family only exists from iOS 27, so naming it as a value has to be
+    /// guarded, unlike the `switch` patterns that match it.
+    @Test func portraitExtraLargeIsNot() {
+        if #available(iOS 27, *) {
+            #expect(!WidgetFamily.systemExtraLargePortrait.isLockScreenAccessory)
+        }
     }
 }
