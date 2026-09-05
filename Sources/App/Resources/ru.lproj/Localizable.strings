@@ -91,10 +91,10 @@
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
 "app_intents.calendar.error.zero_duration" = "The end must be after the start";
 "app_intents.calendar.event.entity.name" = "Calendar event";
-"app_intents.calendar.get_events.description" = "Get the events on a Home Assistant calendar between two dates";
-"app_intents.calendar.get_events.end.title" = "To";
-"app_intents.calendar.get_events.start.title" = "From";
-"app_intents.calendar.get_events.title" = "Get calendar events";
+"app_intents.calendar.get_events.description" = "Получает список событий в календаре Home Assistant за указанный период";
+"app_intents.calendar.get_events.end.title" = "До";
+"app_intents.calendar.get_events.start.title" = "От";
+"app_intents.calendar.get_events.title" = "Получить события календаря";
 "app_intents.calendar.repeat.daily" = "Daily";
 "app_intents.calendar.repeat.monthly" = "Monthly";
 "app_intents.calendar.repeat.none" = "No repeat";
@@ -109,26 +109,26 @@
 "app_intents.error.invalid_response" = "Unexpected response from Home Assistant";
 "app_intents.error.no_server" = "No server provided";
 "app_intents.error.timed_out" = "Timed out after %li seconds";
-"app_intents.error.token_unavailable" = "Could not get an access token for this server";
+"app_intents.error.token_unavailable" = "Не удалось получить токен доступа для этого сервера";
 "app_intents.fan.off_state_icon.title" = "Иконка для выключенного состояния";
 "app_intents.fan.on_state_icon.title" = "Иконка для включенного состояния";
 "app_intents.fan.title" = "Вентилятор";
-"app_intents.fire_event.description" = "Fire an event on a Home Assistant server";
-"app_intents.fire_event.error.invalid_payload" = "Unable to parse event data";
-"app_intents.fire_event.event_data.description" = "JSON data to send with the event";
-"app_intents.fire_event.event_data.title" = "Event data";
-"app_intents.fire_event.event_name.title" = "Event name";
-"app_intents.fire_event.response_success" = "Fired event %@";
-"app_intents.fire_event.title" = "Fire event";
+"app_intents.fire_event.description" = "Запускает событие на сервере Home Assistant";
+"app_intents.fire_event.error.invalid_payload" = "Не удалось разобрать данные события";
+"app_intents.fire_event.event_data.description" = "Данные JSON для отправки вместе с событием";
+"app_intents.fire_event.event_data.title" = "Данные события";
+"app_intents.fire_event.event_name.title" = "Название события";
+"app_intents.fire_event.response_success" = "Запущено событие %@";
+"app_intents.fire_event.title" = "Запустить событие";
 "app_intents.focus_filter.description" = "Сообщает Home Assistant выбранное вами название режима фокусирования, пока он активен.";
 "app_intents.focus_filter.display.none" = "No Focus name picked";
 "app_intents.focus_filter.entity.name" = "Имя фокусирования";
 "app_intents.focus_filter.focus_name.title" = "Имя фокусирования";
 "app_intents.focus_filter.title" = "Сообщить об имени фокусирования";
-"app_intents.get_camera_snapshot.camera.title" = "Camera";
-"app_intents.get_camera_snapshot.description" = "Get a single still frame from a camera";
-"app_intents.get_camera_snapshot.error.png_conversion" = "Image could not be converted to PNG";
-"app_intents.get_camera_snapshot.title" = "Get camera snapshot";
+"app_intents.get_camera_snapshot.camera.title" = "Камера";
+"app_intents.get_camera_snapshot.description" = "Получает один неподвижный кадр с камеры";
+"app_intents.get_camera_snapshot.error.png_conversion" = "Изображение не удалось конвертировать в PNG";
+"app_intents.get_camera_snapshot.title" = "Получить снимок с камеры";
 "app_intents.haptic_confirmation.title" = "Тактильное подтверждение";
 "app_intents.icon.title" = "Иконка";
 "app_intents.intent.cover.title" = "Управлять шторами";
@@ -141,26 +141,26 @@
 "app_intents.lights.on_state_icon.title" = "Иконка для включенного состояния";
 "app_intents.notify_when_run.description" = "Показывать уведомление после выполнения";
 "app_intents.notify_when_run.title" = "Уведомлять при запуске";
-"app_intents.open_app_settings.description" = "Opens the companion app directly in its settings";
-"app_intents.open_app_settings.title" = "Open app settings";
+"app_intents.open_app_settings.description" = "Открывает приложение прямо в его настройках";
+"app_intents.open_app_settings.title" = "Открыть настройки приложения";
 "app_intents.open_experimental_dashboard.description" = "Открывает экспериментальную панель";
 "app_intents.open_experimental_dashboard.title" = "Открыть экспериментальную панель";
 "app_intents.open_state_icon.title" = "Иконка для открытого состояния";
-"app_intents.perform_action.action.title" = "Action";
+"app_intents.perform_action.action.title" = "Действие";
 "app_intents.perform_action.action_parameter_configuration" = "Какое действие?";
 "app_intents.perform_action.action_parameter_confirmation" = "Подтвердите, вы имели в виду \"%@\"?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Существует %@ вариантов, соответствующих '%@'.";
-"app_intents.perform_action.description" = "Perform an action on a Home Assistant server";
+"app_intents.perform_action.description" = "Выполняет действие на сервере Home Assistant";
 "app_intents.perform_action.error.invalid_action" = "Invalid action name";
 "app_intents.perform_action.error.invalid_payload" = "Unable to parse action data";
-"app_intents.perform_action.payload.description" = "JSON data to send with the action";
-"app_intents.perform_action.payload.title" = "Action data";
+"app_intents.perform_action.payload.description" = "Данные JSON для отправки с действием";
+"app_intents.perform_action.payload.title" = "Данные действия";
 "app_intents.perform_action.response_failure" = "Сбой: %@";
 "app_intents.perform_action.response_success" = "Готово";
-"app_intents.perform_action.title" = "Perform action";
-"app_intents.render_template.description" = "Render a Home Assistant template. Only users with the admin role can perform this action.";
-"app_intents.render_template.template.title" = "Template";
-"app_intents.render_template.title" = "Render template";
+"app_intents.perform_action.title" = "Выполнить действие";
+"app_intents.render_template.description" = "Подготавливает шаблон Home Assistant. Это действие могут выполнять только пользователи с ролью администратора.";
+"app_intents.render_template.template.title" = "Шаблон";
+"app_intents.render_template.title" = "Рендер шаблона";
 "app_intents.scenes.failure_message.content" = "Не удалось выполнить сцену \"%@\", пожалуйста, проверьте свои логи.";
 "app_intents.scenes.icon.title" = "Иконка";
 "app_intents.scenes.parameter.scene.title" = "Сцена";
@@ -186,13 +186,13 @@
 "app_intents.state.target" = "Целевое состояние";
 "app_intents.state.toggle" = "Переключить";
 "app_intents.switch.title" = "Переключатель";
-"app_intents.update_location.description" = "Send a location update to Home Assistant";
-"app_intents.update_location.location.title" = "Location";
-"app_intents.update_location.success" = "Updated location on all servers";
-"app_intents.update_location.title" = "Update location";
-"app_intents.update_sensors.description" = "Send a sensor update to Home Assistant";
-"app_intents.update_sensors.success" = "Updated sensors on all servers";
-"app_intents.update_sensors.title" = "Update sensors";
+"app_intents.update_location.description" = "Отправляет обновление местоположения в Home Assistant";
+"app_intents.update_location.location.title" = "Местоположение";
+"app_intents.update_location.success" = "Местоположение обновлено на всех серверах";
+"app_intents.update_location.title" = "Обновить местоположение";
+"app_intents.update_sensors.description" = "Отправляет обновление датчика в Home Assistant";
+"app_intents.update_sensors.success" = "Датчики обновлены на всех серверах";
+"app_intents.update_sensors.title" = "Обновить датчики";
 "assist.button.finish_recording.title" = "Нажмите, чтобы завершить запись...";
 "assist.button.listening.title" = "Слушаю...";
 "assist.carplay.playback_help.change_playback.detail" = "Choose Download and play if Stream does not play audio in your car.";
@@ -203,10 +203,10 @@
 "assist.carplay.playback_help.go_to_troubleshooting.title" = "Troubleshooting > Assist";
 "assist.carplay.playback_help.message" = "If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Advanced, open Assist, and change TTS Playback to Download and play.";
 "assist.carplay.playback_help.open_app.detail" = "Open CarPlay settings in the Home Assistant Companion app.";
-"assist.carplay.playback_help.open_app.title" = "Companion app";
+"assist.carplay.playback_help.open_app.title" = "Приложение-компаньон";
 "assist.carplay.playback_help.title" = "Audio Playback Help";
-"assist.carplay.processing.title" = "Processing...";
-"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.processing.title" = "Обработка...";
+"assist.carplay.responding.title" = "Отвечаю...";
 "assist.carplay.tap_to_record.title" = "Нажмите для записи";
 "assist.chat.menu.edit" = "Edit";
 "assist.chat.menu.replay" = "Replay";
@@ -271,10 +271,10 @@
 "carPlay.config.quick_access.layout.grid_requirement.subtitle" = "Требуется iOS 26 или выше";
 "carPlay.config.quick_access.show_add_edit_buttons.footer" = "Отображение кнопок для добавления и редактирования элементов быстрого доступа прямо в автомобиле.";
 "carPlay.config.quick_access.show_add_edit_buttons.title" = "Показывать кнопки «Добавить» и «Изменить»";
-"carPlay.config.tabs.add.title" = "Add Tab";
+"carPlay.config.tabs.add.title" = "Добавить вкладку";
 "carPlay.config.tabs.maximum.footer" = "CarPlay ограничивает количество отображаемых в автомобиле вкладок (до %li в зависимости от автомобиля). Дополнительные вкладки отображаться не будут.";
-"carPlay.config.tabs.name.title" = "Tab Name";
-"carPlay.config.tabs.new.title" = "New Tab";
+"carPlay.config.tabs.name.title" = "Название вкладки";
+"carPlay.config.tabs.new.title" = "Новая вкладка";
 "carPlay.config.tabs.title" = "Вкладки";
 "carPlay.debug.delete_db.alert.failed.message" = "Не удалось удалить конфигурацию, ошибка: %@";
 "carPlay.debug.delete_db.alert.title" = "Вы уверены, что хотите удалить конфигурацию CarPlay? Это действие нельзя отменить";
@@ -295,7 +295,7 @@
 "carPlay.debug.settings.option.audio_category.play_and_record" = "playAndRecord";
 "carPlay.debug.settings.option.audio_category.playback" = "playback";
 "carPlay.debug.settings.option.audio_category.record" = "record";
-"carPlay.debug.settings.option.audio_mode.default" = "default";
+"carPlay.debug.settings.option.audio_mode.default" = "по умолчанию";
 "carPlay.debug.settings.option.audio_mode.measurement" = "measurement";
 "carPlay.debug.settings.option.audio_mode.spoken_audio" = "spokenAudio";
 "carPlay.debug.settings.option.audio_mode.voice_chat" = "voiceChat";
@@ -323,7 +323,7 @@
 "carPlay.debug.settings.tts_playback.title" = "Воспроизведение TTS";
 "carPlay.folder.empty.title" = "Эта папка пуста";
 "carPlay.labels.already_added_server" = "Уже добавлено";
-"carPlay.labels.empty_area_list" = "No areas available";
+"carPlay.labels.empty_area_list" = "Нет доступных пространств";
 "carPlay.labels.empty_assist_list" = "No Assist pipelines with both speech-to-text and text-to-speech available";
 "carPlay.labels.empty_domain_list" = "Домены недоступны";
 "carPlay.labels.no_servers_available" = "Нет доступных серверов. Добавьте сервер в приложении.";
@@ -335,7 +335,7 @@
 "carPlay.labels.settings.advanced.section.button.detail" = "Используйте эту опцию, если данные вашего сервера загружены неправильно.";
 "carPlay.labels.settings.advanced.section.button.title" = "Перезапустить приложение";
 "carPlay.labels.settings.advanced.section.title" = "Расширенные";
-"carPlay.labels.settings.main_server.title" = "Main server";
+"carPlay.labels.settings.main_server.title" = "Основной сервер";
 "carPlay.labels.settings.troubleshooting.assist.section.title" = "Assist";
 "carPlay.labels.settings.troubleshooting.assist.tts_playback.footer" = "В некоторых автомобилях голосовые ответы могут не воспроизводиться при выборе режима «Поток». В этом случае проблему можно решить, выбрав «Загрузить и воспроизвести».";
 "carPlay.labels.settings.troubleshooting.assist.tts_playback.title" = "TTS Playback";
@@ -361,12 +361,12 @@
 "carPlay.quick_access.add_item.assist_prompt.message" = "Assist prompts can only be created in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.back" = "Back";
 "carPlay.quick_access.add_item.button" = "Добавить элемент";
-"carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
+"carPlay.quick_access.add_item.confirmation.footer" = "Для дополнительной настройки настройте быстрый доступ в приложении Home Assistant на вашем iPhone.";
 "carPlay.quick_access.add_item.confirmation.no_confirmation" = "Add without confirmation";
 "carPlay.quick_access.add_item.confirmation.require" = "Require confirmation";
 "carPlay.quick_access.add_item.folder.message" = "Папки можно создавать только в приложении Home Assistant на вашем iPhone.";
 "carPlay.quick_access.add_item.title" = "Add item";
-"carPlay.quick_access.edit_item.button" = "Edit";
+"carPlay.quick_access.edit_item.button" = "Редактировать";
 "carPlay.quick_access.edit_item.confirmation.no_confirmation" = "Don't require confirmation";
 "carPlay.quick_access.edit_item.subtitle" = "Remove or edit items";
 "carPlay.quick_access.edit_item.title" = "Edit";
@@ -377,8 +377,8 @@
 "carPlay.quick_access.intro.item.title" = "Создайте свою конфигурацию CarPlay";
 "carPlay.state.loading.title" = "Загрузка…";
 "carPlay.tabs.active.delete_action.title" = "Проведите влево, чтобы удалить вкладку";
-"carPlay.tabs.active.title" = "Активна";
-"carPlay.tabs.inactive.title" = "Неактивна";
+"carPlay.tabs.active.title" = "Активные";
+"carPlay.tabs.inactive.title" = "Неактивные";
 "carPlay.unlock.confirmation.title" = "Вы уверены, что хотите выполнить действие разблокировки %@?";
 "carplay.labels.already_added_server" = "Уже добавлено";
 "carplay.labels.empty_domain_list" = "Домены недоступны";
@@ -510,7 +510,7 @@
 "connection_security_level_block.requirement.location_permission_missing.title" = "Предоставить разрешение на местоположение";
 "connection_security_level_block.requirement.not_on_home_network.title" = "Подключитесь к домашней сети";
 "connection_security_level_block.requirement.title" = "Отсутствующие требования";
-"connection_security_level_block.tip" = "Tip: Double check your device settings and app permissions. Make sure the app is allowed local network access and location access is set to 'Always' (so it also works in background) and 'Full' (so the app can identify which network you are using and detect your home network).";
+"connection_security_level_block.tip" = "Совет: проверьте настройки своего устройства и разрешения для приложений. Убедитесь, что приложению разрешен доступ к локальной сети, а для доступа к местоположению установлено значение «Всегда» (чтобы приложение работало в фоновом режиме) и «Полный» (чтобы приложение могло определять, какую сеть вы используете, и находить вашу домашнюю сеть).";
 "connection_security_level_block.title" = "Вы отключены";
 "connectivity.check.dns" = "Разрешение DNS";
 "connectivity.check.dns.description" = "Преобразование имени хоста в IP-адрес";
@@ -586,7 +586,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Объект «%@» не найден!";
 "extensions.notification_content.error.request.hls_unavailable" = "Поток HLS недоступен";
 "extensions.notification_content.error.request.other" = "Получен неожиданный (не 200) код состояния (%li)";
-"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
+"extensions.notification_content.error.request.webrtc_unavailable" = "Трансляция WebRTC недоступна";
 "flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
 "flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
 "flight_greetings.empty_state.title" = "Have a nice flight";
@@ -653,7 +653,7 @@
 "gestures.swipe_right.title" = "Свайп вправо";
 "gestures.value.option.assist" = "Открыть Assist";
 "gestures.value.option.back_page" = "Возвращение на предыдущую страницу";
-"gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
+"gestures.value.option.more_info.open_in_browser" = "Открывает страницу, отображаемую в данный момент в приложении, в выбранном вами браузере";
 "gestures.value.option.more_info.quick_search" = "Быстрый поиск";
 "gestures.value.option.more_info.search_commands" = "Поиск команд";
 "gestures.value.option.more_info.search_devices" = "Поиск устройств";
@@ -662,7 +662,7 @@
 "gestures.value.option.next_server" = "Следующий сервер";
 "gestures.value.option.none" = "Ничего";
 "gestures.value.option.open_debug" = "Открыть отладку";
-"gestures.value.option.open_in_browser" = "Open page in browser";
+"gestures.value.option.open_in_browser" = "Открытие страницы в браузере";
 "gestures.value.option.previous_server" = "Предыдущий сервер";
 "gestures.value.option.quick_search" = "Быстрый поиск";
 "gestures.value.option.search_commands" = "Поиск команд";
@@ -756,14 +756,14 @@
 "kiosk.clock.style" = "Стиль часов";
 "kiosk.clock.style.digital" = "Цифровые";
 "kiosk.clock.style.large" = "Большой";
-"kiosk.corner.bottom_leading" = "Bottom leading";
+"kiosk.corner.bottom_leading" = "Снизу слева";
 "kiosk.corner.bottom_left" = "Нижний левый";
 "kiosk.corner.bottom_right" = "Нижний правый";
-"kiosk.corner.bottom_trailing" = "Bottom trailing";
-"kiosk.corner.top_leading" = "Top leading";
+"kiosk.corner.bottom_trailing" = "Снизу справа";
+"kiosk.corner.top_leading" = "Сверху слева";
 "kiosk.corner.top_left" = "Верхний левый";
 "kiosk.corner.top_right" = "Верхний правый";
-"kiosk.corner.top_trailing" = "Top trailing";
+"kiosk.corner.top_trailing" = "Сверху справа";
 "kiosk.customization.title" = "Кастомизация";
 "kiosk.customize.background_color.title" = "Цвет фона";
 "kiosk.customize.icon_color.title" = "Цвет иконки";
@@ -773,7 +773,7 @@
 "kiosk.display.dashboard_default" = "По умолчанию";
 "kiosk.display.footer" = "Выбранный сервер и панель мониторинга будут отображаться при открытии приложения.";
 "kiosk.display.server" = "Сервер";
-"kiosk.display.title" = "Display";
+"kiosk.display.title" = "Отображение";
 "kiosk.enabled" = "Включение";
 "kiosk.footer.description" = "Если эта функция включена, дисплей будет привязан к панели управления. Для выхода используйте Face ID, Touch ID или код доступа к устройству.";
 "kiosk.hide_status_bar" = "Скрыть строку состояния";
@@ -789,7 +789,7 @@
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Команда киоска";
-"kiosk.remove_header_and_sidebar" = "Hide sidebar and top bar controls";
+"kiosk.remove_header_and_sidebar" = "Скрывать элементы управления боковой и верхней панелью";
 "kiosk.screen_label" = "Экран: %@";
 "kiosk.screensaver.body" = "Показывает заставку после некоторого периода бездействия, чтобы защитить дисплей и сэкономить электроэнергию.";
 "kiosk.screensaver.clock.title" = "Часы";
@@ -831,7 +831,7 @@
 "kiosk.screensaver.timeout.seconds_30" = "30 секунд";
 "kiosk.screensaver.title" = "Заставка";
 "kiosk.screensaver.toggle" = "Заставка";
-"kiosk.screensaver.wake_on_camera_motion" = "Wake on camera motion";
+"kiosk.screensaver.wake_on_camera_motion" = "Пробуждение по движению с камеры";
 "kiosk.screensaver.wake_on_camera_motion_footer" = "Использует фронтальную камеру для обнаружения движения: заставка не запускается, пока происходит движение, и отключается при его обнаружении. Камера остается активной все время, пока включен режим киоска с этой опцией.";
 "kiosk.screensaver_label" = "Заставка: %@";
 "kiosk.section.title" = "Режим киоска";
@@ -848,9 +848,9 @@
 "live_activity.default_title" = "Home Assistant";
 "live_activity.documentation" = "Документация";
 "live_activity.empty_state" = "Нет активностей для эфира активности";
-"live_activity.end_all.button" = "End All Activities";
-"live_activity.end_all.confirm.button" = "End All";
-"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.end_all.button" = "Завершить все эфиры активности";
+"live_activity.end_all.confirm.button" = "Завершить все";
+"live_activity.end_all.confirm.title" = "Завершить все эфиры активности?";
 "live_activity.frequent_updates.footer" = "Позволяет Home Assistant обновлять эфир активности с частотой до одного раза в секунду. Включите в настройках \u203A %@ \u203A эфира активности.";
 "live_activity.frequent_updates.title" = "Более частые обновления";
 "live_activity.privacy.message" = "Информация о текущей активности отображается на экране блокировки и в динамическом острове без использования Face ID или Touch ID. Внимательно выбирайте то, что вы показываете.";
@@ -889,7 +889,7 @@
 "live_activity.sample.no_icon.title" = "Без иконки · Цвет по умолчанию";
 "live_activity.sample.plain.note" = "Минимально жизнеспособный макет — задано только поле для сообщения. Проверяет, как отображается пустой макет без иконки, индикатора выполнения и таймера.";
 "live_activity.sample.plain.summary" = "Простое сообщение без всего остального.";
-"live_activity.sample.plain.title" = "Plain Message";
+"live_activity.sample.plain.title" = "Простое сообщение";
 "live_activity.sample.progress_direction.note" = "progress_bar_direction: при уменьшении значение заполнения полосы меняется на противоположное: отображается то, что осталось (progress_max − progress), и по мере увеличения значения прогресс уменьшается. Процентное значение по-прежнему отображается в исходном виде. Также работает с таймерами обратного отсчета: при увеличении значение заполняется, а не уменьшается.";
 "live_activity.sample.progress_direction.summary" = "Индикатор выполнения, который уменьшается, а не заполняется.";
 "live_activity.sample.progress_direction.title" = "Батарея · Уменьшающаяся полоса";
@@ -909,7 +909,7 @@
 "live_activity.samples.detail_footer" = "При запуске этот пример выполняется локально на устройстве. YAML запускает тот же эфир активности из автоматизации или скрипта — укажите действие уведомления на вашем устройстве.";
 "live_activity.samples.show_yaml" = "Показать YAML";
 "live_activity.samples.start" = "Запуск";
-"live_activity.samples.started" = "Started — lock the screen to watch";
+"live_activity.samples.started" = "Запущено — заблокируйте экран, чтобы увидеть";
 "live_activity.samples.static_footer" = "Фиксированное состояние — без обновлений после запуска. Удобно для быстрой проверки макета.";
 "live_activity.samples.static_title" = "Пример · статические";
 "live_activity.samples.title" = "Примеры";
@@ -922,7 +922,7 @@
 "live_activity.status.open_settings" = "Open Settings";
 "live_activity.subtitle" = "Обновление Home Assistant в режиме реального времени на экране блокировки и динамическом острове.";
 "live_activity.sync.button" = "Синхронизировать с Home Assistant";
-"live_activity.sync.done" = "Synced";
+"live_activity.sync.done" = "Синхронизировано";
 "live_activity.sync.footer" = "Отправляет отчеты об эфирах активности в Home Assistant и освобождает токены, когда они заканчиваются. Запускается автоматически при открытии приложения.";
 "live_activity.title" = "Эфир активности";
 "live_activity.token_unreachable.body" = "Не удалось связаться с Home Assistant для регистрации этого эфира активности, поэтому оно не будет обновляться. Проверьте уровень безопасности подключения к серверу в настройках сопутствующего приложения. Если вы используете внутренний URL-адрес, убедитесь, что для разрешения геопозиции установлено значение «Всегда».";
@@ -1050,7 +1050,7 @@
 Метки будут работать на любом устройстве с установленным Home Assistant, которое имеет аппаратную поддержку для их чтения.";
 "nfc.list.learn_more" = "Узнайте больше";
 "nfc.list.read_tag" = "Считать метку";
-"nfc.list.title" = "NFC Read/Write";
+"nfc.list.title" = "Чтение/запись NFC";
 "nfc.list.write_tag" = "Записать метку";
 "nfc.not_available" = "NFC недоступен на этом устройстве";
 "nfc.read.error.generic_failure" = "Не удалось прочитать метку";
@@ -1135,7 +1135,7 @@
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
 "onboarding.invitation.accept_button" = "Принять";
-"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.address_title" = "Адрес Home Assistant";
 "onboarding.invitation.description" = "Home Assistant — это домашняя автоматизация с открытым исходным кодом, которая ставит на первое место локальный контроль и конфиденциальность.";
 "onboarding.invitation.reject_button" = "Reject";
 "onboarding.invitation.screen_title" = "You've been invited";
@@ -1264,7 +1264,7 @@ Home Assistant — это приложение с открытым исходн�
 "reminders_sync.add.direction_footer.both_ways" = "Изменения в одном списке применяются к другому. Если один и тот же элемент изменяется в обоих приложениях, параметр Конфликтов определяет, какая сторона сохраняется.";
 "reminders_sync.add.direction_footer.to_home_assistant" = "Напоминания — источник достоверной информации. Его элементы и изменения перезаписывают список в Home Assistant. Элементы, которые существуют только в Home Assistant, остаются без изменений.";
 "reminders_sync.add.direction_footer.to_reminders" = "Home Assistant — источник достоверной информации. Его данные и изменения перезаписывают список приложения Напоминания. Элементы, которые существуют только в приложении Напоминания, остаются без изменений.";
-"reminders_sync.add.duplicate_warning" = "These lists are already being synced.";
+"reminders_sync.add.duplicate_warning" = "Эти списки уже синхронизируются.";
 "reminders_sync.add.lists_footer" = "При первой синхронизации элементы, которые присутствуют в обоих списках под одним и тем же названием, связываются. Все остальное копируется в соответствии с направлением синхронизации. Завершённые элементы не копируются.";
 "reminders_sync.add.lists_header" = "Списки для синхронизации";
 "reminders_sync.add.no_todo_lists.message" = "Чтобы синхронизироваться с приложением Напоминания, сначала создайте список дел в Home Assistant, а затем вернитесь сюда.";
@@ -1279,11 +1279,11 @@ Home Assistant — это приложение с открытым исходн�
 "reminders_sync.direction.to_home_assistant" = "Напоминания → Home Assistant";
 "reminders_sync.direction.to_reminders" = "Home Assistant → Напоминания";
 "reminders_sync.history.clear" = "Очистить";
-"reminders_sync.history.clear_confirm.button" = "Clear History";
-"reminders_sync.history.clear_confirm.title" = "Clear all sync history? This can’t be undone.";
-"reminders_sync.history.detail.created_item_%@" = "Created Home Assistant item “%@”";
+"reminders_sync.history.clear_confirm.button" = "Очистить историю";
+"reminders_sync.history.clear_confirm.title" = "Очистить всю историю синхронизации? Это нельзя отменить.";
+"reminders_sync.history.detail.created_item_%@" = "Создан элемент в Home Assistant «%@»";
 "reminders_sync.history.detail.created_reminder_%@" = "Created reminder “%@”";
-"reminders_sync.history.detail.deleted_item_%@" = "Deleted Home Assistant item “%@”";
+"reminders_sync.history.detail.deleted_item_%@" = "Удален элемент в Home Assistant «%@»";
 "reminders_sync.history.detail.deleted_reminder_%@" = "Deleted reminder “%@”";
 "reminders_sync.history.detail.updated_item_%@" = "Updated Home Assistant item “%@”";
 "reminders_sync.history.detail.updated_reminder_%@" = "Updated reminder “%@”";
@@ -1296,7 +1296,7 @@ Home Assistant — это приложение с открытым исходн�
 "reminders_sync.settings.conflicts.header" = "Конфликты";
 "reminders_sync.settings.conflicts.title" = "Сохранить изменения из";
 "reminders_sync.settings.empty.body" = "Списки пока не синхронизированы. Выберите список Напоминания и список дел Home Assistant для синхронизации.";
-"reminders_sync.settings.last_synced_%@" = "Last synced %@";
+"reminders_sync.settings.last_synced_%@" = "Последняя синхронизация %@";
 "reminders_sync.settings.never_synced" = "Not synced yet";
 "reminders_sync.settings.open_settings" = "Открыть настройки";
 "reminders_sync.settings.refresh.background" = "Просить iOS синхронизировать каждые";
@@ -1307,7 +1307,7 @@ Home Assistant — это приложение с открытым исходн�
 "reminders_sync.settings.refresh.header" = "Пока приложение открыто";
 "reminders_sync.settings.refresh.off" = "Выключено";
 "reminders_sync.settings.subtitle" = "Синхронизируйте списки приложения Напоминания и списки дел Home Assistant.";
-"reminders_sync.settings.sync_now" = "Sync now";
+"reminders_sync.settings.sync_now" = "Синхронизировать сейчас";
 "reminders_sync.settings.synced_lists.header" = "Синхронизированные списки";
 "reminders_sync.settings.syncing" = "Синхронизация…";
 "requires_version" = "Требуется %@ или более поздняя версия.";
@@ -1321,7 +1321,7 @@ Home Assistant — это приложение с открытым исходн�
 "sensors.camera_motion.setting.clear_delay" = "Задержка очистки";
 "sensors.camera_motion.setting.frame_rate" = "Частота кадров";
 "sensors.camera_stream.detail_footer" = "Чтобы просматривать изображение с этой камеры в Home Assistant, добавьте интеграцию «MJPEG IP Camera» и используйте указанный выше URL-адрес потока. Поток передается по протоколу HTTP без шифрования. Укажите имя пользователя и пароль в настройках выше, чтобы требовалась аутентификация, иначе любой пользователь в вашей локальной сети сможет просматривать изображение.  Камера доступна только тогда, когда приложение открыто.";
-"sensors.camera_stream.footer" = "To watch this camera in Home Assistant, add the “MJPEG IP Camera” integration and use the stream URL above. The stream is plain HTTP with no encryption; set a username and password below to require authentication, otherwise anyone on your local network can view it. It is only available while the app is open in the foreground.";
+"sensors.camera_stream.footer" = "Чтобы наблюдать за этой камерой в Home Assistant, добавьте интеграцию «MJPEG IP Camera» и используйте указанный выше URL-адрес потока.  Поток передается по протоколу HTTP без шифрования. Укажите ниже имя пользователя и пароль для аутентификации, иначе его смогут увидеть все в вашей локальной сети.  Доступ к потоку возможен только при активном приложении.";
 "sensors.camera_stream.setting.credentials_footer" = "Оставьте оба поля пустыми, чтобы любой пользователь вашей сети мог просматривать трансляцию. Если эти поля заполнены, настройте интеграцию MJPEG в Home Assistant, указав те же имя пользователя и пароль.";
 "sensors.camera_stream.setting.credentials_placeholder" = "Необязательно";
 "sensors.camera_stream.setting.frame_rate" = "Частота кадров";
@@ -1371,7 +1371,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
 "settings.connection_section.cloudhook.check_reachability.result" = "Результат";
 "settings.connection_section.cloudhook.check_reachability.title" = "Проверить достижимость";
-"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Недоступно: %@";
 "settings.connection_section.cloudhook.footer" = "Относитесь к этому URL-адресу как к конфиденциальному. Любой, у кого он есть, может отправлять запросы на webhook этого мобильного приложения.";
 "settings.connection_section.cloudhook.status.not_configured" = "Не настроено";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
@@ -1425,7 +1425,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Для доступа к SSID в фоновом режиме требуется разрешение на определение местоположения \"Всегда\" и точное определение местоположения. Нажмите здесь, чтобы изменить свои настройки.";
 "settings.connection_section.update_database.finished" = "Server information updated";
 "settings.connection_section.update_database.progress.areas" = "Updating areas";
-"settings.connection_section.update_database.progress.calendars" = "Updating calendars";
+"settings.connection_section.update_database.progress.calendars" = "Обновление календарей";
 "settings.connection_section.update_database.progress.devices" = "Updating devices";
 "settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.validate_error.edit_url" = "Изменить URL-адрес";
@@ -1451,8 +1451,8 @@ Home Assistant — это приложение с открытым исходн�
 "settings.database_explorer.row_detail" = "Подробности строки";
 "settings.database_explorer.title" = "Обозреватель базы данных";
 "settings.debugging.cached_entity_data.alert_title" = "Удалить кэшированные данные сущностей?";
-"settings.debugging.cached_entity_data.delete_button" = "Delete Entity Data";
-"settings.debugging.cached_entity_data.message" = "Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again.";
+"settings.debugging.cached_entity_data.delete_button" = "Удалить данные объектов";
+"settings.debugging.cached_entity_data.message" = "Удаляет кэшированные записи объектов Home Assistant из приложения. Они будут созданы заново при повторной синхронизации приложения.";
 "settings.debugging.cached_entity_data.title" = "Удалить кэшированные данные сущностей";
 "settings.debugging.calendars.all_day" = "All-day";
 "settings.debugging.calendars.count_%d" = "%li calendars";
@@ -1473,7 +1473,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.debugging.clear_allowed_tags.title" = "Clear approved NFC tags";
 "settings.debugging.clear_web_cache.alert_title" = "Очистить кэш веб-представления?";
 "settings.debugging.clear_web_cache.clear_button" = "Очистить кэш";
-"settings.debugging.clear_web_cache.message" = "Clears cached web content for the Home Assistant frontend. Frontend resources will be reloaded as needed.";
+"settings.debugging.clear_web_cache.message" = "Очищает кэшированный веб-контент для интерфейса Home Assistant. Ресурсы внешнего интерфейса будут перезагружены по мере необходимости.";
 "settings.debugging.clear_web_cache.title" = "Очистить кэш веб-представления";
 "settings.debugging.components_library.title" = "Components Library";
 "settings.debugging.configuration_transfer.actions.footer" = "Экспортированный файл представляет собой обычный JSON-файл, который можно просмотреть перед отправкой.  При импорте все категории, перечисленные выше, заменяются, и этот процесс необратим.";
@@ -1493,8 +1493,8 @@ Home Assistant — это приложение с открытым исходн�
 "settings.debugging.configuration_transfer.category.nfc_tags.title" = "Approved NFC tags";
 "settings.debugging.configuration_transfer.category.notification_categories.explanation" = "Actionable notification categories and their actions.";
 "settings.debugging.configuration_transfer.category.notification_categories.title" = "Категории уведомлений";
-"settings.debugging.configuration_transfer.category.notification_snooze_actions.explanation" = "Snooze durations offered on notifications.";
-"settings.debugging.configuration_transfer.category.notification_snooze_actions.title" = "Notification snooze actions";
+"settings.debugging.configuration_transfer.category.notification_snooze_actions.explanation" = "Продолжительность отсрочки, предлагаемая в уведомлениях.";
+"settings.debugging.configuration_transfer.category.notification_snooze_actions.title" = "Действия при откладывании уведомлений";
 "settings.debugging.configuration_transfer.category.reminders_sync.explanation" = "Сопоставление списков Apple Reminders со списком дел.";
 "settings.debugging.configuration_transfer.category.reminders_sync.title" = "Синхронизация напоминаний";
 "settings.debugging.configuration_transfer.category.watch_complications.explanation" = "Расширения, настроенные для циферблата Apple Watch.";
@@ -1525,7 +1525,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.configuration_transfer.import.confirmation.title" = "Replace this app's configuration?";
 "settings.debugging.configuration_transfer.import.progress.title" = "Importing configuration";
 "settings.debugging.configuration_transfer.import.success.message" = "Imported %li item(s).";
-"settings.debugging.configuration_transfer.import.success.title" = "Configuration imported";
+"settings.debugging.configuration_transfer.import.success.title" = "Конфигурация импортирована";
 "settings.debugging.configuration_transfer.state.included" = "Включено";
 "settings.debugging.configuration_transfer.state.item_count" = "%li элемент(ов)";
 "settings.debugging.configuration_transfer.state.not_configured" = "Не настроено";
@@ -1551,10 +1551,10 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.database_transfer.import.success.title" = "Import complete";
 "settings.debugging.database_transfer.import.title" = "Import";
 "settings.debugging.database_transfer.part.app_icon_shortcuts" = "app quick actions";
-"settings.debugging.database_transfer.part.carplay_configuration" = "CarPlay configuration";
+"settings.debugging.database_transfer.part.carplay_configuration" = "Конфигурация CarPlay";
 "settings.debugging.database_transfer.part.complications" = "Расширения";
-"settings.debugging.database_transfer.part.custom_widgets" = "custom widgets";
-"settings.debugging.database_transfer.part.watch_configuration" = "watch configuration";
+"settings.debugging.database_transfer.part.custom_widgets" = "пользовательские виджеты";
+"settings.debugging.database_transfer.part.watch_configuration" = "конфигурация часов";
 "settings.debugging.database_transfer.title" = "Database Import/Export";
 "settings.debugging.delete_keychain.date_placeholder" = "гггг-ММ-дд";
 "settings.debugging.delete_keychain.delete_button" = "Удалить";
@@ -1571,9 +1571,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.keychain_explorer.accessibility_label" = "Доступность";
 "settings.debugging.keychain_explorer.account_label" = "Учётная запись";
 "settings.debugging.keychain_explorer.base64_prefix" = "Base64: %@";
-"settings.debugging.keychain_explorer.bytes_format" = "%lld bytes";
+"settings.debugging.keychain_explorer.bytes_format" = "%lld байтов";
 "settings.debugging.keychain_explorer.empty_state" = "No generic password items were found in the app keychain.";
-"settings.debugging.keychain_explorer.item_count_format" = "%lld item(s)";
+"settings.debugging.keychain_explorer.item_count_format" = "%lld элемент(ов)";
 "settings.debugging.keychain_explorer.load_error_format" = "Failed to load keychain items: %@";
 "settings.debugging.keychain_explorer.metadata_section" = "Metadata";
 "settings.debugging.keychain_explorer.navigation_title" = "Keychain explorer";
@@ -1594,7 +1594,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.reset_app.alert_title" = "Удалить все данные приложения?";
 "settings.debugging.reset_app.client_event" = "Deleted all app data from debug settings";
 "settings.debugging.reset_app.delete_button" = "Удалить данные приложения";
-"settings.debugging.reset_app.message" = "Removes servers, tokens, settings, and local app data from this device. This cannot be undone.";
+"settings.debugging.reset_app.message" = "Удаляет серверы, токены, настройки и локальные данные приложения с этого устройства. Отменить это действие невозможно.";
 "settings.debugging.reset_app.title" = "Удалить все данные приложения";
 "settings.debugging.reset_app.toast.clearing_databases" = "Clearing local databases and caches";
 "settings.debugging.reset_app.toast.disconnecting" = "Disconnecting %@";
@@ -1663,31 +1663,31 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.reset_section.reset_app.title" = "Сброс приложения (удаление серверов и данных)";
 "settings.reset_section.reset_row.title" = "Сбросить";
 "settings.reset_section.reset_web_cache.title" = "Сбросить кеш веб-интерфейса";
-"settings.search.no_results.subtitle" = "Check the spelling or try a different search.";
-"settings.search.no_results.title" = "No results for “%@”";
+"settings.search.no_results.subtitle" = "Проверьте написание или попробуйте другой поиск.";
+"settings.search.no_results.title" = "Нет результатов для “%@“";
 "settings.search.prompt" = "Поиск настроек";
 "settings.search_keywords.app_icon_shortcuts" = "quick actions, home screen, long press, launcher";
 "settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
 "settings.search_keywords.car_play" = "car, vehicle, driving, dashboard";
 "settings.search_keywords.complications" = "watch face, apple watch, glance";
-"settings.search_keywords.debugging" = "logs, diagnostics, export, database, troubleshooting, reset";
+"settings.search_keywords.debugging" = "логи, диагностика, экспорт, база данных, диагностика, сброс";
 "settings.search_keywords.focus" = "focus filter, do not disturb, sleep, work, driving, personal";
 "settings.search_keywords.general" = "appearance, theme, app icon, browser, links, display, launch";
 "settings.search_keywords.gestures" = "swipe, tap, navigation, shortcuts";
 "settings.search_keywords.greetings" = "flight, airplane, plane, travel, welcome";
 "settings.search_keywords.help" = "documentation, support, guide, companion";
 "settings.search_keywords.kiosk" = "wall mount, tablet, screen, always on, auto lock";
-"settings.search_keywords.live_activities" = "dynamic island, lock screen, timers";
-"settings.search_keywords.location" = "gps, zones, tracking, presence, background updates";
+"settings.search_keywords.live_activities" = "динамический остров, экран блокировки, таймеры";
+"settings.search_keywords.location" = "gps, зоны, отслеживание, нахождение, фоновые обновления";
 "settings.search_keywords.mac_toolbar" = "menu bar, entities, mac, desktop";
 "settings.search_keywords.nfc" = "tags, stickers, scan, automation";
 "settings.search_keywords.notifications" = "push, alerts, sounds, badge, critical, categories";
 "settings.search_keywords.permissions" = "permissions, access, camera, microphone, location, bluetooth, notifications, motion, speech, focus";
 "settings.search_keywords.privacy" = "analytics, crash reports, data collection, consent";
 "settings.search_keywords.reminders_sync" = "reminders, todo, to-do, tasks, lists, shopping list, sync";
-"settings.search_keywords.sensors" = "battery, motion, pedometer, focus, device data";
-"settings.search_keywords.servers" = "connection, url, account, instance, add server";
-"settings.search_keywords.watch" = "apple watch, watchos, configuration";
+"settings.search_keywords.sensors" = "батарея, движение, шагомер, фокусирование, данные устройства";
+"settings.search_keywords.servers" = "подключение, URL, аккаунт, экземпляр, добавить сервер";
+"settings.search_keywords.watch" = "apple watch, watchos, конфигурация";
 "settings.search_keywords.widgets" = "home screen, lock screen, custom widgets";
 "settings.sections.customize_experience.header" = "Настройте приложение под себя";
 "settings.sections.help_support.header" = "Помощь и поддержка";
@@ -1699,18 +1699,18 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_select.title" = "Сервер";
 "settings.server_switching.by_location.footer" = "Когда вы открываете приложение, оно проверяет, находитесь ли вы в одном из своих домов, подключены ли вы к его сети Wi-Fi или находитесь в его домашней зоне. Если этот дом принадлежит другому серверу, этот сервер открывается автоматически. Проверка выполняется только на этом устройстве во время использования приложения, и ваше местоположение никогда не сохраняется.";
 "settings.server_switching.by_location.title" = "Переключение сервера по местоположению";
-"settings.server_switching.closest_server.title" = "Closest Server";
+"settings.server_switching.closest_server.title" = "Ближайший сервер";
 "settings.server_switching.how_it_works.intro" = "Если у вас несколько домов, приложение может определить, какой сервер важен в данный момент, и переключиться на него за вас. Зайдите в свой второй дом, и его панель управления уже там.";
-"settings.server_switching.how_it_works.location.body" = "В противном случае ваше местоположение сравнивается с домашней зоной каждого сервера, и ближайшая из них считается ближайшей.";
-"settings.server_switching.how_it_works.location.title" = "Then your location";
+"settings.server_switching.how_it_works.location.body" = "В противном случае ваше местоположение сравнивается с домашней зоной каждого сервера, и ближайшим считается тот, который расположен ближе всего.";
+"settings.server_switching.how_it_works.location.title" = "Затем ваше местоположение";
 "settings.server_switching.how_it_works.privacy.body" = "Проверка сети и местоположения выполняется только на этом устройстве и только во время использования приложения. Ваше местоположение никогда не сохраняется и не передается другим пользователям.";
-"settings.server_switching.how_it_works.privacy.title" = "Your privacy";
-"settings.server_switching.how_it_works.switching.body" = "When you open the app at another server's home, on its Wi-Fi network or inside its Home zone, that server is opened automatically. The server you are viewing always wins when homes overlap. If you switch manually, your choice is respected until you leave or stop using the app for a while.";
-"settings.server_switching.how_it_works.switching.title" = "Automatic switching";
-"settings.server_switching.how_it_works.title" = "How it works?";
+"settings.server_switching.how_it_works.privacy.title" = "Ваша конфиденциальность";
+"settings.server_switching.how_it_works.switching.body" = "Когда вы открываете приложение в домашней зоне другого сервера, в его сети Wi-Fi или в его домашней зоне, этот сервер открывается автоматически.  Сервер, который вы просматриваете, всегда имеет преимущество, если домашние зоны перекрываются. Если вы переключаетесь вручную, ваш выбор сохраняется до тех пор, пока вы не выйдете из приложения или не перестанете им пользоваться на некоторое время.";
+"settings.server_switching.how_it_works.switching.title" = "Автоматическое переключение";
+"settings.server_switching.how_it_works.title" = "Как это работает?";
 "settings.server_switching.how_it_works.wifi.body" = "Если это устройство подключено к сети Wi-Fi, принадлежащей одному из ваших серверов, то этот сервер считается ближайшим. Проверка местоположения не требуется.";
-"settings.server_switching.how_it_works.wifi.title" = "Home network first";
-"settings.server_switching.switched_toast" = "Switched to %@";
+"settings.server_switching.how_it_works.wifi.title" = "Сначала домашняя сеть";
+"settings.server_switching.switched_toast" = "Переключено на %@";
 "settings.server_switching.title" = "Переключение сервера";
 "settings.status_section.header" = "Состояние";
 "settings.status_section.location_name_row.placeholder" = "Мой Home Assistant";
@@ -1883,9 +1883,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.notifications.history.clear_confirm.message" = "Это нельзя отменить.";
 "settings_details.notifications.history.clear_confirm.title" = "Вы уверены, что хотите очистить историю уведомлений?";
 "settings_details.notifications.history.detail.copied" = "Скопировано!";
-"settings_details.notifications.history.detail.copy" = "Copy Payload";
-"settings_details.notifications.history.detail.empty" = "No payload";
-"settings_details.notifications.history.detail.payload" = "Payload";
+"settings_details.notifications.history.detail.copy" = "Копировать полезную нагрузку";
+"settings_details.notifications.history.detail.empty" = "Нет полезной нагрузки";
+"settings_details.notifications.history.detail.payload" = "Полезная нагрузка";
 "settings_details.notifications.history.empty" = "Пока никаких уведомлений нет";
 "settings_details.notifications.history.footer" = "Push-уведомления, получаемые на это устройство, включая локальные и дистанционные push-уведомления.";
 "settings_details.notifications.history.kind.all" = "Все";
@@ -2041,7 +2041,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.sensors.configure" = "Конфигурация";
 "settings_sensors.sensors.enable_all" = "Включить все датчики";
 "settings_sensors.sensors.header" = "Датчики";
-"settings_sensors.sensors.no_results" = "No sensors match your search";
+"settings_sensors.sensors.no_results" = "Нет датчиков, соответствующих вашему запросу";
 "settings_sensors.sensors.search_prompt" = "Поиск датчиков";
 "settings_sensors.settings.footer" = "Изменения будут применены при следующем обновлении.";
 "settings_sensors.settings.header" = "Настройки";
@@ -2136,7 +2136,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
 "watch.complications.builder.gauge_template" = "Gauge template";
-"watch.complications.builder.icon" = "Icon";
+"watch.complications.builder.icon" = "Иконка";
 "watch.complications.builder.icon_color" = "Цвет иконки";
 "watch.complications.builder.insert_token" = "Insert";
 "watch.complications.builder.maximum" = "Максимум";
@@ -2148,7 +2148,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.precision" = "Десятичные";
 "watch.complications.builder.precision_automatic" = "Автоматически";
 "watch.complications.builder.preview" = "Предпросмотр";
-"watch.complications.builder.progress_bar_color" = "Progress bar color";
+"watch.complications.builder.progress_bar_color" = "Цвет индикатора выполнения";
 "watch.complications.builder.remove_token" = "Remove %@";
 "watch.complications.builder.reorder_token" = "Reorder %@";
 "watch.complications.builder.reorder_tokens_hint" = "Перетащите один токен на другой, чтобы изменить их порядок.";
@@ -2178,7 +2178,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.template_suggestions_more" = "More";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.text_color" = "Цвет текста";
-"watch.complications.builder.title" = "Complications";
+"watch.complications.builder.title" = "Расширения";
 "watch.complications.builder.token_attributes" = "Атрибуты";
 "watch.complications.builder.token_entity_name" = "Имя объекта";
 "watch.complications.builder.token_template" = "Шаблон";
@@ -2186,8 +2186,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.builder.token_value" = "Значение";
 "watch.complications.builder.unit" = "Единица измерения";
 "watch.complications.builder.unit_automatic" = "Автоматически";
-"watch.complications.builder.value_source" = "Value";
-"watch.complications.builder.value_source_state" = "State";
+"watch.complications.builder.value_source" = "Значение";
+"watch.complications.builder.value_source_state" = "Состояние";
 "watch.complications.builder.value_template" = "Шаблон значения";
 "watch.complications.builder.value_template_footer" = "Когда отображается индикатор выполнения, результат шаблона должен быть числом от 0 до 1.";
 "watch.complications.family.circular" = "Круглое";
@@ -2197,20 +2197,20 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.complications.gauge_style.capacity" = "Кольцо";
 "watch.complications.gauge_style.open" = "Открытое";
 "watch.complications.gauge_style.title" = "Gauge style";
-"watch.complications.legacy.delete_all" = "Delete All Legacy Complications";
-"watch.complications.legacy.delete_all_confirm" = "Delete all legacy complications? This cannot be undone.";
-"watch.complications.legacy.title" = "Legacy Complications";
+"watch.complications.legacy.delete_all" = "Удалить все устаревшие расширения";
+"watch.complications.legacy.delete_all_confirm" = "Удалить все устаревшие расширения? Это нельзя отменить.";
+"watch.complications.legacy.title" = "Устаревшие расширения";
 "watch.complications.root.duplicate" = "Дублировать";
 "watch.complications.root.header_subtitle" = "Показывает состояние сущностей и датчики на циферблате.";
-"watch.complications.root.legacy" = "Legacy complications";
-"watch.complications.root.legacy_footer" = "Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.";
+"watch.complications.root.legacy" = "Устаревшие расширения";
+"watch.complications.root.legacy_footer" = "Расширения, связанные с использованием старых шаблонов watchOS. Существующие продолжают работать и адаптируются к наиболее близкому современному стилю.";
 "watch.complications.root.new" = "Создать";
 "watch.complications.root.reload" = "Перезагрузить расширения";
 "watch.complications.root.reload_failed_title" = "Reload Failed";
 "watch.complications.root.reload_footer" = "Отправляет ваши расширения на Apple Watch и обновляет их.";
-"watch.complications.root.reload_success_message" = "Your complications were sent to the Apple Watch. They refresh shortly.";
-"watch.complications.root.reload_success_title" = "Reload Sent";
-"watch.complications.root.reload_unavailable_message" = "Make sure your Apple Watch is paired and the Home Assistant watch app is installed, then try again.";
+"watch.complications.root.reload_success_message" = "Ваши расширения отправлены на Apple Watch. Они обновятся в ближайшее время.";
+"watch.complications.root.reload_success_title" = "Перезагрузка отправлена";
+"watch.complications.root.reload_unavailable_message" = "Убедитесь, что ваши Apple Watch сопряжены и на часах установлено приложение Home Assistant, затем повторите попытку.";
 "watch.complications.root.reload_unavailable_title" = "Apple Watch Not Available";
 "watch.complications.root.template" = "Шаблон";
 "watch.complications.root.your_complications" = "Ваши расширения";
@@ -2240,7 +2240,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.config.assist.title" = "Assist";
 "watch.config.cache.error.message" = "Не удалось загрузить конфигурацию часов из кэша.";
 "watch.config.conflict.keep_watch" = "Keep Watch Changes";
-"watch.config.conflict.message" = "This watch and your iPhone both changed the configuration since they last synced. Which do you want to keep?";
+"watch.config.conflict.message" = "С момента последней синхронизации настройки этих часов и вашего iPhone изменились. Какие из них вы хотите сохранить?";
 "watch.config.conflict.title" = "Sync Conflict";
 "watch.config.conflict.use_iphone" = "Use iPhone";
 "watch.config.edit.add_button" = "Add";
@@ -2357,8 +2357,8 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.home.run.error.no_active_url_hint" = "Откройте «Настройки» → «Серверы» на этом экране, чтобы просмотреть варианты URL-адресов серверов.";
 "watch.home.run.error.no_response" = "The server didn't respond in time.";
 "watch.home.run.error.title" = "Couldn't run action";
-"watch.home.run.error.token_timeout" = "Couldn't get an access token from the server in time. Try again; restarting the app clears a stuck connection.";
-"watch.home.sync.syncing" = "Syncing with iPhone…";
+"watch.home.run.error.token_timeout" = "Не удалось вовремя получить токен доступа с сервера. Попробуйте еще раз; перезапуск приложения разорвет зависшее соединение.";
+"watch.home.sync.syncing" = "Синхронизация с iPhone…";
 "watch.home.sync.waiting" = "Waiting for iPhone…";
 "watch.home.unsupported.message" = "%@ объектами нельзя управлять из приложения для часов.";
 "watch.home.unsupported.title" = "Не поддерживается";
@@ -2528,7 +2528,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.labels.complication_text_areas.trailing.description" = "Текст, отображаемый после датчика.";
 "watch.labels.complication_text_areas.trailing.label" = "Конечный";
 "watch.labels.no_config" = "Настройка часов недоступна, откройте приложение для iOS и создайте свою конфигурацию в разделе Настройки.";
-"watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
+"watch.labels.no_config_add" = "Если ваш iPhone находится рядом, вы можете добавить совместимые объекты на Apple Watch с помощью кнопки ниже или в настройках приложения-компаньона на iPhone.";
 "watch.labels.no_config_add_plus" = "Если ваш iPhone находится поблизости, вы можете добавить совместимые объекты в свои Apple Watch с помощью кнопки \"+\" или в настройках сопутствующего приложения на iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.light_controls.brightness" = "Яркость";
@@ -2551,7 +2551,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.settings.client_events.empty" = "No events recorded yet.";
 "watch.settings.client_events.send_to_phone" = "Send to iPhone";
 "watch.settings.client_events.send_to_phone.failure" = "Sending logs to the iPhone failed: %@";
-"watch.settings.client_events.send_to_phone.success" = "Logs sent. On the iPhone, use Settings → Debug → Export Log Files to share them.";
+"watch.settings.client_events.send_to_phone.success" = "Журналы отправлены. На iPhone для обмена журналами используйте Настройки → Отладка → Отправить журнал.";
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Журналы";
 "watch.settings.complications.empty" = "No complications configured yet.";
@@ -2570,12 +2570,12 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.settings.complications.status.live" = "Updated";
 "watch.settings.complications.status_header" = "Статус";
 "watch.settings.complications.title" = "Расширения";
-"watch.settings.delete_local_data.confirm.delete" = "Delete";
-"watch.settings.delete_local_data.confirm.message" = "This deletes the offline database and cached files stored on this Watch. Your iPhone and servers aren't affected. Refresh from the Home screen to sync again.";
-"watch.settings.delete_local_data.confirm.title" = "Delete local data?";
+"watch.settings.delete_local_data.confirm.delete" = "Удалить";
+"watch.settings.delete_local_data.confirm.message" = "Это приведет к удалению автономной базы данных и кэшированных файлов, хранящихся на этих часах. Ваш iPhone и серверы не пострадают. Для повторной синхронизации обновите страницу с главного экрана.";
+"watch.settings.delete_local_data.confirm.title" = "Удалить локальные данные?";
 "watch.settings.delete_local_data.error" = "Couldn't delete local data";
 "watch.settings.delete_local_data.footer" = "Удаляет автономную базу данных и кэшированные данные, хранящиеся только на этих часах.";
-"watch.settings.delete_local_data.success" = "Local data deleted";
+"watch.settings.delete_local_data.success" = "Локальные данные удалены";
 "watch.settings.delete_local_data.title" = "Удалить локальные данные";
 "watch.settings.developer.allow_choosing_route.footer" = "Shows the \"Perform action using\" picker in Settings. When off, actions always use automatic routing.";
 "watch.settings.developer.allow_choosing_route.title" = "Allow choosing route";
@@ -2601,12 +2601,12 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.settings.refresh" = "Refresh";
 "watch.settings.restart_app.footer" = "Это немедленно закроет приложение. Вам придется открыть его заново вручную.";
 "watch.settings.restart_app.title" = "Перезапустить приложение";
-"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.footer" = "Apple Watch самостоятельно передают эти данные в Home Assistant как отдельное от iPhone устройство. Данные не отправляются, пока вы не включите датчик.";
 "watch.settings.sensors.last_error" = "Last error: %@";
 "watch.settings.sensors.last_sent" = "Last sent %@";
 "watch.settings.sensors.never_sent" = "Not sent yet";
-"watch.settings.sensors.status_header" = "Status";
-"watch.settings.sensors.title" = "Sensors";
+"watch.settings.sensors.status_header" = "Статус";
+"watch.settings.sensors.title" = "Датчики";
 "watch.settings.server.needs_attention" = "Needs attention";
 "watch.settings.servers.header" = "Серверы";
 "watch.settings.title" = "Настройки";
@@ -2616,9 +2616,9 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
 "watch.settings.url_override.title" = "Always use";
 "watch.sync.error.connection_failed" = "Нам не удалось подключиться к вашему iPhone. Откройте приложение Home Assistant на iPhone, затем нажмите кнопку перезагрузки на часах.";
-"watch.sync.error.data" = "Received incomplete data from iPhone. Please try again.";
-"watch.sync.error.generic" = "Sync failed. Please try again.";
-"watch.sync.error.server_unreachable" = "Couldn't reach your Home Assistant server from this watch. Check the watch's connection and try again.";
+"watch.sync.error.data" = "Получены неполные данные с iPhone. Пожалуйста, попробуйте снова.";
+"watch.sync.error.generic" = "Синхронизация не удалась. Пожалуйста, попробуйте снова.";
+"watch.sync.error.server_unreachable" = "Не удалось подключиться к серверу Home Assistant с этих часов. Проверьте подключение часов и повторите попытку.";
 "watch.sync.error.title" = "Sync Failed";
 "watch.sync.error.unreachable" = "Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.";
 "watch.sync.not_reachable.message" = "Откройте приложение Home Assistant на своем iPhone и держите его под рукой. Ваши расширения будут обновляться в фоновом режиме, как только появится доступ к сети.";
@@ -2651,28 +2651,28 @@ Importing replaces every category listed on this screen, including app settings.
 "whats_new.app_support_update.item_body" = "Это последнее обновление для iOS 15, watchOS 8 и macOS 11 и более ранних версий. Нажмите, чтобы узнать больше.";
 "whats_new.app_support_update.item_title" = "Поддержка iOS 15, watchOS 8 и macOS 11 будет прекращена";
 "whats_new.app_support_update.title" = "App support update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+"whats_new.energy_widget.article_body" = "Новый виджет **Энергия** выводит панель управления энергопотреблением на главный экран и экран блокировки.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**Что он показывает**\
+Данные о потреблении электроэнергии из сети, солнечной энергии, энергии от аккумулятора и газа за выбранный вами период: сегодня, вчера, на этой неделе или в этом месяце. Выберите источник, с которого начнется показ, или позвольте виджету выбрать сам. В маленьком размере и на экране блокировки отображается текущее энергопотребление, если у вас установлены датчики энергопотребления, а в больших размерах отображаются общие показатели за выбранный период по каждому источнику.\
 \
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+**Как его добавить**\
+Нажмите и удерживайте на главном экране, нажмите кнопку «Добавить» в верхнем углу, найдите «Home Assistant» и выберите «Энергия». Чтобы добавить виджет на экран блокировки, нажмите и удерживайте его, выберите «Настроить» и добавьте виджет. Для этого необходимо настроить панель Энергия в Home Assistant.";
+"whats_new.energy_widget.item_body" = "На главном экране и экране блокировки вы сразу увидите, сколько энергии потребляет, вырабатывает и накапливает ваш дом.  Нажмите, чтобы узнать больше.";
+"whats_new.energy_widget.item_title" = "Виджет Энергия";
+"whats_new.energy_widget.mac.article_body" = "Новый виджет **Энергия** выводит панель управления энергопотреблением на рабочий стол.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**Что он показывает**\
+Электроэнергия из сети, солнечная энергия, энергия от аккумуляторов и газ за выбранный вами период: сегодня, вчера, на этой неделе или в этом месяце. Выберите источник, с которого начать, или позвольте виджету сделать это самостоятельно. В маленьком размере отображается текущая мощность, если у вас установлены датчики энергопотребления, а в больших размерах отображаются общие показатели за выбранный период по каждому источнику.\
 \
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
+**Как его добавить**\
+Щелкните правой кнопкой мыши на рабочем столе, выберите «Редактировать виджеты», найдите «Home Assistant» и выберите «Энергия». Для этого виджета в Home Assistant должна быть настроена панель энергии.";
+"whats_new.energy_widget.mac.item_body" = "Посмотрите, сколько энергии используется, вырабатывается и накапливается в вашем доме, сразу на вашем рабочем столе. Нажмите, чтобы узнать больше.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
-"whats_new.title" = "What's New in The Companion App";
+"whats_new.live_activities.item_body" = "Следите за таймером, работающим устройством или любым другим процессом на экране блокировки и в Dynamic Island. Нажмите, чтобы узнать, как запускается уведомление.";
+"whats_new.live_activities.item_title" = "Эфир активностей";
+"whats_new.title" = "Что нового в приложении-компаньоне";
 "whats_new.version_format" = "Версия %@";
 "widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Assist";
@@ -2795,7 +2795,7 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.controls.switch.title" = "Переключатель";
 "widgets.custom.intent_activate_failed.body" = "Попробуйте ещё раз.";
 "widgets.custom.intent_activate_failed.title" = "Не удалось 'активировать' объект";
-"widgets.custom.intent_perform_action_failed.body" = "Please try again";
+"widgets.custom.intent_perform_action_failed.body" = "Пожалуйста, попробуйте снова";
 "widgets.custom.intent_perform_action_failed.title" = "Failed to perform action";
 "widgets.custom.intent_press_failed.body" = "Попробуйте ещё раз.";
 "widgets.custom.intent_press_failed.title" = "Не удалось 'нажать' на объект";
