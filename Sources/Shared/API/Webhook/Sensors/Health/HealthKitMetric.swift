@@ -17,6 +17,8 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
     public let name: String
     /// Material Design icon name, including the `mdi:` prefix.
     public let icon: String
+    /// Explanation shown under the sensor in settings, `nil` for a metric that needs none.
+    public let footer: HealthKitMetricFooter?
     /// Unit of measurement reported to Home Assistant, `nil` for unitless metrics.
     public let unit: String?
     /// Unit the samples are read in, which is also what `unit` describes. A `.sleep` metric has no
@@ -41,6 +43,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         identifier: String,
         name: String,
         icon: String,
+        footer: HealthKitMetricFooter? = nil,
         unit: String?,
         queryUnit: HealthKitMetricUnit,
         aggregation: HealthKitMetricAggregation,
@@ -56,6 +59,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         self.identifier = identifier
         self.name = name
         self.icon = icon
+        self.footer = footer
         self.unit = unit
         self.queryUnit = queryUnit
         self.aggregation = aggregation

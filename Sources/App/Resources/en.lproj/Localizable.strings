@@ -1991,6 +1991,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";
 "settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.";
 "settings_sensors.health.header" = "Apple Health";
+"settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
 "settings_sensors.health.reload" = "Reload Sensors";
 "settings_sensors.health.request_access" = "Request Apple Health Access";
 "settings_sensors.health.sensors.enable_all" = "Enable all Apple Health sensors";
