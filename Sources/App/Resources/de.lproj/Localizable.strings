@@ -2602,12 +2602,12 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.settings.refresh" = "Aktualisieren";
 "watch.settings.restart_app.footer" = "Dadurch wird die App sofort geschlossen. Du musst sie manuell wieder öffnen.";
 "watch.settings.restart_app.title" = "App neu starten";
-"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
-"watch.settings.sensors.last_error" = "Last error: %@";
-"watch.settings.sensors.last_sent" = "Last sent %@";
-"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.footer" = "Deine Apple Watch meldet diese Daten selbstständig an Home Assistant, als separates Gerät unabhängig von deinem iPhone. Es werden erst Daten gesendet, wenn du einen Sensor aktivierst.";
+"watch.settings.sensors.last_error" = "Letzter Fehler: %@";
+"watch.settings.sensors.last_sent" = "Zuletzt gesendet %@";
+"watch.settings.sensors.never_sent" = "Noch nicht gesendet";
 "watch.settings.sensors.status_header" = "Status";
-"watch.settings.sensors.title" = "Sensors";
+"watch.settings.sensors.title" = "Sensoren";
 "watch.settings.server.needs_attention" = "Benötigt Aufmerksamkeit";
 "watch.settings.servers.header" = "Server";
 "watch.settings.title" = "Einstellungen";
@@ -2652,49 +2652,49 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "whats_new.app_support_update.item_body" = "Dies ist das letzte Update für iOS 15, watchOS 8 und macOS 11 und ältere Versionen. Tippe hier, um mehr zu erfahren.";
 "whats_new.app_support_update.item_title" = "Die Unterstützung für iOS 15, watchOS 8 und macOS 11 wird eingestellt";
 "whats_new.app_support_update.title" = "App-Support-Update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+"whats_new.energy_widget.article_body" = "Das neue **Energie**-Widget bringt dein Energie-Dashboard auf deinen Start- und Sperrbildschirm.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**Was es anzeigt**\
+Netz, PV, Akku und Gas für den von dir gewählten Zeitraum: heute, gestern, diese Woche oder diesen Monat. Wähle die Quelle, die an erster Stelle stehen soll, oder lass das Widget entscheiden. Die kleinen Widgets und die Widgets für den Sperrbildschirm zeigen die aktuellen Leistungswerte an, wenn du Leitungssensoren eingerichtet hast, während die breiteren Widgets die Gesamtsummen des Zeitraums für jede Quelle anzeigen.\
 \
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+**So fügst du es hinzu**\
+Halte deinen Startbildschirm gedrückt, tippe auf den Knopf „Hinzufügen“ in der oberen Ecke, suche nach „Home Assistant“ und wähle „Energie“ aus. Für den Sperrbildschirm halte diesen gedrückt, tippe auf „Anpassen“ und füge das Widget dort hinzu. Dazu muss in Home Assistant ein Energie-Dashboard konfiguriert sein.";
+"whats_new.energy_widget.item_body" = "Sieh auf einen Blick auf deinem Start- und Sperrbildschirm, wie viel Energie dein Zuhause verbraucht, erzeugt und speichert. Tippe hier, um mehr zu erfahren.";
+"whats_new.energy_widget.item_title" = "Energie-Widget";
+"whats_new.energy_widget.mac.article_body" = "Das neue **Energie**-Widget bringt dein Energie-Dashboard auf deinen Schreibtisch.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**Was es anzeigt**\
+Netz, PV, Akku und Gas für den von dir gewählten Zeitraum: heute, gestern, diese Woche oder diesen Monat. Wähle die Quelle, die an erster Stelle stehen soll, oder lass das Widget entscheiden. Die kleine Variante zeigt die aktuellen Leistungswerte an, wenn du Leistungssensoren eingerichtet hast, und die größeren Varianten zeigen die Gesamtwerte des Zeitraums für jede Quelle an.\
 \
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
+**So fügst du es hinzu**\
+Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bearbeiten“, suche nach „Home Assistant“ und wähle „Energie“. Dazu muss in Home Assistant ein Energie-Dashboard konfiguriert sein.";
+"whats_new.energy_widget.mac.item_body" = "Sieh auf einen Blick auf deinem Schreibtisch, wie viel Energie dein Zuhause verbraucht, erzeugt und speichert. Tippe hier, um mehr zu erfahren.";
 "whats_new.item.opens_article_hint" = "Öffnet einen Artikel";
 "whats_new.item.opens_link_hint" = "Öffnet einen Link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
+"whats_new.live_activities.item_body" = "Verfolge einen Timer, ein laufendes Gerät oder einen laufenden Vorgang direkt auf deinem Sperrbildschirm und im Dynamic Island. Tippe hier, um zu erfahren, wie eine Benachrichtigung einen solchen Vorgang auslöst.";
+"whats_new.live_activities.item_title" = "Live-Aktivitäten";
 "whats_new.title" = "Neues in der Companion-App";
 "whats_new.version_format" = "Version %@";
-"widgets.action.name.activate" = "Activate";
+"widgets.action.name.activate" = "Aktivieren";
 "widgets.action.name.assist" = "Assist";
-"widgets.action.name.close" = "Close";
+"widgets.action.name.close" = "Schließen";
 "widgets.action.name.default" = "Standard";
-"widgets.action.name.default_action_%@" = "Default (%@)";
-"widgets.action.name.lock" = "Lock";
-"widgets.action.name.main_action" = "Main action";
+"widgets.action.name.default_action_%@" = "Standard (%@)";
+"widgets.action.name.lock" = "Verriegeln";
+"widgets.action.name.main_action" = "Hauptaktion";
 "widgets.action.name.moreInfoDialog" = "Detailansicht";
 "widgets.action.name.navigate" = "Navigieren";
 "widgets.action.name.nothing" = "Keine";
-"widgets.action.name.open" = "Open";
+"widgets.action.name.open" = "Öffnen";
 "widgets.action.name.perform_action" = "Perform action";
-"widgets.action.name.press" = "Press";
-"widgets.action.name.run" = "Run";
+"widgets.action.name.press" = "Drücken";
+"widgets.action.name.run" = "Ausführen";
 "widgets.action.name.run_script" = "Skript ausführen";
 "widgets.action.name.toggle" = "Toggle";
-"widgets.action.name.trigger" = "Trigger";
-"widgets.action.name.turn_off" = "Turn off";
-"widgets.action.name.turn_on" = "Turn on";
-"widgets.action.name.unlock" = "Unlock";
+"widgets.action.name.trigger" = "Auslösen";
+"widgets.action.name.turn_off" = "Ausschalten";
+"widgets.action.name.turn_on" = "Einschalten";
+"widgets.action.name.unlock" = "Entriegeln";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Home Assistant Aktionen durchführen.";
 "widgets.actions.not_configured" = "Keine Aktionen eingerichtet";
