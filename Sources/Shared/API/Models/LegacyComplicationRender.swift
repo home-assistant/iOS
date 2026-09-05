@@ -41,6 +41,16 @@ public struct LegacyComplicationRender: Equatable {
     public let maxLabel: String?
     /// The same areas mapped onto the families that lead with their content (see `ContentLed`).
     public let contentLed: ContentLed
+    /// Whether the corner's own text rides the outer curve of the corner, or sits flat and large in the
+    /// corner tip.
+    ///
+    /// ClockKit only ever curved the Graphic Corner "Text Image" template's text, along the inner arc
+    /// beside its image. Every other template drew its text flat: the corner "Gauge Text" and "Stack
+    /// Text" outer text was the corner's big number — the way the system's own gauge complications
+    /// (UV Index, Battery) still draw theirs — and the circular and small templates a corner slot falls
+    /// back to never curved anything. The modern corner curves its value by design, so the legacy ones
+    /// have to opt out or they come back re-typeset small along the bezel.
+    public let curvesCornerText: Bool
 
     /// The corner and circular families' two text positions, which run the other way round to the rest.
     ///
@@ -108,6 +118,8 @@ public struct LegacyComplicationRender: Equatable {
             title: resolved.count > 1 ? resolved[1].text : "",
             textColor: graphicOnly(resolved.first?.color)
         )
+
+        self.curvesCornerText = complication.Template == .GraphicCornerTextImage
 
         self.fraction = Self.fraction(from: data)
         self.tint = Self.tint(from: data)

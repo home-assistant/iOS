@@ -19,6 +19,13 @@ class HealthKitMetricCatalogTests: XCTestCase {
         HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: metric.identifier))
     }
 
+    private func isSleepMetric(_ metric: HealthKitMetric) -> Bool {
+        if case .sleep = metric.aggregation {
+            return true
+        }
+        return false
+    }
+
     func testCatalogIsNotEmptyAndCoversEveryCategory() {
         XCTAssertGreaterThan(HealthKitMetric.all.count, 20)
         for category in HealthKitMetricCategory.allCases {
@@ -37,7 +44,7 @@ class HealthKitMetricCatalogTests: XCTestCase {
 
     func testHealthKitIdentifiersAreUniqueAndResolveOnThisOS() {
         var seen = Set<String>()
-        for metric in HealthKitMetric.all {
+        for metric in HealthKitMetric.all where !isSleepMetric(metric) {
             XCTAssertTrue(
                 metric.identifier.hasPrefix("HKQuantityTypeIdentifier"),
                 metric.identifier
@@ -49,8 +56,41 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
+    func testSleepMetricsShareTheSleepAnalysisTypeAndCoverDistinctStages() {
+        let sleepMetrics = HealthKitMetric.all.filter { isSleepMetric($0) }
+        XCTAssertEqual(sleepMetrics.map(\.uniqueID), HealthKitMetric.sleepMetrics.map(\.uniqueID))
+
+        var seen = Set<HealthKitMetricAggregation>()
+        for metric in sleepMetrics {
+            XCTAssertEqual(metric.identifier, HealthKitSleepStage.sleepAnalysisIdentifier)
+            XCTAssertEqual(metric.category, .sleep)
+            XCTAssertEqual(metric.unit, "min")
+            XCTAssertEqual(metric.deviceClass, .duration)
+            XCTAssertTrue(seen.insert(metric.aggregation).inserted, "duplicate \(metric.uniqueID)")
+        }
+
+        let identifier = HKCategoryTypeIdentifier(rawValue: HealthKitSleepStage.sleepAnalysisIdentifier)
+        XCTAssertNotNil(HKObjectType.categoryType(forIdentifier: identifier))
+    }
+
+    func testSleepDurationCoversEveryAsleepStageAndEachStageHasASensor() throws {
+        let duration = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_duration"))
+        XCTAssertEqual(duration.aggregation, .sleep(stages: [.asleepUnspecified, .core, .deep, .rem]))
+
+        for (uniqueID, stage) in [
+            ("health_sleep_in_bed", HealthKitSleepStage.inBed),
+            ("health_sleep_awake", .awake),
+            ("health_sleep_core", .core),
+            ("health_sleep_deep", .deep),
+            ("health_sleep_rem", .rem),
+        ] {
+            let metric = try XCTUnwrap(HealthKitMetric.metric(uniqueID: uniqueID))
+            XCTAssertEqual(metric.aggregation, .sleep(stages: [stage]), uniqueID)
+        }
+    }
+
     func testUnitsAreCompatibleWithTheirQuantityType() {
-        for metric in HealthKitMetric.all where isAvailableOnThisOS(metric) {
+        for metric in HealthKitMetric.all where isAvailableOnThisOS(metric) && !isSleepMetric(metric) {
             guard let type = quantityType(for: metric), let unit = metric.queryUnit.hkUnit else { continue }
             XCTAssertTrue(type.is(compatibleWith: unit), "\(metric.identifier) / \(unit)")
         }

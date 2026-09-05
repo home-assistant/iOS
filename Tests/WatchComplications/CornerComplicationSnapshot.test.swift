@@ -42,6 +42,9 @@ struct CornerComplicationSnapshotTests {
             // The rain-sparkline recipe: an icon plus a block-element bar graph, which only reads as a
             // graph while its cells stay flat, abutting and all on screen.
             ("icon-block-sparkline", .sample(value: "▁▂▃▄▅▆▇█", title: nil, fraction: nil)),
+            // A legacy Graphic Corner "Gauge Text" complication: ClockKit drew its outer text flat and
+            // large in the corner tip, so it opts out of the curve and keeps that size.
+            ("flat-outer-text-gauge", .sample(icon: false, value: "16.6", title: nil, curvesText: false)),
         ]
     }
 }

@@ -6752,6 +6752,8 @@ public enum L10n {
         public static var nutrition: String { return L10n.tr("Localizable", "settings_sensors.health.category.nutrition") }
         /// Respiratory
         public static var respiratory: String { return L10n.tr("Localizable", "settings_sensors.health.category.respiratory") }
+        /// Sleep
+        public static var sleep: String { return L10n.tr("Localizable", "settings_sensors.health.category.sleep") }
         /// Vitals
         public static var vitals: String { return L10n.tr("Localizable", "settings_sensors.health.category.vitals") }
       }

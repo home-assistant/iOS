@@ -2049,6 +2049,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.health.category.heart" = "Heart";
 "settings_sensors.health.category.nutrition" = "Nutrition";
 "settings_sensors.health.category.respiratory" = "Respiratory";
+"settings_sensors.health.category.sleep" = "Sleep";
 "settings_sensors.health.category.vitals" = "Vitals";
 "settings_sensors.health.error.no_enabled_sensors" = "Turn on at least one Apple Health sensor before requesting access.";
 "settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";

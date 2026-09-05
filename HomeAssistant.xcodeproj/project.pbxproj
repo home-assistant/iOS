@@ -2302,6 +2302,7 @@
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.value-only.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.zero-fraction.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.custom-text-color.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.flat-outer-text-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.full-fraction.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-block-sparkline.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
