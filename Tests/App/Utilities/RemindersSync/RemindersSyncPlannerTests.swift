@@ -147,6 +147,118 @@ struct RemindersSyncPlannerTests {
         ])
     }
 
+    @Test func testUnlinkedItemsWhoseTitlesDifferOnlyByCaseAreAdopted() {
+        // A backend that normalizes title case (alexa_devices) stores "Almond Milk" as "Almond
+        // milk"; the pair is still the same item, and the reminder is aligned to what was stored.
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": snapshot(title: "Almond Milk")],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1"),
+            .updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1"),
+        ])
+    }
+
+    @Test func testExactTitleMatchIsAdoptedBeforeCaseInsensitiveMatch() {
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Milk")],
+            reminders: [
+                "reminder-1": snapshot(title: "milk"),
+                "reminder-2": snapshot(title: "Milk"),
+            ],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-2"),
+            .createTodoItem(reminderId: "reminder-1"),
+        ])
+    }
+
+    // MARK: - Linking items created on the Home Assistant side
+
+    @Test func testCreatedTodoItemsAreMatchedByExactTitle() {
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1", "reminder-2"],
+            reminders: ["reminder-1": snapshot(title: "Milk"), "reminder-2": snapshot(title: "Eggs")],
+            createdTodoUids: ["todo-1", "todo-2"],
+            todoItems: ["todo-1": snapshot(title: "Eggs"), "todo-2": snapshot(title: "Milk")]
+        )
+        #expect(pairs.map(\.todoItemUid) == ["todo-2", "todo-1"])
+        #expect(pairs.map(\.reminderId) == ["reminder-1", "reminder-2"])
+    }
+
+    @Test func testCreatedTodoItemsWhoseTitlesWereRecasedAreStillMatched() {
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1"],
+            reminders: ["reminder-1": snapshot(title: "SYNC Apple Only")],
+            createdTodoUids: ["todo-1"],
+            todoItems: ["todo-1": snapshot(title: "Sync apple only")]
+        )
+        #expect(pairs.map(\.todoItemUid) == ["todo-1"])
+        #expect(pairs.map(\.reminderId) == ["reminder-1"])
+    }
+
+    @Test func testCreatedTodoItemsPreferExactMatchOverCaseInsensitiveMatch() {
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1", "reminder-2"],
+            reminders: ["reminder-1": snapshot(title: "milk"), "reminder-2": snapshot(title: "Milk")],
+            createdTodoUids: ["todo-1", "todo-2"],
+            todoItems: ["todo-1": snapshot(title: "Milk"), "todo-2": snapshot(title: "milk")]
+        )
+        #expect(pairs.map(\.todoItemUid) == ["todo-2", "todo-1"])
+        #expect(pairs.map(\.reminderId) == ["reminder-1", "reminder-2"])
+    }
+
+    @Test func testCreatedTodoItemsWithRewrittenTitlesAreMatchedInCreationOrder() {
+        // The backend rewrote both titles beyond a case change; the new items are still the
+        // created reminders, in the order they were added.
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1", "reminder-2"],
+            reminders: [
+                "reminder-1": snapshot(title: "Ben & Jerry's"),
+                "reminder-2": snapshot(title: "iPhone charger"),
+            ],
+            createdTodoUids: ["todo-1", "todo-2"],
+            todoItems: [
+                "todo-1": snapshot(title: "Ben and jerrys"),
+                "todo-2": snapshot(title: "Phone charger"),
+            ]
+        )
+        #expect(pairs.map(\.todoItemUid) == ["todo-1", "todo-2"])
+        #expect(pairs.map(\.reminderId) == ["reminder-1", "reminder-2"])
+    }
+
+    @Test func testCreatedTodoItemsAreNotGuessedWhenCountsDiffer() {
+        // One title matched; the other reminder can't be paired positionally because a third,
+        // unrelated item appeared in the meantime.
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1", "reminder-2"],
+            reminders: ["reminder-1": snapshot(title: "Milk"), "reminder-2": snapshot(title: "Eggs")],
+            createdTodoUids: ["todo-1", "todo-2", "todo-3"],
+            todoItems: [
+                "todo-1": snapshot(title: "Milk"),
+                "todo-2": snapshot(title: "Bread"),
+                "todo-3": snapshot(title: "Butter"),
+            ]
+        )
+        #expect(pairs.map(\.todoItemUid) == ["todo-1"])
+        #expect(pairs.map(\.reminderId) == ["reminder-1"])
+    }
+
+    @Test func testCreatedTodoItemsProduceNoPairsWhenNothingAppeared() {
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: ["reminder-1"],
+            reminders: ["reminder-1": snapshot(title: "Milk")],
+            createdTodoUids: [],
+            todoItems: [:]
+        )
+        #expect(pairs.isEmpty)
+    }
+
     // MARK: - Propagating edits on linked pairs
 
     @Test func testReminderEditPropagatesToHomeAssistantWhenSyncingBothWays() {

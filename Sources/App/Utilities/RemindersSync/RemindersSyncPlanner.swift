@@ -63,21 +63,29 @@ enum RemindersSyncPlanner {
 
         // Adopt same-titled unlinked pairs first, so linking two lists that already contain the
         // same items doesn't create duplicates on the first sync. Removing each matched reminder
-        // from the candidates ensures it is adopted at most once.
+        // from the candidates ensures it is adopted at most once. Exact matches are paired before
+        // case-insensitive ones: a backend that normalizes the case of what it stores
+        // (`alexa_devices` sentence-cases every title) would otherwise never match the item it
+        // rewrote, and the reminder would be created on the Home Assistant side again on every
+        // sync (#5644).
         var adoptedTodoUids = Set<String>()
-        for uid in unlinkedTodoUids {
-            guard let todoItem = todoItems[uid],
-                  let reminderIndex = unlinkedReminderIds
-                  .firstIndex(where: { reminders[$0]?.title == todoItem.title }) else { continue }
-            let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
-            adoptedTodoUids.insert(uid)
-            operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
-            if let reminder = reminders[reminderId], reminder != todoItem {
-                switch direction {
-                case .bothWays, .toReminders:
-                    operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
-                case .toHomeAssistant:
-                    operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+        for ignoringCase in [false, true] {
+            for uid in unlinkedTodoUids where !adoptedTodoUids.contains(uid) {
+                guard let todoItem = todoItems[uid],
+                      let reminderIndex = unlinkedReminderIds.firstIndex(where: {
+                          guard let reminder = reminders[$0] else { return false }
+                          return titlesMatch(todoItem.title, reminder.title, ignoringCase: ignoringCase)
+                      }) else { continue }
+                let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
+                adoptedTodoUids.insert(uid)
+                operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
+                if let reminder = reminders[reminderId], reminder != todoItem {
+                    switch direction {
+                    case .bothWays, .toReminders:
+                        operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
+                    case .toHomeAssistant:
+                        operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+                    }
                 }
             }
         }
@@ -103,6 +111,54 @@ enum RemindersSyncPlanner {
         }
 
         return operations
+    }
+
+    /// Pairs the todo items that appeared after this sync's `todo.add_item` calls with the
+    /// reminders they were created from, since the service doesn't return the new item's `uid`.
+    /// `reminderIds` is the order the items were created in and `createdTodoUids` the list order
+    /// of the items that weren't in the list before. Returns the `(todoItemUid, reminderId)`
+    /// pairs to link.
+    ///
+    /// Titles are matched exactly first, then ignoring case, and whatever is still unpaired is
+    /// paired positionally as long as the counts line up: a backend is free to rewrite what it
+    /// stores (`alexa_devices` sentence-cases every title), and an item left unlinked here would
+    /// be created again on every later sync (#5644).
+    static func matchCreatedTodoItems(
+        reminderIds: [String],
+        reminders: [String: RemindersSyncItemSnapshot],
+        createdTodoUids: [String],
+        todoItems: [String: RemindersSyncItemSnapshot]
+    ) -> [(todoItemUid: String, reminderId: String)] {
+        var pairs: [(todoItemUid: String, reminderId: String)] = []
+        var unpairedReminderIds = reminderIds
+        var unpairedTodoUids = createdTodoUids
+
+        for ignoringCase in [false, true] {
+            for reminderId in unpairedReminderIds {
+                guard let reminder = reminders[reminderId],
+                      let index = unpairedTodoUids.firstIndex(where: {
+                          guard let todoItem = todoItems[$0] else { return false }
+                          return titlesMatch(todoItem.title, reminder.title, ignoringCase: ignoringCase)
+                      }) else { continue }
+                pairs.append((todoItemUid: unpairedTodoUids.remove(at: index), reminderId: reminderId))
+            }
+            let pairedReminderIds = Set(pairs.map(\.reminderId))
+            unpairedReminderIds.removeAll { pairedReminderIds.contains($0) }
+        }
+
+        // Home Assistant appends new items, so with no title to go on the leftover items are
+        // the leftover reminders in creation order. A count mismatch means something else
+        // changed the list in between, and guessing would link the wrong items.
+        if unpairedReminderIds.count == unpairedTodoUids.count {
+            for (todoItemUid, reminderId) in zip(unpairedTodoUids, unpairedReminderIds) {
+                pairs.append((todoItemUid: todoItemUid, reminderId: reminderId))
+            }
+        }
+        return pairs
+    }
+
+    private static func titlesMatch(_ lhs: String, _ rhs: String, ignoringCase: Bool) -> Bool {
+        ignoringCase ? lhs.caseInsensitiveCompare(rhs) == .orderedSame : lhs == rhs
     }
 
     /// The operations that bring one previously linked pair back in agreement.

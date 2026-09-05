@@ -446,7 +446,8 @@ final class RemindersSyncManager: ObservableObject {
                 config: config,
                 api: api,
                 reminderIds: createdTodoItemReminderIds,
-                reminderSnapshots: reminderSnapshots
+                reminderSnapshots: reminderSnapshots,
+                knownTodoUids: Set(todoSnapshots.keys)
             )
         }
 
@@ -603,26 +604,39 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// `todo.add_item` doesn't return the created item's `uid`, so items created on the Home
-    /// Assistant side are linked by re-fetching the list and matching still-unlinked items by
-    /// title.
+    /// Assistant side are linked by re-fetching the list and pairing the items that weren't in
+    /// it before this sync (`knownTodoUids`) with the reminders they were created from; see
+    /// `RemindersSyncPlanner.matchCreatedTodoItems` for how. The link stores the reminder's
+    /// snapshot, so a title the backend rewrote on store reads as a Home Assistant edit and is
+    /// carried back to the reminder on the next sync rather than fought over.
     private func linkCreatedTodoItems(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         reminderIds: [String],
-        reminderSnapshots: [String: RemindersSyncItemSnapshot]
+        reminderSnapshots: [String: RemindersSyncItemSnapshot],
+        knownTodoUids: Set<String>
     ) async throws {
         let refreshed = try await fetchTodoItems(api: api, listId: config.todoEntityId)
         let configId = config.id
         let existingLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
         let linkedUids = Set(existingLinks.map(\.todoItemUid))
-        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) }
+        let createdTodoUids = refreshed
+            .filter { !linkedUids.contains($0.uid) && !knownTodoUids.contains($0.uid) }
+            .map(\.uid)
+        let refreshedSnapshots = Dictionary(
+            refreshed.map { ($0.uid, RemindersSyncItemSnapshot(todoItem: $0)) },
+            uniquingKeysWith: { first, _ in first }
+        )
 
-        for reminderId in reminderIds {
-            guard let snapshot = reminderSnapshots[reminderId],
-                  let index = unlinkedItems
-                  .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
-            let item = unlinkedItems.remove(at: index)
-            await saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
+        let pairs = RemindersSyncPlanner.matchCreatedTodoItems(
+            reminderIds: reminderIds,
+            reminders: reminderSnapshots,
+            createdTodoUids: createdTodoUids,
+            todoItems: refreshedSnapshots
+        )
+        for (todoItemUid, reminderId) in pairs {
+            guard let snapshot = reminderSnapshots[reminderId] else { continue }
+            await saveLink(config: config, todoItemUid: todoItemUid, reminderId: reminderId, snapshot: snapshot)
         }
     }
 
