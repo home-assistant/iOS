@@ -45,13 +45,18 @@ enum AppConfigurationTransfer {
         try makePayload(appSettings: appSettings).entryCounts
     }
 
-    static func exportURL(appSettings: AppSettingsSnapshot) throws -> URL {
+    /// The export as raw JSON, for callers that hand the bytes somewhere other than a file — the
+    /// developer-account migration packs them into its own payload.
+    static func exportData(appSettings: AppSettingsSnapshot) throws -> Data {
         let payload = try makePayload(appSettings: appSettings)
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try encoder.encode(payload)
+    }
 
-        let data = try encoder.encode(payload)
+    static func exportURL(appSettings: AppSettingsSnapshot) throws -> URL {
+        let data = try exportData(appSettings: appSettings)
         let exportDate = Self.filenameDateFormatter.string(from: Current.date())
         let filename = "home-assistant-configuration-\(exportDate).json"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
@@ -72,8 +77,22 @@ enum AppConfigurationTransfer {
     /// the caller is; only applying app settings hops back onto it.
     static func importPayload(from url: URL) async throws -> [AppConfigurationCategory: Int] {
         Current.Log.info("Starting app configuration import from \(url.lastPathComponent)")
-        let payload = try decodePayload(from: url)
+        return try await apply(decodePayload(from: url))
+    }
 
+    /// Reports what an in-memory export holds, without applying any of it.
+    static func inspectImportData(_ data: Data) throws -> [AppConfigurationCategory: Int] {
+        try decodePayload(from: data).entryCounts
+    }
+
+    /// Imports an export that arrived as bytes rather than a file — the developer-account migration
+    /// carries it inside its own payload.
+    static func importData(_ data: Data) async throws -> [AppConfigurationCategory: Int] {
+        Current.Log.info("Starting app configuration import from \(data.count) byte(s)")
+        return try await apply(decodePayload(from: data))
+    }
+
+    private static func apply(_ payload: Payload) async throws -> [AppConfigurationCategory: Int] {
         let knownServerIds = Set(Current.servers.all.map(\.identifier.rawValue))
         Current.Log.info("Sanitizing app configuration import against \(knownServerIds.count) server(s)")
         let sanitized = payload.sanitized(knownServerIds: knownServerIds)
@@ -109,6 +128,10 @@ enum AppConfigurationTransfer {
 
         let data = try Data(contentsOf: url)
         Current.Log.info("Read app configuration import file \(url.lastPathComponent): \(data.count) byte(s)")
+        return try decodePayload(from: data)
+    }
+
+    private static func decodePayload(from data: Data) throws -> Payload {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let payload = try decoder.decode(Payload.self, from: data)

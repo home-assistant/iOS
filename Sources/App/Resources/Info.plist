@@ -50,6 +50,9 @@
 	<string>public.app-category.lifestyle</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<!-- The app this one is being replaced by, so the migration can tell whether it is installed.
+		     Keep in sync with AppMigrationConstants.destinationURLScheme. -->
+		<string>homeassistant-next</string>
 		<string>googlechrome</string>
 		<string>googlechromes</string>
 		<string>googlechrome-x-callback</string>
