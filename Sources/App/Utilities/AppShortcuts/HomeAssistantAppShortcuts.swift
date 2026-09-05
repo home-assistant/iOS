@@ -9,16 +9,6 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
 
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
-            intent: ScriptAppIntent(),
-            phrases: [
-                "Run \(\.$script) in \(.applicationName)",
-                "Run the \(\.$script) script in \(.applicationName)",
-                "Run a script in \(.applicationName)",
-            ],
-            shortTitle: .init("app_shortcuts.run_script.title", defaultValue: "Run Script"),
-            systemImageName: "play.circle"
-        )
-        AppShortcut(
             intent: SceneAppIntent(),
             phrases: [
                 "Activate \(\.$scene) in \(.applicationName)",
@@ -27,16 +17,6 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             ],
             shortTitle: .init("app_shortcuts.activate_scene.title", defaultValue: "Activate Scene"),
             systemImageName: "moon.stars"
-        )
-        AppShortcut(
-            intent: AutomationAppIntent(),
-            phrases: [
-                "Trigger \(\.$automation) in \(.applicationName)",
-                "Trigger the \(\.$automation) automation in \(.applicationName)",
-                "Trigger an automation in \(.applicationName)",
-            ],
-            shortTitle: .init("app_shortcuts.trigger_automation.title", defaultValue: "Trigger Automation"),
-            systemImageName: "bolt"
         )
         AppShortcut(
             intent: TurnOnEntityAppIntent(),
@@ -59,15 +39,6 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "power"
         )
         AppShortcut(
-            intent: ToggleEntityAppIntent(),
-            phrases: [
-                "Toggle \(\.$entity) in \(.applicationName)",
-                "Toggle something in \(.applicationName)",
-            ],
-            shortTitle: .init("app_shortcuts.toggle.title", defaultValue: "Toggle"),
-            systemImageName: "switch.2"
-        )
-        AppShortcut(
             intent: GetEntityStateAppIntent(),
             phrases: [
                 "Check an entity in \(.applicationName)",
@@ -87,15 +58,6 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             ],
             shortTitle: .init("app_shortcuts.ask_assist.title", defaultValue: "Ask Assist"),
             systemImageName: "bubble.left.and.text.bubble.right"
-        )
-        AppShortcut(
-            intent: GetCameraSnapshotAppIntent(),
-            phrases: [
-                "Get a camera snapshot from \(.applicationName)",
-                "Show me a camera in \(.applicationName)",
-            ],
-            shortTitle: .init("app_shortcuts.camera_snapshot.title", defaultValue: "Camera Snapshot"),
-            systemImageName: "camera"
         )
         AppShortcut(
             intent: GetActiveEntitiesAppIntent(),

@@ -16,7 +16,8 @@ enum ActiveEntitiesFinder {
         }
 
         var results: [HAEntityStateAppEntity] = []
-        for (server, mirrored) in known {
+        for (server, allMirrored) in known {
+            let mirrored = allMirrored.userFacingInAreas(serverId: server.identifier.rawValue)
             let states = try await AppIntentServerAPI.entities(server: server, domains: domains)
             let activeIds = Set(
                 states

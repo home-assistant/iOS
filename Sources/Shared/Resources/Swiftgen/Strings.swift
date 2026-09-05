@@ -978,10 +978,6 @@ public enum L10n {
       /// Ask Assist
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.ask_assist.title") }
     }
-    public enum CameraSnapshot {
-      /// Camera Snapshot
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.camera_snapshot.title") }
-    }
     public enum Close {
       /// Close
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.close.title") }
@@ -997,18 +993,6 @@ public enum L10n {
     public enum PerformAction {
       /// Perform Action
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.perform_action.title") }
-    }
-    public enum RunScript {
-      /// Run Script
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.run_script.title") }
-    }
-    public enum Toggle {
-      /// Toggle
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.toggle.title") }
-    }
-    public enum TriggerAutomation {
-      /// Trigger Automation
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.trigger_automation.title") }
     }
     public enum TurnOff {
       /// Turn Off

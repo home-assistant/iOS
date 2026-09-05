@@ -6,7 +6,13 @@ import Testing
 /// Exercises the entity list behind the spoken on/off commands: it offers the domains a command can
 /// switch, and nothing else.
 struct ControllableEntityAppEntityQueryTests {
-    private static func makeEntity(serverId: String, entityId: String, name: String) -> HAAppEntity {
+    private static func makeEntity(
+        serverId: String,
+        entityId: String,
+        name: String,
+        entityCategory: Int? = nil,
+        isHidden: Bool? = nil
+    ) -> HAAppEntity {
         HAAppEntity(
             id: ServerEntity.uniqueId(serverId: serverId, entityId: entityId),
             entityId: entityId,
@@ -14,8 +20,32 @@ struct ControllableEntityAppEntityQueryTests {
             domain: entityId.components(separatedBy: ".").first ?? "",
             name: name,
             icon: nil,
-            rawDeviceClass: nil
+            rawDeviceClass: nil,
+            entityCategory: entityCategory,
+            isHidden: isHidden
         )
+    }
+
+    /// Areas carry their entities, which is also how an entity inherits its device's area.
+    private func seedArea(serverId: String, name: String, entities: Set<String>) async throws {
+        try await Current.database().write { db in
+            try AppArea
+                .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                .deleteAll(db)
+            try AppArea(
+                id: "\(serverId)-area",
+                serverId: serverId,
+                areaId: "area",
+                name: name,
+                aliases: [],
+                picture: nil,
+                icon: nil,
+                sortOrder: nil,
+                entities: entities,
+                floorId: nil,
+                floorName: nil
+            ).insert(db)
+        }
     }
 
     private func seed(serverId: String, entities: [HAAppEntity]) async throws {
@@ -50,6 +80,12 @@ struct ControllableEntityAppEntityQueryTests {
                 Self.makeEntity(serverId: serverId, entityId: "scene.movie", name: "Movie"),
             ])
 
+            try await seedArea(
+                serverId: serverId,
+                name: "Kitchen",
+                entities: ["light.kitchen", "cover.garage", "sensor.humidity", "scene.movie"]
+            )
+
             let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
@@ -66,6 +102,8 @@ struct ControllableEntityAppEntityQueryTests {
             let entity = Self.makeEntity(serverId: serverId, entityId: "switch.desk", name: "Desk")
             try await seed(serverId: serverId, entities: [entity])
 
+            try await seedArea(serverId: serverId, name: "Study", entities: ["switch.desk"])
+
             let resolved = try await ControllableEntityAppEntityQuery().entities(for: [entity.id])
 
             #expect(resolved.count == 1)
@@ -81,6 +119,10 @@ struct ControllableEntityAppEntityQueryTests {
                 Self.makeEntity(serverId: serverId, entityId: "light.kitchen", name: "Kitchen ceiling"),
                 Self.makeEntity(serverId: serverId, entityId: "light.porch", name: "Porch"),
             ])
+
+            // Neutral area name: the search index also matches on area, and "Kitchen" there would
+            // pull in the porch light too.
+            try await seedArea(serverId: serverId, name: "Ground floor", entities: ["light.kitchen", "light.porch"])
 
             let collection = try await ControllableEntityAppEntityQuery().entities(matching: "kitchen")
             let names = collection.sections.flatMap(\.items).map(\.value.displayString)
@@ -109,5 +151,27 @@ struct ControllableEntityAppEntityQueryTests {
 
         Current.servers = FakeServerManager(initial: 2)
         #expect(entity.subtitle == "Cabin • Kitchen")
+    }
+
+    @Test func skipsConfigurationDiagnosticHiddenAndRoomlessEntities() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "light.kitchen", name: "Kitchen"),
+                Self.makeEntity(serverId: serverId, entityId: "switch.restart", name: "Restart", entityCategory: 0),
+                Self.makeEntity(serverId: serverId, entityId: "switch.secret", name: "Secret", isHidden: true),
+                Self.makeEntity(serverId: serverId, entityId: "light.nowhere", name: "Nowhere"),
+            ])
+            // Everything but `light.nowhere` has a room.
+            try await seedArea(
+                serverId: serverId,
+                name: "Kitchen",
+                entities: ["light.kitchen", "switch.restart", "switch.secret"]
+            )
+
+            let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
+
+            #expect(ids == ["light.kitchen"])
+        }
     }
 }

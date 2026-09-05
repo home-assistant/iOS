@@ -26,23 +26,31 @@ struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func entities(matching string: String? = nil) -> [(Server, [ControllableEntityAppEntity])] {
-        ControlEntityProvider(domains: Domain.voiceControllable).getEntities(matching: string).map { server, values in
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
-            let areasMap = values.areasMap(for: server.identifier.rawValue)
-            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
-            return (server, values.map { entity in
-                ControllableEntityAppEntity(
-                    id: entity.id,
-                    entityId: entity.entityId,
-                    serverId: entity.serverId,
-                    serverName: server.info.name,
-                    areaName: areasMap[entity.entityId]?.name,
-                    deviceName: deviceMap[entity.entityId]?.name,
-                    floorName: floorMap[entity.entityId],
-                    displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.powerCircleFill.rawValue
-                )
-            })
-        }
+        let byServer = ControlEntityProvider(domains: Domain.voiceControllable).getEntities(matching: string)
+        // Siri offers them in the order they arrive, so the likeliest server leads.
+        let rank = Dictionary(
+            uniqueKeysWithValues: ServerPriority.ordered(byServer.map(\.0)).enumerated()
+                .map { ($0.element.identifier, $0.offset) }
+        )
+        return byServer.sorted { rank[$0.0.identifier] ?? .max < rank[$1.0.identifier] ?? .max }
+            .map { server, allValues in
+                let values = allValues.userFacingInAreas(serverId: server.identifier.rawValue)
+                let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+                let areasMap = values.areasMap(for: server.identifier.rawValue)
+                let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
+                return (server, values.map { entity in
+                    ControllableEntityAppEntity(
+                        id: entity.id,
+                        entityId: entity.entityId,
+                        serverId: entity.serverId,
+                        serverName: server.info.name,
+                        areaName: areasMap[entity.entityId]?.name,
+                        deviceName: deviceMap[entity.entityId]?.name,
+                        floorName: floorMap[entity.entityId],
+                        displayString: entity.name,
+                        iconName: entity.icon ?? SFSymbol.powerCircleFill.rawValue
+                    )
+                })
+            }
     }
 }
