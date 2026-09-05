@@ -32,7 +32,24 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
+    }
+
+    /// Leads with the server when more than one is configured: the picker groups by server, but a row
+    /// stands alone in Siri's disambiguation and in a saved shortcut, where two homes can share a name.
+    var subtitle: String? {
+        guard Current.servers.all.count > 1 else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            floorName: floorName,
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: domain
         )
     }
 

@@ -89,4 +89,25 @@ struct ControllableEntityAppEntityQueryTests {
             #expect(!names.contains("Porch"))
         }
     }
+
+    @Test func subtitleNamesTheServerOnlyWhenThereIsMoreThanOne() async throws {
+        let entity = ControllableEntityAppEntity(
+            id: "s1-light.kitchen",
+            entityId: "light.kitchen",
+            serverId: "s1",
+            serverName: "Cabin",
+            areaName: "Kitchen",
+            displayString: "Ceiling",
+            iconName: "mdi:ceiling-light"
+        )
+
+        let previous = Current.servers
+        defer { Current.servers = previous }
+
+        Current.servers = FakeServerManager(initial: 1)
+        #expect(entity.subtitle == "Kitchen")
+
+        Current.servers = FakeServerManager(initial: 2)
+        #expect(entity.subtitle == "Cabin • Kitchen")
+    }
 }

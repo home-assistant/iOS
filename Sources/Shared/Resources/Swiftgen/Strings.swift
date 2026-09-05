@@ -266,6 +266,10 @@ public enum L10n {
     public enum ActiveEntities {
       /// Lists the entities of a kind that are currently on or open
       public static var description: String { return L10n.tr("Localizable", "app_intents.active_entities.description") }
+      /// %1$@ on %2$@
+      public static func nameWithServer(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.active_entities.name_with_server", String(describing: p1), String(describing: p2))
+      }
       /// Get what is on
       public static var title: String { return L10n.tr("Localizable", "app_intents.active_entities.title") }
       public enum Dialog {

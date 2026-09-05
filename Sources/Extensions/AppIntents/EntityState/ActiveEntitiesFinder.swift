@@ -55,10 +55,21 @@ enum ActiveEntitiesFinder {
                 ? L10n.AppIntents.ActiveEntities.Dialog.noneOpen(kind)
                 : L10n.AppIntents.ActiveEntities.Dialog.noneOn(kind)
         }
-        let names = ListFormatter.localizedString(byJoining: entities.map(\.name))
+        let names = ListFormatter.localizedString(byJoining: entities.map(spokenName(for:)))
         return filter.readsAsOpen
             ? L10n.AppIntents.ActiveEntities.Dialog.someOpen(kind, names)
             : L10n.AppIntents.ActiveEntities.Dialog.someOn(kind, names)
+    }
+}
+
+@available(macOS 13.0, *)
+extension ActiveEntitiesFinder {
+    /// Names the server only when there is more than one, so a single-server answer stays natural.
+    static func spokenName(for entity: HAEntityStateAppEntity) -> String {
+        guard Current.servers.all.count > 1, !entity.serverName.isEmpty else {
+            return entity.name
+        }
+        return L10n.AppIntents.ActiveEntities.nameWithServer(entity.name, entity.serverName)
     }
 }
 

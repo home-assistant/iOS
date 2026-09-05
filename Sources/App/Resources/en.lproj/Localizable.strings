@@ -67,6 +67,7 @@
 "app_intents.active_entities.filter.media_players" = "media players";
 "app_intents.active_entities.filter.name" = "Kind";
 "app_intents.active_entities.filter.switches" = "switches";
+"app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
 "app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "Pipeline";
