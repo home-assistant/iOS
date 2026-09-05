@@ -12,7 +12,13 @@ public extension HealthKitMetric {
             icon: "mdi:sleep",
             stages: HealthKitSleepStage.asleepStages
         ),
-        sleepMetric(uniqueID: "health_sleep_in_bed", name: "In Bed", icon: "mdi:bed", stages: [.inBed]),
+        sleepMetric(
+            uniqueID: "health_sleep_in_bed",
+            name: "In Bed",
+            icon: "mdi:bed",
+            stages: [.inBed],
+            footer: .timeInBedSource
+        ),
         sleepMetric(uniqueID: "health_sleep_awake", name: "Awake", icon: "mdi:eye", stages: [.awake]),
         sleepMetric(uniqueID: "health_sleep_core", name: "Core Sleep", icon: "mdi:sleep", stages: [.core]),
         sleepMetric(uniqueID: "health_sleep_deep", name: "Deep Sleep", icon: "mdi:sleep", stages: [.deep]),
@@ -23,13 +29,15 @@ public extension HealthKitMetric {
         uniqueID: String,
         name: String,
         icon: String,
-        stages: Set<HealthKitSleepStage>
+        stages: Set<HealthKitSleepStage>,
+        footer: HealthKitMetricFooter? = nil
     ) -> HealthKitMetric {
         HealthKitMetric(
             uniqueID: uniqueID,
             identifier: HealthKitSleepStage.sleepAnalysisIdentifier,
             name: name,
             icon: icon,
+            footer: footer,
             unit: "min",
             queryUnit: .minute,
             aggregation: .sleep(stages: stages),

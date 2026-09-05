@@ -89,6 +89,17 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
+    func testOnlyInBedCarriesAFooter() throws {
+        // Nothing writes `inBed` samples on its own, so it's the one metric whose sensor needs the list
+        // to say where its samples have to come from.
+        let inBed = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_in_bed"))
+        XCTAssertEqual(inBed.footer, .timeInBedSource)
+
+        for metric in HealthKitMetric.all where metric.uniqueID != inBed.uniqueID {
+            XCTAssertNil(metric.footer, metric.uniqueID)
+        }
+    }
+
     func testUnitsAreCompatibleWithTheirQuantityType() {
         for metric in HealthKitMetric.all where isAvailableOnThisOS(metric) && !isSleepMetric(metric) {
             guard let type = quantityType(for: metric), let unit = metric.queryUnit.hkUnit else { continue }
