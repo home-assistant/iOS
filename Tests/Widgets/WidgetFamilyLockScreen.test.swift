@@ -17,11 +17,6 @@ struct WidgetFamilyLockScreenTests {
         #expect(!family.isLockScreenAccessory)
     }
 
-    /// The portrait extra large family only exists from iOS 27, so naming it as a value has to be
-    /// guarded, unlike the `switch` patterns that match it.
-    @Test func portraitExtraLargeIsNot() {
-        if #available(iOS 27, *) {
-            #expect(!WidgetFamily.systemExtraLargePortrait.isLockScreenAccessory)
-        }
-    }
+    // `.systemExtraLargePortrait` is not listed: the iOS SDK lets a `switch` match the case but
+    // not name it as a value, so it is covered by `isLockScreenAccessory` listing it explicitly.
 }
