@@ -268,7 +268,12 @@ jobs:
   patch-coverage:
     name: Patch coverage
     needs: test
-    if: github.event_name == 'pull_request'
+    # Runs even when the tests failed, which leaves no tracefile behind: the job has
+    # nothing to measure then, and its own cleanup below is what keeps a request from
+    # an earlier run from outliving the coverage it was about.
+    if: >-
+      !cancelled() &&
+      github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -398,8 +403,14 @@ jobs:
               : 'Patch coverage could not be measured on this run, so the gate no longer applies.'
 
             for (const review of outstanding) {
-              await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
-              core.info(`Dismissed review ${review.id}`)
+              try {
+                await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
+                core.info(`Dismissed review ${review.id}`)
+              } catch (error) {
+                // A request nobody can dismiss blocks the pull request for good, so say
+                // so loudly enough that a maintainer can dismiss it by hand.
+                core.warning(`Could not dismiss review ${review.id}, dismiss it by hand: ${error.message}`)
+              }
             }
 
       - name: Fail below the threshold
