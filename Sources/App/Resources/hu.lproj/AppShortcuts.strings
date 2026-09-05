@@ -2,23 +2,23 @@
    ${applicationName} is the app name and must stay in every phrase; ${entity}, ${scene} and
    ${filter} are replaced by what the person says. Translate the wording around them. */
 
-"Activate ${scene} in ${applicationName}" = "Aktiváld a ${scene} jelenetet a ${applicationName} appban";
-"Activate the ${scene} scene in ${applicationName}" = "Aktiváld a ${scene} jelenetet a ${applicationName} alkalmazásban";
-"Activate a scene in ${applicationName}" = "Aktiválj egy jelenetet a ${applicationName} appban";
-"Turn on ${entity} in ${applicationName}" = "Kapcsold be a ${entity} eszközt a ${applicationName} appban";
-"Open ${entity} in ${applicationName}" = "Nyisd ki a ${entity} eszközt a ${applicationName} appban";
-"Turn something on in ${applicationName}" = "Kapcsolj be valamit a ${applicationName} appban";
-"Turn off ${entity} in ${applicationName}" = "Kapcsold ki a ${entity} eszközt a ${applicationName} appban";
-"Close ${entity} in ${applicationName}" = "Zárd be a ${entity} eszközt a ${applicationName} appban";
-"Turn something off in ${applicationName}" = "Kapcsolj ki valamit a ${applicationName} appban";
-"Check an entity in ${applicationName}" = "Ellenőrizz egy entitást a ${applicationName} appban";
-"Get an entity state from ${applicationName}" = "Kérdezd le egy entitás állapotát a ${applicationName} appból";
-"Is ${entity} on in ${applicationName}" = "Be van kapcsolva a ${entity} a ${applicationName} appban";
-"What is the state of ${entity} in ${applicationName}" = "Mi a ${entity} állapota a ${applicationName} appban";
-"Ask ${applicationName}" = "Kérdezd meg a ${applicationName} appot";
-"Ask ${applicationName} Assist" = "Kérdezd meg a ${applicationName} Assistet";
-"Talk to ${applicationName}" = "Beszélj a ${applicationName} apppal";
-"What ${filter} are on in ${applicationName}" = "Mely ${filter} vannak bekapcsolva a ${applicationName} appban";
-"Which ${filter} are on in ${applicationName}" = "Melyik ${filter} van bekapcsolva a ${applicationName} appban";
-"What is on in ${applicationName}" = "Mi van bekapcsolva a ${applicationName} appban";
-"What is still on in ${applicationName}" = "Mi van még bekapcsolva a ${applicationName} appban";
+"Activate ${scene} in ${applicationName}" = "Activate ${scene} in ${applicationName}";
+"Activate the ${scene} scene in ${applicationName}" = "Activate the ${scene} scene in ${applicationName}";
+"Activate a scene in ${applicationName}" = "Activate a scene in ${applicationName}";
+"Turn on ${entity} in ${applicationName}" = "Turn on ${entity} in ${applicationName}";
+"Open ${entity} in ${applicationName}" = "Open ${entity} in ${applicationName}";
+"Turn something on in ${applicationName}" = "Turn something on in ${applicationName}";
+"Turn off ${entity} in ${applicationName}" = "Turn off ${entity} in ${applicationName}";
+"Close ${entity} in ${applicationName}" = "Close ${entity} in ${applicationName}";
+"Turn something off in ${applicationName}" = "Turn something off in ${applicationName}";
+"Check an entity in ${applicationName}" = "Check an entity in ${applicationName}";
+"Get an entity state from ${applicationName}" = "Get an entity state from ${applicationName}";
+"Is ${entity} on in ${applicationName}" = "Is ${entity} on in ${applicationName}";
+"What is the state of ${entity} in ${applicationName}" = "What is the state of ${entity} in ${applicationName}";
+"Ask ${applicationName}" = "Ask ${applicationName}";
+"Ask ${applicationName} Assist" = "Ask ${applicationName} Assist";
+"Talk to ${applicationName}" = "Talk to ${applicationName}";
+"What ${filter} are on in ${applicationName}" = "What ${filter} are on in ${applicationName}";
+"Which ${filter} are on in ${applicationName}" = "Which ${filter} are on in ${applicationName}";
+"What is on in ${applicationName}" = "What is on in ${applicationName}";
+"What is still on in ${applicationName}" = "What is still on in ${applicationName}";
