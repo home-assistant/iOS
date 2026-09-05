@@ -64,6 +64,15 @@ struct DeeplinkView: View {
                                 viewModel.includeServerChanged()
                             }
                     }
+                    // The list collapses section spacing so the header sits tight against the deeplink
+                    // row, which would also glue this section to it. Restore the gap for this one.
+                    .modify { view in
+                        if #available(iOS 17.0, *) {
+                            view.listSectionSpacing(DesignSystem.Spaces.two)
+                        } else {
+                            view
+                        }
+                    }
                 }
             }
             .modify { view in
