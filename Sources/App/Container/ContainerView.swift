@@ -31,8 +31,10 @@ struct ContainerView: View {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
-                // Pushing lands on `ConditionalContainerView`'s compact-only navigation stack, so the
-                // decision reads the same size class it does — from the window, at presentation time.
+                // Pushing lands on `ConditionalContainerView`'s navigation stack, which is always present so
+                // a size-class change never rebuilds the frontend; push only in compact width, where a
+                // full-screen push is the right shape, and read that size class from the window at
+                // presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
                 if pushOntoNavigationStack, sizeClass == .compact {
                     AppSettingsPresenter.shared.isPushPresented = true
