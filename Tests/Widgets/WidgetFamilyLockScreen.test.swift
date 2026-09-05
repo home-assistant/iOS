@@ -12,7 +12,9 @@ struct WidgetFamilyLockScreenTests {
         #expect(family.isLockScreenAccessory)
     }
 
-    @Test(arguments: [WidgetFamily.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
+    @Test(arguments: [
+        WidgetFamily.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .systemExtraLargePortrait,
+    ])
     func homeScreenFamiliesAreNot(family: WidgetFamily) {
         #expect(!family.isLockScreenAccessory)
     }
