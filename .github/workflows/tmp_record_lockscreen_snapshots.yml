@@ -1,0 +1,81 @@
+# TEMPORARY — records the reference images for the Run Scripts lock screen snapshot tests on a
+# macOS runner and uploads them as an artifact. Delete once the images are committed.
+name: Record lock screen snapshots (temporary)
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/ios-issue-5642-fix-uiymcf
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+
+jobs:
+  record:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      # The new suite has no reference images yet, so its first run records them and reports the
+      # tests as failed — that is expected. The existing lock screen suite runs alongside it to
+      # show its images are unchanged by the fix.
+      - name: Record snapshots
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:Tests-App/WidgetScriptsLockScreenSnapshotTests \
+            -only-testing:Tests-App/WidgetLockScreenAccessorySnapshotTests \
+            -resultBundlePath test_output/Snapshots.xcresult \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee test_output.log || true
+
+      - name: Summarize
+        if: ${{ always() }}
+        run: |
+          {
+            echo '## Test results'
+            echo
+            echo '```'
+            grep -E '(✔|✘|◇ Suite|Test Case|passed|failed)' test_output.log | grep -vi "warning" | tail -60 || true
+            echo '```'
+            echo
+            echo '## Recorded images'
+            echo
+            echo '```'
+            find Tests/Widgets/__Snapshots__/WidgetScriptsLockScreenSnapshot.test -type f 2>/dev/null || echo "none"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload recorded snapshots"
+        if: ${{ always() }}
+        with:
+          name: lockscreen-snapshots
+          path: |
+            Tests/Widgets/__Snapshots__/WidgetScriptsLockScreenSnapshot.test
+            Tests/Widgets/__Snapshots__/WidgetLockScreenAccessorySnapshot.test
+            test_output.log
+          if-no-files-found: warn
