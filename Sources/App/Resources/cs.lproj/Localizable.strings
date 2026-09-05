@@ -2007,7 +2007,7 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings_sensors.periodic_update.description" = "Pokud je tato funkce povolena a aplikace je otevřená v popředí, budou se tyto senzory aktualizovat s touto frekvencí.";
 "settings_sensors.periodic_update.description_foreground" = "Tato frekvence platí jen tehdy, když je aplikace otevřená na obrazovce. Když je aplikace na pozadí, systém iOS rozhoduje, kdy může aktualizovat senzory.";
 "settings_sensors.periodic_update.description_mac" = "Pokud je tato funkce povolena a aplikace je otevřená, budou se tyto senzory aktualizovat s touto frekvencí. Některé senzory se budou automaticky aktualizovat častěji.";
-"settings_sensors.periodic_update.foreground_header" = "When app is open";
+"settings_sensors.periodic_update.foreground_header" = "Když je aplikace otevřená";
 "settings_sensors.periodic_update.off" = "Vypnuto";
 "settings_sensors.periodic_update.title" = "Pravidelná aktualizace";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2601,6 +2601,12 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.settings.refresh" = "Obnovit";
 "watch.settings.restart_app.footer" = "Tím se aplikace okamžitě zavře. Budete ji muset znovu otevřít ručně.";
 "watch.settings.restart_app.title" = "Restartovat aplikaci";
+"watch.settings.sensors.footer" = "Vaše Apple Watch tyto údaje hlásí Home Assistantovi samostatně, jako zařízení oddělené od iPhonu. Nic se neodesílá, dokud nezapnete senzor.";
+"watch.settings.sensors.last_error" = "Poslední chyba: %@";
+"watch.settings.sensors.last_sent" = "Naposledy odesláno %@";
+"watch.settings.sensors.never_sent" = "Zatím neodesláno";
+"watch.settings.sensors.status_header" = "Stav";
+"watch.settings.sensors.title" = "Senzory";
 "watch.settings.server.needs_attention" = "Vyžaduje pozornost";
 "watch.settings.servers.header" = "Servery";
 "watch.settings.title" = "Nastavení";
@@ -2645,18 +2651,49 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "whats_new.app_support_update.item_body" = "Toto je poslední aktualizace pro iOS 15, watchOS 8 a macOS 11 a starší verze. Klepnutím zobrazíte další informace.";
 "whats_new.app_support_update.item_title" = "Podpora pro iOS 15, Watch OS 8 a macOS 11 bude ukončena";
 "whats_new.app_support_update.title" = "Aktualizace podpory aplikace";
+"whats_new.energy_widget.article_body" = "Nový widget **Energie** umístí váš energetický panel na domovskou obrazovku a zamykací obrazovku.\
+\
+**Co to ukazuje**\
+Síť, solární energie, baterie a plyn pro zvolené období: dnes, včera, tento týden nebo tento měsíc. Vyberte zdroj, kterým chcete uvést, nebo nechte rozhodnutí na displeji. Malá velikost a velikost pro zamčenou obrazovku zobrazují aktuální výkon, pokud máte nastavené senzory výkonu, a větší velikosti zobrazují celkové hodnoty pro každý zdroj za dané období.\
+\
+**Jak jej přidat**\
+Dotkněte se a podržte domovskou obrazovku, klepněte na tlačítko Přidat v horním rohu, vyhledejte Home Assistant a vyberte Energie. Pro zamykací obrazovku se dotkněte a podržte ji, klepněte na Přizpůsobit a přidejte tam widget. Vyžaduje to nastavený ovládací panel Energie v Home Assistantovi.";
+"whats_new.energy_widget.item_body" = "Na domovské obrazovce a zamykací obrazovce se můžete jedním pohledem podívat, kolik energie vaše domácnost spotřebovává, vyrábí a ukládá. Klepnutím se dozvíte více.";
+"whats_new.energy_widget.item_title" = "Widget Energie";
+"whats_new.energy_widget.mac.article_body" = "Nový widget **Energie** vám umístí ovládací panel Energie na plochu.\
+\
+**Co to ukazuje**\
+Síť, solární energie, baterie a plyn pro vámi zvolené období: dnes, včera, tento týden nebo tento měsíc. Vyberte zdroj, ke kterému se má připojit, nebo nechte rozhodnutí na widgetu. Malá velikost zobrazuje aktivní energii, pokud máte nastavené senzory výkonu, a větší velikosti zobrazují celkové hodnoty pro každý zdroj za dané období.\
+\
+**Jak jej přidat**\
+Klepněte pravým tlačítkem myši na plochu, vyberte Upravit widgety, vyhledejte Home Assistant a zvolte Energie. Vyžaduje to nastavený ovládací panel Energie v Home Assistantovi.";
+"whats_new.energy_widget.mac.item_body" = "Podívejte se na ploše, kolik energie váš domov spotřebovává, vyrábí a ukládá. Klepnutím se dozvíte více.";
 "whats_new.item.opens_article_hint" = "Otevře článek";
 "whats_new.item.opens_link_hint" = "Otevře odkaz";
+"whats_new.live_activities.item_body" = "Sledujte časovač, spuštěný spotřebič nebo cokoli, co právě probíhá, na zamykací obrazovce a na Dynamic Islanu. Klepnutím zobrazíte, jak oznámení spustí daný proces.";
+"whats_new.live_activities.item_title" = "Živé aktivity";
 "whats_new.title" = "Co je nového v doprovodné aplikaci";
 "whats_new.version_format" = "Verze %@";
+"widgets.action.name.activate" = "Aktivovat";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Zavřít";
 "widgets.action.name.default" = "Výchozí";
+"widgets.action.name.default_action_%@" = "Výchozí (%@)";
+"widgets.action.name.lock" = "Zamknout";
+"widgets.action.name.main_action" = "Hlavní akce";
 "widgets.action.name.moreInfoDialog" = "Více informací";
 "widgets.action.name.navigate" = "Navigovat";
 "widgets.action.name.nothing" = "Nic";
+"widgets.action.name.open" = "Otevřít";
 "widgets.action.name.perform_action" = "Provést akci";
+"widgets.action.name.press" = "Stisknutí";
+"widgets.action.name.run" = "Běh";
 "widgets.action.name.run_script" = "Spustit skript";
 "widgets.action.name.toggle" = "Přepnout";
+"widgets.action.name.trigger" = "Spouštěč";
+"widgets.action.name.turn_off" = "Vypnout";
+"widgets.action.name.turn_on" = "Zapnout";
+"widgets.action.name.unlock" = "Odemknout";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Provede akce v Home Assistantovi.";
 "widgets.actions.not_configured" = "Akce nejsou nastaveny";
@@ -2806,10 +2843,10 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "widgets.energy.source.solar" = "Solární";
 "widgets.energy.source.title" = "Zdroj";
 "widgets.energy.title" = "Energie";
-"widgets.entities.description" = "Show and control the entities you choose.";
-"widgets.entities.not_configured" = "Edit the widget to choose entities.";
-"widgets.entities.param.entities.title" = "Entities";
-"widgets.entities.title" = "Entities";
+"widgets.entities.description" = "Zobrazte a ovládejte entity, které si vyberete.";
+"widgets.entities.not_configured" = "Upravte widget pro výběr entit.";
+"widgets.entities.param.entities.title" = "Entity";
+"widgets.entities.title" = "Entity";
 "widgets.entity_state.placeholder" = "Stav entity";
 "widgets.gauge.description" = "Zobrazí číselné stavy z Home Assistanta na ukazateli.";
 "widgets.gauge.gallery_description" = "Zobrazí entitu, komplikaci hodinek nebo šablony z Home Assistanta v ukazateli.";

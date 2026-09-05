@@ -8518,6 +8518,26 @@ public enum L10n {
       public static var retryButton: String { return L10n.tr("Localizable", "web_view.empty_state.retry_button") }
       /// You're disconnected
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
+      public enum ClientCertificate {
+        /// Import certificate
+        public static var importButton: String { return L10n.tr("Localizable", "web_view.empty_state.client_certificate.import_button") }
+        public enum Rejected {
+          /// %@ refused the client certificate configured on this device. It may have expired, been revoked or been replaced on the server. Import a valid certificate file (.p12 or .pfx) to continue.
+          public static func body(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "web_view.empty_state.client_certificate.rejected.body", String(describing: p1))
+          }
+          /// Certificate rejected
+          public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.client_certificate.rejected.title") }
+        }
+        public enum Required {
+          /// %@ requires a client certificate (mTLS), but none is configured for this server on this device. Import your certificate file (.p12 or .pfx) to continue.
+          public static func body(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "web_view.empty_state.client_certificate.required.body", String(describing: p1))
+          }
+          /// Certificate required
+          public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.client_certificate.required.title") }
+        }
+      }
       public enum LoggedOut {
         /// You have been signed out of this server. Log in again to continue using it on this device.
         public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.logged_out.body") }
@@ -8639,7 +8659,7 @@ public enum L10n {
         /// Nothing
         public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
         /// Open
-        public static var open: String { return L10n.tr("Localizable", "widgets.action.name.open") }
+        public static var `open`: String { return L10n.tr("Localizable", "widgets.action.name.open") }
         /// Perform action
         public static var performAction: String { return L10n.tr("Localizable", "widgets.action.name.perform_action") }
         /// Press

@@ -67,7 +67,7 @@
 "app_intents.automations.parameter.automation.title" = "Automatisering";
 "app_intents.automations.success_message.content" = "Automatisering \"%@\" uitgevoerd";
 "app_intents.calendar.create_event.all_day.title" = "Hele dag";
-"app_intents.calendar.create_event.description" = "Voeg een gebeurtenis toe aan een Home Assistant-kalender";
+"app_intents.calendar.create_event.description" = "Voeg een activiteit toe aan een Home Assistant-kalender";
 "app_intents.calendar.create_event.end.title" = "Eindigt";
 "app_intents.calendar.create_event.event_description.title" = "Beschrijving";
 "app_intents.calendar.create_event.location.title" = "Locatie";
@@ -75,26 +75,26 @@
 "app_intents.calendar.create_event.response_success" = "%@ aan %@ toegevoegd";
 "app_intents.calendar.create_event.start.title" = "Begint";
 "app_intents.calendar.create_event.summary.title" = "Titel";
-"app_intents.calendar.create_event.title" = "Agenda-gebeurtenis toevoegen";
-"app_intents.calendar.delete_event.description" = "Een gebeurtenis verwijderen uit een Home Assistant-agenda";
+"app_intents.calendar.create_event.title" = "Agenda-activiteit toevoegen";
+"app_intents.calendar.delete_event.description" = "Een activiteit verwijderen uit een Home Assistant-agenda";
 "app_intents.calendar.delete_event.response_success" = "%@ van %@ verwijderd";
-"app_intents.calendar.delete_event.scope.this_and_future" = "Deze en alle toekomstige gebeurtenissen";
-"app_intents.calendar.delete_event.scope.this_event" = "Alleen deze gebeurtenis";
+"app_intents.calendar.delete_event.scope.this_and_future" = "Deze en alle toekomstige activiteiten";
+"app_intents.calendar.delete_event.scope.this_event" = "Alleen deze activiteit";
 "app_intents.calendar.delete_event.scope.title" = "Verwijderen";
-"app_intents.calendar.delete_event.title" = "Agenda-gebeurtenis verwijderen";
+"app_intents.calendar.delete_event.title" = "Agenda-activiteit verwijderen";
 "app_intents.calendar.entity.name" = "Agenda";
-"app_intents.calendar.error.create_unsupported" = "%@ staat het toevoegen van gebeurtenissen niet toe";
-"app_intents.calendar.error.delete_unsupported" = "%@ staat het verwijderen van gebeurtenissen niet toe.";
+"app_intents.calendar.error.create_unsupported" = "%@ staat het toevoegen van activiteiten niet toe";
+"app_intents.calendar.error.delete_unsupported" = "%@ staat het verwijderen van activiteiten niet toe.";
 "app_intents.calendar.error.event_not_deletable" = "%@ kan niet worden verwijderd omdat Home Assistant er geen identificatiecode aan heeft toegekend";
-"app_intents.calendar.error.event_not_in_calendar" = "%1$@ is geen gebeurtenis op %2$@";
+"app_intents.calendar.error.event_not_in_calendar" = "%1$@ is geen activiteit op %2$@";
 "app_intents.calendar.error.invalid_duration" = "Het einde mag niet vóór het begin komen";
 "app_intents.calendar.error.unknown_calendar" = "Die agenda is niet meer beschikbaar";
 "app_intents.calendar.error.zero_duration" = "Het einde moet na het begin zijn";
-"app_intents.calendar.event.entity.name" = "Agenda-gebeurtenis";
-"app_intents.calendar.get_events.description" = "De gebeurtenissen tussen twee datums ophalen uit een Home Assistant agenda";
+"app_intents.calendar.event.entity.name" = "Agenda-activiteit";
+"app_intents.calendar.get_events.description" = "De activiteiten tussen twee datums ophalen uit een Home Assistant agenda";
 "app_intents.calendar.get_events.end.title" = "Tot";
 "app_intents.calendar.get_events.start.title" = "Van";
-"app_intents.calendar.get_events.title" = "Bekijk agenda-gebeurtenissen";
+"app_intents.calendar.get_events.title" = "Bekijk agenda-activiteiten";
 "app_intents.calendar.repeat.daily" = "Dagelijks";
 "app_intents.calendar.repeat.monthly" = "Maandelijks";
 "app_intents.calendar.repeat.none" = "Niet herhalen";
@@ -141,7 +141,7 @@
 "app_intents.lights.on_state_icon.title" = "Icoon voor aan-stand";
 "app_intents.notify_when_run.description" = "Toont melding na uitvoering";
 "app_intents.notify_when_run.title" = "Meld wanneer uitgevoerd";
-"app_intents.open_app_settings.description" = "Opens the companion app directly in its settings";
+"app_intents.open_app_settings.description" = "Opent de Companion app direct in de instellingen";
 "app_intents.open_app_settings.title" = "App-instellingen openen";
 "app_intents.open_experimental_dashboard.description" = "Opent het experimentele dashboard";
 "app_intents.open_experimental_dashboard.title" = "Open Experimenteel Dashboard";
@@ -418,7 +418,7 @@
 "client_events.event_type.service_call" = "Service-oproep";
 "client_events.event_type.settings" = "Instellingen";
 "client_events.event_type.unknown" = "Onbekend";
-"client_events.no_events" = "Geen gebeurtenissen";
+"client_events.no_events" = "Geen activiteiten";
 "client_events.view.clear" = "Wis";
 "client_events.view.clear_confirm.message" = "Deze aanpassing kan niet ongedaan gemaakt worden";
 "client_events.view.clear_confirm.title" = "Weet je zeker dat je alle acties wilt wissen?";
@@ -1409,7 +1409,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.local_push_description" = "Maak rechtstreeks verbinding met de Home Assistant-server voor pushmeldingen op interne SSID's.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Nooit";
-"settings.connection_section.location_send_type.setting.zone_only" = "Alleen zonenaam";
+"settings.connection_section.location_send_type.setting.zone_only" = "Alleen zone";
 "settings.connection_section.location_send_type.title" = "Locatie doorgeven";
 "settings.connection_section.logged_in_as" = "Ingelogd als";
 "settings.connection_section.make_default" = "Als standaard instellen";
@@ -1459,13 +1459,13 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.debugging.calendars.empty.subtitle" = "Trek omlaag om de agenda's van Home Assistant op te halen.";
 "settings.debugging.calendars.empty.title" = "Geen agenda's opgeslagen";
 "settings.debugging.calendars.entity_id" = "Entiteits-ID";
-"settings.debugging.calendars.no_events" = "Geen gebeurtenissen op deze dag";
+"settings.debugging.calendars.no_events" = "Geen activiteiten op deze dag";
 "settings.debugging.calendars.refresh_failed" = "Kon geen agenda's ophalen van Home Assistant";
 "settings.debugging.calendars.server_selection.title" = "Selecteer server";
-"settings.debugging.calendars.supported_features.create" = "Gebeurtenissen aanmaken";
-"settings.debugging.calendars.supported_features.delete" = "Gebeurtenissen verwijderen";
+"settings.debugging.calendars.supported_features.create" = "Activiteiten aanmaken";
+"settings.debugging.calendars.supported_features.delete" = "Activiteiten verwijderen";
 "settings.debugging.calendars.supported_features.title" = "Ondersteunde functies";
-"settings.debugging.calendars.supported_features.update" = "Gebeurtenissen bijwerken";
+"settings.debugging.calendars.supported_features.update" = "Activiteiten bijwerken";
 "settings.debugging.calendars.title" = "Agenda's";
 "settings.debugging.clear_allowed_tags.alert_title" = "Clear approved NFC tags?";
 "settings.debugging.clear_allowed_tags.clear_button" = "Clear Tags";
@@ -1473,7 +1473,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.debugging.clear_allowed_tags.title" = "Clear approved NFC tags";
 "settings.debugging.clear_web_cache.alert_title" = "Webview-cache wissen?";
 "settings.debugging.clear_web_cache.clear_button" = "Cache leegmaken";
-"settings.debugging.clear_web_cache.message" = "Clears cached web content for the Home Assistant frontend. Frontend resources will be reloaded as needed.";
+"settings.debugging.clear_web_cache.message" = "Verwijdert de in de cache opgeslagen webinhoud voor de Home Assistant-frontend. Frontend-bronnen worden indien nodig opnieuw geladen.";
 "settings.debugging.clear_web_cache.title" = "Clear web view cache";
 "settings.debugging.components_library.title" = "Components Library";
 "settings.debugging.configuration_transfer.actions.footer" = "De export is een gewoon JSON-bestand dat je kunt bekijken voordat je het deelt. Bij het importeren worden alle hierboven genoemde categorieën vervangen en deze handeling kan niet ongedaan worden gemaakt.";
@@ -1526,7 +1526,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.debugging.configuration_transfer.import.progress.title" = "Configuratie importeren";
 "settings.debugging.configuration_transfer.import.success.message" = "%li item(s) geïmporteerd.";
 "settings.debugging.configuration_transfer.import.success.title" = "Configuratie geïmporteerd";
-"settings.debugging.configuration_transfer.state.included" = "Included";
+"settings.debugging.configuration_transfer.state.included" = "Inbegrepen";
 "settings.debugging.configuration_transfer.state.item_count" = "%li item(s)";
 "settings.debugging.configuration_transfer.state.not_configured" = "Niet geconfigureerd";
 "settings.debugging.configuration_transfer.title" = "Import/export configuratie";
@@ -1555,7 +1555,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.debugging.database_transfer.part.complications" = "complicaties";
 "settings.debugging.database_transfer.part.custom_widgets" = "aangepaste widgets";
 "settings.debugging.database_transfer.part.watch_configuration" = "watch configuratie";
-"settings.debugging.database_transfer.title" = "Database Import/Export";
+"settings.debugging.database_transfer.title" = "Database importeren/exporteren";
 "settings.debugging.delete_keychain.date_placeholder" = "jjjj-MM-dd";
 "settings.debugging.delete_keychain.delete_button" = "Verwijderen";
 "settings.debugging.delete_keychain.invalid_date_format" = "Voer de datum van vandaag in als %@ om verder te gaan.";
@@ -1654,7 +1654,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.mac_toolbar.remove" = "Verwijderen";
 "settings.mac_toolbar.remove_accessibility_label" = "Verwijder %@";
 "settings.mac_toolbar.remove_confirmation.title" = "'%@' uit de werkbalk verwijderen?";
-"settings.mac_toolbar.title" = "Toolbar";
+"settings.mac_toolbar.title" = "Werkbalk";
 "settings.navigation_bar.about_button.title" = "Over";
 "settings.navigation_bar.title" = "Instellingen";
 "settings.reminders_sync.title" = "Herinneringen synchroniseren";
@@ -1929,7 +1929,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings_details.notifications.snooze_actions.add_sheet.title" = "Nieuwe sluimer-actie";
 "settings_details.notifications.snooze_actions.footer" = "Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later.";
 "settings_details.notifications.snooze_actions.header" = "Sluimer-acties";
-"settings_details.notifications.snooze_actions.prefix_footer" = "Snoozed notifications reappear with a “↺” prefix in their title.";
+"settings_details.notifications.snooze_actions.prefix_footer" = "Gesnoozde meldingen verschijnen opnieuw met een “↺” voor de titel.";
 "settings_details.notifications.snooze_actions.title_hour" = "Sluimer 1 uur";
 "settings_details.notifications.snooze_actions.title_hour_minutes" = "Sluimer 1 uur en %li min";
 "settings_details.notifications.snooze_actions.title_hours" = "Sluimer %li uur";
@@ -2007,7 +2007,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings_sensors.periodic_update.description" = "Indien ingeschakeld, worden deze sensoren bijgewerkt met deze frequentie terwijl de app op de voorgrond is geopend.";
 "settings_sensors.periodic_update.description_foreground" = "Deze frequentie is alleen van toepassing zolang de app op het scherm openstaat. Als de app op de achtergrond draait, bepaalt iOS zelf wanneer de sensoren worden bijgewerkt.";
 "settings_sensors.periodic_update.description_mac" = "Wanneer ingeschakeld, worden deze sensoren met deze frequentie bijgewerkt terwijl de app is geopend. Sommige sensoren worden vaker automatisch bijgewerkt.";
-"settings_sensors.periodic_update.foreground_header" = "When app is open";
+"settings_sensors.periodic_update.foreground_header" = "Wanneer de app geopend is";
 "settings_sensors.periodic_update.off" = "Uit";
 "settings_sensors.periodic_update.title" = "Periodiek bijwerken";
 "settings_sensors.permissions.bluetooth.title" = "Bluetooth";
@@ -2222,14 +2222,14 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "watch.config.add.area" = "Ruimte";
 "watch.config.add.complication" = "Complicatie";
 "watch.config.add.complications_empty" = "No rectangular complications yet. Create one on your iPhone first.";
-"watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
-"watch.config.add.entity" = "Entity";
-"watch.config.add.filter.all" = "All";
+"watch.config.add.empty" = "Nog niets toe te voegen. Voeg eerst scripts, scènes of automatiseringen toe op je iPhone.";
+"watch.config.add.entity" = "Entiteit";
+"watch.config.add.filter.all" = "Alle";
 "watch.config.add.folder" = "Map";
 "watch.config.add.no_areas" = "No areas with entities your Apple Watch can show yet.";
 "watch.config.add.search_placeholder" = "Zoeken";
 "watch.config.add.title" = "Toevoegen";
-"watch.config.assist.no_pipelines" = "No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.";
+"watch.config.assist.no_pipelines" = "Er zijn nog geen Assist-pijplijnen in de cache opgeslagen. Houd je iPhone bij de hand en tik op ‘Opnieuw laden’.";
 "watch.config.assist.pipeline" = "Pijplijn";
 "watch.config.assist.preferred" = "Voorkeur";
 "watch.config.assist.reload" = "Herladen";
@@ -2601,6 +2601,12 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.refresh" = "Vernieuwen";
 "watch.settings.restart_app.footer" = "De app wordt hiermee direct afgesloten. Je moet hem handmatig opnieuw openen.";
 "watch.settings.restart_app.title" = "App opnieuw starten";
+"watch.settings.sensors.footer" = "Je Apple Watch rapporteert deze gegevens automatisch naar Home Assistant, als een apart apparaat, los van je iPhone. Er wordt niets verzonden totdat je een sensor inschakelt.";
+"watch.settings.sensors.last_error" = "Laatste fout: %@";
+"watch.settings.sensors.last_sent" = "Laatst verzonden %@";
+"watch.settings.sensors.never_sent" = "Nog niet verzonden";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensoren";
 "watch.settings.server.needs_attention" = "Vereist aandacht";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Instellingen";
@@ -2645,18 +2651,49 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "whats_new.app_support_update.item_body" = "Dit is de laatste update voor iOS 15, watchOS 8 en macOS 11 en eerdere versies. Tik hier om meer te lezen.";
 "whats_new.app_support_update.item_title" = "De ondersteuning voor iOS 15, watchOS 8 en macOS 11 wordt beëindigd";
 "whats_new.app_support_update.title" = "Update over app-ondersteuning";
+"whats_new.energy_widget.article_body" = "Met de nieuwe **Energie-widget** verschijnt je energiedashboard op je startscherm en vergrendelingsscherm.\
+\
+**Wat je te zien krijgt**\
+Netstroom, zonne-energie, accu en gas voor de periode die je kiest: vandaag, gisteren, deze week of deze maand. Kies zelf welke bron bovenaan staat, of laat de widget dat bepalen. De kleine en vergrendelingsschermformaten tonen het actuele stroomverbruik als je stroomsensoren hebt ingesteld, en de bredere formaten geven de totalen van de periode weer voor elke bron.\
+\
+**Hoe voeg je het toe**\
+Houd je startscherm ingedrukt, tik op de knop ‘Toevoegen’ in de bovenhoek, zoek naar Home Assistant en kies ‘Energie’. Voor het vergrendelingsscherm houd je dit ingedrukt, tik je op ‘Aanpassen’ en voeg je de widget daar toe. Hiervoor moet er een energiedashboard zijn geconfigureerd in Home Assistant.";
+"whats_new.energy_widget.item_body" = "Zie in één oogopslag op je startscherm en vergrendelingsscherm hoeveel energie je huis verbruikt, opwekt en opslaat. Tik voor meer informatie.";
+"whats_new.energy_widget.item_title" = "Energie-widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "Zie in één oogopslag op je bureaublad hoeveel energie je huis verbruikt, opwekt en opslaat. Tik voor meer informatie.";
 "whats_new.item.opens_article_hint" = "Opent een artikel";
 "whats_new.item.opens_link_hint" = "Opent een link";
+"whats_new.live_activities.item_body" = "Volg een timer, een apparaat dat draait of iets anders dat bezig is vanaf je vergrendelscherm en het Dynamische Eiland. Tik om te zien hoe een melding er een start.";
+"whats_new.live_activities.item_title" = "Live activiteiten";
 "whats_new.title" = "Nieuw in de Companion-app";
 "whats_new.version_format" = "Versie %@";
+"widgets.action.name.activate" = "Activeren";
 "widgets.action.name.assist" = "Assist";
+"widgets.action.name.close" = "Sluiten";
 "widgets.action.name.default" = "Standaard";
+"widgets.action.name.default_action_%@" = "Standaard (%@)";
+"widgets.action.name.lock" = "Vergrendel";
+"widgets.action.name.main_action" = "Hoofdactie";
 "widgets.action.name.moreInfoDialog" = "Meer informatie";
 "widgets.action.name.navigate" = "Navigeer";
 "widgets.action.name.nothing" = "Niets";
+"widgets.action.name.open" = "Openen";
 "widgets.action.name.perform_action" = "Actie uitvoeren";
+"widgets.action.name.press" = "Indrukken";
+"widgets.action.name.run" = "Uitvoeren";
 "widgets.action.name.run_script" = "Script uitvoeren";
 "widgets.action.name.toggle" = "Omschakelen";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Uitschakelen";
+"widgets.action.name.turn_on" = "Inschakelen";
+"widgets.action.name.unlock" = "Ontgrendel";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Voer Home Assistant-acties uit.";
 "widgets.actions.not_configured" = "Geen acties geconfigureerd";
@@ -2672,7 +2709,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.button.reload_timeline" = "Alle widgets opnieuw laden";
 "widgets.calendar.all_day" = "Hele dag";
 "widgets.calendar.description" = "Bekijk wat er op je agenda staat.";
-"widgets.calendar.no_events" = "Geen aankomende gebeurtenissen";
+"widgets.calendar.no_events" = "Geen aankomende activiteiten";
 "widgets.calendar.parameter.calendars" = "Agenda's";
 "widgets.calendar.parameter.show_calendar_name" = "Naam van de agenda weergeven";
 "widgets.calendar.refresh_title" = "Agenda vernieuwen";
@@ -2806,10 +2843,10 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.energy.source.solar" = "Zonne-energie";
 "widgets.energy.source.title" = "Bron";
 "widgets.energy.title" = "Energie";
-"widgets.entities.description" = "Show and control the entities you choose.";
-"widgets.entities.not_configured" = "Edit the widget to choose entities.";
-"widgets.entities.param.entities.title" = "Entities";
-"widgets.entities.title" = "Entities";
+"widgets.entities.description" = "Toon en beheer de entiteiten die jij kiest.";
+"widgets.entities.not_configured" = "Bewerk de widget om entiteiten te selecteren.";
+"widgets.entities.param.entities.title" = "Entiteiten";
+"widgets.entities.title" = "Entiteiten";
 "widgets.entity_state.placeholder" = "Entiteitsstatus";
 "widgets.gauge.description" = "Numerieke statussen van Home Assistant weergeven in een meter";
 "widgets.gauge.gallery_description" = "Display an entity, a watch complication, or a template from Home Assistant in a gauge";
