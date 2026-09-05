@@ -120,6 +120,9 @@ public struct CornerComplicationContentView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .frame(maxWidth: maxTextWidth)
+                        // Flat text is drawn upright by the widget (only curved text follows the
+                        // bezel), so counter the composition's rotation the way the icon does.
+                        .rotationEffect(.degrees(model.curvesText ? 0 : -45))
                 }
             }
             .frame(height: stackHeight, alignment: .top)
