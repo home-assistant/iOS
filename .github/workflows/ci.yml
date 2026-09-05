@@ -233,6 +233,16 @@ jobs:
           disable_search: true
           plugins: noop
 
+      # Handed to the `patch-coverage` job below, which runs on Linux so the mac
+      # runner is free the moment the tests are done.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload Code Coverage Tracefile"
+        continue-on-error: true
+        with:
+          name: coverage-lcov
+          path: fastlane/test_output/coverage.lcov
+          if-no-files-found: ignore
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Test Logs"
         if: ${{ always() }}
@@ -248,3 +258,148 @@ jobs:
         with:
           name: ios-simulator
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
+
+  # A pull request has to test the code it brings: at least 90% of the lines it adds
+  # or changes, and that the unit tests are able to run at all, must actually be run
+  # by them. Falling short is a changes-requested review rather than only a red check,
+  # so the reason lands where the discussion is. The review is dismissed automatically
+  # as soon as a push clears the bar, and a maintainer can dismiss it to land a change
+  # whose new code genuinely cannot be unit tested.
+  patch-coverage:
+    name: Patch coverage
+    needs: test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    env:
+      COVERAGE_THRESHOLD: "90"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0  # Fetch all history to diff against the merge base
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        name: "Download Code Coverage Tracefile"
+        id: tracefile
+        continue-on-error: true
+        with:
+          name: coverage-lcov
+          path: fastlane/test_output
+
+      # Coverage that could not be measured must not block: when the conversion or the
+      # artifact is missing, this step is skipped, no output is set, and every step
+      # below no-ops rather than requesting changes nobody can act on. The step itself
+      # is `continue-on-error` because the script exits nonzero to report the shortfall.
+      - name: Measure patch coverage
+        id: coverage
+        if: steps.tracefile.outcome == 'success'
+        continue-on-error: true
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch origin "+$BASE_REF:refs/remotes/origin/$BASE_REF"
+          python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov \
+            --base "origin/$BASE_REF" \
+            --threshold "$COVERAGE_THRESHOLD" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            --github-output "$GITHUB_OUTPUT"
+
+      # Only same-repository pull requests: a fork's token cannot review, and the run
+      # would fail on the API call instead of on the coverage it is reporting.
+      - name: Request changes below the threshold
+        if: >-
+          steps.coverage.outputs.passed == 'false' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+          COVERED: ${{ steps.coverage.outputs.covered }}
+          CHANGED: ${{ steps.coverage.outputs.changed }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const pull_number = context.payload.pull_request.number
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
+            const threshold = process.env.COVERAGE_THRESHOLD
+
+            // Marks the review as this job's, so the dismissal below leaves other bots alone.
+            const marker = '<!-- patch-coverage -->'
+
+            const body = [
+              marker,
+              `### Test coverage of this pull request is below ${threshold}%`,
+              '',
+              `The unit tests run **${process.env.COVERAGE}%** of the lines this pull request`,
+              `adds or changes (${process.env.COVERED} of ${process.env.CHANGED} coverable lines).`,
+              '',
+              'The per-file breakdown, and the changed lines no test runs, are in the',
+              `[job summary](${run}). Adding tests for those lines and pushing dismisses this`,
+              'review automatically.',
+              '',
+              'Lines that carry no executable code, and files the unit test targets do not',
+              'build, are not counted. If the new code genuinely cannot be unit tested, a',
+              'maintainer can dismiss this review.',
+            ].join('\n')
+
+            // A push that leaves coverage exactly where it was would otherwise stack an
+            // identical review on every run, so repeat the request only when it changed.
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            })
+            const outstanding = reviews.findLast(
+              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
+            )
+
+            if (outstanding && outstanding.body === body) {
+              core.info('The outstanding coverage review already says this, leaving it alone')
+              return
+            }
+
+            await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'REQUEST_CHANGES', body })
+            core.info(`Requested changes: patch coverage ${process.env.COVERAGE}% is below ${threshold}%`)
+
+      - name: Dismiss the coverage review once it is met
+        if: >-
+          steps.coverage.outputs.passed == 'true' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const pull_number = context.payload.pull_request.number
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            })
+            const marker = '<!-- patch-coverage -->'
+            const outstanding = reviews.filter(
+              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
+            )
+
+            const message =
+              `Patch coverage is now ${process.env.COVERAGE}%, at or above the ` +
+              `${process.env.COVERAGE_THRESHOLD}% threshold.`
+
+            for (const review of outstanding) {
+              await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
+              core.info(`Dismissed review ${review.id}`)
+            }
+
+      - name: Fail below the threshold
+        if: steps.coverage.outputs.passed == 'false'
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+        run: |
+          echo "::error::Patch coverage $COVERAGE% is below the required $COVERAGE_THRESHOLD%"
+          exit 1
