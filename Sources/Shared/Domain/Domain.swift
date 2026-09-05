@@ -600,10 +600,12 @@ public enum Domain: String, CaseIterable {
         [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
     }
 
-    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report
-    /// their last-triggered time.
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report their
+    /// last-triggered time, and an automation reports whether it is *enabled*, never the state of
+    /// the light or fan it actually drives. Rows for these domains show where the item lives
+    /// (server, area) instead of a state the user can't read anything into.
     public var hasIrrelevantState: Bool {
-        [.script, .scene].contains(self)
+        [.automation, .scene, .script].contains(self)
     }
 
     public func localizedState(for state: String) -> String {

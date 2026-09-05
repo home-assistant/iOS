@@ -6,11 +6,19 @@ struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
     @Environment(\.watchNavigate) private var navigate
     private let subtitle: String?
+    private let areaName: String?
     private let layout: WatchLayout
 
-    init(item: MagicItem, itemInfo: MagicItem.Info, subtitle: String? = nil, layout: WatchLayout = .list) {
+    init(
+        item: MagicItem,
+        itemInfo: MagicItem.Info,
+        subtitle: String? = nil,
+        areaName: String? = nil,
+        layout: WatchLayout = .list
+    ) {
         self._viewModel = .init(wrappedValue: .init(item: item, itemInfo: itemInfo))
         self.subtitle = subtitle
+        self.areaName = areaName
         self.layout = layout
     }
 
@@ -166,8 +174,13 @@ struct WatchMagicViewRow: View {
         )
     }
 
+    /// A row whose domain reports a meaningful state leads with it, followed by the server name the
+    /// caller passes (multi-server configs only). The domains whose state says nothing about what
+    /// the item controls — a script's last-triggered time, an automation's enabled flag — show where
+    /// the item lives instead: server and area, whichever exist.
     private var subtitleToDisplay: String? {
-        let combined = [viewModel.stateText, subtitle].compactMap { $0 }.joined(separator: " • ")
+        let parts = viewModel.displaysState ? [viewModel.stateText, subtitle] : [subtitle, areaName]
+        let combined = parts.compactMap { $0 }.joined(separator: " • ")
         return combined.isEmpty ? nil : combined
     }
 
@@ -272,6 +285,13 @@ struct WatchMagicViewRow: View {
         WatchMagicViewRow(
             item: .init(id: "scene.one", serverId: "1", type: .scene),
             itemInfo: .init(id: "1", name: "New scene", iconName: "earth")
+        )
+        // No state worth showing: the subtitle carries where the item lives instead.
+        WatchMagicViewRow(
+            item: .init(id: "automation.bedroom_light_control", serverId: "1", type: .entity),
+            itemInfo: .init(id: "1", name: "Bedroom light", iconName: "mdi:ceiling-light"),
+            subtitle: "Home",
+            areaName: "Bedroom"
         )
         WatchMagicViewRow(
             item: .init(id: "sensor.living_room_temperature", serverId: "1", type: .entity),
