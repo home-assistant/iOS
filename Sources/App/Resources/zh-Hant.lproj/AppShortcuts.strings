@@ -2,23 +2,23 @@
    ${applicationName} is the app name and must stay in every phrase; ${entity}, ${scene} and
    ${filter} are replaced by what the person says. Translate the wording around them. */
 
-"Activate ${scene} in ${applicationName}" = "Activate ${scene} in ${applicationName}";
-"Activate the ${scene} scene in ${applicationName}" = "Activate the ${scene} scene in ${applicationName}";
-"Activate a scene in ${applicationName}" = "Activate a scene in ${applicationName}";
-"Turn on ${entity} in ${applicationName}" = "Turn on ${entity} in ${applicationName}";
-"Open ${entity} in ${applicationName}" = "Open ${entity} in ${applicationName}";
-"Turn something on in ${applicationName}" = "Turn something on in ${applicationName}";
-"Turn off ${entity} in ${applicationName}" = "Turn off ${entity} in ${applicationName}";
-"Close ${entity} in ${applicationName}" = "Close ${entity} in ${applicationName}";
-"Turn something off in ${applicationName}" = "Turn something off in ${applicationName}";
-"Check an entity in ${applicationName}" = "Check an entity in ${applicationName}";
-"Get an entity state from ${applicationName}" = "Get an entity state from ${applicationName}";
-"Is ${entity} on in ${applicationName}" = "Is ${entity} on in ${applicationName}";
-"What is the state of ${entity} in ${applicationName}" = "What is the state of ${entity} in ${applicationName}";
-"Ask ${applicationName}" = "Ask ${applicationName}";
-"Ask ${applicationName} Assist" = "Ask ${applicationName} Assist";
-"Talk to ${applicationName}" = "Talk to ${applicationName}";
-"What ${filter} are on in ${applicationName}" = "What ${filter} are on in ${applicationName}";
-"Which ${filter} are on in ${applicationName}" = "Which ${filter} are on in ${applicationName}";
-"What is on in ${applicationName}" = "What is on in ${applicationName}";
-"What is still on in ${applicationName}" = "What is still on in ${applicationName}";
+"Activate ${scene} in ${applicationName}" = "在${applicationName}中啟用${scene}";
+"Activate the ${scene} scene in ${applicationName}" = "在${applicationName}中啟用${scene}場景";
+"Activate a scene in ${applicationName}" = "在${applicationName}中啟用場景";
+"Turn on ${entity} in ${applicationName}" = "在${applicationName}中開啟${entity}";
+"Open ${entity} in ${applicationName}" = "在${applicationName}中打開${entity}";
+"Turn something on in ${applicationName}" = "在${applicationName}中開啟某個裝置";
+"Turn off ${entity} in ${applicationName}" = "在${applicationName}中關閉${entity}";
+"Close ${entity} in ${applicationName}" = "在${applicationName}中關上${entity}";
+"Turn something off in ${applicationName}" = "在${applicationName}中關閉某個裝置";
+"Check an entity in ${applicationName}" = "在${applicationName}中查看實體";
+"Get an entity state from ${applicationName}" = "從${applicationName}取得實體狀態";
+"Is ${entity} on in ${applicationName}" = "${applicationName}中的${entity}開著嗎";
+"What is the state of ${entity} in ${applicationName}" = "${applicationName}中${entity}的狀態是什麼";
+"Ask ${applicationName}" = "問${applicationName}";
+"Ask ${applicationName} Assist" = "問${applicationName} Assist";
+"Talk to ${applicationName}" = "和${applicationName}對話";
+"What ${filter} are on in ${applicationName}" = "${applicationName}中哪些${filter}開著";
+"Which ${filter} are on in ${applicationName}" = "${applicationName}中有哪些${filter}開著";
+"What is on in ${applicationName}" = "${applicationName}中有什麼開著";
+"What is still on in ${applicationName}" = "${applicationName}中還有什麼開著";

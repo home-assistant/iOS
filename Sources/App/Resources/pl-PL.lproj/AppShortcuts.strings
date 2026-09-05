@@ -2,23 +2,23 @@
    ${applicationName} is the app name and must stay in every phrase; ${entity}, ${scene} and
    ${filter} are replaced by what the person says. Translate the wording around them. */
 
-"Activate ${scene} in ${applicationName}" = "Activate ${scene} in ${applicationName}";
-"Activate the ${scene} scene in ${applicationName}" = "Activate the ${scene} scene in ${applicationName}";
-"Activate a scene in ${applicationName}" = "Activate a scene in ${applicationName}";
-"Turn on ${entity} in ${applicationName}" = "Turn on ${entity} in ${applicationName}";
-"Open ${entity} in ${applicationName}" = "Open ${entity} in ${applicationName}";
-"Turn something on in ${applicationName}" = "Turn something on in ${applicationName}";
-"Turn off ${entity} in ${applicationName}" = "Turn off ${entity} in ${applicationName}";
-"Close ${entity} in ${applicationName}" = "Close ${entity} in ${applicationName}";
-"Turn something off in ${applicationName}" = "Turn something off in ${applicationName}";
-"Check an entity in ${applicationName}" = "Check an entity in ${applicationName}";
-"Get an entity state from ${applicationName}" = "Get an entity state from ${applicationName}";
-"Is ${entity} on in ${applicationName}" = "Is ${entity} on in ${applicationName}";
-"What is the state of ${entity} in ${applicationName}" = "What is the state of ${entity} in ${applicationName}";
-"Ask ${applicationName}" = "Ask ${applicationName}";
-"Ask ${applicationName} Assist" = "Ask ${applicationName} Assist";
-"Talk to ${applicationName}" = "Talk to ${applicationName}";
-"What ${filter} are on in ${applicationName}" = "What ${filter} are on in ${applicationName}";
-"Which ${filter} are on in ${applicationName}" = "Which ${filter} are on in ${applicationName}";
-"What is on in ${applicationName}" = "What is on in ${applicationName}";
-"What is still on in ${applicationName}" = "What is still on in ${applicationName}";
+"Activate ${scene} in ${applicationName}" = "Aktywuj ${scene} w ${applicationName}";
+"Activate the ${scene} scene in ${applicationName}" = "Aktywuj scenę ${scene} w ${applicationName}";
+"Activate a scene in ${applicationName}" = "Aktywuj scenę w ${applicationName}";
+"Turn on ${entity} in ${applicationName}" = "Włącz ${entity} w ${applicationName}";
+"Open ${entity} in ${applicationName}" = "Otwórz ${entity} w ${applicationName}";
+"Turn something on in ${applicationName}" = "Włącz coś w ${applicationName}";
+"Turn off ${entity} in ${applicationName}" = "Wyłącz ${entity} w ${applicationName}";
+"Close ${entity} in ${applicationName}" = "Zamknij ${entity} w ${applicationName}";
+"Turn something off in ${applicationName}" = "Wyłącz coś w ${applicationName}";
+"Check an entity in ${applicationName}" = "Sprawdź encję w ${applicationName}";
+"Get an entity state from ${applicationName}" = "Pobierz stan encji z ${applicationName}";
+"Is ${entity} on in ${applicationName}" = "Czy ${entity} jest włączone w ${applicationName}";
+"What is the state of ${entity} in ${applicationName}" = "Jaki jest stan ${entity} w ${applicationName}";
+"Ask ${applicationName}" = "Zapytaj ${applicationName}";
+"Ask ${applicationName} Assist" = "Zapytaj ${applicationName} Assist";
+"Talk to ${applicationName}" = "Porozmawiaj z ${applicationName}";
+"What ${filter} are on in ${applicationName}" = "Jakie ${filter} są włączone w ${applicationName}";
+"Which ${filter} are on in ${applicationName}" = "Które ${filter} są włączone w ${applicationName}";
+"What is on in ${applicationName}" = "Co jest włączone w ${applicationName}";
+"What is still on in ${applicationName}" = "Co nadal jest włączone w ${applicationName}";
