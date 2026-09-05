@@ -8,5 +8,6 @@ enum ZoneManagerState {
     case didIgnore(ZoneManagerEvent, Error)
     case didError(Error)
     case didFailMonitoring(CLRegion?, Error)
+    case didFailRanging(CLBeaconIdentityConstraint, Error)
     case didStartMonitoring(CLRegion)
 }
