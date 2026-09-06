@@ -16,7 +16,9 @@ final class ManageStorageViewModel: ObservableObject {
     private let measurer: ManageStorageMeasuring
     private let cleaner: ManageStorageCleaning
 
-    init(
+    /// `nonisolated` so `ManageStorageView` can name it as a default argument: a default argument
+    /// is evaluated outside the main actor, and this only fills in stored properties.
+    nonisolated init(
         paths: ManageStoragePaths = .live,
         isCatalyst: Bool = Current.isCatalyst,
         hasCompletedLegacyStoreMigration: Bool = RealmToGRDBMigration.hasCompletedMigration,
