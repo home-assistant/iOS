@@ -909,6 +909,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
       }
     }
+    public enum ReadableEntity {
+      public enum Entity {
+        /// Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.readable_entity.entity.name") }
+      }
+    }
     public enum RenderTemplate {
       /// Render a Home Assistant template. Only users with the admin role can perform this action.
       public static var description: String { return L10n.tr("Localizable", "app_intents.render_template.description") }

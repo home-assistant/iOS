@@ -85,6 +85,26 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.attributes = "{}"
     }
 
+    init(entity: ReadableEntityAppEntity, state liveState: HAEntity) {
+        self.init()
+        self.name = entity.displayString
+        self.entityId = liveState.entityId
+        self.domain = liveState.domain
+        self.state = liveState.state
+        self.formattedState = Self.formattedState(for: liveState, serverId: entity.serverId)
+        self.unitOfMeasurement = liveState.attributes.dictionary["unit_of_measurement"] as? String
+        self.deviceClass = liveState.attributes.dictionary["device_class"] as? String
+        self.isActive = EntityStateActive.isActive(domain: liveState.domain, state: liveState.state)
+        self.areaName = entity.areaName?.nilIfEmpty
+        self.floorName = entity.floorName?.nilIfEmpty
+        self.deviceName = entity.deviceName?.nilIfEmpty
+        self.serverName = entity.serverName
+        self.lastChanged = liveState.lastChanged
+        self.lastUpdated = liveState.lastUpdated
+        self.attributes = Self.attributesJSON(liveState.attributes.dictionary)
+        self.iconName = entity.iconName
+    }
+
     init(entity: HAAppEntityAppIntentEntity, state liveState: HAEntity) {
         self.init()
         self.name = entity.displayString
