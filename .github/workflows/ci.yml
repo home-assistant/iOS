@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -146,7 +146,7 @@ jobs:
             ```
 
   test:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1

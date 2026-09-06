@@ -9,7 +9,7 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 
 - **Language**: Swift 5.8+
 - **Platforms**: iOS, watchOS, macOS (Catalyst), CarPlay
-- **Build System**: Xcode 26.2+, Swift Package Manager
+- **Build System**: Xcode 27.0+, Swift Package Manager
 - **Project**: Open `HomeAssistant.xcodeproj` directly (dependencies are managed via Swift Package Manager)
 
 ## Getting Started
