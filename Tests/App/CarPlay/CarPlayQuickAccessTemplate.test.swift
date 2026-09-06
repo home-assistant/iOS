@@ -74,6 +74,23 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         row.handler?(row, {})
     }
 
+    /// Gives the template a live state for an entity. Locks need one: an unrecognised state sends
+    /// nothing, and an unseeded row resolves to a placeholder whose state is empty.
+    private func seedState(entityId: String, state: String) throws {
+        let entity = try HAEntity(
+            entityId: entityId,
+            state: state,
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: [:],
+            context: .init(id: "", userId: "", parentId: "")
+        )
+        sut.entitiesStateChange(
+            serverId: server.identifier.rawValue,
+            entities: HACachedStates(entitiesDictionary: [entityId: entity])
+        )
+    }
+
     func testTappingAnEntityRowDispatchesItsAction() throws {
         connectAPI()
         let rendered = rows(for: [item(id: "light.kitchen", type: .entity)])
@@ -154,6 +171,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         connectAPI()
         let presenter = FakeCarPlayAlertPresenter()
         sut.alertPresenterOverride = presenter
+        try seedState(entityId: "lock.front_door", state: "locked")
         let rendered = rows(for: [item(id: "lock.front_door", type: .entity)])
 
         try tap(XCTUnwrap(rendered.first))
