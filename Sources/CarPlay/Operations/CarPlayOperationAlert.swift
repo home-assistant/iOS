@@ -14,14 +14,23 @@ enum CarPlayOperationAlert {
         // by one, so anything arriving while a template is already up is logged and dropped.
         guard interfaceController.presentedTemplate == nil else { return }
 
-        let alert = CPAlertTemplate(
+        let alert = makeAlertTemplate(for: error) {
+            interfaceController.dismissTemplate(animated: true, completion: nil)
+        }
+        interfaceController.presentTemplate(alert, animated: true, completion: nil)
+    }
+
+    static func makeAlertTemplate(
+        for error: CarPlayOperationError,
+        onDismiss: @escaping () -> Void
+    ) -> CPAlertTemplate {
+        CPAlertTemplate(
             titleVariants: error.alertTitleVariants,
             actions: [
                 CPAlertAction(title: L10n.Alerts.Confirm.ok, style: .default) { _ in
-                    interfaceController.dismissTemplate(animated: true, completion: nil)
+                    onDismiss()
                 },
             ]
         )
-        interfaceController.presentTemplate(alert, animated: true, completion: nil)
     }
 }

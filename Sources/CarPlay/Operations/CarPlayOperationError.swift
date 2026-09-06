@@ -61,7 +61,13 @@ enum CarPlayOperationError: Error {
     /// the thing the driver can act on — so the connection state at the moment of failure picks the
     /// message, whether the action reported an error or simply never answered.
     static func resolve(underlying: Error?, server: Server) -> CarPlayOperationError {
-        guard isConnected(to: server) else { return .noConnection }
+        resolve(underlying: underlying, isConnected: isConnected(to: server))
+    }
+
+    /// The decision itself, split from reading the live connection so it can be exercised for a
+    /// connection state a unit test can't stand up.
+    static func resolve(underlying: Error?, isConnected: Bool) -> CarPlayOperationError {
+        guard isConnected else { return .noConnection }
         guard let underlying else { return .timedOut }
         return .failed(underlying)
     }

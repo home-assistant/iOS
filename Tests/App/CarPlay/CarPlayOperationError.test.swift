@@ -26,6 +26,25 @@ final class CarPlayOperationErrorTests: XCTestCase {
         }
     }
 
+    func testAReportedErrorOnALiveConnectionIsReportedAsAFailure() {
+        let underlying = CarPlayOperationErrorTestError.any
+        let resolved = CarPlayOperationError.resolve(underlying: underlying, isConnected: true)
+
+        guard case .failed = resolved else {
+            XCTFail("Expected a transport error to be reported as .failed while connected")
+            return
+        }
+    }
+
+    func testAnUnansweredActionOnALiveConnectionIsReportedAsATimeout() {
+        let resolved = CarPlayOperationError.resolve(underlying: nil, isConnected: true)
+
+        guard case .timedOut = resolved else {
+            XCTFail("Expected an unanswered action to be reported as .timedOut while connected")
+            return
+        }
+    }
+
     /// CarPlay renders the longest variant its display can fit, so every case has to offer a short
     /// one and the long one has to come first.
     func testEveryCaseOffersTitleVariantsLongestFirst() {

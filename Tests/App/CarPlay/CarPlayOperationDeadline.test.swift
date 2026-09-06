@@ -76,6 +76,24 @@ final class CarPlayOperationDeadlineTests: XCTestCase {
         XCTAssertEqual(reportCount, 1)
     }
 
+    /// Replies land on HAKit's callback queue, not necessarily main, and CarPlay's UI needs the
+    /// report on main.
+    func testReportsOnTheMainQueueWhenTheActionAnswersOffIt() {
+        let reported = expectation(description: "outcome reported")
+        var reportedOnMain = false
+
+        let deadline = CarPlayOperationDeadline(server: server, timeout: 60) { _ in
+            reportedOnMain = Thread.isMainThread
+            reported.fulfill()
+        }
+        DispatchQueue.global().async {
+            deadline.fail(CarPlayOperationDeadlineTestError.any)
+        }
+
+        wait(for: [reported], timeout: 2)
+        XCTAssertTrue(reportedOnMain)
+    }
+
     func testReportsOnlyTheFirstOutcome() {
         let reported = expectation(description: "outcome reported")
         var outcome: CarPlayOperationError?

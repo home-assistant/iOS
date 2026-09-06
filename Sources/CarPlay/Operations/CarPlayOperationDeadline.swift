@@ -41,7 +41,7 @@ final class CarPlayOperationDeadline {
         let workItem = DispatchWorkItem { [self] in
             deliver(.failed(nil))
         }
-        timeoutWorkItem = workItem
+        self.timeoutWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: workItem)
     }
 
