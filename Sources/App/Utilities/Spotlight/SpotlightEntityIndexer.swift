@@ -238,7 +238,10 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         var entities: [HAAppEntityAppIntentEntity] = []
-        var signatureLines = ["serverContext=\(includesServerContext)", "hidden=\(hiddenServerIds.sorted().joined(separator: ","))"]
+        var signatureLines = [
+            "serverContext=\(includesServerContext)",
+            "hidden=\(hiddenServerIds.sorted().joined(separator: ","))",
+        ]
 
         for server in servers {
             let serverId = server.identifier.rawValue
