@@ -185,6 +185,11 @@ final class SpotlightEntityIndexer: ServerObserver {
                 entityIds: indexedIds,
                 calendarIds: indexedCalendarIds
             ))
+            // Events are indexed on their own because the entity is iOS 27; see
+            // `CalendarEventSpotlightIndexer` for why it isn't part of the snapshot above.
+            if #available(iOS 27.0, *) {
+                await CalendarEventSpotlightIndexer.reindex(index: index, defaults: defaults)
+            }
             // The entities that changed are the ones App Shortcut phrases name.
             HomeAssistantAppShortcuts.updateAppShortcutParameters()
             Current.Log

@@ -924,6 +924,20 @@ public enum L10n {
         /// There are no to-do lists to add this to
         public static var noList: String { return L10n.tr("Localizable", "app_intents.reminders.error.no_list") }
       }
+      public enum GetItems {
+        /// Get the items on a Home Assistant to-do list
+        public static var description: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.description") }
+        /// Get to-do items
+        public static var title: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.title") }
+        public enum IncludeCompleted {
+          /// Include completed
+          public static var title: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.include_completed.title") }
+        }
+      }
+      public enum List {
+        /// List
+        public static var name: String { return L10n.tr("Localizable", "app_intents.reminders.list.name") }
+      }
       public enum ListType {
         /// List
         public static var standard: String { return L10n.tr("Localizable", "app_intents.reminders.list_type.standard") }

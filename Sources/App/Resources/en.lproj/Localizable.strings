@@ -236,6 +236,10 @@
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.perform_action.title" = "Perform action";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
+"app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
+"app_intents.reminders.get_items.include_completed.title" = "Include completed";
+"app_intents.reminders.get_items.title" = "Get to-do items";
+"app_intents.reminders.list.name" = "List";
 "app_intents.reminders.list_type.standard" = "List";
 "app_intents.reminders.location_trigger.arrive" = "Arriving";
 "app_intents.reminders.location_trigger.depart" = "Leaving";
