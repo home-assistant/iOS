@@ -75,7 +75,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         Current.sceneManager.webViewControllerPromise
-            .done { [weak self] webViewController in
+            .done(on: .main) { [weak self] webViewController in
                 guard let self else { return }
                 let server = cameraServer(from: userInfo, fallback: webViewController.server)
                 CameraOverlayPresenter.shared.show(entityId: entityId, server: server, on: webViewController)
@@ -135,7 +135,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     private func hideCamera() {
         Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
+            .done(on: .main) { webViewController in
                 CameraOverlayPresenter.shared.hide(on: webViewController)
             }.catch { error in
                 Current.Log.error("Failed to hide camera from push command: \(error)")

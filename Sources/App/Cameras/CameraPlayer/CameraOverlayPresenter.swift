@@ -31,12 +31,14 @@ final class CameraOverlayPresenter {
         cameraName: String? = nil,
         on webViewController: WebViewControllerProtocol
     ) {
+        precondition(Thread.isMainThread)
         let camera = Camera(entityId: entityId, serverIdentifier: server.identifier)
 
         if isDismissing {
             if webViewController.overlayedController != nil {
                 Current.Log.info("Camera \(entityId) requested while another overlay is dismissing, deferring")
-                pendingShow = { [weak self] in
+                pendingShow = { [weak self, weak webViewController] in
+                    guard let webViewController else { return }
                     self?.show(entityId: entityId, server: server, cameraName: cameraName, on: webViewController)
                 }
                 return
@@ -63,6 +65,7 @@ final class CameraOverlayPresenter {
     }
 
     func hide(on webViewController: WebViewControllerProtocol) {
+        precondition(Thread.isMainThread)
         guard let overlayController, webViewController.overlayedController === overlayController else {
             Current.Log.info("No camera is on display, ignoring hide request")
             clearState()
