@@ -105,7 +105,7 @@ struct ManageStorageMeasurerTests {
 
     @Test func databaseRowsAreMeasuredFromTheirStoredValues() async throws {
         let queue = try DatabaseQueue()
-        try queue.write { db in
+        try await queue.write { db in
             try db.execute(sql: "CREATE TABLE sample (id TEXT, payload TEXT)")
             try db.execute(sql: "INSERT INTO sample VALUES ('ab', 'cdef')")
             try db.execute(sql: "INSERT INTO sample VALUES ('gh', NULL)")
@@ -122,7 +122,7 @@ struct ManageStorageMeasurerTests {
 
     @Test func anEmptyOrMissingTableMeasuresZero() async throws {
         let queue = try DatabaseQueue()
-        try queue.write { db in
+        try await queue.write { db in
             try db.execute(sql: "CREATE TABLE sample (id TEXT)")
         }
         let subject = ManageStorageMeasurer(
@@ -141,7 +141,7 @@ struct ManageStorageMeasurerTests {
         let queue = try DatabaseQueue()
         // A column name carrying a quote breaks the generated length query, which is the closest
         // stand-in for the real failure: a database the app cannot read right now.
-        try queue.write { db in
+        try await queue.write { db in
             try db.execute(sql: "CREATE TABLE weird (\"x\"\"y\" TEXT)")
             try db.execute(sql: "INSERT INTO weird VALUES ('value')")
         }

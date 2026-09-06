@@ -53,7 +53,7 @@ struct ManageStorageFilterTests {
 
         let filtered = filter.apply(to: items)
 
-        #expect(filtered.allSatisfy(\.isDeletable))
+        #expect(filtered.allSatisfy { $0.isDeletable })
         #expect(filtered.count < items.count)
     }
 

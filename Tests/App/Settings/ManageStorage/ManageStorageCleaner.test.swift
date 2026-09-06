@@ -92,7 +92,7 @@ struct ManageStorageCleanerTests {
         let root = try makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
         let queue = try DatabaseQueue(path: root.appendingPathComponent("test.sqlite").path)
-        try queue.write { db in
+        try await queue.write { db in
             try db.execute(sql: "CREATE TABLE sample (id TEXT)")
             try db.execute(sql: "CREATE TABLE keep (id TEXT)")
             try db.execute(sql: "INSERT INTO sample VALUES ('a')")
@@ -106,7 +106,7 @@ struct ManageStorageCleanerTests {
 
         try await subject.clean(item(source: .databaseTables(["sample", "not_a_table"])))
 
-        let counts = try queue.read { db in
+        let counts = try await queue.read { db in
             try (
                 Int.fetchOne(db, sql: "SELECT COUNT(*) FROM sample") ?? -1,
                 Int.fetchOne(db, sql: "SELECT COUNT(*) FROM keep") ?? -1
