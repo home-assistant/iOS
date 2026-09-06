@@ -23,10 +23,12 @@ struct OpenCloseEntityAppIntentTests {
     ///
     /// The intent is async while the connection records requests synchronously, so the call is
     /// started first and the request answered once it lands, rather than the other way around.
-    private func perform(
+    /// The result is an opaque `some IntentResult & ProvidesDialog`, so the spoken sentence can't be
+    /// read back here; the request the intent sent is what says it did the right thing.
+    private func performAndCaptureRequest(
         _ intent: OpenCloseEntityAppIntent,
         connection: HAMockConnection
-    ) async throws -> (dialog: String?, request: HARequest?) {
+    ) async throws -> HARequest? {
         let task = Task { try await intent.perform() }
         var waited = 0
         while connection.pendingRequests.isEmpty, waited < 200 {
@@ -37,8 +39,8 @@ struct OpenCloseEntityAppIntentTests {
         for pending in connection.pendingRequests {
             pending.completion(.success(.empty))
         }
-        let result = try await task.value
-        return (result.dialog.map { "\($0)" }, request)
+        _ = try await task.value
+        return request
     }
 
     private func withMockedServer(_ body: (Server, HAMockConnection) async throws -> Void) async throws {
@@ -66,10 +68,10 @@ struct OpenCloseEntityAppIntentTests {
             intent.action = .open
             intent.entity = Self.cover(serverId: server.identifier.rawValue)
 
-            let (dialog, request) = try await perform(intent, connection: connection)
+            let request = try await performAndCaptureRequest(intent, connection: connection)
             #expect(request?.data["domain"] as? String == "cover")
             #expect(request?.data["service"] as? String == "open_cover")
-            #expect(dialog?.contains("Curtain") == true)
+            #expect((request?.data["service_data"] as? [String: Any])?["entity_id"] as? String == "cover.curtain")
         }
     }
 
@@ -79,7 +81,7 @@ struct OpenCloseEntityAppIntentTests {
             intent.action = .close
             intent.entity = Self.cover(serverId: server.identifier.rawValue)
 
-            let (_, request) = try await perform(intent, connection: connection)
+            let request = try await performAndCaptureRequest(intent, connection: connection)
             #expect(request?.data["service"] as? String == "close_cover")
         }
     }
