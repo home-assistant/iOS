@@ -80,6 +80,11 @@ final class EntityPickerViewModel: ObservableObject {
         selectedGrouping = .area
     }
 
+    deinit {
+        filterTask?.cancel()
+        rowContentTask?.cancel()
+    }
+
     init(domainFilter: [Domain]?, selectedServerId: String?, initialSearchTerm: String? = nil) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
@@ -189,6 +194,7 @@ final class EntityPickerViewModel: ObservableObject {
         // otherwise be free to finish last and wipe what the populated one resolved.
         rowContentTask?.cancel()
         rowContentTask = Task.detached(priority: .userInitiated) { [weak self] in
+            guard !Task.isCancelled else { return }
             let subtitles = serverEntities.contextualSubtitles(for: serverId)
             let icons = serverEntities.reduce(into: [String: MaterialDesignIcons]()) { icons, entity in
                 icons[entity.entityId] = entity.materialDesignIcon
