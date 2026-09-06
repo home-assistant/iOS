@@ -44,11 +44,22 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         connection = mock
     }
 
+    /// A server the app cannot reach — `Server.fake()` carries an external URL, so it is not one.
+    private func offlineServer() -> Server {
+        Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+    }
+
     private func makeSut(
         entityId: String = "light.kitchen",
         domain: String = "light",
-        state: String = "on"
+        state: String = "on",
+        offline: Bool = false
     ) throws {
+        if offline {
+            server = offlineServer()
+        }
         entity = try HAEntity(
             entityId: entityId,
             state: state,
@@ -70,7 +81,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
     /// CarPlay keeps the row busy until its handler's completion runs, so an offline tap has to
     /// release it rather than leave the row spinning.
     func testATapWithoutAConnectionStillReleasesTheRowHandler() throws {
-        try makeSut()
+        try makeSut(offline: true)
         let released = expectation(description: "row handler released")
 
         sut.handleEntityTap(entity: entity) { released.fulfill() }

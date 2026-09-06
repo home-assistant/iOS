@@ -43,13 +43,28 @@ final class CarPlayClimateControlViewModelTests: XCTestCase {
         connection = mock
     }
 
-    private func makeSut() throws {
+    /// A server the app cannot reach — `Server.fake()` carries an external URL, so it is not one.
+    private func offlineServer() -> Server {
+        Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+    }
+
+    private func makeSut(offline: Bool = false) throws {
+        if offline {
+            server = offlineServer()
+        }
         let entity = try HAEntity(
             entityId: "climate.living_room",
             state: "heat",
             lastChanged: Date(),
             lastUpdated: Date(),
-            attributes: ["temperature": 20, "current_temperature": 19],
+            attributes: [
+                "temperature": 20.0,
+                "current_temperature": 19.0,
+                "min_temp": 7.0,
+                "max_temp": 35.0,
+            ],
             context: .init(id: "", userId: "", parentId: "")
         )
         sut = CarPlayClimateControlViewModel(server: server, entity: entity)
@@ -64,12 +79,12 @@ final class CarPlayClimateControlViewModelTests: XCTestCase {
     }
 
     func testAnAdjustmentWithoutAConnectionSendsNothing() throws {
-        try makeSut()
+        try makeSut(offline: true)
 
         sut.adjustTargetTemperature(by: 1)
         waitForDebounce()
 
-        XCTAssertNil(Current.cachedApis[server.identifier])
+        XCTAssertNil(Current.api(for: server))
     }
 
     func testAnAdjustmentDispatchesARequestOnceTheDebounceCloses() throws {

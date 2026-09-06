@@ -42,7 +42,19 @@ final class CarPlayVacuumControlViewModelTests: XCTestCase {
         connection = mock
     }
 
-    private func makeSut() throws {
+    /// A server the app cannot reach: `Current.api(for:)` yields nil for it, which is what a dead
+    /// zone looks like from the CarPlay code's point of view. `Server.fake()` carries an external
+    /// URL, so it is emphatically *not* offline.
+    private func offlineServer() -> Server {
+        Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+    }
+
+    private func makeSut(offline: Bool = false) throws {
+        if offline {
+            server = offlineServer()
+        }
         let entity = try HAEntity(
             entityId: "vacuum.living_room",
             state: "docked",
@@ -60,11 +72,11 @@ final class CarPlayVacuumControlViewModelTests: XCTestCase {
     /// Without a connection the command never reaches the server, so it has to say so rather than
     /// look like it worked.
     func testACommandWithoutAConnectionReportsItRatherThanSendingAnything() throws {
-        try makeSut()
+        try makeSut(offline: true)
 
         sut.start()
 
-        XCTAssertNil(Current.cachedApis[server.identifier])
+        XCTAssertNil(Current.api(for: server))
     }
 
     func testACommandDispatchesARequest() throws {
@@ -103,7 +115,7 @@ final class CarPlayVacuumControlViewModelTests: XCTestCase {
     /// The picker sits on "Loading…" until this answers, so a missing connection has to end the
     /// load rather than leave it spinning for the rest of the drive.
     func testLoadingAreasWithoutAConnectionFinishesImmediately() throws {
-        try makeSut()
+        try makeSut(offline: true)
         let finished = expectation(description: "load finished")
 
         sut.loadCleanableAreas { finished.fulfill() }
