@@ -196,6 +196,66 @@ struct LegacyComplicationRenderTests {
         #expect(render.contentLed.title.isEmpty)
     }
 
+    // MARK: - Corner text layout
+
+    /// The corner "Gauge Text" template drew its Outer area flat and large in the corner tip — the
+    /// complication's big number — so it must not be curved along the bezel, which re-typesets it small.
+    @Test func cornerGaugeTextKeepsItsOuterTextFlat() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerGaugeText,
+            textAreas: ["Outer": ("16.6", "#FFFFFFFF")],
+            extra: ["gauge": ["gauge": "0.5", "gauge_color": "#30D158FF", "gauge_type": "open"]]
+        ))
+
+        #expect(render.curvesCornerText == false)
+        #expect(render.contentLed.value == "16.6")
+    }
+
+    /// "Stack Text" drew its Outer area flat too, with only the Inner area curved along the arc — which
+    /// is where the bezel label already puts the title.
+    @Test func cornerStackTextKeepsItsOuterTextFlat() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerStackText,
+            textAreas: ["Outer": ("21.5°", "#FFFFFFFF"), "Inner": ("Living Room", "#FFFFFFFF")]
+        ))
+
+        #expect(render.curvesCornerText == false)
+        #expect(render.contentLed.value == "21.5°")
+        #expect(render.contentLed.title == "Living Room")
+    }
+
+    /// "Text Image" is the one corner template whose text ClockKit did curve, along the arc beside its
+    /// image, so it keeps the curve.
+    @Test func cornerTextImageCurvesItsText() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicCorner,
+            template: .GraphicCornerTextImage,
+            textAreas: ["Center": ("▁▂▃", "#FFFFFFFF")],
+            extra: ["icon": ["icon": "weather-pouring", "icon_color": "#FFFFFFFF"]]
+        ))
+
+        #expect(render.curvesCornerText)
+    }
+
+    /// A corner slot falls back to the circular and small families, none of which ever curved text.
+    @Test func nonCornerTemplatesKeepTheirTextFlat() {
+        let cases: [(ComplicationGroupMember, ComplicationTemplate)] = [
+            (.graphicCircular, .GraphicCircularOpenGaugeSimpleText),
+            (.circularSmall, .CircularSmallSimpleText),
+        ]
+        for (family, template) in cases {
+            let render = LegacyComplicationRender(complication: complication(
+                family: family,
+                template: template,
+                textAreas: ["Center": ("42", "#FFFFFFFF")]
+            ))
+
+            #expect(render.curvesCornerText == false, "\(template) must not curve its text")
+        }
+    }
+
     // MARK: - Gauge end labels
 
     /// Leading and Trailing label the two ends of the gauge — they are not body text. Reading them as

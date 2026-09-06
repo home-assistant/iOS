@@ -2,7 +2,7 @@
 "NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionalmente, active el seguimiento entre sitios web si su configuración lo requiere.";
 "NSFocusStatusUsageDescription" = "Informar de tu estado de Concentración como un sensor.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthShareUsageDescription" = "Lee los datos seleccionados de Apple Health para poder compartirlos con Home Assistant como sensores.";
 "NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  También necesitamos permiso para acceder a la ubicación \"Siempre\", para que la aplicación pueda realizar operaciones en segundo plano. \n\n ⚠️  Sin ese permiso, la aplicación no podrá decidir qué conexión (local o remota) utilizar en segundo plano y utilizará siempre la remota.";

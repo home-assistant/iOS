@@ -87,15 +87,29 @@ extension AppIntentServerAPI {
     }
 
     static func entitiesViaWebSocket(server: Server, domain: Domain) async throws -> [HAEntity] {
-        try await haConnection(for: server)
+        try await entitiesViaWebSocket(server: server, domains: [domain])
+    }
+
+    static func entitiesViaWebSocket(server: Server, domains: [Domain]) async throws -> [HAEntity] {
+        let wanted = Set(domains.map(\.rawValue))
+        return try await haConnection(for: server)
             .caches
             .states()
             .once()
             .promise
             .map(\.all)
-            .filterValues { $0.domain == domain.rawValue }
+            .filterValues { wanted.contains($0.domain) }
             .map { entities in sortedByDisplayName(entities) }
             .asyncValue(timeout: requestTimeout)
+    }
+
+    static func entityStateViaWebSocket(server: Server, entityId: String) async throws -> HAEntity {
+        // REST over the socket, not the states cache: the cache is a subscription for one read.
+        let data = try await haConnection(for: server)
+            .send(HARequest(type: .rest(.get, "states/\(entityId)"), shouldRetry: true))
+            .promise
+            .asyncValue(timeout: requestTimeout)
+        return try HAEntity(data: data)
     }
 
     static func assistViaWebSocket(server: Server, prompt: String, pipelineId: String?) async throws -> String {

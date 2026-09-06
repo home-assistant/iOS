@@ -45,11 +45,13 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         VStack {
             if contents.isEmpty {
                 empty
+            } else if family == .accessoryCircular {
+                circularAccessory
             } else {
                 grid
             }
             // A lock screen accessory has no room for a footer, and nothing to reload from there.
-            if let refreshControl, !contents.isEmpty, !isAccessory {
+            if let refreshControl, !contents.isEmpty, !family.isLockScreenAccessory {
                 footer(refreshControl)
             }
         }
@@ -57,16 +59,9 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         // would paint over the slot the system means to keep translucent — the circular accessory
         // brings its own `AccessoryWidgetBackground`.
         // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(isAccessory ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.widgetPrimaryBackground))
-    }
-
-    /// Whether the family lives on the lock screen, where the system draws everything over the
-    /// wallpaper on its own background rather than on a card of ours.
-    private var isAccessory: Bool {
-        switch family {
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline: return true
-        default: return false
-        }
+        .widgetBackground(
+            family.isLockScreenAccessory ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.widgetPrimaryBackground)
+        )
     }
 
     /// Nothing to show. The lock screen has no room for the widget's own wording, so it falls back
@@ -78,6 +73,21 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
             WidgetCircularIconView(icon: .homeAssistantIcon)
         } else {
             emptyView()
+        }
+    }
+
+    /// The circular accessory holds one item, and that item is the whole widget: its glyph, wrapped
+    /// in the control that runs it, filling the slot.
+    ///
+    /// Not the grid. The grid wraps a tile in its control from the outside, which for this family
+    /// would put the accessory's system background and the reader it is measured from inside the
+    /// control's label — and a lock screen button only runs its intent when the tap lands on its
+    /// label. See ``WidgetCircularAccessoryView`` for what that did to the scripts widget.
+    private var circularAccessory: some View {
+        // `WidgetTileLayout.size` gives this family exactly one, and `contents` is not empty here.
+        let item = contents[0]
+        return WidgetCircularAccessoryView(icon: item.tileModel.icon) { glyph in
+            tileContent(item, .single, glyph)
         }
     }
 

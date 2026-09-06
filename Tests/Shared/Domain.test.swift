@@ -305,7 +305,7 @@ struct DomainMappingTests {
     }
 
     @Test func irrelevantStateMembership() {
-        let expected: Set<Domain> = [.script, .scene]
+        let expected: Set<Domain> = [.automation, .scene, .script]
         for domain in Domain.allCases {
             #expect(
                 domain.hasIrrelevantState == expected.contains(domain),

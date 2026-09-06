@@ -421,6 +421,40 @@ class HealthKitSensorTests: XCTestCase {
         XCTAssertEqual(bodyMassWindow.start, calendar.date(byAdding: .day, value: -365, to: now))
     }
 
+    func testSleepMetricsQueryWholeSleepDays() throws {
+        let sleepDuration = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_duration"))
+        Current.sensors.setEnabled(true, forUniqueID: sleepDuration.uniqueID)
+        Current.healthKitService.queryValue = { [weak self] metric, start, end in
+            self?.recordWindow(start: start, end: end, for: metric.uniqueID)
+            return nil
+        }
+
+        _ = try generateSensors()
+
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let calendar = Calendar(identifier: .gregorian)
+        let sleepDay = HealthKitSleepSummary.sleepDayStart(containing: now, calendar: calendar)
+        let sleepWindow = try XCTUnwrap(window(sleepDuration.uniqueID))
+        XCTAssertEqual(
+            sleepWindow.start,
+            calendar.date(byAdding: .day, value: -sleepDuration.lookbackDays, to: sleepDay)
+        )
+        XCTAssertEqual(sleepWindow.end, now)
+    }
+
+    func testSleepMinutesAreReportedAsWholeMinutes() throws {
+        let deepSleep = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_deep"))
+        Current.sensors.setEnabled(true, forUniqueID: deepSleep.uniqueID)
+        stubbedValues[deepSleep.uniqueID] = 61.4
+
+        let sensors = try generateSensors()
+
+        let deepSleepSensor = try XCTUnwrap(sensor(deepSleep, in: sensors))
+        XCTAssertEqual(deepSleepSensor.Name, "Deep Sleep")
+        XCTAssertEqual(deepSleepSensor.UnitOfMeasurement, "min")
+        XCTAssertEqual(deepSleepSensor.State as? Int, 61)
+    }
+
     func testIsHealthSensorMatchesEveryCatalogEntry() {
         for metric in HealthKitMetric.all {
             XCTAssertTrue(HealthKitSensor.isHealthSensor(uniqueID: metric.uniqueID), metric.uniqueID)

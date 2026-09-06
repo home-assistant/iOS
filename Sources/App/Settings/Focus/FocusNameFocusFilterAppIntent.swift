@@ -68,3 +68,14 @@ struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
         return .result()
     }
 }
+
+/// `LiveActivityIntent` is not about Live Activities here: a plain `SetFocusFilterIntent` is only
+/// reliably performed while the app is in the foreground, and silently skipped when iOS would have
+/// to launch the app to run it — which is every Focus that starts with the app closed, so the
+/// filter misses exactly the moments it exists for. The conformance opts the intent into being run
+/// in the app's process in the background, which is what makes it run at all.
+///
+/// Declared here rather than on the type so the filter itself stays available on the iOS versions
+/// below the one that introduced the protocol.
+@available(iOS 17.0, *)
+extension FocusNameFocusFilterAppIntent: LiveActivityIntent {}

@@ -174,8 +174,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     /// State is only fetched for entity items whose domain reports a meaningful state — same
-    /// rule as CarPlay.
-    private var displaysState: Bool {
+    /// rule as CarPlay. The rows this excludes (scripts, scenes, automations) show the item's
+    /// server and area instead, so they still carry a context line.
+    var displaysState: Bool {
         guard item.type == .entity, let domain = item.domain else { return false }
         return !domain.hasIrrelevantState
     }

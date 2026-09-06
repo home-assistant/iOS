@@ -268,6 +268,15 @@ final class WatchHomeViewModel: ObservableObject {
         return .init(id: magicItem.id, name: magicItem.id, iconName: "")
     }
 
+    /// The area the item's entity belongs to, or `nil` when it has none (or isn't an entity at all).
+    /// Rows whose domain has no state worth showing put this under the name instead, so a script or
+    /// automation still says where it lives. Resolved from the same registry the provider already
+    /// loaded for `info(for:)`, so it costs no extra database read.
+    func areaName(for magicItem: MagicItem) -> String? {
+        guard magicItem.type != .folder, !magicItem.serverId.isEmpty else { return nil }
+        return magicItemProvider.getAreaName(for: magicItem)
+    }
+
     // MARK: - Offline-aware config reconciliation
 
     /// Handle the phone's reply to a config pull, deciding whether to adopt it, push local offline

@@ -109,6 +109,25 @@ public extension EntityContextRepresentable {
     }
 }
 
+public extension EntityContextRepresentable {
+    /// The context line, led by the server when more than one is configured: a picker groups by
+    /// server, but a row stands alone in Siri's disambiguation, where two homes can share a name.
+    func contextSubtitle(serverName: String) -> String? {
+        guard Current.servers.all.count > 1 else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            floorName: floorName,
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
 public extension HAAppEntity {
     var area: AppArea? {
         do {
@@ -199,6 +218,22 @@ public extension [HAAppEntity] {
     /// Creates a mapping from entity IDs to their associated areas for a given server.
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppArea` objects.
+    /// The entities worth offering to a spoken command: user-facing rather than configuration or
+    /// diagnostic, not hidden, and in an area. An entity with no room is one nobody asks for by name,
+    /// and an entity inherits its device's area, which `areasMap` already resolves.
+    func userFacingInAreas(serverId: String) -> [HAAppEntity] {
+        let areas = areasMap(for: serverId)
+        return filter { entity in
+            guard entity.entityCategory == nil, entity.isHidden != true else {
+                return false
+            }
+            guard Domain(entityId: entity.entityId)?.expectsAnArea ?? true else {
+                return true
+            }
+            return areas[entity.entityId] != nil
+        }
+    }
+
     func areasMap(for serverId: String) -> [String: AppArea] {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)

@@ -1,10 +1,12 @@
+import HAWatchComplications
 import SwiftUI
 import WidgetKit
 
 /// Corner complication: the value curved along the outside of the corner via `widgetCurvesContent`, or
 /// the icon when it has one — with the remaining text carried on the inside of the curve by the bezel
 /// label, alongside the gauge when a value exists (matching the system UV Index / Battery
-/// complications).
+/// complications). A legacy complication whose template drew its text flat keeps it flat and large in
+/// the corner tip instead of curving it.
 @available(watchOS 10.0, *)
 struct CornerComplicationView: View {
     let complication: WatchWidgetComplicationSnapshot?
@@ -41,11 +43,17 @@ struct CornerComplicationView: View {
             // Un-curved: curving a raster image collapses it, so the icon lays out flat and the system
             // fits it into the corner.
             iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
-        } else {
+        } else if complication.curvesCornerText(for: family) {
             // Nothing but text: curve it along the outer edge of the corner, the way the system's own
             // text-only corner complications do.
             cornerLabel(text.isEmpty ? WatchWidgetConstants.appName : text, complication)
                 .widgetCurvesContent()
+        } else {
+            // Flat, the way ClockKit drew a Graphic Corner's outer text and the system still draws its
+            // gauge complications (UV Index, Battery): a large number in the corner tip, with the bezel
+            // label riding the arc below it. Curving it instead re-typesets it small along the bezel.
+            cornerLabel(text.isEmpty ? WatchWidgetConstants.appName : text, complication)
+                .font(CornerComplicationTypography.flatTextFont)
         }
     }
 
@@ -228,6 +236,19 @@ struct CornerComplicationView: View {
         date: .now,
         family: .accessoryCorner,
         complication: .previewSample(title: "▁▂▃▄▅▆▇█", fraction: nil, showName: false, includeIcon: true)
+    )
+}
+
+/// A legacy Graphic Corner "Gauge Text" complication: its outer text flat and large in the corner tip,
+/// with the gauge on the arc below it.
+@available(watchOS 10.0, *)
+#Preview("Legacy flat outer text + gauge", as: .accessoryCorner) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(
+        date: .now,
+        family: .accessoryCorner,
+        complication: .previewSample(title: "16.6", showName: false, curvesText: false)
     )
 }
 #endif

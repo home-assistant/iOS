@@ -12,6 +12,9 @@ struct AssistAppIntent: AppIntent {
     )
 
     static var openAppWhenRun: Bool = true
+    // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
+    @available(iOS 26.0, watchOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground }
 
     @Parameter(title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline"))
     var pipeline: AssistPipelineEntity

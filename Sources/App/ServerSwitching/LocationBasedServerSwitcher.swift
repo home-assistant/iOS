@@ -136,6 +136,8 @@ final class LocationBasedServerSwitcher {
             currentSSID: currentSSID,
             preferring: currentServer?.identifier
         )
+        // Cached even when no switch follows: a picker wants the answer without a location fix.
+        ServerPriority.cacheClosestServer(matched?.identifier)
         defer { lastMatchedServerIdentifier = matched?.identifier }
         guard let matched,
               matched.identifier != lastMatchedServerIdentifier,

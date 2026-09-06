@@ -170,7 +170,11 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         let image = icon.carPlayIcon(color: iconColor)
 
         var detailText: String?
-        if !entityHasIrrelevantState {
+        if entityHasIrrelevantState {
+            // No state worth showing, but where the item lives still is: keep the area on its own
+            // rather than dropping the line entirely.
+            detailText = area
+        } else {
             var renderedDetailText = getContextualStateDescription()
             if let area, !renderedDetailText.isEmpty {
                 renderedDetailText += Self.detailTextSeparator + area

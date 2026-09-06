@@ -3,8 +3,6 @@ import Foundation
 
 // TODO: Grow the catalog in follow-up PRs. Deliberately left out of the first release, roughly in
 // the order they've been asked for:
-//   - Sleep. The most requested thing missing here, and the one that needs real work: HealthKit
-//     models it as a category type, not a quantity type, so it needs its own query and state shape.
 //   - Mobility: walking speed, step length, asymmetry, double support, stair speeds, walking
 //     steadiness, six-minute walk distance.
 //   - Hearing: environmental and headphone audio exposure, environmental sound reduction.
@@ -28,6 +26,7 @@ public extension HealthKitMetric {
         heartMetrics,
         nutritionMetrics,
         respiratoryMetrics,
+        sleepMetrics,
         vitalsMetrics,
     ].flatMap { $0 }
 

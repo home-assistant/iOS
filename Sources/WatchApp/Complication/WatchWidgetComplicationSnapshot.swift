@@ -45,6 +45,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         /// Visibility of the slots that have no legacy flag (both default hidden).
         var showSubtitle: Bool?
         var showBottomText: Bool?
+        /// Corner only: whether the corner's own text rides the outer curve (default true, the modern
+        /// layout) or sits flat in the corner tip, the way ClockKit drew a Graphic Corner's outer text.
+        var curvesText: Bool? = nil
     }
 
     let id: String
@@ -372,6 +375,10 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             bottomText: render.bottomText,
             showBottomText: !render.bottomText.isEmpty
         )
+        // The corner's own text sits flat in the corner tip unless the template curved it (see
+        // `LegacyComplicationRender.curvesCornerText`); the modern layout curves it by default.
+        var cornerOptions = contentLedOptions
+        cornerOptions.curvesText = render.curvesCornerText
 
         self.init(
             id: complication.identifier,
@@ -389,7 +396,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             perFamily: [
                 WatchComplicationConfig.Family.circular.rawValue: contentLedOptions,
                 WatchComplicationConfig.Family.rectangular.rawValue: options,
-                WatchComplicationConfig.Family.corner.rawValue: contentLedOptions,
+                WatchComplicationConfig.Family.corner.rawValue: cornerOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
             menuName: complication.displayName

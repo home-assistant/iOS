@@ -53,12 +53,29 @@
 "announcement.drop_support.button" = "Devam et";
 "announcement.drop_support.subtitle" = "Dikkatli bir değerlendirmenin ardından gelecek güncellemelerimizde iOS 12, 13 ve 14 desteğine son vereceğiz.";
 "announcement.drop_support.title" = "Önemli güncelleme";
+"app_intents.active_entities.description" = "Lists the entities of a kind that are currently on or open";
+"app_intents.active_entities.dialog.none_on" = "No %@ are on";
+"app_intents.active_entities.dialog.none_open" = "No %@ are open";
+"app_intents.active_entities.dialog.some_on" = "These %1$@ are on: %2$@";
+"app_intents.active_entities.dialog.some_open" = "These %1$@ are open: %2$@";
+"app_intents.active_entities.filter.all" = "entities";
+"app_intents.active_entities.filter.climates" = "thermostats";
+"app_intents.active_entities.filter.covers" = "covers";
+"app_intents.active_entities.filter.fans" = "fans";
+"app_intents.active_entities.filter.lights" = "lights";
+"app_intents.active_entities.filter.locks" = "locks";
+"app_intents.active_entities.filter.media_players" = "media players";
+"app_intents.active_entities.filter.name" = "Kind";
+"app_intents.active_entities.filter.switches" = "switches";
+"app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
+"app_intents.active_entities.title" = "Get what is on";
 "app_intents.assist.pipeline.default.title" = "Varsayılan";
 "app_intents.assist.pipeline.title" = "İşlem hattı";
 "app_intents.assist.pipelines.title" = "İşlem hatları";
 "app_intents.assist.preferred_pipeline.title" = "Tercih Edilen";
 "app_intents.assist.refresh_warning.title" = "Assist işlem hattınızı bulamıyor musunuz? İşlem hatları listesini yenilemek için uygulamada Yardım'ı açın.";
 "app_intents.assist_prompt.description" = "Yardımcıya bir metin mesajı gönder";
+"app_intents.assist_prompt.pipeline.description" = "Leave empty to use the preferred pipeline of your first server";
 "app_intents.assist_prompt.prompt.title" = "İstem";
 "app_intents.assist_prompt.title" = "Yardımcı istemi";
 "app_intents.automations.automation.title" = "Otomasyon";
@@ -101,9 +118,43 @@
 "app_intents.calendar.repeat.weekly" = "Haftalık";
 "app_intents.calendar.repeat.yearly" = "Yıllık";
 "app_intents.closed_state_icon.title" = "Kapalı durum simgesi";
+"app_intents.control.error.only_turns_on" = "%@ can only be turned on";
+"app_intents.control.error.unsupported" = "%@ can't be turned on or off";
+"app_intents.controllable_entity.entity.name" = "Controllable Entity";
+"app_intents.controllable_entity.parameter.entity" = "Entity";
 "app_intents.controls.assist.parameter.with_voice" = "Ses ile";
 "app_intents.controls.assist.title" = "Uygulamada assist";
 "app_intents.cover.title" = "Kapak";
+"app_intents.dialog.closed" = "Closed %@";
+"app_intents.dialog.locked" = "Locked %@";
+"app_intents.dialog.opened" = "Opened %@";
+"app_intents.dialog.pressed" = "Pressed %@";
+"app_intents.dialog.set_brightness" = "Set %1$@ to %2$li%%";
+"app_intents.dialog.set_temperature" = "Set %1$@ to %2$@";
+"app_intents.dialog.toggled" = "Toggled %@";
+"app_intents.dialog.turned_off" = "Turned off %@";
+"app_intents.dialog.turned_on" = "Turned on %@";
+"app_intents.dimmable_light.entity.name" = "Light";
+"app_intents.entity.property.area" = "Area";
+"app_intents.entity.property.device" = "Device";
+"app_intents.entity.property.entity_id" = "Entity ID";
+"app_intents.entity.property.floor" = "Floor";
+"app_intents.entity.property.name" = "Name";
+"app_intents.entity.property.server" = "Server";
+"app_intents.entity_state.attributes.title" = "Attributes (JSON)";
+"app_intents.entity_state.description" = "Reads the current state of a Home Assistant entity";
+"app_intents.entity_state.device_class.title" = "Device class";
+"app_intents.entity_state.dialog.content" = "%1$@ is %2$@";
+"app_intents.entity_state.domain.title" = "Domain";
+"app_intents.entity_state.entity.name" = "Entity State";
+"app_intents.entity_state.formatted_state.title" = "Formatted state";
+"app_intents.entity_state.is_active.title" = "Is active";
+"app_intents.entity_state.last_changed.title" = "Last changed";
+"app_intents.entity_state.last_updated.title" = "Last updated";
+"app_intents.entity_state.parameter.entity" = "Entity";
+"app_intents.entity_state.state.title" = "State";
+"app_intents.entity_state.title" = "Get entity state";
+"app_intents.entity_state.unit.title" = "Unit of measurement";
 "app_intents.error.failed_servers" = "Başarısız sunucular: %@";
 "app_intents.error.http_status" = "Home Assistant, HTTP yanıtı verdi %li";
 "app_intents.error.invalid_response" = "Home Assistant'tan beklenmedik yanıt";
@@ -139,6 +190,10 @@
 "app_intents.lights.light.title" = "Işık";
 "app_intents.lights.off_state_icon.title" = "Kapalı durum simgesi";
 "app_intents.lights.on_state_icon.title" = "Açık durum simgesi";
+"app_intents.lock.description" = "Locks a lock. Unlocking is not available by voice.";
+"app_intents.lock.entity.name" = "Lock";
+"app_intents.lock.parameter.entity" = "Lock";
+"app_intents.lock.title" = "Lock";
 "app_intents.notify_when_run.description" = "Yürütüldükten sonra bildirimi gösterir";
 "app_intents.notify_when_run.title" = "Çalıştırıldığında bildir";
 "app_intents.open_app_settings.description" = "Yardımcı uygulamayı doğrudan ayarlarından açar";
@@ -179,6 +234,13 @@
 "app_intents.scripts.show_confirmation_dialog.title" = "Onay bildirimi";
 "app_intents.scripts.success_message.content" = "Komut dosyası \"%@\" çalıştırıldı.";
 "app_intents.server.title" = "Sunucu";
+"app_intents.set_brightness.description" = "Sets a light's brightness as a percentage";
+"app_intents.set_brightness.parameter.brightness" = "Brightness";
+"app_intents.set_brightness.title" = "Set brightness";
+"app_intents.set_temperature.description" = "Sets a thermostat's target temperature, in the unit your server uses";
+"app_intents.set_temperature.parameter.entity" = "Thermostat";
+"app_intents.set_temperature.parameter.temperature" = "Temperature";
+"app_intents.set_temperature.title" = "Set temperature";
 "app_intents.show_confirmation_dialog.description" = "Yürütüldükten sonra onay bildirimini gösterir";
 "app_intents.show_confirmation_dialog.title" = "Onay bildirimi";
 "app_intents.show_entity_details.parameter.entity" = "Varlık";
@@ -186,6 +248,13 @@
 "app_intents.state.target" = "Hedef durum";
 "app_intents.state.toggle" = "Değiştir";
 "app_intents.switch.title" = "Anahtar";
+"app_intents.thermostat.entity.name" = "Thermostat";
+"app_intents.toggle.description" = "Flips an entity to its opposite state";
+"app_intents.toggle.title" = "Toggle";
+"app_intents.turn_off.description" = "Turns off a light, switch or fan, or closes a cover";
+"app_intents.turn_off.title" = "Turn off";
+"app_intents.turn_on.description" = "Turns on a light, switch or fan, or opens a cover";
+"app_intents.turn_on.title" = "Turn on";
 "app_intents.update_location.description" = "Home Assistant'a konum güncellemesi gönder";
 "app_intents.update_location.location.title" = "Konum";
 "app_intents.update_location.success" = "Tüm sunuculardaki konum güncellendi";
@@ -193,6 +262,18 @@
 "app_intents.update_sensors.description" = "Home Assistant'a bir sensör güncellemesi gönderin";
 "app_intents.update_sensors.success" = "Tüm sunuculardaki sensörler güncellendi";
 "app_intents.update_sensors.title" = "Sensörleri güncelle";
+"app_shortcuts.activate_scene.title" = "Activate Scene";
+"app_shortcuts.ask_assist.title" = "Ask Assist";
+"app_shortcuts.close.title" = "Close";
+"app_shortcuts.get_entity_state.title" = "Get Entity State";
+"app_shortcuts.lock.title" = "Lock";
+"app_shortcuts.open.title" = "Open";
+"app_shortcuts.perform_action.title" = "Perform Action";
+"app_shortcuts.set_brightness.title" = "Set Brightness";
+"app_shortcuts.set_temperature.title" = "Set Temperature";
+"app_shortcuts.turn_off.title" = "Turn Off";
+"app_shortcuts.turn_on.title" = "Turn On";
+"app_shortcuts.what_is_on.title" = "What Is On";
 "assist.button.finish_recording.title" = "Kaydı bitirmek için dokunun...";
 "assist.button.listening.title" = "Dinleme...";
 "assist.carplay.playback_help.change_playback.detail" = "Aracınızda Stream ses oynatmıyorsa, İndir ve Oynat seçeneğini seçin.";
@@ -1985,11 +2066,13 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings_sensors.health.category.heart" = "Kalp";
 "settings_sensors.health.category.nutrition" = "Beslenme";
 "settings_sensors.health.category.respiratory" = "Solunum";
+"settings_sensors.health.category.sleep" = "Sleep";
 "settings_sensors.health.category.vitals" = "Hayati Belirtiler";
 "settings_sensors.health.error.no_enabled_sensors" = "Erişim isteğinde bulunmadan önce en az bir Apple Sağlık sensörünü etkinleştirin.";
 "settings_sensors.health.error.unavailable" = "Apple Sağlık bu cihazda kullanılamıyor.";
 "settings_sensors.health.footer" = "Apple Sağlık sensörleri, aşağıda yer alan mevcut sensör bazlı kontrolleri kullanır. Sağlık verileri yalnızca normal sensör güncellemeleri sırasında okunur.";
 "settings_sensors.health.header" = "Apple Sağlık";
+"settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
 "settings_sensors.health.reload" = "Sensörleri Yeniden Yükle";
 "settings_sensors.health.request_access" = "Apple Sağlığa erişim talebinde bulunun";
 "settings_sensors.health.sensors.enable_all" = "Tüm Apple Sağlık sensörlerini etkinleştirin";
@@ -2601,6 +2684,12 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "watch.settings.refresh" = "Yenile";
 "watch.settings.restart_app.footer" = "Bu işlem uygulamayı hemen kapatır. Uygulamayı manuel olarak yeniden açmanız gerekecektir.";
 "watch.settings.restart_app.title" = "Uygulamayı yeniden başlat";
+"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.last_error" = "Last error: %@";
+"watch.settings.sensors.last_sent" = "Last sent %@";
+"watch.settings.sensors.never_sent" = "Not sent yet";
+"watch.settings.sensors.status_header" = "Status";
+"watch.settings.sensors.title" = "Sensors";
 "watch.settings.server.needs_attention" = "İlgilenilmesi gerekiyor";
 "watch.settings.servers.header" = "Sunucular";
 "watch.settings.title" = "Ayarlar";
@@ -2627,6 +2716,11 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Lütfen bağlantınızı kontrol edin veya daha sonra tekrar deneyin. Home Assistant yeniden başlatılıyorsa, tekrar çevrimiçi olduktan sonra yeniden bağlanacaktır.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Önbelleği temizle ve yeniden yükle";
+"web_view.empty_state.client_certificate.import_button" = "Import certificate";
+"web_view.empty_state.client_certificate.rejected.body" = "%@ refused the client certificate configured on this device. It may have expired, been revoked or been replaced on the server. Import a valid certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.rejected.title" = "Certificate rejected";
+"web_view.empty_state.client_certificate.required.body" = "%@ requires a client certificate (mTLS), but none is configured for this server on this device. Import your certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.required.title" = "Certificate required";
 "web_view.empty_state.logged_out.body" = "Bu sunucudan çıkış yaptınız. Bu cihazda kullanmaya devam etmek için tekrar giriş yapın.";
 "web_view.empty_state.logged_out.login_button" = "Oturum aç";
 "web_view.empty_state.logged_out.title" = "Oturumunuz kapandı";
@@ -2645,18 +2739,49 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "whats_new.app_support_update.item_body" = "Bu, iOS 15, watchOS 8 ve macOS 11 ve önceki sürümler için son güncellemedir. Daha fazla bilgi için dokunun.";
 "whats_new.app_support_update.item_title" = "iOS 15, watchOS 8 ve macOS 11 desteği sona erecek";
 "whats_new.app_support_update.title" = "Uygulama desteği güncellemesi";
+"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
+"whats_new.energy_widget.item_title" = "Energy widget";
+"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+\
+**What it shows**\
+Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+\
+**How to add it**\
+Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Bir makaleyi açar";
 "whats_new.item.opens_link_hint" = "Bir bağlantıyı açar";
+"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
+"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "Yardımcı Uygulamada Yenilikler Neler?";
 "whats_new.version_format" = "Sürüm %@";
+"widgets.action.name.activate" = "Activate";
 "widgets.action.name.assist" = "Asistan";
+"widgets.action.name.close" = "Close";
 "widgets.action.name.default" = "Varsayılan";
+"widgets.action.name.default_action_%@" = "Default (%@)";
+"widgets.action.name.lock" = "Lock";
+"widgets.action.name.main_action" = "Main action";
 "widgets.action.name.moreInfoDialog" = "Daha fazla bilgi";
 "widgets.action.name.navigate" = "Gezin";
 "widgets.action.name.nothing" = "Hiçbir şey";
+"widgets.action.name.open" = "Open";
 "widgets.action.name.perform_action" = "Eylemi gerçekleştir";
+"widgets.action.name.press" = "Press";
+"widgets.action.name.run" = "Run";
 "widgets.action.name.run_script" = "Senaryoyu çalıştır";
 "widgets.action.name.toggle" = "Değiştir";
+"widgets.action.name.trigger" = "Trigger";
+"widgets.action.name.turn_off" = "Turn off";
+"widgets.action.name.turn_on" = "Turn on";
+"widgets.action.name.unlock" = "Unlock";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Home Assistant eylemlerini gerçekleştirin.";
 "widgets.actions.not_configured" = "Yapılandırılmış aksiyon Yok";

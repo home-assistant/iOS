@@ -4,6 +4,23 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>HA</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>H A</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Hass</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Home</string>
+		</dict>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>

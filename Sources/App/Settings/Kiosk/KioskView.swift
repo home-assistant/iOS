@@ -7,40 +7,27 @@ struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
     @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showKioskSettings = false
     @Namespace private var serverSelectionNamespace
 
     var body: some View {
-        if horizontalSizeClass == .compact {
-            // Driven entirely by `appSettings.pushPath` so Settings and the screens it pushes share one
-            // value-based mechanism: the boolean `navigationDestination(isPresented:)` used here before
-            // made SwiftUI push Settings again in place of the screen that was tapped. The path is also
-            // single-typed, because SwiftUI's path diffing fatally errors comparing elements of
-            // different types at the same position: Settings' own pushes arrive wrapped as
-            // `AppSettingsPushRoute.item` instead of raw `SettingsItem` values.
-            NavigationStack(path: $appSettings.pushPath) {
-                content
-                    .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(for: AppSettingsPushRoute.self) { route in
-                        switch route {
-                        case .settings:
-                            SettingsView(embedInOwnNavigation: false)
-                                .injectingViewControllerProvider()
-                        case let .item(item):
-                            item.destinationView
-                                .injectingViewControllerProvider()
-                        }
-                    }
-            }
-            .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
-                settingsSheet
-            }
-        } else {
+        // Always present: branching on the size class here rebuilt the frontend on every rotation.
+        NavigationStack(path: $appSettings.pushPath) {
             content
-                .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
-                    settingsSheet
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                    switch route {
+                    case .settings:
+                        SettingsView(embedInOwnNavigation: false)
+                            .injectingViewControllerProvider()
+                    case let .item(item):
+                        item.destinationView
+                            .injectingViewControllerProvider()
+                    }
                 }
+        }
+        .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
+            settingsSheet
         }
     }
 

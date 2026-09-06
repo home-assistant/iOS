@@ -47,6 +47,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// asks for a log in rather than reporting an expired session, until re-authentication succeeds.
     var didLogOut = false
 
+    /// Set when a load failed because of the client certificate (mTLS): the server asked for one the
+    /// device does not have, or refused the one it has. No retry fixes that, so the empty state asks for a
+    /// certificate import instead. Cleared once the frontend loads or the empty state goes away.
+    var clientCertificateIssue: ClientCertificateIssue?
+
+    /// Whether the navigation in flight received a client certificate challenge from the server. A TLS
+    /// failure after one is a certificate problem, not a connectivity one; reset when a navigation starts.
+    var didReceiveClientCertificateChallenge = false
+
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
     var overlayState: WebFrontendOverlayState?

@@ -15,11 +15,11 @@ struct LightIntent: SetValueIntent {
     @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
     var toggle: Bool
 
-    func perform() async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == light.serverId }),
               let connection = Current.api(for: server)?.connection else {
-            return .result()
+            return .result(dialog: .init(stringLiteral: L10n.AppIntents.Error.noServer))
         }
 
         var service = Service.toggle.rawValue
@@ -27,17 +27,21 @@ struct LightIntent: SetValueIntent {
             service = value ? Service.turnOn.rawValue : Service.turnOff.rawValue
         }
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
+        do {
+            try await connection.send(.callService(
                 domain: .init(stringLiteral: Domain.light.rawValue),
                 service: .init(stringLiteral: service),
                 data: [
                     "entity_id": light.entityId,
                 ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+            )).promise.async()
+        } catch {
+            throw ShortcutAppIntentError(error.localizedDescription)
         }
-        return .result()
+        return .result(dialog: .init(stringLiteral: OnOffIntentDialog.text(
+            entityName: light.displayString,
+            toggle: toggle,
+            value: value
+        )))
     }
 }

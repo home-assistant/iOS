@@ -600,10 +600,12 @@ public enum Domain: String, CaseIterable {
         [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
     }
 
-    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report
-    /// their last-triggered time.
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report their
+    /// last-triggered time, and an automation reports whether it is *enabled*, never the state of
+    /// the light or fan it actually drives. Rows for these domains show where the item lives
+    /// (server, area) instead of a state the user can't read anything into.
     public var hasIrrelevantState: Bool {
-        [.script, .scene].contains(self)
+        [.automation, .scene, .script].contains(self)
     }
 
     public func localizedState(for state: String) -> String {
@@ -671,6 +673,73 @@ public extension Domain {
         .climate,
         .vacuum,
     ]
+
+    /// Domains a spoken command can reach, kept to what people actually name out loud.
+    ///
+    /// Deliberately absent: locks and sirens, where a misheard phrase has real consequences;
+    /// scripts, automations and buttons, which have their own actions and read oddly as "off"; and
+    /// cameras, remotes and water heaters, which are rarely asked for by name.
+    static let voiceControllable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .climate,
+        .mediaPlayer,
+        .humidifier,
+        .group,
+        .scene,
+    ]
+
+    /// Domains whose on/off services read as open and close, so a spoken command should say
+    /// "open the curtain" rather than "turn on the curtain".
+    ///
+    /// `valve` belongs here by the same reasoning, but it isn't voice-controllable yet, and adding
+    /// it to this list alone would not expose it.
+    static let voiceOpenable: [Domain] = [
+        .cover,
+    ]
+
+    /// Domains a spoken on/off command should offer. Covers are handled by the open and close
+    /// command instead, where the wording matches what the service actually does.
+    static let voiceSwitchOffered: [Domain] = voiceControllable.filter { !voiceOpenable.contains($0) }
+
+    /// Domains a spoken *question* can report on. Wider than `voiceControllable`, because reading a
+    /// state is safe where changing it is not, and because "what is on" should not quietly skip a
+    /// running vacuum or an unlocked door.
+    static let voiceReadable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .climate,
+        .mediaPlayer,
+        .humidifier,
+        .group,
+        .lock,
+        .valve,
+        .waterHeater,
+        .siren,
+        .vacuum,
+        .lawnMower,
+        .remote,
+        .alarmControlPanel,
+        .camera,
+    ]
+
+    /// Whether a spoken command can turn an entity of this domain *off*. A scene has one service for
+    /// both directions, so "turn off the movie scene" would activate it — those are on-only.
+    var isVoiceSwitchable: Bool {
+        Domain.voiceControllable.contains(self) && toggleIsStateAware
+    }
+
+    /// Whether an entity of this domain is expected to sit in a room. A scene or a group is named by
+    /// whoever made it, so it is worth offering with no area at all.
+    var expectsAnArea: Bool {
+        self != .scene && self != .group
+    }
 
     /// Domains that always show their own confirmation when tapped (state-aware lock handling),
     /// making the per-item "require confirmation" customization irrelevant.

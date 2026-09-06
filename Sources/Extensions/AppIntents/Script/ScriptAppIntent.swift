@@ -32,7 +32,7 @@ final class ScriptAppIntent: AppIntent, @unchecked Sendable {
     )
     var hapticConfirmation: Bool
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
@@ -74,6 +74,9 @@ final class ScriptAppIntent: AppIntent, @unchecked Sendable {
         DataWidgetsUpdater.update()
         #endif
 
-        return .result(value: success)
+        let dialog = success
+            ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString)
+            : L10n.AppIntents.Scripts.FailureMessage.content(script.displayString)
+        return .result(value: success, dialog: .init(stringLiteral: dialog))
     }
 }

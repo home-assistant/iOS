@@ -16,6 +16,11 @@ struct WebViewEmptyStateIcon: View {
             Image(systemSymbol: .key)
                 .font(.system(size: Self.reauthenticationIconSize))
                 .foregroundStyle(Color.haPrimary)
+        } else if style?.isClientCertificateIssue == true {
+            // The same symbol the onboarding certificate import uses, so the two screens read as one flow.
+            Image(systemSymbol: .lockShield)
+                .font(.system(size: Self.reauthenticationIconSize))
+                .foregroundStyle(Color.haPrimary)
         } else {
             Image(.logo)
                 .resizable()
@@ -31,4 +36,8 @@ struct WebViewEmptyStateIcon: View {
 
 #Preview("Re-authentication Key") {
     WebViewEmptyStateIcon(style: .recoveredServerNeedingReauthentication)
+}
+
+#Preview("Client Certificate") {
+    WebViewEmptyStateIcon(style: .clientCertificateRequired)
 }

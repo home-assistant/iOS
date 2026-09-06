@@ -41,6 +41,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
         /// Visibility of the slots that have no legacy flag (both default hidden).
         var showSubtitle: Bool?
         var showBottomText: Bool?
+        /// Corner only: whether the corner's own text rides the outer curve (default true, the modern
+        /// layout) or sits flat in the corner tip, the way ClockKit drew a Graphic Corner's outer text.
+        /// Defaulted so payloads written before this field still decode and construct.
+        var curvesText: Bool? = nil
     }
 
     let id: String?
@@ -187,6 +191,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
         options(for: widgetFamily)?.showBottomText ?? false
     }
 
+    /// Whether the corner's own text rides the outer curve of the corner (default true). Legacy
+    /// complications whose template drew its text flat in the corner tip opt out.
+    func curvesCornerText(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.curvesText ?? true
+    }
+
     /// Whether the circular gauge should be drawn as a full capacity ring (vs the open arc).
     func isCapacityGauge(for widgetFamily: WidgetFamily) -> Bool {
         options(for: widgetFamily)?.gaugeStyle == "capacity"
@@ -313,9 +323,10 @@ extension WatchWidgetComplicationSnapshot {
         showValue: Bool = true,
         showName: Bool = true,
         showIcon: Bool = true,
-        includeIcon: Bool = false
+        includeIcon: Bool = false,
+        curvesText: Bool = true
     ) -> Self {
-        let options = PerFamily(
+        var options = PerFamily(
             fraction: fraction,
             tint: "#34C759FF",
             showValue: showValue,
@@ -328,6 +339,7 @@ extension WatchWidgetComplicationSnapshot {
             maxLabel: "100",
             textColor: nil
         )
+        options.curvesText = curvesText
         return .init(
             id: "preview",
             family: "",

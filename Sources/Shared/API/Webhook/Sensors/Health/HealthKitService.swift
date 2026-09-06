@@ -66,20 +66,32 @@ public struct HealthKitService {
     /// metric, when it isn't authorized, or when there simply are no samples.
     public var queryValue: (HealthKitMetric, Date, Date) async throws -> Double? = { metric, start, end in
         guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension,
-              let quantityType = HealthKitService.quantityType(for: metric),
-              let unit = metric.queryUnit.hkUnit,
-              quantityType.is(compatibleWith: unit) else {
+              let sampleType = HealthKitService.sampleType(for: metric) else {
             return nil
         }
 
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
 
-        // A cumulative sum is only legal for cumulative types; anything else falls back to the newest
-        // sample, so a mismatch in the catalog can't make HealthKit raise.
-        if metric.aggregation == .cumulativeSum, quantityType.aggregationStyle == .cumulative {
-            return try await HealthKitService.sum(of: quantityType, unit: unit, predicate: predicate)
-        } else {
-            return try await HealthKitService.mostRecent(of: quantityType, unit: unit, predicate: predicate)
+        switch metric.aggregation {
+        case let .sleep(stages):
+            guard let categoryType = sampleType as? HKCategoryType else {
+                return nil
+            }
+            return try await HealthKitService.sleepMinutes(in: stages, of: categoryType, predicate: predicate)
+        case .cumulativeSum, .mostRecent:
+            guard let quantityType = sampleType as? HKQuantityType,
+                  let unit = metric.queryUnit.hkUnit,
+                  quantityType.is(compatibleWith: unit) else {
+                return nil
+            }
+
+            // A cumulative sum is only legal for cumulative types; anything else falls back to the newest
+            // sample, so a mismatch in the catalog can't make HealthKit raise.
+            if metric.aggregation == .cumulativeSum, quantityType.aggregationStyle == .cumulative {
+                return try await HealthKitService.sum(of: quantityType, unit: unit, predicate: predicate)
+            } else {
+                return try await HealthKitService.mostRecent(of: quantityType, unit: unit, predicate: predicate)
+            }
         }
     }
 
@@ -100,18 +112,22 @@ public struct HealthKitService {
 
     private static let observations = Observations()
 
-    private static func quantityType(for metric: HealthKitMetric) -> HKQuantityType? {
-        quantityType(forIdentifier: metric.identifier)
+    private static func sampleType(for metric: HealthKitMetric) -> HKSampleType? {
+        sampleType(forIdentifier: metric.identifier)
     }
 
-    private static func quantityType(forIdentifier identifier: String) -> HKQuantityType? {
-        HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))
+    private static func sampleType(forIdentifier identifier: String) -> HKSampleType? {
+        if identifier == HealthKitSleepStage.sleepAnalysisIdentifier {
+            return HKObjectType.categoryType(forIdentifier: .sleepAnalysis)
+        }
+        return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))
     }
 
-    private static func observableTypes(for metrics: [HealthKitMetric]) -> [HKQuantityType] {
+    /// May repeat a type, since every sleep metric reads the same one; callers dedupe.
+    private static func observableTypes(for metrics: [HealthKitMetric]) -> [HKSampleType] {
         metrics
             .filter { $0.queryUnit.hkUnit != nil }
-            .compactMap { quantityType(for: $0) }
+            .compactMap { sampleType(for: $0) }
     }
 
     /// The read types behind the metrics the user turned on. Enablement is an allowlist, so a metric
@@ -170,14 +186,47 @@ public struct HealthKitService {
         }
     }
 
-    /// Owns the running observer queries, keyed by quantity type identifier.
+    /// Minutes spent in `stages` during the most recent night within `predicate`'s window.
+    private static func sleepMinutes(
+        in stages: Set<HealthKitSleepStage>,
+        of categoryType: HKCategoryType,
+        predicate: NSPredicate
+    ) async throws -> Double? {
+        let samples: [HKCategorySample] = try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: categoryType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: nil
+            ) { _, samples, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: samples?.compactMap { $0 as? HKCategorySample } ?? [])
+                }
+            }
+            healthStore.execute(query)
+        }
+
+        let sleepSamples = samples.compactMap { sample in
+            HealthKitSleepStage(sleepAnalysisValue: sample.value).map {
+                HealthKitSleepSample(start: sample.startDate, end: sample.endDate, stage: $0)
+            }
+        }
+
+        return HealthKitSleepSummary
+            .latestNight(in: sleepSamples, calendar: Current.calendar())?
+            .minutes(in: stages)
+    }
+
+    /// Owns the running observer queries, keyed by sample type identifier.
     private final class Observations {
         private let activeQueries = HAProtected<[String: HKObserverQuery]>(value: [:])
         /// Kept apart from the queries so a query, which outlives the `update` that started it, always
         /// reports to the newest handler.
         private let changeHandler = HAProtected<ChangeHandler?>(value: nil)
 
-        func update(to types: [HKQuantityType], onChange: @escaping ChangeHandler) {
+        func update(to types: [HKSampleType], onChange: @escaping ChangeHandler) {
             let wanted = Set(types.map(\.identifier))
             changeHandler.mutate { $0 = onChange }
 
@@ -193,7 +242,7 @@ public struct HealthKitService {
             }
         }
 
-        private func start(observing type: HKQuantityType) -> HKObserverQuery {
+        private func start(observing type: HKSampleType) -> HKObserverQuery {
             let query = HKObserverQuery(sampleType: type, predicate: nil) { [self] _, completionHandler, error in
                 guard let error else {
                     reportChange(completionHandler)
@@ -226,7 +275,7 @@ public struct HealthKitService {
         private func stop(observing identifier: String, query: HKObserverQuery) {
             HealthKitService.healthStore.stop(query)
 
-            guard let type = HealthKitService.quantityType(forIdentifier: identifier) else {
+            guard let type = HealthKitService.sampleType(forIdentifier: identifier) else {
                 return
             }
 

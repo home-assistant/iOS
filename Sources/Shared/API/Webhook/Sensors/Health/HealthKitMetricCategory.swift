@@ -8,6 +8,7 @@ public enum HealthKitMetricCategory: String, CaseIterable, Sendable {
     case heart
     case nutrition
     case respiratory
+    case sleep
     case vitals
 
     public var name: String {
@@ -17,6 +18,7 @@ public enum HealthKitMetricCategory: String, CaseIterable, Sendable {
         case .heart: return L10n.SettingsSensors.Health.Category.heart
         case .nutrition: return L10n.SettingsSensors.Health.Category.nutrition
         case .respiratory: return L10n.SettingsSensors.Health.Category.respiratory
+        case .sleep: return L10n.SettingsSensors.Health.Category.sleep
         case .vitals: return L10n.SettingsSensors.Health.Category.vitals
         }
     }
