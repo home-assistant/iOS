@@ -5631,6 +5631,12 @@ public enum L10n {
             /// Client event log
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.client_event_log.title") }
           }
+          public enum DiskCache {
+            /// Profile pictures downloaded for your Home Assistant account. They are fetched again when needed.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.disk_cache.explanation") }
+            /// Profile picture cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.disk_cache.title") }
+          }
           public enum Downloads {
             /// Files downloaded from the frontend.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.downloads.explanation") }
@@ -5672,6 +5678,12 @@ public enum L10n {
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_history.explanation") }
             /// Notification history
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_history.title") }
+          }
+          public enum NotificationIconCache {
+            /// Sender images the app downloaded to show on notifications. They are fetched again when needed.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_icon_cache.explanation") }
+            /// Notification icon cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_icon_cache.title") }
           }
           public enum NotificationSounds {
             /// Sound files you imported for notifications.

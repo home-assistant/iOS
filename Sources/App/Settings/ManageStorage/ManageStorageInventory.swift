@@ -93,6 +93,18 @@ enum ManageStorageInventory {
                 source: .files(paths.watchItemCache)
             ),
             ManageStorageItem(
+                id: .diskCache,
+                category: .caches,
+                protection: .deletable,
+                source: .files(paths.diskCache)
+            ),
+            ManageStorageItem(
+                id: .notificationIconCache,
+                category: .caches,
+                protection: .deletable,
+                source: .files(paths.notificationIconCache)
+            ),
+            ManageStorageItem(
                 id: .networkResponseCache,
                 category: .caches,
                 protection: .deletable,

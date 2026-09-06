@@ -15,6 +15,8 @@ struct ManageStorageSampleMeasurer: ManageStorageMeasuring {
         .locationHistory: 1_048_576,
         .widgetCache: 262_144,
         .watchItemCache: 32768,
+        .diskCache: 1_310_720,
+        .notificationIconCache: 458_752,
         .networkResponseCache: 8_388_608,
         .frontendAssetCache: 41_943_040,
         .websiteData: 3_145_728,

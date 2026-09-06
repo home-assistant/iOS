@@ -12,6 +12,8 @@ struct ManageStoragePaths: Equatable {
     var notificationSounds: [URL]
     var widgetCache: [URL]
     var watchItemCache: [URL]
+    var diskCache: [URL]
+    var notificationIconCache: [URL]
     var frontendAssetCache: [URL]
     var websiteData: [URL]
     var clientEventLog: [URL]
@@ -42,6 +44,8 @@ struct ManageStoragePaths: Equatable {
             notificationSounds: [library?.appendingPathComponent("Sounds", isDirectory: true)].compactMap { $0 },
             widgetCache: [AppConstants.widgetsCacheURL],
             watchItemCache: [AppConstants.watchMagicItemsInfo],
+            diskCache: [appGroup.appendingPathComponent("DiskCache", isDirectory: true)],
+            notificationIconCache: [appGroup.appendingPathComponent("notification-icons", isDirectory: true)],
             frontendAssetCache: [library?.appendingPathComponent("Caches/WebKit", isDirectory: true)]
                 .compactMap { $0 },
             websiteData: [
@@ -70,6 +74,8 @@ struct ManageStoragePaths: Equatable {
             notificationSounds: path(ManageStorageItemID.notificationSounds.rawValue),
             widgetCache: path(ManageStorageItemID.widgetCache.rawValue),
             watchItemCache: path(ManageStorageItemID.watchItemCache.rawValue),
+            diskCache: path(ManageStorageItemID.diskCache.rawValue),
+            notificationIconCache: path(ManageStorageItemID.notificationIconCache.rawValue),
             frontendAssetCache: path(ManageStorageItemID.frontendAssetCache.rawValue),
             websiteData: path(ManageStorageItemID.websiteData.rawValue),
             clientEventLog: path(ManageStorageItemID.clientEventLog.rawValue),

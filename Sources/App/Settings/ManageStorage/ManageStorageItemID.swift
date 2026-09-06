@@ -19,6 +19,8 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
     // Caches
     case widgetCache
     case watchItemCache
+    case diskCache
+    case notificationIconCache
     case networkResponseCache
     // Web content
     case frontendAssetCache
@@ -53,6 +55,10 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
             return L10n.Settings.Debugging.ManageStorage.Item.WidgetCache.title
         case .watchItemCache:
             return L10n.Settings.Debugging.ManageStorage.Item.WatchItemCache.title
+        case .diskCache:
+            return L10n.Settings.Debugging.ManageStorage.Item.DiskCache.title
+        case .notificationIconCache:
+            return L10n.Settings.Debugging.ManageStorage.Item.NotificationIconCache.title
         case .networkResponseCache:
             return L10n.Settings.Debugging.ManageStorage.Item.NetworkResponseCache.title
         case .frontendAssetCache:
@@ -94,6 +100,10 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
             return L10n.Settings.Debugging.ManageStorage.Item.WidgetCache.explanation
         case .watchItemCache:
             return L10n.Settings.Debugging.ManageStorage.Item.WatchItemCache.explanation
+        case .diskCache:
+            return L10n.Settings.Debugging.ManageStorage.Item.DiskCache.explanation
+        case .notificationIconCache:
+            return L10n.Settings.Debugging.ManageStorage.Item.NotificationIconCache.explanation
         case .networkResponseCache:
             return L10n.Settings.Debugging.ManageStorage.Item.NetworkResponseCache.explanation
         case .frontendAssetCache:
@@ -133,6 +143,10 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
             return .squareGrid2x2Fill
         case .watchItemCache:
             return .applewatchWatchface
+        case .diskCache:
+            return .photoFill
+        case .notificationIconCache:
+            return .envelopeBadgeFill
         case .networkResponseCache:
             return .network
         case .frontendAssetCache:

@@ -9,13 +9,14 @@ struct ManageStoragePathsTests {
 
         let all = [
             paths.appDatabase, paths.appPreferences, paths.legacyRealmStore, paths.notificationSounds,
-            paths.widgetCache, paths.watchItemCache, paths.frontendAssetCache, paths.websiteData,
+            paths.widgetCache, paths.watchItemCache, paths.diskCache, paths.notificationIconCache,
+            paths.frontendAssetCache, paths.websiteData,
             paths.clientEventLog, paths.notificationHistory, paths.logFiles, paths.downloads,
             paths.temporaryFiles,
         ].flatMap { $0 }
 
-        #expect(all.count == 13)
-        #expect(Set(all).count == 13)
+        #expect(all.count == 15)
+        #expect(Set(all).count == 15)
         #expect(all.allSatisfy { $0.deletingLastPathComponent().path == root.path })
         #expect(paths.logFiles.first?.lastPathComponent == ManageStorageItemID.logFiles.rawValue)
     }
@@ -35,6 +36,8 @@ struct ManageStoragePathsTests {
         #expect(!paths.temporaryFiles.isEmpty)
         #expect(!paths.appPreferences.isEmpty)
         #expect(!paths.notificationSounds.isEmpty)
+        #expect(!paths.diskCache.isEmpty)
+        #expect(!paths.notificationIconCache.isEmpty)
         #expect(!paths.frontendAssetCache.isEmpty)
         #expect(!paths.websiteData.isEmpty)
     }

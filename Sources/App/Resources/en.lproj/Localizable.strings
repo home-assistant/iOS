@@ -1698,6 +1698,8 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.item.cached_entities.title" = "Cached entity data";
 "settings.debugging.manage_storage.item.client_event_log.explanation" = "The events listed on the event log screen.";
 "settings.debugging.manage_storage.item.client_event_log.title" = "Client event log";
+"settings.debugging.manage_storage.item.disk_cache.explanation" = "Profile pictures downloaded for your Home Assistant account. They are fetched again when needed.";
+"settings.debugging.manage_storage.item.disk_cache.title" = "Profile picture cache";
 "settings.debugging.manage_storage.item.downloads.explanation" = "Files downloaded from the frontend.";
 "settings.debugging.manage_storage.item.downloads.title" = "Downloads";
 "settings.debugging.manage_storage.item.frontend_asset_cache.explanation" = "Scripts, styles and images the web view stored for the frontend. They download again on the next load.";
@@ -1712,6 +1714,8 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.item.network_response_cache.title" = "Network response cache";
 "settings.debugging.manage_storage.item.notification_history.explanation" = "Recent notifications kept for the notification debugging screen.";
 "settings.debugging.manage_storage.item.notification_history.title" = "Notification history";
+"settings.debugging.manage_storage.item.notification_icon_cache.explanation" = "Sender images the app downloaded to show on notifications. They are fetched again when needed.";
+"settings.debugging.manage_storage.item.notification_icon_cache.title" = "Notification icon cache";
 "settings.debugging.manage_storage.item.notification_sounds.explanation" = "Sound files you imported for notifications.";
 "settings.debugging.manage_storage.item.notification_sounds.title" = "Notification sounds";
 "settings.debugging.manage_storage.item.temporary_files.explanation" = "Scratch files left behind by uploads, exports and attachment downloads.";
