@@ -8,7 +8,10 @@ import Shared
 @available(macOS 13.0, *)
 enum ActiveEntitiesFinder {
     /// One states call per server, joined against the local mirror so each result keeps its name and area.
-    static func active(matching filter: ActiveEntitiesFilterAppEnum) async throws -> [HAEntityStateAppEntity] {
+    static func active(
+        matching filter: ActiveEntitiesFilterAppEnum,
+        state wanted: EntityStateFilterAppEnum = .on
+    ) async throws -> [HAEntityStateAppEntity] {
         let domains = filter.domains
         let known = ControlEntityProvider(domains: domains).getEntities()
         guard !Current.servers.all.isEmpty else {
@@ -21,7 +24,7 @@ enum ActiveEntitiesFinder {
             let states = try await AppIntentServerAPI.entities(server: server, domains: domains)
             let activeIds = Set(
                 states
-                    .filter { EntityStateActive.isActive(domain: $0.domain, state: $0.state) }
+                    .filter { matches($0, wanted: wanted) }
                     .map(\.entityId)
             )
             let statesById = Dictionary(states.map { ($0.entityId, $0) }, uniquingKeysWith: { first, _ in first })
@@ -49,17 +52,41 @@ enum ActiveEntitiesFinder {
     }
 
     /// The spoken answer: the names when there are any, and the plural noun when there are none.
-    static func dialog(for entities: [HAEntityStateAppEntity], filter: ActiveEntitiesFilterAppEnum) -> String {
+    /// Whether a state belongs on the requested side.
+    ///
+    /// The inactive side is deliberately not `!isActive`: that predicate also answers false for
+    /// `unavailable` and `unknown`, and a light the server can't reach is not a light that is off.
+    private static func matches(_ state: HAEntity, wanted: EntityStateFilterAppEnum) -> Bool {
+        let isActive = EntityStateActive.isActive(domain: state.domain, state: state.state)
+        guard !wanted.wantsActive else { return isActive }
+        let raw = state.state.lowercased()
+        return !isActive && raw != EntityStateActive.unavailable && raw != EntityStateActive.unknown
+    }
+
+    static func dialog(
+        for entities: [HAEntityStateAppEntity],
+        filter: ActiveEntitiesFilterAppEnum,
+        state wanted: EntityStateFilterAppEnum = .on
+    ) -> String {
         let kind = filter.localizedPluralName
+        // The answer is worded by the kind, not by the word that was spoken, so asking "what lights
+        // are open" still reads back as "on".
+        let open = filter.readsAsOpen
         guard !entities.isEmpty else {
-            return filter.readsAsOpen
-                ? L10n.AppIntents.ActiveEntities.Dialog.noneOpen(kind)
-                : L10n.AppIntents.ActiveEntities.Dialog.noneOn(kind)
+            switch (wanted.wantsActive, open) {
+            case (true, true): return L10n.AppIntents.ActiveEntities.Dialog.noneOpen(kind)
+            case (true, false): return L10n.AppIntents.ActiveEntities.Dialog.noneOn(kind)
+            case (false, true): return L10n.AppIntents.ActiveEntities.Dialog.noneClosed(kind)
+            case (false, false): return L10n.AppIntents.ActiveEntities.Dialog.noneOff(kind)
+            }
         }
         let names = ListFormatter.localizedString(byJoining: entities.map(spokenName(for:)))
-        return filter.readsAsOpen
-            ? L10n.AppIntents.ActiveEntities.Dialog.someOpen(kind, names)
-            : L10n.AppIntents.ActiveEntities.Dialog.someOn(kind, names)
+        switch (wanted.wantsActive, open) {
+        case (true, true): return L10n.AppIntents.ActiveEntities.Dialog.someOpen(kind, names)
+        case (true, false): return L10n.AppIntents.ActiveEntities.Dialog.someOn(kind, names)
+        case (false, true): return L10n.AppIntents.ActiveEntities.Dialog.someClosed(kind, names)
+        case (false, false): return L10n.AppIntents.ActiveEntities.Dialog.someOff(kind, names)
+        }
     }
 }
 

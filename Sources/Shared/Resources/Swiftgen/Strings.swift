@@ -264,7 +264,7 @@ public enum L10n {
 
   public enum AppIntents {
     public enum ActiveEntities {
-      /// Lists the entities of a kind that are currently on or open
+      /// Lists the entities of a kind that are currently in the state you ask for
       public static var description: String { return L10n.tr("Localizable", "app_intents.active_entities.description") }
       /// %1$@ on %2$@
       public static func nameWithServer(_ p1: Any, _ p2: Any) -> String {
@@ -273,6 +273,14 @@ public enum L10n {
       /// Get what is on
       public static var title: String { return L10n.tr("Localizable", "app_intents.active_entities.title") }
       public enum Dialog {
+        /// No %@ are closed
+        public static func noneClosed(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_closed", String(describing: p1))
+        }
+        /// No %@ are off
+        public static func noneOff(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_off", String(describing: p1))
+        }
         /// No %@ are on
         public static func noneOn(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_on", String(describing: p1))
@@ -280,6 +288,14 @@ public enum L10n {
         /// No %@ are open
         public static func noneOpen(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_open", String(describing: p1))
+        }
+        /// These %1$@ are closed: %2$@
+        public static func someClosed(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_closed", String(describing: p1), String(describing: p2))
+        }
+        /// These %1$@ are off: %2$@
+        public static func someOff(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_off", String(describing: p1), String(describing: p2))
         }
         /// These %1$@ are on: %2$@
         public static func someOn(_ p1: Any, _ p2: Any) -> String {
@@ -309,6 +325,18 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.name") }
         /// switches
         public static var switches: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.switches") }
+      }
+      public enum State {
+        /// closed
+        public static var closed: String { return L10n.tr("Localizable", "app_intents.active_entities.state.closed") }
+        /// State
+        public static var name: String { return L10n.tr("Localizable", "app_intents.active_entities.state.name") }
+        /// off
+        public static var off: String { return L10n.tr("Localizable", "app_intents.active_entities.state.off") }
+        /// on
+        public static var on: String { return L10n.tr("Localizable", "app_intents.active_entities.state.on") }
+        /// open
+        public static var `open`: String { return L10n.tr("Localizable", "app_intents.active_entities.state.open") }
       }
     }
     public enum Assist {

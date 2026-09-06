@@ -13,7 +13,7 @@ extension HAAppEntityAppIntentEntity: IndexedEntity {
         attributes.contentDescription = subtitle
         attributes.keywords = searchKeywords
         attributes.alternateNames = contextualNames
-        attributes.thumbnailData = SpotlightEntityIconRenderer.thumbnailData(iconName: iconName)
+        attributes.thumbnailData = EntityIconRenderer.thumbnailData(iconName: iconName)
         return attributes
     }
 

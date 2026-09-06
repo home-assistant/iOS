@@ -96,12 +96,16 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
         )
         AppShortcut(
             intent: GetActiveEntitiesAppIntent(),
+            // Only the kind is interpolated: `state` stays at its `.on` default so voice offers the
+            // two questions worth asking out loud. "On" and "open" are the same query, so both
+            // wordings are spelled out rather than expanded from the state parameter — asking what
+            // is *off* would read back nearly every entity in the home, and the specific case
+            // ("is the porch light off") is what `GetEntityStateAppIntent` already answers.
             phrases: [
                 "\(.applicationName) what \(\.$filter) are on",
                 "What \(\.$filter) are on in \(.applicationName)",
-                "Which \(\.$filter) are on in \(.applicationName)",
+                "What \(\.$filter) are open in \(.applicationName)",
                 "What is on in \(.applicationName)",
-                "What is still on in \(.applicationName)",
             ],
             shortTitle: .init("app_shortcuts.what_is_on.title", defaultValue: "What Is On"),
             systemImageName: "lightbulb"
