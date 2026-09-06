@@ -46,7 +46,7 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/ManageStorageViewTests \
+            -only-testing:Tests-App/ManageStorageViewTests \
             -skipPackagePluginValidation \
             -skipMacroValidation \
             COMPILER_INDEX_STORE_ENABLE=NO
