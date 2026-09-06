@@ -52,9 +52,7 @@ final class CameraOverlayPresenter {
         }
 
         let controller = CameraPlayerView(server: server, cameraEntityId: entityId, cameraName: cameraName)
-            .onDisappear { [weak self] in
-                self?.overlayDidDisappear(camera)
-            }
+            .onDisappear(perform: overlayDisappearHandler(for: camera))
             .embeddedInHostingController()
         controller.modalPresentationStyle = .overFullScreen
 
@@ -83,7 +81,13 @@ final class CameraOverlayPresenter {
         }
     }
 
-    func overlayDidDisappear(_ camera: Camera) {
+    func overlayDisappearHandler(for camera: Camera) -> () -> Void {
+        { [weak self] in
+            self?.overlayDidDisappear(camera)
+        }
+    }
+
+    private func overlayDidDisappear(_ camera: Camera) {
         guard displayedCamera == camera else { return }
         clearState()
     }

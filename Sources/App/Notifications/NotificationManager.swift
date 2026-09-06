@@ -68,7 +68,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         #endif
     }
 
-    private func openCamera(from userInfo: [AnyHashable: Any]?) {
+    func openCamera(from userInfo: [AnyHashable: Any]?) {
         guard let entityId = cameraEntityId(from: userInfo) else {
             Current.Log.error("Received kiosk_show_camera command without a valid camera entity_id")
             return
@@ -133,7 +133,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         return server
     }
 
-    private func hideCamera() {
+    func hideCamera() {
         Current.sceneManager.webViewControllerPromise
             .done(on: .main) { webViewController in
                 CameraOverlayPresenter.shared.hide(on: webViewController)

@@ -123,7 +123,7 @@ final class CameraOverlayPresenterTests: XCTestCase {
     func testOverlayDisappearingClearsStateForTheDisplayedCamera() {
         show(frontDoor)
 
-        presenter.overlayDidDisappear(frontDoor)
+        presenter.overlayDisappearHandler(for: frontDoor)()
 
         XCTAssertNil(presenter.displayedCamera)
         XCTAssertFalse(presenter.isDisplaying(frontDoor, on: webViewController))
@@ -133,7 +133,7 @@ final class CameraOverlayPresenterTests: XCTestCase {
     func testOverlayDisappearingForAnotherCameraIsIgnored() {
         show(frontDoor)
 
-        presenter.overlayDidDisappear(backyard)
+        presenter.overlayDisappearHandler(for: backyard)()
 
         XCTAssertEqual(presenter.displayedCamera, frontDoor)
         XCTAssertTrue(presenter.isDisplaying(frontDoor, on: webViewController))
