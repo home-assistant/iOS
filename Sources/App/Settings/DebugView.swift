@@ -89,7 +89,7 @@ struct DebugView: View {
                 }
 
                 NavigationLink {
-                    ManageStorageView()
+                    ManageStorageView(viewModel: ManageStorageViewModel())
                 } label: {
                     linkContent(
                         image: .init(systemSymbol: .externaldriveConnectedToLineBelow),

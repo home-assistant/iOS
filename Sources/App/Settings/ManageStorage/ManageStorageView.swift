@@ -5,10 +5,11 @@ import SwiftUI
 struct ManageStorageView: View {
     @StateObject private var viewModel: ManageStorageViewModel
 
-    /// The view model is built lazily: `ManageStorageView()` is created every time the debugging
-    /// screen redraws, and building the inventory walks the app group container.
-    init(viewModel: @autoclosure @escaping () -> ManageStorageViewModel = ManageStorageViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel())
+    /// The view model is handed in rather than defaulted: `ManageStorageViewModel` is `@MainActor`,
+    /// and a default argument would be evaluated outside the main actor. Callers build it from the
+    /// main actor, which every `View` body already is.
+    init(viewModel: ManageStorageViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
