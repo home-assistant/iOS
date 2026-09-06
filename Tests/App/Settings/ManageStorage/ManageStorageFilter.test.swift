@@ -52,8 +52,11 @@ struct ManageStorageFilterTests {
         filter.onlyDeletable = true
 
         let filtered = filter.apply(to: items)
+        // Hoisted out of `#expect`: the macro cannot prove a key path handed to a `rethrows`
+        // method is non-throwing, and SwiftFormat rewrites the equivalent closure to a key path.
+        let allDeletable = filtered.allSatisfy(\.isDeletable)
 
-        #expect(filtered.allSatisfy { $0.isDeletable })
+        #expect(allDeletable)
         #expect(filtered.count < items.count)
     }
 
