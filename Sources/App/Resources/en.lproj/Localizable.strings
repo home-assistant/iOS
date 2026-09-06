@@ -92,6 +92,14 @@
 "app_intents.automations.icon.title" = "Icon";
 "app_intents.automations.parameter.automation.title" = "Automation";
 "app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
+"app_intents.calendar.attendee.name" = "Attendee";
+"app_intents.calendar.attendee_status.accepted" = "Accepted";
+"app_intents.calendar.attendee_status.declined" = "Declined";
+"app_intents.calendar.attendee_status.pending" = "Pending";
+"app_intents.calendar.attendee_status.tentative" = "Tentative";
+"app_intents.calendar.attendee_type.person" = "Person";
+"app_intents.calendar.attendee_type.resource" = "Resource";
+"app_intents.calendar.attendee_type.room" = "Room";
 "app_intents.calendar.create_event.all_day.title" = "All-day";
 "app_intents.calendar.create_event.description" = "Add an event to a Home Assistant calendar";
 "app_intents.calendar.create_event.end.title" = "Ends";
@@ -117,6 +125,9 @@
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
 "app_intents.calendar.error.zero_duration" = "The end must be after the start";
 "app_intents.calendar.event.entity.name" = "Calendar event";
+"app_intents.calendar.event_status.cancelled" = "Cancelled";
+"app_intents.calendar.event_status.confirmed" = "Confirmed";
+"app_intents.calendar.event_status.tentative" = "Tentative";
 "app_intents.calendar.get_events.description" = "Get the events on a Home Assistant calendar between two dates";
 "app_intents.calendar.get_events.end.title" = "To";
 "app_intents.calendar.get_events.start.title" = "From";
@@ -222,6 +233,10 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.perform_action.title" = "Perform action";
+"app_intents.reminders.list_type.standard" = "List";
+"app_intents.reminders.location_trigger.arrive" = "Arriving";
+"app_intents.reminders.location_trigger.depart" = "Leaving";
+"app_intents.reminders.location_trigger.name" = "Location";
 "app_intents.render_template.description" = "Render a Home Assistant template. Only users with the admin role can perform this action.";
 "app_intents.render_template.template.title" = "Template";
 "app_intents.render_template.title" = "Render template";
