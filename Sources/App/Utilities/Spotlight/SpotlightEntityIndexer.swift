@@ -104,6 +104,25 @@ final class SpotlightEntityIndexer: ServerObserver {
         needsReindexOnForeground = true
     }
 
+    /// Reindexes the named entities on request from the system, which asks when it notices the index
+    /// may be stale rather than waiting for the next database change.
+    @available(iOS 27.0, *)
+    func reindex(entityIds: [String]) async throws {
+        let wanted = Set(entityIds)
+        guard let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value else {
+            return
+        }
+        let entities = snapshot.entities.filter { wanted.contains($0.id) }
+        guard !entities.isEmpty else { return }
+        try await index.indexAppEntities(entities)
+    }
+
+    /// Rebuilds the whole index on request from the system.
+    @available(iOS 27.0, *)
+    func reindexEverything() async {
+        await reindex(reason: "system asked for a reindex")
+    }
+
     private func reindexAfterForegroundIfNeeded() {
         guard needsReindexOnForeground else { return }
         needsReindexOnForeground = false
