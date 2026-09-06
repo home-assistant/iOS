@@ -118,4 +118,12 @@ struct OpenCloseEntityAppIntentTests {
             #expect(OpenCloseActionAppEnum.caseDisplayRepresentations[action] != nil)
         }
     }
+
+    /// Reading the summary runs the builder that lays the command out in the Shortcuts editor.
+    /// Nothing else in these tests reaches it, and a summary that names a parameter the intent no
+    /// longer has stops the editor from drawing it.
+    @Test func theSummaryBuilds() {
+        #expect(!String(describing: OpenCloseEntityAppIntent.parameterSummary).isEmpty)
+        #expect(!String(localized: OpenCloseEntityAppIntent.title).isEmpty)
+    }
 }
