@@ -251,6 +251,7 @@ jobs:
             ~/Library/Logs/DiagnosticReports
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
+            fastlane/test_output/Tests-Unit.xcresult
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Simulator App"
