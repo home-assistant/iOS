@@ -33,8 +33,7 @@ struct ManageStorageViewTests {
 
         assertLightDarkSnapshots(
             of: NavigationView { ManageStorageView(viewModel: viewModel) },
-            drawHierarchyInKeyWindow: true,
-            named: "removable"
+            drawHierarchyInKeyWindow: true
         )
     }
 
@@ -44,8 +43,7 @@ struct ManageStorageViewTests {
 
         assertLightDarkSnapshots(
             of: NavigationView { ManageStorageView(viewModel: viewModel) },
-            drawHierarchyInKeyWindow: true,
-            named: "no-matches"
+            drawHierarchyInKeyWindow: true
         )
     }
 }
