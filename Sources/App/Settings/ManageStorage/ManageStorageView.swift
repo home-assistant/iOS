@@ -104,11 +104,7 @@ struct ManageStorageView: View {
                                             .foregroundStyle(item.isCleanable ? Color.red : Color.secondary)
                                     }
                                     .buttonStyle(.borderless)
-                                    .disabled(
-                                        !item.isCleanable
-                                            || viewModel.cleaningItemID != nil
-                                            || viewModel.isLoading
-                                    )
+                                    .disabled(!item.isCleanable || viewModel.isBusy)
                                     .accessibilityLabel(
                                         L10n.Settings.Debugging.ManageStorage.deleteAccessibilityLabel(item.title)
                                     )

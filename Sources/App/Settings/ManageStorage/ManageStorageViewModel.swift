@@ -63,6 +63,11 @@ final class ManageStorageViewModel: ObservableObject {
         items.filter(\.isDeletable).reduce(into: Int64(0)) { $0 += $1.byteCount }
     }
 
+    /// True while a load or a delete is running. The two must not overlap — a load that finished
+    /// after a delete would write the pre-delete sizes back — and the delete buttons are disabled
+    /// for the duration.
+    var isBusy: Bool { isLoading || cleaningItemID != nil }
+
     var protectedItemCount: Int {
         items.filter { !$0.isDeletable }.count
     }
@@ -72,7 +77,7 @@ final class ManageStorageViewModel: ObservableObject {
         // while a row is being emptied. Any of those overlapping would race: a second pass would
         // clear `isLoading` while the first still measured, and a pass that started before a clean
         // would finish afterwards and write its pre-delete sizes back over the cleaned row.
-        guard !isLoading, cleaningItemID == nil else { return }
+        guard !isBusy else { return }
         isLoading = true
         defer { isLoading = false }
 
