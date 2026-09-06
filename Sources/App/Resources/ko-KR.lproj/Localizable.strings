@@ -53,12 +53,29 @@
 "announcement.drop_support.button" = "계속하기";
 "announcement.drop_support.subtitle" = "신중한 검토 끝에 향후 업데이트에서 iOS 12, 13, 14에 대한 지원을 중단할 예정입니다.";
 "announcement.drop_support.title" = "중요 업데이트";
+"app_intents.active_entities.description" = "Lists the entities of a kind that are currently on or open";
+"app_intents.active_entities.dialog.none_on" = "No %@ are on";
+"app_intents.active_entities.dialog.none_open" = "No %@ are open";
+"app_intents.active_entities.dialog.some_on" = "These %1$@ are on: %2$@";
+"app_intents.active_entities.dialog.some_open" = "These %1$@ are open: %2$@";
+"app_intents.active_entities.filter.all" = "entities";
+"app_intents.active_entities.filter.climates" = "thermostats";
+"app_intents.active_entities.filter.covers" = "covers";
+"app_intents.active_entities.filter.fans" = "fans";
+"app_intents.active_entities.filter.lights" = "lights";
+"app_intents.active_entities.filter.locks" = "locks";
+"app_intents.active_entities.filter.media_players" = "media players";
+"app_intents.active_entities.filter.name" = "Kind";
+"app_intents.active_entities.filter.switches" = "switches";
+"app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
+"app_intents.active_entities.title" = "Get what is on";
 "app_intents.assist.pipeline.default.title" = "기본값";
 "app_intents.assist.pipeline.title" = "파이프라인";
 "app_intents.assist.pipelines.title" = "파이프라인";
 "app_intents.assist.preferred_pipeline.title" = "선호됨";
 "app_intents.assist.refresh_warning.title" = "Assist 파이프라인을 찾을 수 없나요? 앱에서 Assist를 열어 파이프라인 목록을 새로 고칩니다.";
 "app_intents.assist_prompt.description" = "Assist에 텍스트 프롬프트 보내기";
+"app_intents.assist_prompt.pipeline.description" = "Leave empty to use the preferred pipeline of your first server";
 "app_intents.assist_prompt.prompt.title" = "프롬프트";
 "app_intents.assist_prompt.title" = "Assist 프롬프트";
 "app_intents.automations.automation.title" = "자동화";
@@ -101,9 +118,43 @@
 "app_intents.calendar.repeat.weekly" = "매주";
 "app_intents.calendar.repeat.yearly" = "매년";
 "app_intents.closed_state_icon.title" = "닫힘 상태 아이콘";
+"app_intents.control.error.only_turns_on" = "%@ can only be turned on";
+"app_intents.control.error.unsupported" = "%@ can't be turned on or off";
+"app_intents.controllable_entity.entity.name" = "Controllable Entity";
+"app_intents.controllable_entity.parameter.entity" = "Entity";
 "app_intents.controls.assist.parameter.with_voice" = "음성으로";
 "app_intents.controls.assist.title" = "앱에서 Assist";
 "app_intents.cover.title" = "커버";
+"app_intents.dialog.closed" = "Closed %@";
+"app_intents.dialog.locked" = "Locked %@";
+"app_intents.dialog.opened" = "Opened %@";
+"app_intents.dialog.pressed" = "Pressed %@";
+"app_intents.dialog.set_brightness" = "Set %1$@ to %2$li%%";
+"app_intents.dialog.set_temperature" = "Set %1$@ to %2$@";
+"app_intents.dialog.toggled" = "Toggled %@";
+"app_intents.dialog.turned_off" = "Turned off %@";
+"app_intents.dialog.turned_on" = "Turned on %@";
+"app_intents.dimmable_light.entity.name" = "Light";
+"app_intents.entity.property.area" = "Area";
+"app_intents.entity.property.device" = "Device";
+"app_intents.entity.property.entity_id" = "Entity ID";
+"app_intents.entity.property.floor" = "Floor";
+"app_intents.entity.property.name" = "Name";
+"app_intents.entity.property.server" = "Server";
+"app_intents.entity_state.attributes.title" = "Attributes (JSON)";
+"app_intents.entity_state.description" = "Reads the current state of a Home Assistant entity";
+"app_intents.entity_state.device_class.title" = "Device class";
+"app_intents.entity_state.dialog.content" = "%1$@ is %2$@";
+"app_intents.entity_state.domain.title" = "Domain";
+"app_intents.entity_state.entity.name" = "Entity State";
+"app_intents.entity_state.formatted_state.title" = "Formatted state";
+"app_intents.entity_state.is_active.title" = "Is active";
+"app_intents.entity_state.last_changed.title" = "Last changed";
+"app_intents.entity_state.last_updated.title" = "Last updated";
+"app_intents.entity_state.parameter.entity" = "Entity";
+"app_intents.entity_state.state.title" = "State";
+"app_intents.entity_state.title" = "Get entity state";
+"app_intents.entity_state.unit.title" = "Unit of measurement";
 "app_intents.error.failed_servers" = "실패한 서버: %@";
 "app_intents.error.http_status" = "Home Assistant에서 HTTP %li 상태 코드를 반환했습니다";
 "app_intents.error.invalid_response" = "Home Assistant에서 예상하지 못한 응답을 받았습니다";
@@ -139,6 +190,10 @@
 "app_intents.lights.light.title" = "조명";
 "app_intents.lights.off_state_icon.title" = "꺼짐 상태 아이콘";
 "app_intents.lights.on_state_icon.title" = "켜짐 상태 아이콘";
+"app_intents.lock.description" = "Locks a lock. Unlocking is not available by voice.";
+"app_intents.lock.entity.name" = "Lock";
+"app_intents.lock.parameter.entity" = "Lock";
+"app_intents.lock.title" = "Lock";
 "app_intents.notify_when_run.description" = "실행 후 알림 표시";
 "app_intents.notify_when_run.title" = "실행 시 알림";
 "app_intents.open_app_settings.description" = "Companion 앱의 설정 화면을 바로 엽니다.";
@@ -179,6 +234,13 @@
 "app_intents.scripts.show_confirmation_dialog.title" = "확인 알림";
 "app_intents.scripts.success_message.content" = "스크립트 %@ 실행되었습니다";
 "app_intents.server.title" = "서버";
+"app_intents.set_brightness.description" = "Sets a light's brightness as a percentage";
+"app_intents.set_brightness.parameter.brightness" = "Brightness";
+"app_intents.set_brightness.title" = "Set brightness";
+"app_intents.set_temperature.description" = "Sets a thermostat's target temperature, in the unit your server uses";
+"app_intents.set_temperature.parameter.entity" = "Thermostat";
+"app_intents.set_temperature.parameter.temperature" = "Temperature";
+"app_intents.set_temperature.title" = "Set temperature";
 "app_intents.show_confirmation_dialog.description" = "실행 후 확인 알림 표시";
 "app_intents.show_confirmation_dialog.title" = "확인 알림";
 "app_intents.show_entity_details.parameter.entity" = "엔티티";
@@ -186,6 +248,13 @@
 "app_intents.state.target" = "대상 상태";
 "app_intents.state.toggle" = "토글";
 "app_intents.switch.title" = "스위치";
+"app_intents.thermostat.entity.name" = "Thermostat";
+"app_intents.toggle.description" = "Flips an entity to its opposite state";
+"app_intents.toggle.title" = "Toggle";
+"app_intents.turn_off.description" = "Turns off a light, switch or fan, or closes a cover";
+"app_intents.turn_off.title" = "Turn off";
+"app_intents.turn_on.description" = "Turns on a light, switch or fan, or opens a cover";
+"app_intents.turn_on.title" = "Turn on";
 "app_intents.update_location.description" = "Home Assistant에 위치 업데이트 보내기";
 "app_intents.update_location.location.title" = "위치";
 "app_intents.update_location.success" = "모든 서버의 위치가 업데이트되었습니다";
@@ -193,6 +262,18 @@
 "app_intents.update_sensors.description" = "Home Assistant에 센서 업데이트 보내기";
 "app_intents.update_sensors.success" = "모든 서버의 센서가 업데이트되었습니다";
 "app_intents.update_sensors.title" = "센서 업데이트";
+"app_shortcuts.activate_scene.title" = "Activate Scene";
+"app_shortcuts.ask_assist.title" = "Ask Assist";
+"app_shortcuts.close.title" = "Close";
+"app_shortcuts.get_entity_state.title" = "Get Entity State";
+"app_shortcuts.lock.title" = "Lock";
+"app_shortcuts.open.title" = "Open";
+"app_shortcuts.perform_action.title" = "Perform Action";
+"app_shortcuts.set_brightness.title" = "Set Brightness";
+"app_shortcuts.set_temperature.title" = "Set Temperature";
+"app_shortcuts.turn_off.title" = "Turn Off";
+"app_shortcuts.turn_on.title" = "Turn On";
+"app_shortcuts.what_is_on.title" = "What Is On";
 "assist.button.finish_recording.title" = "탭하여 녹음 종료";
 "assist.button.listening.title" = "청취 중...";
 "assist.carplay.playback_help.change_playback.detail" = "Download And Play If Stream Does Not Play Audio In Your Car. 선택";
@@ -1985,11 +2066,13 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_sensors.health.category.heart" = "심장";
 "settings_sensors.health.category.nutrition" = "영양";
 "settings_sensors.health.category.respiratory" = "호흡";
+"settings_sensors.health.category.sleep" = "Sleep";
 "settings_sensors.health.category.vitals" = "활력 징후";
 "settings_sensors.health.error.no_enabled_sensors" = "접근을 요청하기 전에 Apple 건강 센서를 하나 이상 켜세요.";
 "settings_sensors.health.error.unavailable" = "이 기기에서는 Apple 건강을 사용할 수 없습니다.";
 "settings_sensors.health.footer" = "Apple 건강 센서는 아래의 기존 센서별 제어를 사용합니다. 건강 데이터는 일반 센서 업데이트 중에만 읽습니다.";
 "settings_sensors.health.header" = "Apple 건강";
+"settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
 "settings_sensors.health.reload" = "센서 다시 로드";
 "settings_sensors.health.request_access" = "Apple 건강 접근 요청";
 "settings_sensors.health.sensors.enable_all" = "모든 Apple 건강 센서 활성화";
@@ -2599,12 +2682,12 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.settings.refresh" = "새로 고침";
 "watch.settings.restart_app.footer" = "앱이 즉시 닫힙니다. 수동으로 다시 열어야 합니다.";
 "watch.settings.restart_app.title" = "앱 다시 시작";
-"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
-"watch.settings.sensors.last_error" = "Last error: %@";
-"watch.settings.sensors.last_sent" = "Last sent %@";
-"watch.settings.sensors.never_sent" = "Not sent yet";
-"watch.settings.sensors.status_header" = "Status";
-"watch.settings.sensors.title" = "Sensors";
+"watch.settings.sensors.footer" = "Apple Watch는 iPhone과 별개의 기기로서 이 센서 데이터를 Home Assistant에 직접 전송합니다. 센서를 켜기 전에는 아무 데이터도 전송하지 않습니다.";
+"watch.settings.sensors.last_error" = "마지막 오류: %@";
+"watch.settings.sensors.last_sent" = "마지막 전송 %@";
+"watch.settings.sensors.never_sent" = "아직 전송되지 않음";
+"watch.settings.sensors.status_header" = "상태";
+"watch.settings.sensors.title" = "센서";
 "watch.settings.server.needs_attention" = "확인 필요";
 "watch.settings.servers.header" = "서버";
 "watch.settings.title" = "설정";
@@ -2631,6 +2714,11 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "web_view.add_to.option.Widget.title" = "위젯";
 "web_view.empty_state.body" = "연결 상태를 확인하거나 나중에 다시 시도해 주세요. Home Assistant가 다시 시작되는 경우, 온라인 상태가 되면 다시 연결됩니다.";
 "web_view.empty_state.clean_cache_and_reload_button" = "캐시 정리 후 다시 로드";
+"web_view.empty_state.client_certificate.import_button" = "Import certificate";
+"web_view.empty_state.client_certificate.rejected.body" = "%@ refused the client certificate configured on this device. It may have expired, been revoked or been replaced on the server. Import a valid certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.rejected.title" = "Certificate rejected";
+"web_view.empty_state.client_certificate.required.body" = "%@ requires a client certificate (mTLS), but none is configured for this server on this device. Import your certificate file (.p12 or .pfx) to continue.";
+"web_view.empty_state.client_certificate.required.title" = "Certificate required";
 "web_view.empty_state.logged_out.body" = "이 서버에서 로그아웃되었습니다. 이 기기에서 계속 사용하려면 다시 로그인하세요.";
 "web_view.empty_state.logged_out.login_button" = "로그인";
 "web_view.empty_state.logged_out.title" = "로그아웃됨";
@@ -2649,49 +2737,49 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "whats_new.app_support_update.item_body" = "이것은 iOS 15, watchOS 8, macOS 11 및 이전 버전에 대한 마지막 업데이트입니다. 자세한 내용을 보려면 탭하세요.";
 "whats_new.app_support_update.item_title" = "iOS 15, watchOS 8, macOS 11 지원이 종료됩니다";
 "whats_new.app_support_update.title" = "앱 지원 업데이트";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+"whats_new.energy_widget.article_body" = "새로운 **에너지** 위젯으로 홈 화면과 잠금 화면에서 에너지 대시보드를 볼 수 있습니다.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**표시되는 정보**\
+오늘, 어제, 이번 주 또는 이번 달 중 선택한 기간의 전력망, 태양광, 배터리 및 가스 정보를 표시합니다. 우선 표시할 에너지원을 직접 선택하거나 자동으로 선택되도록 할 수 있습니다. 전력 센서가 설정되어 있으면 소형 위젯과 잠금 화면 위젯에 실시간 전력이 표시되고, 더 넓은 위젯에는 선택한 기간의 에너지원별 합계가 표시됩니다.\
 \
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
+**추가 방법**\
+홈 화면을 길게 누르고 상단 모서리의 추가 버튼을 탭한 다음 Home Assistant를 검색하여 에너지를 선택하세요. 잠금 화면에서는 화면을 길게 누르고 사용자화를 탭한 다음 위젯을 추가하세요. Home Assistant에 에너지 대시보드가 구성되어 있어야 합니다.";
+"whats_new.energy_widget.item_body" = "홈 화면과 잠금 화면에서 집의 에너지 사용량, 생산량, 저장량을 한눈에 확인하세요. 자세히 알아보려면 탭하세요.";
+"whats_new.energy_widget.item_title" = "에너지 위젯";
+"whats_new.energy_widget.mac.article_body" = "새로운 **에너지** 위젯으로 데스크탑에서 에너지 대시보드를 볼 수 있습니다.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**표시되는 정보**\
+오늘, 어제, 이번 주 또는 이번 달 중 선택한 기간의 전력망, 태양광, 배터리 및 가스 정보를 표시합니다. 우선 표시할 에너지원을 직접 선택하거나 자동으로 선택되도록 할 수 있습니다. 전력 센서가 설정되어 있으면 소형 위젯에 실시간 전력이 표시되고, 더 넓은 위젯에는 선택한 기간의 에너지원별 합계가 표시됩니다.\
 \
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
+**추가 방법**\
+데스크탑을 마우스 오른쪽 버튼으로 클릭하고 위젯 편집을 선택한 다음 Home Assistant를 검색하여 에너지를 선택하세요. Home Assistant에 에너지 대시보드가 구성되어 있어야 합니다.";
+"whats_new.energy_widget.mac.item_body" = "데스크탑에서 집의 에너지 사용량, 생산량, 저장량을 한눈에 확인하세요. 자세히 알아보려면 탭하세요.";
 "whats_new.item.opens_article_hint" = "기사 열기";
 "whats_new.item.opens_link_hint" = "링크 열기";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
+"whats_new.live_activities.item_body" = "잠금 화면과 Dynamic Island에서 타이머, 작동 중인 가전제품 등 진행 중인 작업을 확인하세요. 알림으로 실시간 현황을 시작하는 방법을 알아보려면 탭하세요.";
+"whats_new.live_activities.item_title" = "실시간 현황";
 "whats_new.title" = "컴패니언 앱의 새로운 기능";
 "whats_new.version_format" = "버전 %@";
-"widgets.action.name.activate" = "Activate";
+"widgets.action.name.activate" = "활성화";
 "widgets.action.name.assist" = "Assist";
-"widgets.action.name.close" = "Close";
+"widgets.action.name.close" = "닫기";
 "widgets.action.name.default" = "기본값";
-"widgets.action.name.default_action_%@" = "Default (%@)";
-"widgets.action.name.lock" = "Lock";
-"widgets.action.name.main_action" = "Main action";
+"widgets.action.name.default_action_%@" = "기본값 (%@)";
+"widgets.action.name.lock" = "잠그기";
+"widgets.action.name.main_action" = "기본 액션";
 "widgets.action.name.moreInfoDialog" = "추가 정보";
 "widgets.action.name.navigate" = "이동하기";
 "widgets.action.name.nothing" = "아무것도 안 함";
-"widgets.action.name.open" = "Open";
+"widgets.action.name.open" = "열기";
 "widgets.action.name.perform_action" = "액션 실행";
-"widgets.action.name.press" = "Press";
-"widgets.action.name.run" = "Run";
+"widgets.action.name.press" = "누르기";
+"widgets.action.name.run" = "실행";
 "widgets.action.name.run_script" = "스크립트 실행";
 "widgets.action.name.toggle" = "토글";
-"widgets.action.name.trigger" = "Trigger";
-"widgets.action.name.turn_off" = "Turn off";
-"widgets.action.name.turn_on" = "Turn on";
-"widgets.action.name.unlock" = "Unlock";
+"widgets.action.name.trigger" = "트리거";
+"widgets.action.name.turn_off" = "끄기";
+"widgets.action.name.turn_on" = "켜기";
+"widgets.action.name.unlock" = "잠금 해제";
 "widgets.action.name.url" = "URL";
 "widgets.actions.description" = "Home Assistant 동작을 수행합니다.";
 "widgets.actions.not_configured" = "구성된 동작 없음";
