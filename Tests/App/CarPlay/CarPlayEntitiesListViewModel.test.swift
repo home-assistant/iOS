@@ -161,7 +161,8 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         let presenter = FakeCarPlayAlertPresenter()
         template.alertPresenterOverride = presenter
 
-        sut.handleEntityTap(entity: entity) {}
+        let settled = expectation(description: "execution settled")
+        sut.handleEntityTap(entity: entity, executionFinished: { settled.fulfill() }, completion: {})
         XCTAssertTrue(connection.pendingRequests.isEmpty)
 
         let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
@@ -169,6 +170,9 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         confirm.handler(confirm)
 
         XCTAssertEqual(connection.pendingRequests.count, 1)
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        request.completion(.success(.empty))
+        wait(for: [settled], timeout: 2)
     }
 
     /// The rendered rows carry the same repeat-tap guard the view model does.

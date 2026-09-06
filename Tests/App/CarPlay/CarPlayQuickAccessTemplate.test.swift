@@ -184,6 +184,55 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         drainMainQueue()
 
         XCTAssertEqual(connection.pendingRequests.count, 1)
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        request.completion(.success(.empty))
+        drainMainQueue()
+    }
+
+    /// A lock whose server is gone can't run, and the driver has to be told rather than left with a
+    /// row that quietly did nothing.
+    func testALockRowWhoseServerIsGoneRunsNothing() throws {
+        connectAPI()
+        let presenter = FakeCarPlayAlertPresenter()
+        sut.alertPresenterOverride = presenter
+        let orphan = MagicItem(id: "lock.front_door", serverId: "gone", type: .entity)
+        let rendered = rows(for: [orphan])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let confirm = try XCTUnwrap(alert.actions.last)
+        confirm.handler(confirm)
+        drainMainQueue()
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
+    /// A lock on a server the app can't reach: same, but the reason is the connection.
+    func testALockRowWithoutAReachableServerRunsNothing() throws {
+        connectAPI()
+        let unreachable = Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+        let servers = try XCTUnwrap(Current.servers as? FakeServerManager)
+        servers.add(identifier: unreachable.identifier, serverInfo: unreachable.info)
+        let presenter = FakeCarPlayAlertPresenter()
+        sut.alertPresenterOverride = presenter
+        let item = MagicItem(
+            id: "lock.front_door",
+            serverId: unreachable.identifier.rawValue,
+            type: .entity
+        )
+        let rendered = rows(for: [item])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let confirm = try XCTUnwrap(alert.actions.last)
+        confirm.handler(confirm)
+        drainMainQueue()
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
     func testCancellingALockConfirmationRunsNothing() throws {
