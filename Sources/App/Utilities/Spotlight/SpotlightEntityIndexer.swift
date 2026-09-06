@@ -49,6 +49,7 @@ final class SpotlightEntityIndexer: ServerObserver {
     private var databaseObserver: NSObjectProtocol?
     private var backgroundObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
+    private var exposureObserver: NSObjectProtocol?
     private var reindexTask: Task<Void, Never>?
     /// Set when a pass was cancelled or deferred because the app left the foreground, so the next
     /// foreground redoes it instead of waiting for another database update.
@@ -88,6 +89,17 @@ final class SpotlightEntityIndexer: ServerObserver {
                 Task { @MainActor in
                     self?.reindexAfterForegroundIfNeeded()
                 }
+            }
+        }
+        // Changing which servers Siri may use has to take effect now, not at the next database
+        // update: the index and the App Shortcut parameters are what actually carry the change.
+        exposureObserver = NotificationCenter.default.addObserver(
+            forName: .siriEntityExposureDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.scheduleReindex(reason: "Siri exposure changed")
             }
         }
         Current.servers.add(observer: self)
@@ -208,7 +220,13 @@ final class SpotlightEntityIndexer: ServerObserver {
     /// which would otherwise bury the entities people search for under firmware versions and signal
     /// strengths.
     private nonisolated static func makeSnapshot() -> Snapshot? {
-        let servers = Current.servers.all.sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+        // A server the user opted out of is left out of the index entirely, which is what removes
+        // its entities from Spotlight search. The signature covers the choice too, so toggling it
+        // is a change the next pass acts on rather than one it skips as unchanged.
+        let hiddenServerIds = SiriServerExposure.hiddenServerIds()
+        let servers = Current.servers.all
+            .filter { !hiddenServerIds.contains($0.identifier.rawValue) }
+            .sorted { $0.identifier.rawValue < $1.identifier.rawValue }
         let includesServerContext = servers.count > 1
 
         let allEntities: [HAAppEntity]
@@ -220,7 +238,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         var entities: [HAAppEntityAppIntentEntity] = []
-        var signatureLines = ["serverContext=\(includesServerContext)"]
+        var signatureLines = ["serverContext=\(includesServerContext)", "hidden=\(hiddenServerIds.sorted().joined(separator: ","))"]
 
         for server in servers {
             let serverId = server.identifier.rawValue
@@ -257,7 +275,9 @@ final class SpotlightEntityIndexer: ServerObserver {
             }
         }
 
-        let calendars = HACalendar.all().map(HACalendarAppEntity.init(calendar:))
+        let calendars = HACalendar.all()
+            .filter { !hiddenServerIds.contains($0.serverId) }
+            .map(HACalendarAppEntity.init(calendar:))
         for calendar in calendars {
             signatureLines.append([
                 "calendar",

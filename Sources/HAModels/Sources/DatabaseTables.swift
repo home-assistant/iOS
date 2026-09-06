@@ -39,6 +39,7 @@ public enum GRDBDatabaseTable: String {
     case remindersSyncHistoryEntry
     // Focus names the user pairs with an iOS Focus Filter
     case focusName
+    case siriServerExposure
     // Calendar entities mirrored from Home Assistant
     case HACalendar = "hACalendar"
     // Events cached from the calendars above, so a fetch failure can fall back to them
@@ -381,6 +382,12 @@ public enum DatabaseTables {
 
     // Focus names paired with an iOS Focus Filter. Column names must match `FocusName`'s stored
     // properties.
+    /// Whether a server's entities may be offered to Siri, Spotlight and the Shortcuts app.
+    public enum SiriServerExposure: String, CaseIterable {
+        case serverId
+        case isExposed
+    }
+
     public enum FocusName: String, CaseIterable {
         case id
         case name

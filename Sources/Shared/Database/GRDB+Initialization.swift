@@ -88,6 +88,7 @@ public extension DatabaseQueue {
             RemindersSyncItemLinkTable(),
             RemindersSyncHistoryEntryTable(),
             FocusNameTable(),
+            SiriServerExposureTable(),
             HACalendarTable(),
             HACalendarEventTable(),
         ]

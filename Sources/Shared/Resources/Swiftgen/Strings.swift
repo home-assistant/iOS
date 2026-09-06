@@ -6141,6 +6141,8 @@ public enum L10n {
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
       public static var servers: String { return L10n.tr("Localizable", "settings.search_keywords.servers") }
+      /// siri, shortcuts, spotlight, voice, assistant
+      public static var siri: String { return L10n.tr("Localizable", "settings.search_keywords.siri") }
       /// apple watch, watchos, configuration
       public static var watch: String { return L10n.tr("Localizable", "settings.search_keywords.watch") }
       /// home screen, lock screen, custom widgets
@@ -6226,6 +6228,20 @@ public enum L10n {
           /// Home network first
           public static var title: String { return L10n.tr("Localizable", "settings.server_switching.how_it_works.wifi.title") }
         }
+      }
+    }
+    public enum Siri {
+      /// Choose which servers Siri can use
+      public static var subtitle: String { return L10n.tr("Localizable", "settings.siri.subtitle") }
+      /// Siri
+      public static var title: String { return L10n.tr("Localizable", "settings.siri.title") }
+      public enum Servers {
+        /// No servers yet
+        public static var empty: String { return L10n.tr("Localizable", "settings.siri.servers.empty") }
+        /// Turning a server off removes its entities from Siri, from Spotlight search, and from the Shortcuts app. Shortcuts you already built with those entities will stop finding them. Widgets and controls are not affected.
+        public static var footer: String { return L10n.tr("Localizable", "settings.siri.servers.footer") }
+        /// Servers
+        public static var header: String { return L10n.tr("Localizable", "settings.siri.servers.header") }
       }
     }
     public enum StatusSection {

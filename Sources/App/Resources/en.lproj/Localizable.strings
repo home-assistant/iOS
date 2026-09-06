@@ -1857,6 +1857,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.reminders_sync" = "reminders, todo, to-do, tasks, lists, shopping list, sync";
 "settings.search_keywords.sensors" = "battery, motion, pedometer, focus, device data";
 "settings.search_keywords.servers" = "connection, url, account, instance, add server";
+"settings.search_keywords.siri" = "siri, shortcuts, spotlight, voice, assistant";
 "settings.search_keywords.watch" = "apple watch, watchos, configuration";
 "settings.search_keywords.widgets" = "home screen, lock screen, custom widgets";
 "settings.sections.customize_experience.header" = "Customize your experience";
@@ -1882,6 +1883,11 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_switching.how_it_works.wifi.title" = "Home network first";
 "settings.server_switching.switched_toast" = "Switched to %@";
 "settings.server_switching.title" = "Server Switching";
+"settings.siri.servers.empty" = "No servers yet";
+"settings.siri.servers.footer" = "Turning a server off removes its entities from Siri, from Spotlight search, and from the Shortcuts app. Shortcuts you already built with those entities will stop finding them. Widgets and controls are not affected.";
+"settings.siri.servers.header" = "Servers";
+"settings.siri.subtitle" = "Choose which servers Siri can use";
+"settings.siri.title" = "Siri";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";
