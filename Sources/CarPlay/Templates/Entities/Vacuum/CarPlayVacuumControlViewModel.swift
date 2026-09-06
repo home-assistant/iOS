@@ -81,22 +81,30 @@ final class CarPlayVacuumControlViewModel {
     /// when the picker opens rather than kept in sync.
     func loadCleanableAreas(completion: @escaping () -> Void) {
         guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to load vacuum area mapping for \(entityId)")
+            templateProvider?.presentOperationFailure(.noConnection)
             completion()
             return
         }
         isLoadingAreas = true
+        let entityId = entityId
+        // The mapping request is queued rather than rejected while the connection is down, so
+        // without a deadline the picker would sit on "Loading…" for the rest of the drive.
+        let deadline = CarPlayOperationDeadline(server: server) { [weak self] error in
+            self?.isLoadingAreas = false
+            completion()
+            guard let error else { return }
+            self?.templateProvider?.presentOperationFailure(error)
+        }
         connection.send(.vacuumAreaMapping(entityId: entityId)).promise
             .done { [weak self] mapping in
-                guard let self else { return }
-                cleanableAreas = Self.resolveAreas(ids: mapping.areaIds, serverId: server.identifier.rawValue)
+                if let self {
+                    cleanableAreas = Self.resolveAreas(ids: mapping.areaIds, serverId: server.identifier.rawValue)
+                }
+                deadline.succeed()
             }
             .catch { error in
-                Current.Log.error("Failed to load vacuum area mapping for \(self.entityId): \(error)")
-            }
-            .finally { [weak self] in
-                self?.isLoadingAreas = false
-                completion()
+                Current.Log.error("Failed to load vacuum area mapping for \(entityId): \(error)")
+                deadline.fail(error)
             }
     }
 
@@ -143,16 +151,22 @@ final class CarPlayVacuumControlViewModel {
 
     private func send(service: Service, data: [String: Any] = [:]) {
         guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available for CarPlay vacuum service call on \(entityId)")
+            templateProvider?.presentOperationFailure(.noConnection)
             return
+        }
+        let entityId = entityId
+        let deadline = CarPlayOperationDeadline(server: server) { [weak self] error in
+            guard let error else { return }
+            self?.templateProvider?.presentOperationFailure(error)
         }
         connection.send(.callEntityService(domain: .vacuum, service, entityId: entityId, data: data)).promise
             .done { _ in
-                Current.Log.verbose("CarPlay vacuum \(service.rawValue) succeeded for \(self.entityId)")
+                Current.Log.verbose("CarPlay vacuum \(service.rawValue) succeeded for \(entityId)")
+                deadline.succeed()
             }
-            .catch { [weak self] error in
-                guard let self else { return }
+            .catch { error in
                 Current.Log.error("CarPlay vacuum \(service.rawValue) failed for \(entityId): \(error)")
+                deadline.fail(error)
             }
     }
 }

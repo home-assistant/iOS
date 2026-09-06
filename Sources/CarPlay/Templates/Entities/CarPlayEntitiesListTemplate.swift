@@ -83,6 +83,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private func listItems(entityProviders: [CarPlayEntityListItem]) -> [CPListItem] {
         entityProviders.map { entityProvider in
             entityProvider.template.handler = { [weak self] _, completion in
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !entityProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: entityProvider.entity,
                     executionStarted: { [weak self] in
@@ -124,6 +129,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
                     return
                 }
                 let selectedProvider = rowProviders[index]
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !selectedProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: selectedProvider.entity,
                     executionStarted: { [weak self] in

@@ -49,6 +49,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var entitiesPerServer: [String: HACachedStates] = [:]
     private var lastKnownEntities: [String: HAEntity] = [:]
     private var executingItemIds: Set<String> = []
+    /// Items whose action hasn't reported back yet. Deliberately not `executingItemIds`, which
+    /// lingers a moment past the call so the "Executing…" subtitle doesn't flash by — a tap in that
+    /// window is a legitimate second action.
+    private var inFlightItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
     private var activeAssistSession: AnyObject?
@@ -264,6 +268,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func beginExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.insert(key)
         pendingExecutingClearWorkItems[key]?.cancel()
         pendingExecutingClearWorkItems[key] = nil
         executingItemIds.insert(key)
@@ -273,6 +278,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func endExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.remove(key)
         guard executingItemIds.contains(key) else { return }
 
         pendingExecutingClearWorkItems[key]?.cancel()
@@ -721,6 +727,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
 
+        // A second tap while the first call is still in flight would run the action twice, and on a
+        // slow connection the row sits on "Executing…" long enough to invite one.
+        guard !inFlightItemIds.contains(executionKey(for: magicItem)) else { return }
+
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
@@ -747,11 +757,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for control screen magic item id: \(magicItem.id)")
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
         guard let entity = resolvedEntity(for: magicItem) else {
             Current.Log.error("Failed to resolve entity for control screen magic item id: \(magicItem.id)")
+            presentOperationFailure(.resolve(underlying: nil, server: server))
             return
         }
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
@@ -767,15 +778,17 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
-        magicItem.execute(on: server, source: .CarPlay) { success, _ in
-            if !success {
-                Current.Log.error("Failed executing quick access magic item id: \(magicItem.id)")
+        let deadline = makeDeadline(server: server, executionFinished: completion)
+        magicItem.execute(on: server, source: .CarPlay) { success, error in
+            if success {
+                deadline.succeed()
+            } else {
+                deadline.fail(error)
             }
-            completion()
         }
     }
 
@@ -788,27 +801,38 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for lock magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
 
         guard let api = Current.api(for: server) else {
-            Current.Log.error("No API available to execute lock entity")
             completion()
+            presentOperationFailure(.noConnection)
             return
         }
 
+        let deadline = makeDeadline(server: server, executionFinished: completion)
         // Use shared execution method for consistency across all CarPlay templates
         CarPlayLockConfirmation.execute(
             entityId: magicItem.id,
             currentState: currentState,
             api: api
-        ) { success in
-            if !success {
-                Current.Log.error("Failed executing quick access lock entity id: \(magicItem.id)")
+        ) { error in
+            if let error {
+                deadline.fail(error)
+            } else {
+                deadline.succeed()
             }
-            completion()
+        }
+    }
+
+    /// A deadline that settles the row and, on failure, tells the driver why.
+    private func makeDeadline(server: Server, executionFinished: @escaping () -> Void) -> CarPlayOperationDeadline {
+        CarPlayOperationDeadline(server: server) { [weak self] error in
+            executionFinished()
+            guard let error else { return }
+            self?.presentOperationFailure(error)
         }
     }
 
