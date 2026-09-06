@@ -90,7 +90,9 @@ struct ControllableEntityAppEntityQueryTests {
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids.contains("light.kitchen"))
-            #expect(ids.contains("cover.garage"))
+            // A cover is offered by the open and close command instead, where the wording matches
+            // the service it calls.
+            #expect(!ids.contains("cover.garage"))
             // A scene is offered, though only "turn on" reaches it.
             #expect(ids.contains("scene.movie"))
             // Nothing to switch on a sensor.
@@ -111,6 +113,18 @@ struct ControllableEntityAppEntityQueryTests {
             #expect(resolved.first?.entityId == "switch.desk")
             #expect(resolved.first?.displayString == "Desk")
             #expect(resolved.first?.domain == .switch)
+        }
+    }
+
+    /// Covers are not offered any more, but resolution stays wider than the suggestions: an id that
+    /// reaches this query still has to resolve, wherever it came from.
+    @Test func resolvesACoverEvenThoughItIsNoLongerOffered() async throws {
+        try await withFakeServer { serverId in
+            let entity = Self.makeEntity(serverId: serverId, entityId: "cover.garage", name: "Garage")
+            try await seed(serverId: serverId, entities: [entity])
+            try await seedArea(serverId: serverId, name: "Garage", entities: ["cover.garage"])
+            let resolved = try await ControllableEntityAppEntityQuery().entities(for: [entity.id])
+            #expect(resolved.first?.entityId == "cover.garage")
         }
     }
 
