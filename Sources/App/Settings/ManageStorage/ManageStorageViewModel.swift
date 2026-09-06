@@ -68,13 +68,18 @@ final class ManageStorageViewModel: ObservableObject {
     }
 
     func load() async {
+        // Pull to refresh and the first appearance can both start a load. Two passes would race:
+        // the first to finish would clear `isLoading` while the other was still measuring, and the
+        // last to finish would overwrite `items` with whichever sizes it happened to hold.
+        guard !isLoading else { return }
         isLoading = true
+        defer { isLoading = false }
+
         var measured = items
         for index in measured.indices {
             measured[index].byteCount = await measurer.byteCount(of: measured[index])
         }
         items = measured
-        isLoading = false
     }
 
     /// Asks for confirmation rather than deleting straight away — every row here is cheap to lose

@@ -3,6 +3,10 @@ import GRDB
 import Shared
 
 /// Reports how much space a storage source currently occupies.
+///
+/// Implementations must keep their work off the main actor. `SWIFT_APPROACHABLE_CONCURRENCY` is on
+/// for this project, so a nonisolated `async` function runs on its caller's executor — being `async`
+/// is not on its own enough to keep a directory walk off the main thread.
 protocol ManageStorageMeasuring {
     func byteCount(of item: ManageStorageItem) async -> Int64
 }
@@ -11,8 +15,9 @@ protocol ManageStorageMeasuring {
 /// stored column values for database-backed rows.
 ///
 /// Everything it touches is injected, so a test can point it at a temporary directory and assert on
-/// byte counts it wrote itself.
-struct ManageStorageMeasurer: ManageStorageMeasuring {
+/// byte counts it wrote itself. It is an actor so the traversal runs on its own executor rather than
+/// on the main one, where the `@MainActor` view model calls it from.
+actor ManageStorageMeasurer: ManageStorageMeasuring {
     let fileManager: FileManager
     let database: () -> DatabaseQueue
     let networkResponseCacheByteCount: () -> Int64
@@ -55,15 +60,17 @@ struct ManageStorageMeasurer: ManageStorageMeasuring {
         }
 
         // No error handler: the default keeps walking past an unreadable subfolder, which is what
-        // this wants — one locked folder should not cost the row the rest of its size.
-        let children = fileManager.enumerator(
+        // this wants — one locked folder should not cost the row the rest of its size. The
+        // enumerator is stepped lazily: a WebKit cache can hold a lot of files, and collecting them
+        // all first would cost the memory for nothing.
+        let enumerator = fileManager.enumerator(
             at: url,
             includingPropertiesForKeys: Self.resourceKeys,
             options: []
-        )?.allObjects ?? []
+        )
 
         var total: Int64 = 0
-        for case let child as URL in children {
+        while let child = enumerator?.nextObject() as? URL {
             total += allocatedSize(of: child)
         }
         return total

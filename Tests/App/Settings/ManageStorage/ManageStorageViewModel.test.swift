@@ -44,6 +44,25 @@ struct ManageStorageViewModelTests {
         #expect(!viewModel.isLoading)
     }
 
+    @Test func aLoadStartedWhileOneIsRunningIsIgnored() async {
+        let measurer = ManageStorageMeasurerMock()
+        let viewModel = ManageStorageViewModel(
+            paths: paths,
+            isCatalyst: false,
+            hasCompletedLegacyStoreMigration: true,
+            measurer: measurer,
+            cleaner: ManageStorageCleanerMock()
+        )
+        // Re-enter the view model from inside the first measurement, which is what pull to refresh
+        // does while the load started on appearance is still running.
+        measurer.duringFirstMeasurement = { await viewModel.load() }
+
+        await viewModel.load()
+
+        #expect(measurer.measured.count == ManageStorageItemID.allCases.count)
+        #expect(!viewModel.isLoading)
+    }
+
     @Test func theTotalLeavesOutRowsStoredInsideTheDatabase() async {
         let (viewModel, _, _) = makeViewModel(byteCounts: [
             .appDatabase: 1000,

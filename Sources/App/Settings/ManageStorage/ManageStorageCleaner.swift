@@ -3,13 +3,19 @@ import GRDB
 import Shared
 
 /// Frees the space a storage source occupies.
+///
+/// Implementations must keep their work off the main actor, for the same reason as
+/// `ManageStorageMeasuring`.
 protocol ManageStorageCleaning {
     func clean(_ item: ManageStorageItem) async throws
 }
 
 /// The real cleaner. It only ever runs against a source the inventory marked deletable — the view
 /// model refuses protected rows before it gets here — so it does not second-guess what it is given.
-struct ManageStorageCleaner: ManageStorageCleaning {
+///
+/// An actor, so deleting files and the `DELETE`/`VACUUM` pair run on its own executor instead of
+/// blocking the main one while a large database is compacted.
+actor ManageStorageCleaner: ManageStorageCleaning {
     let fileManager: FileManager
     let database: () -> DatabaseQueue
     let cleanWebsiteData: (Set<String>) async -> Void
