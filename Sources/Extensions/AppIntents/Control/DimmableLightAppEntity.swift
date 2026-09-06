@@ -8,7 +8,7 @@ import Shared
 struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
         "app_intents.dimmable_light.entity.name",
-        defaultValue: "DimmableLight"
+        defaultValue: "Light"
     ))
 
     static let defaultQuery = DimmableLightAppEntityQuery()

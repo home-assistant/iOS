@@ -1,38 +1,23 @@
 /* Spoken phrases for the App Shortcuts. The key is the English phrase exactly as written in code.
-   ${applicationName} is the app name and must stay in every phrase; ${entity}, ${light}, ${scene}
-   and ${filter} are replaced by what the person says. Translate the wording around them. */
+   ${applicationName} is the app name and must stay in every phrase; ${entity}, ${scene} and
+   ${filter} are replaced by what the person says. Translate the wording around them. */
 
-"${applicationName} activate ${scene}" = "${applicationName} activate ${scene}";
 "Activate ${scene} in ${applicationName}" = "Activate ${scene} in ${applicationName}";
 "Activate the ${scene} scene in ${applicationName}" = "Activate the ${scene} scene in ${applicationName}";
 "Activate a scene in ${applicationName}" = "Activate a scene in ${applicationName}";
-"${applicationName} turn on ${entity}" = "${applicationName} turn on ${entity}";
 "Turn on ${entity} in ${applicationName}" = "Turn on ${entity} in ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Open ${entity} in ${applicationName}";
 "Turn something on in ${applicationName}" = "Turn something on in ${applicationName}";
-"${applicationName} turn off ${entity}" = "${applicationName} turn off ${entity}";
 "Turn off ${entity} in ${applicationName}" = "Turn off ${entity} in ${applicationName}";
 "Close ${entity} in ${applicationName}" = "Close ${entity} in ${applicationName}";
 "Turn something off in ${applicationName}" = "Turn something off in ${applicationName}";
-"${applicationName} is ${entity} on" = "${applicationName} is ${entity} on";
 "Check an entity in ${applicationName}" = "Check an entity in ${applicationName}";
 "Get an entity state from ${applicationName}" = "Get an entity state from ${applicationName}";
 "Is ${entity} on in ${applicationName}" = "Is ${entity} on in ${applicationName}";
 "What is the state of ${entity} in ${applicationName}" = "What is the state of ${entity} in ${applicationName}";
-"${applicationName} assist" = "${applicationName} assist";
 "Ask ${applicationName}" = "Ask ${applicationName}";
 "Ask ${applicationName} Assist" = "Ask ${applicationName} Assist";
 "Talk to ${applicationName}" = "Talk to ${applicationName}";
-"${applicationName} lock ${entity}" = "${applicationName} lock ${entity}";
-"Lock ${entity} in ${applicationName}" = "Lock ${entity} in ${applicationName}";
-"Lock something in ${applicationName}" = "Lock something in ${applicationName}";
-"${applicationName} set a temperature" = "${applicationName} set a temperature";
-"Set a temperature in ${applicationName}" = "Set a temperature in ${applicationName}";
-"Set ${entity} temperature in ${applicationName}" = "Set ${entity} temperature in ${applicationName}";
-"${applicationName} dim ${light}" = "${applicationName} dim ${light}";
-"Set a brightness in ${applicationName}" = "Set a brightness in ${applicationName}";
-"Dim ${light} in ${applicationName}" = "Dim ${light} in ${applicationName}";
-"${applicationName} what ${filter} are on" = "${applicationName} what ${filter} are on";
 "What ${filter} are on in ${applicationName}" = "What ${filter} are on in ${applicationName}";
 "Which ${filter} are on in ${applicationName}" = "Which ${filter} are on in ${applicationName}";
 "What is on in ${applicationName}" = "What is on in ${applicationName}";
