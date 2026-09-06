@@ -88,6 +88,15 @@ struct DebugView: View {
                     )
                 }
 
+                NavigationLink {
+                    ManageStorageView(viewModel: ManageStorageViewModel())
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .externaldriveConnectedToLineBelow),
+                        title: L10n.Settings.Debugging.ManageStorage.title
+                    )
+                }
+
                 if #available(iOS 17, *), !Current.isCatalyst {
                     NavigationLink {
                         ThreadCredentialsManagementView()
@@ -967,6 +976,7 @@ extension DebugView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.LocationHistory.title),
             SettingsSearchEntry(L10n.Settings.DatabaseExplorer.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ConfigurationTransfer.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.ManageStorage.title),
             SettingsSearchEntry(L10n.Settings.Debugging.CachedEntityData.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ClearWebCache.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ResetApp.title),

@@ -93,6 +93,12 @@ public enum RealmToGRDBMigration {
     static let migrationAttemptsKey = "realmToGRDBMigrationAttemptsV2"
     static let maxMigrationAttempts = 3
 
+    /// Whether the importer has finished with the legacy store, which is what makes the store on
+    /// disk safe to delete: until it flips, that store is still the only copy of what it holds.
+    public static var hasCompletedMigration: Bool {
+        Current.settingsStore.prefs.bool(forKey: migrationCompletedKey)
+    }
+
     public static func migrateIfNeeded() {
         guard NSClassFromString("XCTest") == nil else { return }
 
