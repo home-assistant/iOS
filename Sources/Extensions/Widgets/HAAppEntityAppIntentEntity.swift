@@ -30,10 +30,14 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// groups entities under a per-server section.
     var includesServerContext: Bool
 
+    /// The icon is the entity's own Material Design glyph rather than an SF Symbol: Home Assistant
+    /// lets people choose an icon per entity, and mapping those onto SF Symbols would throw that
+    /// choice away. `EntityIconRenderer` memoizes by icon name, so a long picker redraws cheaply.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
+            image: EntityIconRenderer.thumbnailData(iconName: iconName).map { .init(data: $0) }
         )
     }
 

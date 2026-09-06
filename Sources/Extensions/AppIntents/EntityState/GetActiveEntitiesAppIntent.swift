@@ -12,11 +12,11 @@ struct GetActiveEntitiesAppIntent: AppIntent {
 
     static let description = IntentDescription(.init(
         "app_intents.active_entities.description",
-        defaultValue: "Lists the entities of a kind that are currently on or open"
+        defaultValue: "Lists the entities of a kind that are currently in the state you ask for"
     ))
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Get \(\.$filter) that are on")
+        Summary("Get \(\.$filter) that are \(\.$state)")
     }
 
     @Parameter(
@@ -25,12 +25,18 @@ struct GetActiveEntitiesAppIntent: AppIntent {
     )
     var filter: ActiveEntitiesFilterAppEnum
 
+    @Parameter(
+        title: .init("app_intents.active_entities.state.name", defaultValue: "State"),
+        default: .on
+    )
+    var state: EntityStateFilterAppEnum
+
     func perform() async throws -> some IntentResult & ReturnsValue<[HAEntityStateAppEntity]> & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
-        let active = try await ActiveEntitiesFinder.active(matching: filter)
+        let active = try await ActiveEntitiesFinder.active(matching: filter, state: state)
         return .result(
             value: active,
-            dialog: .init(stringLiteral: ActiveEntitiesFinder.dialog(for: active, filter: filter))
+            dialog: .init(stringLiteral: ActiveEntitiesFinder.dialog(for: active, filter: filter, state: state))
         )
     }
 }

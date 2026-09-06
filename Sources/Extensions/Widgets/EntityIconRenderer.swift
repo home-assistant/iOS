@@ -2,12 +2,13 @@ import Foundation
 import Shared
 import UIKit
 
-/// Renders the Material Design icon an entity resolves to as PNG data for its Spotlight result.
+/// Renders the Material Design icon an entity resolves to as PNG data, for Spotlight results and
+/// for the entity's App Intents display representation.
 ///
 /// Drawn in Home Assistant blue rather than black so the glyph stays visible in both light and dark
-/// appearances (Spotlight shows the thumbnail as-is), and memoized by icon name because the same few
-/// glyphs repeat across thousands of entities.
-enum SpotlightEntityIconRenderer {
+/// appearances (neither surface tints it), and memoized by icon name because the same few glyphs
+/// repeat across thousands of entities.
+enum EntityIconRenderer {
     static func thumbnailData(iconName: String) -> Data? {
         let key = iconName as NSString
         if let cached = cache.object(forKey: key) {
