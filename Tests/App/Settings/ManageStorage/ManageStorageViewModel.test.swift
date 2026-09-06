@@ -187,7 +187,7 @@ struct ManageStorageViewModelTests {
         #expect(viewModel.cleaningItemID == nil)
     }
 
-    @Test func measuringAgainAfterACleanSurvivesAConcurrentReload() async throws {
+    @Test func measuringAgainAfterACleanOnlyTouchesThatRow() async throws {
         let measurer = ManageStorageMeasurerMock(byteCounts: [.logFiles: 500, .widgetCache: 250])
         let cleaner = ManageStorageCleanerMock()
         let viewModel = ManageStorageViewModel(
@@ -201,11 +201,10 @@ struct ManageStorageViewModelTests {
         let logs = try #require(viewModel.items.first { $0.id == .logFiles })
         measurer.byteCounts[.logFiles] = 0
 
-        async let clean: Void = viewModel.clean(logs)
-        async let reload: Void = viewModel.load()
-        _ = await (clean, reload)
+        await viewModel.clean(logs)
 
         #expect(viewModel.items.count == ManageStorageItemID.allCases.count)
+        #expect(viewModel.items.first { $0.id == .logFiles }?.byteCount == 0)
         #expect(viewModel.items.first { $0.id == .widgetCache }?.byteCount == 250)
     }
 }

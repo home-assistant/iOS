@@ -61,10 +61,8 @@ struct ManageStorageInventoryTests {
 
         #expect(notCounted == [.cachedEntities, .cachedCalendarEvents, .locationHistory])
         for item in items() where !item.countsTowardTotal {
-            guard case .databaseTables = item.source else {
-                Issue.record("\(item.id.rawValue) is not backed by database tables")
-                continue
-            }
+            if case .databaseTables = item.source { continue }
+            Issue.record("\(item.id.rawValue) is not backed by database tables")
         }
     }
 

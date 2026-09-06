@@ -49,9 +49,25 @@ jobs:
             -only-testing:Tests-App/ManageStorageViewTests \
             -skipPackagePluginValidation \
             -skipMacroValidation \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            COMPILER_INDEX_STORE_ENABLE=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      # xcodebuild buries the actual diagnostics thousands of lines up, behind command lines that
+      # are tens of kilobytes each. Repeat them at the very end so a failure is readable from the
+      # tail of the log.
+      - name: Show compiler errors
+        if: always()
+        run: |
+          echo "::group::Compiler errors"
+          grep -E "error:" "$RUNNER_TEMP/xcodebuild.log" \
+            | grep -v "^ *warning:" \
+            | sed 's|/Users/runner/work/iOS/iOS/||' \
+            | sort -u \
+            | head -80 \
+            || echo "(no lines matching error:)"
+          echo "::endgroup::"
 
       - name: Show what was recorded
+        if: always()
         run: |
           git status --porcelain
           find "$SNAPSHOTS_PATH" -type f || true
