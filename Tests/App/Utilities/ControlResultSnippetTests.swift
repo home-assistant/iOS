@@ -27,6 +27,8 @@ struct ControlResultSnippetTests {
             "last_changed": "2026-09-06T10:00:00.000000+00:00",
             "last_updated": "2026-09-06T10:00:00.000000+00:00",
             "attributes": ["friendly_name": "Ceiling"],
+            // HAEntity requires a context; without it the decode throws and no card is built.
+            "context": ["id": "test", "parent_id": NSNull(), "user_id": NSNull()],
         ])
     }
 
