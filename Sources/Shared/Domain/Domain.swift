@@ -692,6 +692,19 @@ public extension Domain {
         .scene,
     ]
 
+    /// Domains whose on/off services read as open and close, so a spoken command should say
+    /// "open the curtain" rather than "turn on the curtain".
+    ///
+    /// `valve` belongs here by the same reasoning, but it isn't voice-controllable yet, and adding
+    /// it to this list alone would not expose it.
+    static let voiceOpenable: [Domain] = [
+        .cover,
+    ]
+
+    /// Domains a spoken on/off command should offer. Covers are handled by the open and close
+    /// command instead, where the wording matches what the service actually does.
+    static let voiceSwitchOffered: [Domain] = voiceControllable.filter { !voiceOpenable.contains($0) }
+
     /// Domains a spoken *question* can report on. Wider than `voiceControllable`, because reading a
     /// state is safe where changing it is not, and because "what is on" should not quietly skip a
     /// running vacuum or an unlocked door.

@@ -833,6 +833,34 @@ public enum L10n {
       /// Open app settings
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_app_settings.title") }
     }
+    public enum OpenClose {
+      /// Opens or closes a Home Assistant cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_close.description") }
+      /// Open or close
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_close.title") }
+      public enum Action {
+        /// Close
+        public static var close: String { return L10n.tr("Localizable", "app_intents.open_close.action.close") }
+        /// Action
+        public static var name: String { return L10n.tr("Localizable", "app_intents.open_close.action.name") }
+        /// Open
+        public static var `open`: String { return L10n.tr("Localizable", "app_intents.open_close.action.open") }
+      }
+      public enum Dialog {
+        /// Closed %@
+        public static func closed(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.open_close.dialog.closed", String(describing: p1))
+        }
+        /// Opened %@
+        public static func opened(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.open_close.dialog.opened", String(describing: p1))
+        }
+      }
+      public enum Entity {
+        /// Cover
+        public static var name: String { return L10n.tr("Localizable", "app_intents.open_close.entity.name") }
+      }
+    }
     public enum OpenExperimentalDashboard {
       /// Opens the experimental dashboard
       public static var description: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.description") }
@@ -1062,14 +1090,6 @@ public enum L10n {
   }
 
   public enum AppShortcuts {
-    public enum ActivateScene {
-      /// Activate Scene
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.activate_scene.title") }
-    }
-    public enum AskAssist {
-      /// Ask Assist
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.ask_assist.title") }
-    }
     public enum Close {
       /// Close
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.close.title") }
@@ -1085,6 +1105,10 @@ public enum L10n {
     public enum Open {
       /// Open
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
+    }
+    public enum OpenClose {
+      /// Open Or Close
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open_close.title") }
     }
     public enum PerformAction {
       /// Perform Action
@@ -1105,10 +1129,6 @@ public enum L10n {
     public enum TurnOn {
       /// Turn On
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.turn_on.title") }
-    }
-    public enum WhatIsOn {
-      /// What Is On
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.what_is_on.title") }
     }
   }
 
