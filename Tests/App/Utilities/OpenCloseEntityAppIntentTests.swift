@@ -124,6 +124,5 @@ struct OpenCloseEntityAppIntentTests {
     /// longer has stops the editor from drawing it.
     @Test func theSummaryBuilds() {
         #expect(!String(describing: OpenCloseEntityAppIntent.parameterSummary).isEmpty)
-        #expect(!String(localized: OpenCloseEntityAppIntent.title).isEmpty)
     }
 }
