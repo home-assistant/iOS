@@ -404,6 +404,28 @@ public enum L10n {
       }
     }
     public enum Calendar {
+      public enum Attendee {
+        /// Attendee
+        public static var name: String { return L10n.tr("Localizable", "app_intents.calendar.attendee.name") }
+      }
+      public enum AttendeeStatus {
+        /// Accepted
+        public static var accepted: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_status.accepted") }
+        /// Declined
+        public static var declined: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_status.declined") }
+        /// Pending
+        public static var pending: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_status.pending") }
+        /// Tentative
+        public static var tentative: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_status.tentative") }
+      }
+      public enum AttendeeType {
+        /// Person
+        public static var person: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_type.person") }
+        /// Resource
+        public static var resource: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_type.resource") }
+        /// Room
+        public static var room: String { return L10n.tr("Localizable", "app_intents.calendar.attendee_type.room") }
+      }
       public enum CreateEvent {
         /// Add an event to a Home Assistant calendar
         public static var description: String { return L10n.tr("Localizable", "app_intents.calendar.create_event.description") }
@@ -477,6 +499,10 @@ public enum L10n {
         public static func eventNotDeletable(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.event_not_deletable", String(describing: p1))
         }
+        /// %@ cannot be edited because Home Assistant did not give it an identifier
+        public static func eventNotEditable(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.event_not_editable", String(describing: p1))
+        }
         /// %1$@ is not an event on %2$@
         public static func eventNotInCalendar(_ p1: Any, _ p2: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.event_not_in_calendar", String(describing: p1), String(describing: p2))
@@ -485,6 +511,10 @@ public enum L10n {
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
         /// That calendar is no longer available
         public static var unknownCalendar: String { return L10n.tr("Localizable", "app_intents.calendar.error.unknown_calendar") }
+        /// %@ does not allow editing events
+        public static func updateUnsupported(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.update_unsupported", String(describing: p1))
+        }
         /// The end must be after the start
         public static var zeroDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.zero_duration") }
       }
@@ -493,6 +523,14 @@ public enum L10n {
           /// Calendar event
           public static var name: String { return L10n.tr("Localizable", "app_intents.calendar.event.entity.name") }
         }
+      }
+      public enum EventStatus {
+        /// Cancelled
+        public static var cancelled: String { return L10n.tr("Localizable", "app_intents.calendar.event_status.cancelled") }
+        /// Confirmed
+        public static var confirmed: String { return L10n.tr("Localizable", "app_intents.calendar.event_status.confirmed") }
+        /// Tentative
+        public static var tentative: String { return L10n.tr("Localizable", "app_intents.calendar.event_status.tentative") }
       }
       public enum GetEvents {
         /// Get the events on a Home Assistant calendar between two dates
@@ -879,6 +917,38 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
         /// Action data
         public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
+      }
+    }
+    public enum Reminders {
+      public enum Error {
+        /// There are no to-do lists to add this to
+        public static var noList: String { return L10n.tr("Localizable", "app_intents.reminders.error.no_list") }
+      }
+      public enum GetItems {
+        /// Get the items on a Home Assistant to-do list
+        public static var description: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.description") }
+        /// Get to-do items
+        public static var title: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.title") }
+        public enum IncludeCompleted {
+          /// Include completed
+          public static var title: String { return L10n.tr("Localizable", "app_intents.reminders.get_items.include_completed.title") }
+        }
+      }
+      public enum List {
+        /// List
+        public static var name: String { return L10n.tr("Localizable", "app_intents.reminders.list.name") }
+      }
+      public enum ListType {
+        /// List
+        public static var standard: String { return L10n.tr("Localizable", "app_intents.reminders.list_type.standard") }
+      }
+      public enum LocationTrigger {
+        /// Arriving
+        public static var arrive: String { return L10n.tr("Localizable", "app_intents.reminders.location_trigger.arrive") }
+        /// Leaving
+        public static var depart: String { return L10n.tr("Localizable", "app_intents.reminders.location_trigger.depart") }
+        /// Location
+        public static var name: String { return L10n.tr("Localizable", "app_intents.reminders.location_trigger.name") }
       }
     }
     public enum RenderTemplate {

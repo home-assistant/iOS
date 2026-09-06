@@ -133,6 +133,14 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
     }
 
+    /// Events are indexed on their own because the entity is iOS 27; see
+    /// `CalendarEventSpotlightIndexer` for why it isn't part of the snapshot.
+    private func reindexCalendarEvents() async {
+        if #available(iOS 27.0, *) {
+            await CalendarEventSpotlightIndexer.reindex(index: index, defaults: defaults)
+        }
+    }
+
     private func reindex(reason: String) async {
         // A trigger fired while backgrounded (background refresh, servers changing) lands here with
         // the coalescing delay already spent; defer it to the foreground instead of reading the
@@ -185,6 +193,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                 entityIds: indexedIds,
                 calendarIds: indexedCalendarIds
             ))
+            await reindexCalendarEvents()
             // The entities that changed are the ones App Shortcut phrases name.
             HomeAssistantAppShortcuts.updateAppShortcutParameters()
             Current.Log
