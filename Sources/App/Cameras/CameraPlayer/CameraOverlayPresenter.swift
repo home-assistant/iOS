@@ -80,7 +80,7 @@ final class CameraOverlayPresenter {
         }
     }
 
-    private func overlayDidDisappear(_ camera: Camera) {
+    func overlayDidDisappear(_ camera: Camera) {
         guard displayedCamera == camera else { return }
         clearState()
     }

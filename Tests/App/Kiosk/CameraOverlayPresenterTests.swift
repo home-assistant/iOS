@@ -120,6 +120,40 @@ final class CameraOverlayPresenterTests: XCTestCase {
         XCTAssertFalse(kiosk.isCameraOverlayVisible)
     }
 
+    func testOverlayDisappearingClearsStateForTheDisplayedCamera() {
+        show(frontDoor)
+
+        presenter.overlayDidDisappear(frontDoor)
+
+        XCTAssertNil(presenter.displayedCamera)
+        XCTAssertFalse(presenter.isDisplaying(frontDoor, on: webViewController))
+        XCTAssertFalse(kiosk.isCameraOverlayVisible)
+    }
+
+    func testOverlayDisappearingForAnotherCameraIsIgnored() {
+        show(frontDoor)
+
+        presenter.overlayDidDisappear(backyard)
+
+        XCTAssertEqual(presenter.displayedCamera, frontDoor)
+        XCTAssertTrue(presenter.isDisplaying(frontDoor, on: webViewController))
+        XCTAssertTrue(kiosk.isCameraOverlayVisible)
+    }
+
+    func testShowAfterDismissalFinishedWithoutCompletionPresents() {
+        show(frontDoor)
+        presenter.hide(on: webViewController)
+        webViewController.overlayedController = nil
+        webViewController.presentOverlayControllerCalled = false
+
+        show(frontDoor)
+
+        XCTAssertTrue(webViewController.presentOverlayControllerCalled)
+        XCTAssertEqual(presenter.displayedCamera, frontDoor)
+        XCTAssertTrue(presenter.isDisplaying(frontDoor, on: webViewController))
+        XCTAssertTrue(kiosk.isCameraOverlayVisible)
+    }
+
     func testShowWhileDismissingIsDeferredUntilDismissalCompletes() {
         show(frontDoor)
         presenter.hide(on: webViewController)
