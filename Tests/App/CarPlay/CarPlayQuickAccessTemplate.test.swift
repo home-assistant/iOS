@@ -148,6 +148,43 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
+    /// Locks always confirm first: the action must not reach the server until the driver taps
+    /// through the confirmation.
+    func testALockRowRunsItsActionOnlyOnceConfirmed() throws {
+        connectAPI()
+        let presenter = FakeCarPlayAlertPresenter()
+        sut.alertPresenterOverride = presenter
+        let rendered = rows(for: [item(id: "lock.front_door", type: .entity)])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let confirm = try XCTUnwrap(alert.actions.last)
+        confirm.handler(confirm)
+        drainMainQueue()
+
+        XCTAssertEqual(connection.pendingRequests.count, 1)
+    }
+
+    func testCancellingALockConfirmationRunsNothing() throws {
+        connectAPI()
+        let presenter = FakeCarPlayAlertPresenter()
+        sut.alertPresenterOverride = presenter
+        let rendered = rows(for: [item(id: "lock.front_door", type: .entity)])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let cancel = try XCTUnwrap(alert.actions.first)
+        cancel.handler(cancel)
+        drainMainQueue()
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
     /// Climate rows open a control screen instead of executing, and a missing server leaves nothing
     /// to open.
     func testTappingAClimateRowWhoseServerIsGoneOpensNothing() throws {

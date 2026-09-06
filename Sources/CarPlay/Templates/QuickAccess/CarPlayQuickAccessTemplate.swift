@@ -34,6 +34,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var alertPresenterOverride: CarPlayAlertPresenting?
+    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
     private var listItemsByKey: [String: CPListItem] = [:]
     /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
     /// Rows are reused in place — same reasoning as `listItemsByKey`.
@@ -856,15 +859,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             L10n.Watch.Home.Run.Confirmation.title(item.name(info: info)),
         ], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
             .init(title: L10n.Alerts.Confirm.confirm, style: .default, handler: { [weak self] _ in
                 completion()
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
         ])
 
-        interfaceController?.presentTemplate(alert, animated: true, completion: nil)
+        alertPresenter?.presentTemplate(alert, animated: true, completion: nil)
     }
 
     private func showLockConfirmation(
@@ -876,7 +879,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         CarPlayLockConfirmation.show(
             entityName: info.name,
             currentState: currentState,
-            interfaceController: interfaceController,
+            interfaceController: alertPresenter,
             completion: completion
         )
     }

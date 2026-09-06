@@ -154,6 +154,58 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
+    /// Locks always confirm first: nothing reaches the server until the driver taps through.
+    func testALockEntityRunsItsActionOnlyOnceConfirmed() throws {
+        connectAPI()
+        try makeSut(entityId: "lock.front_door", domain: "lock", state: "locked")
+        let presenter = FakeCarPlayAlertPresenter()
+        template.alertPresenterOverride = presenter
+
+        sut.handleEntityTap(entity: entity) {}
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let confirm = try XCTUnwrap(alert.actions.last)
+        confirm.handler(confirm)
+
+        XCTAssertEqual(connection.pendingRequests.count, 1)
+    }
+
+    /// The rendered rows carry the same repeat-tap guard the view model does.
+    @available(iOS 26.0, *)
+    func testACondensedRowRefusesARepeatTapWhileItsCallIsInFlight() throws {
+        connectAPI()
+        try makeSut()
+        drainMainQueue()
+        let items = template.template.sections.flatMap(\.items)
+        let row = try XCTUnwrap(items.compactMap { $0 as? CPListImageRowItem }.first)
+
+        row.listImageRowHandler?(row, 0, {})
+        drainMainQueue()
+        row.listImageRowHandler?(row, 0, {})
+        drainMainQueue()
+
+        XCTAssertEqual(connection.pendingRequests.count, 1)
+    }
+
+    /// `CarPlayPaginatedListTemplate` applies its rows asynchronously.
+    private func drainMainQueue(cycles: Int = 3) {
+        let drained = expectation(description: "main queue drained")
+
+        func schedule(_ remaining: Int) {
+            DispatchQueue.main.async {
+                if remaining == 0 {
+                    drained.fulfill()
+                } else {
+                    schedule(remaining - 1)
+                }
+            }
+        }
+
+        schedule(cycles)
+        wait(for: [drained], timeout: 5)
+    }
+
     /// The row refuses a repeat tap while its call is outstanding, which is what stops a slow
     /// connection from running the action twice.
     func testARowReportsItselfInFlightWhileItsCallIsOutstanding() throws {

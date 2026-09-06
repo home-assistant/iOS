@@ -15,12 +15,12 @@ enum CarPlayLockConfirmation {
     /// - Parameters:
     ///   - entityName: The friendly name of the lock entity
     ///   - currentState: The current state of the lock entity (e.g., "locked", "unlocked")
-    ///   - interfaceController: The CarPlay interface controller to present the alert on
+    ///   - interfaceController: Where the confirmation is presented
     ///   - completion: Closure to execute when the user confirms the action
     static func show(
         entityName: String,
         currentState: String,
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayAlertPresenting?,
         completion: @escaping () -> Void
     ) {
         guard let state = Domain.State(rawValue: currentState) else {
@@ -96,7 +96,7 @@ enum CarPlayLockConfirmation {
     /// Shows a generic lock confirmation when state cannot be determined
     private static func showGenericConfirmation(
         entityName: String,
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayAlertPresenting?,
         completion: @escaping () -> Void
     ) {
         let title = L10n.CarPlay.Lock.Confirmation.title(entityName)
