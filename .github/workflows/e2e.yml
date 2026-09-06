@@ -165,6 +165,14 @@ jobs:
           --output "$RUNNER_TEMP/homeassistant-config.json"
           --summary "$GITHUB_STEP_SUMMARY"
 
+      # Same as the CI workflow: the lane runs with package resolution disabled, so the packages
+      # have to be checked out before it, which a restore-only cache cannot guarantee.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-UI
+
       - name: Run onboarding flow
         run: >-
           bundle exec fastlane e2e

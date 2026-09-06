@@ -193,6 +193,15 @@ jobs:
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
 
+      # The test lane runs with package resolution disabled, so the test action does not
+      # re-resolve once per scheme. That relies on the packages already being checked out, which
+      # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
       - name: Run tests
         run: bundle exec fastlane test
 
