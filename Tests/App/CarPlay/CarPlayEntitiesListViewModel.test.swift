@@ -103,11 +103,17 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
     func testATapMarksTheRowExecutingUntilTheServerAnswers() throws {
         connectAPI()
         try makeSut()
+        // Waiting on the callback itself rather than a main-queue hop: the reply travels through
+        // PromiseKit before the deadline reports, so a fixed number of hops races it.
+        let settled = expectation(description: "execution settled")
         var finished = false
 
         sut.handleEntityTap(
             entity: entity,
-            executionFinished: { finished = true },
+            executionFinished: {
+                finished = true
+                settled.fulfill()
+            },
             completion: {}
         )
 
@@ -115,8 +121,6 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.success(.empty))
 
-        let settled = expectation(description: "execution settled")
-        DispatchQueue.main.async { settled.fulfill() }
         wait(for: [settled], timeout: 2)
         XCTAssertTrue(finished)
     }

@@ -34,22 +34,21 @@ final class CarPlayLockConfirmationTests: XCTestCase {
     }
 
     func testASuccessfulLockActionReportsNoError() throws {
-        var reported: Error?
-        var didReport = false
+        // Waiting on the callback itself rather than a main-queue hop: the reply travels through
+        // PromiseKit first, so a fixed number of hops races it.
+        let reported = expectation(description: "outcome reported")
+        var error: Error?
 
-        CarPlayLockConfirmation.execute(entityId: "lock.front_door", currentState: "locked", api: api) { error in
-            reported = error
-            didReport = true
+        CarPlayLockConfirmation.execute(entityId: "lock.front_door", currentState: "locked", api: api) {
+            error = $0
+            reported.fulfill()
         }
 
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.success(.empty))
 
-        let settled = expectation(description: "settled")
-        DispatchQueue.main.async { settled.fulfill() }
-        wait(for: [settled], timeout: 2)
-        XCTAssertTrue(didReport)
-        XCTAssertNil(reported)
+        wait(for: [reported], timeout: 2)
+        XCTAssertNil(error)
     }
 
     func testALockActionTheServerRejectsReportsTheError() throws {
