@@ -6,7 +6,7 @@ import Shared
 @available(macOS 13.0, watchOS 9.4, *)
 struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [ControllableEntityAppEntity] {
-        entities().flatMap(\.1).filter { identifiers.contains($0.id) }
+        entities(domains: Domain.voiceControllable).flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<ControllableEntityAppEntity> {
@@ -25,8 +25,15 @@ struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func entities(matching string: String? = nil) -> [(Server, [ControllableEntityAppEntity])] {
-        let byServer = ControlEntityProvider(domains: Domain.voiceControllable).getEntities(matching: string)
+    private func entities(
+        matching string: String? = nil,
+        domains: [Domain] = Domain.voiceSwitchOffered
+    ) -> [(Server, [ControllableEntityAppEntity])] {
+        // Suggestions leave covers out: they are offered by the open and close command, where the
+        // wording matches the service. Resolution stays wider than this on purpose — an id that was
+        // valid once should keep resolving, whether it came from a shortcut, an automation or a
+        // donation.
+        let byServer = ControlEntityProvider(domains: domains).getEntities(matching: string)
         // Siri offers them in the order they arrive, so the likeliest server leads.
         let rank = Dictionary(
             uniqueKeysWithValues: ServerPriority.ordered(byServer.map(\.0)).enumerated()
