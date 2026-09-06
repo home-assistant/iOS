@@ -654,13 +654,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
-        let view = CameraPlayerView(
+        CameraOverlayPresenter.shared.show(
+            entityId: entityId,
             server: webViewController.server,
-            cameraEntityId: entityId,
-            cameraName: cameraName
-        ).embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        webViewController.presentOverlayController(controller: view, animated: true)
+            cameraName: cameraName,
+            on: webViewController
+        )
     }
 }
 
