@@ -73,7 +73,13 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         refreshTemplate()
     }
 
+    /// Whether an action started from this row is still in flight, so a repeat tap doesn't run it
+    /// a second time. Deliberately not the "Executing…" subtitle, which lingers a moment past the
+    /// call so it doesn't flash by — a tap in that window is a legitimate second action.
+    private(set) var isOperationInFlight = false
+
     func setExecutingState(_ isExecuting: Bool) {
+        isOperationInFlight = isExecuting
         if isExecuting {
             pendingExecutingClearWorkItem?.cancel()
             pendingExecutingClearWorkItem = nil

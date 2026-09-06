@@ -1700,6 +1700,28 @@ public enum L10n {
         }
       }
     }
+    public enum Operation {
+      public enum Error {
+        public enum Failed {
+          /// Action failed
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.failed.short") }
+          /// Home Assistant couldn't run that action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.failed.title") }
+        }
+        public enum NoConnection {
+          /// Not connected
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.no_connection.short") }
+          /// Not connected to Home Assistant
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.no_connection.title") }
+        }
+        public enum TimedOut {
+          /// No response
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.timed_out.short") }
+          /// Home Assistant didn't respond in time
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.timed_out.title") }
+        }
+      }
+    }
     public enum QuickAccess {
       public enum AddItem {
         /// Back

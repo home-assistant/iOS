@@ -171,24 +171,27 @@ final class CarPlayEntitiesListViewModel {
         completion: @escaping () -> Void
     ) {
         guard let api = Current.api(for: server) else {
-            Current.Log.error("No API available to handle CarPlay entity tap")
+            templateProvider?.presentOperationFailure(.noConnection)
             completion()
             return
         }
 
         if let domain = Domain(rawValue: entity.domain), domain == .lock {
             // Show confirmation and use shared execution method
-            templateProvider?.displayLockConfirmation(entity: entity, completion: {
+            templateProvider?.displayLockConfirmation(entity: entity, completion: { [weak self] in
+                guard let self else { return }
                 executionStarted()
+                let deadline = makeDeadline(executionFinished: executionFinished)
                 CarPlayLockConfirmation.execute(
                     entityId: entity.entityId,
                     currentState: entity.state,
                     api: api
-                ) { success in
-                    if !success {
-                        Current.Log.error("Failed to execute lock action for entity: \(entity.entityId)")
+                ) { error in
+                    if let error {
+                        deadline.fail(error)
+                    } else {
+                        deadline.succeed()
                     }
-                    executionFinished()
                 }
             })
             completion()
@@ -199,16 +202,27 @@ final class CarPlayEntitiesListViewModel {
         } else {
             // For non-lock entities, use entity.onPress directly
             executionStarted()
+            let deadline = makeDeadline(executionFinished: executionFinished)
+            // CarPlay wants the row's handler released promptly, and the row already says it is
+            // executing — so the call's outcome is reported through the deadline rather than by
+            // holding the handler open for as long as the server takes.
+            completion()
             firstly {
                 entity.onPress(for: api)
             }.done {
-                executionFinished()
-                completion()
+                deadline.succeed()
             }.catch { error in
-                Current.Log.error("Received error from callService during onPress call: \(error)")
-                executionFinished()
-                completion()
+                deadline.fail(error)
             }
+        }
+    }
+
+    /// A deadline that settles the row and, on failure, tells the driver why.
+    private func makeDeadline(executionFinished: @escaping () -> Void) -> CarPlayOperationDeadline {
+        CarPlayOperationDeadline(server: server) { [weak self] error in
+            executionFinished()
+            guard let error else { return }
+            self?.templateProvider?.presentOperationFailure(error)
         }
     }
 }
