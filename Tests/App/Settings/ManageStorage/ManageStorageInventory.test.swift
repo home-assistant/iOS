@@ -107,6 +107,24 @@ struct ManageStorageInventoryTests {
         #expect(byID[.networkResponseCache]?.source == .networkResponseCache)
     }
 
+    @Test func aFolderThatHoldsProtectedDataCannotBeEmptied() {
+        // What the app group container falling back to the temporary directory looks like: every
+        // other row ends up inside the temporary files row.
+        let root = URL(fileURLWithPath: "/tmp/manage-storage-inventory")
+        var overlapping = paths
+        overlapping.temporaryFiles = [root]
+
+        let inventory = ManageStorageInventory.items(
+            paths: overlapping,
+            isCatalyst: false,
+            hasCompletedLegacyStoreMigration: true
+        )
+
+        #expect(inventory.first { $0.id == .temporaryFiles }?.protection == .protected(.holdsProtectedData))
+        // The rows that do not contain anything protected are left alone.
+        #expect(inventory.first { $0.id == .logFiles }?.protection == .deletable)
+    }
+
     @Test func everyRowLandsInACategoryThatDescribesIt() {
         let byID = Dictionary(uniqueKeysWithValues: items().map { ($0.id, $0.category) })
 

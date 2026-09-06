@@ -5709,6 +5709,10 @@ public enum L10n {
             /// Kept: deleting this would sign you out and lose everything you configured.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.essential_app_data.explanation") }
           }
+          public enum HoldsProtectedData {
+            /// Kept: on this device this folder also holds data the app cannot rebuild.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.holds_protected_data.explanation") }
+          }
           public enum OutsideAppControl {
             /// Kept: this is your own Downloads folder, which holds files this app did not create.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.outside_app_control.explanation") }

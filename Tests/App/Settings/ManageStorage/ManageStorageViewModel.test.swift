@@ -206,6 +206,48 @@ struct ManageStorageViewModelTests {
         #expect(viewModel.cleaningItemID == nil)
     }
 
+    @Test func aLoadStartedWhileARowIsBeingCleanedIsIgnored() async throws {
+        let measurer = ManageStorageMeasurerMock(byteCounts: [.logFiles: 500])
+        let cleaner = ManageStorageCleanerMock()
+        let viewModel = ManageStorageViewModel(
+            paths: paths,
+            isCatalyst: false,
+            hasCompletedLegacyStoreMigration: true,
+            measurer: measurer,
+            cleaner: cleaner
+        )
+        let logs = try #require(viewModel.items.first { $0.id == .logFiles })
+        // Pull to refresh part way through the delete. Its snapshot still holds the pre-delete size,
+        // so letting it finish would put that size back over the cleaned row.
+        cleaner.duringClean = { await viewModel.load() }
+
+        await viewModel.clean(logs)
+
+        // Only the cleaned row was measured: the refresh found a clean in flight and did nothing.
+        #expect(measurer.measured == [.logFiles])
+    }
+
+    @Test func cleaningRowsInsideTheDatabaseMeasuresTheDatabaseFileAgain() async throws {
+        let measurer = ManageStorageMeasurerMock(byteCounts: [.appDatabase: 1000, .cachedEntities: 400])
+        let viewModel = ManageStorageViewModel(
+            paths: paths,
+            isCatalyst: false,
+            hasCompletedLegacyStoreMigration: true,
+            measurer: measurer,
+            cleaner: ManageStorageCleanerMock()
+        )
+        await viewModel.load()
+        let entities = try #require(viewModel.items.first { $0.id == .cachedEntities })
+        // The vacuum that follows the delete shrinks the database file the row lives in.
+        measurer.byteCounts[.cachedEntities] = 0
+        measurer.byteCounts[.appDatabase] = 600
+
+        await viewModel.clean(entities)
+
+        #expect(viewModel.items.first { $0.id == .appDatabase }?.byteCount == 600)
+        #expect(viewModel.totalByteCount == 600)
+    }
+
     @Test func measuringAgainAfterACleanOnlyTouchesThatRow() async throws {
         let measurer = ManageStorageMeasurerMock(byteCounts: [.logFiles: 500, .widgetCache: 250])
         let cleaner = ManageStorageCleanerMock()

@@ -25,9 +25,9 @@ actor ManageStorageMeasurer: ManageStorageMeasuring {
     init(
         fileManager: FileManager = .default,
         database: @escaping () -> DatabaseQueue = { Current.database() },
-        networkResponseCacheByteCount: @escaping () -> Int64 = {
-            Int64(URLCache.shared.currentDiskUsage) + Int64(URLCache.shared.currentMemoryUsage)
-        }
+        // Disk usage only: `currentMemoryUsage` is RAM, and counting it would inflate both the
+        // total and what this screen offers to free.
+        networkResponseCacheByteCount: @escaping () -> Int64 = { Int64(URLCache.shared.currentDiskUsage) }
     ) {
         self.fileManager = fileManager
         self.database = database

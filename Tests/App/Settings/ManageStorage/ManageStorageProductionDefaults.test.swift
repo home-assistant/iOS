@@ -15,7 +15,7 @@ struct ManageStorageProductionDefaultsTests {
     // Reading and clearing `URLCache.shared` share process-wide state, so they stay in one test
     // rather than racing each other when the suite runs in parallel.
     @Test func theDefaultsReadAndClearUrlCache() async throws {
-        let expected = Int64(URLCache.shared.currentDiskUsage) + Int64(URLCache.shared.currentMemoryUsage)
+        let expected = Int64(URLCache.shared.currentDiskUsage)
 
         let measured = await ManageStorageMeasurer().byteCount(of: item(source: .networkResponseCache))
 

@@ -22,7 +22,7 @@ enum ManageStorageInventory {
         isCatalyst: Bool,
         hasCompletedLegacyStoreMigration: Bool
     ) -> [ManageStorageItem] {
-        [
+        protectingRowsThatHoldProtectedData(in: [
             ManageStorageItem(
                 id: .appDatabase,
                 category: .appData,
@@ -145,6 +145,39 @@ enum ManageStorageInventory {
                 protection: .deletable,
                 source: .files(paths.temporaryFiles)
             ),
-        ]
+        ])
+    }
+
+    /// Protects a deletable folder that turns out to contain a protected one.
+    ///
+    /// `AppConstants.AppGroupContainer` falls back to the temporary directory when the app group is
+    /// unavailable, and then the database, the logs and the caches all sit inside the temporary
+    /// files row. Emptying a folder empties what is under it, so that row would delete the very data
+    /// the other rows protect.
+    private static func protectingRowsThatHoldProtectedData(
+        in items: [ManageStorageItem]
+    ) -> [ManageStorageItem] {
+        let protectedPaths = items
+            .filter { !$0.isDeletable }
+            .flatMap(\.source.urls)
+            .map(\.standardizedFileURL.path)
+
+        return items.map { item in
+            guard item.isDeletable, item.source.urls.contains(where: { holds(protectedPaths, $0) }) else {
+                return item
+            }
+            return ManageStorageItem(
+                id: item.id,
+                category: item.category,
+                protection: .protected(.holdsProtectedData),
+                source: item.source,
+                countsTowardTotal: item.countsTowardTotal
+            )
+        }
+    }
+
+    private static func holds(_ protectedPaths: [String], _ url: URL) -> Bool {
+        let root = url.standardizedFileURL.path
+        return protectedPaths.contains { $0 == root || $0.hasPrefix(root + "/") }
     }
 }

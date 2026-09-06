@@ -68,10 +68,11 @@ final class ManageStorageViewModel: ObservableObject {
     }
 
     func load() async {
-        // Pull to refresh and the first appearance can both start a load. Two passes would race:
-        // the first to finish would clear `isLoading` while the other was still measuring, and the
-        // last to finish would overwrite `items` with whichever sizes it happened to hold.
-        guard !isLoading else { return }
+        // Pull to refresh and the first appearance can both start a load, and a refresh can start
+        // while a row is being emptied. Any of those overlapping would race: a second pass would
+        // clear `isLoading` while the first still measured, and a pass that started before a clean
+        // would finish afterwards and write its pre-delete sizes back over the cleaned row.
+        guard !isLoading, cleaningItemID == nil else { return }
         isLoading = true
         defer { isLoading = false }
 
@@ -109,12 +110,18 @@ final class ManageStorageViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
         await remeasure(item)
+        if case .databaseTables = item.source {
+            // `VACUUM` shrinks the database file, and that file is a row of its own. Without this
+            // the screen would keep showing its pre-clean size, and so would the total.
+            await remeasure(items.first { $0.id == .appDatabase })
+        }
         cleaningItemID = nil
     }
 
     /// Rebuilds the list rather than writing through an index: a concurrent `load()` can have
     /// replaced the array while the clean was running.
-    private func remeasure(_ item: ManageStorageItem) async {
+    private func remeasure(_ item: ManageStorageItem?) async {
+        guard let item else { return }
         let byteCount = await measurer.byteCount(of: item)
         items = items.map { current in
             guard current.id == item.id else { return current }

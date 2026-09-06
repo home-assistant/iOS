@@ -14,6 +14,8 @@ enum ManageStorageProtectionReason: String, CaseIterable {
     case userProvidedContent
     /// A folder the app points at but does not own, so wiping it would delete unrelated files.
     case outsideAppControl
+    /// A folder that turns out to contain one of the protected rows on this device.
+    case holdsProtectedData
 
     var explanation: String {
         switch self {
@@ -25,6 +27,8 @@ enum ManageStorageProtectionReason: String, CaseIterable {
             return L10n.Settings.Debugging.ManageStorage.Protection.UserProvidedContent.explanation
         case .outsideAppControl:
             return L10n.Settings.Debugging.ManageStorage.Protection.OutsideAppControl.explanation
+        case .holdsProtectedData:
+            return L10n.Settings.Debugging.ManageStorage.Protection.HoldsProtectedData.explanation
         }
     }
 }

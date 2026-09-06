@@ -1723,6 +1723,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.item.widget_cache.explanation" = "The last state each widget rendered, so a widget can draw before its refresh finishes.";
 "settings.debugging.manage_storage.item.widget_cache.title" = "Widget cache";
 "settings.debugging.manage_storage.protection.essential_app_data.explanation" = "Kept: deleting this would sign you out and lose everything you configured.";
+"settings.debugging.manage_storage.protection.holds_protected_data.explanation" = "Kept: on this device this folder also holds data the app cannot rebuild.";
 "settings.debugging.manage_storage.protection.outside_app_control.explanation" = "Kept: this is your own Downloads folder, which holds files this app did not create.";
 "settings.debugging.manage_storage.protection.pending_migration.explanation" = "Kept: records in here have not been imported into the app database yet.";
 "settings.debugging.manage_storage.protection.user_provided_content.explanation" = "Kept: you added these files yourself and the app cannot get them back.";

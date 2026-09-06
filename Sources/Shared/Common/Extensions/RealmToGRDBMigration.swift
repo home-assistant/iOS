@@ -95,8 +95,14 @@ public enum RealmToGRDBMigration {
 
     /// Whether the importer has finished with the legacy store, which is what makes the store on
     /// disk safe to delete: until it flips, that store is still the only copy of what it holds.
+    ///
+    /// The completion flag alone is not enough. It is also set when the importer gives up after
+    /// `maxMigrationAttempts`, and that path deliberately leaves the store untouched — so it can
+    /// still hold the only copy of records that never made it into the database.
     public static var hasCompletedMigration: Bool {
-        Current.settingsStore.prefs.bool(forKey: migrationCompletedKey)
+        let prefs = Current.settingsStore.prefs
+        guard prefs.bool(forKey: migrationCompletedKey) else { return false }
+        return prefs.integer(forKey: migrationAttemptsKey) <= maxMigrationAttempts
     }
 
     public static func migrateIfNeeded() {
