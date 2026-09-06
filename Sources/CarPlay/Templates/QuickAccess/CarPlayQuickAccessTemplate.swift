@@ -447,8 +447,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             item.setDetailText("")
             item.setImage(nil)
         }
-        item.handler = { [weak self] _, _ in
-            guard let self else { return }
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
             itemTap(
                 magicItem: magicItem,
                 info: info,
@@ -456,6 +459,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                 executionFinished: { [weak self] in self?.endExecuting(magicItem) }
             )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
         }
     }
 
@@ -491,14 +497,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         item.setText(magicItem.name(info: info))
         item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
         item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
-        item.handler = { [weak self] _, _ in
-            guard let self else { return }
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
             itemTap(
                 magicItem: magicItem,
                 info: info,
                 executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                 executionFinished: { [weak self] in self?.endExecuting(magicItem) }
             )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
         }
     }
 
@@ -761,8 +773,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
         guard let entity = resolvedEntity(for: magicItem) else {
-            Current.Log.error("Failed to resolve entity for control screen magic item id: \(magicItem.id)")
-            presentOperationFailure(.resolve(underlying: nil, server: server))
+            presentOperationFailure(.unresolvedEntity(id: magicItem.id))
             return
         }
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }

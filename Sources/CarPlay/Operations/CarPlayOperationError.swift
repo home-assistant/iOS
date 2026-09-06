@@ -18,6 +18,9 @@ enum CarPlayOperationError: Error {
     /// server it points at, for instance. Shown as a plain failure: there is nothing about the
     /// drive or the connection for the driver to act on.
     case missingServer(id: String)
+    /// The entity the action would act on isn't in the state cache, so the action was never
+    /// attempted. Shown as a plain failure — nothing was sent, so this is not a timeout.
+    case unresolvedEntity(id: String)
 
     /// Longest first, which is the order `CPAlertTemplate` expects: CarPlay renders the longest
     /// variant the vehicle's display can fit.
@@ -33,7 +36,7 @@ enum CarPlayOperationError: Error {
                 L10n.CarPlay.Operation.Error.TimedOut.title,
                 L10n.CarPlay.Operation.Error.TimedOut.short,
             ]
-        case .failed, .missingServer:
+        case .failed, .missingServer, .unresolvedEntity:
             return [
                 L10n.CarPlay.Operation.Error.Failed.title,
                 L10n.CarPlay.Operation.Error.Failed.short,
@@ -52,6 +55,8 @@ enum CarPlayOperationError: Error {
             return error.localizedDescription
         case let .missingServer(id):
             return "no server configured with id \(id)"
+        case let .unresolvedEntity(id):
+            return "no cached state for entity \(id)"
         }
     }
 

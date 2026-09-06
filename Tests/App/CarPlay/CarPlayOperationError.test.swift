@@ -53,6 +53,7 @@ final class CarPlayOperationErrorTests: XCTestCase {
             .timedOut,
             .failed(CarPlayOperationErrorTestError.any),
             .missingServer(id: "123"),
+            .unresolvedEntity(id: "light.kitchen"),
         ]
 
         for error in errors {
@@ -71,6 +72,12 @@ final class CarPlayOperationErrorTests: XCTestCase {
         let error = CarPlayOperationError.missingServer(id: "server-1")
 
         XCTAssertTrue(error.logDescription.contains("server-1"))
+    }
+
+    func testUnresolvedEntityNamesTheEntityInTheLog() {
+        let error = CarPlayOperationError.unresolvedEntity(id: "light.kitchen")
+
+        XCTAssertTrue(error.logDescription.contains("light.kitchen"))
     }
 }
 
