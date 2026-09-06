@@ -1106,10 +1106,6 @@ public enum L10n {
       /// Open
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
     }
-    public enum OpenClose {
-      /// Open Or Close
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open_close.title") }
-    }
     public enum PerformAction {
       /// Perform Action
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.perform_action.title") }

@@ -283,7 +283,6 @@
 "app_shortcuts.get_entity_state.title" = "Get Entity State";
 "app_shortcuts.lock.title" = "Lock";
 "app_shortcuts.open.title" = "Open";
-"app_shortcuts.open_close.title" = "Open Or Close";
 "app_shortcuts.perform_action.title" = "Perform Action";
 "app_shortcuts.set_brightness.title" = "Set Brightness";
 "app_shortcuts.set_temperature.title" = "Set Temperature";

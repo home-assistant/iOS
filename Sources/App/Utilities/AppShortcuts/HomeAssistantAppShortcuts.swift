@@ -70,16 +70,26 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             shortTitle: .init("app_shortcuts.set_brightness.title", defaultValue: "Set Brightness"),
             systemImageName: "sun.max"
         )
+        // Open and close are two shortcuts rather than one with the verb as a parameter: a phrase
+        // may interpolate only a single parameter, and the entity is the one worth naming out loud.
         AppShortcut(
-            intent: OpenCloseEntityAppIntent(),
-            // The action is interpolated so one template carries both verbs; the entity list is
-            // covers only, because the parameter has its own query.
+            intent: OpenCloseEntityAppIntent(action: .open),
             phrases: [
-                "\(.applicationName) \(\.$action) \(\.$entity)",
-                "\(\.$action) \(\.$entity) in \(.applicationName)",
+                "\(.applicationName) open \(\.$entity)",
+                "Open \(\.$entity) in \(.applicationName)",
                 "Open something in \(.applicationName)",
             ],
-            shortTitle: .init("app_shortcuts.open_close.title", defaultValue: "Open Or Close"),
+            shortTitle: .init("app_shortcuts.open.title", defaultValue: "Open"),
+            systemImageName: "curtains"
+        )
+        AppShortcut(
+            intent: OpenCloseEntityAppIntent(action: .close),
+            phrases: [
+                "\(.applicationName) close \(\.$entity)",
+                "Close \(\.$entity) in \(.applicationName)",
+                "Close something in \(.applicationName)",
+            ],
+            shortTitle: .init("app_shortcuts.close.title", defaultValue: "Close"),
             systemImageName: "curtains.closed"
         )
     }
