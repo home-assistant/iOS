@@ -5529,6 +5529,220 @@ public enum L10n {
         /// App restart required
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.keychain_restart_required.title") }
       }
+      public enum ManageStorage {
+        /// Delete %@
+        public static func deleteAccessibilityLabel(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.manage_storage.delete_accessibility_label_%@", String(describing: p1))
+        }
+        /// Stored inside the app database
+        public static var insideAppDatabase: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.inside_app_database") }
+        /// See what this app is storing on your device, and clear out anything it can rebuild.
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.subtitle") }
+        /// Manage Storage
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.title") }
+        public enum Category {
+          public enum AppData {
+            /// What you configured, and what the app cannot rebuild on its own.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.app_data.explanation") }
+            /// App data
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.app_data.title") }
+          }
+          public enum Caches {
+            /// Copies of server data kept so the app can draw something before it finishes syncing.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.caches.explanation") }
+            /// Caches
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.caches.title") }
+          }
+          public enum Downloads {
+            /// Files the app saved out of the frontend.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.downloads.explanation") }
+            /// Downloads
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.downloads.title") }
+          }
+          public enum Logs {
+            /// Records kept only so the debugging screens have something to show.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.logs.explanation") }
+            /// Logs and diagnostics
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.logs.title") }
+          }
+          public enum Temporary {
+            /// Scratch space the system may also clear on its own.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.temporary.explanation") }
+            /// Temporary
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.temporary.title") }
+          }
+          public enum WebContent {
+            /// What the web view stored while showing the Home Assistant frontend.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.web_content.explanation") }
+            /// Web content
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.category.web_content.title") }
+          }
+        }
+        public enum Confirm {
+          /// Delete
+          public static var deleteButton: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.confirm.delete_button") }
+          /// Delete %@?
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.debugging.manage_storage.confirm.title_%@", String(describing: p1))
+          }
+        }
+        public enum Empty {
+          /// Nothing matches this filter.
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.empty.title") }
+        }
+        public enum Filter {
+          /// All categories
+          public static var allCategories: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.filter.all_categories") }
+          /// Category
+          public static var category: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.filter.category") }
+          /// Only what can be deleted
+          public static var onlyRemovable: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.filter.only_removable") }
+          /// Sort and filter
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.filter.title") }
+        }
+        public enum Item {
+          public enum AppDatabase {
+            /// The servers you signed in to, plus the Apple Watch, CarPlay, widget and notification setups you built by hand.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.app_database.explanation") }
+            /// App database
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.app_database.title") }
+          }
+          public enum AppPreferences {
+            /// Every switch, picker and preference in this app.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.app_preferences.explanation") }
+            /// App settings
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.app_preferences.title") }
+          }
+          public enum CachedCalendarEvents {
+            /// Calendar events kept so widgets can still draw something when a fetch fails.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.cached_calendar_events.explanation") }
+            /// Cached calendar events
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.cached_calendar_events.title") }
+          }
+          public enum CachedEntities {
+            /// Entity, device and registry records mirrored from your servers. They are fetched again on the next sync.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.cached_entities.explanation") }
+            /// Cached entity data
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.cached_entities.title") }
+          }
+          public enum ClientEventLog {
+            /// The events listed on the event log screen.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.client_event_log.explanation") }
+            /// Client event log
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.client_event_log.title") }
+          }
+          public enum Downloads {
+            /// Files downloaded from the frontend.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.downloads.explanation") }
+            /// Downloads
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.downloads.title") }
+          }
+          public enum FrontendAssetCache {
+            /// Scripts, styles and images the web view stored for the frontend. They download again on the next load.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.frontend_asset_cache.explanation") }
+            /// Frontend asset cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.frontend_asset_cache.title") }
+          }
+          public enum LegacyRealmStore {
+            /// The old store zones, notification categories and complications are imported from. It is only kept until that import has run.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.explanation") }
+            /// Legacy database
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.title") }
+          }
+          public enum LocationHistory {
+            /// Recorded location updates and their errors, shown on the location history screen.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.location_history.explanation") }
+            /// Location history
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.location_history.title") }
+          }
+          public enum LogFiles {
+            /// Rotating app logs, the same ones the export button above shares.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.log_files.explanation") }
+            /// Log files
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.log_files.title") }
+          }
+          public enum NetworkResponseCache {
+            /// Responses the system cached for the app's own network requests.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.network_response_cache.explanation") }
+            /// Network response cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.network_response_cache.title") }
+          }
+          public enum NotificationHistory {
+            /// Recent notifications kept for the notification debugging screen.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_history.explanation") }
+            /// Notification history
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_history.title") }
+          }
+          public enum NotificationSounds {
+            /// Sound files you imported for notifications.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_sounds.explanation") }
+            /// Notification sounds
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.notification_sounds.title") }
+          }
+          public enum TemporaryFiles {
+            /// Scratch files left behind by uploads, exports and attachment downloads.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.temporary_files.explanation") }
+            /// Temporary files
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.temporary_files.title") }
+          }
+          public enum WatchItemCache {
+            /// Names and icons the Apple Watch shows for the items you configured.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.watch_item_cache.explanation") }
+            /// Apple Watch item cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.watch_item_cache.title") }
+          }
+          public enum WebsiteData {
+            /// Cookies, local storage and databases the frontend keeps in the web view. The app signs in with its own token, so clearing this only resets browser-side preferences.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.website_data.explanation") }
+            /// Website data
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.website_data.title") }
+          }
+          public enum WidgetCache {
+            /// The last state each widget rendered, so a widget can draw before its refresh finishes.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.widget_cache.explanation") }
+            /// Widget cache
+            public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.widget_cache.title") }
+          }
+        }
+        public enum Protection {
+          public enum EssentialAppData {
+            /// Kept: deleting this would sign you out and lose everything you configured.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.essential_app_data.explanation") }
+          }
+          public enum OutsideAppControl {
+            /// Kept: this is your own Downloads folder, which holds files this app did not create.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.outside_app_control.explanation") }
+          }
+          public enum PendingMigration {
+            /// Kept: records in here have not been imported into the app database yet.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.pending_migration.explanation") }
+          }
+          public enum UserProvidedContent {
+            /// Kept: you added these files yourself and the app cannot get them back.
+            public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.protection.user_provided_content.explanation") }
+          }
+        }
+        public enum Sort {
+          /// Largest first
+          public static var largestFirst: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.largest_first") }
+          /// Name
+          public static var name: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.name") }
+          /// Smallest first
+          public static var smallestFirst: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.smallest_first") }
+          /// Sort
+          public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.title") }
+        }
+        public enum Summary {
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.
+          public static var footer: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.footer") }
+          /// Protected items
+          public static var protected: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected") }
+          /// Can be freed
+          public static var reclaimable: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.reclaimable") }
+          /// Total used
+          public static var total: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.total") }
+        }
+      }
       public enum MediaPlayback {
         /// Select which frontend media types require a user action before playback.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.media_playback.footer") }

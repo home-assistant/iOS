@@ -1,0 +1,69 @@
+# TEMPORARY workflow: records the reference images for the Manage Storage snapshot tests.
+#
+# Snapshot references have to be produced by a real simulator run, which cannot happen on the
+# machine the feature was written on. This runs on every push to the feature branch, commits the
+# PNGs it recorded back to that branch, and is meant to be deleted before the pull request is
+# merged — the regular `CI` workflow verifies the snapshots from then on.
+name: Record Manage Storage Snapshots
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - claude/manage-storage-debug-screen-byeri4
+  workflow_dispatch:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  BUNDLE_PATH: vendor/bundle
+  SNAPSHOTS_PATH: Tests/App/Settings/ManageStorage/__Snapshots__
+
+concurrency:
+  group: record-manage-storage-snapshots
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      # `SNAPSHOT_TESTING_RECORD=all` makes every assertion write its reference image instead of
+      # comparing it, and swift-snapshot-testing reports a freshly recorded snapshot as a failure on
+      # purpose — so the run is expected to fail. The images are what this job is after.
+      # `xcodebuild` forwards TEST_RUNNER_-prefixed variables into the test process with the prefix
+      # stripped, which is how the setting reaches the simulator.
+      - name: Record snapshots
+        continue-on-error: true
+        env:
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: all
+          SNAPSHOT_TESTING_RECORD: all
+        run: |
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:HomeAssistant-Tests-App/ManageStorageViewTests \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Show what was recorded
+        run: |
+          git status --porcelain
+          find "$SNAPSHOTS_PATH" -type f || true
+
+      - name: Commit the recorded snapshots
+        run: |
+          if [ -z "$(git status --porcelain "$SNAPSHOTS_PATH")" ]; then
+            echo "::error::No snapshots were recorded. Check the recording step's log."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$SNAPSHOTS_PATH"
+          git commit -m "Record Manage Storage snapshot references [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
