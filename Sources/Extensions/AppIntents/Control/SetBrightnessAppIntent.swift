@@ -28,7 +28,30 @@ struct SetBrightnessAppIntent: AppIntent {
     )
     var brightness: Int
 
+    #if os(watchOS)
     func perform() async throws -> some IntentResult & ProvidesDialog {
+        try await .result(dialog: .init(stringLiteral: apply()))
+    }
+    #else
+    // The card is app-only: the view and the entity it draws aren't built for the watch, where a
+    // spoken answer is the whole interaction anyway.
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let dialog = try await apply()
+        let state = await ControlResultSnippet.state(
+            of: light,
+            serverId: light.serverId,
+            iconName: light.iconName
+        )
+        return .result(dialog: .init(stringLiteral: dialog)) {
+            if let state {
+                ControlResultSnippetView(state: state)
+            }
+        }
+    }
+    #endif
+
+    /// Sets the brightness, returning the sentence to speak.
+    private func apply() async throws -> String {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: light.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -41,9 +64,9 @@ struct SetBrightnessAppIntent: AppIntent {
             data: ["entity_id": light.entityId, "brightness_pct": brightness],
             returnResponse: false
         )
-        return .result(dialog: .init(stringLiteral: L10n.AppIntents.Dialog.setBrightness(
+        return L10n.AppIntents.Dialog.setBrightness(
             light.displayString,
             brightness
-        )))
+        )
     }
 }

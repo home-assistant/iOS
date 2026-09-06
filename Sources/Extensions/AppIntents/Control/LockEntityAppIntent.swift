@@ -19,7 +19,30 @@ struct LockEntityAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.lock.parameter.entity", defaultValue: "Lock"))
     var entity: LockAppEntity
 
+    #if os(watchOS)
     func perform() async throws -> some IntentResult & ProvidesDialog {
+        try await .result(dialog: .init(stringLiteral: secure()))
+    }
+    #else
+    // The card is app-only: the view and the entity it draws aren't built for the watch, where a
+    // spoken answer is the whole interaction anyway.
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let dialog = try await secure()
+        let state = await ControlResultSnippet.state(
+            of: entity,
+            serverId: entity.serverId,
+            iconName: entity.iconName
+        )
+        return .result(dialog: .init(stringLiteral: dialog)) {
+            if let state {
+                ControlResultSnippetView(state: state)
+            }
+        }
+    }
+    #endif
+
+    /// Locks the lock, returning the sentence to speak.
+    private func secure() async throws -> String {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -32,6 +55,6 @@ struct LockEntityAppIntent: AppIntent {
             data: ["entity_id": entity.entityId],
             returnResponse: false
         )
-        return .result(dialog: .init(stringLiteral: L10n.AppIntents.Dialog.locked(entity.displayString)))
+        return L10n.AppIntents.Dialog.locked(entity.displayString)
     }
 }
