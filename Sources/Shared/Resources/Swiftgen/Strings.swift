@@ -499,6 +499,10 @@ public enum L10n {
         public static func eventNotDeletable(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.event_not_deletable", String(describing: p1))
         }
+        /// %@ cannot be edited because Home Assistant did not give it an identifier
+        public static func eventNotEditable(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.event_not_editable", String(describing: p1))
+        }
         /// %1$@ is not an event on %2$@
         public static func eventNotInCalendar(_ p1: Any, _ p2: Any) -> String {
           return L10n.tr("Localizable", "app_intents.calendar.error.event_not_in_calendar", String(describing: p1), String(describing: p2))
@@ -507,6 +511,10 @@ public enum L10n {
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
         /// That calendar is no longer available
         public static var unknownCalendar: String { return L10n.tr("Localizable", "app_intents.calendar.error.unknown_calendar") }
+        /// %@ does not allow editing events
+        public static func updateUnsupported(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.calendar.error.update_unsupported", String(describing: p1))
+        }
         /// The end must be after the start
         public static var zeroDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.zero_duration") }
       }
@@ -912,6 +920,10 @@ public enum L10n {
       }
     }
     public enum Reminders {
+      public enum Error {
+        /// There are no to-do lists to add this to
+        public static var noList: String { return L10n.tr("Localizable", "app_intents.reminders.error.no_list") }
+      }
       public enum ListType {
         /// List
         public static var standard: String { return L10n.tr("Localizable", "app_intents.reminders.list_type.standard") }

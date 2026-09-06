@@ -120,9 +120,11 @@
 "app_intents.calendar.error.create_unsupported" = "%@ does not allow adding events";
 "app_intents.calendar.error.delete_unsupported" = "%@ does not allow deleting events";
 "app_intents.calendar.error.event_not_deletable" = "%@ cannot be deleted because Home Assistant did not give it an identifier";
+"app_intents.calendar.error.event_not_editable" = "%@ cannot be edited because Home Assistant did not give it an identifier";
 "app_intents.calendar.error.event_not_in_calendar" = "%1$@ is not an event on %2$@";
 "app_intents.calendar.error.invalid_duration" = "The end must not be before the start";
 "app_intents.calendar.error.unknown_calendar" = "That calendar is no longer available";
+"app_intents.calendar.error.update_unsupported" = "%@ does not allow editing events";
 "app_intents.calendar.error.zero_duration" = "The end must be after the start";
 "app_intents.calendar.event.entity.name" = "Calendar event";
 "app_intents.calendar.event_status.cancelled" = "Cancelled";
@@ -233,6 +235,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.perform_action.title" = "Perform action";
+"app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.list_type.standard" = "List";
 "app_intents.reminders.location_trigger.arrive" = "Arriving";
 "app_intents.reminders.location_trigger.depart" = "Leaving";
