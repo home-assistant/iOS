@@ -28,6 +28,14 @@ struct OpenCloseEntityAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.open_close.entity.name", defaultValue: "Cover"))
     var entity: OpenableEntityAppEntity
 
+    init() {}
+
+    /// Used by the App Shortcuts, which need the verb fixed: a phrase may interpolate only one
+    /// parameter, so the entity is the one it names and the action comes preset.
+    init(action: OpenCloseActionAppEnum) {
+        self.action = action
+    }
+
     func perform() async throws -> some IntentResult & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
