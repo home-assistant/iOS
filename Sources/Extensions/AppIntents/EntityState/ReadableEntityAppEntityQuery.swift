@@ -27,10 +27,12 @@ struct ReadableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func entities(
         matching string: String? = nil,
-        domains: [Domain] = Domain.voiceReadable
+        domains: [Domain] = []
     ) -> [(Server, [ReadableEntityAppEntity])] {
-        // `userFacingInAreas` below is what keeps configuration and diagnostic entities, hidden
-        // ones, and entities with no room out of the list a question offers.
+        // Every domain: a question is safe to ask about anything, and narrowing to the domains a
+        // command can *change* would drop the sensors people most often ask for. What the list
+        // leaves out is decided by `userFacingInAreas` below — configuration and diagnostic
+        // entities, hidden ones, and ones in no room.
         let byServer = ControlEntityProvider(domains: domains).getEntities(matching: string)
         // Siri offers them in the order they arrive, so the likeliest server leads.
         let rank = Dictionary(
