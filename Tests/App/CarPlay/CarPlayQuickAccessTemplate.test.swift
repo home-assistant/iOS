@@ -78,7 +78,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         connectAPI()
         let rendered = rows(for: [item(id: "light.kitchen", type: .entity)])
 
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         XCTAssertEqual(connection.pendingRequests.count, 1)
@@ -102,7 +102,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
     func testATapThatSucceedsSettlesTheRow() throws {
         connectAPI()
         let rendered = rows(for: [item(id: "light.kitchen", type: .entity)])
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         let request = try XCTUnwrap(connection.pendingRequests.first)
@@ -115,7 +115,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
     func testATapTheServerRejectsSettlesTheRow() throws {
         connectAPI()
         let rendered = rows(for: [item(id: "light.kitchen", type: .entity)])
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         let request = try XCTUnwrap(connection.pendingRequests.first)
@@ -129,7 +129,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         connectAPI()
         let rendered = rows(for: [item(id: "script.good_morning", type: .script)])
 
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         XCTAssertFalse(rendered.isEmpty)
@@ -142,7 +142,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         let orphan = MagicItem(id: "light.kitchen", serverId: "gone", type: .entity)
         let rendered = rows(for: [orphan])
 
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         XCTAssertTrue(connection.pendingRequests.isEmpty)
@@ -155,7 +155,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         let orphan = MagicItem(id: "climate.hall", serverId: "gone", type: .entity)
         let rendered = rows(for: [orphan])
 
-        tap(try XCTUnwrap(rendered.first))
+        try tap(XCTUnwrap(rendered.first))
         drainMainQueue()
 
         XCTAssertTrue(connection.pendingRequests.isEmpty)
