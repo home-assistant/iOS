@@ -4,7 +4,7 @@ import Shared
 
 /// Tells the driver that an action didn't go through.
 enum CarPlayOperationAlert {
-    static func present(_ error: CarPlayOperationError, on interfaceController: CPInterfaceController?) {
+    static func present(_ error: CarPlayOperationError, on interfaceController: CarPlayAlertPresenting?) {
         Current.Log.error("CarPlay action failed: \(error.logDescription)")
 
         guard let interfaceController else { return }

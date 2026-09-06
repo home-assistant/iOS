@@ -39,4 +39,50 @@ final class CarPlayOperationAlertTests: XCTestCase {
     func testPresentingWithoutAnInterfaceControllerIsANoOp() {
         CarPlayOperationAlert.present(.noConnection, on: nil)
     }
+
+    func testAFailurePresentsAnAlertCarryingItsTitleVariants() {
+        let presenter = FakeCarPlayAlertPresenter()
+
+        CarPlayOperationAlert.present(.noConnection, on: presenter)
+
+        XCTAssertEqual(presenter.presentedTemplates.count, 1)
+        let alert = presenter.presentedTemplates.first as? CPAlertTemplate
+        XCTAssertEqual(alert?.titleVariants, CarPlayOperationError.noConnection.alertTitleVariants)
+    }
+
+    /// A dead zone can catch several rows at once. CarPlay shows one modal at a time, and stacking
+    /// alerts would leave the driver dismissing them one by one.
+    func testASecondFailureDoesNotStackAnotherAlert() {
+        let presenter = FakeCarPlayAlertPresenter()
+
+        CarPlayOperationAlert.present(.noConnection, on: presenter)
+        CarPlayOperationAlert.present(.timedOut, on: presenter)
+
+        XCTAssertEqual(presenter.presentedTemplates.count, 1)
+    }
+
+    /// Once the driver dismisses, the next failure is worth showing again.
+    func testAFailureAfterTheAlertIsDismissedPresentsAgain() {
+        let presenter = FakeCarPlayAlertPresenter()
+
+        CarPlayOperationAlert.present(.noConnection, on: presenter)
+        presenter.dismissTemplate(animated: false, completion: nil)
+        CarPlayOperationAlert.present(.timedOut, on: presenter)
+
+        XCTAssertEqual(presenter.presentedTemplates.count, 2)
+    }
+
+    func testTheAlertsActionDismissesThePresentedTemplate() {
+        let presenter = FakeCarPlayAlertPresenter()
+        CarPlayOperationAlert.present(.noConnection, on: presenter)
+
+        guard let alert = presenter.presentedTemplates.first as? CPAlertTemplate,
+              let action = alert.actions.first else {
+            XCTFail("Expected a presented alert with a dismiss action")
+            return
+        }
+        action.handler(action)
+
+        XCTAssertEqual(presenter.dismissCount, 1)
+    }
 }
