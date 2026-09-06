@@ -5779,6 +5779,8 @@ public enum L10n {
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
       /// reminders, todo, to-do, tasks, lists, shopping list, sync
       public static var remindersSync: String { return L10n.tr("Localizable", "settings.search_keywords.reminders_sync") }
+      /// speaker, media player, music, audio, multi-room, cast, sendspin
+      public static var sendspin: String { return L10n.tr("Localizable", "settings.search_keywords.sendspin") }
       /// battery, motion, pedometer, focus, device data
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
@@ -5816,6 +5818,124 @@ public enum L10n {
       public enum StayInformed {
         /// Stay informed
         public static var header: String { return L10n.tr("Localizable", "settings.sections.stay_informed.header") }
+      }
+    }
+    public enum Sendspin {
+      /// Sendspin player
+      public static var title: String { return L10n.tr("Localizable", "settings.sendspin.title") }
+      public enum Diagnostics {
+        /// Buffered
+        public static var buffer: String { return L10n.tr("Localizable", "settings.sendspin.diagnostics.buffer") }
+        /// Device ID
+        public static var deviceId: String { return L10n.tr("Localizable", "settings.sendspin.diagnostics.device_id") }
+        /// Dropouts
+        public static var dropouts: String { return L10n.tr("Localizable", "settings.sendspin.diagnostics.dropouts") }
+        /// Diagnostics
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.diagnostics.header") }
+        /// Stream
+        public static var stream: String { return L10n.tr("Localizable", "settings.sendspin.diagnostics.stream") }
+      }
+      public enum Enable {
+        /// While this is on, the app looks for Sendspin servers on your network and keeps a connection open so Home Assistant can play audio here, including in the background.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.enable.footer") }
+        /// Use this device as a player
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.enable.title") }
+      }
+      public enum Header {
+        /// Play audio from Home Assistant on this device, in step with your other speakers.
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.sendspin.header.subtitle") }
+      }
+      public enum Name {
+        /// The name servers show for this device. A new name applies the next time this device connects.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.name.footer") }
+        /// Player name
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.name.header") }
+      }
+      public enum NowPlaying {
+        /// Now playing
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.now_playing.header") }
+        /// Nothing is playing here right now.
+        public static var idle: String { return L10n.tr("Localizable", "settings.sendspin.now_playing.idle") }
+        /// Unknown track
+        public static var unknownTitle: String { return L10n.tr("Localizable", "settings.sendspin.now_playing.unknown_title") }
+      }
+      public enum Output {
+        /// Output delay: %li ms
+        public static func delay(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.output.delay", p1)
+        }
+        /// Volume: %li%%
+        public static func volume(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.output.volume", p1)
+        }
+        /// Output delay compensates for speakers or an amplifier that add delay of their own after this device’s audio output.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.output.footer") }
+        /// Output
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.output.header") }
+        /// Mute
+        public static var mute: String { return L10n.tr("Localizable", "settings.sendspin.output.mute") }
+      }
+      public enum Pairing {
+        /// Paired servers: %li
+        public static func pairedCount(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.pairing.paired_count", p1)
+        }
+        /// Allow unpaired servers
+        public static var allowUnpaired: String { return L10n.tr("Localizable", "settings.sendspin.pairing.allow_unpaired") }
+        /// Enter this code into your Sendspin server to pair it with this device.
+        public static var body: String { return L10n.tr("Localizable", "settings.sendspin.pairing.body") }
+        /// Copy pairing code
+        public static var copy: String { return L10n.tr("Localizable", "settings.sendspin.pairing.copy") }
+        /// Audio always travels encrypted, but until a server is paired nothing proves which server is on the other end. Pairing settles that, and unpaired servers can be turned away entirely.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.pairing.footer") }
+        /// Forget all pairings
+        public static var forget: String { return L10n.tr("Localizable", "settings.sendspin.pairing.forget") }
+        /// Every paired server will have to pair with this device again, and servers will see it as a new device.
+        public static var forgetConfirmation: String { return L10n.tr("Localizable", "settings.sendspin.pairing.forget_confirmation") }
+        /// Pairing
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.pairing.header") }
+        /// Show pairing code
+        public static var reveal: String { return L10n.tr("Localizable", "settings.sendspin.pairing.reveal") }
+        /// Pairing code
+        public static var row: String { return L10n.tr("Localizable", "settings.sendspin.pairing.row") }
+        /// Pair this device
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.pairing.title") }
+        /// Treat this code like a password: anyone who has it can pair with this device.
+        public static var warning: String { return L10n.tr("Localizable", "settings.sendspin.pairing.warning") }
+      }
+      public enum Servers {
+        /// Automatic
+        public static var automatic: String { return L10n.tr("Localizable", "settings.sendspin.servers.automatic") }
+        /// No Sendspin servers found on this network yet.
+        public static var empty: String { return L10n.tr("Localizable", "settings.sendspin.servers.empty") }
+        /// Servers announce themselves on the local network. Pick one to stay with it, or leave this on Automatic.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.servers.footer") }
+        /// Server
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.servers.header") }
+      }
+      public enum Status {
+        /// Connected to %@
+        public static func connectedPaired(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.connected_paired", String(describing: p1))
+        }
+        /// Connected to %@ (not paired)
+        public static func connectedUnpaired(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.connected_unpaired", String(describing: p1))
+        }
+        /// Connecting to %@…
+        public static func connecting(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.connecting", String(describing: p1))
+        }
+        /// Synchronizing with %@…
+        public static func synchronizing(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.synchronizing", String(describing: p1))
+        }
+        /// Off
+        public static var off: String { return L10n.tr("Localizable", "settings.sendspin.status.off") }
+        /// Looking for servers…
+        public static var searching: String { return L10n.tr("Localizable", "settings.sendspin.status.searching") }
+        /// Status
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.status.title") }
       }
     }
     public enum ServerSelect {

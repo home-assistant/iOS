@@ -12,6 +12,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case notifications
     case liveActivities
     case sensors
+    case sendspin
     case nfc
     case macToolbar
     case widgets
@@ -39,6 +40,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
+        case .sendspin: return L10n.Settings.Sendspin.title
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
@@ -69,6 +71,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return .bellOutlineIcon
         case .liveActivities: return .playBoxOutlineIcon
         case .sensors: return .formatListBulletedIcon
+        case .sendspin: return .speakerMultipleIcon
         case .nfc: return .nfcVariantIcon
         case .widgets: return .widgetsIcon
         case .appIconShortcuts: return .applicationIcon
@@ -132,6 +135,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             #endif
         case .sensors:
             SensorListView()
+        case .sendspin:
+            SendspinSettingsView()
         case .nfc:
             TagsView()
         case .widgets:
@@ -197,6 +202,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .appLabs:
             // App Labs is limited to TestFlight builds while its features mature.
             return AppLabsFeature.isLabsAvailable
+        case .sendspin:
+            return SendspinPlayerManager.isAvailable
         default:
             return true
         }
@@ -224,6 +231,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
+        case .sendspin: return L10n.Settings.SearchKeywords.sendspin
         case .nfc: return L10n.Settings.SearchKeywords.nfc
         case .widgets: return L10n.Settings.SearchKeywords.widgets
         case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
@@ -262,6 +270,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return []
             #endif
         case .sensors: return SensorListView.settingsSearchEntries
+        case .sendspin: return SendspinSettingsView.settingsSearchEntries
         case .nfc: return TagsView.settingsSearchEntries
         case .widgets: return CustomWidgetsListView.settingsSearchEntries
         case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries

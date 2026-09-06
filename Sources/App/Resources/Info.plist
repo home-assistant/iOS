@@ -77,6 +77,7 @@
 		<string>_hass-mobile-app._tcp</string>
 		<string>_home-assistant._tcp</string>
 		<string>_matter._tcp</string>
+		<string>_sendspin-server._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos and send them to your Home Assistant server.</string>
@@ -91,7 +92,7 @@
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Home Assistant does not write any data to Apple Health.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Locate and communicate with your Home Assistant instance.</string>
+	<string>Locate and communicate with your Home Assistant instance and with media servers that play audio on this device.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We suggest selecting "Always Allow" for the best location experience.
 			Selecting "Only While Using the App" will disable iBeacons, geofences,

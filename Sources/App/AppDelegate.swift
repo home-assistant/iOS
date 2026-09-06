@@ -141,6 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        SendspinPlayerManager.shared.start()
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
         }

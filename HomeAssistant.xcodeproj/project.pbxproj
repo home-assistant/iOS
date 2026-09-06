@@ -2382,6 +2382,7 @@
 		42EDBBB63002FBC90051FC9B /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
 		42EDBBBC3002FBC90051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDBBCD3002FBC90051FC9B /* WebView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WebView; sourceTree = "<group>"; };
+		42FE0002300315A50051FC9B /* Sendspin */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sendspin; sourceTree = "<group>"; };
 		42EDBBDB3002FBC90051FC9B /* Scenes */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Scenes; sourceTree = "<group>"; };
 		42EDBBE23002FBC90051FC9B /* Thread */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Thread; sourceTree = "<group>"; };
 		42EDBBE83002FBC90051FC9B /* TestFlightCommunication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestFlightCommunication; sourceTree = "<group>"; };
@@ -2431,6 +2432,7 @@
 		42EDE731300315A50051FC9B /* PermissionScreen */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PermissionScreen; sourceTree = "<group>"; };
 		42EDE880300315A50051FC9B /* Scenes */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Scenes; sourceTree = "<group>"; };
 		42EDE882300315A50051FC9B /* Servers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Servers; sourceTree = "<group>"; };
+		42FE0001300315A50051FC9B /* Sendspin */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sendspin; sourceTree = "<group>"; };
 		42EDE917300315A50051FC9B /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42EDE91C300315A50051FC9B /* TestFlightCommunication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestFlightCommunication; sourceTree = "<group>"; };
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
@@ -2791,6 +2793,7 @@
 				42EDE731300315A50051FC9B /* PermissionScreen */,
 				4283E0D53004DCF4004D1061 /* Resources */,
 				42EDE880300315A50051FC9B /* Scenes */,
+				42FE0001300315A50051FC9B /* Sendspin */,
 				42EDE882300315A50051FC9B /* Servers */,
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
@@ -2884,6 +2887,7 @@
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				42EDBBF63002FBC90051FC9B /* Resources */,
 				42EDBBDB3002FBC90051FC9B /* Scenes */,
+				42FE0002300315A50051FC9B /* Sendspin */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
 				42EDBBE23002FBC90051FC9B /* Thread */,
 				42EDBBBC3002FBC90051FC9B /* Utilities */,
@@ -3355,6 +3359,7 @@
 				42EDE72C300315A50051FC9B /* Onboarding */,
 				42EDE731300315A50051FC9B /* PermissionScreen */,
 				42EDE880300315A50051FC9B /* Scenes */,
+				42FE0001300315A50051FC9B /* Sendspin */,
 				42EDE882300315A50051FC9B /* Servers */,
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
@@ -3419,6 +3424,7 @@
 				42EDBBBC3002FBC90051FC9B /* Utilities */,
 				42EDBBCD3002FBC90051FC9B /* WebView */,
 				42EDBBDB3002FBC90051FC9B /* Scenes */,
+				42FE0002300315A50051FC9B /* Sendspin */,
 				42EDBBE23002FBC90051FC9B /* Thread */,
 				42EDBBE83002FBC90051FC9B /* TestFlightCommunication */,
 				42EDBBEB3002FBC90051FC9B /* Webhook */,
