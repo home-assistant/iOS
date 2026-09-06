@@ -10,3 +10,15 @@ enum EventLocationCases {
     case place(PlaceDescriptor)
     case text(String)
 }
+
+@available(iOS 27.0, *)
+extension EventLocationCases {
+    /// Home Assistant stores a location as a free string, so a structured place is flattened to
+    /// its name rather than dropped.
+    var plainText: String? {
+        switch self {
+        case let .text(text): text.nilIfEmpty
+        case let .place(place): place.commonName?.nilIfEmpty
+        }
+    }
+}

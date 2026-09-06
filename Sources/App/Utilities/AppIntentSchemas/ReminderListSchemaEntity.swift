@@ -30,4 +30,13 @@ struct ReminderListSchemaEntity: IndexedEntity {
         self.name = entity.name
         self.type = .standard
     }
+
+    /// An empty list, for the transient section entity that must carry one to satisfy the schema.
+    init() {
+        self.id = ""
+        self.entityId = ""
+        self.serverId = ""
+        self.name = ""
+        self.type = .standard
+    }
 }

@@ -55,4 +55,43 @@ struct ReminderSchemaEntity {
         self.tags = []
         self.urls = []
     }
+
+    /// An item described by what was just asked for. `todo.add_item` does not return a uid, so one
+    /// is not known until the list is read again.
+    init(title: String, list: ReminderListSchemaEntity, dueDate: DateComponents?, note: String?) {
+        self.init(
+            id: "\(list.serverId)-\(list.entityId)-\(title)",
+            uid: "",
+            title: title,
+            list: list,
+            dueDate: dueDate,
+            isCompleted: false,
+            note: note
+        )
+    }
+
+    init(
+        id: String,
+        uid: String,
+        title: String,
+        list: ReminderListSchemaEntity,
+        dueDate: DateComponents?,
+        isCompleted: Bool,
+        note: String?
+    ) {
+        self.id = id
+        self.uid = uid
+        self.title = title
+        self.list = list
+        self.dueDate = dueDate
+        self.isCompleted = isCompleted
+        self.note = note
+        self.completionDate = nil
+        self.creationDate = nil
+        self.isFlagged = nil
+        self.recurrence = nil
+        self.locationTrigger = nil
+        self.tags = []
+        self.urls = []
+    }
 }

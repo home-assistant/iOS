@@ -22,4 +22,10 @@ struct ReminderListSchemaEntityQuery: EntityQuery, EntityStringQuery {
             .flatMap(\.1)
             .map(ReminderListSchemaEntity.init(entity:))
     }
+
+    /// The list a new reminder lands on when none was named: the first the provider reports, which
+    /// follows the app's own server and entity ordering.
+    func firstList() -> ReminderListSchemaEntity? {
+        lists().first
+    }
 }
