@@ -1,3 +1,5 @@
+import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import XCTest
@@ -57,14 +59,68 @@ final class CarPlayOperationErrorTests: XCTestCase {
         ]
 
         for error in errors {
+            let described = error.logDescription
             let variants = error.alertTitleVariants
-            XCTAssertEqual(variants.count, 2, "Expected two variants for \(error.logDescription)")
-            XCTAssertFalse(variants.contains(where: \.isEmpty), "Empty variant for \(error.logDescription)")
+            XCTAssertFalse(described.isEmpty)
+            XCTAssertEqual(variants.count, 2, "Expected two variants for \(described)")
+            XCTAssertFalse(variants.contains(where: \.isEmpty), "Empty variant for \(described)")
             XCTAssertGreaterThan(
                 variants[0].count,
                 variants[1].count,
-                "Expected the longest variant first for \(error.logDescription)"
+                "Expected the longest variant first for \(described)"
             )
+        }
+    }
+
+    /// The server-state branch: a reachable, ready connection means the failure is the server's or
+    /// the transport's, not the drive's.
+    func testAFailureOnAReadyConnectionIsNotReportedAsDisconnected() {
+        let previousServers = Current.servers
+        let servers = FakeServerManager()
+        Current.servers = servers
+        let server = servers.addFake()
+        let api = HomeAssistantAPI(server: server)
+        let connection = HAMockConnection()
+        api.connection = connection
+        Current.cachedApis[server.identifier] = api
+        connection.setState(.ready(version: "1.0-mock"), waitForQueue: false)
+        defer {
+            Current.cachedApis = [:]
+            Current.servers = previousServers
+        }
+
+        let resolved = CarPlayOperationError.resolve(
+            underlying: CarPlayOperationErrorTestError.any,
+            server: server
+        )
+
+        guard case .failed = resolved else {
+            XCTFail("Expected a transport error to be reported as .failed on a ready connection")
+            return
+        }
+    }
+
+    /// A connection that exists but isn't up is still "not connected" as far as the driver goes.
+    func testAFailureOnAConnectionThatIsNotReadyIsReportedAsDisconnected() {
+        let previousServers = Current.servers
+        let servers = FakeServerManager()
+        Current.servers = servers
+        let server = servers.addFake()
+        let api = HomeAssistantAPI(server: server)
+        let connection = HAMockConnection()
+        api.connection = connection
+        Current.cachedApis[server.identifier] = api
+        connection.setState(.connecting, waitForQueue: false)
+        defer {
+            Current.cachedApis = [:]
+            Current.servers = previousServers
+        }
+
+        let resolved = CarPlayOperationError.resolve(underlying: nil, server: server)
+
+        guard case .noConnection = resolved else {
+            XCTFail("Expected an unanswered action on a connecting socket to be .noConnection")
+            return
         }
     }
 
