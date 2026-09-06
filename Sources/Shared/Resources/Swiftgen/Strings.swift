@@ -538,6 +538,10 @@ public enum L10n {
       public static func closed(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.dialog.closed", String(describing: p1))
       }
+      /// Locked %@
+      public static func locked(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.dialog.locked", String(describing: p1))
+      }
       /// Opened %@
       public static func opened(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.dialog.opened", String(describing: p1))
@@ -545,6 +549,14 @@ public enum L10n {
       /// Pressed %@
       public static func pressed(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.dialog.pressed", String(describing: p1))
+      }
+      /// Set %1$@ to %2$li%%
+      public static func setBrightness(_ p1: Any, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "app_intents.dialog.set_brightness", String(describing: p1), p2)
+      }
+      /// Set %1$@ to %2$@
+      public static func setTemperature(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.dialog.set_temperature", String(describing: p1), String(describing: p2))
       }
       /// Toggled %@
       public static func toggled(_ p1: Any) -> String {
@@ -557,6 +569,12 @@ public enum L10n {
       /// Turned on %@
       public static func turnedOn(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.dialog.turned_on", String(describing: p1))
+      }
+    }
+    public enum DimmableLight {
+      public enum Entity {
+        /// Light
+        public static var name: String { return L10n.tr("Localizable", "app_intents.dimmable_light.entity.name") }
       }
     }
     public enum Entity {
@@ -761,6 +779,20 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.lights.on_state_icon.title") }
       }
     }
+    public enum Lock {
+      /// Locks a lock. Unlocking is not available by voice.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.lock.description") }
+      /// Lock
+      public static var title: String { return L10n.tr("Localizable", "app_intents.lock.title") }
+      public enum Entity {
+        /// Lock
+        public static var name: String { return L10n.tr("Localizable", "app_intents.lock.entity.name") }
+      }
+      public enum Parameter {
+        /// Lock
+        public static var entity: String { return L10n.tr("Localizable", "app_intents.lock.parameter.entity") }
+      }
+    }
     public enum NotifyWhenRun {
       /// Shows notification after executed
       public static var description: String { return L10n.tr("Localizable", "app_intents.notify_when_run.description") }
@@ -909,6 +941,28 @@ public enum L10n {
       /// Server
       public static var title: String { return L10n.tr("Localizable", "app_intents.server.title") }
     }
+    public enum SetBrightness {
+      /// Sets a light's brightness as a percentage
+      public static var description: String { return L10n.tr("Localizable", "app_intents.set_brightness.description") }
+      /// Set brightness
+      public static var title: String { return L10n.tr("Localizable", "app_intents.set_brightness.title") }
+      public enum Parameter {
+        /// Brightness
+        public static var brightness: String { return L10n.tr("Localizable", "app_intents.set_brightness.parameter.brightness") }
+      }
+    }
+    public enum SetTemperature {
+      /// Sets a thermostat's target temperature, in the unit your server uses
+      public static var description: String { return L10n.tr("Localizable", "app_intents.set_temperature.description") }
+      /// Set temperature
+      public static var title: String { return L10n.tr("Localizable", "app_intents.set_temperature.title") }
+      public enum Parameter {
+        /// Thermostat
+        public static var entity: String { return L10n.tr("Localizable", "app_intents.set_temperature.parameter.entity") }
+        /// Temperature
+        public static var temperature: String { return L10n.tr("Localizable", "app_intents.set_temperature.parameter.temperature") }
+      }
+    }
     public enum ShowConfirmationDialog {
       /// Shows confirmation notification after executed
       public static var description: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.description") }
@@ -932,6 +986,12 @@ public enum L10n {
     public enum Switch {
       /// Switch
       public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
+    }
+    public enum Thermostat {
+      public enum Entity {
+        /// Thermostat
+        public static var name: String { return L10n.tr("Localizable", "app_intents.thermostat.entity.name") }
+      }
     }
     public enum Toggle {
       /// Flips an entity to its opposite state
@@ -990,6 +1050,10 @@ public enum L10n {
       /// Get Entity State
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.get_entity_state.title") }
     }
+    public enum Lock {
+      /// Lock
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.lock.title") }
+    }
     public enum Open {
       /// Open
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
@@ -997,6 +1061,14 @@ public enum L10n {
     public enum PerformAction {
       /// Perform Action
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.perform_action.title") }
+    }
+    public enum SetBrightness {
+      /// Set Brightness
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.set_brightness.title") }
+    }
+    public enum SetTemperature {
+      /// Set Temperature
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.set_temperature.title") }
     }
     public enum TurnOff {
       /// Turn Off

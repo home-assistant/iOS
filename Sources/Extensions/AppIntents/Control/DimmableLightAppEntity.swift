@@ -3,15 +3,15 @@ import Foundation
 import SFSafeSymbols
 import Shared
 
-/// An entity a spoken command can switch on or off, across every domain that supports it.
+/// A light whose brightness a spoken command can set.
 @available(macOS 13.0, watchOS 9.4, *)
-struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
+struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
-        "app_intents.controllable_entity.entity.name",
-        defaultValue: "Controllable Entity"
+        "app_intents.dimmable_light.entity.name",
+        defaultValue: "Light"
     ))
 
-    static let defaultQuery = ControllableEntityAppEntityQuery()
+    static let defaultQuery = DimmableLightAppEntityQuery()
 
     var id: String
     var serverId: String
@@ -32,17 +32,8 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: contextSubtitle(serverName: serverName).map { LocalizedStringResource(stringLiteral: $0) }
         )
-    }
-
-    var subtitle: String? {
-        contextSubtitle(serverName: serverName)
-    }
-
-    /// The domain the command resolves its service from, e.g. `cover` opens rather than turns on.
-    var domain: Domain? {
-        Domain(entityId: entityId)
     }
 
     init(
