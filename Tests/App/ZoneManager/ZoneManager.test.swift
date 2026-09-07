@@ -42,28 +42,96 @@ class ZoneManagerTests: XCTestCase {
     }
 
     private final class FakeZoneEventOutbox: ZoneEventOutbox {
-        var events = [PendingZoneEvent]()
+        private let lock = NSLock()
+        private var storedEvents = [PendingZoneEvent]()
+        private var deliveryClearedObserver: ((PendingZoneEvent) -> Void)?
+        private var removalObserver: ((PendingZoneEvent) -> Void)?
+
+        var events: [PendingZoneEvent] {
+            get { synchronized { storedEvents } }
+            set { synchronized { storedEvents = newValue } }
+        }
+
+        private func synchronized<T>(_ action: () -> T) -> T {
+            lock.lock()
+            defer { lock.unlock() }
+            return action()
+        }
+
+        func observeDeliveryCleared(_ observer: @escaping (PendingZoneEvent) -> Void) {
+            synchronized { deliveryClearedObserver = observer }
+        }
+
+        func observeRemoval(_ observer: @escaping (PendingZoneEvent) -> Void) {
+            synchronized { removalObserver = observer }
+        }
 
         func pendingEvents() throws -> [PendingZoneEvent] {
-            events
+            synchronized { storedEvents }
         }
 
         func append(_ event: PendingZoneEvent) throws {
-            events.append(event)
+            synchronized { storedEvents.append(event) }
         }
 
         func markDeliveryStarted(id: UUID, at date: Date) throws {
-            guard let index = events.firstIndex(where: { $0.id == id }) else { return }
-            events[index].deliveryStartedAt = date
+            synchronized {
+                guard let index = storedEvents.firstIndex(where: { $0.id == id }) else { return }
+                storedEvents[index].deliveryStartedAt = date
+            }
         }
 
         func clearDeliveryStarted(id: UUID) throws {
-            guard let index = events.firstIndex(where: { $0.id == id }) else { return }
-            events[index].deliveryStartedAt = nil
+            let result: (PendingZoneEvent, ((PendingZoneEvent) -> Void)?)? = synchronized {
+                guard let index = storedEvents.firstIndex(where: { $0.id == id }) else { return nil }
+                storedEvents[index].deliveryStartedAt = nil
+                return (storedEvents[index], deliveryClearedObserver)
+            }
+            if let (event, observer) = result {
+                observer?(event)
+            }
         }
 
         func remove(id: UUID) throws {
-            events.removeAll { $0.id == id }
+            let result: (PendingZoneEvent, ((PendingZoneEvent) -> Void)?)? = synchronized {
+                guard let event = storedEvents.first(where: { $0.id == id }) else { return nil }
+                storedEvents.removeAll { $0.id == id }
+                return (event, removalObserver)
+            }
+            if let (event, observer) = result {
+                observer?(event)
+            }
+        }
+    }
+
+    private final class ObservingZoneEventOutbox: ZoneEventOutbox {
+        private let outbox: ZoneEventOutbox
+        private let didRemove: (UUID) -> Void
+
+        init(outbox: ZoneEventOutbox, didRemove: @escaping (UUID) -> Void) {
+            self.outbox = outbox
+            self.didRemove = didRemove
+        }
+
+        func pendingEvents() throws -> [PendingZoneEvent] {
+            try outbox.pendingEvents()
+        }
+
+        func append(_ event: PendingZoneEvent) throws {
+            try outbox.append(event)
+        }
+
+        func markDeliveryStarted(id: UUID, at date: Date) throws {
+            try outbox.markDeliveryStarted(id: id, at: date)
+        }
+
+        func clearDeliveryStarted(id: UUID) throws {
+            try outbox.clearDeliveryStarted(id: id)
+        }
+
+        func remove(id: UUID) throws {
+            try outbox.remove(id: id)
+            didRemove(id)
         }
     }
 
@@ -661,14 +729,14 @@ class ZoneManagerTests: XCTestCase {
         )
         let outbox = FakeZoneEventOutbox()
         outbox.events = [malformedEvent, validEvent]
+        let removed = expectation(description: "unreadable and delivered events removed")
+        removed.expectedFulfillmentCount = 2
+        outbox.observeRemoval { _ in removed.fulfill() }
 
         let manager = newZoneManager(zoneEventOutbox: outbox)
 
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_exited"])
         XCTAssertTrue(loggedEvents.contains { $0.text.contains("Event data is unreadable") })
         withExtendedLifetime(manager) { /* retain during drain */ }
@@ -694,7 +762,14 @@ class ZoneManagerTests: XCTestCase {
             ),
         ])[0]
         processor.promiseToReturn = .value(())
-        api.persistentEventStartResult = .success(.init(error: TestError.anyError))
+        api.enqueuePersistentEventStartResults([
+            .success(.init(error: TestError.anyError)),
+            .success(.value(())),
+            .success(.value(())),
+        ])
+        let removed = expectation(description: "retried entry and following exit removed")
+        removed.expectedFulfillmentCount = 2
+        outbox.observeRemoval { _ in removed.fulfill() }
 
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .inside),
@@ -705,12 +780,8 @@ class ZoneManagerTests: XCTestCase {
             associatedZone: zone
         ))
 
-        api.persistentEventStartResult = .success(.value(()))
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertEqual(
             api.createdEvents.map(\.eventType),
             ["ios.zone_entered", "ios.zone_entered", "ios.zone_exited"]
@@ -720,7 +791,7 @@ class ZoneManagerTests: XCTestCase {
 
     func testFailedZoneEventIsQueuedAndRetriedWhenAppBecomesActive() throws {
         let outbox = FakeZoneEventOutbox()
-        let manager = newZoneManager(zoneEventOutbox: outbox)
+        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 60 })
         let api = apis[1]
         let region = CLCircularRegion(
             center: .init(latitude: 42.4242, longitude: 43.4343),
@@ -739,29 +810,26 @@ class ZoneManagerTests: XCTestCase {
         ])[0]
         processor.promiseToReturn = .value(())
         api.persistentEventResult = .init(error: TestError.anyError)
+        let deliveryFailed = expectation(description: "failed delivery becomes retryable")
+        outbox.observeDeliveryCleared { _ in deliveryFailed.fulfill() }
 
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .inside),
             associatedZone: zone
         ))
 
-        let queued = expectation(
-            for: NSPredicate(block: { _, _ in
-                outbox.events.first?.deliveryStartedAt == nil && api.createdEvents.count == 1
-            }),
-            evaluatedWith: nil
-        )
-        wait(for: [queued], timeout: 1)
+        wait(for: [deliveryFailed], timeout: 1)
+        XCTAssertEqual(api.createdEvents.count, 1)
         XCTAssertEqual(outbox.events.first?.eventType, "ios.zone_entered")
 
+        let removed = expectation(description: "app-active retry removed delivered event")
+        outbox.observeRemoval { _ in removed.fulfill() }
         api.persistentEventResult = .value(())
         manager.applicationDidBecomeActive()
 
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
+        XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered", "ios.zone_entered"])
     }
 
     func testZoneEventStartFailureRemainsImmediatelyRetryableOnNextWake() throws {
@@ -794,14 +862,13 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(outbox.events.count, 1)
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered"])
 
+        let removed = expectation(description: "next wake removed delivered event")
+        outbox.observeRemoval { _ in removed.fulfill() }
         api.persistentEventStartResult = .success(.value(()))
         manager.applicationDidBecomeActive()
 
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered", "ios.zone_entered"])
     }
 
@@ -836,12 +903,11 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(outbox.events.count, 1)
         XCTAssertEqual(outbox.events.first?.eventType, "ios.zone_entered")
 
+        let removed = expectation(description: "completed delivery removed persisted event")
+        outbox.observeRemoval { _ in removed.fulfill() }
         deliverySeal.fulfill(())
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
     }
 
     func testQueuedZoneEventsRemainOrderedUntilEachDeliverySucceeds() throws {
@@ -879,12 +945,12 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(outbox.events.map(\.eventType), ["ios.zone_entered", "ios.zone_exited"])
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered"])
 
+        let removed = expectation(description: "ordered deliveries removed")
+        removed.expectedFulfillmentCount = 2
+        outbox.observeRemoval { _ in removed.fulfill() }
         firstDeliverySeal.fulfill(())
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered", "ios.zone_exited"])
     }
 
@@ -892,7 +958,10 @@ class ZoneManagerTests: XCTestCase {
         let directoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directoryURL) }
-        let outbox = AtomicFileZoneEventOutbox(fileURL: directoryURL.appendingPathComponent("outbox.json"))
+        let backingOutbox = AtomicFileZoneEventOutbox(fileURL: directoryURL.appendingPathComponent("outbox.json"))
+        let removed = expectation(description: "coalesced entry and exit removed in order")
+        removed.expectedFulfillmentCount = 2
+        let outbox = ObservingZoneEventOutbox(outbox: backingOutbox) { _ in removed.fulfill() }
         let manager = newZoneManager(zoneEventOutbox: outbox)
         let api = apis[1]
         let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon-zone")
@@ -923,13 +992,8 @@ class ZoneManagerTests: XCTestCase {
 
         api.persistentEventStartResult = .success(.value(()))
         entryDeliverySeal.fulfill(())
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in
-                (try? outbox.pendingEvents())?.isEmpty == true
-            }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
         XCTAssertEqual(api.createdEvents.map(\.eventType), ["ios.zone_entered", "ios.zone_exited"])
     }
 
@@ -958,19 +1022,20 @@ class ZoneManagerTests: XCTestCase {
                 }
             }
         })
+        let reconciled = expectation(description: "persisted upload reconciled")
+        api.observePersistentEventReconciliation { _ in reconciled.fulfill() }
+        let removed = expectation(description: "adopted upload removed delivered event")
+        outbox.observeRemoval { _ in removed.fulfill() }
 
         let manager = newZoneManager(zoneEventOutbox: outbox)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        wait(for: [reconciled], timeout: 1)
 
         XCTAssertTrue(api.createdEvents.isEmpty)
         XCTAssertEqual(outbox.events.map(\.id), [pending.id])
 
         seal.fulfill(())
-        let drained = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.isEmpty }),
-            evaluatedWith: nil
-        )
-        wait(for: [drained], timeout: 1)
+        wait(for: [removed], timeout: 1)
+        XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertTrue(api.createdEvents.isEmpty)
 
         withExtendedLifetime(manager) { /* retain through completion */ }
@@ -1173,18 +1238,58 @@ private class FakeRegionFilter: ZoneManagerRegionFilter {
 private class FakeHassAPI: HomeAssistantAPI {
     typealias CreatedEventInfo = (eventType: String, eventData: [String: Any])
 
+    private let lock = NSLock()
+    private var storedPersistentEventResult: Promise<Void> = .value(())
+    private var storedPersistentEventStartResult: Swift.Result<Promise<Void>, Error>?
+    private var queuedPersistentEventStartResults = [Swift.Result<Promise<Void>, Error>]()
+    private var storedPersistentEventReconciliationState: PersistedBackgroundRequestState = .absent
+    private var storedCreatedEvents = [CreatedEventInfo]()
+    private var storedCreatedEventIdentifiers = [UUID]()
+    private var persistentEventReconciliationObserver: ((UUID) -> Void)?
+
+    private func synchronized<T>(_ action: () -> T) -> T {
+        lock.lock()
+        defer { lock.unlock() }
+        return action()
+    }
+
     func resetCreatedEventInfo() {
         (createdEventPromise, createdEventSeal) = Promise<CreatedEventInfo>.pending()
+    }
+
+    func observePersistentEventReconciliation(_ observer: @escaping (UUID) -> Void) {
+        synchronized { persistentEventReconciliationObserver = observer }
+    }
+
+    func enqueuePersistentEventStartResults(_ results: [Swift.Result<Promise<Void>, Error>]) {
+        synchronized { queuedPersistentEventStartResults.append(contentsOf: results) }
     }
 
     var createdEventPromise: Promise<CreatedEventInfo>!
     var createdEventSeal: Resolver<CreatedEventInfo>?
     var ephemeralEventCount = 0
-    var persistentEventResult: Promise<Void> = .value(())
-    var persistentEventStartResult: Swift.Result<Promise<Void>, Error>?
-    var persistentEventReconciliationState: PersistedBackgroundRequestState = .absent
-    var createdEvents = [CreatedEventInfo]()
-    var createdEventIdentifiers = [UUID]()
+    var persistentEventResult: Promise<Void> {
+        get { synchronized { storedPersistentEventResult } }
+        set { synchronized { storedPersistentEventResult = newValue } }
+    }
+
+    var persistentEventStartResult: Swift.Result<Promise<Void>, Error>? {
+        get { synchronized { storedPersistentEventStartResult } }
+        set { synchronized { storedPersistentEventStartResult = newValue } }
+    }
+
+    var persistentEventReconciliationState: PersistedBackgroundRequestState {
+        get { synchronized { storedPersistentEventReconciliationState } }
+        set { synchronized { storedPersistentEventReconciliationState = newValue } }
+    }
+
+    var createdEvents: [CreatedEventInfo] {
+        synchronized { storedCreatedEvents }
+    }
+
+    var createdEventIdentifiers: [UUID] {
+        synchronized { storedCreatedEventIdentifiers }
+    }
 
     override func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
         ephemeralEventCount += 1
@@ -1196,10 +1301,16 @@ private class FakeHassAPI: HomeAssistantAPI {
         eventData: [String: Any],
         eventIdentifier: UUID
     ) -> Swift.Result<Task<Void, Error>, Error> {
-        createdEvents.append((eventType: eventType, eventData: eventData))
-        createdEventIdentifiers.append(eventIdentifier)
+        let startResult: Swift.Result<Promise<Void>, Error> = synchronized {
+            storedCreatedEvents.append((eventType: eventType, eventData: eventData))
+            storedCreatedEventIdentifiers.append(eventIdentifier)
+            if queuedPersistentEventStartResults.isEmpty {
+                return storedPersistentEventStartResult ?? .success(storedPersistentEventResult)
+            }
+            return queuedPersistentEventStartResults.removeFirst()
+        }
         createdEventSeal?.fulfill((eventType: eventType, eventData: eventData))
-        switch persistentEventStartResult ?? .success(persistentEventResult) {
+        switch startResult {
         case let .success(promise):
             return .success(Task {
                 try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
@@ -1221,6 +1332,10 @@ private class FakeHassAPI: HomeAssistantAPI {
     override func reconcilePersistentEvent(
         eventIdentifier: UUID
     ) async -> PersistedBackgroundRequestState {
-        persistentEventReconciliationState
+        let (state, observer) = synchronized {
+            (storedPersistentEventReconciliationState, persistentEventReconciliationObserver)
+        }
+        observer?(eventIdentifier)
+        return state
     }
 }
