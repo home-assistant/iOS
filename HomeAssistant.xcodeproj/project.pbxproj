@@ -5480,7 +5480,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MIGRATION_URL_HANDLER = "homeassistant-ohf-dev";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5519,7 +5518,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MIGRATION_URL_HANDLER = "homeassistant-ohf";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
