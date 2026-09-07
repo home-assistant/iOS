@@ -312,6 +312,27 @@ final class WebRTCClient: NSObject {
         // to the other side, which is what the frontend's peer connection does by default.
         config.continualGatheringPolicy = .gatherContinually
 
+        // Left to itself this gathers on every interface the phone has, and on cellular that is a
+        // lot of them: several private pdp_ip addresses, the 464XLAT address, link-local and
+        // unique-local IPv6, each in a UDP and a TCP flavour. Device logs showed close to fifty
+        // candidates offered for a camera reachable over exactly one of them, and the checks then
+        // worked through the useless pairs first — nine seconds of them before the relay pair won.
+        // A browser never offers that set, which is why the frontend connects on the same network
+        // while this took ten seconds or gave up.
+        //
+        // None of what is dropped here could carry the stream: a TCP host candidate on a private
+        // cellular address is unreachable from the server (TURN over TCP is unaffected, it comes
+        // from the ICE server list), and so is a link-local one. Pruning redundant TURN ports cuts
+        // the relay set down to the ones actually in play.
+        config.tcpCandidatePolicy = .disabled
+        config.disableLinkLocalNetworks = true
+        config.shouldPruneTurnPorts = true
+
+        // Gather a candidate up front rather than starting from cold when the offer is created, so
+        // the offer carries one instead of the backend waiting on the first trickled candidate —
+        // which it cannot even be sent before it answers with a session id.
+        config.iceCandidatePoolSize = 1
+
         // Define media constraints. DtlsSrtpKeyAgreement is required to be true to be able to connect with web
         // browsers.
         let constraints = RTCMediaConstraints(
