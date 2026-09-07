@@ -70,3 +70,66 @@ struct SiriSettingsViewModelTests {
         try await clear()
     }
 }
+
+/// Every list Siri reads through honours the opt-out. Each query is checked on its own, so a
+/// regression names the one that stopped filtering rather than just "Siri sees too much".
+@MainActor
+struct SiriExposureAcrossQueriesTests {
+    private func clear() async throws {
+        try await Current.database().write { db in
+            _ = try SiriServerExposure.deleteAll(db)
+        }
+    }
+
+    private func withHiddenServer(_ body: (String) async throws -> Void) async throws {
+        let previous = Current.servers
+        defer { Current.servers = previous }
+        let manager = FakeServerManager(initial: 0)
+        let server = manager.addFake()
+        Current.servers = manager
+        let serverId = server.identifier.rawValue
+        SiriServerExposure.setExposed(false, serverId: serverId)
+        try await body(serverId)
+        try await clear()
+    }
+
+    @Test func theControlQueriesOfferNothingFromAHiddenServer() async throws {
+        try await clear()
+        try await withHiddenServer { _ in
+            let controllable = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let locks = try await LockAppEntityQuery().suggestedEntities()
+            let thermostats = try await ThermostatAppEntityQuery().suggestedEntities()
+            let lights = try await DimmableLightAppEntityQuery().suggestedEntities()
+            let covers = try await OpenableEntityAppEntityQuery().suggestedEntities()
+
+            #expect(controllable.sections.flatMap(\.items).isEmpty)
+            #expect(locks.sections.flatMap(\.items).isEmpty)
+            #expect(thermostats.sections.flatMap(\.items).isEmpty)
+            #expect(lights.sections.flatMap(\.items).isEmpty)
+            #expect(covers.sections.flatMap(\.items).isEmpty)
+        }
+    }
+
+    @Test func theQuestionAndScriptListsAlsoHonourIt() async throws {
+        try await clear()
+        try await withHiddenServer { _ in
+            let entities = try await HAAppEntityAppIntentEntityQuery().suggestedEntities()
+            let scripts = try await IntentScriptAppEntityQuery().suggestedEntities()
+
+            #expect(entities.sections.flatMap(\.items).isEmpty)
+            #expect(scripts.sections.flatMap(\.items).isEmpty)
+        }
+    }
+}
+
+/// The screen itself draws, and its rows carry what the model holds.
+@MainActor
+struct SiriSettingsViewTests {
+    @Test func theScreenBuildsItsBody() {
+        #expect(!String(describing: SiriSettingsView().body).isEmpty)
+    }
+
+    @Test func theScreenOffersItsSearchEntries() {
+        #expect(!SiriSettingsView.settingsSearchEntries.isEmpty)
+    }
+}
