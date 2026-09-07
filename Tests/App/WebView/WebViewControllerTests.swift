@@ -928,6 +928,16 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0?edit=1")
     }
 
+    func testOpeningTheCurrentPageOutsideTheAppDoesNothingBeforeAnyPageLoads() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+
+        sut.openInBrowser()
+        sut.openServerInSafari()
+
+        XCTAssertNil(sut.currentPageURL)
+    }
+
     func testCurrentPageURLDropsTheQueryWhenOnlyExternalAuthWasPresent() async throws {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)

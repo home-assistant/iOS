@@ -184,12 +184,7 @@ public enum AppConstants {
     }
 
     public static func pageDeeplinkURL(path: String, serverName: String) -> URL? {
-        guard let base = pageDeeplinkURL(path: path),
-              var components = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
-            return nil
-        }
-        components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "server", value: serverName)]
-        return components.url
+        pageDeeplinkURL(path: path)?.appending(queryItems: [URLQueryItem(name: "server", value: serverName)])
     }
 
     /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
