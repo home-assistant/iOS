@@ -13,8 +13,8 @@ struct AppMigrationCompleteView: View {
                     .foregroundStyle(.haSuccessColor)
             },
             title: L10n.AppMigration.Complete.title,
-            primaryDescription: L10n.AppMigration.Complete.body,
-            secondaryDescription: summary.serversDescription,
+            primaryDescription: summary.completionBody,
+            secondaryDescription: summary.serverCount == 0 ? nil : summary.serversDescription,
             content: {
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                     HASectionTitle(L10n.AppMigration.Complete.Section.nextSteps)

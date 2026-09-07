@@ -9,6 +9,10 @@ struct AppMigrationSummary: Equatable {
         serverNames.count
     }
 
+    var completionBody: String {
+        serverCount == 0 ? L10n.AppMigration.Complete.bodyNoServers : L10n.AppMigration.Complete.body
+    }
+
     var serversDescription: String {
         serverCount == 1 ? L10n.AppMigration.Complete.serverSingle : L10n.AppMigration.Complete
             .serversTransferred(serverCount)

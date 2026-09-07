@@ -1139,6 +1139,8 @@ public enum L10n {
     public enum Complete {
       /// Your setup is now in this app and you are signed in.
       public static var body: String { return L10n.tr("Localizable", "app_migration.complete.body") }
+      /// Your settings are now in this app. The previous app had no servers to sign in to.
+      public static var bodyNoServers: String { return L10n.tr("Localizable", "app_migration.complete.body_no_servers") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.complete.continue_button") }
       /// 1 server transferred

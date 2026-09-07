@@ -289,6 +289,7 @@
 "app_intents.update_sensors.success" = "Updated sensors on all servers";
 "app_intents.update_sensors.title" = "Update sensors";
 "app_migration.complete.body" = "Your setup is now in this app and you are signed in.";
+"app_migration.complete.body_no_servers" = "Your settings are now in this app. The previous app had no servers to sign in to.";
 "app_migration.complete.continue_button" = "Continue";
 "app_migration.complete.section.next_steps" = "Next steps";
 "app_migration.complete.server_single" = "1 server transferred";
