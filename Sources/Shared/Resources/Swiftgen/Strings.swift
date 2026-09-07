@@ -979,23 +979,21 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "app_intents.thermostat.entity.name") }
       }
     }
-    public enum Toggle {
-      /// Flips an entity to its opposite state
-      public static var description: String { return L10n.tr("Localizable", "app_intents.toggle.description") }
-      /// Toggle
-      public static var title: String { return L10n.tr("Localizable", "app_intents.toggle.title") }
-    }
-    public enum TurnOff {
-      /// Turns off a light, switch or fan, or closes a cover
-      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_off.description") }
-      /// Turn off
-      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_off.title") }
-    }
-    public enum TurnOn {
-      /// Turns on a light, switch or fan, or opens a cover
-      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on.description") }
-      /// Turn on
-      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_on.title") }
+    public enum TurnOnOff {
+      /// Turns a light, switch or fan on or off, or opens and closes a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on_off.description") }
+      /// Turn on or off
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_on_off.title") }
+      public enum Action {
+        /// Action
+        public static var name: String { return L10n.tr("Localizable", "app_intents.turn_on_off.action.name") }
+        /// Turn off
+        public static var off: String { return L10n.tr("Localizable", "app_intents.turn_on_off.action.off") }
+        /// Turn on
+        public static var on: String { return L10n.tr("Localizable", "app_intents.turn_on_off.action.on") }
+        /// Toggle
+        public static var toggle: String { return L10n.tr("Localizable", "app_intents.turn_on_off.action.toggle") }
+      }
     }
     public enum UpdateLocation {
       /// Send a location update to Home Assistant
