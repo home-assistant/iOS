@@ -26,13 +26,27 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// How long to wait for the first rendered frame before giving up so callers can fall back
     /// to HLS instead of showing a spinner forever (e.g. remote connections that need TURN, or a
     /// camera whose video codec the bundled WebRTC build has no decoder for).
-    private static let connectionTimeout: TimeInterval = 15
+    ///
+    /// Generous, because it is the whole negotiation being measured: gathering relay candidates
+    /// over cellular and checking them takes the better part of ten seconds on a healthy 5G link,
+    /// and cutting that short sends a camera that would have played to a lesser stream.
+    private static let connectionTimeout: TimeInterval = 25
 
-    /// How many times a failed connection is rebuilt before the player gives up and cascades to the
+    /// How long a dropped connection is given to mend itself before the stream is rebuilt.
+    ///
+    /// WebRTC re-checks its candidates after a brief interruption and often recovers on its own,
+    /// so an immediate rebuild would throw away a stream that was coming back. A connection lost
+    /// because the phone actually moved between networks — cellular to Wi-Fi and back — never
+    /// returns on its own, and sitting on it is what leaves a frozen picture until the player is
+    /// reopened.
+    private static let disconnectedGracePeriod: TimeInterval = 5
+
+    /// How many times a broken connection is rebuilt before the player gives up and cascades to the
     /// next streaming method. The frontend restarts ICE on the same peer connection; core mints a
-    /// session per offer, so the app starts a fresh one instead — the effect is the same, a second
-    /// pass at gathering candidates before anything is declared unplayable.
-    private static let maxConnectionRetries = 1
+    /// session per offer, so the app starts a fresh one instead — the effect is the same, another
+    /// pass at gathering candidates before anything is declared unplayable. Reaching a connected
+    /// state resets the count, so a long watch isn't limited by an interruption it recovered from.
+    private static let maxConnectionRetries = 2
 
     /// Mirrors `HIDDEN_CLEANUP_DELAY` in the frontend player: a stream gets this long out of sight
     /// before coming back to the foreground counts as needing a fresh one.
@@ -43,6 +57,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private var pendingCandidates: [RTCIceCandidate] = []
     private var offerSubscription: HACancellable?
     private var timeoutWorkItem: DispatchWorkItem?
+    private var disconnectRecoveryWorkItem: DispatchWorkItem?
     /// Regenerated on every start/teardown so async setup steps (config fetch, offer creation)
     /// from a previous attempt are ignored instead of resurrecting a torn-down connection.
     private var connectionToken = UUID()
@@ -80,6 +95,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     deinit {
         offerSubscription?.cancel()
         timeoutWorkItem?.cancel()
+        disconnectRecoveryWorkItem?.cancel()
         webRTCClient?.closeConnection()
     }
 
@@ -124,6 +140,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         isActive = false
         backgroundedAt = nil
         cancelTimeout()
+        cancelDisconnectRecovery()
         tearDownConnection()
     }
 
@@ -151,6 +168,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     }
 
     private func beginConnection() {
+        cancelDisconnectRecovery()
         tearDownConnection()
         showLoader = true
         failureReason = nil
@@ -290,17 +308,41 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         timeoutWorkItem = nil
     }
 
-    /// A failed ICE connection gets one more attempt before the player cascades, the way the
-    /// frontend restarts ICE instead of giving up on the first failure. The retry runs inside the
-    /// timeout `start()` scheduled, so a camera that can't connect at all still gives way to the
-    /// next streaming method within the same budget.
+    /// Waits out a short interruption before rebuilding the stream, so WebRTC gets the chance to
+    /// re-check its candidates and carry on. Scheduled once per interruption; reaching a connected
+    /// state again cancels it.
+    private func scheduleDisconnectRecovery() {
+        guard disconnectRecoveryWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            disconnectRecoveryWorkItem = nil
+            Current.Log.info("WebRTC stream for \(cameraEntityId) stayed disconnected, rebuilding it")
+            handleConnectionFailure()
+        }
+        disconnectRecoveryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.disconnectedGracePeriod, execute: workItem)
+    }
+
+    private func cancelDisconnectRecovery() {
+        disconnectRecoveryWorkItem?.cancel()
+        disconnectRecoveryWorkItem = nil
+    }
+
+    /// A connection that broke gets rebuilt before the player gives up on WebRTC, the way the
+    /// frontend restarts ICE instead of surrendering the stream on the first failure.
     private func handleConnectionFailure() {
+        cancelDisconnectRecovery()
         guard connectionRetries < Self.maxConnectionRetries else {
             handleFailure(reason: nil)
             return
         }
         connectionRetries += 1
-        Current.Log.info("WebRTC connection for \(cameraEntityId) failed, retrying")
+        Current.Log.info("WebRTC connection for \(cameraEntityId) failed, rebuilding it")
+        // A stream that was already playing cancelled its timeout when the first frame arrived, so
+        // the rebuild needs a fresh one — otherwise a retry that never connects leaves the loader
+        // spinning with nothing to cascade it onwards.
+        cancelTimeout()
+        scheduleTimeout()
         beginConnection()
     }
 
@@ -419,12 +461,26 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
 
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
         Current.Log.info("WebRTC connection state changed to: \(state)")
-        guard state == .failed else { return }
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             // Ignore state changes from a connection that was already torn down/replaced.
             guard client === webRTCClient else { return }
-            handleConnectionFailure()
+            switch state {
+            case .connected, .completed:
+                // Back on its feet, and the attempts it took to get here shouldn't count against a
+                // later interruption in what may be a long watch.
+                cancelDisconnectRecovery()
+                connectionRetries = 0
+            case .failed:
+                handleConnectionFailure()
+            case .disconnected:
+                // Not fatal on its own: WebRTC re-checks and often recovers. Moving between
+                // networks lands here too and never recovers, which is what the grace period sorts
+                // out one way or the other.
+                scheduleDisconnectRecovery()
+            default:
+                break
+            }
         }
     }
 
