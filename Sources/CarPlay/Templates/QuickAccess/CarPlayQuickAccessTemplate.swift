@@ -34,6 +34,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var alertPresenterOverride: CarPlayAlertPresenting?
+    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
     private var listItemsByKey: [String: CPListItem] = [:]
     /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
     /// Rows are reused in place — same reasoning as `listItemsByKey`.
@@ -49,6 +52,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var entitiesPerServer: [String: HACachedStates] = [:]
     private var lastKnownEntities: [String: HAEntity] = [:]
     private var executingItemIds: Set<String> = []
+    /// Items whose action hasn't reported back yet. Deliberately not `executingItemIds`, which
+    /// lingers a moment past the call so the "Executing…" subtitle doesn't flash by — a tap in that
+    /// window is a legitimate second action.
+    private var inFlightItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
     private var activeAssistSession: AnyObject?
@@ -264,6 +271,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func beginExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.insert(key)
         pendingExecutingClearWorkItems[key]?.cancel()
         pendingExecutingClearWorkItems[key] = nil
         executingItemIds.insert(key)
@@ -273,6 +281,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func endExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.remove(key)
         guard executingItemIds.contains(key) else { return }
 
         pendingExecutingClearWorkItems[key]?.cancel()
@@ -441,8 +450,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             item.setDetailText("")
             item.setImage(nil)
         }
-        item.handler = { [weak self] _, _ in
-            guard let self else { return }
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
             itemTap(
                 magicItem: magicItem,
                 info: info,
@@ -450,6 +462,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                 executionFinished: { [weak self] in self?.endExecuting(magicItem) }
             )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
         }
     }
 
@@ -485,14 +500,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         item.setText(magicItem.name(info: info))
         item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
         item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
-        item.handler = { [weak self] _, _ in
-            guard let self else { return }
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
             itemTap(
                 magicItem: magicItem,
                 info: info,
                 executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
                 executionFinished: { [weak self] in self?.endExecuting(magicItem) }
             )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
         }
     }
 
@@ -721,6 +742,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
 
+        // A second tap while the first call is still in flight would run the action twice, and on a
+        // slow connection the row sits on "Executing…" long enough to invite one.
+        guard !inFlightItemIds.contains(executionKey(for: magicItem)) else { return }
+
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
@@ -747,11 +772,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for control screen magic item id: \(magicItem.id)")
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
         guard let entity = resolvedEntity(for: magicItem) else {
-            Current.Log.error("Failed to resolve entity for control screen magic item id: \(magicItem.id)")
+            presentOperationFailure(.unresolvedEntity(id: magicItem.id))
             return
         }
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
@@ -767,15 +792,17 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
-        magicItem.execute(on: server, source: .CarPlay) { success, _ in
-            if !success {
-                Current.Log.error("Failed executing quick access magic item id: \(magicItem.id)")
+        let deadline = makeDeadline(server: server, executionFinished: completion)
+        magicItem.execute(on: server, source: .CarPlay) { success, error in
+            if success {
+                deadline.succeed()
+            } else {
+                deadline.fail(error)
             }
-            completion()
         }
     }
 
@@ -788,27 +815,38 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for lock magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
 
         guard let api = Current.api(for: server) else {
-            Current.Log.error("No API available to execute lock entity")
             completion()
+            presentOperationFailure(.noConnection)
             return
         }
 
+        let deadline = makeDeadline(server: server, executionFinished: completion)
         // Use shared execution method for consistency across all CarPlay templates
         CarPlayLockConfirmation.execute(
             entityId: magicItem.id,
             currentState: currentState,
             api: api
-        ) { success in
-            if !success {
-                Current.Log.error("Failed executing quick access lock entity id: \(magicItem.id)")
+        ) { error in
+            if let error {
+                deadline.fail(error)
+            } else {
+                deadline.succeed()
             }
-            completion()
+        }
+    }
+
+    /// A deadline that settles the row and, on failure, tells the driver why.
+    private func makeDeadline(server: Server, executionFinished: @escaping () -> Void) -> CarPlayOperationDeadline {
+        CarPlayOperationDeadline(server: server) { [weak self] error in
+            executionFinished()
+            guard let error else { return }
+            self?.presentOperationFailure(error)
         }
     }
 
@@ -821,15 +859,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             L10n.Watch.Home.Run.Confirmation.title(item.name(info: info)),
         ], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
             .init(title: L10n.Alerts.Confirm.confirm, style: .default, handler: { [weak self] _ in
                 completion()
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
         ])
 
-        interfaceController?.presentTemplate(alert, animated: true, completion: nil)
+        alertPresenter?.presentTemplate(alert, animated: true, completion: nil)
     }
 
     private func showLockConfirmation(
@@ -841,7 +879,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         CarPlayLockConfirmation.show(
             entityName: info.name,
             currentState: currentState,
-            interfaceController: interfaceController,
+            interfaceController: alertPresenter,
             completion: completion
         )
     }

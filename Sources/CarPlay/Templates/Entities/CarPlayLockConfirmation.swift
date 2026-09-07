@@ -5,16 +5,22 @@ import PromiseKit
 import Shared
 
 enum CarPlayLockConfirmation {
+    /// Why a lock action couldn't even be attempted.
+    private enum LockExecutionError: Error {
+        /// The entity the action would run against couldn't be built from the row's state.
+        case invalidEntity
+    }
+
     /// Displays a lock/unlock confirmation dialog appropriate for the entity's current state
     /// - Parameters:
     ///   - entityName: The friendly name of the lock entity
     ///   - currentState: The current state of the lock entity (e.g., "locked", "unlocked")
-    ///   - interfaceController: The CarPlay interface controller to present the alert on
+    ///   - interfaceController: Where the confirmation is presented
     ///   - completion: Closure to execute when the user confirms the action
     static func show(
         entityName: String,
         currentState: String,
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayAlertPresenting?,
         completion: @escaping () -> Void
     ) {
         guard let state = Domain.State(rawValue: currentState) else {
@@ -54,12 +60,12 @@ enum CarPlayLockConfirmation {
     ///   - entityId: The entity ID of the lock
     ///   - currentState: The current state of the lock entity
     ///   - api: The Home Assistant API connection
-    ///   - completion: Closure called with success/failure result
+    ///   - completion: Closure called with `nil` on success, or the error that stopped the action
     static func execute(
         entityId: String,
         currentState: String,
         api: HomeAssistantAPI,
-        completion: @escaping (Bool) -> Void
+        completion: @escaping (Error?) -> Void
     ) {
         // Create entity with current state to use with onPress
         guard let entity = try? HAEntity(
@@ -71,7 +77,7 @@ enum CarPlayLockConfirmation {
             context: .init(id: "", userId: "", parentId: "")
         ) else {
             Current.Log.error("Failed to create entity for lock: \(entityId)")
-            completion(false)
+            completion(LockExecutionError.invalidEntity)
             return
         }
 
@@ -80,17 +86,17 @@ enum CarPlayLockConfirmation {
             entity.onPress(for: api)
         }.done {
             Current.Log.verbose("Successfully executed lock action for: \(entityId)")
-            completion(true)
+            completion(nil)
         }.catch { error in
             Current.Log.error("Received error from callService during lock onPress call: \(error)")
-            completion(false)
+            completion(error)
         }
     }
 
     /// Shows a generic lock confirmation when state cannot be determined
     private static func showGenericConfirmation(
         entityName: String,
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayAlertPresenting?,
         completion: @escaping () -> Void
     ) {
         let title = L10n.CarPlay.Lock.Confirmation.title(entityName)
