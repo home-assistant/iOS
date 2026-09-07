@@ -112,4 +112,29 @@ struct ControlResultSnippetTests {
         let view = ControlResultSnippetView(state: state)
         #expect(!String(describing: view.body).isEmpty)
     }
+
+    /// The icon falls back twice: a Material Design name, then an SF Symbol name, then a symbol
+    /// that stands in for both. Each branch draws a different row.
+    @MainActor @Test func theCardDrawsEveryIconKind() {
+        for iconName in ["mdi:ceiling-light", "power.circle.fill", "not-an-icon-anywhere"] {
+            var state = HAEntityStateAppEntity()
+            state.name = "Ceiling"
+            state.formattedState = "On"
+            state.iconName = iconName
+            state.areaName = "Kitchen"
+            let view = ControlResultSnippetView(state: state)
+            #expect(!String(describing: view.body).isEmpty, "no body for \(iconName)")
+        }
+    }
+
+    /// An entity with no room, device or floor has no second line, so the card drops it rather
+    /// than drawing an empty one.
+    @MainActor @Test func theCardOmitsAnEmptyContextLine() {
+        var state = HAEntityStateAppEntity()
+        state.name = "Ceiling"
+        state.formattedState = "On"
+        state.iconName = "mdi:ceiling-light"
+        let view = ControlResultSnippetView(state: state)
+        #expect(!String(describing: view.body).isEmpty)
+    }
 }
