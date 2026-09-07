@@ -85,7 +85,7 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.attributes = "{}"
     }
 
-    init(entity: HAAppEntityAppIntentEntity, state liveState: HAEntity) {
+    init(entity: ReadableEntityAppEntity, state liveState: HAEntity) {
         self.init()
         self.name = entity.displayString
         self.entityId = liveState.entityId
@@ -95,7 +95,6 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.unitOfMeasurement = liveState.attributes.dictionary["unit_of_measurement"] as? String
         self.deviceClass = liveState.attributes.dictionary["device_class"] as? String
         self.isActive = EntityStateActive.isActive(domain: liveState.domain, state: liveState.state)
-        // Queries pad missing context with ""; a property Siri reads should be absent instead.
         self.areaName = entity.areaName?.nilIfEmpty
         self.floorName = entity.floorName?.nilIfEmpty
         self.deviceName = entity.deviceName?.nilIfEmpty
@@ -104,6 +103,45 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.lastUpdated = liveState.lastUpdated
         self.attributes = Self.attributesJSON(liveState.attributes.dictionary)
         self.iconName = entity.iconName
+    }
+
+    init(entity: HAAppEntityAppIntentEntity, state liveState: HAEntity) {
+        self.init(
+            context: entity,
+            serverId: entity.serverId,
+            serverName: entity.serverName,
+            iconName: entity.iconName,
+            state: liveState
+        )
+    }
+
+    /// The same shape from any entity that carries context, so the control commands can describe
+    /// what they just changed without owning a second copy of this mapping.
+    init(
+        context: some EntityContextRepresentable,
+        serverId: String,
+        serverName: String,
+        iconName: String,
+        state liveState: HAEntity
+    ) {
+        self.init()
+        self.name = context.displayString
+        self.entityId = liveState.entityId
+        self.domain = liveState.domain
+        self.state = liveState.state
+        self.formattedState = Self.formattedState(for: liveState, serverId: serverId)
+        self.unitOfMeasurement = liveState.attributes.dictionary["unit_of_measurement"] as? String
+        self.deviceClass = liveState.attributes.dictionary["device_class"] as? String
+        self.isActive = EntityStateActive.isActive(domain: liveState.domain, state: liveState.state)
+        // Queries pad missing context with ""; a property Siri reads should be absent instead.
+        self.areaName = context.areaName?.nilIfEmpty
+        self.floorName = context.floorName?.nilIfEmpty
+        self.deviceName = context.deviceName?.nilIfEmpty
+        self.serverName = serverName
+        self.lastChanged = liveState.lastChanged
+        self.lastUpdated = liveState.lastUpdated
+        self.attributes = Self.attributesJSON(liveState.attributes.dictionary)
+        self.iconName = iconName
     }
 
     /// Formats the state as the frontend does, falling back to the plain localized state.

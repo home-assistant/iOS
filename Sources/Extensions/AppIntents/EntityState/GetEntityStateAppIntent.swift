@@ -21,7 +21,7 @@ struct GetEntityStateAppIntent: AppIntent {
     }
 
     @Parameter(title: .init("app_intents.entity_state.parameter.entity", defaultValue: "Entity"))
-    var entity: HAAppEntityAppIntentEntity
+    var entity: ReadableEntityAppEntity
 
     func perform() async throws -> some IntentResult & ReturnsValue<HAEntityStateAppEntity> & ProvidesDialog &
         ShowsSnippetView {
