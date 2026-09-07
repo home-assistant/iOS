@@ -40,7 +40,8 @@ struct SetBrightnessAppIntent: AppIntent {
         let state = await ControlResultSnippet.state(
             of: light,
             serverId: light.serverId,
-            iconName: light.iconName
+            iconName: light.iconName,
+            settlingOn: Domain.light.statesAfter(.turnOn)
         )
         return .result(dialog: .init(stringLiteral: dialog)) {
             if let state {

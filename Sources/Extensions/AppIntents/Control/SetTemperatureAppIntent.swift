@@ -40,6 +40,8 @@ struct SetTemperatureAppIntent: AppIntent {
     // spoken answer is the whole interaction anyway.
     func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let dialog = try await apply()
+        // No state to settle on: setting a target temperature changes an attribute, and the
+        // thermostat goes on reading whatever mode it was already in.
         let state = await ControlResultSnippet.state(
             of: entity,
             serverId: entity.serverId,

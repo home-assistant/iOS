@@ -14,7 +14,7 @@ import UIKit
 struct ControlResultSnippetView: View {
     let state: HAEntityStateAppEntity
 
-    private static let iconSize: CGFloat = 44
+    private static let iconSize: CGFloat = 28
     private var accent: Color { Color(uiColor: AppConstants.tintColor) }
 
     var body: some View {
@@ -25,17 +25,22 @@ struct ControlResultSnippetView: View {
                 .padding(DesignSystem.Spaces.one)
                 .background(accent.opacity(0.15), in: Circle())
 
+            // Siri gives a snippet the full width of its own card and scales the type up with it,
+            // so the sizes here sit a step below what the same rows would use in the app.
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                 Text(state.name)
-                    .font(.headline)
-                Text(state.formattedState)
-                    .font(.title3)
+                    .font(.subheadline)
                     .fontWeight(.semibold)
+                    .lineLimit(1)
+                Text(state.formattedState)
+                    .font(.subheadline)
                     .foregroundStyle(accent)
+                    .lineLimit(1)
                 if let context {
                     Text(context)
-                        .font(.footnote)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
             Spacer(minLength: 0)
