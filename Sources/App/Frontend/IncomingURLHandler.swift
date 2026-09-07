@@ -26,6 +26,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case migration
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -74,6 +75,8 @@ class IncomingURLHandler {
                     message: L10n.UrlHandler.SendLocation.Confirm.message,
                     handler: { self.sendLocationURLHandler() }
                 )
+            case .migration:
+                return handleMigration(url: url)
             case .camera:
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -115,7 +118,9 @@ class IncomingURLHandler {
                 // so it doesn't leak into the navigated path.
                 let webhookId = queryParameters?.first(where: { $0.name == "webhook_id" })?.value
                 components.queryItems = components.queryItems?.filter { $0.name != "webhook_id" }
-                if components.queryItems?.isEmpty == true { components.queryItems = nil }
+                if components.queryItems?.isEmpty == true {
+                    components.queryItems = nil
+                }
                 let server = components.popWidgetServer(isFromWidget: isFromWidget)
                     ?? Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
                     ?? webhookId.flatMap { Current.servers.server(forWebhookID: $0) }
@@ -699,6 +704,21 @@ class IncomingURLHandler {
         presentOnTopmost(alert)
     }
 
+    private func handleMigration(url: URL) -> Bool {
+        MainActor.assumeIsolated {
+            let migration = AppMigrationCoordinator.shared
+            guard migration.handle(url: url) else { return false }
+            if migration.role == .previousApp, migration.exportRequest != nil {
+                coordinator?.present(
+                    AppMigrationExportContainerView().embeddedInHostingController(),
+                    animated: true,
+                    completion: nil
+                )
+            }
+            return true
+        }
+    }
+
     private func showMy(for url: URL) -> Bool {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             Current.Log.info("couldn't create url components out of \(url)")
@@ -833,7 +853,6 @@ extension IncomingURLHandler {
         }
 
         Manager.shared["send_location"] = { _, success, failure, cancel in
-
             self.confirmAction(
                 title: L10n.UrlHandler.SendLocation.Confirm.title,
                 message: L10n.UrlHandler.SendLocation.Confirm.message,

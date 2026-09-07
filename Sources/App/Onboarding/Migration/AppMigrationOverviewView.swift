@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -14,7 +15,7 @@ struct AppMigrationOverviewView: View {
                     .multilineTextAlignment(.center)
                     .padding(.bottom, DesignSystem.Spaces.half)
 
-                Label(L10n.AppMigration.Overview.Section.moves, systemImage: "checkmark.circle.fill")
+                Label(L10n.AppMigration.Overview.Section.moves, systemSymbol: .checkmarkCircleFill)
                     .font(DesignSystem.Font.headline)
                     .foregroundStyle(.haSuccessColor)
                 CardView {
@@ -28,10 +29,10 @@ struct AppMigrationOverviewView: View {
                             )
                         }
                     }
-                    .padding(DesignSystem.Spaces.oneAndHalf)
+                    .padding(DesignSystem.Spaces.one)
                 }
 
-                Label(L10n.AppMigration.Overview.Section.followUp, systemImage: "arrow.uturn.backward.circle.fill")
+                Label(L10n.AppMigration.Overview.Section.followUp, systemSymbol: .arrowUturnBackwardCircleFill)
                     .font(DesignSystem.Font.headline)
                     .foregroundStyle(.secondary)
                     .padding(.top, DesignSystem.Spaces.half)
@@ -46,7 +47,7 @@ struct AppMigrationOverviewView: View {
                             )
                         }
                     }
-                    .padding(DesignSystem.Spaces.oneAndHalf)
+                    .padding(DesignSystem.Spaces.one)
                 }
             }
             .padding(.horizontal, DesignSystem.Spaces.two)

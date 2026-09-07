@@ -294,6 +294,13 @@
 "app_migration.complete.server_single" = "1 server transferred";
 "app_migration.complete.servers_transferred" = "%d servers transferred";
 "app_migration.complete.title" = "Transfer complete";
+"app_migration.error.declined" = "The previous app cancelled the transfer.";
+"app_migration.error.invalid_payload" = "The transfer could not be read. Try again.";
+"app_migration.error.new_app_unavailable" = "The new Home Assistant app could not be opened.";
+"app_migration.error.no_payload" = "Nothing was received from the previous app.";
+"app_migration.error.previous_app_unavailable" = "The previous Home Assistant app could not be opened.";
+"app_migration.error.unsupported_version" = "Update the previous Home Assistant app before transferring.";
+"app_migration.error.wrong_session" = "The transfer did not match the request from this app.";
 "app_migration.export.body" = "The new app is asking to receive your setup. Nothing leaves this device.";
 "app_migration.export.cancel_button" = "Cancel";
 "app_migration.export.failed.retry_button" = "Try again";

@@ -10,9 +10,8 @@ struct AppMigrationItemRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
-            MaterialDesignIconsImage(icon: icon, size: 22)
-                .foregroundStyle(tint)
-                .frame(width: 28)
+            Image(uiImage: icon.image(ofSize: CGSize(width: 24, height: 24), color: UIColor(tint)))
+                .frame(width: 24, height: 24)
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
                 Text(title)
                     .font(DesignSystem.Font.body)
@@ -33,6 +32,12 @@ struct AppMigrationItemRow: View {
             tint: .haSuccessColor,
             title: "Servers and sign-ins",
             caption: "Stay signed in to every server."
+        )
+        AppMigrationItemRow(
+            icon: .watchVariantIcon,
+            tint: .haSuccessColor,
+            title: "Watch, CarPlay and widget setup",
+            caption: "Configured items and complications."
         )
         AppMigrationItemRow(
             icon: .widgetsOutlineIcon,

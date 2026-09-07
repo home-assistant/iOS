@@ -15,7 +15,7 @@ enum OnboardingStyle: Hashable {
 }
 
 enum OnboardingNavigation {
-    public static var requiredOnboardingStyle: OnboardingStyle? {
+    static var requiredOnboardingStyle: OnboardingStyle? {
         if Current.servers.all.isEmpty {
             return .required
         } else {
@@ -29,10 +29,11 @@ enum OnboardingNavigation {
 /// are real pushes.
 struct OnboardingNavigationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject public var viewModel = OnboardingNavigationViewModel()
+    @StateObject var viewModel = OnboardingNavigationViewModel()
     @StateObject private var presenter = OnboardingAuthPresenter()
+    @ObservedObject private var migrationCoordinator = AppMigrationCoordinator.shared
 
-    public let onboardingStyle: OnboardingStyle
+    let onboardingStyle: OnboardingStyle
     private let prefillURL: URL?
     private let shouldDismissOnSuccess: Bool
 
@@ -71,13 +72,21 @@ struct OnboardingNavigationView: View {
                 closeOnboarding()
             }
         }
+        .onChange(of: migrationCoordinator.importState) { newValue in
+            if newValue != nil, !presenter.path.contains(.migration) {
+                presenter.push(.migration)
+            }
+        }
     }
 
     @ViewBuilder
     private var root: some View {
         switch onboardingStyle {
         case .initial, .required:
-            OnboardingWelcomeView(continueAction: { presenter.push(.serversList) })
+            OnboardingWelcomeView(
+                continueAction: { presenter.push(.serversList) },
+                transferAction: migrationCoordinator.isPreviousAppInstalled ? { presenter.push(.migration) } : nil
+            )
         case .secondary:
             serversList
                 .navigationTitle(L10n.Settings.ConnectionSection.addServer)
@@ -120,6 +129,11 @@ struct OnboardingNavigationView: View {
                 error: context.error,
                 showSettingsEntry: false,
                 expandMoreDetails: true
+            )
+        case .migration:
+            AppMigrationFlowView(
+                skipAction: { presenter.popToRoot() },
+                finishAction: { finishFlow() }
             )
         }
     }
