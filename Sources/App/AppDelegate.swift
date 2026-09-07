@@ -41,7 +41,7 @@ extension AppEnvironment {
     }
 }
 
-// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
+/// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
     private(set) static var shared: AppDelegate?
@@ -108,6 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
         // swiftlint:enable prohibit_environment_assignment
 
+        MainActor.assumeIsolated { AppMigrationCoordinator.shared.restoreHandoffIfNeeded() }
         notificationManager.setupNotifications()
         setupLiveActivityReattachment()
         setupFirebase()

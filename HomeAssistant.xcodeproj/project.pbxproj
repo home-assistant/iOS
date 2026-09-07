@@ -1329,6 +1329,8 @@
 				Migration/AppMigrationExporter.swift,
 				Migration/AppMigrationFlowView.swift,
 				Migration/AppMigrationFollowUpItem.swift,
+				Migration/AppMigrationHandoffPhase.swift,
+				Migration/AppMigrationHandoffStore.swift,
 				Migration/AppMigrationImportState.swift,
 				Migration/AppMigrationImportView.swift,
 				Migration/AppMigrationImporter.swift,
@@ -5464,12 +5466,12 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
 				ENV_URL_HANDLER = "homeassistant-dev";
-				MIGRATION_URL_HANDLER = "homeassistant-ohf-dev";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MIGRATION_URL_HANDLER = "homeassistant-ohf-dev";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5502,12 +5504,12 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
 				ENV_URL_HANDLER = homeassistant;
-				MIGRATION_URL_HANDLER = "homeassistant-ohf";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MIGRATION_URL_HANDLER = "homeassistant-ohf";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

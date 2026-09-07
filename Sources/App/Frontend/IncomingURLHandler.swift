@@ -708,12 +708,8 @@ class IncomingURLHandler {
         MainActor.assumeIsolated {
             let migration = AppMigrationCoordinator.shared
             guard migration.handle(url: url) else { return false }
-            if migration.role == .previousApp, migration.exportRequest != nil {
-                coordinator?.present(
-                    AppMigrationExportContainerView().embeddedInHostingController(),
-                    animated: true,
-                    completion: nil
-                )
+            if migration.role == .previousApp, migration.handoffPhase != nil {
+                coordinator?.dismissPresentedContent(completion: {})
             }
             return true
         }

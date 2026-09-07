@@ -77,6 +77,11 @@ struct OnboardingNavigationView: View {
                 presenter.push(.migration)
             }
         }
+        .onAppear {
+            if migrationCoordinator.importState != nil, !presenter.path.contains(.migration) {
+                presenter.push(.migration)
+            }
+        }
     }
 
     @ViewBuilder

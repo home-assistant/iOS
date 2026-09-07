@@ -1181,6 +1181,20 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "app_migration.export.title") }
       /// Transfer
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.export.transfer_button") }
+      public enum EraseConfirmation {
+        /// Servers, settings and cached data are removed from this app only. The new app keeps what it received.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.export.erase_confirmation.body") }
+        /// Erase
+        public static var confirmButton: String { return L10n.tr("Localizable", "app_migration.export.erase_confirmation.confirm_button") }
+        /// Erase everything in this app?
+        public static var title: String { return L10n.tr("Localizable", "app_migration.export.erase_confirmation.title") }
+      }
+      public enum Erased {
+        /// Everything was removed. Delete this app from your Home Screen and keep using the new Home Assistant app.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.export.erased.body") }
+        /// This app is empty
+        public static var title: String { return L10n.tr("Localizable", "app_migration.export.erased.title") }
+      }
       public enum Failed {
         /// Try again
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.export.failed.retry_button") }
@@ -1188,12 +1202,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.failed.title") }
       }
       public enum HandedOff {
-        /// Finish in the new app. When everything works there, you can delete this app.
-        public static var body: String { return L10n.tr("Localizable", "app_migration.export.handed_off.body") }
+        /// Open the new app and check that your servers and settings are there. When everything works, erase this app and delete it from your Home Screen.
+        public static var checkBody: String { return L10n.tr("Localizable", "app_migration.export.handed_off.check_body") }
+        /// Erase this app
+        public static var eraseButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.erase_button") }
         /// Open the new app
         public static var openButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.open_button") }
         /// Transfer sent
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.handed_off.title") }
+        /// Transfer again
+        public static var transferAgainButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.transfer_again_button") }
       }
       public enum Preparing {
         /// Preparing your setup…
@@ -1202,6 +1220,14 @@ public enum L10n {
       public enum Section {
         /// This transfer includes
         public static var includes: String { return L10n.tr("Localizable", "app_migration.export.section.includes") }
+      }
+      public enum TransferAgainConfirmation {
+        /// The new app removes everything it received and asks for your setup once more.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.body") }
+        /// Transfer again
+        public static var confirmButton: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.confirm_button") }
+        /// Transfer again?
+        public static var title: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.title") }
       }
     }
     public enum FollowUp {

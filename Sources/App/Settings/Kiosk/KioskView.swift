@@ -90,7 +90,7 @@ struct ConditionalContainerView: View {
 
     private var content: some View {
         Group {
-            if kiosk.settings.enabled {
+            if kiosk.settings.enabled, !AppMigrationHandoffStore.isActive {
                 KioskView(showSettings: $showKioskSettings)
             } else {
                 ContainerView()
@@ -102,7 +102,9 @@ struct ConditionalContainerView: View {
         .onAppear { applyKeepScreenOn() }
         .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
         .onChange(of: scenePhase) { phase in
-            if phase == .active { applyKeepScreenOn() }
+            if phase == .active {
+                applyKeepScreenOn()
+            }
         }
         .onChange(of: appSettings.isSheetPresented) { isPresented in
             refreshWebViewIfSettingsClosed(isPresented)

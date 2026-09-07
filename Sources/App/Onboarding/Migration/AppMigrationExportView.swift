@@ -2,37 +2,43 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The previous app's side of the handoff: confirm, package the setup and pass it to the new app.
+/// The previous app's side of the handoff: confirm and package the setup, then stay as the only screen
+/// until the user has checked the new app and erased this one.
 struct AppMigrationExportView: View {
     let state: AppMigrationExportState
     let summary: AppMigrationSummary
     let transferAction: () -> Void
     let openNewAppAction: () -> Void
+    let transferAgainAction: () -> Void
+    let eraseAction: () -> Void
     let cancelAction: () -> Void
+
+    @State private var showsEraseConfirmation = false
+    @State private var showsTransferAgainConfirmation = false
 
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spaces.three) {
-                MaterialDesignIconsImage(icon: state == .handedOff ? .checkCircleOutlineIcon : .transferIcon, size: 96)
-                    .foregroundStyle(state == .handedOff ? .haSuccessColor : .haPrimary)
+                MaterialDesignIconsImage(icon: headerIcon, size: 96)
+                    .foregroundStyle(headerTint)
                     .padding(.top, DesignSystem.Spaces.two)
-                Text(state == .handedOff ? L10n.AppMigration.Export.HandedOff.title : L10n.AppMigration.Export.title)
+                Text(title)
                     .font(DesignSystem.Font.largeTitle.bold())
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DesignSystem.Spaces.two)
                 VStack(spacing: DesignSystem.Spaces.two) {
-                    Text(state == .handedOff ? L10n.AppMigration.Export.HandedOff.body : L10n.AppMigration.Export.body)
+                    Text(message)
                         .font(DesignSystem.Font.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                    if case let .failed(message) = state {
+                    if case let .failed(failure) = state {
                         HAAlertView(title: L10n.AppMigration.Export.Failed.title, alertType: .error) {
-                            Text(message)
+                            Text(failure)
                         } action: {
                             EmptyView()
                         }
                     }
-                    if state != .handedOff {
+                    if showsInventory {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                             Label(L10n.AppMigration.Export.Section.includes, systemSymbol: .checkmarkCircleFill)
                                 .font(DesignSystem.Font.headline)
@@ -63,12 +69,52 @@ struct AppMigrationExportView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: DesignSystem.Spaces.one) {
-                if state == .handedOff {
+                switch state {
+                case .handedOff:
                     Button(action: openNewAppAction) {
                         Text(L10n.AppMigration.Export.HandedOff.openButton)
                     }
                     .buttonStyle(.primaryButton)
-                } else {
+                    Button(L10n.AppMigration.Export.HandedOff.transferAgainButton) {
+                        showsTransferAgainConfirmation = true
+                    }
+                    .buttonStyle(.secondaryButton)
+                    .tint(Color.haPrimary)
+                    .confirmationDialog(
+                        L10n.AppMigration.Export.TransferAgainConfirmation.title,
+                        isPresented: $showsTransferAgainConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(
+                            L10n.AppMigration.Export.TransferAgainConfirmation.confirmButton,
+                            action: transferAgainAction
+                        )
+                    } message: {
+                        Text(L10n.AppMigration.Export.TransferAgainConfirmation.body)
+                    }
+                    Button(L10n.AppMigration.Export.HandedOff.eraseButton) {
+                        showsEraseConfirmation = true
+                    }
+                    .buttonStyle(.secondaryNegativeButton)
+                    .confirmationDialog(
+                        L10n.AppMigration.Export.EraseConfirmation.title,
+                        isPresented: $showsEraseConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(
+                            L10n.AppMigration.Export.EraseConfirmation.confirmButton,
+                            role: .destructive,
+                            action: eraseAction
+                        )
+                    } message: {
+                        Text(L10n.AppMigration.Export.EraseConfirmation.body)
+                    }
+                case .erased:
+                    Button(action: openNewAppAction) {
+                        Text(L10n.AppMigration.Export.HandedOff.openButton)
+                    }
+                    .buttonStyle(.primaryButton)
+                case .idle, .preparing, .failed:
                     HAProgressButton(
                         state == .preparing ? L10n.AppMigration.Export.Preparing.title : L10n.AppMigration.Export
                             .transferButton,
@@ -93,9 +139,48 @@ struct AppMigrationExportView: View {
         .background(Color(uiColor: .systemBackground))
     }
 
+    private var showsInventory: Bool {
+        switch state {
+        case .idle, .preparing, .failed: true
+        case .handedOff, .erased: false
+        }
+    }
+
+    private var headerIcon: MaterialDesignIcons {
+        switch state {
+        case .idle, .preparing, .failed: .transferIcon
+        case .handedOff: .checkCircleOutlineIcon
+        case .erased: .cellphoneRemoveIcon
+        }
+    }
+
+    private var headerTint: Color {
+        switch state {
+        case .idle, .preparing, .failed: .haPrimary
+        case .handedOff: .haSuccessColor
+        case .erased: .secondary
+        }
+    }
+
+    private var title: String {
+        switch state {
+        case .idle, .preparing, .failed: L10n.AppMigration.Export.title
+        case .handedOff: L10n.AppMigration.Export.HandedOff.title
+        case .erased: L10n.AppMigration.Export.Erased.title
+        }
+    }
+
+    private var message: String {
+        switch state {
+        case .idle, .preparing, .failed: L10n.AppMigration.Export.body
+        case .handedOff: L10n.AppMigration.Export.HandedOff.checkBody
+        case .erased: L10n.AppMigration.Export.Erased.body
+        }
+    }
+
     private var progressButtonState: HAProgressButtonState {
         switch state {
-        case .idle, .handedOff: .idle
+        case .idle, .handedOff, .erased: .idle
         case .preparing: .inProgress
         case .failed: .failure
         }
@@ -108,16 +193,8 @@ struct AppMigrationExportView: View {
         summary: .preview,
         transferAction: {},
         openNewAppAction: {},
-        cancelAction: {}
-    )
-}
-
-#Preview("Preparing") {
-    AppMigrationExportView(
-        state: .preparing,
-        summary: .preview,
-        transferAction: {},
-        openNewAppAction: {},
+        transferAgainAction: {},
+        eraseAction: {},
         cancelAction: {}
     )
 }
@@ -128,6 +205,20 @@ struct AppMigrationExportView: View {
         summary: .preview,
         transferAction: {},
         openNewAppAction: {},
+        transferAgainAction: {},
+        eraseAction: {},
+        cancelAction: {}
+    )
+}
+
+#Preview("Erased") {
+    AppMigrationExportView(
+        state: .erased,
+        summary: .preview,
+        transferAction: {},
+        openNewAppAction: {},
+        transferAgainAction: {},
+        eraseAction: {},
         cancelAction: {}
     )
 }
@@ -138,6 +229,8 @@ struct AppMigrationExportView: View {
         summary: .preview,
         transferAction: {},
         openNewAppAction: {},
+        transferAgainAction: {},
+        eraseAction: {},
         cancelAction: {}
     )
 }
