@@ -10,12 +10,25 @@
       "hidden" : false,
       "layers" : [
         {
-          "fill" : {
-            "linear-gradient" : [
-              "display-p3:0.32317,0.32317,0.32317,1.00000",
-              "display-p3:0.00000,0.00000,0.00000,1.00000"
-            ]
-          },
+          "fill-specializations" : [
+            {
+              "value" : {
+                "linear-gradient" : [
+                  "srgb:0.68942,0.68942,0.68942,1.00000",
+                  "display-p3:0.00000,0.69733,1.00000,1.00000"
+                ]
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "linear-gradient" : [
+                  "srgb:0.68942,0.68942,0.68942,1.00000",
+                  "srgb:0.62156,0.87925,1.00000,1.00000"
+                ]
+              }
+            }
+          ],
           "glass" : true,
           "hidden" : false,
           "image-name" : "ha-house.png",
@@ -30,6 +43,19 @@
           }
         },
         {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "automatic-gradient" : "srgb:0.99350,1.00000,0.92356,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "automatic-gradient" : "srgb:0.00000,0.00000,0.00000,1.00000"
+              }
+            }
+          ],
           "image-name" : "dev.png",
           "name" : "dev",
           "opacity" : 0.81
