@@ -67,10 +67,7 @@ final class WebViewGestureHandler {
     private func createDeeplink() {
         guard let webView,
               let url = webView.currentPageURL,
-              let target = DeeplinkTarget.page(from: url) else {
-            Current.Log.error("No current page available to create a deeplink")
-            return
-        }
+              let target = DeeplinkTarget.page(from: url) else { return }
         DeeplinkPresenter.present(target: target, from: webView)
     }
 

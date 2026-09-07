@@ -63,6 +63,7 @@ extension WebViewController {
             return nil
         }
         urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+        if urlComponents.queryItems?.isEmpty == true { urlComponents.queryItems = nil }
         return urlComponents.url
     }
 

@@ -6,7 +6,7 @@ enum DeeplinkPresenter {
     private static let detentIdentifier = UISheetPresentationController.Detent.Identifier("deeplink")
 
     static func present(target: DeeplinkTarget, from webViewController: WebViewControllerProtocol) {
-        Current.Log.info("Opening deeplink for \(target)")
+        Current.Log.info("Presenting deeplink sheet")
 
         let hostingController = DeeplinkView(
             viewModel: DeeplinkViewModel(
