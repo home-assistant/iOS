@@ -1,5 +1,4 @@
 import Foundation
-import SFSafeSymbols
 import Shared
 
 /// One measurable pile of bytes the app is responsible for.
@@ -120,49 +119,6 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
             return L10n.Settings.Debugging.ManageStorage.Item.Downloads.explanation
         case .temporaryFiles:
             return L10n.Settings.Debugging.ManageStorage.Item.TemporaryFiles.explanation
-        }
-    }
-
-    var icon: SFSymbol {
-        switch self {
-        case .appDatabase:
-            return .externaldriveConnectedToLineBelow
-        case .appPreferences:
-            return .gearshapeFill
-        case .legacyRealmStore:
-            return .arrow2Squarepath
-        case .notificationSounds:
-            return .speakerWave2Fill
-        case .cachedEntities:
-            return .tablecells
-        case .cachedCalendarEvents:
-            return .calendar
-        case .locationHistory:
-            return .mappinAndEllipse
-        case .widgetCache:
-            return .squareGrid2x2Fill
-        case .watchItemCache:
-            return .applewatchWatchface
-        case .diskCache:
-            return .photoFill
-        case .notificationIconCache:
-            return .envelopeBadgeFill
-        case .networkResponseCache:
-            return .network
-        case .frontendAssetCache:
-            return .globe
-        case .websiteData:
-            return .docTextFill
-        case .clientEventLog:
-            return .listDash
-        case .notificationHistory:
-            return .bell
-        case .logFiles:
-            return .docZipper
-        case .downloads:
-            return .squareAndArrowDown
-        case .temporaryFiles:
-            return .clockArrowCirclepath
         }
     }
 }
