@@ -9,6 +9,7 @@ protocol AppCameraView {
 
 struct WebRTCVideoPlayerView: View, AppCameraView {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     @StateObject private var viewModel: WebRTCViewPlayerViewModel
 
@@ -102,6 +103,19 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             }
             .onChange(of: viewModel.showLoader) { showLoader in
                 self.showLoader.wrappedValue = showLoader
+            }
+            // The frontend player keeps a hidden stream alive briefly and starts a new one when the
+            // page comes back; the peer connection here does not survive iOS suspending the app, so
+            // returning to a dead stream restarts it rather than leaving a frozen frame on screen.
+            .onChange(of: scenePhase) { phase in
+                switch phase {
+                case .active:
+                    viewModel.handleAppForegrounded()
+                case .background, .inactive:
+                    viewModel.handleAppBackgrounded()
+                @unknown default:
+                    break
+                }
             }
         }
     }

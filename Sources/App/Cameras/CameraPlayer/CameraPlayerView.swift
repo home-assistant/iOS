@@ -4,15 +4,21 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// A camera player view that automatically falls back from WebRTC to HLS to MJPEG
-/// when a streaming method is not supported.
+/// A camera player view that plays a camera over the best streaming method it supports, falling
+/// through to the next one when a stream can't be established.
+///
+/// The order comes from the camera's own `camera/capabilities`, the same way the frontend's
+/// `ha-camera-stream` chooses its player; see `CameraStreamPlan`.
 struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     private let server: Server
     private let cameraName: String?
 
     @State private var cameraEntityId: String
-    @State private var playerType: PlayerType = .webRTC
+    /// The streaming methods to try for the current camera, most preferred first. Empty until the
+    /// camera's capabilities come back, which is when the loader gives way to a player.
+    @State private var players: [CameraPlayerType] = []
+    @State private var playerIndex = 0
     @State private var appEntity: HAAppEntity?
     @State private var name: String?
     @State private var subtitle: String?
@@ -29,10 +35,16 @@ struct CameraPlayerView: View {
     private let maxTitleTextWidth: CGFloat = 100
     private let topScrimHeight: CGFloat = 140
 
-    enum PlayerType {
-        case webRTC
-        case hls
-        case mjpeg
+    private var playerType: CameraPlayerType? {
+        players.indices.contains(playerIndex) ? players[playerIndex] : nil
+    }
+
+    /// This loader covers the stretch before a player exists — while the camera's capabilities are
+    /// being fetched — and the WebRTC player, which reports its loading state up here. The HLS and
+    /// MJPEG players draw their own, so a second spinner on top of theirs would never clear.
+    private var isLoaderVisible: Bool {
+        guard let playerType else { return true }
+        return playerType == .webRTC && showLoader
     }
 
     init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
@@ -45,7 +57,7 @@ struct CameraPlayerView: View {
         ZStack {
             navigationStack
 
-            if showLoader {
+            if isLoaderVisible {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .tint(.white)
@@ -55,6 +67,7 @@ struct CameraPlayerView: View {
         .onAppear {
             loadMetadata()
             loadCameras()
+            Task { await loadCapabilities() }
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
@@ -193,35 +206,12 @@ struct CameraPlayerView: View {
 
     private var content: some View {
         Group {
-            switch playerType {
-            case .webRTC:
-                WebRTCVideoPlayerView(
-                    server: server,
-                    cameraEntityId: cameraEntityId,
-                    cameraName: name ?? cameraName,
-                    controlsVisible: $controlsVisible,
-                    showLoader: $showLoader,
-                    onWebRTCUnsupported: {
-                        fallbackToHLS()
-                    }
-                )
-            case .hls:
-                CameraStreamHLSView(
-                    server: server,
-                    cameraEntityId: cameraEntityId,
-                    cameraName: name ?? cameraName,
-                    controlsVisible: $controlsVisible,
-                    onHLSUnsupported: {
-                        fallbackToMJPEG()
-                    }
-                )
-            case .mjpeg:
-                CameraMJPEGPlayerView(
-                    server: server,
-                    cameraEntityId: cameraEntityId,
-                    cameraName: name ?? cameraName,
-                    controlsVisible: $controlsVisible
-                )
+            if let playerType {
+                player(playerType)
+            } else {
+                // Waiting on `camera/capabilities` to say which player this camera needs; the
+                // loader in `body` covers this.
+                Color.black
             }
         }
         // Rebuild the whole player subtree when the camera changes so the previous stream is torn
@@ -230,18 +220,68 @@ struct CameraPlayerView: View {
         .id(cameraEntityId)
     }
 
-    private func fallbackToHLS() {
-        Current.Log.info("Camera \(cameraEntityId) does not support WebRTC, falling back to HLS")
-        withAnimation {
-            playerType = .hls
+    @ViewBuilder
+    private func player(_ playerType: CameraPlayerType) -> some View {
+        switch playerType {
+        case .webRTC:
+            WebRTCVideoPlayerView(
+                server: server,
+                cameraEntityId: cameraEntityId,
+                cameraName: name ?? cameraName,
+                controlsVisible: $controlsVisible,
+                showLoader: $showLoader,
+                onWebRTCUnsupported: {
+                    advanceToNextPlayer(from: .webRTC)
+                }
+            )
+        case .hls:
+            CameraStreamHLSView(
+                server: server,
+                cameraEntityId: cameraEntityId,
+                cameraName: name ?? cameraName,
+                controlsVisible: $controlsVisible,
+                onHLSUnsupported: {
+                    advanceToNextPlayer(from: .hls)
+                }
+            )
+        case .mjpeg:
+            CameraMJPEGPlayerView(
+                server: server,
+                cameraEntityId: cameraEntityId,
+                cameraName: name ?? cameraName,
+                controlsVisible: $controlsVisible
+            )
         }
     }
 
-    private func fallbackToMJPEG() {
-        Current.Log.info("Camera \(cameraEntityId) does not support HLS, falling back to MJPEG")
-        withAnimation {
-            playerType = .mjpeg
+    /// Moves to the next streaming method after `player` failed. The `from:` guard keeps a late
+    /// failure from a player that has already been replaced — WebRTC reports both an unsupported
+    /// camera and a failed connection — from skipping an untried method.
+    private func advanceToNextPlayer(from player: CameraPlayerType) {
+        guard playerType == player else { return }
+        guard players.indices.contains(playerIndex + 1) else {
+            Current.Log.error("Camera \(cameraEntityId) has no streaming method left after \(player)")
+            return
         }
+        let next = players[playerIndex + 1]
+        Current.Log.info("Camera \(cameraEntityId) could not stream over \(player), falling back to \(next)")
+        showLoader = true
+        withAnimation {
+            playerIndex += 1
+        }
+    }
+
+    /// Asks the server which stream types this camera supports and builds the fallback order from
+    /// it, exactly as the frontend does before it mounts a player.
+    @MainActor
+    private func loadCapabilities() async {
+        let entityId = cameraEntityId
+        let capabilities = await CameraCapabilities.fetch(server: server, cameraEntityId: entityId)
+        // The picker can switch cameras while this is in flight; a stale answer must not decide the
+        // plan for the camera now on screen.
+        guard entityId == cameraEntityId else { return }
+        players = CameraStreamPlan.players(for: capabilities)
+        playerIndex = 0
     }
 
     private func loadMetadata() {
@@ -289,12 +329,14 @@ struct CameraPlayerView: View {
 
     private func switchCamera(to entityId: String) {
         guard entityId != cameraEntityId else { return }
-        // Restart from the top of the fallback chain and show the loader while the new stream connects.
+        // Show the loader while the new camera's capabilities are fetched and its stream connects.
         // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.
         showLoader = true
-        playerType = .webRTC
+        players = []
+        playerIndex = 0
         cameraEntityId = entityId
         loadMetadata()
+        Task { await loadCapabilities() }
     }
 }
 
