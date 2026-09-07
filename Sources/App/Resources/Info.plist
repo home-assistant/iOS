@@ -45,6 +45,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>${ENV_URL_HANDLER}</string>
+				<string>${MIGRATION_URL_HANDLER}</string>
 			</array>
 		</dict>
 	</array>
@@ -77,6 +78,10 @@
 		<string>firefox</string>
 		<string>firefox-focus</string>
 		<string>firefox-klar</string>
+		<string>homeassistant-nc</string>
+		<string>homeassistant-nc-dev</string>
+		<string>homeassistant-ohf</string>
+		<string>homeassistant-ohf-dev</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

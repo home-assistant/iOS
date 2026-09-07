@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -33,7 +34,7 @@ struct AppMigrationExportView: View {
                     }
                     if state != .handedOff {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                            Label(L10n.AppMigration.Export.Section.includes, systemImage: "checkmark.circle.fill")
+                            Label(L10n.AppMigration.Export.Section.includes, systemSymbol: .checkmarkCircleFill)
                                 .font(DesignSystem.Font.headline)
                                 .foregroundStyle(.haSuccessColor)
                             CardView {
@@ -47,7 +48,7 @@ struct AppMigrationExportView: View {
                                         )
                                     }
                                 }
-                                .padding(DesignSystem.Spaces.oneAndHalf)
+                                .padding(DesignSystem.Spaces.one)
                             }
                         }
                         .padding(.top, DesignSystem.Spaces.two)

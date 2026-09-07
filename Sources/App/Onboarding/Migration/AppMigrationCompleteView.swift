@@ -29,7 +29,7 @@ struct AppMigrationCompleteView: View {
                                 )
                             }
                         }
-                        .padding(DesignSystem.Spaces.oneAndHalf)
+                        .padding(DesignSystem.Spaces.one)
                     }
                 }
                 .padding(.top, DesignSystem.Spaces.two)

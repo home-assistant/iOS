@@ -1154,6 +1154,22 @@ public enum L10n {
         public static var nextSteps: String { return L10n.tr("Localizable", "app_migration.complete.section.next_steps") }
       }
     }
+    public enum Error {
+      /// The previous app cancelled the transfer.
+      public static var declined: String { return L10n.tr("Localizable", "app_migration.error.declined") }
+      /// The transfer could not be read. Try again.
+      public static var invalidPayload: String { return L10n.tr("Localizable", "app_migration.error.invalid_payload") }
+      /// The new Home Assistant app could not be opened.
+      public static var newAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.new_app_unavailable") }
+      /// Nothing was received from the previous app.
+      public static var noPayload: String { return L10n.tr("Localizable", "app_migration.error.no_payload") }
+      /// The previous Home Assistant app could not be opened.
+      public static var previousAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.previous_app_unavailable") }
+      /// Update the previous Home Assistant app before transferring.
+      public static var unsupportedVersion: String { return L10n.tr("Localizable", "app_migration.error.unsupported_version") }
+      /// The transfer did not match the request from this app.
+      public static var wrongSession: String { return L10n.tr("Localizable", "app_migration.error.wrong_session") }
+    }
     public enum Export {
       /// The new app is asking to receive your setup. Nothing leaves this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.export.body") }
