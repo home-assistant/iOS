@@ -31,7 +31,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
     /// this needs no server round trip on either platform.
     private func getScriptEntities(matching string: String? = nil) -> [(Server, [IntentScriptEntity])] {
         var scriptEntities: [(Server, [IntentScriptEntity])] = []
-        let entities = ControlEntityProvider(domains: [.script]).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.script]).getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)

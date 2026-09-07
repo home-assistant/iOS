@@ -29,7 +29,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
         case .customizeExperience: return [.general, .gestures, .greetings, .kiosk, .macToolbar]
         case .stayInformed: return [.notifications, .liveActivities]
         case .shareFromDevice: return [.location, .sensors, .remindersSync]
-        case .quickAccess: return [.widgets, .appIconShortcuts, .nfc]
+        case .quickAccess: return [.widgets, .appIconShortcuts, .siri, .nfc]
         case .otherDevices: return [.watch, .complications, .carPlay]
         case .privacySecurity: return [.permissions, .privacy]
         case .helpSupport: return [.help, .debugging, .appLabs]

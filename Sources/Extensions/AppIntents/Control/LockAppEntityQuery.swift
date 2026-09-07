@@ -26,7 +26,7 @@ struct LockAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func entities(matching string: String? = nil) -> [(Server, [LockAppEntity])] {
-        let byServer = ControlEntityProvider(domains: [.lock]).getEntities(matching: string)
+        let byServer = ControlEntityProvider(domains: [.lock]).getEntitiesExposedToSiri(matching: string)
         let rank = Dictionary(
             uniqueKeysWithValues: ServerPriority.ordered(byServer.map(\.0)).enumerated()
                 .map { ($0.element.identifier, $0.offset) }

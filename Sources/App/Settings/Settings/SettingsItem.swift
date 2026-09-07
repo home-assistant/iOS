@@ -16,6 +16,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case macToolbar
     case widgets
     case appIconShortcuts
+    case siri
     case watch
     case carPlay
     case complications
@@ -42,6 +43,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
+        case .siri: return L10n.Settings.Siri.title
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
@@ -72,6 +74,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .nfc: return .nfcVariantIcon
         case .widgets: return .widgetsIcon
         case .appIconShortcuts: return .applicationIcon
+        case .siri: return .microphoneMessageIcon
         case .watch: return .watchVariantIcon
         case .carPlay: return .carBackIcon
         case .complications: return .chartDonutIcon
@@ -138,6 +141,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CustomWidgetsListView()
         case .appIconShortcuts:
             AppIconShortcutsConfigurationView()
+        case .siri:
+            SiriSettingsView()
         case .watch:
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
@@ -227,6 +232,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .nfc: return L10n.Settings.SearchKeywords.nfc
         case .widgets: return L10n.Settings.SearchKeywords.widgets
         case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
+        case .siri: return L10n.Settings.SearchKeywords.siri
         case .watch: return L10n.Settings.SearchKeywords.watch
         case .carPlay: return L10n.Settings.SearchKeywords.carPlay
         case .complications: return L10n.Settings.SearchKeywords.complications
@@ -265,6 +271,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .nfc: return TagsView.settingsSearchEntries
         case .widgets: return CustomWidgetsListView.settingsSearchEntries
         case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries
+        case .siri: return SiriSettingsView.settingsSearchEntries
         case .watch: return WatchConfigurationView.settingsSearchEntries
         case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
         case .complications: return ComplicationsRootView.settingsSearchEntries

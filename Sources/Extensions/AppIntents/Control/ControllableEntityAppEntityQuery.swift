@@ -33,7 +33,7 @@ struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
         // wording matches the service. Resolution stays wider than this on purpose — an id that was
         // valid once should keep resolving, whether it came from a shortcut, an automation or a
         // donation.
-        let byServer = ControlEntityProvider(domains: domains).getEntities(matching: string)
+        let byServer = ControlEntityProvider(domains: domains).getEntitiesExposedToSiri(matching: string)
         // Siri offers them in the order they arrive, so the likeliest server leads.
         let rank = Dictionary(
             uniqueKeysWithValues: ServerPriority.ordered(byServer.map(\.0)).enumerated()

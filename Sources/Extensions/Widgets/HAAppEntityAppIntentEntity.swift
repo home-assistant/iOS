@@ -111,7 +111,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getEntities(matching string: String? = nil) -> [(Server, [HAAppEntityAppIntentEntity])] {
         var allEntities: [(Server, [HAAppEntityAppIntentEntity])] = []
-        let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: []).getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
