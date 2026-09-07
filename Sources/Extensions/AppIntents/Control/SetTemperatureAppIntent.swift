@@ -31,7 +31,30 @@ struct SetTemperatureAppIntent: AppIntent {
     )
     var temperature: Double
 
+    #if os(watchOS)
     func perform() async throws -> some IntentResult & ProvidesDialog {
+        try await .result(dialog: .init(stringLiteral: apply()))
+    }
+    #else
+    // The card is app-only: the view and the entity it draws aren't built for the watch, where a
+    // spoken answer is the whole interaction anyway.
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let dialog = try await apply()
+        let state = await ControlResultSnippet.state(
+            of: entity,
+            serverId: entity.serverId,
+            iconName: entity.iconName
+        )
+        return .result(dialog: .init(stringLiteral: dialog)) {
+            if let state {
+                ControlResultSnippetView(state: state)
+            }
+        }
+    }
+    #endif
+
+    /// Sets the temperature, returning the sentence to speak.
+    private func apply() async throws -> String {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -44,9 +67,9 @@ struct SetTemperatureAppIntent: AppIntent {
             data: ["entity_id": entity.entityId, "temperature": temperature],
             returnResponse: false
         )
-        return .result(dialog: .init(stringLiteral: L10n.AppIntents.Dialog.setTemperature(
+        return L10n.AppIntents.Dialog.setTemperature(
             entity.displayString,
             NumberFormatter.localizedString(from: NSNumber(value: temperature), number: .decimal)
-        )))
+        )
     }
 }

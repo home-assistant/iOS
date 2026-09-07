@@ -21,8 +21,21 @@ struct ToggleEntityAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.controllable_entity.parameter.entity", defaultValue: "Entity"))
     var entity: ControllableEntityAppEntity
 
+    // The card is app-only: the view and the entity it draws aren't built for the watch, where a
+    // spoken answer is the whole interaction anyway.
+    #if os(watchOS)
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let dialog = try await ControlEntityIntentRunner.perform(.toggle, on: entity)
         return .result(dialog: .init(stringLiteral: dialog))
     }
+    #else
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let outcome = try await ControlEntityIntentRunner.performShowingResult(.toggle, on: entity)
+        return .result(dialog: .init(stringLiteral: outcome.dialog)) {
+            if let state = outcome.state {
+                ControlResultSnippetView(state: state)
+            }
+        }
+    }
+    #endif
 }
