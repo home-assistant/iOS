@@ -81,43 +81,100 @@ struct SiriExposureAcrossQueriesTests {
         }
     }
 
-    private func withHiddenServer(_ body: (String) async throws -> Void) async throws {
+    /// Two servers, one hidden: the visible one still has to come through, or the test would pass
+    /// on a query that simply returns nothing.
+    private func withOneHiddenServer(
+        _ body: (_ hidden: String, _ visible: String) async throws -> Void
+    ) async throws {
         let previous = Current.servers
         defer { Current.servers = previous }
         let manager = FakeServerManager(initial: 0)
-        let server = manager.addFake()
+        let hidden = manager.addFake()
+        let visible = manager.addFake()
         Current.servers = manager
-        let serverId = server.identifier.rawValue
-        SiriServerExposure.setExposed(false, serverId: serverId)
-        try await body(serverId)
+
+        for server in [hidden, visible] {
+            let id = server.identifier.rawValue
+            try await Current.database().write { db in
+                try HAAppEntity
+                    .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == id)
+                    .deleteAll(db)
+                for entityId in ["light.kitchen", "lock.front", "climate.hall", "cover.curtain", "script.night"] {
+                    try HAAppEntity(
+                        id: ServerEntity.uniqueId(serverId: id, entityId: entityId),
+                        entityId: entityId,
+                        serverId: id,
+                        domain: entityId.components(separatedBy: ".").first ?? "",
+                        name: entityId,
+                        icon: nil,
+                        rawDeviceClass: nil,
+                        entityCategory: nil,
+                        isHidden: nil
+                    ).insert(db)
+                }
+                try AppArea
+                    .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == id)
+                    .deleteAll(db)
+                try AppArea(
+                    id: "\(id)-area",
+                    serverId: id,
+                    areaId: "area",
+                    name: "Kitchen",
+                    aliases: [],
+                    picture: nil,
+                    icon: nil,
+                    sortOrder: nil,
+                    entities: ["light.kitchen", "lock.front", "climate.hall", "cover.curtain", "script.night"],
+                    floorId: nil,
+                    floorName: nil
+                ).insert(db)
+            }
+        }
+
+        SiriServerExposure.setExposed(false, serverId: hidden.identifier.rawValue)
+        try await body(hidden.identifier.rawValue, visible.identifier.rawValue)
         try await clear()
     }
 
-    @Test func theControlQueriesOfferNothingFromAHiddenServer() async throws {
+    @Test func theControlQueriesDropTheHiddenServerAndKeepTheOther() async throws {
         try await clear()
-        try await withHiddenServer { _ in
+        try await withOneHiddenServer { hidden, visible in
             let controllable = try await ControllableEntityAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
             let locks = try await LockAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
             let thermostats = try await ThermostatAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
             let lights = try await DimmableLightAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
             let covers = try await OpenableEntityAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
 
-            #expect(controllable.sections.flatMap(\.items).isEmpty)
-            #expect(locks.sections.flatMap(\.items).isEmpty)
-            #expect(thermostats.sections.flatMap(\.items).isEmpty)
-            #expect(lights.sections.flatMap(\.items).isEmpty)
-            #expect(covers.sections.flatMap(\.items).isEmpty)
+            #expect(!controllable.contains(hidden))
+            #expect(controllable.contains(visible))
+            #expect(!locks.contains(hidden))
+            #expect(locks.contains(visible))
+            #expect(!thermostats.contains(hidden))
+            #expect(thermostats.contains(visible))
+            #expect(!lights.contains(hidden))
+            #expect(lights.contains(visible))
+            #expect(!covers.contains(hidden))
+            #expect(covers.contains(visible))
         }
     }
 
     @Test func theQuestionAndScriptListsAlsoHonourIt() async throws {
         try await clear()
-        try await withHiddenServer { _ in
+        try await withOneHiddenServer { hidden, visible in
             let entities = try await HAAppEntityAppIntentEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
             let scripts = try await IntentScriptAppEntityQuery().suggestedEntities()
+                .sections.flatMap(\.items).map(\.value.serverId)
 
-            #expect(entities.sections.flatMap(\.items).isEmpty)
-            #expect(scripts.sections.flatMap(\.items).isEmpty)
+            #expect(!entities.contains(hidden))
+            #expect(entities.contains(visible))
+            #expect(!scripts.contains(hidden))
+            #expect(scripts.contains(visible))
         }
     }
 }
