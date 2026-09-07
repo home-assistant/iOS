@@ -6,7 +6,9 @@ import Shared
 @available(macOS 13.0, watchOS 9.4, *)
 struct ReadableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [ReadableEntityAppEntity] {
-        entities(domains: Domain.voiceControllable).flatMap(\.1).filter { identifiers.contains($0.id) }
+        // Every domain here too: an id that was offered has to resolve, and the list a question
+        // offers is not limited to what a command can change.
+        entities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<ReadableEntityAppEntity> {
