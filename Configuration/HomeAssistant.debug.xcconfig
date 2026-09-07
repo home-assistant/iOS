@@ -11,6 +11,7 @@ ENABLE_DEVICE_NAME_QMQYCKL255 = 0
 STRIP_INSTALLED_PRODUCT = NO
 
 BUNDLE_ID_SUFFIX = .dev
+APP_DISPLAY_NAME = Home Assistant NC Δ
 VALIDATE_PRODUCT = NO
 DEBUG_INFORMATION_FORMAT = dwarf
 OTHER_SWIFT_FLAGS = $(inherited) -DDEBUG -Xfrontend -warn-long-expression-type-checking=500 -Xfrontend  -warn-long-function-bodies=500
