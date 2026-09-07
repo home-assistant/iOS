@@ -9,7 +9,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
 
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
-            intent: TurnOnEntityAppIntent(),
+            intent: TurnOnOffEntityAppIntent(action: .on),
             phrases: [
                 "\(.applicationName) turn on \(\.$entity)",
                 "Turn on \(\.$entity) in \(.applicationName)",
@@ -19,7 +19,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "power"
         )
         AppShortcut(
-            intent: TurnOffEntityAppIntent(),
+            intent: TurnOnOffEntityAppIntent(action: .off),
             phrases: [
                 "\(.applicationName) turn off \(\.$entity)",
                 "Turn off \(\.$entity) in \(.applicationName)",

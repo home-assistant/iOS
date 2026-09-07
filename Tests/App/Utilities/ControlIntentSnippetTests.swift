@@ -82,7 +82,7 @@ struct ControlIntentSnippetTests {
 
     @Test func turningOnCallsTurnOnAndDescribesTheResult() async throws {
         try await withMockedServer { server, connection in
-            var intent = TurnOnEntityAppIntent()
+            var intent = TurnOnOffEntityAppIntent(action: .on)
             intent.entity = Self.controllable(serverId: server.identifier.rawValue)
             let task = Task { try await intent.perform() }
             let requests = try await drain(connection, entityId: "light.kitchen", state: "on", answering: 2)
@@ -93,7 +93,7 @@ struct ControlIntentSnippetTests {
 
     @Test func turningOffCallsTurnOff() async throws {
         try await withMockedServer { server, connection in
-            var intent = TurnOffEntityAppIntent()
+            var intent = TurnOnOffEntityAppIntent(action: .off)
             intent.entity = Self.controllable(serverId: server.identifier.rawValue)
             let task = Task { try await intent.perform() }
             let requests = try await drain(connection, entityId: "light.kitchen", state: "off", answering: 2)
