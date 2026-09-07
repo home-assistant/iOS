@@ -14,6 +14,8 @@ struct OnboardingWelcomeView: View {
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
     let continueAction: () -> Void
+    /// Offered only while the previous Home Assistant app is installed on this device.
+    var transferAction: (() -> Void)?
 
     var body: some View {
         ScrollView {
@@ -72,6 +74,10 @@ struct OnboardingWelcomeView: View {
             }
             .buttonStyle(.primaryButton)
             .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
+            if let transferAction {
+                Button(L10n.Onboarding.Welcome.transferButton, action: transferAction)
+                    .buttonStyle(.secondaryButton)
+            }
             Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true
             }
@@ -92,4 +98,8 @@ struct OnboardingWelcomeView: View {
             OnboardingWelcomeView(continueAction: {})
         }
     }
+}
+
+#Preview("Previous app installed") {
+    OnboardingWelcomeView(continueAction: {}, transferAction: {})
 }
