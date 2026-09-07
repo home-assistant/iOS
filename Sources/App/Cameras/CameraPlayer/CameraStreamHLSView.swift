@@ -119,8 +119,13 @@ struct CameraStreamHLSView: View {
         guard let baseURL = await api.server.activeURL() else {
             throw StreamError.noActiveURL
         }
-        // `hls_path` is server-absolute; appending it with its leading slash intact leaves a double
-        // slash in the URL, and swallows the base path of a server installed under a subpath.
+        return Self.playlistURL(baseURL: baseURL, hlsPath: hlsPath)
+    }
+
+    /// Resolves the playlist against the server's URL. `hls_path` comes back server-absolute, so
+    /// appending it with its leading slash intact leaves a double slash in the URL and swallows the
+    /// base path of a server installed under a subpath.
+    static func playlistURL(baseURL: URL, hlsPath: String) -> URL {
         let relativePath = hlsPath.hasPrefix("/") ? String(hlsPath.dropFirst()) : hlsPath
         return baseURL.appendingPathComponent(relativePath)
     }

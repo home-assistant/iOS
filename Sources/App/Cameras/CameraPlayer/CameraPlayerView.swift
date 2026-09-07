@@ -15,10 +15,8 @@ struct CameraPlayerView: View {
     private let cameraName: String?
 
     @State private var cameraEntityId: String
-    /// The streaming methods to try for the current camera, most preferred first. Empty until the
-    /// camera's capabilities come back, which is when the loader gives way to a player.
-    @State private var players: [CameraPlayerType] = []
-    @State private var playerIndex = 0
+    /// The streaming methods to try for the current camera and which one is showing.
+    @State private var playback = CameraPlayerPlayback()
     @State private var appEntity: HAAppEntity?
     @State private var name: String?
     @State private var subtitle: String?
@@ -35,18 +33,6 @@ struct CameraPlayerView: View {
     private let maxTitleTextWidth: CGFloat = 100
     private let topScrimHeight: CGFloat = 140
 
-    private var playerType: CameraPlayerType? {
-        players.indices.contains(playerIndex) ? players[playerIndex] : nil
-    }
-
-    /// This loader covers the stretch before a player exists — while the camera's capabilities are
-    /// being fetched — and the WebRTC player, which reports its loading state up here. The HLS and
-    /// MJPEG players draw their own, so a second spinner on top of theirs would never clear.
-    private var isLoaderVisible: Bool {
-        guard let playerType else { return true }
-        return playerType == .webRTC && showLoader
-    }
-
     init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
         self.server = server
         self._cameraEntityId = State(initialValue: cameraEntityId)
@@ -57,7 +43,7 @@ struct CameraPlayerView: View {
         ZStack {
             navigationStack
 
-            if isLoaderVisible {
+            if playback.isLoaderVisible(webRTCIsLoading: showLoader) {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .tint(.white)
@@ -210,7 +196,7 @@ struct CameraPlayerView: View {
 
     private var content: some View {
         Group {
-            if let playerType {
+            if let playerType = playback.current {
                 player(playerType)
             } else {
                 // Waiting on `camera/capabilities` to say which player this camera needs; the
@@ -258,20 +244,14 @@ struct CameraPlayerView: View {
         }
     }
 
-    /// Moves to the next streaming method after `player` failed. The `from:` guard keeps a late
-    /// failure from a player that has already been replaced — WebRTC reports both an unsupported
-    /// camera and a failed connection — from skipping an untried method.
+    /// Moves to the next streaming method after `player` failed.
     private func advanceToNextPlayer(from player: CameraPlayerType) {
-        guard playerType == player else { return }
-        guard players.indices.contains(playerIndex + 1) else {
-            Current.Log.error("Camera \(cameraEntityId) has no streaming method left after \(player)")
-            return
-        }
-        let next = players[playerIndex + 1]
+        var advanced = playback
+        guard let next = advanced.advance(from: player) else { return }
         Current.Log.info("Camera \(cameraEntityId) could not stream over \(player), falling back to \(next)")
         showLoader = true
         withAnimation {
-            playerIndex += 1
+            playback = advanced
         }
     }
 
@@ -285,8 +265,7 @@ struct CameraPlayerView: View {
         // mid-fetch still lands here; a stale answer must not decide the plan for the camera now
         // on screen.
         guard entityId == cameraEntityId else { return }
-        players = CameraStreamPlan.players(for: capabilities)
-        playerIndex = 0
+        playback.start(with: CameraStreamPlan.players(for: capabilities))
     }
 
     private func loadMetadata() {
@@ -337,8 +316,7 @@ struct CameraPlayerView: View {
         // Show the loader while the new camera's capabilities are fetched and its stream connects.
         // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.
         showLoader = true
-        players = []
-        playerIndex = 0
+        playback.clear()
         cameraEntityId = entityId
         loadMetadata()
     }
