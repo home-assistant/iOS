@@ -61,6 +61,7 @@ struct AppMigrationOverviewView: View {
                 Text(L10n.AppMigration.Overview.startButton)
             }
             .buttonStyle(.primaryButton)
+            .accessibilityIdentifier(AccessibilityIdentifier.migrationOverviewStart.rawValue)
             .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
             .frame(maxWidth: Sizes.maxWidthForLargerScreens)
             .padding([.horizontal, .top], DesignSystem.Spaces.two)

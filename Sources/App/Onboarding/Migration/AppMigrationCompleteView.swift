@@ -35,7 +35,8 @@ struct AppMigrationCompleteView: View {
                 .padding(.top, DesignSystem.Spaces.two)
             },
             primaryActionTitle: L10n.AppMigration.Complete.continueButton,
-            primaryAction: continueAction
+            primaryAction: continueAction,
+            primaryActionIdentifier: AccessibilityIdentifier.migrationCompleteContinue.rawValue
         )
     }
 }

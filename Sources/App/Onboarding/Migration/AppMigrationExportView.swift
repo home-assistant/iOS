@@ -75,11 +75,13 @@ struct AppMigrationExportView: View {
                         Text(L10n.AppMigration.Export.HandedOff.openButton)
                     }
                     .buttonStyle(.primaryButton)
+                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportOpenNewApp.rawValue)
                     Button(L10n.AppMigration.Export.HandedOff.transferAgainButton) {
                         showsTransferAgainConfirmation = true
                     }
                     .buttonStyle(.secondaryButton)
                     .tint(Color.haPrimary)
+                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransferAgain.rawValue)
                     .confirmationDialog(
                         L10n.AppMigration.Export.TransferAgainConfirmation.title,
                         isPresented: $showsTransferAgainConfirmation,
@@ -96,6 +98,7 @@ struct AppMigrationExportView: View {
                         showsEraseConfirmation = true
                     }
                     .buttonStyle(.secondaryNegativeButton)
+                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportErase.rawValue)
                     .confirmationDialog(
                         L10n.AppMigration.Export.EraseConfirmation.title,
                         isPresented: $showsEraseConfirmation,
@@ -114,6 +117,7 @@ struct AppMigrationExportView: View {
                         Text(L10n.AppMigration.Export.HandedOff.openButton)
                     }
                     .buttonStyle(.primaryButton)
+                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportOpenNewApp.rawValue)
                 case .idle, .preparing, .failed:
                     HAProgressButton(
                         state == .preparing ? L10n.AppMigration.Export.Preparing.title : L10n.AppMigration.Export
@@ -122,6 +126,7 @@ struct AppMigrationExportView: View {
                         state: progressButtonState,
                         action: transferAction
                     )
+                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransfer.rawValue)
                     .disabled(state == .preparing)
                     Button(action: cancelAction) {
                         Text(L10n.AppMigration.Export.cancelButton)

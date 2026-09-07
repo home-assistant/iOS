@@ -7,6 +7,7 @@ import Foundation
 /// translation or a wording change would break.
 enum AccessibilityIdentifier: String {
     case onboardingWelcomeContinue = "onboarding.welcome.continue"
+    case onboardingWelcomeTransfer = "onboarding.welcome.transfer"
     case onboardingServersManualEntry = "onboarding.servers.manualEntry"
     case onboardingManualEntryConnect = "onboarding.manualEntry.connect"
     case onboardingDeviceNameSave = "onboarding.deviceName.save"
@@ -20,4 +21,11 @@ enum AccessibilityIdentifier: String {
     case notificationPermissionRequestPrimary = "notificationPermission.request.primary"
     case notificationPermissionRequestSecondary = "notificationPermission.request.secondary"
     case settingsList = "settings.list"
+    case migrationIntroContinue = "migration.intro.continue"
+    case migrationOverviewStart = "migration.overview.start"
+    case migrationCompleteContinue = "migration.complete.continue"
+    case migrationExportTransfer = "migration.export.transfer"
+    case migrationExportOpenNewApp = "migration.export.openNewApp"
+    case migrationExportTransferAgain = "migration.export.transferAgain"
+    case migrationExportErase = "migration.export.erase"
 }
