@@ -33,22 +33,21 @@ struct AppMigrationExportView: View {
                     }
                     if state != .handedOff {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                            HASectionTitle(L10n.AppMigration.Export.Section.includes)
+                            Label(L10n.AppMigration.Export.Section.includes, systemImage: "checkmark.circle.fill")
+                                .font(DesignSystem.Font.headline)
+                                .foregroundStyle(.haSuccessColor)
                             CardView {
-                                VStack(spacing: .zero) {
+                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
                                     ForEach(AppMigrationTransferredItem.allCases) { item in
-                                        HASettingsRow(
-                                            heading: item.title,
-                                            description: item == .servers ? summary.serversDescription : item
-                                                .explanation
-                                        ) {
-                                            MaterialDesignIconsImage(icon: item.icon, size: 24)
-                                                .foregroundStyle(.haPrimary)
-                                        } content: {
-                                            EmptyView()
-                                        }
+                                        AppMigrationItemRow(
+                                            icon: item.icon,
+                                            tint: .haSuccessColor,
+                                            title: item.title,
+                                            caption: item == .servers ? summary.serversDescription : item.explanation
+                                        )
                                     }
                                 }
+                                .padding(DesignSystem.Spaces.oneAndHalf)
                             }
                         }
                         .padding(.top, DesignSystem.Spaces.two)
