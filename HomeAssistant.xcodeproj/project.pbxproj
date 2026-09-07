@@ -756,6 +756,8 @@
 				AppIntents/Control/TurnOnEntityAppIntent.swift,
 				AppIntents/EntityState/EntityStateSnippetView.swift,
 				AppIntents/EntityState/GetEntityStateAppIntent.swift,
+				AppIntents/EntityState/ReadableEntityAppEntity.swift,
+				AppIntents/EntityState/ReadableEntityAppEntityQuery.swift,
 				AppIntents/EntityState/HAEntityStateAppEntity.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
