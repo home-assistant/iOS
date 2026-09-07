@@ -8,6 +8,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
     var canGoBack: Bool = false
     var canGoForward: Bool = false
+    var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
     var connectionState: FrontEndConnectionState = .connected

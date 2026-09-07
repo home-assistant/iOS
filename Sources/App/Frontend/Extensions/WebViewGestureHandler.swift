@@ -21,6 +21,8 @@ final class WebViewGestureHandler {
             webViewNavigateForward()
         case .openInBrowser:
             webView?.openInBrowser()
+        case .createDeeplink:
+            createDeeplink()
         case .showServersList:
             showServersList()
         case .nextServer:
@@ -60,6 +62,16 @@ final class WebViewGestureHandler {
         if webView?.canGoForward ?? false {
             webView?.goForward()
         }
+    }
+
+    private func createDeeplink() {
+        guard let webView,
+              let url = webView.currentPageURL,
+              let target = DeeplinkTarget.page(from: url) else {
+            Current.Log.error("No current page available to create a deeplink")
+            return
+        }
+        DeeplinkPresenter.present(target: target, from: webView)
     }
 
     private func showServersList() {

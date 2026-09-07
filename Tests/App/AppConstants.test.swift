@@ -100,6 +100,18 @@ struct AppConstantsTests {
         )
     }
 
+    @Test func testPageDeeplinkURL() {
+        let result = AppConstants.pageDeeplinkURL(path: "lovelace/0?edit=1")?.absoluteString
+
+        #expect(result == "\(AppConstants.deeplinkURL.absoluteString)navigate/lovelace/0?edit=1")
+    }
+
+    @Test func testPageDeeplinkURLWithServer() {
+        let result = AppConstants.pageDeeplinkURL(path: "lovelace/0", serverName: "My Home")?.absoluteString
+
+        #expect(result == "\(AppConstants.deeplinkURL.absoluteString)navigate/lovelace/0?server=My%20Home")
+    }
+
     @Test func testOpenEntityMoreInfoDeeplinkURLWithServer() async throws {
         let entityId = "light.living_room"
         let result = AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId, serverName: "My Home")?

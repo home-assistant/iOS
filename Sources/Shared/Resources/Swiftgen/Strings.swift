@@ -2307,6 +2307,10 @@ public enum L10n {
       /// Include server
       public static var title: String { return L10n.tr("Localizable", "deeplink.include_server.title") }
     }
+    public enum Page {
+      /// Copy a link that opens this page in the app.
+      public static var description: String { return L10n.tr("Localizable", "deeplink.page.description") }
+    }
   }
 
   public enum DeviceName {
@@ -2696,6 +2700,8 @@ public enum L10n {
         public static var assist: String { return L10n.tr("Localizable", "gestures.value.option.assist") }
         /// Back to previous page
         public static var backPage: String { return L10n.tr("Localizable", "gestures.value.option.back_page") }
+        /// Create deeplink
+        public static var createDeeplink: String { return L10n.tr("Localizable", "gestures.value.option.create_deeplink") }
         /// Go to next page
         public static var nextPage: String { return L10n.tr("Localizable", "gestures.value.option.next_page") }
         /// Next server
@@ -2723,6 +2729,8 @@ public enum L10n {
         /// Show sidebar
         public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
         public enum MoreInfo {
+          /// Creates a deeplink to the page you are currently on
+          public static var createDeeplink: String { return L10n.tr("Localizable", "gestures.value.option.more_info.create_deeplink") }
           /// Opens the page currently shown in the app in your preferred browser
           public static var openInBrowser: String { return L10n.tr("Localizable", "gestures.value.option.more_info.open_in_browser") }
           /// Quick search

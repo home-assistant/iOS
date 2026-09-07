@@ -46,20 +46,18 @@ extension WebViewController {
     }
 
     @objc func openServerInSafari() {
-        guard let url = externalURLForCurrentPage() else { return }
+        guard let url = currentPageURL else { return }
         URLOpener.shared.open(url, options: [:], completionHandler: nil)
     }
 
     /// Gesture counterpart of the macOS toolbar's "Open in Safari" action. Unlike the toolbar item, it
     /// honors the browser picked in General settings, which is only offered outside of macOS.
     func openInBrowser() {
-        guard let url = externalURLForCurrentPage() else { return }
+        guard let url = currentPageURL else { return }
         openURLInBrowser(url, self)
     }
 
-    /// The URL currently displayed, without the `external_auth` query item that only makes sense to the
-    /// frontend running inside our webview.
-    private func externalURLForCurrentPage() -> URL? {
+    var currentPageURL: URL? {
         guard let url = webView.url,
               var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil

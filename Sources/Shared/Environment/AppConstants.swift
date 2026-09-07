@@ -179,6 +179,19 @@ public enum AppConstants {
         return components.url
     }
 
+    public static func pageDeeplinkURL(path: String) -> URL? {
+        URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)")
+    }
+
+    public static func pageDeeplinkURL(path: String, serverName: String) -> URL? {
+        guard let base = pageDeeplinkURL(path: path),
+              var components = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "server", value: serverName)]
+        return components.url
+    }
+
     /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
     /// dialog for everything else.
     public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {

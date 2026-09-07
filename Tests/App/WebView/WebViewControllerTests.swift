@@ -910,6 +910,22 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
+    func testCurrentPageURLIsNilBeforeAnyPageLoads() {
+        let sut = makeSUT()
+
+        XCTAssertNil(sut.currentPageURL)
+    }
+
+    func testCurrentPageURLDropsExternalAuthQueryItem() async throws {
+        let sut = makeSUT()
+        let baseURL = try XCTUnwrap(URL(string: "https://home.local/lovelace/0?external_auth=1&edit=1"))
+
+        sut.webView.loadHTMLString("<html></html>", baseURL: baseURL)
+        await waitUntil { sut.webView.url != nil }
+
+        XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0?edit=1")
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
