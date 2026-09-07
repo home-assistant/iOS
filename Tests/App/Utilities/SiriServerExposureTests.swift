@@ -85,4 +85,10 @@ struct SiriExposureWiringTests {
             _ = try SiriServerExposure.deleteAll(db)
         }
     }
+
+    /// The row has to lead somewhere: without that case the entry appears in settings and opens
+    /// nothing.
+    @MainActor @Test func theEntryOpensTheSiriScreen() {
+        #expect(!String(describing: SettingsItem.siri.destinationView).isEmpty)
+    }
 }
