@@ -1,0 +1,88 @@
+# Temporary workflow — delete once the re-recorded images are committed.
+#
+# The Manage Storage screen lost its per-row icons and swapped its header icon,
+# so its reference images no longer match. Snapshot images can only be produced
+# on a macOS runner, so this workflow deletes the outdated references and lets
+# swift-snapshot-testing write them fresh, then pushes them back to the branch.
+name: Record Manage Storage Snapshots
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - claude/storage-screen-icon-cleanup-fhoopx
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  FASTLANE_XCODE_LIST_TIMEOUT: 80
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
+  BUNDLE_PATH: vendor/bundle
+  SNAPSHOTS: Tests/App/Settings/ManageStorage/__Snapshots__/ManageStorageView.test
+
+concurrency:
+  group: record-storage-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: macos-26
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+
+      # Same key the CI test job restores from, so the pinned SPM dependencies
+      # are reused instead of recompiled from scratch.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Install Gems
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Drop the outdated reference images
+        run: rm -f "$SNAPSHOTS"/*.png
+
+      # Recording a missing snapshot is reported as a test failure, so the run
+      # is expected to end red: the images it wrote are what this job is after.
+      - name: Run tests
+        continue-on-error: true
+        run: bundle exec fastlane test
+
+      - name: Commit re-recorded snapshots
+        run: |
+          git config user.name 'Home Assistant Bot'
+          git config user.email 'hello@home-assistant.io'
+          git add -- "$SNAPSHOTS"
+          if git diff --cached --quiet; then
+            echo "::error::No snapshots were recorded, see the test logs above"
+            exit 1
+          fi
+          git commit -m "Re-record Manage Storage snapshots"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload Test Logs"
+        if: ${{ always() }}
+        with:
+          name: record-snapshots-logs
+          path: |
+            ~/Library/Logs/scan
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
