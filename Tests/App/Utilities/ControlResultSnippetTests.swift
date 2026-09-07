@@ -62,6 +62,26 @@ struct ControlResultSnippetTests {
         }
     }
 
+    /// Answers each state read the card makes, in order, until they stop coming. The last state
+    /// given answers every read after it, which is how a device that ignores the command behaves.
+    private func answerReads(_ connection: HAMockConnection, with states: [String]) async throws {
+        var answered = 0
+        var idle = 0
+        // The card waits a quarter second between reads, so a longer silence than that means it
+        // has stopped asking.
+        while idle < 120 {
+            guard connection.pendingRequests.count > answered else {
+                try await Task.sleep(nanoseconds: 5_000_000)
+                idle += 1
+                continue
+            }
+            let state = states[min(answered, states.count - 1)]
+            connection.pendingRequests[answered].completion(.success(Self.stateResponse(state)))
+            answered += 1
+            idle = 0
+        }
+    }
+
     @Test func describesTheEntityAsItStandsAfterwards() async throws {
         try await withMockedServer { server, connection in
             let entity = Self.light(serverId: server.identifier.rawValue)
@@ -82,6 +102,70 @@ struct ControlResultSnippetTests {
             #expect(state?.iconName == "mdi:ceiling-light")
             #expect(state?.areaName == "Kitchen")
             #expect(state?.serverName == server.info.name)
+        }
+    }
+
+    /// Home Assistant answers a service call before the device has reported back, so the first read
+    /// still says the light is off. The card waits for the state the action asked for rather than
+    /// drawing the one it replaced.
+    @Test func waitsForTheStateTheActionAskedFor() async throws {
+        try await withMockedServer { server, connection in
+            let entity = Self.light(serverId: server.identifier.rawValue)
+            let task = Task {
+                await ControlResultSnippet.state(
+                    of: entity,
+                    serverId: entity.serverId,
+                    iconName: entity.iconName,
+                    settlingOn: ["on"]
+                )
+            }
+            try await answerReads(connection, with: ["off", "on"])
+            let state = await task.value
+
+            #expect(state?.state == "on")
+            #expect(state?.isActive == true)
+        }
+    }
+
+    /// A device that ignores the command is reported as it is: the card gives up on the state it
+    /// was waiting for rather than claiming the light came on.
+    @Test func reportsTheStateADeviceThatRefusesIsLeftIn() async throws {
+        try await withMockedServer { server, connection in
+            let entity = Self.light(serverId: server.identifier.rawValue)
+            let task = Task {
+                await ControlResultSnippet.state(
+                    of: entity,
+                    serverId: entity.serverId,
+                    iconName: entity.iconName,
+                    settlingOn: ["on"]
+                )
+            }
+            try await answerReads(connection, with: ["off"])
+            let state = await task.value
+
+            #expect(state?.state == "off")
+            #expect(state?.isActive == false)
+        }
+    }
+
+    /// A curtain reads `closing` for as long as it travels, which outlasts any card. That state
+    /// already proves the command landed, so the card shows it rather than waiting out the deadline
+    /// on `closed` and reporting the curtain as still open.
+    @Test func takesAMovingCoverAsProofTheCommandLanded() async throws {
+        try await withMockedServer { server, connection in
+            let entity = Self.light(serverId: server.identifier.rawValue)
+            let task = Task {
+                await ControlResultSnippet.state(
+                    of: entity,
+                    serverId: entity.serverId,
+                    iconName: entity.iconName,
+                    settlingOn: Domain.cover.statesAfter(.closeCover)
+                )
+            }
+            try await answerReads(connection, with: ["open", "closing"])
+            let state = await task.value
+
+            #expect(state?.state == "closing")
         }
     }
 

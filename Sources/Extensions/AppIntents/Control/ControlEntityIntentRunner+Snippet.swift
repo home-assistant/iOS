@@ -15,12 +15,13 @@ extension ControlEntityIntentRunner {
         _ action: Action,
         on entity: ControllableEntityAppEntity
     ) async throws -> (dialog: String, state: HAEntityStateAppEntity?) {
-        let dialog = try await perform(action, on: entity)
+        let service = try await callService(action, on: entity)
         let state = await ControlResultSnippet.state(
             of: entity,
             serverId: entity.serverId,
-            iconName: entity.iconName
+            iconName: entity.iconName,
+            settlingOn: entity.domain?.statesAfter(service) ?? []
         )
-        return (dialog, state)
+        return (dialog(for: service, entityName: entity.displayString), state)
     }
 }

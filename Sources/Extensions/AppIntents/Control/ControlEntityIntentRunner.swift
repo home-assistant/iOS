@@ -14,6 +14,14 @@ enum ControlEntityIntentRunner {
     /// Performs `action` and returns the sentence Siri should speak.
     @available(macOS 13.0, watchOS 9.4, *)
     static func perform(_ action: Action, on entity: ControllableEntityAppEntity) async throws -> String {
+        let service = try await callService(action, on: entity)
+        return dialog(for: service, entityName: entity.displayString)
+    }
+
+    /// Performs `action` and returns the service it called, which is what says both how to word the
+    /// confirmation and which state the entity should settle on.
+    @available(macOS 13.0, watchOS 9.4, *)
+    static func callService(_ action: Action, on entity: ControllableEntityAppEntity) async throws -> Service {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -30,7 +38,7 @@ enum ControlEntityIntentRunner {
             data: ["entity_id": entity.entityId],
             returnResponse: false
         )
-        return dialog(for: service, entityName: entity.displayString)
+        return service
     }
 
     @available(macOS 13.0, watchOS 9.4, *)

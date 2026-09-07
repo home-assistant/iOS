@@ -38,19 +38,21 @@ struct OpenCloseEntityAppIntent: AppIntent {
 
     #if os(watchOS)
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        try await .result(dialog: .init(stringLiteral: move()))
+        let service = try await move()
+        return .result(dialog: .init(stringLiteral: dialog(for: service)))
     }
     #else
     // The card is app-only: the view and the entity it draws aren't built for the watch, where a
     // spoken answer is the whole interaction anyway.
     func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
-        let dialog = try await move()
+        let service = try await move()
         let state = await ControlResultSnippet.state(
             of: entity,
             serverId: entity.serverId,
-            iconName: entity.iconName
+            iconName: entity.iconName,
+            settlingOn: entity.domain?.statesAfter(service) ?? []
         )
-        return .result(dialog: .init(stringLiteral: dialog)) {
+        return .result(dialog: .init(stringLiteral: dialog(for: service))) {
             if let state {
                 ControlResultSnippetView(state: state)
             }
@@ -58,8 +60,8 @@ struct OpenCloseEntityAppIntent: AppIntent {
     }
     #endif
 
-    /// Opens or closes the cover, returning the sentence to speak.
-    private func move() async throws -> String {
+    /// Opens or closes the cover, returning the service it called.
+    private func move() async throws -> Service {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -76,7 +78,12 @@ struct OpenCloseEntityAppIntent: AppIntent {
             data: ["entity_id": entity.entityId],
             returnResponse: false
         )
-        return action == .open
+        return service
+    }
+
+    /// The spoken confirmation, worded for the direction the cover moved.
+    private func dialog(for service: Service) -> String {
+        action == .open
             ? L10n.AppIntents.OpenClose.Dialog.opened(entity.displayString)
             : L10n.AppIntents.OpenClose.Dialog.closed(entity.displayString)
     }

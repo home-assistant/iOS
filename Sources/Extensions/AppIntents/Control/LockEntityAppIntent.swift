@@ -31,7 +31,8 @@ struct LockEntityAppIntent: AppIntent {
         let state = await ControlResultSnippet.state(
             of: entity,
             serverId: entity.serverId,
-            iconName: entity.iconName
+            iconName: entity.iconName,
+            settlingOn: Domain.lock.statesAfter(.lock)
         )
         return .result(dialog: .init(stringLiteral: dialog)) {
             if let state {
