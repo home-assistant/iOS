@@ -30,16 +30,22 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// groups entities under a per-server section.
     var includesServerContext: Bool
 
-    /// The icon is the entity's own Material Design glyph rather than an SF Symbol: Home Assistant
-    /// lets people choose an icon per entity, and mapping those onto SF Symbols would throw that
-    /// choice away. `EntityIconRenderer` memoizes by icon name, so a long picker redraws cheaply.
+    /// The icon is the domain's SF Symbol, not the entity's own Material Design glyph.
+    ///
+    /// Drawing the glyph here meant rendering an image per row as the list scrolled, which made the
+    /// Shortcuts app stutter. A symbol name costs nothing to pass and the system draws it. Spotlight
+    /// results still carry the real glyph, where it is rendered once per index pass.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
             subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
-            image: EntityIconRenderer.thumbnailData(iconName: iconName).map { .init(data: $0) }
+            image: .init(systemName: Domain(entityId: entityId)?.sfSymbolName ?? Self.fallbackSymbolName)
         )
     }
+
+    /// A domain the app does not model still gets a row, and an on/off glyph is the least wrong
+    /// thing to show for one.
+    static let fallbackSymbolName = SFSymbol.powerCircle.rawValue
 
     /// The `Server • Floor • Area • Device` line shown under the entity name.
     var subtitle: String? {

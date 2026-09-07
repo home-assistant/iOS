@@ -263,82 +263,6 @@ public enum L10n {
   }
 
   public enum AppIntents {
-    public enum ActiveEntities {
-      /// Lists the entities of a kind that are currently in the state you ask for
-      public static var description: String { return L10n.tr("Localizable", "app_intents.active_entities.description") }
-      /// %1$@ on %2$@
-      public static func nameWithServer(_ p1: Any, _ p2: Any) -> String {
-        return L10n.tr("Localizable", "app_intents.active_entities.name_with_server", String(describing: p1), String(describing: p2))
-      }
-      /// Get what is on
-      public static var title: String { return L10n.tr("Localizable", "app_intents.active_entities.title") }
-      public enum Dialog {
-        /// No %@ are closed
-        public static func noneClosed(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_closed", String(describing: p1))
-        }
-        /// No %@ are off
-        public static func noneOff(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_off", String(describing: p1))
-        }
-        /// No %@ are on
-        public static func noneOn(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_on", String(describing: p1))
-        }
-        /// No %@ are open
-        public static func noneOpen(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.none_open", String(describing: p1))
-        }
-        /// These %1$@ are closed: %2$@
-        public static func someClosed(_ p1: Any, _ p2: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_closed", String(describing: p1), String(describing: p2))
-        }
-        /// These %1$@ are off: %2$@
-        public static func someOff(_ p1: Any, _ p2: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_off", String(describing: p1), String(describing: p2))
-        }
-        /// These %1$@ are on: %2$@
-        public static func someOn(_ p1: Any, _ p2: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_on", String(describing: p1), String(describing: p2))
-        }
-        /// These %1$@ are open: %2$@
-        public static func someOpen(_ p1: Any, _ p2: Any) -> String {
-          return L10n.tr("Localizable", "app_intents.active_entities.dialog.some_open", String(describing: p1), String(describing: p2))
-        }
-      }
-      public enum Filter {
-        /// entities
-        public static var all: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.all") }
-        /// thermostats
-        public static var climates: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.climates") }
-        /// covers
-        public static var covers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.covers") }
-        /// fans
-        public static var fans: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.fans") }
-        /// lights
-        public static var lights: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.lights") }
-        /// locks
-        public static var locks: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.locks") }
-        /// media players
-        public static var mediaPlayers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.media_players") }
-        /// Kind
-        public static var name: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.name") }
-        /// switches
-        public static var switches: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.switches") }
-      }
-      public enum State {
-        /// closed
-        public static var closed: String { return L10n.tr("Localizable", "app_intents.active_entities.state.closed") }
-        /// State
-        public static var name: String { return L10n.tr("Localizable", "app_intents.active_entities.state.name") }
-        /// off
-        public static var off: String { return L10n.tr("Localizable", "app_intents.active_entities.state.off") }
-        /// on
-        public static var on: String { return L10n.tr("Localizable", "app_intents.active_entities.state.on") }
-        /// open
-        public static var `open`: String { return L10n.tr("Localizable", "app_intents.active_entities.state.open") }
-      }
-    }
     public enum Assist {
       public enum Pipeline {
         /// Pipeline
@@ -1693,6 +1617,28 @@ public enum L10n {
           public static var body: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.body") }
           /// Create CarPlay configuration
           public static var title: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.title") }
+        }
+      }
+    }
+    public enum Operation {
+      public enum Error {
+        public enum Failed {
+          /// Action failed
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.failed.short") }
+          /// Home Assistant couldn't run that action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.failed.title") }
+        }
+        public enum NoConnection {
+          /// Not connected
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.no_connection.short") }
+          /// Not connected to Home Assistant
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.no_connection.title") }
+        }
+        public enum TimedOut {
+          /// No response
+          public static var short: String { return L10n.tr("Localizable", "carPlay.operation.error.timed_out.short") }
+          /// Home Assistant didn't respond in time
+          public static var title: String { return L10n.tr("Localizable", "carPlay.operation.error.timed_out.title") }
         }
       }
     }
