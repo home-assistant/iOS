@@ -11,6 +11,9 @@ protocol WebViewControllerProtocol: AnyObject {
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
+    /// The URL currently displayed, without the `external_auth` query item that only makes sense to the
+    /// frontend running inside our webview.
+    var currentPageURL: URL? { get }
     var traitCollection: UITraitCollection { get }
 
     func presentOverlayController(controller: UIViewController, animated: Bool)

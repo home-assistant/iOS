@@ -37,6 +37,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     case backPage
     case nextPage
     case openInBrowser
+    case createDeeplink
     // Servers
     case showServersList
     case nextServer
@@ -63,7 +64,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         switch self {
         case .showSidebar, .quickSearch, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
-        case .backPage, .nextPage, .openInBrowser:
+        case .backPage, .nextPage, .openInBrowser, .createDeeplink:
             .page
         case .showServersList, .nextServer, .previousServer:
             .servers
@@ -84,6 +85,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.nextPage
         case .openInBrowser:
             L10n.Gestures.Value.Option.openInBrowser
+        case .createDeeplink:
+            L10n.Gestures.Value.Option.createDeeplink
         case .quickSearch:
             L10n.Gestures.Value.Option.quickSearch
         case .searchEntities:
@@ -129,6 +132,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             .chevronForward
         case .openInBrowser:
             .safari
+        case .createDeeplink:
+            .link
         case .showServersList:
             .serverRack
         case .nextServer:
@@ -154,6 +159,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .openInBrowser:
             L10n.Gestures.Value.Option.MoreInfo.openInBrowser
+        case .createDeeplink:
+            L10n.Gestures.Value.Option.MoreInfo.createDeeplink
         case .quickSearch:
             L10n.Gestures.Value.Option.MoreInfo.quickSearch
         case .searchEntities:

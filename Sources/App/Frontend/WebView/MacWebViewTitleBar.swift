@@ -456,6 +456,8 @@ extension MacWebViewTitleBar {
                 .arrowUturnForward
             case .openInBrowser:
                 .safari
+            case .createDeeplink:
+                .link
             case .showServersList:
                 .serverRack
             case .nextServer:

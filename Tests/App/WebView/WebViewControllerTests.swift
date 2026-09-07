@@ -910,6 +910,45 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
+    func testCurrentPageURLIsNilBeforeAnyPageLoads() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+
+        XCTAssertNil(sut.currentPageURL)
+    }
+
+    func testCurrentPageURLDropsExternalAuthQueryItem() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let baseURL = try XCTUnwrap(URL(string: "https://home.local/lovelace/0?external_auth=1&edit=1"))
+
+        sut.webView.loadHTMLString("<html></html>", baseURL: baseURL)
+        await waitUntil { sut.webView.url != nil }
+
+        XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0?edit=1")
+    }
+
+    func testOpeningTheCurrentPageOutsideTheAppDoesNothingBeforeAnyPageLoads() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+
+        sut.openInBrowser()
+        sut.openServerInSafari()
+
+        XCTAssertNil(sut.currentPageURL)
+    }
+
+    func testCurrentPageURLDropsTheQueryWhenOnlyExternalAuthWasPresent() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let baseURL = try XCTUnwrap(URL(string: "https://home.local/lovelace/0?external_auth=1"))
+
+        sut.webView.loadHTMLString("<html></html>", baseURL: baseURL)
+        await waitUntil { sut.webView.url != nil }
+
+        XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0")
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))

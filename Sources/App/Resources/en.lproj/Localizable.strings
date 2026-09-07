@@ -634,6 +634,7 @@
 "deeplink.description" = "Copy a link that opens this entity in the app.";
 "deeplink.include_server.subtitle" = "In case you have multiple servers configured in the app, this deeplink will be specifically to %@.";
 "deeplink.include_server.title" = "Include server";
+"deeplink.page.description" = "Copy a link that opens this page in the app.";
 "deeplink.title" = "Deeplink";
 "delete" = "Delete";
 "device_name.primary_button.title" = "Save";
@@ -749,6 +750,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.assist" = "Open Assist";
 "gestures.value.option.back_page" = "Back to previous page";
+"gestures.value.option.create_deeplink" = "Create deeplink";
+"gestures.value.option.more_info.create_deeplink" = "Creates a deeplink to the page you are currently on";
 "gestures.value.option.more_info.open_in_browser" = "Opens the page currently shown in the app in your preferred browser";
 "gestures.value.option.more_info.quick_search" = "Quick search";
 "gestures.value.option.more_info.search_commands" = "Search commands";

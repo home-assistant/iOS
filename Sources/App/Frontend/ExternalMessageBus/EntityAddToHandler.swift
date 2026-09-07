@@ -197,31 +197,7 @@ final class EntityAddToHandler {
     }
 
     private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
-        Current.Log.info("Opening deeplink for entity \(entityId)")
-
-        let hostingController = DeeplinkView(
-            viewModel: DeeplinkViewModel(
-                entityId: entityId,
-                serverName: webViewController.server.info.name
-            ),
-            onClose: { [weak webViewController] in
-                webViewController?.overlayedController?.dismiss(animated: true, completion: nil)
-            }
-        ).embeddedInHostingController()
-
-        if Current.isCatalyst {
-            hostingController.modalPresentationStyle = .formSheet
-        } else if let sheet = hostingController.sheetPresentationController {
-            let detent = UISheetPresentationController.Detent.custom(identifier: .init("deeplink")) { context in
-                context.maximumDetentValue * 0.7
-            }
-            sheet.detents = [detent, .large()]
-            sheet.selectedDetentIdentifier = detent.identifier
-            sheet.prefersGrabberVisible = true
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-        }
-
-        webViewController.presentOverlayController(controller: hostingController, animated: true)
+        DeeplinkPresenter.present(target: .entity(id: entityId), from: webViewController)
     }
 
     private func openWidgetBuilder(
