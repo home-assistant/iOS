@@ -1,5 +1,4 @@
 import AVKit
-import PromiseKit
 import Shared
 import SwiftUI
 
@@ -112,11 +111,7 @@ struct CameraStreamHLSView: View {
     /// only once the request has actually completed, which is why this awaits the promise instead
     /// of reading whatever value it happens to hold.
     private func fetchStreamURL(api: HomeAssistantAPI) async throws -> URL {
-        let response: StreamCameraResponse = try await withCheckedThrowingContinuation { continuation in
-            api.StreamCamera(entityId: cameraEntityId)
-                .done { continuation.resume(returning: $0) }
-                .catch { continuation.resume(throwing: $0) }
-        }
+        let response = try await api.StreamCamera(entityId: cameraEntityId).asyncValue()
 
         guard let hlsPath = response.hlsPath else {
             throw StreamError.noHLSAvailable

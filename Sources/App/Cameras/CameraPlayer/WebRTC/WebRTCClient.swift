@@ -435,7 +435,17 @@ final class WebRTCClient: NSObject {
     /// connection hands over, instead of assuming the media arrives on the transceiver the offer
     /// created. Backends are free to answer with the m-lines arranged differently, and a video
     /// track picked up front would then render nothing at all.
+    ///
+    /// Peer connection callbacks arrive on WebRTC's signaling thread while the renderer is
+    /// registered from the main one, so the track state is only ever touched on the main queue.
     private func adopt(track: RTCMediaStreamTrack?) {
+        guard let track else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.attach(track: track)
+        }
+    }
+
+    private func attach(track: RTCMediaStreamTrack) {
         if let videoTrack = track as? RTCVideoTrack {
             guard videoTrack !== remoteVideoTrack else { return }
             if let renderer {

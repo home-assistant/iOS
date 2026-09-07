@@ -67,7 +67,11 @@ struct CameraPlayerView: View {
         .onAppear {
             loadMetadata()
             loadCameras()
-            Task { await loadCapabilities() }
+        }
+        // Tied to the view's lifecycle rather than launched loose from `onAppear`, so the fetch is
+        // cancelled on dismissal and reruns by itself when the picker switches camera.
+        .task(id: cameraEntityId) {
+            await loadCapabilities()
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
@@ -277,8 +281,9 @@ struct CameraPlayerView: View {
     private func loadCapabilities() async {
         let entityId = cameraEntityId
         let capabilities = await CameraCapabilities.fetch(server: server, cameraEntityId: entityId)
-        // The picker can switch cameras while this is in flight; a stale answer must not decide the
-        // plan for the camera now on screen.
+        // Cancelling the task does not stop the request already in flight, so a switch of camera
+        // mid-fetch still lands here; a stale answer must not decide the plan for the camera now
+        // on screen.
         guard entityId == cameraEntityId else { return }
         players = CameraStreamPlan.players(for: capabilities)
         playerIndex = 0
@@ -336,7 +341,6 @@ struct CameraPlayerView: View {
         playerIndex = 0
         cameraEntityId = entityId
         loadMetadata()
-        Task { await loadCapabilities() }
     }
 }
 
