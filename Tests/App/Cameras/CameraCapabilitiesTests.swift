@@ -82,6 +82,22 @@ final class CameraCapabilitiesTests: XCTestCase {
         XCTAssertNil(capabilities)
     }
 
+    /// A server the app has no usable URL for yields no API at all, which is what a camera opened
+    /// while the phone is off the network looks like. Nothing is sent, and the plan stays undecided.
+    func testFetchReturnsNilWhenTheServerHasNoUsableConnection() async {
+        let unreachable = Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+
+        let capabilities = await CameraCapabilities.fetch(
+            server: unreachable,
+            cameraEntityId: "camera.front_door"
+        )
+
+        XCTAssertNil(capabilities)
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
     /// The fetch runs off this test's own execution context, so wait for the request to reach the
     /// mock connection rather than assuming it has been sent by the time the test looks.
     private func capabilitiesRequest() async throws -> HAMockConnection.PendingRequest {
