@@ -19,16 +19,17 @@ struct AppMigrationCompleteView: View {
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                     HASectionTitle(L10n.AppMigration.Complete.Section.nextSteps)
                     CardView {
-                        VStack(spacing: .zero) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
                             ForEach(AppMigrationFollowUpItem.allCases) { item in
-                                HASettingsRow(heading: item.title, description: item.explanation) {
-                                    MaterialDesignIconsImage(icon: item.icon, size: 24)
-                                        .foregroundStyle(.haPrimary)
-                                } content: {
-                                    EmptyView()
-                                }
+                                AppMigrationItemRow(
+                                    icon: item.icon,
+                                    tint: .secondary,
+                                    title: item.title,
+                                    caption: item.explanation
+                                )
                             }
                         }
+                        .padding(DesignSystem.Spaces.oneAndHalf)
                     }
                 }
                 .padding(.top, DesignSystem.Spaces.two)

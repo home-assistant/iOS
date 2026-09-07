@@ -1188,37 +1188,37 @@ public enum L10n {
     }
     public enum FollowUp {
       public enum DeletePreviousApp {
-        /// Once everything works here, remove it so notifications are not delivered twice.
+        /// Remove it once everything works here.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.delete_previous_app.explanation") }
         /// Delete the previous app
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.delete_previous_app.title") }
       }
       public enum HomeScreenWidgets {
-        /// Widgets belong to the app that placed them. Add them again from the new app.
+        /// Add them again from the new app.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.home_screen_widgets.explanation") }
         /// Home Screen widgets
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.home_screen_widgets.title") }
       }
       public enum Permissions {
-        /// iOS asks again for location, notifications, camera and other access.
+        /// Location, notifications and camera access.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.permissions.explanation") }
         /// Permissions
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.permissions.title") }
       }
       public enum PushRegistration {
-        /// This device registers as a new device in Home Assistant. Point automations at the new one.
+        /// Registers again with Home Assistant.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.push_registration.explanation") }
         /// Notifications from Home Assistant
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.push_registration.title") }
       }
       public enum Shortcuts {
-        /// Shortcuts that used the previous app need to be created again.
+        /// Recreate Shortcuts that used the old app.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.shortcuts.explanation") }
         /// Siri and Shortcuts
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.shortcuts.title") }
       }
       public enum WatchApp {
-        /// Install the new watch app and pick its complications again.
+        /// Install it and pick complications again.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.explanation") }
         /// Apple Watch app
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.title") }
@@ -1255,49 +1255,55 @@ public enum L10n {
     public enum Intro {
       /// Home Assistant has moved to a new app. Bring your servers and settings over from the previous app in a few seconds. Everything stays on this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.intro.body") }
+      /// Continue
+      public static var continueButton: String { return L10n.tr("Localizable", "app_migration.intro.continue_button") }
       /// Not now
       public static var skipButton: String { return L10n.tr("Localizable", "app_migration.intro.skip_button") }
-      /// Start transfer
-      public static var startButton: String { return L10n.tr("Localizable", "app_migration.intro.start_button") }
       /// Transfer your setup
       public static var title: String { return L10n.tr("Localizable", "app_migration.intro.title") }
-      public enum Section {
-        /// What you set up again afterwards
-        public static var followUp: String { return L10n.tr("Localizable", "app_migration.intro.section.follow_up") }
-        /// What moves over
-        public static var moves: String { return L10n.tr("Localizable", "app_migration.intro.section.moves") }
-      }
     }
     public enum Item {
       public enum AppSettings {
-        /// Privacy, location, appearance, gestures and connection preferences.
+        /// Privacy, location, appearance, gestures.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.app_settings.explanation") }
         /// App settings
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.app_settings.title") }
       }
       public enum CompanionSetup {
-        /// Configured items, complications and custom widgets.
+        /// Configured items and complications.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.companion_setup.explanation") }
         /// Watch, CarPlay and widget setup
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.companion_setup.title") }
       }
       public enum NfcTags {
-        /// Approved tags and the app icon quick actions.
+        /// Approved tags and icon quick actions.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.nfc_tags.explanation") }
         /// NFC tags and quick actions
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.nfc_tags.title") }
       }
       public enum Notifications {
-        /// Actionable categories, snooze actions and history.
+        /// Actionable categories and snooze actions.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.notifications.explanation") }
         /// Notification categories
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.notifications.title") }
       }
       public enum Servers {
-        /// Every server with its credentials, so you stay signed in.
+        /// Stay signed in to every server.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.servers.explanation") }
         /// Servers and sign-ins
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.servers.title") }
+      }
+    }
+    public enum Overview {
+      /// Start transfer
+      public static var startButton: String { return L10n.tr("Localizable", "app_migration.overview.start_button") }
+      /// What moves over
+      public static var title: String { return L10n.tr("Localizable", "app_migration.overview.title") }
+      public enum Section {
+        /// Set up again in the new app
+        public static var followUp: String { return L10n.tr("Localizable", "app_migration.overview.section.follow_up") }
+        /// Comes with you
+        public static var moves: String { return L10n.tr("Localizable", "app_migration.overview.section.moves") }
       }
     }
   }
