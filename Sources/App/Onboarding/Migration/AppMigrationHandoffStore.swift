@@ -8,6 +8,9 @@ enum AppMigrationHandoffStore {
     private static let sessionIDKey = "appMigrationHandoffSessionID"
     private static let sessionKeyKey = "appMigrationHandoffSessionKey"
 
+    /// The keys above: they describe this app's own handoff and must never travel to the new app.
+    static let defaultsKeys: Set<String> = [phaseKey, sessionIDKey, sessionKeyKey]
+
     private static var defaults: UserDefaults? {
         UserDefaults(suiteName: AppConstants.AppGroupID)
     }

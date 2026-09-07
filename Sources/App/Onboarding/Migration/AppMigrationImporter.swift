@@ -34,7 +34,7 @@ struct AppMigrationImporter {
             throw AppMigrationError.invalidPayload
         }
         var merged = defaults.persistentDomain(forName: AppConstants.AppGroupID) ?? [:]
-        for (key, value) in incoming {
+        for (key, value) in incoming where !AppMigrationExporter.excludedDefaultsKeys.contains(key) {
             merged[key] = value
         }
         defaults.setPersistentDomain(merged, forName: AppConstants.AppGroupID)

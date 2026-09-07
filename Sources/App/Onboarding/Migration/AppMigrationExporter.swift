@@ -7,7 +7,8 @@ import Shared
 struct AppMigrationExporter {
     /// Values the new app generates for itself and must not inherit. The push token belongs to the
     /// previous app's bundle and would be rejected for the new one.
-    static let excludedDefaultsKeys: Set<String> = ["pushID", "FASTLANE_SNAPSHOT"]
+    static let excludedDefaultsKeys: Set<String> = Set(["pushID", "FASTLANE_SNAPSHOT"])
+        .union(AppMigrationHandoffStore.defaultsKeys)
 
     func makePayload(sessionID: UUID) throws -> AppMigrationPayload {
         try AppMigrationPayload(
