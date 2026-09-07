@@ -17,8 +17,8 @@ class ZoneManagerRegionFilterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        // Limits are smaller for tests for stability/ease of tests.
-        filter = ZoneManagerRegionFilterImpl(limits: .init(beacon: 3, circular: 6))
+        // Per-type limits are smaller for stability and to exercise both reduction paths.
+        filter = ZoneManagerRegionFilterImpl(limits: .init(beacon: 3, circular: 3))
 
         // inside home
         locationInStart = CLLocation(latitude: 37.766220, longitude: -122.393261)

@@ -76,6 +76,7 @@ class ZoneManagerTests: XCTestCase {
     private var apis: [FakeHassAPI]!
     private var previousNotificationDispatcher: LocalNotificationDispatcherProtocol!
     private var notificationDispatcher: ZoneManagerNotificationDispatcher!
+    private var managers = [ZoneManager]()
     private var loggedEventsUpdatedExpectation: XCTestExpectation?
     private var loggedEvents: [ClientEvent]! {
         didSet {
@@ -121,6 +122,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     override func tearDown() {
+        managers.removeAll()
         Current.database = previousDatabase
         Current.clientEventStore.clearAllEvents()
         Current.notificationDispatcher = previousNotificationDispatcher
@@ -133,7 +135,7 @@ class ZoneManagerTests: XCTestCase {
         zoneEventOutbox: ZoneEventOutbox = FakeZoneEventOutbox(),
         zoneEventRetryDelay: @escaping (Int) -> TimeInterval = { _ in 1 }
     ) -> ZoneManager {
-        ZoneManager(
+        let manager = ZoneManager(
             locationManager: locationManager,
             collector: collector,
             processor: processor,
@@ -142,6 +144,8 @@ class ZoneManagerTests: XCTestCase {
             zoneEventOutbox: zoneEventOutbox,
             zoneEventRetryDelay: zoneEventRetryDelay
         )
+        managers.append(manager)
+        return manager
     }
 
     func testBecomingActiveScansMonitoredBeaconRegions() {
@@ -742,7 +746,9 @@ class ZoneManagerTests: XCTestCase {
         ))
 
         let queued = expectation(
-            for: NSPredicate(block: { _, _ in outbox.events.count == 1 }),
+            for: NSPredicate(block: { _, _ in
+                outbox.events.first?.deliveryStartedAt == nil && api.createdEvents.count == 1
+            }),
             evaluatedWith: nil
         )
         wait(for: [queued], timeout: 1)
@@ -1030,12 +1036,10 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(processor.performEvent, event)
         XCTAssertTrue(loggedEvents.isEmpty)
 
-        seal.reject(TestError.anyError)
-
         let expectation = expectation(description: "promise")
         loggedEventsUpdatedExpectation = expectation
 
-        seal.fulfill(())
+        seal.reject(TestError.anyError)
         wait(for: [expectation], timeout: 10)
 
         guard let loggedEvent = loggedEvents.first else {
@@ -1090,7 +1094,7 @@ private extension Array where Element: CLRegion {
 }
 
 private class FakeCollector: NSObject, ZoneManagerCollector {
-    var delegate: ZoneManagerCollectorDelegate?
+    weak var delegate: ZoneManagerCollectorDelegate?
 
     var ignoringNextStates = Set<CLRegion>()
     var ignoreNextStateCallsWereOnMainThread = [Bool]()
@@ -1137,7 +1141,7 @@ private class FakeCollector: NSObject, ZoneManagerCollector {
 }
 
 private class FakeProcessor: ZoneManagerProcessor {
-    var delegate: ZoneManagerProcessorDelegate?
+    weak var delegate: ZoneManagerProcessorDelegate?
 
     var promiseToReturn: Promise<Void>?
     var performEvent: ZoneManagerEvent?

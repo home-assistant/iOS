@@ -303,6 +303,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         let foregroundIdentifiers = identifiers(in: foregroundBeaconEntries, matching: beaconConstraint)
         let opportunisticIdentifiers = identifiers(in: opportunisticBeaconEntries, matching: beaconConstraint)
         let identifiers = Set(pendingIdentifiers + foregroundIdentifiers + opportunisticIdentifiers)
+        guard !identifiers.isEmpty else { return }
 
         guard let detectedBeacon = samples.first(where: isBeaconInsideRange) else {
             reconcileEmptyBeaconSample(identifiers: Array(identifiers), manager: manager)
