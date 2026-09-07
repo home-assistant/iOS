@@ -1,3 +1,4 @@
+import FirebaseMessaging
 import Foundation
 import Shared
 import UIKit
@@ -46,6 +47,12 @@ final class AppMigrationCoordinator: ObservableObject {
     func restoreHandoffIfNeeded() {
         guard role == .previousApp, handoffPhase != nil else { return }
         HomeAssistantAPI.connectionsSuspended = true
+        switch handoffPhase {
+        case .handedOff, .erased:
+            releasePushRegistration()
+        case .requested, nil:
+            break
+        }
     }
 
     @discardableResult
@@ -135,9 +142,28 @@ final class AppMigrationCoordinator: ObservableObject {
                 self.session = nil
                 importState = nil
                 completedSummary = summary
+                adoptPushRegistration()
             } catch {
                 Current.Log.error("App migration import failed: \(error)")
                 importState = .failed(message: error.localizedDescription)
+            }
+        }
+    }
+
+    /// The transferred registration still carries the previous app's push token: Home Assistant merges
+    /// `update_registration` into what it has, so the token only changes once this app sends its own.
+    /// Connecting right away does that, and also brings the websocket up for the imported servers.
+    private func adoptPushRegistration() {
+        Messaging.messaging().token { token, error in
+            Task { @MainActor in
+                if let token {
+                    Current.settingsStore.pushID = token
+                } else if let error {
+                    Current.Log.error("No push token to hand to the transferred registration yet: \(error)")
+                }
+                for api in Current.apis {
+                    _ = api.Connect(reason: .warm)
+                }
             }
         }
     }
@@ -166,6 +192,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 if await open(AppMigrationLink.payloadReady(sessionID: request.id).url(to: .newApp)) {
                     exportState = .handedOff
                     setHandoffPhase(.handedOff)
+                    releasePushRegistration()
                 } else {
                     AppMigrationPasteboard.clear()
                     exportState = .failed(message: AppMigrationError.newAppUnavailable.localizedDescription)
@@ -201,6 +228,17 @@ final class AppMigrationCoordinator: ObservableObject {
         exportRequest = nil
         exportState = .erased
         setHandoffPhase(.erased)
+    }
+
+    /// Once the setup has left this app, pushes must not land here even if Home Assistant still holds
+    /// the old token for a moment: drop the APNs registration and invalidate the FCM token.
+    private func releasePushRegistration() {
+        UIApplication.shared.unregisterForRemoteNotifications()
+        Messaging.messaging().deleteToken { error in
+            if let error {
+                Current.Log.error("Failed to delete the previous app's push token: \(error)")
+            }
+        }
     }
 
     private func enterTakeover(with request: AppMigrationSession) {
