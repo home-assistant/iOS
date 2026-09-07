@@ -50,3 +50,39 @@ struct SiriServerExposureTests {
         #expect(row.isExposed == false)
     }
 }
+
+/// The table and the settings entry that carry the opt-out.
+struct SiriExposureWiringTests {
+    /// The row lands in a real table, so the choice survives a relaunch rather than living in
+    /// memory.
+    @Test func theTableIsCreatedWithItsColumns() async throws {
+        let columns = try await Current.database().read { db in
+            try db.columns(in: GRDBDatabaseTable.siriServerExposure.rawValue).map(\.name)
+        }
+        #expect(columns.contains(DatabaseTables.SiriServerExposure.serverId.rawValue))
+        #expect(columns.contains(DatabaseTables.SiriServerExposure.isExposed.rawValue))
+    }
+
+    @Test func theSettingsEntryIsReachable() {
+        #expect(SettingsSection.quickAccess.allItems.contains(.siri))
+        #expect(!SettingsItem.siri.title.isEmpty)
+        #expect(!SettingsItem.siri.searchKeywords.isEmpty)
+        #expect(!SettingsItem.siri.contentSearchEntries.isEmpty)
+    }
+
+    /// Writing the same server twice replaces the row rather than failing on its key.
+    @Test func theChoiceIsReplacedNotDuplicated() async throws {
+        try await Current.database().write { db in
+            _ = try SiriServerExposure.deleteAll(db)
+        }
+        SiriServerExposure.setExposed(false, serverId: "s1")
+        SiriServerExposure.setExposed(false, serverId: "s1")
+        let rows = try await Current.database().read { db in
+            try SiriServerExposure.fetchAll(db)
+        }
+        #expect(rows.count == 1)
+        try await Current.database().write { db in
+            _ = try SiriServerExposure.deleteAll(db)
+        }
+    }
+}
