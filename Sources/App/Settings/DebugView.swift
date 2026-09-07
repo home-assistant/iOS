@@ -92,7 +92,7 @@ struct DebugView: View {
                     ManageStorageView(viewModel: ManageStorageViewModel())
                 } label: {
                     linkContent(
-                        image: .init(systemSymbol: .externaldriveConnectedToLineBelow),
+                        image: .init(systemSymbol: .internaldrive),
                         title: L10n.Settings.Debugging.ManageStorage.title
                     )
                 }

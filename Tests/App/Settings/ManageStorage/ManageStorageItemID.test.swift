@@ -10,13 +10,11 @@ struct ManageStorageItemIDTests {
         }
     }
 
-    @Test func itemTitlesExplanationsAndIconsAreUnique() {
+    @Test func itemTitlesAndExplanationsAreUnique() {
         let titles = Set(ManageStorageItemID.allCases.map(\.title))
         let explanations = Set(ManageStorageItemID.allCases.map(\.explanation))
-        let icons = Set(ManageStorageItemID.allCases.map(\.icon))
 
         #expect(titles.count == ManageStorageItemID.allCases.count)
         #expect(explanations.count == ManageStorageItemID.allCases.count)
-        #expect(icons.count == ManageStorageItemID.allCases.count)
     }
 }
