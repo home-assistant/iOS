@@ -173,24 +173,24 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             "entity_id": cameraEntityId,
         ])) { [weak self] result in
             DispatchQueue.main.async {
-                guard let self, token == connectionToken else { return }
+                guard let self, token == self.connectionToken else { return }
                 switch result {
                 case let .success(data):
-                    startConnection(configuration: .init(data: data), api: api, token: token)
+                    self.startConnection(configuration: .init(data: data), api: api, token: token)
                 case let .failure(error):
                     // Core guards this command with the same `require_webrtc_support` check as the
                     // offer, so a rejection here already tells us the camera has no WebRTC stream
                     // type. Cascading now beats sending an offer that is certain to be refused.
                     if Self.isWebRTCUnsupported(error: error) {
-                        Current.Log.info("Camera \(cameraEntityId) does not support WebRTC")
-                        isWebRTCUnsupported = true
-                        handleFailure(reason: nil)
+                        Current.Log.info("Camera \(self.cameraEntityId) does not support WebRTC")
+                        self.isWebRTCUnsupported = true
+                        self.handleFailure(reason: nil)
                         return
                     }
                     Current.Log.error(
                         "WebRTC client config fetch failed, using fallback: \(error.localizedDescription)"
                     )
-                    startConnection(configuration: .fallback, api: api, token: token)
+                    self.startConnection(configuration: .fallback, api: api, token: token)
                 }
             }
         }
