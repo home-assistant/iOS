@@ -1,4 +1,6 @@
 import GRDB
+import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -121,5 +123,92 @@ struct ReadableEntityAppEntityQueryTests {
             let matched = try await ReadableEntityAppEntityQuery().entities(matching: "humid")
             #expect(matched.sections.flatMap(\.items).map(\.value.entityId).contains("sensor.humidity"))
         }
+    }
+}
+
+/// The question itself: the entity it names, and what it reads back.
+struct GetEntityStateAppIntentTests {
+    private static func entity(serverId: String) -> ReadableEntityAppEntity {
+        .init(
+            id: "\(serverId)-sensor.humidity",
+            entityId: "sensor.humidity",
+            serverId: serverId,
+            serverName: "Home",
+            areaName: "Bathroom",
+            deviceName: "Sensor",
+            floorName: "Ground floor",
+            displayString: "Humidity",
+            iconName: "mdi:water-percent"
+        )
+    }
+
+    private static func stateResponse(_ state: String) -> HAData {
+        .dictionary([
+            "entity_id": "sensor.humidity",
+            "state": state,
+            "last_changed": "2026-09-06T10:00:00.000000+00:00",
+            "last_updated": "2026-09-06T10:00:00.000000+00:00",
+            "attributes": ["friendly_name": "Humidity", "unit_of_measurement": "%"],
+            "context": ["id": "test", "parent_id": NSNull(), "user_id": NSNull()],
+        ])
+    }
+
+    private func withMockedServer(_ body: (Server, HAMockConnection) async throws -> Void) async throws {
+        let previousServers = Current.servers
+        let previousApis = Current.cachedApis
+        defer {
+            Current.servers = previousServers
+            Current.cachedApis = previousApis
+        }
+        let manager = FakeServerManager(initial: 0)
+        let server = manager.addFake()
+        Current.servers = manager
+        let connection = HAMockConnection()
+        let api = HomeAssistantAPI(server: server)
+        api.connection = connection
+        Current.cachedApis = [server.identifier: api]
+        try await body(server, connection)
+    }
+
+    @Test func readingAStateAsksTheServerAndKeepsTheContext() async throws {
+        try await withMockedServer { server, connection in
+            var intent = GetEntityStateAppIntent()
+            intent.entity = Self.entity(serverId: server.identifier.rawValue)
+
+            let task = Task { try await intent.perform() }
+            var waited = 0
+            while connection.pendingRequests.isEmpty, waited < 300 {
+                try await Task.sleep(nanoseconds: 5_000_000)
+                waited += 1
+            }
+            for pending in connection.pendingRequests {
+                pending.completion(.success(Self.stateResponse("58")))
+            }
+            _ = try await task.value
+            #expect(!connection.pendingRequests.isEmpty)
+        }
+    }
+
+    /// The state entity keeps what the question knew about the entity, so the answer can name the
+    /// room without asking again.
+    @Test func theStateCarriesTheEntitysContext() throws {
+        let live = try HAEntity(data: Self.stateResponse("58"))
+        let state = HAEntityStateAppEntity(entity: Self.entity(serverId: "s1"), state: live)
+
+        #expect(state.name == "Humidity")
+        #expect(state.entityId == "sensor.humidity")
+        #expect(state.state == "58")
+        #expect(state.areaName == "Bathroom")
+        #expect(state.deviceName == "Sensor")
+        #expect(state.floorName == "Ground floor")
+        #expect(state.serverName == "Home")
+        #expect(state.iconName == "mdi:water-percent")
+        #expect(state.unitOfMeasurement == "%")
+    }
+
+    @Test func theEntityDescribesItself() {
+        let entity = Self.entity(serverId: "s1")
+        #expect(!String(describing: entity.displayRepresentation).isEmpty)
+        #expect(entity.domain == .sensor)
     }
 }
