@@ -184,9 +184,12 @@ struct ControllableEntityAppEntityQueryTests {
             )
 
             let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
-            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
+            let items = collection.sections.flatMap(\.items).map(\.value)
 
-            #expect(ids == ["light.kitchen"])
+            #expect(items.filter { $0.areaTarget == nil }.map(\.entityId) == ["light.kitchen"])
+            // The one light left standing also makes its room a target, and the filtered-out
+            // switches take no area of their own with them.
+            #expect(items.filter { $0.areaTarget != nil }.map(\.displayString) == ["Kitchen lights"])
         }
     }
 

@@ -74,8 +74,11 @@ struct OpenableEntityAppEntityQueryTests {
                 entities: ["cover.garage", "light.kitchen", "switch.desk"]
             )
             let collection = try await OpenableEntityAppEntityQuery().suggestedEntities()
-            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
-            #expect(ids == ["cover.garage"])
+            let items = collection.sections.flatMap(\.items).map(\.value)
+            #expect(items.filter { $0.areaTarget == nil }.map(\.entityId) == ["cover.garage"])
+            // The room is offered as a target too, and only for what this command can open: the
+            // light and the switch sharing the area contribute none of their own.
+            #expect(items.filter { $0.areaTarget != nil }.map(\.domain) == [.cover])
         }
     }
 
