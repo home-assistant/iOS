@@ -1,10 +1,9 @@
 import Shared
 import SwiftUI
 
-/// Presented in the previous app when the new app asks for the setup.
+/// The previous app's only screen from the moment the new app asks for the setup.
 struct AppMigrationExportContainerView: View {
     @ObservedObject private var coordinator = AppMigrationCoordinator.shared
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         AppMigrationExportView(
@@ -12,12 +11,10 @@ struct AppMigrationExportContainerView: View {
             summary: coordinator.exportSummary,
             transferAction: coordinator.transfer,
             openNewAppAction: coordinator.openNewApp,
-            cancelAction: {
-                coordinator.declineExport()
-                dismiss()
-            }
+            transferAgainAction: coordinator.transferAgain,
+            eraseAction: coordinator.eraseApp,
+            cancelAction: coordinator.declineExport
         )
-        .interactiveDismissDisabled(coordinator.exportState == .preparing)
     }
 }
 

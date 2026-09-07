@@ -21,6 +21,8 @@ struct ContainerView: View {
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
                 RecoveredServerReauthView(server: server, state: state)
+            case .migrationHandoff:
+                AppMigrationExportContainerView()
             }
         }
         .navigationTitle(" ") // Remove default macOS title
@@ -110,7 +112,7 @@ struct ContainerView: View {
     /// fade the splash out as soon as one of them becomes the top-level screen.
     private func fadeOutLaunchSplashIfNeeded(for screen: OnboardingStateObservable.Screen) {
         switch screen {
-        case .recoveredServerImport, .recoveredServerReauth:
+        case .recoveredServerImport, .recoveredServerReauth, .migrationHandoff:
             LaunchSplashOverlayState.shared.fadeOut()
         case .onboarding, .webView:
             break

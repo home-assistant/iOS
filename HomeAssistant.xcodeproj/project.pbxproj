@@ -1329,6 +1329,8 @@
 				Migration/AppMigrationExporter.swift,
 				Migration/AppMigrationFlowView.swift,
 				Migration/AppMigrationFollowUpItem.swift,
+				Migration/AppMigrationHandoffPhase.swift,
+				Migration/AppMigrationHandoffStore.swift,
 				Migration/AppMigrationImportState.swift,
 				Migration/AppMigrationImportView.swift,
 				Migration/AppMigrationImporter.swift,
@@ -5470,6 +5472,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MIGRATION_URL_HANDLER = "homeassistant-ohf-dev";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5508,6 +5511,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MIGRATION_URL_HANDLER = "homeassistant-ohf";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

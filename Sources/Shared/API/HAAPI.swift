@@ -307,7 +307,15 @@ public class HomeAssistantAPI {
         }
     }
 
+    /// Set while the app hands its setup to another app: nothing may open a websocket or refresh a
+    /// registration until it is cleared.
+    public static var connectionsSuspended = false
+
     public func connectWebSocketIfNeeded() {
+        guard !Self.connectionsSuspended else {
+            Current.Log.info("skipping automatic websocket connect while connections are suspended")
+            return
+        }
         let state = connection.state
 
         guard Self.shouldAttemptAutomaticWebSocketConnect(for: state) else {
@@ -319,6 +327,10 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
+        guard !Self.connectionsSuspended else {
+            Current.Log.info("skipping connect for \(reason) while connections are suspended")
+            return .value(())
+        }
         Current.Log.info("running connect for \(reason)")
 
         // websocket
@@ -1267,7 +1279,9 @@ public class HomeAssistantAPI {
             }
 
             guard let self else {
-                if cached == nil { completion(nil) }
+                if cached == nil {
+                    completion(nil)
+                }
                 return
             }
 
@@ -1299,14 +1313,18 @@ public class HomeAssistantAPI {
             let hasCachedFallback = cached != nil
 
             guard let self else {
-                if !hasCachedFallback { completion(nil) }
+                if !hasCachedFallback {
+                    completion(nil)
+                }
                 return
             }
 
             cancellable.add(currentUser { [weak self] user in
                 guard !cancellable.isCancelled else { return }
                 guard let self, let user else {
-                    if !hasCachedFallback { completion(nil) }
+                    if !hasCachedFallback {
+                        completion(nil)
+                    }
                     return
                 }
 
@@ -1331,7 +1349,9 @@ public class HomeAssistantAPI {
         cancellable.add(resolveProfilePictureURL(for: user) { [weak self] result in
             guard !cancellable.isCancelled else { return }
             guard let self else {
-                if !hasCachedFallback { completion(nil) }
+                if !hasCachedFallback {
+                    completion(nil)
+                }
                 return
             }
 
@@ -1603,7 +1623,8 @@ final class RetryAwareHAConnection: HAConnection {
             break
         }
 
-        guard HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
+        guard !HomeAssistantAPI.connectionsSuspended,
+              HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
             return
         }
 

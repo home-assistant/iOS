@@ -25,6 +25,8 @@ final class OnboardingStateObservable: ObservableObject {
         case webView(Server, initialPath: String?)
         case recoveredServerImport
         case recoveredServerReauth(Server)
+        /// The previous app handing its setup to the new one; nothing else is shown until it is erased.
+        case migrationHandoff
     }
 
     @Published private(set) var screen: Screen
@@ -35,10 +37,15 @@ final class OnboardingStateObservable: ObservableObject {
         self.screen = Self.initialScreen()
         Current.onboardingObservation.register(observer: self)
         observeKioskTarget()
+        NotificationCenter.default.publisher(for: AppMigrationCoordinator.handoffDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.reevaluate() }
+            .store(in: &cancellables)
     }
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.
     func showWebView(for server: Server) {
+        guard !AppMigrationHandoffStore.isActive else { return }
         screen = .webView(server, initialPath: nil)
     }
 
@@ -165,6 +172,9 @@ final class OnboardingStateObservable: ObservableObject {
     /// Mirrors `WebViewWindowController.setup()`: onboarding when required, otherwise the last viewed
     /// server's web view (restoring its last path).
     private static func initialScreen() -> Screen {
+        if AppMigrationHandoffStore.isActive {
+            return .migrationHandoff
+        }
         if Current.servers.isMirrorRestorePending {
             return .recoveredServerImport
         }
@@ -217,6 +227,7 @@ final class OnboardingStateObservable: ObservableObject {
     }
 
     private func apply(_ state: OnboardingState) {
+        guard !AppMigrationHandoffStore.isActive else { return }
         switch state {
         case let .needed(type):
             switch type {
