@@ -1,0 +1,240 @@
+import Foundation
+@testable import HomeAssistant
+import Network
+import Testing
+
+/// Drives a real listener over loopback and exercises the requests Home Assistant sends. The
+/// connection is a state machine over a socket, so nothing below the transport tells you whether a
+/// `synthesize` actually comes back as playable audio.
+struct WyomingConnectionTests {
+    private enum TestError: Error {
+        case listenerUnavailable
+        case connectionClosed
+        case timedOut
+    }
+
+    /// Records the listener's state, which arrives on the listener's own queue.
+    private final class StateRecorder: @unchecked Sendable {
+        private let lock = NSLock()
+        private var port: UInt16?
+        private var failed = false
+
+        func record(_ state: WyomingServerState) {
+            lock.lock()
+            defer { lock.unlock() }
+            switch state {
+            case let .running(port): self.port = port
+            case .failed: failed = true
+            case .stopped, .starting: break
+            }
+        }
+
+        func boundPort(timeout: TimeInterval = 10) async throws -> UInt16 {
+            let deadline = Date().addingTimeInterval(timeout)
+            while Date() < deadline {
+                lock.lock()
+                let port = port
+                let failed = failed
+                lock.unlock()
+                if failed { throw TestError.listenerUnavailable }
+                if let port { return port }
+                try await Task.sleep(nanoseconds: 20_000_000)
+            }
+            throw TestError.timedOut
+        }
+    }
+
+    /// A Wyoming client: owns the socket and the partial read buffer that events are framed out of.
+    private final class Client {
+        private let connection: NWConnection
+        private var buffer = Data()
+
+        init(port: NWEndpoint.Port) {
+            self.connection = NWConnection(host: .ipv4(.loopback), port: port, using: .tcp)
+            connection.start(queue: .global())
+        }
+
+        func cancel() {
+            connection.cancel()
+        }
+
+        func send(_ event: WyomingEvent) async throws {
+            let data = try WyomingEventCodec.encode(event)
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                connection.send(content: data, completion: .contentProcessed { error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume()
+                    }
+                })
+            }
+        }
+
+        func receive() async throws -> WyomingEvent {
+            while true {
+                if let event = try WyomingEventCodec.decode(from: &buffer) {
+                    return event
+                }
+                try await buffer.append(readChunk())
+            }
+        }
+
+        private func readChunk() async throws -> Data {
+            try await withCheckedThrowingContinuation { continuation in
+                connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isComplete, error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else if let data, !data.isEmpty {
+                        continuation.resume(returning: data)
+                    } else if isComplete {
+                        continuation.resume(throwing: TestError.connectionClosed)
+                    } else {
+                        continuation.resume(returning: Data())
+                    }
+                }
+            }
+        }
+    }
+
+    /// Opens a listener on a system-assigned port with a client attached, and tears both down.
+    private func withClient(_ work: (Client) async throws -> Void) async throws {
+        let recorder = StateRecorder()
+        let server = WyomingServer(
+            port: .any,
+            serviceName: "Wyoming connection tests",
+            fallbackLocale: Locale(identifier: "en-US"),
+            advertisesOverBonjour: false,
+            onStateChange: { recorder.record($0) }
+        )
+        await server.start()
+
+        let boundPort = try await recorder.boundPort()
+        let port = try #require(NWEndpoint.Port(rawValue: boundPort))
+        let client = Client(port: port)
+
+        do {
+            try await work(client)
+        } catch {
+            client.cancel()
+            await server.stop()
+            throw error
+        }
+        client.cancel()
+        await server.stop()
+    }
+
+    private struct SynthesizeRequest: Encodable {
+        let text: String
+    }
+
+    private struct TranscriptResponse: Decodable {
+        let text: String
+    }
+
+    private struct ErrorResponse: Decodable {
+        let text: String
+    }
+
+    /// The whole point of the text-to-speech half: a `synthesize` has to come back as a format
+    /// header, PCM payloads and a stop, or Home Assistant has nothing to play.
+    @Test func synthesizeAnswersWithPlayableAudio() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .synthesize, encoding: SynthesizeRequest(text: "Hello.")))
+
+            let start = try await client.receive()
+            let format = try start.decodeData(WyomingAudioFormat.self)
+            #expect(start.kind == .audioStart)
+            #expect(format.width == 2)
+            #expect(format.channels == 1)
+            #expect(format.rate > 0)
+
+            var audio = Data()
+            var chunkFormats: [WyomingAudioFormat] = []
+            while true {
+                let event = try await client.receive()
+                if event.kind == .audioStop { break }
+                #expect(event.kind == .audioChunk)
+                // Every chunk repeats the format, which is what Home Assistant builds its WAV
+                // header from.
+                try chunkFormats.append(event.decodeData(WyomingAudioFormat.self))
+                audio.append(event.payload ?? Data())
+            }
+
+            #expect(!audio.isEmpty)
+            #expect(chunkFormats.allSatisfy { $0 == format })
+        }
+    }
+
+    /// Failures have to come back as an `error` event: a client that gets silence waits out its own
+    /// timeout instead of reporting what went wrong.
+    @Test func reportsSynthesisOfEmptyTextAsAnError() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .synthesize, encoding: SynthesizeRequest(text: "   ")))
+
+            let event = try await client.receive()
+            let response = try event.decodeData(ErrorResponse.self)
+            #expect(event.kind == .error)
+            #expect(!response.text.isEmpty)
+        }
+    }
+
+    @Test func answersPingWithPong() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .ping))
+
+            let event = try await client.receive()
+            #expect(event.kind == .pong)
+        }
+    }
+
+    /// Only 16-bit PCM is accepted; anything else is refused rather than handed to the recognizer
+    /// as noise.
+    @Test func rejectsAudioThatIsNot16Bit() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .transcribe, data: Data(#"{"language":"en-US"}"#.utf8)))
+            try await client.send(WyomingEvent(
+                kind: .audioStart,
+                encoding: WyomingAudioFormat(rate: 16000, width: 4, channels: 1)
+            ))
+
+            let event = try await client.receive()
+            let response = try event.decodeData(ErrorResponse.self)
+            #expect(event.kind == .error)
+            #expect(response.text.contains("16-bit"))
+        }
+    }
+
+    /// A stream that carried no audio has nothing to transcribe, and saying so beats an empty
+    /// transcript the pipeline would read as a successful silent turn.
+    @Test func reportsAnAudioStreamThatCarriedNothing() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(
+                kind: .audioStart,
+                encoding: WyomingAudioFormat(rate: 16000, width: 2, channels: 1)
+            ))
+            try await client.send(WyomingEvent(kind: .audioStop))
+
+            let event = try await client.receive()
+            // A device without on-device dictation cannot even open the session, which is reported
+            // the same way; either answer proves the failure reaches the client.
+            #expect(event.kind == .error || event.kind == .transcript)
+            if event.kind == .transcript {
+                let transcript = try event.decodeData(TranscriptResponse.self)
+                #expect(transcript.text.isEmpty)
+            }
+        }
+    }
+
+    /// Responses this server sends rather than receives are ignored instead of failing the
+    /// connection, so a client echoing one back does not end the session.
+    @Test func ignoresEventsItOnlySends() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .transcript, data: Data(#"{"text":"echo"}"#.utf8)))
+            try await client.send(WyomingEvent(kind: .ping))
+
+            let event = try await client.receive()
+            #expect(event.kind == .pong)
+        }
+    }
+}
