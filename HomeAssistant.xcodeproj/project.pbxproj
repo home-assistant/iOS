@@ -2428,6 +2428,7 @@
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
+		42CE0002300000000051FC9B /* Cameras */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cameras; sourceTree = "<group>"; };
 		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
 		42DF4EE5302CACB600589E49 /* FlightGreetings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FlightGreetings; sourceTree = "<group>"; };
@@ -2950,6 +2951,7 @@
 				42EDBB6B3002FBBE0051FC9B /* Area */,
 				42EDBB9F3002FBBE0051FC9B /* Assist */,
 				42EDBB893002FBBE0051FC9B /* Auth */,
+				42CE0002300000000051FC9B /* Cameras */,
 				42EDBB7B3002FBBE0051FC9B /* CarPlay */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				42CE0001300000000051FC9B /* Container */,
@@ -3478,6 +3480,7 @@
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
 				42CE0001300000000051FC9B /* Container */,
+				42CE0002300000000051FC9B /* Cameras */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
 				42DF4F00302CACC600589E49 /* Templating */,
 				42DF4F06302CACD400589E49 /* ServerSwitching */,

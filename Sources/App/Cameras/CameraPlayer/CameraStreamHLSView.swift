@@ -1,4 +1,5 @@
 import AVKit
+import PromiseKit
 import Shared
 import SwiftUI
 
@@ -104,15 +105,29 @@ struct CameraStreamHLSView: View {
         }
     }
 
+    /// Asks the server to start an HLS stream and resolves the playlist URL for it.
+    ///
+    /// `stream_camera` runs the same `camera.async_request_stream(..., "hls")` the frontend reaches
+    /// through `camera/stream`, so a camera the frontend can play over HLS answers here too — but
+    /// only once the request has actually completed, which is why this awaits the promise instead
+    /// of reading whatever value it happens to hold.
     private func fetchStreamURL(api: HomeAssistantAPI) async throws -> URL {
-        let response = api.StreamCamera(entityId: cameraEntityId).value
+        let response: StreamCameraResponse = try await withCheckedThrowingContinuation { continuation in
+            api.StreamCamera(entityId: cameraEntityId)
+                .done { continuation.resume(returning: $0) }
+                .catch { continuation.resume(throwing: $0) }
+        }
 
-        if let hlsPath = response?.hlsPath,
-           let baseURL = await api.server.activeURL() {
-            return baseURL.appendingPathComponent(hlsPath)
-        } else {
+        guard let hlsPath = response.hlsPath else {
             throw StreamError.noHLSAvailable
         }
+        guard let baseURL = await api.server.activeURL() else {
+            throw StreamError.noActiveURL
+        }
+        // `hls_path` is server-absolute; appending it with its leading slash intact leaves a double
+        // slash in the URL, and swallows the base path of a server installed under a subpath.
+        let relativePath = hlsPath.hasPrefix("/") ? String(hlsPath.dropFirst()) : hlsPath
+        return baseURL.appendingPathComponent(relativePath)
     }
 
     @MainActor
