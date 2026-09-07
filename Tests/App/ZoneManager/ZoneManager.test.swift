@@ -148,7 +148,9 @@ class ZoneManagerTests: XCTestCase {
     private var loggedEventsUpdatedExpectation: XCTestExpectation?
     private var loggedEvents: [ClientEvent]! {
         didSet {
-            loggedEventsUpdatedExpectation?.fulfill()
+            let expectation = loggedEventsUpdatedExpectation
+            loggedEventsUpdatedExpectation = nil
+            expectation?.fulfill()
         }
     }
 
@@ -190,6 +192,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     override func tearDown() {
+        loggedEventsUpdatedExpectation = nil
         managers.removeAll()
         Current.database = previousDatabase
         Current.clientEventStore.clearAllEvents()
@@ -444,7 +447,6 @@ class ZoneManagerTests: XCTestCase {
         processor.promiseToReturn = .value(())
 
         let expectation = expectation(description: "promise")
-        expectation.assertForOverFulfill = false // changing zones adds logs and we don't care
         loggedEventsUpdatedExpectation = expectation
 
         manager.collector(collector, didCollect: .init(
