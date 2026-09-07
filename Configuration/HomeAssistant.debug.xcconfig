@@ -1,16 +1,19 @@
 #include "HomeAssistant.xcconfig"
 
-CODE_SIGN_STYLE_QMQYCKL255_App = Manual
-CODE_SIGN_STYLE_QMQYCKL255_Extensions_PushProvider = Manual
-PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_App = Local Developer: Main App
-PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_Extensions_PushProvider = Local Developer: Push Provider
+CODE_SIGN_STYLE_GUYFAK8DC6_App = Manual
+CODE_SIGN_STYLE_GUYFAK8DC6_Extensions_PushProvider = Manual
+PROVISIONING_PROFILE_SPECIFIER_GUYFAK8DC6_App = Local Developer: Home Assistant Main App
+PROVISIONING_PROFILE_SPECIFIER_GUYFAK8DC6_Extensions_PushProvider = Local Developer: Home Assistant Push Provider
 
-// apple did not give us the device name permission in the dev app
-ENABLE_DEVICE_NAME_QMQYCKL255 = 0
+CODE_SIGN_STYLE[sdk=macosx*] = $(CODE_SIGN_STYLE_MAC_$(DEVELOPMENT_TEAM)_$(TARGET_NAME:c99extidentifier):default=$CODE_SIGN_STYLE_DEFAULT)
+PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*] = $(PROVISIONING_PROFILE_SPECIFIER_MAC_$(DEVELOPMENT_TEAM)_$(TARGET_NAME:c99extidentifier))
+CODE_SIGN_STYLE_MAC_GUYFAK8DC6_App = Manual
+PROVISIONING_PROFILE_SPECIFIER_MAC_GUYFAK8DC6_App = Local Developer: Home Assistant Mac Main App
 
 STRIP_INSTALLED_PRODUCT = NO
 
 BUNDLE_ID_SUFFIX = .dev
+APP_DISPLAY_NAME = Home Assistant OHF Δ
 VALIDATE_PRODUCT = NO
 DEBUG_INFORMATION_FORMAT = dwarf
 OTHER_SWIFT_FLAGS = $(inherited) -DDEBUG -Xfrontend -warn-long-expression-type-checking=500 -Xfrontend  -warn-long-function-bodies=500

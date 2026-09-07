@@ -22,7 +22,7 @@
 		</dict>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -211,8 +211,8 @@
 	</dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>io.robbie.homeassistant.backgroundfetch</string>
-		<string>io.robbie.homeassistant.reminderssync</string>
+		<string>io.home-assistant.backgroundfetch</string>
+		<string>io.home-assistant.reminderssync</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

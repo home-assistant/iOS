@@ -47,7 +47,7 @@ lane :update_dsyms do
 
   download_dsyms(
     after_uploaded_date: Date.today.prev_day(7).iso8601,
-    app_identifier: 'io.robbie.HomeAssistant',
+    app_identifier: 'io.home-assistant.app',
     output_directory: directory
   )
 

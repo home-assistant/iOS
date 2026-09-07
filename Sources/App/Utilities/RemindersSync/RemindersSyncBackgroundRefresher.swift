@@ -6,7 +6,7 @@ import Shared
 /// picked in the sync settings. The frequency is only the earliest allowed start; iOS decides
 /// when (and whether) the refresh actually runs.
 enum RemindersSyncBackgroundRefresher {
-    static let taskIdentifier = "io.robbie.homeassistant.reminderssync"
+    static let taskIdentifier = "io.home-assistant.reminderssync"
 
     static func register() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: taskIdentifier, using: .main) { task in

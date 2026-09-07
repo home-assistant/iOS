@@ -60,7 +60,7 @@
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "io.robbie.HomeAssistant.dev"
+         BundleIdentifier = "io.home-assistant.app.dev"
          RemotePath = "/var/containers/Bundle/Application/98CE04EB-7B3D-4A90-B46E-8522E87FB5E6/Home Assistant &#x394;.app">
       </RemoteRunnable>
       <MacroExpansion>
