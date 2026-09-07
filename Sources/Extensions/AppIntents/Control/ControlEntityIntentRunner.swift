@@ -35,7 +35,7 @@ enum ControlEntityIntentRunner {
             server: server,
             domain: domain.serviceDomain,
             service: service.rawValue,
-            data: ["entity_id": entity.entityId],
+            data: entity.serviceTarget,
             returnResponse: false
         )
         return service
@@ -60,6 +60,11 @@ enum ControlEntityIntentRunner {
         case .turnOff:
             return services.off
         case .toggle:
+            // An area has no single state to read, so it toggles through the service that flips each
+            // entity on its own terms — which is what someone asking for a room expects anyway.
+            if entity.areaTarget != nil {
+                return domain.toggleServices.map { _ in Service.toggle } ?? services.off
+            }
             // A toggle needs to know which way to go, and the state is the only thing that says so.
             let state = try await AppIntentServerAPI.entityState(server: server, entityId: entity.entityId).state
             return domain.toggleService(state: state) ?? services.off

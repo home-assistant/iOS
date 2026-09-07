@@ -311,6 +311,76 @@ public enum L10n {
         public static var switches: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.switches") }
       }
     }
+    public enum AreaTarget {
+      /// %@ areas
+      public static func areasSection(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.areas_section", String(describing: p1))
+      }
+      /// %@ blinds
+      public static func blinds(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.blinds", String(describing: p1))
+      }
+      /// %@ covers
+      public static func covers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.covers", String(describing: p1))
+      }
+      /// %@ curtains
+      public static func curtains(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.curtains", String(describing: p1))
+      }
+      /// %@ doors
+      public static func doors(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.doors", String(describing: p1))
+      }
+      /// %@ fans
+      public static func fans(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.fans", String(describing: p1))
+      }
+      /// %@ garage doors
+      public static func garageDoors(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.garage_doors", String(describing: p1))
+      }
+      /// %@ humidifiers
+      public static func humidifiers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.humidifiers", String(describing: p1))
+      }
+      /// %@ lights
+      public static func lights(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.lights", String(describing: p1))
+      }
+      /// %@ media players
+      public static func mediaPlayers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.media_players", String(describing: p1))
+      }
+      /// %@ shades
+      public static func shades(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.shades", String(describing: p1))
+      }
+      /// %@ shutters
+      public static func shutters(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.shutters", String(describing: p1))
+      }
+      /// %@ switches
+      public static func switches(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.switches", String(describing: p1))
+      }
+      /// %@ thermostats
+      public static func thermostats(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.thermostats", String(describing: p1))
+      }
+      /// %@ toggles
+      public static func toggles(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.toggles", String(describing: p1))
+      }
+      /// %@ valves
+      public static func valves(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.valves", String(describing: p1))
+      }
+      /// %@ windows
+      public static func windows(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.area_target.windows", String(describing: p1))
+      }
+    }
     public enum Assist {
       public enum Pipeline {
         /// Pipeline
