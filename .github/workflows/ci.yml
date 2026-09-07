@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -146,7 +146,7 @@ jobs:
             ```
 
   test:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -192,6 +192,15 @@ jobs:
       - name: Install Gems
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
+
+      # The test lane runs with package resolution disabled, so the test action does not
+      # re-resolve once per scheme. That relies on the packages already being checked out, which
+      # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
 
       - name: Run tests
         run: bundle exec fastlane test
@@ -252,6 +261,7 @@ jobs:
             ~/Library/Logs/DiagnosticReports
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
+            fastlane/test_output/Tests-Unit.xcresult
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Simulator App"
