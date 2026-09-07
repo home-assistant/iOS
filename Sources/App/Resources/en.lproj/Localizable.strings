@@ -1879,6 +1879,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.servers" = "connection, url, account, instance, add server";
 "settings.search_keywords.siri" = "siri, shortcuts, spotlight, voice, assistant";
 "settings.search_keywords.watch" = "apple watch, watchos, configuration";
+"settings.search_keywords.voice_tools_server" = "wyoming, speech, voice, assist, speech to text, text to speech, stt, tts, microphone, dictation";
 "settings.search_keywords.widgets" = "home screen, lock screen, custom widgets";
 "settings.sections.customize_experience.header" = "Customize your experience";
 "settings.sections.help_support.header" = "Help & support";
@@ -1916,6 +1917,17 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.template_edit.title" = "Edit Template";
 "settings.test_flight_communication.title" = "Beta Tester Updates";
 "settings.whats_new.title" = "What's new?";
+"settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
+"settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\n\nThe server only answers while the app is open, and stops when you leave it.";
+"settings.voice_tools_server.footer" = "Speech is recognized and spoken on this device. Only the text and the finished audio travel over your local network.";
+"settings.voice_tools_server.port" = "Port";
+"settings.voice_tools_server.speech_permission" = "Speech recognition permission has not been granted, so this device can only answer text-to-speech requests. Allow it in the Settings app to use speech-to-text too.";
+"settings.voice_tools_server.status.running" = "Listening on port %@";
+"settings.voice_tools_server.status.starting" = "Starting...";
+"settings.voice_tools_server.status.stopped" = "Stopped";
+"settings.voice_tools_server.status_title" = "Status";
+"settings.voice_tools_server.title" = "Voice tools server";
+"settings.voice_tools_server.toggle" = "Enable voice tools server";
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Items";

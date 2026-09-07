@@ -12,6 +12,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case notifications
     case liveActivities
     case sensors
+    case voiceToolsServer
     case nfc
     case macToolbar
     case widgets
@@ -40,6 +41,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
+        case .voiceToolsServer: return L10n.Settings.VoiceToolsServer.title
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
@@ -71,6 +73,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return .bellOutlineIcon
         case .liveActivities: return .playBoxOutlineIcon
         case .sensors: return .formatListBulletedIcon
+        case .voiceToolsServer: return .accountVoiceIcon
         case .nfc: return .nfcVariantIcon
         case .widgets: return .widgetsIcon
         case .appIconShortcuts: return .applicationIcon
@@ -135,6 +138,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             #endif
         case .sensors:
             SensorListView()
+        case .voiceToolsServer:
+            VoiceToolsServerSettingsView()
         case .nfc:
             TagsView()
         case .widgets:
@@ -229,6 +234,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
+        case .voiceToolsServer: return L10n.Settings.SearchKeywords.voiceToolsServer
         case .nfc: return L10n.Settings.SearchKeywords.nfc
         case .widgets: return L10n.Settings.SearchKeywords.widgets
         case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
@@ -268,6 +274,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return []
             #endif
         case .sensors: return SensorListView.settingsSearchEntries
+        case .voiceToolsServer: return VoiceToolsServerSettingsView.settingsSearchEntries
         case .nfc: return TagsView.settingsSearchEntries
         case .widgets: return CustomWidgetsListView.settingsSearchEntries
         case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries

@@ -6219,6 +6219,8 @@ public enum L10n {
       public static var servers: String { return L10n.tr("Localizable", "settings.search_keywords.servers") }
       /// siri, shortcuts, spotlight, voice, assistant
       public static var siri: String { return L10n.tr("Localizable", "settings.search_keywords.siri") }
+      /// wyoming, speech, voice, assist, speech to text, text to speech, stt, tts, microphone, dictation
+      public static var voiceToolsServer: String { return L10n.tr("Localizable", "settings.search_keywords.voice_tools_server") }
       /// apple watch, watchos, configuration
       public static var watch: String { return L10n.tr("Localizable", "settings.search_keywords.watch") }
       /// home screen, lock screen, custom widgets
@@ -6343,6 +6345,36 @@ public enum L10n {
     public enum TestFlightCommunication {
       /// Beta Tester Updates
       public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
+    }
+    public enum VoiceToolsServer {
+      /// Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.
+      public static var body: String { return L10n.tr("Localizable", "settings.voice_tools_server.body") }
+      /// In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.
+      /// 
+      /// The server only answers while the app is open, and stops when you leave it.
+      public static var enabledFooter: String { return L10n.tr("Localizable", "settings.voice_tools_server.enabled_footer") }
+      /// Speech is recognized and spoken on this device. Only the text and the finished audio travel over your local network.
+      public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.footer") }
+      /// Port
+      public static var port: String { return L10n.tr("Localizable", "settings.voice_tools_server.port") }
+      /// Speech recognition permission has not been granted, so this device can only answer text-to-speech requests. Allow it in the Settings app to use speech-to-text too.
+      public static var speechPermission: String { return L10n.tr("Localizable", "settings.voice_tools_server.speech_permission") }
+      /// Status
+      public static var statusTitle: String { return L10n.tr("Localizable", "settings.voice_tools_server.status_title") }
+      /// Voice tools server
+      public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.title") }
+      /// Enable voice tools server
+      public static var toggle: String { return L10n.tr("Localizable", "settings.voice_tools_server.toggle") }
+      public enum Status {
+        /// Listening on port %@
+        public static func running(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.voice_tools_server.status.running", String(describing: p1))
+        }
+        /// Starting...
+        public static var starting: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.starting") }
+        /// Stopped
+        public static var stopped: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.stopped") }
+      }
     }
     public enum WhatsNew {
       /// What's new?
