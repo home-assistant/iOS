@@ -77,6 +77,7 @@ struct OnboardingWelcomeView: View {
             if let transferAction {
                 Button(L10n.Onboarding.Welcome.transferButton, action: transferAction)
                     .buttonStyle(.secondaryButton)
+                    .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeTransfer.rawValue)
             }
             Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true

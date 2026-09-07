@@ -16,6 +16,7 @@ struct AppMigrationIntroView: View {
             primaryDescription: L10n.AppMigration.Intro.body,
             primaryActionTitle: L10n.AppMigration.Intro.continueButton,
             primaryAction: continueAction,
+            primaryActionIdentifier: AccessibilityIdentifier.migrationIntroContinue.rawValue,
             secondaryActionTitle: L10n.AppMigration.Intro.skipButton,
             secondaryAction: skipAction
         )
