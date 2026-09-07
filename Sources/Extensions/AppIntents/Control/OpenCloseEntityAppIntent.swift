@@ -46,7 +46,8 @@ struct OpenCloseEntityAppIntent: AppIntent {
     // spoken answer is the whole interaction anyway.
     func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let service = try await move()
-        let state = await ControlResultSnippet.state(
+        // A whole area has no one state to report, so it gets the spoken sentence and no card.
+        let state = entity.areaTarget != nil ? nil : await ControlResultSnippet.state(
             of: entity,
             serverId: entity.serverId,
             iconName: entity.iconName,
@@ -75,7 +76,7 @@ struct OpenCloseEntityAppIntent: AppIntent {
             server: server,
             domain: domain.serviceDomain,
             service: service.rawValue,
-            data: ["entity_id": entity.entityId],
+            data: entity.serviceTarget,
             returnResponse: false
         )
         return service
