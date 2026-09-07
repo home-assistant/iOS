@@ -219,14 +219,36 @@ final class SpotlightEntityIndexer: ServerObserver {
     /// Hidden entities are excluded (as everywhere else in the app) and so are config/diagnostic ones,
     /// which would otherwise bury the entities people search for under firmware versions and signal
     /// strengths.
+    /// The servers whose entities belong in the index, in a stable order.
+    ///
+    /// Split out so the opt-out can be tested without driving the indexer, which only runs from
+    /// notifications and database observers.
+    nonisolated static func indexableServers(_ servers: [Server], hiding hidden: Set<String>) -> [Server] {
+        servers
+            .filter { !hidden.contains($0.identifier.rawValue) }
+            .sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+    }
+
+    /// Calendars follow the same rule: they belong to a server too.
+    nonisolated static func indexableCalendars(_ calendars: [HACalendar], hiding hidden: Set<String>) -> [HACalendar] {
+        calendars.filter { !hidden.contains($0.serverId) }
+    }
+
+    /// The signature covers which servers are hidden, so flipping the setting reads as a change
+    /// rather than as a pass worth skipping.
+    nonisolated static func signaturePrefix(includesServerContext: Bool, hiding hidden: Set<String>) -> [String] {
+        [
+            "serverContext=\(includesServerContext)",
+            "hidden=\(hidden.sorted().joined(separator: ","))",
+        ]
+    }
+
     private nonisolated static func makeSnapshot() -> Snapshot? {
         // A server the user opted out of is left out of the index entirely, which is what removes
         // its entities from Spotlight search. The signature covers the choice too, so toggling it
         // is a change the next pass acts on rather than one it skips as unchanged.
         let hiddenServerIds = SiriServerExposure.hiddenServerIds()
-        let servers = Current.servers.all
-            .filter { !hiddenServerIds.contains($0.identifier.rawValue) }
-            .sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+        let servers = indexableServers(Current.servers.all, hiding: hiddenServerIds)
         let includesServerContext = servers.count > 1
 
         let allEntities: [HAAppEntity]
@@ -238,10 +260,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         var entities: [HAAppEntityAppIntentEntity] = []
-        var signatureLines = [
-            "serverContext=\(includesServerContext)",
-            "hidden=\(hiddenServerIds.sorted().joined(separator: ","))",
-        ]
+        var signatureLines = signaturePrefix(includesServerContext: includesServerContext, hiding: hiddenServerIds)
 
         for server in servers {
             let serverId = server.identifier.rawValue
@@ -278,8 +297,7 @@ final class SpotlightEntityIndexer: ServerObserver {
             }
         }
 
-        let calendars = HACalendar.all()
-            .filter { !hiddenServerIds.contains($0.serverId) }
+        let calendars = indexableCalendars(HACalendar.all(), hiding: hiddenServerIds)
             .map(HACalendarAppEntity.init(calendar:))
         for calendar in calendars {
             signatureLines.append([
