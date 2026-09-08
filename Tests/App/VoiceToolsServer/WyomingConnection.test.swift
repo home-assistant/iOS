@@ -127,13 +127,17 @@ struct WyomingConnectionTests {
     }
 
     /// Opens a listener on a system-assigned port with a client attached, and tears both down.
-    private func withClient(_ work: (Client) async throws -> Void) async throws {
+    private func withClient(
+        makeRecognizer: @escaping WyomingRecognizerFactory = { _ in StubRecognizer() },
+        _ work: (Client) async throws -> Void
+    ) async throws {
         let recorder = StateRecorder()
         let server = WyomingServer(
             port: .any,
             serviceName: "Wyoming connection tests",
             fallbackLocale: Locale(identifier: "en-US"),
             advertisesOverBonjour: false,
+            makeRecognizer: makeRecognizer,
             onStateChange: { recorder.record($0) }
         )
         await server.start()
@@ -151,6 +155,30 @@ struct WyomingConnectionTests {
         }
         client.cancel()
         await server.stop()
+    }
+
+    /// Answers the moment the audio ends, so a whole transcription exchange runs without speech
+    /// authorisation and without waiting on a real recogniser.
+    @MainActor
+    private final class StubRecognizer: WyomingSpeechRecognizing {
+        static let transcript = "turn on the kitchen light"
+
+        private var onTranscript: ((String, Bool) -> Void)?
+
+        func start(
+            onTranscript: @escaping (String, Bool) -> Void,
+            onFailure _: @escaping (Error) -> Void
+        ) {
+            self.onTranscript = onTranscript
+        }
+
+        func append(_: AVAudioPCMBuffer) {}
+
+        func endAudio() {
+            onTranscript?(Self.transcript, true)
+        }
+
+        func cancel() {}
     }
 
     private struct SynthesizeRequest: Encodable {
@@ -255,6 +283,46 @@ struct WyomingConnectionTests {
 
             let event = try await client.receive()
             #expect(event.kind == .audioStart)
+        }
+    }
+
+    /// The speech-to-text half, end to end: Home Assistant names a language, streams audio, and
+    /// gets one transcript back when it stops.
+    @Test func transcribesAnAudioStreamIntoATranscript() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .transcribe, data: Data(#"{"language":"en-US"}"#.utf8)))
+            try await client.send(WyomingEvent(
+                kind: .audioStart,
+                encoding: WyomingAudioFormat(rate: 16000, width: 2, channels: 1)
+            ))
+            try await client.send(WyomingEvent(
+                kind: .audioChunk,
+                encoding: WyomingAudioFormat(rate: 16000, width: 2, channels: 1),
+                payload: Data(repeating: 0, count: 640)
+            ))
+            try await client.send(WyomingEvent(kind: .audioStop))
+
+            let event = try await client.receive()
+            let transcript = try event.decodeData(TranscriptResponse.self)
+
+            #expect(event.kind == .transcript)
+            #expect(transcript.text == StubRecognizer.transcript)
+        }
+    }
+
+    /// A client that streams audio without an `audio-start` still describes its format on every
+    /// chunk, so it does not have to be turned away.
+    @Test func transcribesAStreamThatSkippedAudioStart() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(
+                kind: .audioChunk,
+                encoding: WyomingAudioFormat(rate: 16000, width: 2, channels: 1),
+                payload: Data(repeating: 0, count: 640)
+            ))
+            try await client.send(WyomingEvent(kind: .audioStop))
+
+            let event = try await client.receive()
+            #expect(event.kind == .transcript)
         }
     }
 

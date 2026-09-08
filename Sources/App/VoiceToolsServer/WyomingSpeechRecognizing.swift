@@ -20,3 +20,12 @@ protocol WyomingSpeechRecognizing: AnyObject {
     func endAudio()
     func cancel()
 }
+
+/// Builds the recogniser a connection transcribes with.
+///
+/// Threaded from the listener down rather than constructed where it is used, so a test can drive a
+/// whole `audio-start`/`audio-chunk`/`audio-stop` exchange without speech authorisation.
+typealias WyomingRecognizerFactory = @Sendable @MainActor (Locale) throws -> any WyomingSpeechRecognizing
+
+/// The on-device recogniser, which is what the app itself always uses.
+let wyomingSystemRecognizerFactory: WyomingRecognizerFactory = { try SystemSpeechRecognizer(locale: $0) }

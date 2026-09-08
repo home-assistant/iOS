@@ -24,6 +24,7 @@ actor WyomingServer {
     /// local-network permission prompt on the machine running them.
     private let advertisesOverBonjour: Bool
     private let fallbackLocale: Locale
+    private let makeRecognizer: WyomingRecognizerFactory
     private let onStateChange: @Sendable (WyomingServerState) -> Void
     private let queue = DispatchQueue(label: "io.home-assistant.wyoming-server", qos: .userInitiated)
 
@@ -35,12 +36,14 @@ actor WyomingServer {
         serviceName: String,
         fallbackLocale: Locale,
         advertisesOverBonjour: Bool = true,
+        makeRecognizer: @escaping WyomingRecognizerFactory = wyomingSystemRecognizerFactory,
         onStateChange: @escaping @Sendable (WyomingServerState) -> Void
     ) {
         self.requestedPort = port
         self.serviceName = serviceName
         self.fallbackLocale = fallbackLocale
         self.advertisesOverBonjour = advertisesOverBonjour
+        self.makeRecognizer = makeRecognizer
         self.onStateChange = onStateChange
     }
 
@@ -113,7 +116,12 @@ actor WyomingServer {
         }
 
         let id = UUID()
-        let handler = WyomingConnection(connection: connection, queue: queue, fallbackLocale: fallbackLocale)
+        let handler = WyomingConnection(
+            connection: connection,
+            queue: queue,
+            fallbackLocale: fallbackLocale,
+            makeRecognizer: makeRecognizer
+        )
         // The task inherits this actor, so the bookkeeping below runs on it without a hop and the
         // entry is always removed on the same actor that added it.
         let task = Task {

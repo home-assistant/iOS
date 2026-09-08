@@ -49,16 +49,23 @@ actor WyomingConnection {
     private let queue: DispatchQueue
     /// Used when the client transcribes without naming a language, which the protocol allows.
     private let fallbackLocale: Locale
+    private let makeRecognizer: WyomingRecognizerFactory
     private let synthesizer = WyomingSpeechSynthesizer()
 
     private var buffer = Data()
     private var requestedLanguage: String?
     private var recognition: WyomingSpeechRecognitionSession?
 
-    init(connection: NWConnection, queue: DispatchQueue, fallbackLocale: Locale) {
+    init(
+        connection: NWConnection,
+        queue: DispatchQueue,
+        fallbackLocale: Locale,
+        makeRecognizer: @escaping WyomingRecognizerFactory
+    ) {
         self.connection = connection
         self.queue = queue
         self.fallbackLocale = fallbackLocale
+        self.makeRecognizer = makeRecognizer
     }
 
     /// Reads and answers events until the client hangs up or the task is cancelled.
@@ -134,8 +141,9 @@ actor WyomingConnection {
     private func startRecognition(format: WyomingAudioFormat) async throws {
         await cancelRecognition()
         let locale = await WyomingServiceCatalog.resolveLocale(for: requestedLanguage, fallback: fallbackLocale)
+        let makeRecognizer = makeRecognizer
         recognition = try await MainActor.run {
-            try WyomingSpeechRecognitionSession(locale: locale, format: format)
+            try WyomingSpeechRecognitionSession(format: format) { try makeRecognizer(locale) }
         }
     }
 
