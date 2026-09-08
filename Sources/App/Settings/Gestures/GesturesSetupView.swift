@@ -91,7 +91,7 @@ struct GesturesSetupView: View {
     static var gestureActionsPickerContent: ListPickerContent {
         var sections: [ListPickerContent.Section] = []
         for category in HAGestureActionCategory.allCases {
-            let items = HAGestureAction.allCases.filter({ $0.category == category }).map { action in
+            let items = HAGestureAction.allCases.filter({ $0.category == category && $0.isAvailable }).map { action in
                 ListPickerContent.Item(
                     id: action.rawValue,
                     title: action.localizedString,

@@ -206,6 +206,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 reloadAndClearFrontendCache()
             case .sidebarShow:
                 MacNativeSidebarState.shared.show()
+                NativeTabBarState.shared.requestMore()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
