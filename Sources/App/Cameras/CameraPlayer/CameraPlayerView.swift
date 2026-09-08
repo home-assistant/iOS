@@ -147,22 +147,27 @@ struct CameraPlayerView: View {
     private var nameBadge: some View {
         if controlsVisible {
             Menu {
-                ForEach(cameras) { camera in
-                    Button {
-                        switchCamera(to: camera.entityId)
-                    } label: {
-                        if let snapshot = cameraSnapshots[camera.entityId] {
-                            Image(uiImage: snapshot)
-                                .renderingMode(.original)
-                                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
-                        } else {
-                            Image(systemSymbol: .videoFill)
-                        }
-                        Text(displayName(camera.name))
-                        if let subtitle = cameraSubtitles[camera.entityId], !subtitle.isEmpty {
-                            Text(subtitle)
+                Group {
+                    ForEach(cameras) { camera in
+                        Button {
+                            switchCamera(to: camera.entityId)
+                        } label: {
+                            if let snapshot = cameraSnapshots[camera.entityId] {
+                                Image(uiImage: snapshot)
+                                    .renderingMode(.original)
+                                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
+                            } else {
+                                Image(systemSymbol: .videoFill)
+                            }
+                            Text(displayName(camera.name))
+                            if let subtitle = cameraSubtitles[camera.entityId], !subtitle.isEmpty {
+                                Text(subtitle)
+                            }
                         }
                     }
+                }
+                .onAppear {
+                    Task { await loadSnapshots(for: cameras) }
                 }
             } label: {
                 HStack(spacing: DesignSystem.Spaces.one) {
@@ -285,27 +290,37 @@ struct CameraPlayerView: View {
                     camera.contextualSubtitle.map { (camera.entityId, $0) }
                 }
             )
-            Task { await loadSnapshots(for: loaded) }
+            cameraSnapshots = Dictionary(
+                uniqueKeysWithValues: loaded.compactMap { camera in
+                    CameraPickerSnapshotCache.shared.image(for: snapshotKey(for: camera)).map { (camera.entityId, $0) }
+                }
+            )
         } catch {
             Current.Log.error("Failed to load cameras for picker: \(error)")
         }
     }
 
-    /// Fetches a still thumbnail for each camera to show as its picker icon. Failures are logged and
-    /// simply leave that camera on its SF Symbol placeholder.
+    private func snapshotKey(for camera: HAAppEntity) -> CameraPickerSnapshotCache.Key {
+        CameraPickerSnapshotCache.Key(serverId: server.identifier.rawValue, entityId: camera.entityId)
+    }
+
+    /// Fetches a still thumbnail for each camera to show as its picker icon, once the picker is
+    /// actually opened. Failures leave that camera on its SF Symbol placeholder and are remembered,
+    /// so a camera the server cannot produce an image for is not asked again on every open.
     @MainActor
     private func loadSnapshots(for cameras: [HAAppEntity]) async {
         guard let api = Current.api(for: server) else { return }
+        let cache = CameraPickerSnapshotCache.shared
         for camera in cameras where cameraSnapshots[camera.entityId] == nil {
+            let key = snapshotKey(for: camera)
+            guard cache.shouldFetch(key) else { continue }
             do {
-                let image: UIImage = try await withCheckedThrowingContinuation { continuation in
-                    api.getCameraSnapshot(cameraEntityID: camera.entityId)
-                        .done { continuation.resume(returning: $0) }
-                        .catch { continuation.resume(throwing: $0) }
-                }
-                let thumbnail = await image.byPreparingThumbnail(ofSize: CGSize(width: 120, height: 120))
-                cameraSnapshots[camera.entityId] = thumbnail ?? image
+                let image = try await api.getCameraSnapshot(cameraEntityID: camera.entityId).asyncValue()
+                let thumbnail = await image.byPreparingThumbnail(ofSize: CGSize(width: 120, height: 120)) ?? image
+                cache.store(thumbnail, for: key)
+                cameraSnapshots[camera.entityId] = thumbnail
             } catch {
+                cache.recordFailure(for: key)
                 Current.Log.error("Failed to load snapshot for \(camera.entityId): \(error)")
             }
         }

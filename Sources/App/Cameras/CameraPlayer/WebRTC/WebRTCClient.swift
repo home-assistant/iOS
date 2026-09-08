@@ -309,6 +309,11 @@ final class WebRTCClient: NSObject {
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan
 
+        // One transport for audio and video from the start, instead of gathering and checking a
+        // full candidate set per m-line until the answer bundles them. Every WebRTC answerer
+        // bundles, so the only effect is half the candidates and half the connectivity checks.
+        config.bundlePolicy = .maxBundle
+
         // gatherContinually lets WebRTC listen for network changes and trickle any new candidates
         // to the other side, which is what the frontend's peer connection does by default.
         config.continualGatheringPolicy = .gatherContinually
