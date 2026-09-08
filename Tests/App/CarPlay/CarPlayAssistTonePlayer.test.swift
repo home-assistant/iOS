@@ -73,8 +73,8 @@ final class CarPlayAssistTonePlayerTests: XCTestCase {
         sut.play(.listeningStopped) { completedEarly.fulfill() }
         sut.audioPlayerDidFinishPlaying(otherPlayer, successfully: true)
         sut.audioPlayerDecodeErrorDidOccur(otherPlayer, error: nil)
+        sut.stop()
 
         wait(for: [completedEarly], timeout: 0.5)
-        sut.stop()
     }
 }
