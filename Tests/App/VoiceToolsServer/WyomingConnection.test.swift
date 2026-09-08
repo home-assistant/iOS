@@ -46,6 +46,10 @@ struct WyomingConnectionTests {
 
     /// A Wyoming client: owns the socket and the partial read buffer that events are framed out of.
     private final class Client {
+        /// Generous: synthesising a sentence on a busy runner is not instant, but an unanswered
+        /// request still has to fail long before the job's own timeout.
+        private static let readTimeout: TimeInterval = 60
+
         private let connection: NWConnection
         private var buffer = Data()
 
@@ -80,17 +84,42 @@ struct WyomingConnectionTests {
             }
         }
 
+        /// Hands out the continuation once, whichever of the read and the deadline gets there first.
+        private final class Pending: @unchecked Sendable {
+            private var continuation: CheckedContinuation<Data, Error>?
+            private let lock = NSLock()
+
+            init(_ continuation: CheckedContinuation<Data, Error>) {
+                self.continuation = continuation
+            }
+
+            func resume(with result: Result<Data, Error>) {
+                lock.lock()
+                let pending = continuation
+                continuation = nil
+                lock.unlock()
+                pending?.resume(with: result)
+            }
+        }
+
+        /// A read that never completes would otherwise hang the whole test job until the runner's
+        /// hour is up, instead of failing here with something to read.
         private func readChunk() async throws -> Data {
             try await withCheckedThrowingContinuation { continuation in
+                let pending = Pending(continuation)
+                let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
+                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+
                 connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isComplete, error in
+                    deadline.cancel()
                     if let error {
-                        continuation.resume(throwing: error)
+                        pending.resume(with: .failure(error))
                     } else if let data, !data.isEmpty {
-                        continuation.resume(returning: data)
+                        pending.resume(with: .success(data))
                     } else if isComplete {
-                        continuation.resume(throwing: TestError.connectionClosed)
+                        pending.resume(with: .failure(TestError.connectionClosed))
                     } else {
-                        continuation.resume(returning: Data())
+                        pending.resume(with: .success(Data()))
                     }
                 }
             }
