@@ -10,6 +10,8 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var showAssistSettingsCalled = false
     private(set) var dismissPresentedContentCallCount = 0
     private(set) var activatedServers: [Server] = []
+    private(set) var openedDeeplinks: [(server: Server, urlString: String)] = []
+    private(set) var openedDeeplinksSelectingServer: [String] = []
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
 
@@ -52,7 +54,9 @@ final class MockAppCoordinator: AppCoordinator {
         skipConfirm: Bool,
         avoidUnnecessaryReload: Bool,
         isComingFromAppIntent: Bool
-    ) {}
+    ) {
+        openedDeeplinks.append((server, urlString))
+    }
 
     func openSelectingServer(
         from: OpenSource,
@@ -60,7 +64,9 @@ final class MockAppCoordinator: AppCoordinator {
         skipConfirm: Bool,
         queryParameters: [URLQueryItem]?,
         isComingFromAppIntent: Bool
-    ) {}
+    ) {
+        openedDeeplinksSelectingServer.append(urlString)
+    }
 
     func dismissPresentedContent(completion: (() -> Void)?) {
         dismissPresentedContentCallCount += 1
