@@ -1426,6 +1426,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.settings.sync_now" = "Sync now";
 "reminders_sync.settings.synced_lists.header" = "Synced lists";
 "reminders_sync.settings.syncing" = "Syncing…";
+"remote_media.session_error" = "Could not update Now Playing. Reopen Home Assistant or try again.";
 "requires_version" = "Requires %@ or later.";
 "retry_label" = "Retry";
 "room_view.section.hidden" = "Hidden";

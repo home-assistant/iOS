@@ -4817,6 +4817,11 @@ public enum L10n {
     }
   }
 
+  public enum RemoteMedia {
+    /// Could not update Now Playing. Reopen Home Assistant or try again.
+    public static var sessionError: String { return L10n.tr("Localizable", "remote_media.session_error") }
+  }
+
   public enum RoomView {
     public enum Section {
       /// Hidden

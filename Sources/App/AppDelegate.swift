@@ -141,6 +141,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
         RemindersSyncManager.shared.start()
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 27.0, *) {
+            RemoteMediaCoordinator.shared.start()
+        }
+        #endif
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
         }
