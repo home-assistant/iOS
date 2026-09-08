@@ -13,6 +13,7 @@ struct HomeAssistantView: View, WebFrontendView {
     /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
     @ObservedObject private var nativeSidebar = MacNativeSidebarState.shared
+    @ObservedObject private var nativeTabBar = NativeTabBarState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
@@ -46,23 +47,44 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     var body: some View {
-        HStack(spacing: 0) {
-            if nativeSidebar.isEnabled, nativeSidebar.isVisible {
-                MacSidebarView(viewModel: viewModel.macSidebar)
-                    .frame(width: Constants.macSidebarWidth)
-                    .transition(.move(edge: .leading))
-                Divider()
-                    .ignoresSafeArea()
+        ZStack {
+            if #available(iOS 26, *), isNativeTabBarActive {
+                NativeTabBarContainerView(
+                    viewModel: viewModel.tabBar,
+                    webViewController: viewModel.webViewController,
+                    frontendOpacity: viewModel.webViewContentOpacity,
+                    frontendIgnoredSafeAreaEdges: viewModel.webViewIgnoredSafeAreaEdges,
+                    onNeedsWebViewController: viewModel.ensureWebViewController
+                )
             }
-            frontendContent
+            // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
+            // appear/disappear fades never race each other when a layout is toggled.
+            HStack(spacing: 0) {
+                if nativeSidebar.isEnabled, nativeSidebar.isVisible {
+                    MacSidebarView(viewModel: viewModel.sidebar)
+                        .frame(width: Constants.macSidebarWidth)
+                        .transition(.move(edge: .leading))
+                    Divider()
+                        .ignoresSafeArea()
+                }
+                frontendContent
+            }
+            .animation(reduceMotion ? nil : DesignSystem.Animation.easeInOutFaster, value: nativeSidebar.isVisible)
         }
-        .animation(reduceMotion ? nil : DesignSystem.Animation.easeInOutFaster, value: nativeSidebar.isVisible)
         .onChange(of: nativeSidebar.isEnabled) { _ in
             // The frontend reads the `hasSidebar` external config once per page load, so a fresh web
             // view is what applies the new value. Reloading in place keeps the fade/loader state
             // consistent, unlike swapping the frontend's structural identity.
             viewModel.resetWebFrontend()
         }
+        .onChange(of: nativeTabBar.isEnabled) { _ in
+            viewModel.resetWebFrontend()
+        }
+    }
+
+    /// With the tab bar on, the web view is hosted by the selected tab instead of `frontendContent`.
+    private var isNativeTabBarActive: Bool {
+        nativeTabBar.isEnabled
     }
 
     private var frontendContent: some View {
@@ -72,8 +94,10 @@ struct HomeAssistantView: View, WebFrontendView {
             ZStack(alignment: .topLeading) {
                 themedStatusBar
                     .opacity(viewModel.webViewContentOpacity)
-                homeAssistant
-                    .opacity(viewModel.webViewContentOpacity)
+                if !isNativeTabBarActive {
+                    homeAssistant
+                        .opacity(viewModel.webViewContentOpacity)
+                }
                 pullToRefreshIndicator
                 macTitleBar
             }

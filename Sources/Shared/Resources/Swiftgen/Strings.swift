@@ -4920,6 +4920,12 @@ public enum L10n {
         /// App Labs are experimental features that can change or be removed at any time. Use them at your own risk.
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
+      public enum IosNativeTabBar {
+        /// Replaces the Home Assistant sidebar with a native tab bar. Choose up to three tabs from the More tab. The page reloads when you change this setting.
+        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.footer") }
+        /// Native tab bar
+        public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
+      }
       public enum MacNativeSidebar {
         /// Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.
         public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.footer") }
@@ -7377,6 +7383,39 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum TabBar {
+    public enum Customize {
+      /// Add
+      public static var add: String { return L10n.tr("Localizable", "tab_bar.customize.add") }
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "tab_bar.customize.remove") }
+      /// Customize Tabs
+      public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
+      public enum AvailableSection {
+        /// Remove a tab to add another one.
+        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
+        /// Available
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
+      }
+      public enum TabsSection {
+        /// No tabs. Add pages from the list below.
+        public static var empty: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.empty") }
+        /// Up to three pages show as tabs. Drag to reorder.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.footer") }
+        /// Tabs
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.header") }
+      }
+    }
+    public enum More {
+      /// App Settings
+      public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
+      /// Home Assistant Settings
+      public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
+      /// More
+      public static var title: String { return L10n.tr("Localizable", "tab_bar.more.title") }
     }
   }
 

@@ -3,6 +3,7 @@ import Shared
 
 enum AppLabsFeature: String, CaseIterable, Identifiable {
     case macNativeSidebar
+    case iosNativeTabBar
 
     var id: String { rawValue }
 
@@ -14,18 +15,25 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.title
+        case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.title
         }
     }
 
     var footer: String {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.footer
+        case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.footer
         }
     }
 
     var isAvailableOnThisDevice: Bool {
         switch self {
         case .macNativeSidebar: return Current.isCatalyst
+        case .iosNativeTabBar:
+            if #available(iOS 26, *) {
+                return !Current.isCatalyst
+            }
+            return false
         }
     }
 

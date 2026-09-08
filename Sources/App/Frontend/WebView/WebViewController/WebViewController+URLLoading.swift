@@ -274,6 +274,7 @@ extension WebViewController {
             let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
             Current.Log.info("navigating web view to root: \(target.path)")
             loadViewIfNeeded()
+            overlayState?.externalNavigationRequests.send()
             load(request: URLRequest(url: target))
         }
     }
