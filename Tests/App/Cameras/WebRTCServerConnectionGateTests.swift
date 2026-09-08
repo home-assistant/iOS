@@ -107,6 +107,30 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
         XCTAssertEqual(result, true)
     }
 
+    /// HAKit posts its transitions asynchronously and without the state they announce, so a socket
+    /// that drops and is back within one turn of the main queue reports two transitions that both
+    /// read ready by the time they arrive. The gate must still count that as the reconnect it was
+    /// waiting for, or a stalled stream waits on a connection that already came back.
+    func testAConnectionThatDropsAndComesBackWithinOneTurnIsTrustedAgain() {
+        connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
+        let settled = expectation(description: "initial state is delivered")
+        DispatchQueue.main.async { settled.fulfill() }
+        wait(for: [settled], timeout: 2)
+
+        var result: Bool?
+        gate.whenReady(requiringFreshConnection: true) { result = $0 }
+        XCTAssertNil(result)
+
+        connection.setState(.connecting, waitForQueue: false)
+        connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
+
+        let delivered = expectation(description: "both transitions are delivered")
+        DispatchQueue.main.async { delivered.fulfill() }
+        wait(for: [delivered], timeout: 2)
+
+        XCTAssertEqual(result, true)
+    }
+
     func testACancelledGateNeverCallsBack() {
         connection.setState(.connecting, waitForQueue: false)
 

@@ -46,10 +46,10 @@ final class WebRTCServerConnectionGate {
             object: connection,
             queue: .main
         ) { [weak self] _ in
-            self?.evaluate()
+            self?.evaluate(afterTransition: true)
         }
 
-        evaluate()
+        evaluate(afterTransition: false)
     }
 
     /// Drops a pending wait without calling back, for a stream that was torn down while waiting.
@@ -58,14 +58,19 @@ final class WebRTCServerConnectionGate {
         handler = nil
     }
 
-    private func evaluate() {
+    /// `afterTransition` is set when a state change notification brought us here. HAKit posts
+    /// those asynchronously and carries no state in them, so a connection that drops and comes
+    /// back within one turn of the queue delivers two notifications that both read ready. The
+    /// notification itself is therefore the evidence: the gate was armed while the state read
+    /// ready, so any transition since means the connection moved.
+    private func evaluate(afterTransition: Bool) {
         guard handler != nil else { return }
 
         let readiness = WebRTCServerConnectionReadiness(state: connection.state)
 
         // A connection that has left ready is the reconnect this gate was told to wait for; from
         // here the states mean what they say again.
-        if needsReconnectFirst, readiness != .ready {
+        if needsReconnectFirst, afterTransition || readiness != .ready {
             needsReconnectFirst = false
         }
 
