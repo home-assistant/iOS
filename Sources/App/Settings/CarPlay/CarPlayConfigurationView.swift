@@ -154,8 +154,6 @@ struct CarPlayConfigurationView: View {
                     layoutPickerOption(layout).tag(layout)
                 }
             }
-            // Keyed by server unique id, not the bare entity id: two servers can hold the same
-            // entity id, and duplicate identities make the rows render each other's content.
             ForEach(viewModel.config.quickAccessItems, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
             }
