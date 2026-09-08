@@ -27,13 +27,20 @@ struct VoiceToolsServerSettingsViewRenderTests {
 
     /// Lays the view out in a window, which is what makes SwiftUI evaluate the body and run
     /// `onAppear`.
+    ///
+    /// Deliberately never becomes the key window: the snapshot helpers draw into whatever window is
+    /// key, so stealing it here would reach into unrelated tests. The window is torn down again for
+    /// the same reason.
     private func render(_ view: some View) {
         let controller = UIHostingController(rootView: view)
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         window.rootViewController = controller
-        window.makeKeyAndVisible()
+        window.isHidden = false
         controller.view.setNeedsLayout()
         controller.view.layoutIfNeeded()
+
+        window.isHidden = true
+        window.rootViewController = nil
     }
 
     @Test func rendersWithTheServerOff() throws {
