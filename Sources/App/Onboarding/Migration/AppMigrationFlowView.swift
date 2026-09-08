@@ -23,7 +23,7 @@ struct AppMigrationFlowView: View {
                 }
             }
         } else if let summary = coordinator.completedSummary {
-            AppMigrationCompleteView(summary: summary) {
+            AppMigrationSuccessView(summary: summary) {
                 if summary.grantedPermissions.isEmpty {
                     coordinator.finishImport()
                     finishAction()
@@ -44,9 +44,18 @@ struct AppMigrationFlowView: View {
             )
             .navigationBarBackButtonHidden(true)
         } else if showsOverview {
-            AppMigrationOverviewView(startAction: coordinator.startImport)
+            AppMigrationOverviewView {
+                AppMigrationHaptics.tap()
+                coordinator.startImport()
+            }
         } else {
-            AppMigrationIntroView(continueAction: { showsOverview = true }, skipAction: skipAction)
+            AppMigrationIntroView(
+                continueAction: {
+                    AppMigrationHaptics.tap()
+                    showsOverview = true
+                },
+                skipAction: skipAction
+            )
         }
     }
 }

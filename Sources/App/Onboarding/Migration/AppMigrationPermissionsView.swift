@@ -18,14 +18,15 @@ struct AppMigrationPermissionsView: View {
             illustration: {
                 MaterialDesignIconsImage(icon: .shieldCheckOutlineIcon, size: 96)
                     .foregroundStyle(.haPrimary)
+                    .padding(.top, DesignSystem.Spaces.two)
             },
             title: L10n.AppMigration.Permissions.title,
             primaryDescription: L10n.AppMigration.Permissions.body,
             content: {
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                    HASectionTitle(L10n.AppMigration.Permissions.Section.previousApp)
-                    CardView {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                    HASectionPill(L10n.AppMigration.Permissions.Section.previousApp)
+                    CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                             ForEach(viewModel.permissions) { permission in
                                 let status = viewModel.status(for: permission)
                                 Button {
@@ -65,7 +66,6 @@ struct AppMigrationPermissionsView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                        .padding(DesignSystem.Spaces.one)
                     }
                 }
                 .padding(.top, DesignSystem.Spaces.two)
@@ -73,7 +73,14 @@ struct AppMigrationPermissionsView: View {
             primaryActionTitle: viewModel.isSettled
                 ? L10n.AppMigration.Permissions.continueButton
                 : L10n.AppMigration.Permissions.allowAllButton,
-            primaryAction: viewModel.isSettled ? continueAction : viewModel.allowAll,
+            primaryAction: {
+                AppMigrationHaptics.tap()
+                if viewModel.isSettled {
+                    continueAction()
+                } else {
+                    viewModel.allowAll()
+                }
+            },
             primaryActionIdentifier: AccessibilityIdentifier.migrationPermissionsPrimary.rawValue,
             secondaryActionTitle: viewModel.isSettled ? nil : L10n.AppMigration.Permissions.skipButton,
             secondaryAction: viewModel.isSettled ? nil : continueAction,

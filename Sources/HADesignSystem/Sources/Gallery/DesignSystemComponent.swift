@@ -35,6 +35,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case metric
     case emptyState
     case sectionTitle
+    case sectionPill
     case tip
     case label
     case bigNumber
@@ -156,6 +157,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .metric: HAMetric.frontendComponentName
         case .emptyState: HAEmptyStateView<AnyView>.frontendComponentName
         case .sectionTitle: HASectionTitle.frontendComponentName
+        case .sectionPill: nil
         case .tip: HATipView.frontendComponentName
         case .label: HALabel.frontendComponentName
         case .bigNumber: HABigNumber.frontendComponentName
@@ -275,6 +277,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .metric: HAMetric.frontendComponentVersion
         case .emptyState: HAEmptyStateView<AnyView>.frontendComponentVersion
         case .sectionTitle: HASectionTitle.frontendComponentVersion
+        case .sectionPill: nil
         case .tip: HATipView.frontendComponentVersion
         case .label: HALabel.frontendComponentVersion
         case .bigNumber: HABigNumber.frontendComponentVersion
@@ -366,7 +369,9 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         }
     }
 
-    public var id: String { rawValue }
+    public var id: String {
+        rawValue
+    }
 
     public var title: String {
         switch self {
@@ -393,6 +398,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .metric: "Metric"
         case .emptyState: "Empty State"
         case .sectionTitle: "Section Title"
+        case .sectionPill: "Section Pill"
         case .tip: "Tip"
         case .label: "Label"
         case .bigNumber: "Big Number"
@@ -496,7 +502,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .textField, .selectBox, .formField, .baseTimeInput, .timeInput, .durationInput,
              .dateInput, .qrScanner:
             .inputs
-        case .card, .bottomSheet, .floatingPanel, .sectionTitle, .settingsRow, .faded, .collapsible,
+        case .card, .bottomSheet, .floatingPanel, .sectionTitle, .sectionPill, .settingsRow, .faded, .collapsible,
              .haCard, .tileCard, .entityCard, .buttonCard, .glanceCard, .gaugeCard, .markdownCard,
              .headingCard, .clockCard, .thermostatCard, .todoListCard, .weatherForecastCard, .dialogHeader,
              .pictureCard, .alarmPanelCard, .statisticCard, .humidifierCard, .pictureGlanceCard,
@@ -663,6 +669,13 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             ]
         case .sectionTitle:
             [.init("Default") { HASectionTitle("Living room") }]
+        case .sectionPill:
+            [
+                .init("Default") { HASectionPill("Next steps") },
+                .init("Icon and tint") {
+                    HASectionPill("Comes with you", icon: .checkmarkCircleFill, tint: .haSuccessColor)
+                },
+            ]
         case .tip:
             [
                 .init("Short") { HATipView("You can drag cards to reorder them.") },

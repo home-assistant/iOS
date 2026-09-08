@@ -11,6 +11,7 @@ struct AppMigrationIntroView: View {
             illustration: {
                 MaterialDesignIconsImage(icon: .transferIcon, size: 96)
                     .foregroundStyle(.haPrimary)
+                    .padding(.top, DesignSystem.Spaces.two)
             },
             title: L10n.AppMigration.Intro.title,
             primaryDescription: L10n.AppMigration.Intro.body,

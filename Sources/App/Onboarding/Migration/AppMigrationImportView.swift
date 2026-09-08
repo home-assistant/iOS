@@ -32,6 +32,7 @@ struct AppMigrationImportView: View {
                 illustration: {
                     MaterialDesignIconsImage(icon: .alertCircleOutlineIcon, size: 96)
                         .foregroundStyle(.haErrorColor)
+                        .padding(.top, DesignSystem.Spaces.two)
                 },
                 title: L10n.AppMigration.Import.Failed.title,
                 primaryDescription: message,
@@ -40,6 +41,9 @@ struct AppMigrationImportView: View {
                 secondaryActionTitle: L10n.AppMigration.Import.Failed.manualButton,
                 secondaryAction: cancelAction
             )
+            .onAppear {
+                AppMigrationHaptics.error()
+            }
         }
     }
 }

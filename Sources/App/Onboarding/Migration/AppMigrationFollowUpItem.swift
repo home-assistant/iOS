@@ -6,7 +6,6 @@ enum AppMigrationFollowUpItem: CaseIterable, Identifiable {
     case homeScreenWidgets
     case watchApp
     case permissions
-    case pushRegistration
     case shortcuts
     case deletePreviousApp
 
@@ -25,7 +24,6 @@ enum AppMigrationFollowUpItem: CaseIterable, Identifiable {
         case .homeScreenWidgets: .widgetsOutlineIcon
         case .watchApp: .watchIcon
         case .permissions: .shieldCheckOutlineIcon
-        case .pushRegistration: .bellRingOutlineIcon
         case .shortcuts: .microphoneOutlineIcon
         case .deletePreviousApp: .cellphoneRemoveIcon
         }
@@ -36,7 +34,6 @@ enum AppMigrationFollowUpItem: CaseIterable, Identifiable {
         case .homeScreenWidgets: L10n.AppMigration.FollowUp.HomeScreenWidgets.title
         case .watchApp: L10n.AppMigration.FollowUp.WatchApp.title
         case .permissions: L10n.AppMigration.FollowUp.Permissions.title
-        case .pushRegistration: L10n.AppMigration.FollowUp.PushRegistration.title
         case .shortcuts: L10n.AppMigration.FollowUp.Shortcuts.title
         case .deletePreviousApp: L10n.AppMigration.FollowUp.DeletePreviousApp.title
         }
@@ -47,7 +44,6 @@ enum AppMigrationFollowUpItem: CaseIterable, Identifiable {
         case .homeScreenWidgets: L10n.AppMigration.FollowUp.HomeScreenWidgets.explanation
         case .watchApp: L10n.AppMigration.FollowUp.WatchApp.explanation
         case .permissions: L10n.AppMigration.FollowUp.Permissions.explanation
-        case .pushRegistration: L10n.AppMigration.FollowUp.PushRegistration.explanation
         case .shortcuts: L10n.AppMigration.FollowUp.Shortcuts.explanation
         case .deletePreviousApp: L10n.AppMigration.FollowUp.DeletePreviousApp.explanation
         }

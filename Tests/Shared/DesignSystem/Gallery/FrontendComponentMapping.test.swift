@@ -16,6 +16,9 @@ struct FrontendComponentMappingTests {
         .floatingPanel,
         .fullScreenLoader,
         .pill,
+        // A capsule header over a card on the app's own onboarding pages; the frontend's group
+        // headers are full-width `ha-section-title` strips.
+        .sectionPill,
         // The companion app's own Assist orb. The web frontend animates its assist dialog
         // differently and has no equivalent element.
         .assistVoiceOrb,
