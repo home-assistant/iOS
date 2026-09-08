@@ -2,8 +2,8 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Edits the sidebar order the tab bar is laid out from: the first `NativeTabBarViewModel.maximumTabs` pages
-/// are the tabs, the rest fill More, and hidden pages wait at the bottom to be shown again.
+/// Edits the sidebar order the tab bar is laid out from: the first `NativeTabBarViewModel.maximumTabs`
+/// dashboards are the tabs, the rest fill More, and hidden dashboards wait at the bottom to be shown again.
 struct NativeTabBarCustomizeView: View {
     private enum Constants {
         static let hiddenRowOpacity: Double = 0.6
@@ -31,16 +31,24 @@ struct NativeTabBarCustomizeView: View {
                             server: viewModel.sidebar.server,
                             user: viewModel.sidebar.user
                         )
+                        if let index = viewModel.tabItems.firstIndex(where: { $0.id == item.id }) {
+                            Spacer(minLength: 0)
+                            Text(L10n.TabBar.Customize.tabNumberD(index + 1))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.haPrimary)
+                                .padding(.horizontal, DesignSystem.Spaces.one)
+                                .padding(.vertical, DesignSystem.Spaces.micro)
+                                .background(Capsule().fill(Color.haPrimaryLightFill))
+                        }
                     }
-                    .listRowBackground(viewModel.isTab(item) ? Color.haPrimaryLightFill : nil)
                 }
                 .onMove { source, destination in
                     viewModel.moveItems(fromOffsets: source, toOffset: destination)
                 }
             } header: {
-                Text(L10n.TabBar.Customize.PagesSection.header)
+                Text(L10n.TabBar.Customize.DashboardsSection.header)
             } footer: {
-                Text(L10n.TabBar.Customize.PagesSection.footer)
+                Text(L10n.TabBar.Customize.DashboardsSection.footer)
             }
 
             if !viewModel.hiddenItems.isEmpty {

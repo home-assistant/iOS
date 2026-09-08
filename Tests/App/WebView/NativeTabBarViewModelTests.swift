@@ -123,16 +123,6 @@ struct NativeTabBarViewModelTests {
         #expect(sut.moreShowsFrontend)
     }
 
-    @Test("Tabs are the first pages of the sidebar order, so pinning is a question of position")
-    func isTab() throws {
-        let sut = makeFixture("isTab").sut
-        let alpha = try #require(sut.tabItems.first { $0.id == "alpha" })
-        let map = try #require(sut.moreItems.first { $0.id == "map" })
-
-        #expect(sut.isTab(alpha))
-        #expect(!sut.isTab(map))
-    }
-
     @Test("Pages hidden in the sidebar preferences stay out of the bar and More but are listed as hidden")
     func hiddenPagesStayOut() {
         let sut = makeFixture("hidden", hiddenPanels: ["alpha"]).sut

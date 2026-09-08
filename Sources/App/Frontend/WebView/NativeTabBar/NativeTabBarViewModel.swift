@@ -159,10 +159,6 @@ final class NativeTabBarViewModel: ObservableObject {
 
     // MARK: - Customisation
 
-    func isTab(_ item: MacSidebarItem) -> Bool {
-        tabItems.contains(where: { $0.id == item.id })
-    }
-
     func moveItems(fromOffsets source: IndexSet, toOffset destination: Int) {
         sidebar.moveItems(fromOffsets: source, toOffset: destination)
     }
