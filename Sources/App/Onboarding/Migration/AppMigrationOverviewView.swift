@@ -15,11 +15,13 @@ struct AppMigrationOverviewView: View {
                     .multilineTextAlignment(.center)
                     .padding(.bottom, DesignSystem.Spaces.half)
 
-                Label(L10n.AppMigration.Overview.Section.moves, systemSymbol: .checkmarkCircleFill)
-                    .font(DesignSystem.Font.headline)
-                    .foregroundStyle(.haSuccessColor)
-                CardView {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                HASectionPill(
+                    L10n.AppMigration.Overview.Section.moves,
+                    icon: .checkmarkCircleFill,
+                    tint: .haSuccessColor
+                )
+                CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                         ForEach(AppMigrationTransferredItem.allCases) { item in
                             AppMigrationItemRow(
                                 icon: item.icon,
@@ -29,15 +31,12 @@ struct AppMigrationOverviewView: View {
                             )
                         }
                     }
-                    .padding(DesignSystem.Spaces.one)
                 }
 
-                Label(L10n.AppMigration.Overview.Section.followUp, systemSymbol: .arrowUturnBackwardCircleFill)
-                    .font(DesignSystem.Font.headline)
-                    .foregroundStyle(.secondary)
+                HASectionPill(L10n.AppMigration.Overview.Section.followUp, icon: .arrowUturnBackwardCircleFill)
                     .padding(.top, DesignSystem.Spaces.half)
-                CardView {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                         ForEach(AppMigrationFollowUpItem.beforeTransfer) { item in
                             AppMigrationItemRow(
                                 icon: item.icon,
@@ -47,7 +46,6 @@ struct AppMigrationOverviewView: View {
                             )
                         }
                     }
-                    .padding(DesignSystem.Spaces.one)
                 }
             }
             .padding(.horizontal, DesignSystem.Spaces.two)

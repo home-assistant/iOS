@@ -115,6 +115,7 @@ struct OnboardingPermissionsNavigationView: View {
     private var checkmarkSuccessView: some View {
         // View that display success animation and dismisses the flow shortly after
         CheckmarkDrawOnView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 // Dismiss after a short delay to allow the user to see the success state
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {

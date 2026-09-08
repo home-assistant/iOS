@@ -322,8 +322,6 @@
 "app_migration.follow_up.home_screen_widgets.title" = "Home Screen widgets";
 "app_migration.follow_up.permissions.explanation" = "Location, notifications and camera access.";
 "app_migration.follow_up.permissions.title" = "Permissions";
-"app_migration.follow_up.push_registration.explanation" = "Registers again with Home Assistant.";
-"app_migration.follow_up.push_registration.title" = "Notifications from Home Assistant";
 "app_migration.follow_up.shortcuts.explanation" = "Recreate Shortcuts that used the old app.";
 "app_migration.follow_up.shortcuts.title" = "Siri and Shortcuts";
 "app_migration.follow_up.watch_app.explanation" = "Install it and pick complications again.";

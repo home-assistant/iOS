@@ -114,11 +114,10 @@ final class AppMigrationCoordinator: ObservableObject {
         }
         let started = Current.date()
         importState = .receiving
-        guard let sealed = AppMigrationPasteboard.read() else {
+        guard let sealed = AppMigrationPasteboard.take() else {
             importState = .failed(message: AppMigrationError.noPayload.localizedDescription)
             return
         }
-        AppMigrationPasteboard.clear()
         Task {
             do {
                 let payload = try await Task.detached {

@@ -40,6 +40,7 @@ struct AppMigrationProgressView: View {
                 withAnimation(DesignSystem.Animation.default) {
                     stageIndex = index
                 }
+                AppMigrationHaptics.stage()
             }
         }
     }

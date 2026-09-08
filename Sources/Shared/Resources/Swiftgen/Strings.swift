@@ -1229,12 +1229,6 @@ public enum L10n {
         /// Permissions
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.permissions.title") }
       }
-      public enum PushRegistration {
-        /// Registers again with Home Assistant.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.push_registration.explanation") }
-        /// Notifications from Home Assistant
-        public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.push_registration.title") }
-      }
       public enum Shortcuts {
         /// Recreate Shortcuts that used the old app.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.shortcuts.explanation") }
