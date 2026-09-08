@@ -48,6 +48,24 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertIdentical(controller.reconnectManager, reconnectManager)
     }
 
+    func testEnsureWebViewControllerBuildsTheFrontendOnceForTheTabBar() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(server: Server.fake(), initialPath: "/energy", overlayState: overlayState)
+        XCTAssertNil(sut.webViewController)
+
+        sut.ensureWebViewController()
+        let controller = sut.webViewController
+        XCTAssertNotNil(controller)
+        XCTAssertEqual(controller?.initialURLPath, "/energy")
+        XCTAssertIdentical(controller?.overlayState, overlayState)
+
+        sut.ensureWebViewController()
+        XCTAssertIdentical(sut.webViewController, controller)
+
+        sut.resetWebFrontend()
+        XCTAssertNil(sut.webViewController)
+    }
+
     func testHomeAssistantViewModelStartsWithStandbyLoaderUntilFrontendConnects() {
         let overlayState = WebFrontendOverlayState()
         overlayState.connectionState = .connected

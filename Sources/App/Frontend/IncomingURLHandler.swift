@@ -75,31 +75,15 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard let entityId = serviceData["entityId"],
+                      let destination = AppConstants.openEntityDestinationURL(
+                          entityId: entityId,
+                          serverId: serviceData["serverId"] ?? ""
+                      ) else {
+                    Current.Log.error("No entity found for open camera URL: \(url)")
                     return false
                 }
-                components.scheme = nil
-                components.host = nil
-
-                let queryParameters = components.queryItems
-                let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
-                let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
-
-                guard let entityId,
-                      let server = Current.servers.all.first(where: { server in
-                          server.identifier.rawValue == serverId
-                      }) else {
-                    Current.Log.error("No server found for open camera URL: \(url)")
-                    return false
-                }
-                presentOverFrontend { webViewController in
-                    let view = CameraPlayerView(
-                        server: server,
-                        cameraEntityId: entityId
-                    ).embeddedInHostingController()
-                    view.modalPresentationStyle = .overFullScreen
-                    webViewController.present(view, animated: true)
-                }
+                return handle(url: destination)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
