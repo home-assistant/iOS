@@ -10,6 +10,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case location
     case remindersSync
     case notifications
+    case remoteMedia
     case liveActivities
     case sensors
     case nfc
@@ -38,6 +39,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .remindersSync: return L10n.Settings.RemindersSync.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
+        case .remoteMedia: return L10n.RemoteMedia.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
         case .nfc: return L10n.Tags.title
@@ -69,6 +71,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .location: return .crosshairsGpsIcon
         case .remindersSync: return .formatListChecksIcon
         case .notifications: return .bellOutlineIcon
+        case .remoteMedia: return .speakerIcon
         case .liveActivities: return .playBoxOutlineIcon
         case .sensors: return .formatListBulletedIcon
         case .nfc: return .nfcVariantIcon
@@ -125,6 +128,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
             RemindersSyncSettingsView()
         case .notifications:
             SettingsNotificationsView()
+        case .remoteMedia:
+            #if !targetEnvironment(macCatalyst)
+            if #available(iOS 27.0, *) { RemoteMediaSettingsView() }
+            #else
+            EmptyView()
+            #endif
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 17.2, *) {
@@ -190,6 +199,11 @@ enum SettingsItem: String, Hashable, CaseIterable {
         #endif
 
         switch self {
+        case .remoteMedia:
+            #if !targetEnvironment(macCatalyst)
+            if #available(iOS 27.0, *) { return UIDevice.current.userInterfaceIdiom == .phone }
+            #endif
+            return false
         case .liveActivities:
             return Self.canShowLiveActivities
         case .macToolbar:
@@ -227,6 +241,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .location: return L10n.Settings.SearchKeywords.location
         case .remindersSync: return L10n.Settings.SearchKeywords.remindersSync
         case .notifications: return L10n.Settings.SearchKeywords.notifications
+        case .remoteMedia: return L10n.Settings.SearchKeywords.remoteMedia
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
         case .nfc: return L10n.Settings.SearchKeywords.nfc
@@ -258,6 +273,15 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .location: return LocationSettingsView.settingsSearchEntries
         case .remindersSync: return RemindersSyncSettingsView.settingsSearchEntries
         case .notifications: return NotificationSettingsView.settingsSearchEntries
+        case .remoteMedia:
+            #if !targetEnvironment(macCatalyst)
+            if #available(iOS 27.0, *) {
+                return RemoteMediaSettingsView.settingsSearchEntries
+            }
+            return []
+            #else
+            return []
+            #endif
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 17.2, *) {

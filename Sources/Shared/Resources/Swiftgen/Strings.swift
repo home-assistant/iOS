@@ -4818,8 +4818,28 @@ public enum L10n {
   }
 
   public enum RemoteMedia {
+    /// The player you follow appears in iPhone Now Playing, so you can control it from the system media controls.
+    public static var description: String { return L10n.tr("Localizable", "remote_media.description") }
+    /// Following on iPhone
+    public static var following: String { return L10n.tr("Localizable", "remote_media.following") }
+    /// Playback updates require Home Assistant to stay connected. Updates may stop while the app is in the background or closed. Open Home Assistant to refresh Now Playing.
+    public static var foregroundLimitation: String { return L10n.tr("Localizable", "remote_media.foreground_limitation") }
+    /// Try again
+    public static var retry: String { return L10n.tr("Localizable", "remote_media.retry") }
     /// Could not update Now Playing. Reopen Home Assistant or try again.
     public static var sessionError: String { return L10n.tr("Localizable", "remote_media.session_error") }
+    /// Stop following
+    public static var stopFollowing: String { return L10n.tr("Localizable", "remote_media.stop_following") }
+    /// Remote Now Playing
+    public static var title: String { return L10n.tr("Localizable", "remote_media.title") }
+    /// Waiting for this player to play or pause. Check that the player and its server are available.
+    public static var waiting: String { return L10n.tr("Localizable", "remote_media.waiting") }
+    public enum Empty {
+      /// To follow a media player, open it in Home Assistant and choose Add to → Follow in Now Playing.
+      public static var instructions: String { return L10n.tr("Localizable", "remote_media.empty.instructions") }
+      /// No player is currently being followed
+      public static var title: String { return L10n.tr("Localizable", "remote_media.empty.title") }
+    }
   }
 
   public enum RoomView {
@@ -6218,6 +6238,8 @@ public enum L10n {
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
       /// reminders, todo, to-do, tasks, lists, shopping list, sync
       public static var remindersSync: String { return L10n.tr("Localizable", "settings.search_keywords.reminders_sync") }
+      /// now playing, media, music, lock screen, control center, media player, speaker
+      public static var remoteMedia: String { return L10n.tr("Localizable", "settings.search_keywords.remote_media") }
       /// battery, motion, pedometer, focus, device data
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
@@ -9188,6 +9210,16 @@ public enum L10n {
         public enum MacToolbar {
           /// Mac Toolbar
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.MacToolbar.title") }
+        }
+        public enum RemoteNowPlaying {
+          /// Show this player in iPhone system media controls
+          public static var details: String { return L10n.tr("Localizable", "web_view.add_to.option.RemoteNowPlaying.details") }
+          /// Currently shown in iPhone system media controls
+          public static var stopDetails: String { return L10n.tr("Localizable", "web_view.add_to.option.RemoteNowPlaying.stop_details") }
+          /// Stop following in Now Playing
+          public static var stopTitle: String { return L10n.tr("Localizable", "web_view.add_to.option.RemoteNowPlaying.stop_title") }
+          /// Follow in Now Playing
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.RemoteNowPlaying.title") }
         }
         public enum Widget {
           /// Widget

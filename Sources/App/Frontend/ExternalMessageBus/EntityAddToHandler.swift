@@ -23,7 +23,10 @@ final class EntityAddToHandler {
     /// - Parameter entityId: The entity ID to get available actions for (e.g., "light.living_room")
     /// - Returns: Promise that resolves to a list of actions that can be performed for this entity
     func actionsForEntity(entityId: String) -> Promise<[any EntityAddToAction]> {
-        Promise { seal in
+        // Read on the caller's thread: the external bus delivers on the main actor, and the
+        // Remote Now Playing action has to know which server the entity was opened from.
+        let serverId = webViewController?.server.identifier.rawValue
+        return Promise { seal in
             DispatchQueue.global(qos: .userInitiated).async {
                 var actions: [any EntityAddToAction] = []
 
@@ -47,6 +50,20 @@ final class EntityAddToHandler {
                     if isWatchSupported {
                         actions.append(WatchItemAction())
                     }
+                }
+                #endif
+
+                // Remote Now Playing needs the iOS 27 NowPlaying framework, and its extension is
+                // built for iPhone only. The action carries the current state so the same row can
+                // offer to stop following the player it is already following.
+                #if !targetEnvironment(macCatalyst)
+                if #available(iOS 27.0, *), !Current.isCatalyst,
+                   UIDevice.current.userInterfaceIdiom == .phone,
+                   domain == .mediaPlayer, let serverId {
+                    let selection = RemoteMediaSelection(serverId: serverId, entityId: entityId)
+                    actions.append(RemoteNowPlayingAction(
+                        isFollowing: Current.settingsStore.remoteMediaSelection == selection
+                    ))
                 }
                 #endif
 
@@ -113,6 +130,13 @@ final class EntityAddToHandler {
 
                 case .deeplink:
                     openDeeplink(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .remoteNowPlaying:
+                    // Already on the main queue, which is where the coordinator lives.
+                    MainActor.assumeIsolated {
+                        self.toggleRemoteNowPlaying(entityId: entityId, webViewController: webViewController)
+                    }
                     seal.fulfill(())
 
                 case .none:
@@ -194,6 +218,31 @@ final class EntityAddToHandler {
         } catch {
             Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
         }
+    }
+
+    /// Hands the selection to the existing Remote Now Playing coordinator, which owns persistence
+    /// and the session lifecycle. Following a different player replaces the previous one, so no
+    /// confirmation is needed.
+    ///
+    /// What the action said when the frontend built the list only decided how the row reads. Which
+    /// way it goes is decided here against the selection as it is now, because the followed player
+    /// can change between the list being built and the user choosing from it.
+    @MainActor
+    private func toggleRemoteNowPlaying(entityId: String, webViewController: WebViewControllerProtocol) {
+        #if !targetEnvironment(macCatalyst)
+        guard #available(iOS 27.0, *) else { return }
+        let target = RemoteMediaSelection(
+            serverId: webViewController.server.identifier.rawValue,
+            entityId: entityId
+        )
+        if Current.settingsStore.remoteMediaSelection == target {
+            Current.Log.info("Stopping Remote Now Playing for entity \(entityId)")
+            RemoteMediaCoordinator.shared.follow(nil)
+        } else {
+            Current.Log.info("Following entity \(entityId) in Remote Now Playing")
+            RemoteMediaCoordinator.shared.follow(target)
+        }
+        #endif
     }
 
     private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {

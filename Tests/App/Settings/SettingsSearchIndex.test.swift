@@ -48,6 +48,8 @@ struct SettingsSearchIndexTests {
         for item in SettingsItem.allCases where ![.help, .whatsNew].contains(item) {
             // Live Activities entries are only available alongside their screen.
             if item == .liveActivities, #unavailable(iOS 17.2) { continue }
+            // Remote Now Playing needs the iOS 27 NowPlaying framework for its screen.
+            if item == .remoteMedia, #unavailable(iOS 27.0) { continue }
             #expect(!item.contentSearchEntries.isEmpty, "\(item.rawValue) has no content search entries")
         }
     }
