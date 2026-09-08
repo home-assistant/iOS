@@ -170,8 +170,7 @@ struct GetEntityStateAppIntentTests {
         try await body(server, connection)
     }
 
-    @Test(.disabled("Hangs CI when a request lands after the poll"))
-    func readingAStateAsksTheServerAndKeepsTheContext() async throws {
+    @Test func readingAStateAsksTheServerAndKeepsTheContext() async throws {
         try await withMockedServer { server, connection in
             var intent = GetEntityStateAppIntent()
             intent.entity = Self.entity(serverId: server.identifier.rawValue)

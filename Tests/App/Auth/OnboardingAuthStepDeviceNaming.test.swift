@@ -53,16 +53,14 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         XCTAssertTrue(OnboardingAuthStepDeviceNaming.supportedPoints.contains(.beforeRegister))
     }
 
-    func testNoWebSocketResponseWithoutError() throws {
-        try XCTSkipIf(true, "Hangs the test run waiting on the zero-second timeout; re-enabled once the wait is fixed")
+    func testNoWebSocketResponseWithoutError() {
         step.timeout = 0
         XCTAssertThrowsError(try hang(step.perform(point: .beforeRegister))) { error in
             XCTAssertEqual((error as? OnboardingAuthError)?.kind, .invalidURL)
         }
     }
 
-    func testNoWebSocketResponseWithError() throws {
-        try XCTSkipIf(true, "Hangs the test run waiting on the zero-second timeout; re-enabled once the wait is fixed")
+    func testNoWebSocketResponseWithError() {
         step.timeout = 0
         connection
             .setState(.disconnected(reason: .waitingToReconnect(

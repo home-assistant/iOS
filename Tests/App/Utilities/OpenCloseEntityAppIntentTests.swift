@@ -62,8 +62,7 @@ struct OpenCloseEntityAppIntentTests {
         try await body(server, connection)
     }
 
-    @Test(.disabled("Hangs CI when the request lands after the one second poll"))
-    func openCallsOpenCover() async throws {
+    @Test func openCallsOpenCover() async throws {
         try await withMockedServer { server, connection in
             let intent = OpenCloseEntityAppIntent()
             intent.action = .open
@@ -76,8 +75,7 @@ struct OpenCloseEntityAppIntentTests {
         }
     }
 
-    @Test(.disabled("Hangs CI when the request lands after the one second poll"))
-    func closeCallsCloseCover() async throws {
+    @Test func closeCallsCloseCover() async throws {
         try await withMockedServer { server, connection in
             let intent = OpenCloseEntityAppIntent()
             intent.action = .close

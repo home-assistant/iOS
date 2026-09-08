@@ -73,8 +73,7 @@ struct TurnOnOffEntityAppIntentTests {
         return first?.data["service"] as? String
     }
 
-    @Test(.disabled("Hangs CI when a request lands after the poll"))
-    func onSendsTurnOn() async throws {
+    @Test func onSendsTurnOn() async throws {
         try await withMockedServer { server, connection in
             var intent = TurnOnOffEntityAppIntent(action: .on)
             intent.entity = Self.entity(serverId: server.identifier.rawValue)
@@ -83,8 +82,7 @@ struct TurnOnOffEntityAppIntentTests {
         }
     }
 
-    @Test(.disabled("Hangs CI when a request lands after the poll"))
-    func offSendsTurnOff() async throws {
+    @Test func offSendsTurnOff() async throws {
         try await withMockedServer { server, connection in
             var intent = TurnOnOffEntityAppIntent(action: .off)
             intent.entity = Self.entity(serverId: server.identifier.rawValue)
@@ -94,8 +92,7 @@ struct TurnOnOffEntityAppIntentTests {
     }
 
     /// The service still comes from the domain, so the same intent opens a cover.
-    @Test(.disabled("Hangs CI when a request lands after the poll"))
-    func onOpensACover() async throws {
+    @Test func onOpensACover() async throws {
         try await withMockedServer { server, connection in
             var intent = TurnOnOffEntityAppIntent(action: .on)
             intent.entity = Self.entity(serverId: server.identifier.rawValue, entityId: "cover.curtain")
