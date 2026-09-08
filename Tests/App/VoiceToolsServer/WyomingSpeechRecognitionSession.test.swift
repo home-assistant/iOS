@@ -64,11 +64,13 @@ struct WyomingSpeechRecognitionSessionTests {
         let session = try makeSession(recognizer: recognizer)
         session.append(pcm([1, 2, 3, 4]))
 
-        async let transcript = session.finish()
+        let pending = Task { try await session.finish() }
+        // Let `finish()` register its continuation before the recogniser answers.
+        try await Task.sleep(nanoseconds: 50_000_000)
         recognizer.report("turn on the")
         recognizer.report("Turn on the kitchen light.", isFinal: true)
 
-        let recognised = try await transcript
+        let recognised = try await pending.value
         #expect(recognised == "Turn on the kitchen light.")
         #expect(recognizer.didEndAudio)
     }
@@ -80,11 +82,12 @@ struct WyomingSpeechRecognitionSessionTests {
         let session = try makeSession(recognizer: recognizer)
         session.append(pcm([1, 2]))
 
-        async let transcript = session.finish()
+        let pending = Task { try await session.finish() }
+        try await Task.sleep(nanoseconds: 50_000_000)
         recognizer.report("kitchen light")
         recognizer.fail(RecognizerFailure())
 
-        let recognised = try await transcript
+        let recognised = try await pending.value
         #expect(recognised == "kitchen light")
     }
 
@@ -94,11 +97,10 @@ struct WyomingSpeechRecognitionSessionTests {
         let session = try makeSession(recognizer: recognizer)
         session.append(pcm([1, 2]))
 
-        async let transcript = session.finish()
         recognizer.fail(RecognizerFailure())
 
         await #expect(throws: RecognizerFailure.self) {
-            _ = try await transcript
+            _ = try await session.finish()
         }
     }
 
@@ -146,12 +148,11 @@ struct WyomingSpeechRecognitionSessionTests {
         let session = try makeSession(recognizer: recognizer)
         session.append(pcm([1, 2]))
 
-        async let transcript = session.finish()
         recognizer.report("first", isFinal: true)
         recognizer.report("second", isFinal: true)
         recognizer.fail(RecognizerFailure())
 
-        let recognised = try await transcript
+        let recognised = try await session.finish()
         #expect(recognised == "first")
     }
 
