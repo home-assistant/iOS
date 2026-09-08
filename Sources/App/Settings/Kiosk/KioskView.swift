@@ -10,25 +10,14 @@ struct ConditionalContainerView: View {
     @State private var showKioskSettings = false
     @Namespace private var serverSelectionNamespace
 
+    // The navigation stack Settings is pushed onto lives in `ContainerView`, around the frontend alone:
+    // it is the only screen anything is ever pushed over, and a stack here would also enclose
+    // onboarding's own — two nested `NavigationStack`s crash SwiftUI on iOS 16.
     var body: some View {
-        // Always present: branching on the size class here rebuilt the frontend on every rotation.
-        NavigationStack(path: $appSettings.pushPath) {
-            content
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(for: AppSettingsPushRoute.self) { route in
-                    switch route {
-                    case .settings:
-                        SettingsView(embedInOwnNavigation: false)
-                            .injectingViewControllerProvider()
-                    case let .item(item):
-                        item.destinationView
-                            .injectingViewControllerProvider()
-                    }
-                }
-        }
-        .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
-            settingsSheet
-        }
+        content
+            .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
+                settingsSheet
+            }
     }
 
     /// One sheet, two sizes: the servers at the medium detent, Settings once it is expanded. Settings is
