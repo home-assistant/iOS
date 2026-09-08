@@ -368,7 +368,7 @@ final class CarPlayAssistSession: NSObject {
         if presentTemplate {
             interfaceController?.presentTemplate(template, animated: true, completion: nil)
         }
-        playProcessingIndicatorToneIfNeeded()
+        playListeningStoppedTone()
         assistService.assist(source: .text(
             input: prompt,
             pipelineId: pipelineId,
@@ -545,13 +545,13 @@ final class CarPlayAssistSession: NSObject {
 
     // Tones go through the audio session (not the system sound server) so they stay audible
     // when the iPhone ring/silent switch is muted, like any other media playback.
-    private func playRecordingIndicatorToneIfNeeded() {
+    private func playListeningToneIfNeeded() {
         guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
-        tonePlayer.play(.startRecording)
+        tonePlayer.play(.listening)
     }
 
-    private func playProcessingIndicatorToneIfNeeded() {
-        tonePlayer.play(.processing)
+    private func playListeningStoppedTone() {
+        tonePlayer.play(.listeningStopped)
     }
 
     // MARK: - TTS Playback
@@ -573,6 +573,9 @@ final class CarPlayAssistSession: NSObject {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
 
+        // The response takes over from the listening-stopped cue, and a still-playing cue would
+        // keep the session's I/O running while a debug reconfigure tries to deactivate it.
+        tonePlayer.stop()
         configureAudioSessionForTTSIfNeeded()
         logCurrentAudioRoute(context: "before tts playback")
 
@@ -808,7 +811,7 @@ final class CarPlayAssistSession: NSObject {
             do {
                 try await transcriber.startListening()
                 onDeviceListeningActive = true
-                playRecordingIndicatorToneIfNeeded()
+                playListeningToneIfNeeded()
             } catch {
                 Current.Log
                     .error("CarPlay Assist failed to start on-device transcription: \(error.localizedDescription)")
@@ -872,7 +875,7 @@ final class CarPlayAssistSession: NSObject {
             return
         }
 
-        playProcessingIndicatorToneIfNeeded()
+        playListeningStoppedTone()
         activateVoiceControlState(for: .processing)
         assistService.assist(source: .text(
             input: input,
@@ -1033,7 +1036,7 @@ final class CarPlayAssistSession: NSObject {
 @available(iOS 26.4, *)
 extension CarPlayAssistSession: AudioRecorderDelegate {
     func didStartRecording(with sampleRate: Double) {
-        playRecordingIndicatorToneIfNeeded()
+        playListeningToneIfNeeded()
         assistService.assist(source: .audio(
             pipelineId: pipelineId,
             audioSampleRate: sampleRate,
@@ -1104,7 +1107,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
             guard shouldHandleSttEnd else { return }
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
-            playProcessingIndicatorToneIfNeeded()
+            playListeningStoppedTone()
             activateVoiceControlState(for: .processing)
             armResponseWatchdog()
         } else {

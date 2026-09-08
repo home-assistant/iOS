@@ -78,7 +78,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             mockAssistService.assistSource,
             .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
         )
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.startRecording))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listening))
     }
 
     func testDidStartRecordingSkipsServerTTSWhenOnDeviceTTSEnabled() {
@@ -112,7 +112,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
 
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listeningStopped))
         XCTAssertEqual(sut.currentState, .processing)
     }
 
@@ -217,7 +217,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             mockAssistService.assistSource,
             .text(input: "How many lights are on?", pipelineId: "pipeline", expectTTS: true)
         )
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listeningStopped))
         XCTAssertEqual(sut.currentState, .processing)
     }
 
@@ -247,7 +247,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
         sut.start()
         // The listening-active flag is set right before the recording indicator tone.
         await waitUntil { [mockTonePlayer] in
-            mockTonePlayer?.playedTones.contains(.startRecording) == true
+            mockTonePlayer?.playedTones.contains(.listening) == true
         }
 
         transcriber.simulateListeningStateChange(false)
