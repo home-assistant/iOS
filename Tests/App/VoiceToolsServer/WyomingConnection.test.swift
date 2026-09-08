@@ -327,6 +327,40 @@ struct WyomingConnectionTests {
         }
     }
 
+    /// The listener is open to anything on the local network, so a peer opening sockets without
+    /// ever closing them must not be able to exhaust the process.
+    @Test func refusesConnectionsPastItsLimit() async throws {
+        let recorder = StateRecorder()
+        let server = WyomingServer(
+            port: .any,
+            serviceName: "Wyoming connection tests",
+            fallbackLocale: Locale(identifier: "en-US"),
+            advertisesOverBonjour: false,
+            makeRecognizer: { _ in StubRecognizer() },
+            onStateChange: { recorder.record($0) }
+        )
+        await server.start()
+        let boundPort = try await recorder.boundPort()
+        let port = try #require(NWEndpoint.Port(rawValue: boundPort))
+
+        // One more than the cap, all held open at once.
+        var clients: [Client] = []
+        for _ in 0 ... 8 {
+            let client = Client(port: port)
+            clients.append(client)
+            try await client.send(WyomingEvent(kind: .ping))
+        }
+
+        // The ones within the cap still answer, which is what proves the refusal was selective.
+        let firstReply = try await clients[0].receive()
+        #expect(firstReply.kind == .pong)
+
+        for client in clients {
+            client.cancel()
+        }
+        await server.stop()
+    }
+
     @Test func answersPingWithPong() async throws {
         try await withClient { client in
             try await client.send(WyomingEvent(kind: .ping))

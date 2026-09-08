@@ -14,6 +14,20 @@ struct VoiceToolsServerConfigurationTests {
         return database
     }
 
+    /// Creating the table over an existing database migrates it instead of failing, which is the
+    /// path every launch after the first takes.
+    @Test func createsOnceThenMigrates() throws {
+        let database = try makeDatabase()
+        let table = VoiceToolsServerConfigurationTable()
+
+        try table.createIfNeeded(database: database)
+
+        let columns = try database.read { db in
+            try db.columns(in: table.tableName).map(\.name)
+        }
+        #expect(Set(columns) == Set(table.definedColumns))
+    }
+
     @Test func defaultsToOffOnTheWyomingPort() {
         let configuration = VoiceToolsServerConfiguration()
 

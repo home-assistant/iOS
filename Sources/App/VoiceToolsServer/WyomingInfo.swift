@@ -31,7 +31,24 @@ struct WyomingInfo: Encodable {
         let models: [AsrModel]
         /// This server answers with a single `transcript` once the audio ends, never with the
         /// `transcript-start`/`transcript-chunk` stream.
-        let supportsTranscriptStreaming = false
+        let supportsTranscriptStreaming: Bool
+
+        init(
+            name: String,
+            description: String,
+            attribution: Attribution,
+            installed: Bool,
+            version: String,
+            models: [AsrModel]
+        ) {
+            self.name = name
+            self.description = description
+            self.attribution = attribution
+            self.installed = installed
+            self.version = version
+            self.models = models
+            self.supportsTranscriptStreaming = false
+        }
     }
 
     struct TtsVoice: Encodable {
@@ -54,7 +71,24 @@ struct WyomingInfo: Encodable {
         let version: String
         let voices: [TtsVoice]
         /// Speech is rendered in one pass and sent as a finished `audio-start`/`audio-stop` run.
-        let supportsSynthesizeStreaming = false
+        let supportsSynthesizeStreaming: Bool
+
+        init(
+            name: String,
+            description: String,
+            attribution: Attribution,
+            installed: Bool,
+            version: String,
+            voices: [TtsVoice]
+        ) {
+            self.name = name
+            self.description = description
+            self.attribution = attribution
+            self.installed = installed
+            self.version = version
+            self.voices = voices
+            self.supportsSynthesizeStreaming = false
+        }
     }
 
     let asr: [AsrProgram]
