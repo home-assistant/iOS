@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 @testable import HomeAssistant
 import Network
