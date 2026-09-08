@@ -34,23 +34,28 @@ struct WyomingPCMConverterTests {
         #expect(abs(channel[0][2] + 0.5) < 0.01)
     }
 
-    /// Nothing in the protocol promises a chunk ends on a frame boundary, and a half frame carried
+    /// Nothing in the protocol promises a chunk ends on a frame boundary, and half a frame carried
     /// into the next chunk would shift every following sample by a byte.
     @Test func carriesAPartialFrameIntoTheNextChunk() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 16000, width: 2, channels: 1))
         let samples = pcm([1000, 2000])
 
-        // One byte short of a whole frame: nothing to convert yet.
-        let partial = converter.convert(samples.prefix(3))
-        #expect(partial == nil)
+        // Three bytes is one whole frame plus half of the next: the whole one converts, the half
+        // is held back.
+        let firstConverted = converter.convert(samples.prefix(3))
+        let first = try #require(firstConverted)
+        #expect(first.frameLength == 1)
 
-        let converted = converter.convert(samples.dropFirst(3))
-        let buffer = try #require(converted)
-        let channel = try #require(buffer.floatChannelData)
+        // The byte held back completes the second frame once the rest of it arrives.
+        let secondConverted = converter.convert(samples.dropFirst(3))
+        let second = try #require(secondConverted)
+        #expect(second.frameLength == 1)
 
-        #expect(buffer.frameLength == 2)
-        #expect(abs(channel[0][0] - Float(1000) / Float(Int16.max)) < 0.01)
-        #expect(abs(channel[0][1] - Float(2000) / Float(Int16.max)) < 0.01)
+        // Both samples survive the split, which is the whole point of holding the odd byte.
+        let firstChannel = try #require(first.floatChannelData)
+        let secondChannel = try #require(second.floatChannelData)
+        #expect(abs(firstChannel[0][0] - Float(1000) / Float(Int16.max)) < 0.01)
+        #expect(abs(secondChannel[0][0] - Float(2000) / Float(Int16.max)) < 0.01)
     }
 
     @Test func waitsUntilThereIsAWholeFrame() throws {
