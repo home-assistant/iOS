@@ -16,6 +16,7 @@ final class AppMigrationCoordinator: ObservableObject {
     @Published private(set) var importState: AppMigrationImportState?
     @Published private(set) var completedSummary: AppMigrationSummary?
     @Published private(set) var exportRequest: AppMigrationSession?
+    private var exportStartedHere = false
     @Published private(set) var exportState: AppMigrationExportState = .idle
     @Published private(set) var handoffPhase: AppMigrationHandoffPhase?
 
@@ -24,8 +25,9 @@ final class AppMigrationCoordinator: ObservableObject {
     private init() {
         self.handoffPhase = AppMigrationHandoffStore.load()
         switch handoffPhase {
-        case let .requested(request):
+        case let .requested(request, startedHere):
             self.exportRequest = request
+            self.exportStartedHere = startedHere
         case .handedOff:
             self.exportState = .handedOff
         case nil:
@@ -35,6 +37,10 @@ final class AppMigrationCoordinator: ObservableObject {
 
     var isPreviousAppInstalled: Bool {
         role == .newApp && UIApplication.shared.canOpenURL(AppMigrationRole.previousApp.baseURL)
+    }
+
+    var isNewAppInstalled: Bool {
+        role == .previousApp && UIApplication.shared.canOpenURL(AppMigrationRole.newApp.baseURL)
     }
 
     var exportSummary: AppMigrationSummary {
@@ -54,15 +60,19 @@ final class AppMigrationCoordinator: ObservableObject {
     func handle(url: URL) -> Bool {
         guard let link = AppMigrationLink(url: url) else { return false }
         switch (role, link) {
-        case let (.newApp, .payloadReady(sessionID)):
-            receivePayload(sessionID: sessionID)
+        case let (.newApp, .payloadReady(sessionID, key)):
+            if let key {
+                receiveTransferStartedByPreviousApp(sessionID: sessionID, keyString: key)
+            } else {
+                receivePayload(sessionID: sessionID)
+            }
         case let (.newApp, .declined(sessionID)):
             guard currentSession()?.id == sessionID else { return false }
             importState = .failed(message: AppMigrationError.declined.localizedDescription)
         case (.newApp, .restart):
             restartImport()
         case let (.previousApp, .request(requested)):
-            enterTakeover(with: requested)
+            enterTakeover(with: requested, startedHere: false)
         default:
             return false
         }
@@ -105,6 +115,23 @@ final class AppMigrationCoordinator: ObservableObject {
             session = AppMigrationSessionStore.load()
         }
         return session
+    }
+
+    /// The previous app minted the session itself, so the key arrives with the payload. Anything this
+    /// app already holds gives way: the user chose the transfer over there, on the setup that matters.
+    private func receiveTransferStartedByPreviousApp(sessionID: UUID, keyString: String) {
+        guard let session = AppMigrationSession(id: sessionID, keyString: keyString) else {
+            importState = .failed(message: AppMigrationError.wrongSession.localizedDescription)
+            return
+        }
+        if !Current.servers.all.isEmpty {
+            wipeLocalData()
+            Current.onboardingObservation.needed(.logout)
+        }
+        self.session = session
+        AppMigrationSessionStore.save(session)
+        completedSummary = nil
+        receivePayload(sessionID: sessionID)
     }
 
     private func receivePayload(sessionID: UUID) {
@@ -170,6 +197,15 @@ final class AppMigrationCoordinator: ObservableObject {
 
     // MARK: Previous app
 
+    /// Starts the transfer from this app's own announcement. Only possible once the new app is on the
+    /// device; the caller sends the user to the App Store otherwise.
+    @discardableResult
+    func beginTransferFromThisApp() -> Bool {
+        guard isNewAppInstalled else { return false }
+        enterTakeover(with: AppMigrationSession.make(), startedHere: true)
+        return true
+    }
+
     func transfer() {
         guard let request = exportRequest else { return }
         exportState = .preparing
@@ -187,7 +223,8 @@ final class AppMigrationCoordinator: ObservableObject {
                 }.value
                 await pace(from: started)
                 AppMigrationPasteboard.write(sealed)
-                if await open(AppMigrationLink.payloadReady(sessionID: request.id).url(to: .newApp)) {
+                let key = exportStartedHere ? request.keyString : nil
+                if await open(AppMigrationLink.payloadReady(sessionID: request.id, key: key).url(to: .newApp)) {
                     exportState = .handedOff
                     setHandoffPhase(.handedOff)
                     releasePushRegistration()
@@ -212,10 +249,11 @@ final class AppMigrationCoordinator: ObservableObject {
 
     /// Leaves the takeover for now: tells the new app, forgets the handoff and lets this app reconnect.
     func declineExport() {
-        if let request = exportRequest {
+        if let request = exportRequest, !exportStartedHere {
             Task { _ = await open(AppMigrationLink.declined(sessionID: request.id).url(to: .newApp)) }
         }
         exportRequest = nil
+        exportStartedHere = false
         exportState = .idle
         setHandoffPhase(nil)
         resumeConnections()
@@ -232,12 +270,13 @@ final class AppMigrationCoordinator: ObservableObject {
         }
     }
 
-    private func enterTakeover(with request: AppMigrationSession) {
+    private func enterTakeover(with request: AppMigrationSession, startedHere: Bool) {
         exportRequest = request
+        exportStartedHere = startedHere
         exportState = .idle
         suspendConnections()
         closeOtherWindows()
-        setHandoffPhase(.requested(request))
+        setHandoffPhase(.requested(request, startedHere: startedHere))
     }
 
     private func setHandoffPhase(_ phase: AppMigrationHandoffPhase?) {

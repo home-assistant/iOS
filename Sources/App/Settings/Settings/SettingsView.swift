@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
+    @State private var showsMigrationAnnouncement = false
     @State private var testFlightMessage: TestFlightMessage?
     @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
     @State private var searchText = ""
@@ -34,7 +35,6 @@ struct SettingsView: View {
 
     // MARK: - macOS Split View
 
-    @ViewBuilder
     private var macOSView: some View {
         // Use navigation view since navigation stack has bugs on Mac Catalyst
         // such as no back buttons for navigated views
@@ -111,9 +111,9 @@ struct SettingsView: View {
 
     // MARK: - iOS List View
 
-    // When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
-    // `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
-    // single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
+    /// When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
+    /// `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
+    /// single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
     @ViewBuilder
     private var iOSView: some View {
         if embedInOwnNavigation {
@@ -148,6 +148,16 @@ struct SettingsView: View {
 
                 // Settings items grouped by user objective
                 settingsSections(matching: nil)
+
+                if AppMigrationAnnouncement.isRelevant {
+                    Section {
+                        Button {
+                            showsMigrationAnnouncement = true
+                        } label: {
+                            settingsItemLabel(.transferToNewApp)
+                        }
+                    }
+                }
 
                 if let latestRelease = WhatsNewEngine().latestRelease() {
                     // What's New
@@ -215,6 +225,9 @@ struct SettingsView: View {
             NavigationStack {
                 aboutViewContent
             }
+        }
+        .sheet(isPresented: $showsMigrationAnnouncement) {
+            AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
         }
         .sheet(item: $whatsNewRelease) { release in
             WhatsNewView(release: release) {
@@ -337,7 +350,6 @@ struct SettingsView: View {
         }
     }
 
-    @ViewBuilder
     private func settingsSections(matching searchQuery: String?) -> some View {
         ForEach(SettingsSection.allCases, id: \.self) { section in
             let items = searchQuery.map { section.items(matching: $0) } ?? section.items

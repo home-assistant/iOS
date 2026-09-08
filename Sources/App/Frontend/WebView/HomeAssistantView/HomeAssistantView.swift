@@ -115,6 +115,8 @@ struct HomeAssistantView: View, WebFrontendView {
         }
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
             switch message {
+            case .appMigration:
+                AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
             case let .testFlight(message):
