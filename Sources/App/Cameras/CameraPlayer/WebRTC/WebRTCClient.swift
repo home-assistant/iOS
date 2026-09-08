@@ -7,11 +7,11 @@ import WebRTC
 /// Delegate protocol for WebRTCClient events.
 protocol WebRTCClientDelegate: AnyObject {
     /// Called when a new ICE candidate is discovered.
-    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
+    func webRTCClient(_ client: WebRTCStreamClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
     /// Called when the ICE connection state changes.
-    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState)
+    func webRTCClient(_ client: WebRTCStreamClient, didChangeConnectionState state: RTCIceConnectionState)
     /// Called when data is received over the data channel.
-    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data)
+    func webRTCClient(_ client: WebRTCStreamClient, didReceiveData data: Data)
 }
 
 /// Custom WebRTC audio device that supports playout only and never opens input.
@@ -267,7 +267,7 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
 /// It abstracts the setup and control of a WebRTC session for use in the Home Assistant iOS app.
 ///
 /// - Note: Based on example project from WebRTC iOS SDK https://github.com/stasel/WebRTC
-final class WebRTCClient: NSObject {
+final class WebRTCClient: NSObject, WebRTCStreamClient {
     private static let playbackOnlyAudioDevice = PlaybackOnlyRTCAudioDevice()
 
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.

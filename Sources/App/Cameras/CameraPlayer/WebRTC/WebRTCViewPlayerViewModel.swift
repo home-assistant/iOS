@@ -70,7 +70,23 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// before coming back to the foreground counts as needing a fresh one.
     private static let backgroundTeardownDelay: TimeInterval = 60
 
-    var webRTCClient: WebRTCClient?
+    struct Timing {
+        var connectionTimeout: TimeInterval
+        var disconnectedGracePeriod: TimeInterval
+        var signalingStallTimeout: TimeInterval
+        var connectionWaitTimeout: TimeInterval
+        var backgroundTeardownDelay: TimeInterval
+
+        static let production = Timing(
+            connectionTimeout: WebRTCViewPlayerViewModel.connectionTimeout,
+            disconnectedGracePeriod: WebRTCViewPlayerViewModel.disconnectedGracePeriod,
+            signalingStallTimeout: WebRTCViewPlayerViewModel.signalingStallTimeout,
+            connectionWaitTimeout: WebRTCViewPlayerViewModel.connectionWaitTimeout,
+            backgroundTeardownDelay: WebRTCViewPlayerViewModel.backgroundTeardownDelay
+        )
+    }
+
+    var webRTCClient: WebRTCStreamClient?
     private var sessionId: String?
     private var pendingCandidates: [RTCIceCandidate] = []
     private var offerSubscription: HACancellable?
@@ -96,6 +112,8 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private let server: Server
     private let cameraEntityId: String
     private let supportsTalkback: Bool
+    private let makeClient: (WebRTCClientConfiguration) -> WebRTCStreamClient
+    private let timing: Timing
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
@@ -112,10 +130,18 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// published properties instead.
     var onFailure: (() -> Void)?
 
-    init(server: Server, cameraEntityId: String, supportsTalkback: Bool = false) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        supportsTalkback: Bool = false,
+        makeClient: @escaping (WebRTCClientConfiguration) -> WebRTCStreamClient = { WebRTCClient(configuration: $0) },
+        timing: Timing = .production
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.supportsTalkback = supportsTalkback
+        self.makeClient = makeClient
+        self.timing = timing
     }
 
     deinit {
@@ -191,7 +217,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         // A connection still being set up has no client yet; restarting would throw away an attempt
         // that is still in flight, which matters because `.inactive` also covers a passing overlay.
         guard let webRTCClient else { return }
-        guard hiddenDuration >= Self.backgroundTeardownDelay || !webRTCClient.isConnectionAlive else { return }
+        guard hiddenDuration >= timing.backgroundTeardownDelay || !webRTCClient.isConnectionAlive else { return }
         Current.Log.info("Restarting WebRTC stream for \(cameraEntityId) after \(Int(hiddenDuration))s hidden")
         start()
     }
@@ -278,7 +304,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         // The server answered, so whatever killed the last socket is behind us and a later attempt
         // has no reason to distrust the connection state again.
         didStallOnSignaling = false
-        let client = WebRTCClient(configuration: configuration)
+        let client = makeClient(configuration)
         webRTCClient = client
         client.delegate = self
         if let renderer {
@@ -366,7 +392,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             handleFailure(reason: nil)
         }
         timeoutWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectionTimeout, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.connectionTimeout, execute: workItem)
     }
 
     private func cancelTimeout() {
@@ -387,7 +413,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             handleFailure(reason: nil)
         }
         connectionWaitWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectionWaitTimeout, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.connectionWaitTimeout, execute: workItem)
     }
 
     private func cancelConnectionWait() {
@@ -404,7 +430,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             handleSignalingStall()
         }
         signalingStallWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.signalingStallTimeout, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.signalingStallTimeout, execute: workItem)
     }
 
     private func cancelSignalingStall() {
@@ -440,7 +466,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             handleConnectionFailure()
         }
         disconnectRecoveryWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.disconnectedGracePeriod, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.disconnectedGracePeriod, execute: workItem)
     }
 
     private func cancelDisconnectRecovery() {
@@ -570,7 +596,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 }
 
 extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
-    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
+    func webRTCClient(_ client: WebRTCStreamClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         // WebRTC delegate callbacks arrive on its signaling thread; all view model state is
         // main-thread confined.
         DispatchQueue.main.async { [weak self] in
@@ -578,7 +604,7 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
         }
     }
 
-    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
+    func webRTCClient(_ client: WebRTCStreamClient, didChangeConnectionState state: RTCIceConnectionState) {
         Current.Log.info("WebRTC connection state changed to: \(state)")
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -603,7 +629,7 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
         }
     }
 
-    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
+    func webRTCClient(_ client: WebRTCStreamClient, didReceiveData data: Data) {
         Current.Log.info("WebRTC client received data of size: \(data.count) bytes")
     }
 }

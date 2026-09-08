@@ -427,6 +427,28 @@ class ModelManagerTests: XCTestCase {
         XCTAssertTrue(handlers.allSatisfy { !$0.wasCancelled })
     }
 
+    func testUnsubscribeCancelsAndForgetsTheSubscribedServers() {
+        let handlers: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        var handlersIterator = handlers.makeIterator()
+        var subscribeCount = 0
+
+        let definitions: [LegacyModelManager.SubscribeDefinition] = [
+            .init(subscribe: { _, _, _, _ -> [HACancellable] in
+                subscribeCount += 1
+                return [handlersIterator.next()!]
+            }),
+        ]
+
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
+        manager.unsubscribe()
+
+        XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+
+        servers.notify()
+
+        XCTAssertEqual(subscribeCount, 2, "Forgotten definitions must not be resubscribed by a server change")
+    }
+
     func testStoreWithoutModels() throws {
         try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: []))
         XCTAssertEqual(try database.read { try TestStoreModel1.fetchCount($0) }, 0)
