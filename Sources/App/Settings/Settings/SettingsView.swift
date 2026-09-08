@@ -112,7 +112,7 @@ struct SettingsView: View {
     // MARK: - iOS List View
 
     // When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
-    // `AppSettingsPushRoute.item` instead, resolved by `ConditionalContainerView`: that path must stay
+    // `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
     // single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
     @ViewBuilder
     private var iOSView: some View {

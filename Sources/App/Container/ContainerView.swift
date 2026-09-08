@@ -6,6 +6,7 @@ import UIKit
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
+    @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @State private var coordinator = AppContainerCoordinator()
 
     var body: some View {
@@ -15,11 +16,7 @@ struct ContainerView: View {
                 OnboardingNavigationView(onboardingStyle: style)
                     .id(style)
             case let .webView(server, initialPath):
-                HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
-                    coordinator.setFrontend(webViewController)
-                    Current.sceneManager.setWebViewController(webViewController)
-                }
-                .id(server.identifier.rawValue)
+                frontend(server: server, initialPath: initialPath)
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
@@ -82,6 +79,33 @@ struct ContainerView: View {
                 }
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
+            }
+        }
+    }
+
+    /// The frontend, and the navigation stack Settings is pushed onto when the frontend's external bus asks
+    /// for it. The stack deliberately wraps only this screen: onboarding hosts a `NavigationStack` of its
+    /// own, and nesting two of them makes SwiftUI compare their differently-typed paths and fatally error
+    /// (`AnyNavigationPath.Error.comparisonTypeMismatch`) as the app lays out for the first time on iOS 16.
+    /// It stays out of the size-class branch it used to live in — rebuilding it on rotation reloaded the
+    /// frontend.
+    private func frontend(server: Server, initialPath: String?) -> some View {
+        NavigationStack(path: $appSettings.pushPath) {
+            HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
+                coordinator.setFrontend(webViewController)
+                Current.sceneManager.setWebViewController(webViewController)
+            }
+            .id(server.identifier.rawValue)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                switch route {
+                case .settings:
+                    SettingsView(embedInOwnNavigation: false)
+                        .injectingViewControllerProvider()
+                case let .item(item):
+                    item.destinationView
+                        .injectingViewControllerProvider()
+                }
             }
         }
     }
