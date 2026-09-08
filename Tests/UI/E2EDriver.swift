@@ -76,22 +76,15 @@ final class E2EDriver {
         let webView = app.webViews.firstMatch
         wait(for: webView, timeout: Timeout.frontend, "login web view")
 
-        // Both fields are checked after typing: text aimed at a web view field lands wherever the
-        // keyboard happens to be focused, and a miss otherwise surfaces only as a rejected login.
+        // Text aimed at a web view field lands wherever the keyboard happens to be focused, and a
+        // miss otherwise surfaces only as a rejected login, so both fields are typed with checks.
         let username = webView.textFields.firstMatch
         wait(for: username, timeout: Timeout.frontend, "username field")
         type(Instance.username, into: username, "username field")
-        XCTAssertEqual(username.value as? String, Instance.username, "Username field did not receive the username")
 
         let password = webView.secureTextFields.firstMatch
         wait(for: password, timeout: Timeout.frontend, "password field")
-        type(Instance.password, into: password, "password field")
-        // Secure fields report one bullet per character rather than the text itself.
-        XCTAssertEqual(
-            (password.value as? String)?.count,
-            Instance.password.count,
-            "Password field did not receive the whole password"
-        )
+        type(Instance.password, into: password, "password field", secure: true)
 
         // Submitting from the field avoids matching the login button, whose label the frontend
         // renders inside a shadow root.
@@ -181,12 +174,28 @@ final class E2EDriver {
         element.tap()
     }
 
-    /// Types into a field, waiting for it to actually take keyboard focus first.
+    /// Types into a field, waiting for it to actually take keyboard focus first, and retypes when
+    /// the field did not end up holding the text.
     ///
     /// A tap on a web view field does not focus it synchronously: the page has to handle the touch
     /// and move focus itself. Typing before that fails outright with "Neither element nor any
-    /// descendant has keyboard focus", so the tap is repeated until the keyboard is up.
-    func type(_ text: String, into element: XCUIElement, _ description: String) {
+    /// descendant has keyboard focus", so the tap is repeated until the keyboard is up. On a freshly
+    /// erased simulator iOS also covers the first keyboard with its typing tutorial, which swallows
+    /// most keystrokes, so the tutorial is dismissed and the value checked after every attempt.
+    func type(_ text: String, into element: XCUIElement, _ description: String, secure: Bool = false) {
+        for _ in 1 ... 3 {
+            focus(element, description)
+            dismissKeyboardTutorialIfPresent()
+            element.typeText(text)
+            if holds(element, text, secure: secure) {
+                return
+            }
+            clear(element)
+        }
+        XCTFail("The \(description) did not receive the text after three attempts")
+    }
+
+    private func focus(_ element: XCUIElement, _ description: String) {
         // Always taps at least once, even when the keyboard is already up for a previous field,
         // since that tap is what moves focus to this one.
         var attempts = 0
@@ -196,7 +205,35 @@ final class E2EDriver {
         } while !app.keyboards.element.waitForExistence(timeout: Timeout.optional) && attempts < 3
 
         XCTAssertTrue(app.keyboards.element.exists, "Keyboard never came up for the \(description)")
-        element.typeText(text)
+    }
+
+    private func holds(_ element: XCUIElement, _ text: String, secure: Bool) -> Bool {
+        let value = element.value as? String
+        // Secure fields report one bullet per character rather than the text itself.
+        return secure ? value?.count == text.count : value == text
+    }
+
+    private func clear(_ element: XCUIElement) {
+        let count = (element.value as? String)?.count ?? 0
+        guard count > 0 else { return }
+        element.tap()
+        element.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: count + 2))
+    }
+
+    /// The keyboard tutorial sits where the keys would be and offers a single Continue button; the
+    /// app's own Continue buttons never share the keyboard's frame, which is what tells them apart.
+    private func dismissKeyboardTutorialIfPresent() {
+        let keyboard = app.keyboards.element
+        guard keyboard.exists else { return }
+        let keyboardTop = keyboard.frame.minY - 100
+        for container in [app, springboard] {
+            let candidates = container.buttons.matching(NSPredicate(format: "label == 'Continue'"))
+            if let button = candidates.allElementsBoundByIndex.first(where: { $0.frame.minY >= keyboardTop }) {
+                button.tap()
+                _ = app.keyboards.element.waitForExistence(timeout: Timeout.optional)
+                return
+            }
+        }
     }
 
     @discardableResult
@@ -305,6 +342,18 @@ final class E2EDriver {
     @discardableResult
     func answerSystemAlertIfPresent(timeout: TimeInterval) -> Bool {
         guard let button = systemAlertButton(matching: NSPredicate(value: true), timeout: timeout) else {
+            return false
+        }
+        button.tap()
+        return true
+    }
+
+    /// Confirms the "X wants to open Y" prompt iOS raises for some cross-app URL scheme opens; nothing
+    /// to do when the hop went through without one.
+    @discardableResult
+    func confirmOpeningOtherAppIfAsked() -> Bool {
+        let open = NSPredicate(format: "label == 'Open'")
+        guard let button = systemAlertButton(matching: open, timeout: Timeout.optional) else {
             return false
         }
         button.tap()
