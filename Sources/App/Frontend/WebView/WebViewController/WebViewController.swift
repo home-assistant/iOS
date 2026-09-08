@@ -431,8 +431,11 @@ extension WebViewController {
         }
     }
 
+    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
+    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
+        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
+            || AppLabsFeature.iosNativeTabBar.isEnabled
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": enable]

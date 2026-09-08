@@ -30,8 +30,10 @@ final class HomeAssistantViewModel: ObservableObject {
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
-    /// Feeds the App Labs native macOS sidebar; only started once that sidebar is on screen.
-    let macSidebar: MacSidebarViewModel
+    /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
+    let sidebar: MacSidebarViewModel
+    /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
+    let tabBar: NativeTabBarViewModel
 
     @Published var webViewResetID = UUID()
     @Published var webViewController: WebViewController?
@@ -78,18 +80,22 @@ final class HomeAssistantViewModel: ObservableObject {
         self.chrome = chrome ?? WebViewChromeState()
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
         self.onWebViewController = onWebViewController
-        self.macSidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
+        self.sidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
+        self.tabBar = NativeTabBarViewModel(sidebar: sidebar, overlayState: self.overlayState)
 
-        macSidebar.onNavigate = { [weak self] path in
+        sidebar.onNavigate = { [weak self] path in
             self?.webViewController?.openSidebarPath(path)
         }
-        macSidebar.onShowNotifications = { [weak self] in
+        tabBar.onQuickSearch = { [weak self] in
+            self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
+        }
+        sidebar.onShowNotifications = { [weak self] in
             self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
                 command: .showNotifications,
                 payload: nil
             )
         }
-        macSidebar.readLocalStorage = { [weak self] key, completion in
+        sidebar.readLocalStorage = { [weak self] key, completion in
             guard let webViewController = self?.webViewController else {
                 completion(nil)
                 return
@@ -189,6 +195,21 @@ final class HomeAssistantViewModel: ObservableObject {
     func handleWebViewController(_ controller: WebViewController) {
         webViewController = controller
         onWebViewController?(controller)
+    }
+
+    /// Builds the frontend when the native tab bar hosts it: there the web view lives in a tab slot rather
+    /// than in a `FrontendView`, so the slot asks for it the first time it is on screen.
+    func ensureWebViewController() {
+        guard webViewController == nil else { return }
+        let controller = FrontendView(
+            server: server,
+            initialPath: initialPath,
+            onWebViewLoaded: { [weak self] controller in self?.handleWebViewLoaded(controller) },
+            resetFrontendAction: { [weak self] in self?.resetWebFrontend() },
+            reconnectManager: reconnectManager,
+            overlayState: overlayState
+        ).makeWebViewController()
+        handleWebViewController(controller)
     }
 
     func handleWebViewLoaded(_ controller: WebViewController) {
