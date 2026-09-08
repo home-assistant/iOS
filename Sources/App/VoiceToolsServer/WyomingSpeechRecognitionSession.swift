@@ -1,61 +1,56 @@
 import AVFoundation
 import Foundation
 import Shared
-import Speech
 
 /// Transcribes one Wyoming audio stream: PCM arrives in `append`, and `finish` reports what the
 /// recogniser made of it once the client's `audio-stop` closes the stream.
-///
-/// Recognition is pinned to the on-device recogniser. Sending a Home Assistant user's audio to
-/// Apple's servers is the opposite of what running the pipeline locally is for, so a locale without
-/// on-device support is refused rather than quietly handled in the cloud.
 @MainActor
 final class WyomingSpeechRecognitionSession {
     /// How long to wait for a final result after the audio ends before answering with the best
-    /// transcript so far. The recogniser can cancel after `endAudio()` without ever delivering an
-    /// `isFinal` result, which would otherwise hang the client until it times out.
-    private static let finalResultGracePeriod: TimeInterval = 2
+    /// transcript so far. The recogniser can cancel after `endAudio()` without ever delivering a
+    /// final result, which would otherwise hang the client until it times out.
+    static let defaultGracePeriod: TimeInterval = 2
 
-    private let request = SFSpeechAudioBufferRecognitionRequest()
+    private let recognizer: any WyomingSpeechRecognizing
+    private let gracePeriod: TimeInterval
     private var converter: WyomingPCMConverter
 
-    private var task: SFSpeechRecognitionTask?
     private var latestTranscript = ""
     private var receivedAudio = false
     private var result: Result<String, Error>?
     private var continuation: CheckedContinuation<String, Error>?
     private var graceTask: Task<Void, Never>?
 
-    init(locale: Locale, format: WyomingAudioFormat) throws {
+    /// The audio format is validated before the recogniser is built, so a client sending something
+    /// other than 16-bit PCM is told exactly that rather than whatever the recogniser complains
+    /// about first.
+    init(
+        format: WyomingAudioFormat,
+        gracePeriod: TimeInterval = WyomingSpeechRecognitionSession.defaultGracePeriod,
+        makeRecognizer: () throws -> any WyomingSpeechRecognizing
+    ) throws {
         self.converter = try WyomingPCMConverter(format: format)
+        self.recognizer = try makeRecognizer()
+        self.gracePeriod = gracePeriod
 
-        guard let recognizer = SFSpeechRecognizer(locale: locale), recognizer.isAvailable else {
-            throw WyomingProtocolError.speechRecognitionUnavailable(locale.identifier)
-        }
-        guard recognizer.supportsOnDeviceRecognition else {
-            throw WyomingProtocolError.speechRecognitionUnavailable(locale.identifier)
-        }
-        guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
-            throw WyomingProtocolError.speechRecognitionNotAuthorized
-        }
-
-        request.requiresOnDeviceRecognition = true
-        request.addsPunctuation = true
-        // Partial results are the fallback `finish` answers with when no final result arrives, so
-        // they are worth the extra callbacks even though only the last one is ever sent.
-        request.shouldReportPartialResults = true
-
-        self.task = recognizer.recognitionTask(with: request) { [weak self] result, error in
-            Task { @MainActor in
-                self?.handle(result: result, error: error)
+        recognizer.start(
+            onTranscript: { [weak self] transcript, isFinal in
+                self?.handle(transcript: transcript, isFinal: isFinal)
+            },
+            onFailure: { [weak self] error in
+                self?.handle(failure: error)
             }
-        }
+        )
+    }
+
+    convenience init(locale: Locale, format: WyomingAudioFormat) throws {
+        try self.init(format: format) { try SystemSpeechRecognizer(locale: locale) }
     }
 
     func append(_ audio: Data) {
         guard let buffer = converter.convert(audio) else { return }
         receivedAudio = true
-        request.append(buffer)
+        recognizer.append(buffer)
     }
 
     /// Closes the audio stream and waits for the transcript.
@@ -65,7 +60,7 @@ final class WyomingSpeechRecognitionSession {
             throw WyomingProtocolError.noAudioReceived
         }
 
-        request.endAudio()
+        recognizer.endAudio()
         startGracePeriod()
 
         return try await withCheckedThrowingContinuation { continuation in
@@ -80,26 +75,23 @@ final class WyomingSpeechRecognitionSession {
     func cancel() {
         graceTask?.cancel()
         graceTask = nil
-        task?.cancel()
-        task = nil
+        recognizer.cancel()
         continuation?.resume(throwing: CancellationError())
         continuation = nil
     }
 
-    private func handle(result: SFSpeechRecognitionResult?, error: Error?) {
-        if let result {
-            latestTranscript = result.bestTranscription.formattedString
-            if result.isFinal {
-                complete(.success(latestTranscript))
-                return
-            }
+    private func handle(transcript: String, isFinal: Bool) {
+        latestTranscript = transcript
+        if isFinal {
+            complete(.success(transcript))
         }
+    }
 
-        guard let error else { return }
+    private func handle(failure: Error) {
         // The recogniser cancels the task as a matter of course once `endAudio()` has been called,
-        // so an error after the audio ended is only a failure when nothing was recognised at all.
+        // so a failure after the audio ended only counts when nothing was recognised at all.
         if latestTranscript.isEmpty {
-            complete(.failure(error))
+            complete(.failure(failure))
         } else {
             complete(.success(latestTranscript))
         }
@@ -108,7 +100,7 @@ final class WyomingSpeechRecognitionSession {
     private func startGracePeriod() {
         graceTask?.cancel()
         graceTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(Self.finalResultGracePeriod * 1_000_000_000))
+            try? await Task.sleep(nanoseconds: UInt64((self?.gracePeriod ?? 0) * 1_000_000_000))
             guard !Task.isCancelled, let self else { return }
             self.complete(.success(self.latestTranscript))
         }
