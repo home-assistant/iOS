@@ -1275,6 +1275,8 @@ public enum L10n {
       }
     }
     public enum GetNewApp {
+      /// Back
+      public static var backButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.back_button") }
       /// Install the new Home Assistant app from the App Store, then come back here. The transfer starts as soon as the new app is on this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.body") }
       /// I have installed it

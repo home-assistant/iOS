@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -7,6 +8,7 @@ struct AppMigrationGetNewAppView: View {
     @ObservedObject private var coordinator = AppMigrationCoordinator.shared
     @Environment(\.scenePhase) private var scenePhase
     @State private var notFoundYet = false
+    let backAction: () -> Void
     let transferStartedAction: () -> Void
 
     var body: some View {
@@ -41,7 +43,16 @@ struct AppMigrationGetNewAppView: View {
             },
             secondaryActionIdentifier: AccessibilityIdentifier.migrationGetNewAppInstalled.rawValue
         )
-        .navigationBarBackButtonHidden(false)
+        .overlay(alignment: .topLeading) {
+            Button(action: backAction) {
+                Image(systemSymbol: .chevronLeft)
+                    .font(DesignSystem.Font.body.weight(.semibold))
+                    .padding(DesignSystem.Spaces.one)
+            }
+            .tint(.haPrimary)
+            .padding(DesignSystem.Spaces.one)
+            .accessibilityLabel(L10n.AppMigration.GetNewApp.backButton)
+        }
         .onChange(of: scenePhase) { phase in
             if phase == .active {
                 startTransferIfInstalled(reportMissing: false)
@@ -62,7 +73,5 @@ struct AppMigrationGetNewAppView: View {
 }
 
 #Preview {
-    NavigationStack {
-        AppMigrationGetNewAppView(transferStartedAction: {})
-    }
+    AppMigrationGetNewAppView(backAction: {}, transferStartedAction: {})
 }
