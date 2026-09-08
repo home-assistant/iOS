@@ -78,6 +78,23 @@ struct VoiceToolsServerSettingsView: View {
                     }
                 }
             }
+
+            Section {
+                NavigationLink {
+                    VoiceToolsServerLanguagesView()
+                } label: {
+                    Text(L10n.Settings.VoiceToolsServer.Languages.title)
+                }
+                NavigationLink {
+                    VoiceToolsServerVoicesView()
+                } label: {
+                    Text(L10n.Settings.VoiceToolsServer.Voices.title)
+                }
+            } header: {
+                Text(L10n.Settings.VoiceToolsServer.OnDevice.header)
+            } footer: {
+                Text(L10n.Settings.VoiceToolsServer.OnDevice.footer)
+            }
         }
         .onAppear {
             portText = String(viewModel.configuration.port)
@@ -103,6 +120,8 @@ extension VoiceToolsServerSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.VoiceToolsServer.toggle),
             SettingsSearchEntry(L10n.Settings.VoiceToolsServer.statusTitle),
             SettingsSearchEntry(L10n.Settings.VoiceToolsServer.port),
+            SettingsSearchEntry(L10n.Settings.VoiceToolsServer.Languages.title),
+            SettingsSearchEntry(L10n.Settings.VoiceToolsServer.Voices.title),
         ]
     }
 }

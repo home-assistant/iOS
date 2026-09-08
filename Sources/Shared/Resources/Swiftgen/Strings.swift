@@ -4908,8 +4908,6 @@ public enum L10n {
       }
     }
     public enum AppLabs {
-      /// There are no experimental features available on this device right now.
-      public static var emptyState: String { return L10n.tr("Localizable", "settings.app_labs.empty_state") }
       /// App Labs
       public static var title: String { return L10n.tr("Localizable", "settings.app_labs.title") }
       public enum FeaturesSection {
@@ -6365,6 +6363,20 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.title") }
       /// Enable voice tools server
       public static var toggle: String { return L10n.tr("Localizable", "settings.voice_tools_server.toggle") }
+      public enum Languages {
+        /// This device has no languages available for on-device speech recognition.
+        public static var empty: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.empty") }
+        /// Speech in these languages is recognized entirely on this device. A dictation language added in the Settings app appears here once it supports on-device recognition.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.footer") }
+        /// Speech-to-text languages
+        public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.title") }
+      }
+      public enum OnDevice {
+        /// Home Assistant can pick any of these for a voice pipeline that uses this device.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.on_device.footer") }
+        /// Available on this device
+        public static var header: String { return L10n.tr("Localizable", "settings.voice_tools_server.on_device.header") }
+      }
       public enum Status {
         /// Listening on port %@
         public static func running(_ p1: Any) -> String {
@@ -6374,6 +6386,14 @@ public enum L10n {
         public static var starting: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.starting") }
         /// Stopped
         public static var stopped: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.stopped") }
+      }
+      public enum Voices {
+        /// This device has no text-to-speech voices installed.
+        public static var empty: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.empty") }
+        /// Speech is spoken with these voices, all installed on this device. Voices downloaded in the Settings app, under Accessibility, appear here too.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.footer") }
+        /// Text-to-speech voices
+        public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.title") }
       }
     }
     public enum WhatsNew {

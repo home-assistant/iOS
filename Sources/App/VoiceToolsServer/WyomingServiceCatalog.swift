@@ -33,12 +33,25 @@ enum WyomingServiceCatalog {
         return requested
     }
 
+    /// The name this device already goes by in Home Assistant: the `device_name` its `mobile_app`
+    /// registration carries, so the Wyoming entry and the companion device line up in the UI. A
+    /// device that has not registered yet falls back to the name it would register with.
+    static func advertisedDeviceName() -> String {
+        let servers = Current.servers.all
+        if let registered = servers.lazy
+            .compactMap({ $0.info.setting(for: .registeredDeviceName) })
+            .first(where: { !$0.isEmpty }) {
+            return registered
+        }
+        return servers.first?.info.mobileAppDeviceName ?? Current.device.deviceName()
+    }
+
     static func info() async -> WyomingInfo {
         let version = Current.clientVersion().description
         // Home Assistant titles the config entry after the first program it finds, so the programs
-        // are named after the device: "Bruno's iPhone" identifies which phone was added, where
-        // "apple-on-device-speech" would be the same on every one of them.
-        let deviceName = Current.device.deviceName()
+        // are named after the device as Home Assistant knows it: "Bruno's iPhone" identifies which
+        // phone was added, where "apple-on-device-speech" would be the same on every one of them.
+        let deviceName = advertisedDeviceName()
         let attribution = WyomingInfo.Attribution(
             name: "Home Assistant Companion",
             url: "https://companion.home-assistant.io"

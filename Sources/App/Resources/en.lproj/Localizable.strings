@@ -1454,7 +1454,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
 "settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
 "settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
-"settings.app_labs.empty_state" = "There are no experimental features available on this device right now.";
 "settings.app_labs.features_section.header" = "Experimental features";
 "settings.app_labs.header.subtitle" = "App Labs are experimental features that can change or be removed at any time. Use them at your own risk.";
 "settings.app_labs.mac_native_sidebar.footer" = "Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.";
@@ -1920,6 +1919,11 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
 "settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\n\nThe server only answers while the app is open, and stops when you leave it.";
 "settings.voice_tools_server.footer" = "Speech is recognized and spoken on this device. Only the text and the finished audio travel over your local network.";
+"settings.voice_tools_server.languages.empty" = "This device has no languages available for on-device speech recognition.";
+"settings.voice_tools_server.languages.footer" = "Speech in these languages is recognized entirely on this device. A dictation language added in the Settings app appears here once it supports on-device recognition.";
+"settings.voice_tools_server.languages.title" = "Speech-to-text languages";
+"settings.voice_tools_server.on_device.footer" = "Home Assistant can pick any of these for a voice pipeline that uses this device.";
+"settings.voice_tools_server.on_device.header" = "Available on this device";
 "settings.voice_tools_server.port" = "Port";
 "settings.voice_tools_server.speech_permission" = "Speech recognition permission has not been granted, so this device can only answer text-to-speech requests. Allow it in the Settings app to use speech-to-text too.";
 "settings.voice_tools_server.status.running" = "Listening on port %@";
@@ -1928,6 +1932,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.voice_tools_server.status_title" = "Status";
 "settings.voice_tools_server.title" = "Voice tools server";
 "settings.voice_tools_server.toggle" = "Enable voice tools server";
+"settings.voice_tools_server.voices.empty" = "This device has no text-to-speech voices installed.";
+"settings.voice_tools_server.voices.footer" = "Speech is spoken with these voices, all installed on this device. Voices downloaded in the Settings app, under Accessibility, appear here too.";
+"settings.voice_tools_server.voices.title" = "Text-to-speech voices";
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Items";

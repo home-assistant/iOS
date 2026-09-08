@@ -1,8 +1,53 @@
 import Foundation
 @testable import HomeAssistant
+@testable import Shared
 import Testing
 
 struct WyomingServiceCatalogTests {
+    private func withServers(_ servers: FakeServerManager, _ work: () async -> Void) async {
+        let previousServers = Current.servers
+        Current.servers = servers
+        defer { Current.servers = previousServers }
+        await work()
+    }
+
+    /// Home Assistant already knows this device by the name its `mobile_app` registration carries,
+    /// so the Wyoming entry is named the same way rather than after whatever iOS calls the device.
+    @Test func advertisesTheNameRegisteredWithHomeAssistant() async {
+        let servers = FakeServerManager(initial: 1)
+        servers.all[0].update {
+            $0.setSetting(value: "Kitchen iPad", for: .overrideDeviceName)
+            $0.setSetting(value: "Living room iPad", for: .registeredDeviceName)
+        }
+
+        await withServers(servers) {
+            #expect(WyomingServiceCatalog.advertisedDeviceName() == "Living room iPad")
+
+            let info = await WyomingServiceCatalog.info()
+            #expect(info.tts.first?.name == "Living room iPad")
+            #expect(info.asr.allSatisfy { $0.name == "Living room iPad" })
+        }
+    }
+
+    /// A device that has not registered yet is named after what it will register with, which is the
+    /// override when the user set one.
+    @Test func fallsBackToTheNameItWouldRegisterWith() async {
+        let servers = FakeServerManager(initial: 1)
+        servers.all[0].update {
+            $0.setSetting(value: "Kitchen iPad", for: .overrideDeviceName)
+        }
+
+        await withServers(servers) {
+            #expect(WyomingServiceCatalog.advertisedDeviceName() == "Kitchen iPad")
+        }
+    }
+
+    @Test func fallsBackToTheDeviceNameWithoutAServer() async {
+        await withServers(FakeServerManager(initial: 0)) {
+            #expect(WyomingServiceCatalog.advertisedDeviceName() == Current.device.deviceName())
+        }
+    }
+
     /// The pipeline's language is not always one of the tags this device advertises, so a bare
     /// `en` has to find `en-US` rather than failing the request outright.
     @Test func matchesOnTheLanguageWhenTheExactTagIsNotSupported() async {

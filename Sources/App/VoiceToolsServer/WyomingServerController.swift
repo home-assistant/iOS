@@ -49,7 +49,9 @@ final class WyomingServerController: ObservableObject {
 
     private func reconcile() {
         let configuration = configuration ?? VoiceToolsServerConfiguration.config
-        guard configuration.isEnabled, isForeground else {
+        // The server is an App Labs feature, so a setting left on by a TestFlight build stays
+        // inert once the same install updates to an App Store build.
+        guard AppLabsFeature.isLabsAvailable, configuration.isEnabled, isForeground else {
             stop()
             return
         }
@@ -64,7 +66,7 @@ final class WyomingServerController: ObservableObject {
 
         let server = WyomingServer(
             port: port,
-            serviceName: Current.device.deviceName(),
+            serviceName: WyomingServiceCatalog.advertisedDeviceName(),
             // Only used when a client transcribes without naming a language, which Home Assistant
             // never does. The device's own locale, deliberately not Assist's speech setting: what
             // this device serves is configured independently of how Assist behaves in the app.
