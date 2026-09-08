@@ -37,7 +37,7 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
             }
         }
 
-        static let resourceExtension = "flac"
+        static let resourceExtension = "m4a"
     }
 
     /// Serial queue protecting `player` and `completion`; calls arrive from CarPlay template
