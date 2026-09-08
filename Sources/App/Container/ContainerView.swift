@@ -6,6 +6,7 @@ import UIKit
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
+    @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @State private var coordinator = AppContainerCoordinator()
 
     var body: some View {
@@ -15,11 +16,7 @@ struct ContainerView: View {
                 OnboardingNavigationView(onboardingStyle: style)
                     .id(style)
             case let .webView(server, initialPath):
-                HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
-                    coordinator.setFrontend(webViewController)
-                    Current.sceneManager.setWebViewController(webViewController)
-                }
-                .id(server.identifier.rawValue)
+                frontend(server: server, initialPath: initialPath)
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
@@ -82,6 +79,29 @@ struct ContainerView: View {
                 }
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
+            }
+        }
+    }
+
+    /// The frontend, in the stack Settings is pushed onto. Only this screen: onboarding brings its own
+    /// `NavigationStack`, and SwiftUI crashes on the two nested.
+    private func frontend(server: Server, initialPath: String?) -> some View {
+        NavigationStack(path: $appSettings.pushPath) {
+            HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
+                coordinator.setFrontend(webViewController)
+                Current.sceneManager.setWebViewController(webViewController)
+            }
+            .id(server.identifier.rawValue)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                switch route {
+                case .settings:
+                    SettingsView(embedInOwnNavigation: false)
+                        .injectingViewControllerProvider()
+                case let .item(item):
+                    item.destinationView
+                        .injectingViewControllerProvider()
+                }
             }
         }
     }

@@ -154,7 +154,7 @@ struct CarPlayConfigurationView: View {
                     layoutPickerOption(layout).tag(layout)
                 }
             }
-            ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
+            ForEach(viewModel.config.quickAccessItems, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
             }
             .onMove { indices, newOffset in
