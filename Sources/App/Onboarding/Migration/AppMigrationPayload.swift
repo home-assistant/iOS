@@ -18,4 +18,6 @@ struct AppMigrationPayload: Codable {
     /// The app-group `UserDefaults` domain as a binary property list.
     let appGroupDefaults: Data
     let keychainItems: [KeychainItem]
+    /// Raw `SensorPermission` values the previous app held; the new app asks for them again.
+    let grantedPermissions: [String]?
 }

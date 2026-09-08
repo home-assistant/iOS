@@ -4,6 +4,8 @@ import Shared
 /// What a transfer carried, shown on both ends of the handoff.
 struct AppMigrationSummary: Equatable {
     let serverNames: [String]
+    /// What the previous app was allowed to use; empty on the previous app's own screen.
+    var grantedPermissions: [SensorPermission] = []
 
     var serverCount: Int {
         serverNames.count
@@ -18,5 +20,8 @@ struct AppMigrationSummary: Equatable {
             .serversTransferred(serverCount)
     }
 
-    static let preview = AppMigrationSummary(serverNames: ["Home", "Cabin"])
+    static let preview = AppMigrationSummary(
+        serverNames: ["Home", "Cabin"],
+        grantedPermissions: [.location, .notification]
+    )
 }

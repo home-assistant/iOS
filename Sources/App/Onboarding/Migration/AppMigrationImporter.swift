@@ -15,7 +15,10 @@ struct AppMigrationImporter {
         try restoreDefaults(payload.appGroupDefaults)
         restoreKeychain(payload.keychainItems.filter { $0.store != .servers })
         let serverNames = try restoreServers(payload.keychainItems.filter { $0.store == .servers })
-        return AppMigrationSummary(serverNames: serverNames)
+        return AppMigrationSummary(
+            serverNames: serverNames,
+            grantedPermissions: (payload.grantedPermissions ?? []).compactMap(SensorPermission.init(rawValue:))
+        )
     }
 
     private func restoreDatabase(_ data: Data) throws {

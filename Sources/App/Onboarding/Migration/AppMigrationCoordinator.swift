@@ -121,6 +121,7 @@ final class AppMigrationCoordinator: ObservableObject {
             importState = .failed(message: AppMigrationError.wrongSession.localizedDescription)
             return
         }
+        let started = Current.date()
         importState = .receiving
         guard let sealed = AppMigrationPasteboard.read() else {
             importState = .failed(message: AppMigrationError.noPayload.localizedDescription)
@@ -138,6 +139,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 let summary = try await Task.detached {
                     try AppMigrationImporter().apply(payload)
                 }.value
+                await pace(from: started)
                 AppMigrationSessionStore.clear()
                 self.session = nil
                 importState = nil
@@ -183,11 +185,17 @@ final class AppMigrationCoordinator: ObservableObject {
         exportState = .preparing
         Task {
             do {
+                let started = Current.date()
+                let grantedPermissions = await AppMigrationGrantedPermissions.current()
                 let sealed = try await Task.detached {
-                    let payload = try AppMigrationExporter().makePayload(sessionID: request.id)
+                    let payload = try AppMigrationExporter().makePayload(
+                        sessionID: request.id,
+                        grantedPermissions: grantedPermissions
+                    )
                     let data = try JSONEncoder().encode(payload)
                     return try AppMigrationCrypto.seal(data, key: request.key)
                 }.value
+                await pace(from: started)
                 AppMigrationPasteboard.write(sealed)
                 if await open(AppMigrationLink.payloadReady(sessionID: request.id).url(to: .newApp)) {
                     exportState = .handedOff
@@ -297,6 +305,14 @@ final class AppMigrationCoordinator: ObservableObject {
         for scene in windowScenes where scene !== keep {
             UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil, errorHandler: nil)
         }
+    }
+
+    /// The work finishes well inside the progress script, so each side holds until the script has
+    /// played out and the user has read what moved.
+    private func pace(from start: Date) async {
+        let remaining = AppMigrationProgressScript.duration - Current.date().timeIntervalSince(start)
+        guard remaining > 0 else { return }
+        try? await Task.sleep(for: .seconds(remaining))
     }
 
     private func open(_ url: URL) async -> Bool {
