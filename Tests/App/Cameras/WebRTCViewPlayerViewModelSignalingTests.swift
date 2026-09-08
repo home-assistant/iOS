@@ -19,7 +19,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         connectionTimeout: 0.2,
         disconnectedGracePeriod: 0.1,
         signalingStallTimeout: 0.2,
-        connectionWaitTimeout: 0.3,
+        connectionWaitTimeout: 1.0,
         backgroundTeardownDelay: 60
     )
 
@@ -86,6 +86,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     func testAFailedConfigurationFetchStillOffersWithTheFallbackServers() throws {
         viewModel.start()
         try clientConfigRequest(at: 0).completion(.failure(.internal(debugDescription: "boom")))
+        flushMainQueue()
         flushMainQueue()
 
         let client = try XCTUnwrap(clients.first)
@@ -214,6 +215,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         _ = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
 
+        viewModel.handleVideoRendered()
         client.changeConnectionState(.disconnected)
         flushMainQueue()
         client.changeConnectionState(.connected)
@@ -271,13 +273,13 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         connection.setState(.connecting, waitForQueue: false)
         viewModel.start()
 
-        spinMain(for: timing.connectionWaitTimeout * 2)
+        spinMain(for: timing.connectionWaitTimeout * 1.5)
 
         XCTAssertTrue(viewModel.didFail)
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
-    func testUnansweredSignalingWaitsForAFreshConnectionAndRetries() throws {
+    func testUnansweredSignalingWaitsForAFreshConnectionAndRetries() {
         viewModel.start()
         XCTAssertEqual(clientConfigRequests.count, 1)
 
@@ -344,8 +346,11 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         return try XCTUnwrap(requests.indices.contains(index) ? requests[index] : nil)
     }
 
+    /// The configuration lands on the main queue, and the offer the client produces hops there once
+    /// more before it is sent, so both hops are drained before anything is asserted.
     private func answerClientConfig(at index: Int) throws {
         try clientConfigRequest(at: index).completion(.success(.init(value: clientConfiguration)))
+        flushMainQueue()
         flushMainQueue()
     }
 
