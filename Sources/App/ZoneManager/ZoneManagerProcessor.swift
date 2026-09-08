@@ -177,10 +177,6 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
 
             zone.setInRegion(state == .inside)
 
-            if region is CLBeaconRegion, state == .outside {
-                return ignore(.beaconExitIgnored)
-            }
-
             return .value(())
         }
     }
