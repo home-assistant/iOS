@@ -3,17 +3,15 @@ import Shared
 import SwiftUI
 
 /// The previous app's side of the handoff: confirm and package the setup, then stay as the only screen
-/// until the user has checked the new app and erased this one.
+/// until the user has checked the new app and deleted this one.
 struct AppMigrationExportView: View {
     let state: AppMigrationExportState
     let summary: AppMigrationSummary
     let transferAction: () -> Void
     let openNewAppAction: () -> Void
     let transferAgainAction: () -> Void
-    let eraseAction: () -> Void
     let cancelAction: () -> Void
 
-    @State private var showsEraseConfirmation = false
     @State private var showsTransferAgainConfirmation = false
 
     var body: some View {
@@ -100,32 +98,8 @@ struct AppMigrationExportView: View {
                             action: transferAgainAction
                         )
                     } message: {
-                        Text(L10n.AppMigration.Export.TransferAgainConfirmation.body)
+                        Text(L10n.AppMigration.Export.TransferAgainConfirmation.resetBody)
                     }
-                    Button(L10n.AppMigration.Export.HandedOff.eraseButton) {
-                        showsEraseConfirmation = true
-                    }
-                    .buttonStyle(.secondaryNegativeButton)
-                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportErase.rawValue)
-                    .confirmationDialog(
-                        L10n.AppMigration.Export.EraseConfirmation.title,
-                        isPresented: $showsEraseConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(
-                            L10n.AppMigration.Export.EraseConfirmation.confirmButton,
-                            role: .destructive,
-                            action: eraseAction
-                        )
-                    } message: {
-                        Text(L10n.AppMigration.Export.EraseConfirmation.body)
-                    }
-                case .erased:
-                    Button(action: openNewAppAction) {
-                        Text(L10n.AppMigration.Export.HandedOff.openButton)
-                    }
-                    .buttonStyle(.primaryButton)
-                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportOpenNewApp.rawValue)
                 case .idle, .preparing, .failed:
                     HAProgressButton(
                         L10n.AppMigration.Export.transferButton,
@@ -135,7 +109,7 @@ struct AppMigrationExportView: View {
                     )
                     .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransfer.rawValue)
                     Button(action: cancelAction) {
-                        Text(L10n.AppMigration.Export.cancelButton)
+                        Text(L10n.AppMigration.Export.laterButton)
                     }
                     .buttonStyle(.secondaryButton)
                     .tint(Color.haPrimary)
@@ -152,7 +126,7 @@ struct AppMigrationExportView: View {
     private var showsInventory: Bool {
         switch state {
         case .idle, .preparing, .failed: true
-        case .handedOff, .erased: false
+        case .handedOff: false
         }
     }
 
@@ -160,7 +134,6 @@ struct AppMigrationExportView: View {
         switch state {
         case .idle, .preparing, .failed: .transferIcon
         case .handedOff: .checkCircleOutlineIcon
-        case .erased: .cellphoneRemoveIcon
         }
     }
 
@@ -168,7 +141,6 @@ struct AppMigrationExportView: View {
         switch state {
         case .idle, .preparing, .failed: .haPrimary
         case .handedOff: .haSuccessColor
-        case .erased: .secondary
         }
     }
 
@@ -176,21 +148,19 @@ struct AppMigrationExportView: View {
         switch state {
         case .idle, .preparing, .failed: L10n.AppMigration.Export.title
         case .handedOff: L10n.AppMigration.Export.HandedOff.title
-        case .erased: L10n.AppMigration.Export.Erased.title
         }
     }
 
     private var message: String {
         switch state {
         case .idle, .preparing, .failed: L10n.AppMigration.Export.body
-        case .handedOff: L10n.AppMigration.Export.HandedOff.checkBody
-        case .erased: L10n.AppMigration.Export.Erased.body
+        case .handedOff: L10n.AppMigration.Export.HandedOff.verifyBody
         }
     }
 
     private var progressButtonState: HAProgressButtonState {
         switch state {
-        case .idle, .handedOff, .erased: .idle
+        case .idle, .handedOff: .idle
         case .preparing: .inProgress
         case .failed: .failure
         }
@@ -204,7 +174,6 @@ struct AppMigrationExportView: View {
         transferAction: {},
         openNewAppAction: {},
         transferAgainAction: {},
-        eraseAction: {},
         cancelAction: {}
     )
 }
@@ -216,7 +185,6 @@ struct AppMigrationExportView: View {
         transferAction: {},
         openNewAppAction: {},
         transferAgainAction: {},
-        eraseAction: {},
         cancelAction: {}
     )
 }
@@ -228,19 +196,6 @@ struct AppMigrationExportView: View {
         transferAction: {},
         openNewAppAction: {},
         transferAgainAction: {},
-        eraseAction: {},
-        cancelAction: {}
-    )
-}
-
-#Preview("Erased") {
-    AppMigrationExportView(
-        state: .erased,
-        summary: .preview,
-        transferAction: {},
-        openNewAppAction: {},
-        transferAgainAction: {},
-        eraseAction: {},
         cancelAction: {}
     )
 }
@@ -252,7 +207,6 @@ struct AppMigrationExportView: View {
         transferAction: {},
         openNewAppAction: {},
         transferAgainAction: {},
-        eraseAction: {},
         cancelAction: {}
     )
 }

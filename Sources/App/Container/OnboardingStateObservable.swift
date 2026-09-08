@@ -25,7 +25,7 @@ final class OnboardingStateObservable: ObservableObject {
         case webView(Server, initialPath: String?)
         case recoveredServerImport
         case recoveredServerReauth(Server)
-        /// The previous app handing its setup to the new one; nothing else is shown until it is erased.
+        /// The previous app handing its setup to the new one; nothing else is shown until the app is deleted.
         case migrationHandoff
     }
 

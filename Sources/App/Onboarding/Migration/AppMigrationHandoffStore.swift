@@ -28,8 +28,6 @@ enum AppMigrationHandoffStore {
             return .requested(session)
         case "handedOff":
             return .handedOff
-        case "erased":
-            return .erased
         default:
             return nil
         }
@@ -46,8 +44,6 @@ enum AppMigrationHandoffStore {
             defaults.set(session.keyString, forKey: sessionKeyKey)
         case .handedOff:
             defaults.set("handedOff", forKey: phaseKey)
-        case .erased:
-            defaults.set("erased", forKey: phaseKey)
         case nil:
             defaults.removeObject(forKey: phaseKey)
         }

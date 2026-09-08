@@ -5,5 +5,4 @@ import Foundation
 enum AppMigrationHandoffPhase: Equatable {
     case requested(AppMigrationSession)
     case handedOff
-    case erased
 }

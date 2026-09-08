@@ -27,7 +27,6 @@ enum AccessibilityIdentifier: String {
     case migrationExportTransfer = "migration.export.transfer"
     case migrationExportOpenNewApp = "migration.export.openNewApp"
     case migrationExportTransferAgain = "migration.export.transferAgain"
-    case migrationExportErase = "migration.export.erase"
     case migrationPermissionsPrimary = "migration.permissions.primary"
     case migrationPermissionsSkip = "migration.permissions.skip"
 }
