@@ -26,6 +26,8 @@ final class WebRTCViewPlayerViewModelTests: XCTestCase {
         server = servers.addFake()
         api = HomeAssistantAPI(server: server)
         connection = HAMockConnection()
+        // Signaling is only sent over a live socket, so a player under test starts from one.
+        connection.setState(.ready(version: "1.0-mock"), waitForQueue: false)
         api.connection = connection
         Current.cachedApis[server.identifier] = api
         viewModel = WebRTCViewPlayerViewModel(server: server, cameraEntityId: "camera.front_door")
@@ -127,6 +129,44 @@ final class WebRTCViewPlayerViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.showLoader)
         XCTAssertFalse(viewModel.didFail)
+    }
+
+    /// The failure the device logs caught: a network change kills the WebSocket, HAKit takes the
+    /// better part of a minute to notice, and a stream set up meanwhile sends signaling that
+    /// nothing ever answers. Holding it back is what lets the stream start when the socket returns.
+    func testAStreamIsNotSignalledWhileTheServerConnectionIsDown() {
+        connection.setState(.connecting, waitForQueue: false)
+
+        viewModel.start()
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty, "Nothing should be sent into a dead socket")
+        XCTAssertTrue(viewModel.showLoader)
+        XCTAssertFalse(viewModel.didFail)
+    }
+
+    /// ...and once it is back, the stream goes out on its own rather than waiting for the user to
+    /// reopen the player.
+    func testAStreamHeldForTheConnectionIsSentOnceItIsReady() {
+        connection.setState(.connecting, waitForQueue: false)
+        viewModel.start()
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+
+        connection.setState(.ready(version: "1.0-mock"), waitForQueue: false)
+        flushMainQueue()
+
+        XCTAssertEqual(connection.pendingRequests.first?.request.type.command, "camera/webrtc/get_client_config")
+        XCTAssertFalse(viewModel.didFail)
+    }
+
+    /// A server that refused us is not worth waiting on; the player cascades instead.
+    func testARejectedServerConnectionFailsTheStreamRatherThanWaiting() {
+        connection.setState(.disconnected(reason: .rejected), waitForQueue: false)
+
+        viewModel.start()
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+        XCTAssertTrue(viewModel.didFail)
+        XCTAssertFalse(viewModel.showLoader)
     }
 
     /// Lets the view model's main-queue hop run before the assertions read its state.

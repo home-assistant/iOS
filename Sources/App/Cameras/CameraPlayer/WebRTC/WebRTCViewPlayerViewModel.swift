@@ -48,6 +48,14 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// state resets the count, so a long watch isn't limited by an interruption it recovered from.
     private static let maxConnectionRetries = 2
 
+    /// How long the stream waits for a server connection that is down before giving up on it.
+    ///
+    /// Long, because it is HAKit's own reconnect being waited on: device logs show it takes some
+    /// forty-five seconds to notice a socket died with the network under it, and failing sooner
+    /// would cascade to a stream that needs exactly the same socket. Bounded all the same, so a
+    /// server that is simply unreachable reports that instead of spinning forever.
+    private static let connectionWaitTimeout: TimeInterval = 60
+
     /// Mirrors `HIDDEN_CLEANUP_DELAY` in the frontend player: a stream gets this long out of sight
     /// before coming back to the foreground counts as needing a fresh one.
     private static let backgroundTeardownDelay: TimeInterval = 60
@@ -58,6 +66,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private var offerSubscription: HACancellable?
     private var timeoutWorkItem: DispatchWorkItem?
     private var disconnectRecoveryWorkItem: DispatchWorkItem?
+    /// Holds an attempt back while the server's WebSocket is down, so signaling is never sent into
+    /// a socket that cannot answer it.
+    private var connectionGate: WebRTCServerConnectionGate?
+    private var connectionWaitWorkItem: DispatchWorkItem?
     /// Regenerated on every start/teardown so async setup steps (config fetch, offer creation)
     /// from a previous attempt are ignored instead of resurrecting a torn-down connection.
     private var connectionToken = UUID()
@@ -96,6 +108,8 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         offerSubscription?.cancel()
         timeoutWorkItem?.cancel()
         disconnectRecoveryWorkItem?.cancel()
+        connectionWaitWorkItem?.cancel()
+        connectionGate?.cancel()
         webRTCClient?.closeConnection()
     }
 
@@ -132,7 +146,6 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         isActive = true
         connectionRetries = 0
         cancelTimeout()
-        scheduleTimeout()
         beginConnection()
     }
 
@@ -183,6 +196,34 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         }
 
         let token = connectionToken
+
+        // Signaling only works over a live WebSocket, and after a network change that socket stays
+        // dead for as long as HAKit takes to notice — commands sent meanwhile are answered by
+        // nothing at all. Waiting for it here is what makes a stream survive moving between Wi-Fi
+        // and cellular instead of spinning until it gives up on WebRTC entirely.
+        let gate = WebRTCServerConnectionGate(connection: api.connection)
+        connectionGate = gate
+        scheduleConnectionWaitTimeout()
+        gate.whenReady { [weak self] isReady in
+            guard let self, token == connectionToken else { return }
+            cancelConnectionWait()
+            connectionGate = nil
+            guard isReady else {
+                Current.Log.error("Server connection is unusable, cannot stream \(cameraEntityId) over WebRTC")
+                handleFailure(reason: nil)
+                return
+            }
+            fetchClientConfiguration(api: api, token: token)
+        }
+    }
+
+    /// Starts the attempt proper, once the server is known to be reachable. The stream's time
+    /// budget starts here rather than at `start()`: a wait on the connection is not the camera
+    /// failing to answer, and charging it to the same clock is what cascaded a perfectly good
+    /// camera to a lesser stream after a network change.
+    private func fetchClientConfiguration(api: HomeAssistantAPI, token: UUID) {
+        cancelTimeout()
+        scheduleTimeout()
 
         // Same flow as the frontend player: ask the server for the client configuration — the ICE
         // servers, including any user-configured TURN, and the data channel some cameras need —
@@ -283,6 +324,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     private func tearDownConnection() {
         connectionToken = UUID()
+        cancelConnectionWait()
+        connectionGate?.cancel()
+        connectionGate = nil
         offerSubscription?.cancel()
         offerSubscription = nil
         webRTCClient?.closeConnection()
@@ -306,6 +350,27 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private func cancelTimeout() {
         timeoutWorkItem?.cancel()
         timeoutWorkItem = nil
+    }
+
+    /// Bounds the wait on a server connection so an unreachable server ends in a reported failure
+    /// rather than a loader that never resolves.
+    private func scheduleConnectionWaitTimeout() {
+        connectionWaitWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            connectionWaitWorkItem = nil
+            Current.Log.error("Server connection never came back, giving up on \(cameraEntityId) over WebRTC")
+            connectionGate?.cancel()
+            connectionGate = nil
+            handleFailure(reason: nil)
+        }
+        connectionWaitWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectionWaitTimeout, execute: workItem)
+    }
+
+    private func cancelConnectionWait() {
+        connectionWaitWorkItem?.cancel()
+        connectionWaitWorkItem = nil
     }
 
     /// Waits out a short interruption before rebuilding the stream, so WebRTC gets the chance to
@@ -338,16 +403,15 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         }
         connectionRetries += 1
         Current.Log.info("WebRTC connection for \(cameraEntityId) failed, rebuilding it")
-        // A stream that was already playing cancelled its timeout when the first frame arrived, so
-        // the rebuild needs a fresh one — otherwise a retry that never connects leaves the loader
-        // spinning with nothing to cascade it onwards.
+        // The rebuild arms its own timeout once the server answers, so a retry that waits on a
+        // socket the network took away is not charged for the wait.
         cancelTimeout()
-        scheduleTimeout()
         beginConnection()
     }
 
     private func handleFailure(reason: String?) {
         cancelTimeout()
+        cancelConnectionWait()
         showLoader = false
         if let reason {
             failureReason = reason
