@@ -330,6 +330,18 @@ final class CarPlayAssistSessionTests: XCTestCase {
 
     // MARK: - Muted TTS (does not apply to CarPlay)
 
+    func testTTSMediaUrlStopsTheProcessingCueBeforePlayback() {
+        let sut = makeSut()
+        sut.start()
+        sut.didReceiveEvent(.sttEnd)
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
+        XCTAssertFalse(mockTonePlayer.stopCalled)
+
+        sut.didReceiveTtsMediaUrl(URL(string: "https://example.invalid/tts.mp3")!)
+
+        XCTAssertTrue(mockTonePlayer.stopCalled)
+    }
+
     func testMuteTTSDoesNotSuppressServerTTSRequest() {
         let sut = makeSut(configuration: AssistConfiguration(muteTTS: true))
         sut.start()
