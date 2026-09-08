@@ -45,9 +45,11 @@ struct WyomingSpeechRecognitionSessionTests {
 
     private struct RecognizerFailure: Error {}
 
+    /// Long by default so the fallback never races the recogniser: only the test that is about the
+    /// grace period shortens it.
     private func makeSession(
         recognizer: FakeRecognizer,
-        gracePeriod: TimeInterval = 0.05
+        gracePeriod: TimeInterval = 30
     ) throws -> WyomingSpeechRecognitionSession {
         try WyomingSpeechRecognitionSession(
             format: .init(rate: 16000, width: 2, channels: 1),
@@ -111,6 +113,7 @@ struct WyomingSpeechRecognitionSessionTests {
         let session = try makeSession(recognizer: recognizer, gracePeriod: 0.05)
         session.append(pcm([1, 2]))
         recognizer.report("half a sentence")
+        // No final result and no failure ever arrives: only the grace period can answer.
 
         let transcript = try await session.finish()
 
