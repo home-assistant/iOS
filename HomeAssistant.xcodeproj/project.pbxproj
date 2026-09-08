@@ -2515,6 +2515,7 @@
 		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
 		42FE0001300000000000RM01 /* RemoteMediaCore */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMediaCore; sourceTree = "<group>"; };
 		42FE0004300000000000RM04 /* WebhookCrypto */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WebhookCrypto; sourceTree = "<group>"; };
+		76BBD9F0E0301B66C72F7851 /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
 		1786D9816CD0FE7344F88EED /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
@@ -2997,6 +2998,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				76BBD9F0E0301B66C72F7851 /* RemoteMedia */,
 				42EDBE083002FC020051FC9B /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
@@ -3721,6 +3723,7 @@
 				42EDE917300315A50051FC9B /* Settings */,
 				42FE0001300000000000RM01 /* RemoteMediaCore */,
 				42FE0004300000000000RM04 /* WebhookCrypto */,
+				76BBD9F0E0301B66C72F7851 /* RemoteMedia */,
 				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = "Shared-iOS";
