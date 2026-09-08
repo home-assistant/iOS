@@ -125,7 +125,13 @@ struct WyomingConnectionTests {
     }
 
     private struct SynthesizeRequest: Encodable {
+        struct Voice: Encodable {
+            let name: String?
+            let language: String?
+        }
+
         let text: String
+        var voice: Voice?
     }
 
     private struct TranscriptResponse: Decodable {
@@ -176,6 +182,50 @@ struct WyomingConnectionTests {
             let response = try event.decodeData(ErrorResponse.self)
             #expect(event.kind == .error)
             #expect(!response.text.isEmpty)
+        }
+    }
+
+    /// Home Assistant sends back the voice id this server advertised, which is an
+    /// `AVSpeechSynthesisVoice` identifier.
+    @Test func synthesizesWithTheVoiceTheClientAsksForByIdentifier() async throws {
+        let voices = await OnDeviceVoiceCatalog.voices()
+        let identifier = try #require(voices.first?.identifier)
+
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .synthesize, encoding: SynthesizeRequest(
+                text: "Hello.",
+                voice: .init(name: identifier, language: nil)
+            )))
+
+            let event = try await client.receive()
+            #expect(event.kind == .audioStart)
+        }
+    }
+
+    /// A client that names a language without picking a voice still gets speech, in that language.
+    @Test func synthesizesWithALanguageWhenNoVoiceIsNamed() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .synthesize, encoding: SynthesizeRequest(
+                text: "Hello.",
+                voice: .init(name: nil, language: "en-US")
+            )))
+
+            let event = try await client.receive()
+            #expect(event.kind == .audioStart)
+        }
+    }
+
+    /// An identifier no longer installed falls through to the system voice rather than failing the
+    /// request: the voice list is read once and a client can hold a stale one.
+    @Test func fallsBackWhenTheNamedVoiceIsGone() async throws {
+        try await withClient { client in
+            try await client.send(WyomingEvent(kind: .synthesize, encoding: SynthesizeRequest(
+                text: "Hello.",
+                voice: .init(name: "com.example.voice.that.is.not.installed", language: nil)
+            )))
+
+            let event = try await client.receive()
+            #expect(event.kind == .audioStart)
         }
     }
 

@@ -17,16 +17,9 @@ final class WyomingSpeechRecognitionSession {
     private static let finalResultGracePeriod: TimeInterval = 2
 
     private let request = SFSpeechAudioBufferRecognitionRequest()
-    private let sourceFormat: AVAudioFormat
-    private let recognitionFormat: AVAudioFormat
-    private let converter: AVAudioConverter
-    private let bytesPerFrame: Int
+    private var converter: WyomingPCMConverter
 
     private var task: SFSpeechRecognitionTask?
-    /// Bytes left over from a chunk that did not end on a frame boundary. Home Assistant sends
-    /// whole frames, but nothing in the protocol promises it, and a half-frame carried into the
-    /// next chunk would shift every following sample by a byte and turn speech into noise.
-    private var remainder = Data()
     private var latestTranscript = ""
     private var receivedAudio = false
     private var result: Result<String, Error>?
@@ -34,18 +27,7 @@ final class WyomingSpeechRecognitionSession {
     private var graceTask: Task<Void, Never>?
 
     init(locale: Locale, format: WyomingAudioFormat) throws {
-        guard let sourceFormat = format.pcmFormat else {
-            throw WyomingProtocolError.unsupportedAudioFormat(format)
-        }
-        // The recogniser is fed the same float format an `AVAudioEngine` tap produces, at the
-        // client's sample rate: no resampling, only the integer-to-float and channel change, which
-        // `AVAudioConverter` does in one pass without the pull-style input block.
-        guard let recognitionFormat = AVAudioFormat(
-            standardFormatWithSampleRate: sourceFormat.sampleRate,
-            channels: 1
-        ), let converter = AVAudioConverter(from: sourceFormat, to: recognitionFormat) else {
-            throw WyomingProtocolError.unsupportedAudioFormat(format)
-        }
+        self.converter = try WyomingPCMConverter(format: format)
 
         guard let recognizer = SFSpeechRecognizer(locale: locale), recognizer.isAvailable else {
             throw WyomingProtocolError.speechRecognitionUnavailable(locale.identifier)
@@ -56,11 +38,6 @@ final class WyomingSpeechRecognitionSession {
         guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
             throw WyomingProtocolError.speechRecognitionNotAuthorized
         }
-
-        self.sourceFormat = sourceFormat
-        self.recognitionFormat = recognitionFormat
-        self.converter = converter
-        self.bytesPerFrame = format.bytesPerFrame
 
         request.requiresOnDeviceRecognition = true
         request.addsPunctuation = true
@@ -76,15 +53,7 @@ final class WyomingSpeechRecognitionSession {
     }
 
     func append(_ audio: Data) {
-        remainder.append(audio)
-        let frameCount = remainder.count / bytesPerFrame
-        guard frameCount > 0 else { return }
-
-        let consumed = frameCount * bytesPerFrame
-        let frames = Data(remainder.prefix(consumed))
-        remainder = Data(remainder.dropFirst(consumed))
-
-        guard let buffer = makeBuffer(from: frames, frameCount: AVAudioFrameCount(frameCount)) else { return }
+        guard let buffer = converter.convert(audio) else { return }
         receivedAudio = true
         request.append(buffer)
     }
@@ -115,26 +84,6 @@ final class WyomingSpeechRecognitionSession {
         task = nil
         continuation?.resume(throwing: CancellationError())
         continuation = nil
-    }
-
-    private func makeBuffer(from audio: Data, frameCount: AVAudioFrameCount) -> AVAudioPCMBuffer? {
-        guard let source = AVAudioPCMBuffer(pcmFormat: sourceFormat, frameCapacity: frameCount),
-              let target = AVAudioPCMBuffer(pcmFormat: recognitionFormat, frameCapacity: frameCount),
-              let channelData = source.int16ChannelData else {
-            return nil
-        }
-        source.frameLength = frameCount
-        // Copied through a raw pointer rather than rebound to `Int16`: `Data`'s buffer carries no
-        // alignment promise, and the samples are little-endian on every platform this ships to.
-        audio.copyBytes(to: UnsafeMutableRawBufferPointer(start: channelData[0], count: audio.count))
-
-        do {
-            try converter.convert(to: target, from: source)
-        } catch {
-            Current.Log.error("Wyoming: failed to convert incoming audio: \(error)")
-            return nil
-        }
-        return target
     }
 
     private func handle(result: SFSpeechRecognitionResult?, error: Error?) {

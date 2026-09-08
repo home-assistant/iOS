@@ -59,12 +59,21 @@ struct WyomingInfo: Encodable {
 
     let asr: [AsrProgram]
     let tts: [TtsProgram]
+    let handle: [String]
+    let intent: [String]
+    let wake: [String]
+    let mic: [String]
+    let snd: [String]
 
-    /// Wyoming's own writer emits every program list, and clients are free to read them without a
-    /// default, so the categories this server does not implement go out as empty arrays.
-    let handle: [String] = []
-    let intent: [String] = []
-    let wake: [String] = []
-    let mic: [String] = []
-    let snd: [String] = []
+    init(asr: [AsrProgram], tts: [TtsProgram]) {
+        self.asr = asr
+        self.tts = tts
+        // Wyoming's own writer emits every program list, and clients are free to read them without
+        // a default, so the categories this server does not implement go out as empty arrays.
+        self.handle = []
+        self.intent = []
+        self.wake = []
+        self.mic = []
+        self.snd = []
+    }
 }

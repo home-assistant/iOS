@@ -4,6 +4,7 @@ import GRDB
 @testable import Shared
 import Testing
 
+@Suite(.serialized)
 struct VoiceToolsServerConfigurationTests {
     private func makeDatabase() throws -> DatabaseQueue {
         let database = try DatabaseQueue(path: ":memory:")

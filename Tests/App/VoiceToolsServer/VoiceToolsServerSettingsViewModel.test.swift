@@ -6,6 +6,7 @@ import GRDB
 import Testing
 
 @MainActor
+@Suite(.serialized)
 struct VoiceToolsServerSettingsViewModelTests {
     private func withTestDatabase(_ work: () throws -> Void) throws {
         let database = try DatabaseQueue(path: ":memory:")
@@ -65,15 +66,24 @@ struct VoiceToolsServerSettingsViewModelTests {
         #expect(viewModel.isSpeechRecognitionAuthorized == false)
     }
 
-    @Test func mirrorsTheControllerState() {
-        let controller = WyomingServerController()
-        let viewModel = VoiceToolsServerSettingsViewModel(
-            configuration: .init(),
-            controller: controller,
-            state: .running(port: 1)
-        )
+    @Test func mirrorsTheControllerState() throws {
+        try withTestDatabase {
+            let controller = WyomingServerController()
+            let viewModel = VoiceToolsServerSettingsViewModel(
+                configuration: .init(),
+                controller: controller,
+                state: .running(port: 1)
+            )
 
-        // The controller is the source of truth once there is one, so the injected state is ignored.
-        #expect(viewModel.state == .stopped)
+            // The controller is the source of truth once there is one, so the injected state is
+            // ignored.
+            #expect(viewModel.state == .stopped)
+
+            // And the screen keeps following it, which is how the status row goes live.
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: true, port: 10804))
+            #expect(viewModel.state != .stopped)
+
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
+        }
     }
 }

@@ -27,8 +27,9 @@ final class VoiceToolsServerSettingsViewModel: ObservableObject {
         self.state = controller?.state ?? state
         self.isSpeechRecognitionAuthorized = isSpeechRecognitionAuthorized
 
+        // No `receive(on:)`: the controller is `@MainActor`, so this already arrives on the main
+        // actor, and hopping again would leave the status row a run-loop turn behind.
         controller?.$state
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.state = state
             }

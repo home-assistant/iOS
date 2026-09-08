@@ -5,6 +5,7 @@ import GRDB
 import Testing
 
 @MainActor
+@Suite(.serialized)
 struct WyomingServerControllerTests {
     private func withTestDatabase(_ work: () throws -> Void) throws {
         let database = try DatabaseQueue(path: ":memory:")
@@ -55,6 +56,25 @@ struct WyomingServerControllerTests {
 
             #expect(controller.state == .stopped)
         }
+    }
+
+    /// A port stored outside the valid range would otherwise ask the system to pick an arbitrary
+    /// one, which Home Assistant could not be pointed at.
+    @Test func fallsBackToTheDefaultPortWhenTheStoredOneCannotBeBound() throws {
+        try withTestDatabase {
+            let controller = WyomingServerController()
+
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: true, port: 0))
+
+            #expect(controller.state != .stopped)
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
+        }
+    }
+
+    /// Text-to-speech answers without it, so this only gates the transcription half.
+    @Test func readsWhetherSpeechRecognitionWasGranted() {
+        // Whatever the runner grants, reading it must not trap or block.
+        _ = WyomingServerController.isSpeechRecognitionAuthorized
     }
 
     /// Coming back to the screen re-binds what leaving it took down.
