@@ -1097,6 +1097,24 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "app_intents.thermostat.entity.name") }
       }
     }
+    public enum Toggle {
+      /// Flips an entity to its opposite state
+      public static var description: String { return L10n.tr("Localizable", "app_intents.toggle.description") }
+      /// Toggle
+      public static var title: String { return L10n.tr("Localizable", "app_intents.toggle.title") }
+    }
+    public enum TurnOff {
+      /// Turns off a light, switch or fan, or closes a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_off.description") }
+      /// Turn off
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_off.title") }
+    }
+    public enum TurnOn {
+      /// Turns on a light, switch or fan, or opens a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on.description") }
+      /// Turn on
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_on.title") }
+    }
     public enum TurnOnOff {
       /// Turns a light, switch or fan on or off, or opens and closes a cover
       public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on_off.description") }
@@ -4908,6 +4926,8 @@ public enum L10n {
       }
     }
     public enum AppLabs {
+      /// There are no experimental features available on this device right now.
+      public static var emptyState: String { return L10n.tr("Localizable", "settings.app_labs.empty_state") }
       /// App Labs
       public static var title: String { return L10n.tr("Localizable", "settings.app_labs.title") }
       public enum FeaturesSection {
