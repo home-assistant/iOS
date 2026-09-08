@@ -1,6 +1,8 @@
 @testable import Shared
 import Testing
 
+/// Serialized because the tests share the database and swap the servers in `Current`.
+@Suite(.serialized)
 struct MagicItemProviderTests {
     private var sut: MagicItemProvider
 
@@ -135,21 +137,23 @@ struct MagicItemProviderTests {
             try carPlayConfig.insert(db)
         }
 
+        let garageDoorOnServerOne = Self.entity(
+            entityId: "cover.garage_door",
+            domain: "cover",
+            name: "Garage Door",
+            icon: nil,
+            serverId: "1"
+        )
+        let garageDoorOnServerTwo = Self.entity(
+            entityId: "cover.garage_door",
+            domain: "cover",
+            name: "Garage Door",
+            icon: nil,
+            serverId: "2"
+        )
         sut.entitiesPerServer = [
-            "1": [Self.entity(
-                entityId: "cover.garage_door",
-                domain: "cover",
-                name: "Garage Door",
-                icon: nil,
-                serverId: "1"
-            )],
-            "2": [Self.entity(
-                entityId: "cover.garage_door",
-                domain: "cover",
-                name: "Garage Door",
-                icon: nil,
-                serverId: "2"
-            )],
+            "1": [garageDoorOnServerOne],
+            "2": [garageDoorOnServerTwo],
         ]
 
         await withCheckedContinuation { continuation in
@@ -162,6 +166,57 @@ struct MagicItemProviderTests {
         // item points at is untouched.
         let newCarPlayConfig = try CarPlayConfig.config()
         #expect(newCarPlayConfig?.quickAccessItems == expectedItems)
+    }
+
+    /// Items that aren't entity-backed have no entity to be re-pointed at, so an area or a
+    /// complication that no longer resolves is kept as it is rather than dropped or moved.
+    @Test mutating func migrateKeepsNonEntityBackedItemsThatCannotResolve() async throws {
+        var watchConfig = WatchConfig()
+        let expectedItems: [MagicItem] = [
+            .init(id: "area-gone", serverId: "areas-test-server", type: .area),
+            .init(id: "complication-gone", serverId: "areas-test-server", type: .complication),
+        ]
+        watchConfig.items = expectedItems
+
+        try await Current.database().write { [watchConfig] db in
+            try WatchConfig.deleteAll(db)
+            try watchConfig.insert(db)
+        }
+
+        await withCheckedContinuation { continuation in
+            sut.migrateWatchConfig {
+                continuation.resume()
+            }
+        }
+
+        let newWatchConfig = try WatchConfig.config()
+        #expect(newWatchConfig?.items == expectedItems)
+    }
+
+    /// Entities cached for a server that has since been removed must not linger: the absence of a
+    /// server's entities is what tells the migration an item's server is gone and its entity can be
+    /// looked for elsewhere.
+    @Test mutating func loadInformationForgetsServersThatAreNoLongerConfigured() async {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+
+        let servers = FakeServerManager()
+        let server = servers.addFake()
+        Current.servers = servers
+
+        let entityOnRemovedServer = Self.entity(
+            entityId: "light.one",
+            domain: "light",
+            name: "Light One",
+            icon: nil,
+            serverId: "removed-server"
+        )
+        sut.entitiesPerServer = ["removed-server": [entityOnRemovedServer]]
+
+        _ = await sut.loadInformation()
+
+        #expect(sut.entitiesPerServer["removed-server"] == nil)
+        #expect(sut.entitiesPerServer[server.identifier.rawValue] != nil)
     }
 
     /// `getInfo` resolves entity-backed items through the per-server entity index rather than scanning

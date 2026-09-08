@@ -83,12 +83,12 @@ extension MagicItemProvider {
         // Sorted so the pick stays stable when more than one server holds the entity id; dictionary
         // iteration order is not.
         for serverId in entitiesPerServer.keys.sorted() {
-            guard let similarEntityInCache = entitiesPerServer[serverId]?
-                .first(where: { $0.entityId == item.id }) else { continue }
+            let entities = entitiesPerServer[serverId] ?? []
+            guard let similarEntity = entities.first(where: { $0.entityId == item.id }) else { continue }
 
             return .init(
-                id: similarEntityInCache.entityId,
-                serverId: similarEntityInCache.serverId,
+                id: similarEntity.entityId,
+                serverId: similarEntity.serverId,
                 type: item.type,
                 customization: item.customization
             )
