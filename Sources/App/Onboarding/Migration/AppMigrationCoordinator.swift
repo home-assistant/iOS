@@ -141,6 +141,7 @@ final class AppMigrationCoordinator: ObservableObject {
         }
         let started = Current.date()
         importState = .receiving
+        Current.Log.info("App migration import: reading the payload for session \(sessionID)")
         guard let sealed = AppMigrationPasteboard.take() else {
             importState = .failed(message: AppMigrationError.noPayload.localizedDescription)
             return
@@ -153,6 +154,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 }.value
                 guard payload.sessionID == sessionID else { throw AppMigrationError.wrongSession }
                 importState = .applying
+                Current.Log.info("App migration import: applying \(payload.database.count) database bytes")
                 let summary = try await Task.detached {
                     try AppMigrationImporter().apply(payload)
                 }.value
@@ -212,7 +214,9 @@ final class AppMigrationCoordinator: ObservableObject {
         Task {
             do {
                 let started = Current.date()
+                Current.Log.info("App migration export: collecting permissions")
                 let grantedPermissions = await AppMigrationGrantedPermissions.current()
+                Current.Log.info("App migration export: packaging (\(grantedPermissions.count) permissions held)")
                 let sealed = try await Task.detached {
                     let payload = try AppMigrationExporter().makePayload(
                         sessionID: request.id,
@@ -221,10 +225,14 @@ final class AppMigrationCoordinator: ObservableObject {
                     let data = try JSONEncoder().encode(payload)
                     return try AppMigrationCrypto.seal(data, key: request.key)
                 }.value
+                Current.Log.info("App migration export: sealed \(sealed.count) bytes")
                 await pace(from: started)
                 AppMigrationPasteboard.write(sealed)
                 let key = exportStartedHere ? request.keyString : nil
-                if await open(AppMigrationLink.payloadReady(sessionID: request.id, key: key).url(to: .newApp)) {
+                Current.Log.info("App migration export: opening the new app (key attached: \(key != nil))")
+                let opened = await open(AppMigrationLink.payloadReady(sessionID: request.id, key: key).url(to: .newApp))
+                Current.Log.info("App migration export: new app opened: \(opened)")
+                if opened {
                     exportState = .handedOff
                     setHandoffPhase(.handedOff)
                     releasePushRegistration()
