@@ -63,6 +63,7 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
                 controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
             controller.didMove(toParent: self)
+            setContentScrollView(controller.webView?.scrollView, for: .bottom)
             hostedController = controller
         }
 
@@ -74,6 +75,7 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             controller.willMove(toParent: nil)
             controller.view.removeFromSuperview()
             controller.removeFromParent()
+            setContentScrollView(nil, for: .bottom)
             hostedController = nil
         }
     }

@@ -67,6 +67,7 @@ struct NativeTabBarContainerView: View {
             }
         }
         .tabViewSearchActivation(.searchTabSelection)
+        .tabBarMinimizeBehavior(.onScrollDown)
         .onAppear { viewModel.start() }
         .onDisappear { viewModel.stop() }
     }

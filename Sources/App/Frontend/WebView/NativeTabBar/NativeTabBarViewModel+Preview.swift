@@ -7,6 +7,7 @@ extension NativeTabBarViewModel {
     @MainActor
     static func preview(
         tabItemIds: [String]? = nil,
+        hiddenPanelPaths: [String] = [],
         isAdmin: Bool = true,
         suiteName: String = "NativeTabBarPreview"
     ) -> NativeTabBarViewModel {
@@ -18,6 +19,7 @@ extension NativeTabBarViewModel {
         snapshotStore.store(
             MacSidebarSnapshot(
                 panels: previewPanels,
+                hiddenPanels: hiddenPanelPaths.isEmpty ? nil : hiddenPanelPaths,
                 isAdmin: isAdmin,
                 userName: "Bruno"
             ),

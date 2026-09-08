@@ -35,7 +35,12 @@ struct NativeTabBarViewModelTests {
         let configurationStore: NativeTabBarConfigurationStore
     }
 
-    private func makeFixture(_ name: String, tabItemIds: [String]? = nil, isAdmin: Bool = true) -> Fixture {
+    private func makeFixture(
+        _ name: String,
+        tabItemIds: [String]? = nil,
+        hiddenPanels: [String]? = nil,
+        isAdmin: Bool = true
+    ) -> Fixture {
         let suiteName = "NativeTabBarViewModelTests.\(name)"
         let defaults = UserDefaults(suiteName: suiteName)!
         defaults.removePersistentDomain(forName: suiteName)
@@ -43,7 +48,7 @@ struct NativeTabBarViewModelTests {
 
         let snapshotStore = MacSidebarSnapshotStore(userDefaults: defaults)
         snapshotStore.store(
-            MacSidebarSnapshot(panels: panels, isAdmin: isAdmin, userName: "Bruno"),
+            MacSidebarSnapshot(panels: panels, hiddenPanels: hiddenPanels, isAdmin: isAdmin, userName: "Bruno"),
             for: server.identifier.rawValue
         )
         let configurationStore = NativeTabBarConfigurationStore(userDefaults: defaults)
@@ -115,6 +120,86 @@ struct NativeTabBarViewModelTests {
         sut.addTab(profile)
         #expect(sut.tabItems.map(\.id) == ["home", "energy"])
         #expect(sut.pinnableItems.map(\.id) == ["home", "alpha", "energy", "map", "config"])
+    }
+
+    @Test("Pages hidden in the sidebar preferences stay out of the bar and More but are listed as hidden")
+    func hiddenPagesStayOut() {
+        let sut = makeFixture("hidden", tabItemIds: ["home", "alpha", "map"], hiddenPanels: ["alpha"]).sut
+
+        #expect(sut.tabItems.map(\.id) == ["home", "map"])
+        #expect(sut.moreItems.map(\.id) == ["energy"])
+        #expect(sut.hiddenItems.map(\.id) == ["alpha"])
+        #expect(!sut.pinnableItems.contains(where: { $0.id == "alpha" }))
+    }
+
+    @Test("Only sidebar pages other than the default dashboard can be hidden")
+    func canHide() throws {
+        let sut = makeFixture("canHide").sut
+        let home = try #require(sut.tabItems.first { $0.id == "home" })
+        let map = try #require(sut.moreItems.first { $0.id == "map" })
+        let settings = try #require(sut.settingsItem)
+        let profile = try #require(sut.profileItem)
+
+        #expect(!sut.canHide(home))
+        #expect(sut.canHide(map))
+        #expect(!sut.canHide(settings))
+        #expect(!sut.canHide(profile))
+    }
+
+    @Test("Hiding a page removes it from More; showing it again appends it to More")
+    func hideAndShowFromMore() async throws {
+        let fixture = makeFixture("hideShow")
+        let sut = fixture.sut
+        let map = try #require(sut.moreItems.first { $0.id == "map" })
+
+        sut.hide(map)
+        await Task.yield()
+        #expect(sut.moreItems.isEmpty)
+        #expect(sut.hiddenItems.map(\.id) == ["map"])
+        #expect(sut.tabItems.map(\.id) == ["home", "alpha", "energy"])
+
+        let hiddenMap = try #require(sut.hiddenItems.first)
+        sut.show(hiddenMap)
+        await Task.yield()
+        #expect(sut.moreItems.map(\.id) == ["map"])
+        #expect(sut.hiddenItems.isEmpty)
+    }
+
+    @Test("Hiding a tab unpins it, so showing it again lands in More instead of the bar")
+    func hideTab() async throws {
+        let fixture = makeFixture("hideTab")
+        let sut = fixture.sut
+        let alpha = try #require(sut.tabItems.first { $0.id == "alpha" })
+
+        sut.didSelect(.panel(id: "alpha"))
+        sut.hide(alpha)
+        await Task.yield()
+        #expect(sut.tabItems.map(\.id) == ["home", "energy"])
+        #expect(sut.hiddenItems.map(\.id) == ["alpha"])
+        #expect(sut.selection == .more)
+        #expect(fixture.configurationStore.itemIds(for: ServerFixture.standard.identifier.rawValue) == [
+            "home",
+            "energy",
+        ])
+
+        let hiddenAlpha = try #require(sut.hiddenItems.first)
+        sut.show(hiddenAlpha)
+        await Task.yield()
+        #expect(sut.tabItems.map(\.id) == ["home", "energy"])
+        #expect(sut.moreItems.map(\.id) == ["map", "alpha"])
+    }
+
+    @Test("The default dashboard and header pages ignore hide requests")
+    func hideIgnoresProtectedPages() async throws {
+        let sut = makeFixture("hideProtected").sut
+        let home = try #require(sut.tabItems.first { $0.id == "home" })
+        let settings = try #require(sut.settingsItem)
+
+        sut.hide(home)
+        sut.hide(settings)
+        await Task.yield()
+        #expect(sut.hiddenItems.isEmpty)
+        #expect(sut.tabItems.map(\.id) == ["home", "alpha", "energy"])
     }
 
     @Test("The More header exposes profile, notifications and, for admins only, Settings")

@@ -11,6 +11,7 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var moreItems: [MacSidebarItem] = []
     /// Settings, Notifications and Profile, minus any pinned to the bar.
     @Published private(set) var fixedItems: [MacSidebarItem] = []
+    @Published private(set) var hiddenItems: [MacSidebarItem] = []
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
@@ -41,16 +42,18 @@ final class NativeTabBarViewModel: ObservableObject {
         self.selection = .more
         self.mainItems = sidebar.mainItems
         self.allFixedItems = sidebar.fixedItems
+        self.hiddenItems = sidebar.hiddenItems
         rebuild()
         self.selection = tabItems.first.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
 
         sidebar.$mainItems
-            .combineLatest(sidebar.$fixedItems)
+            .combineLatest(sidebar.$fixedItems, sidebar.$hiddenItems)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] mainItems, fixedItems in
+            .sink { [weak self] mainItems, fixedItems, hiddenItems in
                 self?.mainItems = mainItems
                 self?.allFixedItems = fixedItems
+                self?.hiddenItems = hiddenItems
                 self?.rebuild()
             }
             .store(in: &cancellables)
@@ -193,6 +196,24 @@ final class NativeTabBarViewModel: ObservableObject {
         var ids = tabItems.map(\.id)
         ids.move(fromOffsets: source, toOffset: destination)
         saveTabs(ids)
+    }
+
+    // MARK: - Visibility
+
+    func canHide(_ item: MacSidebarItem) -> Bool {
+        mainItems.contains(where: { $0.id == item.id }) && sidebar.canHide(item)
+    }
+
+    func hide(_ item: MacSidebarItem) {
+        guard canHide(item) else { return }
+        if isTab(item) {
+            saveTabs(tabItems.map(\.id).filter { $0 != item.id })
+        }
+        sidebar.hide(itemId: item.id)
+    }
+
+    func show(_ item: MacSidebarItem) {
+        sidebar.show(itemId: item.id)
     }
 
     // MARK: - Private

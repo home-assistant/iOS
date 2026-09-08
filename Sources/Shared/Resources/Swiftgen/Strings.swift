@@ -7442,15 +7442,27 @@ public enum L10n {
     public enum Customize {
       /// Add
       public static var add: String { return L10n.tr("Localizable", "tab_bar.customize.add") }
+      /// Hide
+      public static var hide: String { return L10n.tr("Localizable", "tab_bar.customize.hide") }
       /// Remove
       public static var remove: String { return L10n.tr("Localizable", "tab_bar.customize.remove") }
+      /// Show
+      public static var show: String { return L10n.tr("Localizable", "tab_bar.customize.show") }
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
-      public enum AvailableSection {
+      public enum HiddenSection {
+        /// Hidden pages do not appear in the tab bar or in More.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.footer") }
+        /// Hidden
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
+      }
+      public enum MoreSection {
+        /// Pages that are not tabs are listed in More.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.footer") }
         /// Remove a tab to add another one.
-        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
-        /// Available
-        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
+        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.footer_full") }
+        /// More
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.header") }
       }
       public enum TabsSection {
         /// No tabs. Add pages from the list below.

@@ -2269,9 +2269,14 @@ Importing replaces every category listed on this screen, including app settings.
 "share_extension.error.title" = "Couldn't Send";
 "shortcut_item.open_settings.title" = "Open Settings";
 "tab_bar.customize.add" = "Add";
-"tab_bar.customize.available_section.footer_full" = "Remove a tab to add another one.";
-"tab_bar.customize.available_section.header" = "Available";
+"tab_bar.customize.hidden_section.footer" = "Hidden pages do not appear in the tab bar or in More.";
+"tab_bar.customize.hidden_section.header" = "Hidden";
+"tab_bar.customize.hide" = "Hide";
+"tab_bar.customize.more_section.footer" = "Pages that are not tabs are listed in More.";
+"tab_bar.customize.more_section.footer_full" = "Remove a tab to add another one.";
+"tab_bar.customize.more_section.header" = "More";
 "tab_bar.customize.remove" = "Remove";
+"tab_bar.customize.show" = "Show";
 "tab_bar.customize.tabs_section.empty" = "No tabs. Add pages from the list below.";
 "tab_bar.customize.tabs_section.footer" = "Up to three pages show as tabs. Drag to reorder.";
 "tab_bar.customize.tabs_section.header" = "Tabs";

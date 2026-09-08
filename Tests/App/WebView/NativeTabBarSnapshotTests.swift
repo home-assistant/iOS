@@ -33,6 +33,17 @@ struct NativeTabBarSnapshotTests {
         )
     }
 
+    @Test func customizeViewWithHiddenPages() {
+        let viewModel = NativeTabBarViewModel.preview(
+            hiddenPanelPaths: ["logbook", "history"],
+            suiteName: "NativeTabBarSnapshotTests.customizeHidden"
+        )
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarCustomizeView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
     @available(iOS 26, *)
     @Test func tabBarWithMoreSelected() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarMore")
