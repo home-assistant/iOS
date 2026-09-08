@@ -545,7 +545,7 @@ final class CarPlayAssistSession: NSObject {
 
     // Tones go through the audio session (not the system sound server) so they stay audible
     // when the iPhone ring/silent switch is muted, like any other media playback.
-    private func playListeningToneIfNeeded() {
+    private func playRecordingIndicatorToneIfNeeded() {
         guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
         tonePlayer.play(.listening)
     }
@@ -811,7 +811,7 @@ final class CarPlayAssistSession: NSObject {
             do {
                 try await transcriber.startListening()
                 onDeviceListeningActive = true
-                playListeningToneIfNeeded()
+                playRecordingIndicatorToneIfNeeded()
             } catch {
                 Current.Log
                     .error("CarPlay Assist failed to start on-device transcription: \(error.localizedDescription)")
@@ -1036,7 +1036,7 @@ final class CarPlayAssistSession: NSObject {
 @available(iOS 26.4, *)
 extension CarPlayAssistSession: AudioRecorderDelegate {
     func didStartRecording(with sampleRate: Double) {
-        playListeningToneIfNeeded()
+        playRecordingIndicatorToneIfNeeded()
         assistService.assist(source: .audio(
             pipelineId: pipelineId,
             audioSampleRate: sampleRate,

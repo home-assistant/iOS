@@ -245,7 +245,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             speechTranscriber: transcriber
         )
         sut.start()
-        // The listening-active flag is set right before the recording indicator tone.
+        // The listening-active flag is set right before the listening tone.
         await waitUntil { [mockTonePlayer] in
             mockTonePlayer?.playedTones.contains(.listening) == true
         }
