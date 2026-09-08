@@ -112,7 +112,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
 
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listeningStopped))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
         XCTAssertEqual(sut.currentState, .processing)
     }
 
@@ -217,7 +217,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             mockAssistService.assistSource,
             .text(input: "How many lights are on?", pipelineId: "pipeline", expectTTS: true)
         )
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listeningStopped))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
         XCTAssertEqual(sut.currentState, .processing)
     }
 

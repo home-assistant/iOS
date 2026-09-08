@@ -63,14 +63,14 @@ final class CarPlayAssistTonePlayerTests: XCTestCase {
     func testCallbacksFromAnotherPlayerAreIgnored() throws {
         let sut = CarPlayAssistTonePlayer(bundle: appBundle)
         let url = try XCTUnwrap(appBundle.url(
-            forResource: CarPlayAssistTonePlayer.Tone.listeningStopped.resourceName,
+            forResource: CarPlayAssistTonePlayer.Tone.processing.resourceName,
             withExtension: CarPlayAssistTonePlayer.Tone.resourceExtension
         ))
         let otherPlayer = try AVAudioPlayer(contentsOf: url)
         let completedEarly = expectation(description: "completion before the sound finished")
         completedEarly.isInverted = true
 
-        sut.play(.listeningStopped) { completedEarly.fulfill() }
+        sut.play(.processing) { completedEarly.fulfill() }
         sut.audioPlayerDidFinishPlaying(otherPlayer, successfully: true)
         sut.audioPlayerDecodeErrorDidOccur(otherPlayer, error: nil)
         sut.stop()

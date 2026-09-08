@@ -23,15 +23,16 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
     enum Tone: CaseIterable {
         /// Assist started listening; the Voice PE wake word chime.
         case listening
-        /// Assist stopped listening and is processing the request; the Voice PE unmute sound.
-        case listeningStopped
+        /// Assist is processing the request, which also marks the end of listening; the Voice PE
+        /// unmute sound.
+        case processing
         /// Assist failed; the Voice PE mute sound.
         case error
 
         var resourceName: String {
             switch self {
             case .listening: "wake_word_triggered"
-            case .listeningStopped: "mute_switch_off"
+            case .processing: "mute_switch_off"
             case .error: "mute_switch_on"
             }
         }

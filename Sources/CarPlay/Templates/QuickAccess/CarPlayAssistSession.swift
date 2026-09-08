@@ -368,7 +368,7 @@ final class CarPlayAssistSession: NSObject {
         if presentTemplate {
             interfaceController?.presentTemplate(template, animated: true, completion: nil)
         }
-        playListeningStoppedTone()
+        playProcessingTone()
         assistService.assist(source: .text(
             input: prompt,
             pipelineId: pipelineId,
@@ -550,8 +550,8 @@ final class CarPlayAssistSession: NSObject {
         tonePlayer.play(.listening)
     }
 
-    private func playListeningStoppedTone() {
-        tonePlayer.play(.listeningStopped)
+    private func playProcessingTone() {
+        tonePlayer.play(.processing)
     }
 
     // MARK: - TTS Playback
@@ -573,7 +573,7 @@ final class CarPlayAssistSession: NSObject {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
 
-        // The response takes over from the listening-stopped cue, and a still-playing cue would
+        // The response takes over from the processing cue, and a still-playing cue would
         // keep the session's I/O running while a debug reconfigure tries to deactivate it.
         tonePlayer.stop()
         configureAudioSessionForTTSIfNeeded()
@@ -875,7 +875,7 @@ final class CarPlayAssistSession: NSObject {
             return
         }
 
-        playListeningStoppedTone()
+        playProcessingTone()
         activateVoiceControlState(for: .processing)
         assistService.assist(source: .text(
             input: input,
@@ -1107,7 +1107,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
             guard shouldHandleSttEnd else { return }
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
-            playListeningStoppedTone()
+            playProcessingTone()
             activateVoiceControlState(for: .processing)
             armResponseWatchdog()
         } else {
