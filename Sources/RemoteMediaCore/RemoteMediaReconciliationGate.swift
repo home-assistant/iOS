@@ -18,10 +18,15 @@ public final class RemoteMediaReconciliationGate {
 
     /// Claims the next generation and cancels whatever the previous one was still doing.
     public func begin() -> Int {
+        invalidate()
+        return generation
+    }
+
+    /// Makes every result already in flight stale, including one whose callback has been queued.
+    public func invalidate() {
         task?.cancel()
         task = nil
         generation += 1
-        return generation
     }
 
     /// Whether a result belonging to `generation` is still the newest word on the subject.

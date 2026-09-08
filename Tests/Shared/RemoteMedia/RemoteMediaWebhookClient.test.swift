@@ -92,8 +92,9 @@ struct RemoteMediaWebhookClientTests {
         }
     }
 
-    @Test func cloudhookOutageFallsBackToTheNextCandidate() async throws {
-        let recorder = Recorder(statuses: [503, 200])
+    @Test func aPreDeliveryCommandFailureFallsBackToTheNextCandidate() async throws {
+        let recorder = Recorder(statuses: [200, 200])
+        recorder.errors[0] = URLError(.cannotConnectToHost)
         try await RemoteMediaWebhookClient(perform: recorder.perform).send(
             .play,
             selection: selection,
@@ -104,6 +105,37 @@ struct RemoteMediaWebhookClientTests {
         )
         #expect(recorder.requests.count == 2)
         #expect(recorder.requests.last?.url?.host == "external.example.com")
+    }
+
+    /// A timeout can mean Home Assistant executed the command and its response was lost. Replaying
+    /// it through another route would turn one user action into two.
+    @Test func anAmbiguousCommandFailureIsNeverReplayed() async {
+        let recorder = Recorder(statuses: [200, 200])
+        recorder.errors[0] = URLError(.timedOut)
+
+        await #expect(throws: URLError.self) {
+            try await RemoteMediaWebhookClient(perform: recorder.perform).send(
+                .next,
+                selection: selection,
+                context: context(urls: ["https://a.example.com/h", "https://b.example.com/h"])
+            )
+        }
+        #expect(recorder.requests.count == 1)
+    }
+
+    /// A gateway may return an error after forwarding the POST, so service calls cannot use HTTP
+    /// status as proof that delivery never happened.
+    @Test func aGatewayFailureDoesNotReplayACommand() async {
+        let recorder = Recorder(statuses: [503, 200])
+
+        await #expect(throws: RemoteMediaWebhookClient.ClientError.unacceptableStatus(code: 503)) {
+            try await RemoteMediaWebhookClient(perform: recorder.perform).send(
+                .next,
+                selection: selection,
+                context: context(urls: ["https://a.example.com/h", "https://b.example.com/h"])
+            )
+        }
+        #expect(recorder.requests.count == 1)
     }
 
     @Test func stateReadbackFallsBackToTheNextCandidate() async throws {
@@ -150,8 +182,7 @@ struct RemoteMediaWebhookClientTests {
     @Test func everyCandidateFailingSurfacesTheLastError() async {
         let recorder = Recorder(statuses: [503, 503])
         await #expect(throws: RemoteMediaWebhookClient.ClientError.unacceptableStatus(code: 503)) {
-            try await RemoteMediaWebhookClient(perform: recorder.perform).send(
-                .play,
+            _ = try await RemoteMediaWebhookClient(perform: recorder.perform).readState(
                 selection: selection,
                 context: context(urls: ["https://a.example.com/h", "https://b.example.com/h"])
             )
@@ -168,5 +199,46 @@ struct RemoteMediaWebhookClientTests {
         )
         // No entity-state GET beforehand, and no attempt on the remaining candidate.
         #expect(recorder.requests.count == 1)
+    }
+
+    @Test func cancellationStopsURLFallback() async {
+        let started = Signal()
+        let recorder = Recorder(statuses: [200, 200])
+        let client = RemoteMediaWebhookClient { request in
+            recorder.requests.append(request)
+            await started.signal()
+            try await Task.sleep(for: .seconds(30))
+            return (
+                Data(),
+                HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            )
+        }
+        let task = Task {
+            try await client.readState(
+                selection: selection,
+                context: context(urls: ["https://a.example.com/h", "https://b.example.com/h"])
+            )
+        }
+
+        await started.wait()
+        task.cancel()
+        await #expect(throws: CancellationError.self) { try await task.value }
+        #expect(recorder.requests.count == 1)
+    }
+
+    private actor Signal {
+        private var continuation: CheckedContinuation<Void, Never>?
+        private var signalled = false
+
+        func signal() {
+            signalled = true
+            continuation?.resume()
+            continuation = nil
+        }
+
+        func wait() async {
+            if signalled { return }
+            await withCheckedContinuation { continuation = $0 }
+        }
     }
 }

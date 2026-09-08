@@ -124,19 +124,16 @@ struct RemoteMediaDismissalReconcilerTests {
     /// the old relationship and nothing else.
     @Test func aRetryNamesTheOldRelationshipAndNotTheCurrentOne() async throws {
         let store = Current.settingsStore
-        let previousSelection = store.remoteMediaSelection
-        let previousLifetime = store.remoteMediaFollowLifetime
+        let previousRecord = store.remoteMediaFollowRecord
         let previousSequence = store.remoteMediaFollowSequence
         defer {
-            store.remoteMediaSelection = previousSelection
-            store.remoteMediaFollowLifetime = previousLifetime
+            store.remoteMediaFollowRecord = previousRecord
             store.remoteMediaFollowSequence = previousSequence
         }
 
         let old = pending(generation: "A", sequence: 10)
         try await withWorld(servers: [Self.serverId], records: [old]) { recorder in
             // The user has since followed again; this is the relationship that is current.
-            store.remoteMediaSelection = Self.selection
             store.remoteMediaFollowSequence = 10
             let current = try #require(store.startRemoteMediaFollowLifetime(following: Self.selection))
             #expect(current.sequence == 11)

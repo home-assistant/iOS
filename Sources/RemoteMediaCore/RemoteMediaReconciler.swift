@@ -51,7 +51,10 @@ public struct RemoteMediaReconciler: Sendable {
             let readback: RemoteMediaStateReadback
             do {
                 readback = try await fetch()
+            } catch is CancellationError {
+                return
             } catch {
+                if Task.isCancelled { return }
                 RemoteMediaLog.logger.debug("reconcile fetch failed, will retry if attempts remain")
                 continue
             }

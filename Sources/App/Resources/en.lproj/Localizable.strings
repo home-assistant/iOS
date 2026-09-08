@@ -1430,7 +1430,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "remote_media.empty.instructions" = "To follow a media player, open it in Home Assistant and choose Add to → Follow in Now Playing.";
 "remote_media.empty.title" = "No player is currently being followed";
 "remote_media.following" = "Following on iPhone";
-"remote_media.foreground_limitation" = "Playback updates require Home Assistant to stay connected. Updates may stop while the app is in the background or closed. Open Home Assistant to refresh Now Playing.";
 "remote_media.retry" = "Try again";
 "remote_media.session_error" = "Could not update Now Playing. Reopen Home Assistant or try again.";
 "remote_media.stop_following" = "Stop following";

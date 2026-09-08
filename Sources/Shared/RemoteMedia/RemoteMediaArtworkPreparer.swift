@@ -1,6 +1,4 @@
 import Foundation
-import ImageIO
-import UniformTypeIdentifiers
 
 /// Fetches and downsamples album art in the host app, then leaves it in the App Group for the
 /// extension to read.
@@ -10,8 +8,8 @@ import UniformTypeIdentifiers
 public actor RemoteMediaArtworkPreparer {
     /// Now Playing renders artwork at screen size at most; anything larger is wasted bytes in the
     /// group container and wasted decode in the extension.
-    static let maximumPixelSize = 512
-    static let compressionQuality = 0.8
+    static let maximumPixelSize = RemoteMediaArtworkDownsampler.maximumPixelSize
+    static let compressionQuality = RemoteMediaArtworkDownsampler.compressionQuality
     static let timeout: TimeInterval = 15
     /// Home Assistant proxies album art from the player, which is screen-sized at worst.
     static let maximumSourceBytes = 10 * 1024 * 1024
@@ -93,24 +91,6 @@ public actor RemoteMediaArtworkPreparer {
 
     /// Downsamples with ImageIO rather than decoding at full resolution, and never upscales.
     static func downsample(_ data: Data, maximumPixelSize: Int = maximumPixelSize) -> Data? {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
-        let options: [CFString: Any] = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceShouldCacheImmediately: true,
-            kCGImageSourceThumbnailMaxPixelSize: maximumPixelSize,
-        ]
-        guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
-            return nil
-        }
-        let output = NSMutableData()
-        guard let destination = CGImageDestinationCreateWithData(
-            output, UTType.jpeg.identifier as CFString, 1, nil
-        ) else { return nil }
-        CGImageDestinationAddImage(destination, image, [
-            kCGImageDestinationLossyCompressionQuality: compressionQuality,
-        ] as CFDictionary)
-        guard CGImageDestinationFinalize(destination) else { return nil }
-        return output as Data
+        RemoteMediaArtworkDownsampler.downsample(data, maximumPixelSize: maximumPixelSize)
     }
 }

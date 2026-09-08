@@ -16,13 +16,20 @@ struct RemoteMediaFollowLifetimeTests {
     /// suite's.
     private func withStore(_ body: (SettingsStore) throws -> Void) rethrows {
         let store = Current.settingsStore
-        let lifetime = store.remoteMediaFollowLifetime
-        let sequence = store.remoteMediaFollowSequence
-        let selection = store.remoteMediaSelection
+        let keys = [
+            "remoteMediaFollowRecord",
+            "remoteMediaFollowSequence",
+            "remoteMediaSelection",
+            "remoteMediaFollowLifetime",
+            "remoteMediaSessionGeneration",
+        ]
+        let previous = keys.reduce(into: [String: Any]()) { values, key in
+            values[key] = store.prefs.object(forKey: key)
+        }
+        keys.forEach { store.prefs.removeObject(forKey: $0) }
         defer {
-            store.remoteMediaFollowLifetime = lifetime
-            store.remoteMediaFollowSequence = sequence
-            store.remoteMediaSelection = selection
+            keys.forEach { store.prefs.removeObject(forKey: $0) }
+            previous.forEach { store.prefs.set($0.value, forKey: $0.key) }
         }
         try body(store)
     }
@@ -123,19 +130,51 @@ struct RemoteMediaFollowLifetimeTests {
     // MARK: - Migration
 
     /// A development install can hold a relationship from before there was an order to be in.
-    /// Adopting it costs one counter step and keeps the user's followed player working.
+    /// Adopting it costs one counter step and keeps the user's followed player working, but mints a
+    /// new identity because separately stored legacy values cannot prove they belong together.
     @Test func anUnorderedRelationshipFromAnEarlierBuildIsAdopted() throws {
         try withStore { store in
-            store.remoteMediaFollowLifetime = nil
-            store.remoteMediaSelection = selection
+            try store.prefs.set(JSONEncoder().encode(selection), forKey: "remoteMediaSelection")
             store.prefs.set("legacy-uuid", forKey: "remoteMediaSessionGeneration")
 
             let migrated = try #require(store.migrateRemoteMediaFollowLifetime())
-            #expect(migrated.generation == "legacy-uuid")
+            #expect(migrated.generation != "legacy-uuid")
             #expect(migrated.sequence > 0)
             #expect(store.remoteMediaFollowLifetime == migrated)
-            // Migrating once is enough; the old key is gone.
+            #expect(store.remoteMediaFollowRecord == .init(selection: selection, lifetime: migrated))
+            // Migrating once is enough; all old keys are gone.
             #expect(store.prefs.string(forKey: "remoteMediaSessionGeneration") == nil)
+            #expect(store.prefs.data(forKey: "remoteMediaSelection") == nil)
+        }
+    }
+
+    /// This is the crash shape the atomic record replaces: the new player reached preferences but
+    /// the lifetime still belongs to the previous relationship. Recovery must mint a later pair.
+    @Test func aPartiallyWrittenLegacyRelationshipIsRepaired() throws {
+        try withStore { store in
+            let stale = RemoteMediaFollowLifetime(generation: "stale", sequence: 12)
+            try store.prefs.set(JSONEncoder().encode(other), forKey: "remoteMediaSelection")
+            try store.prefs.set(JSONEncoder().encode(stale), forKey: "remoteMediaFollowLifetime")
+            store.remoteMediaFollowSequence = 5
+
+            let migrated = try #require(store.migrateRemoteMediaFollowLifetime())
+
+            #expect(migrated.generation != stale.generation)
+            #expect(migrated.sequence == 13)
+            #expect(store.remoteMediaFollowRecord == .init(selection: other, lifetime: migrated))
+            #expect(store.prefs.data(forKey: "remoteMediaSelection") == nil)
+            #expect(store.prefs.data(forKey: "remoteMediaFollowLifetime") == nil)
+        }
+    }
+
+    @Test func aLegacyLifetimeWithoutASelectionIsDiscarded() throws {
+        try withStore { store in
+            let stale = RemoteMediaFollowLifetime(generation: "stale", sequence: 12)
+            try store.prefs.set(JSONEncoder().encode(stale), forKey: "remoteMediaFollowLifetime")
+
+            #expect(store.migrateRemoteMediaFollowLifetime() == nil)
+            #expect(store.remoteMediaFollowRecord == nil)
+            #expect(store.prefs.data(forKey: "remoteMediaFollowLifetime") == nil)
         }
     }
 
@@ -150,8 +189,6 @@ struct RemoteMediaFollowLifetimeTests {
 
     @Test func migrationInventsNothingWhenNoPlayerIsFollowed() throws {
         try withStore { store in
-            store.remoteMediaFollowLifetime = nil
-            store.remoteMediaSelection = nil
             store.prefs.set("legacy-uuid", forKey: "remoteMediaSessionGeneration")
             #expect(store.migrateRemoteMediaFollowLifetime() == nil)
             #expect(store.remoteMediaFollowLifetime == nil)

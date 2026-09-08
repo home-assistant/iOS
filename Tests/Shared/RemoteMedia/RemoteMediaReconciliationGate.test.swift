@@ -52,6 +52,23 @@ struct RemoteMediaReconciliationGateTests {
         #expect(task.isCancelled)
     }
 
+    /// A framework push is authoritative. If its attributes arrive while an older command's
+    /// readback is in flight, that readback must not overwrite the pushed track afterward.
+    @Test func authoritativeUpdateInvalidatesAnOlderReadback() {
+        let gate = RemoteMediaReconciliationGate()
+        let reconciliation = gate.begin()
+        var track = "original"
+
+        gate.invalidate()
+        track = "pushed"
+        if gate.isCurrent(reconciliation) {
+            track = "stale-readback"
+        }
+
+        #expect(track == "pushed")
+        #expect(!gate.isCurrent(reconciliation))
+    }
+
     @Test func aTaskArrivingForAnAlreadySupersededGenerationIsCancelledImmediately() async {
         let gate = RemoteMediaReconciliationGate()
         let stale = gate.begin()

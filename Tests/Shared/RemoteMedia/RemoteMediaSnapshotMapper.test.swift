@@ -113,6 +113,23 @@ struct RemoteMediaSnapshotMapperTests {
         #expect(nonfinite.volume == nil)
     }
 
+    /// Foundation bridges booleans through `NSNumber`, but Home Assistant does not consider them
+    /// numeric media attributes. Both the HAKit and pushed-template paths use this mapper, so they
+    /// must reject the same malformed wire values.
+    @Test func booleansAreNotDecodedAsNumbers() throws {
+        let snapshot = try mappedSnapshot(attributes: [
+            "media_duration": true,
+            "media_position": false,
+            "volume_level": true,
+            "supported_features": true,
+        ])
+
+        #expect(snapshot.duration == nil)
+        #expect(snapshot.position == nil)
+        #expect(snapshot.volume == nil)
+        #expect(snapshot.features.isEmpty)
+    }
+
     @Test func stableSessionAndChangingTrack() throws {
         let first = try mappedSnapshot(attributes: ["media_title": "One"])
         let next = try mappedSnapshot(attributes: ["media_title": "Two"])

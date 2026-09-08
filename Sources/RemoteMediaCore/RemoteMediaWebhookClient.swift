@@ -19,25 +19,33 @@ public struct RemoteMediaWebhookClient: Sendable {
     public static let timeout: TimeInterval = 10
 
     public typealias Perform = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
+    public typealias EndBurst = @Sendable () -> Void
+
+    private enum FallbackPolicy: Equatable {
+        /// Registration, dismissal and reads are safe to repeat with the same payload.
+        case idempotent
+        /// A service call may only move to another route when no HTTP request could have arrived.
+        case beforeDeliveryOnly
+    }
 
     private let perform: Perform
-    private let transport: RemoteMediaWebhookTransport?
+    private let finish: EndBurst
 
     /// Uses one session for a command and its read-backs; call `endBurst()` when they are done.
     public init() {
         let transport = RemoteMediaWebhookTransport()
-        self.transport = transport
         self.perform = { try await transport.perform($0) }
+        self.finish = { transport.invalidate() }
     }
 
-    public init(perform: @escaping Perform) {
-        self.transport = nil
+    public init(perform: @escaping Perform, endBurst: @escaping EndBurst = {}) {
         self.perform = perform
+        self.finish = endBurst
     }
 
     /// Releases the connection this command's requests shared.
     public func endBurst() {
-        transport?.invalidate()
+        finish()
     }
 
     public func send(
@@ -53,7 +61,12 @@ public struct RemoteMediaWebhookClient: Sendable {
         let call = try RemoteMediaServiceCall(command: command, entityId: selection.entityId, value: value)
         let body = try Self.body(for: call, secret: context.secret)
 
-        try await post(body, candidates: context.webhookURLs, describing: call.service)
+        try await post(
+            body,
+            candidates: context.webhookURLs,
+            describing: call.service,
+            fallbackPolicy: .beforeDeliveryOnly
+        )
     }
 
     /// Tells Home Assistant which APNs token this session's Now Playing updates should be
@@ -79,7 +92,8 @@ public struct RemoteMediaWebhookClient: Sendable {
                 secret: context.secret
             ),
             candidates: context.webhookURLs,
-            describing: RemoteMediaSessionRegistration.webhookType
+            describing: RemoteMediaSessionRegistration.webhookType,
+            fallbackPolicy: .idempotent
         )
     }
 
@@ -101,7 +115,8 @@ public struct RemoteMediaWebhookClient: Sendable {
                 secret: context.secret
             ),
             candidates: context.webhookURLs,
-            describing: RemoteMediaSessionDismissal.webhookType
+            describing: RemoteMediaSessionDismissal.webhookType,
+            fallbackPolicy: .idempotent
         )
     }
 
@@ -114,11 +129,13 @@ public struct RemoteMediaWebhookClient: Sendable {
     private func post(
         _ body: [String: Any],
         candidates: [URL],
-        describing label: String
+        describing label: String,
+        fallbackPolicy: FallbackPolicy
     ) async throws -> Data {
         guard !candidates.isEmpty else { throw ClientError.noUsableURL }
         var lastError: Error = ClientError.noUsableURL
         for (index, url) in candidates.enumerated() {
+            try Task.checkCancellation()
             do {
                 let data = try await post(body, to: url)
                 RemoteMediaLog.logger.info(
@@ -126,8 +143,12 @@ public struct RemoteMediaWebhookClient: Sendable {
                 )
                 return data
             } catch {
+                // `URLSession` commonly surfaces task cancellation as `URLError.cancelled`.
+                // Checking the parent task first preserves structured cancellation and, more
+                // importantly, prevents a cancelled request from moving to another route.
+                try Task.checkCancellation()
                 lastError = error
-                guard Self.shouldTryNextCandidate(after: error) else { throw error }
+                guard Self.shouldTryNextCandidate(after: error, policy: fallbackPolicy) else { throw error }
                 RemoteMediaLog.logger.debug(
                     "webhook candidate \(index, privacy: .public) failed, trying next"
                 )
@@ -154,7 +175,8 @@ public struct RemoteMediaWebhookClient: Sendable {
         let response = try await post(
             Self.body(type: "render_template", data: data, secret: context.secret),
             candidates: context.webhookURLs,
-            describing: "render_template"
+            describing: "render_template",
+            fallbackPolicy: .idempotent
         )
         let object = try Self.responseObject(from: response, secret: context.secret)
         guard let dictionary = object as? [String: Any],
@@ -205,13 +227,25 @@ public struct RemoteMediaWebhookClient: Sendable {
 
     /// Only a candidate that failed in a way the next endpoint could plausibly survive is retried,
     /// so a rejected payload does not get replayed against every URL.
-    static func shouldTryNextCandidate(after error: Error) -> Bool {
+    private static func shouldTryNextCandidate(after error: Error, policy: FallbackPolicy) -> Bool {
+        if error is CancellationError { return false }
         switch error {
         case let ClientError.unacceptableStatus(code):
-            // A cloudhook that is temporarily down, or an endpoint this route cannot reach.
-            return code == 502 || code == 503 || code == 504
-        case is URLError:
-            return true
+            // A gateway failure is safe to replay only for idempotent payloads: the gateway may
+            // have lost Home Assistant's response after a service call already executed.
+            return policy == .idempotent && (code == 502 || code == 503 || code == 504)
+        case let error as URLError:
+            guard error.code != .cancelled else { return false }
+            if policy == .idempotent { return true }
+            // These failures happen before an HTTP request can reach Home Assistant. Timeouts,
+            // connection loss and response decoding are deliberately absent because delivery is
+            // ambiguous and replaying Next, seek or volume could apply the action twice.
+            return [
+                .cannotFindHost,
+                .dnsLookupFailed,
+                .cannotConnectToHost,
+                .secureConnectionFailed,
+            ].contains(error.code)
         default:
             return false
         }

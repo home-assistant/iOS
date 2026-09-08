@@ -18,9 +18,13 @@ struct EntityAddToRemoteNowPlayingTests {
 
     /// Runs `body` with `selection` persisted as the followed player, restoring what was there.
     private func withFollowed(_ selection: RemoteMediaSelection?, _ body: () async throws -> Void) async rethrows {
-        let previous = Current.settingsStore.remoteMediaSelection
-        defer { Current.settingsStore.remoteMediaSelection = previous }
-        Current.settingsStore.remoteMediaSelection = selection
+        let previousRecord = Current.settingsStore.remoteMediaFollowRecord
+        let previousSequence = Current.settingsStore.remoteMediaFollowSequence
+        defer {
+            Current.settingsStore.remoteMediaFollowRecord = previousRecord
+            Current.settingsStore.remoteMediaFollowSequence = previousSequence
+        }
+        Current.settingsStore.startRemoteMediaFollowLifetime(following: selection)
         try await body()
     }
 

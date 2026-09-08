@@ -20,9 +20,8 @@ final class HomeAssistantRemoteMediaSession: RemoteMediaSessionRepresentable {
     /// process's own reconciliation after a command.
     private var snapshot: RemoteMediaSnapshot
     private let selection: RemoteMediaSelection
-    /// One client and a cached context, refreshed when the host delivers new attributes so route
-    /// changes are picked up without making every command build the app's networking stack.
-    private let client = RemoteMediaWebhookClient()
+    /// Cached context, refreshed when the host delivers new attributes so route changes are picked
+    /// up without making every command build the app's networking stack.
     private var context: RemoteMediaTransportContext?
 
     /// Rapid Control Center use overlaps commands, and a slow reply to Next #1 must never overwrite
@@ -63,8 +62,9 @@ final class HomeAssistantRemoteMediaSession: RemoteMediaSessionRepresentable {
 
     func update(_ attributes: RemoteMediaSessionAttributes) {
         guard attributes.id == id else { return }
-        // The host app is authoritative when it is running, but a reconciliation already in flight
-        // is answering a command the user just pressed, so it is not thrown away here.
+        // A framework update is authoritative. Invalidate first so a readback already queued on the
+        // main actor cannot overwrite these newer pushed attributes after they are applied.
+        gate.invalidate()
         apply(attributes.snapshot)
         context = RemoteMediaTransportStore.load()
         // Following the same player again is a new relationship, so the token has to be
@@ -123,17 +123,23 @@ final class HomeAssistantRemoteMediaSession: RemoteMediaSessionRepresentable {
             RemoteMediaLog.logger.error("artwork fetch failed: \(outcome.reason, privacy: .public)")
             throw RemoteMediaError.invalidArtwork
         }
+        // Network bytes are bounded, but a small compressed image can still have enormous pixel
+        // dimensions. ImageIO creates only a 512-pixel thumbnail, keeping full-resolution decode
+        // out of this process's 6144 KB ledger.
+        guard let prepared = RemoteMediaArtworkDownsampler.downsample(data) else {
+            throw RemoteMediaError.invalidArtwork
+        }
 
         if let key = descriptor.resolvedKey(sessionId: sessionId, trackId: trackId) {
             do {
-                try RemoteMediaArtworkCache.store(data, for: .init(cacheKey: key))
+                try RemoteMediaArtworkCache.store(prepared, for: .init(cacheKey: key))
             } catch {
                 // The image is already in hand; only the next request is affected.
                 RemoteMediaLog.logger.error("artwork cache write failed")
             }
         }
 
-        return try ArtworkRepresentation(data: data)
+        return try ArtworkRepresentation(data: prepared)
     }
 
     // MARK: - What the system renders
@@ -222,29 +228,28 @@ final class HomeAssistantRemoteMediaSession: RemoteMediaSessionRepresentable {
         // Claim a generation before the command goes out, so a reply to an older one cannot land
         // on top of this. Claiming also cancels the reconciliation still running for the last.
         let generation = gate.begin()
+        let burst = RemoteMediaCommandBurst()
 
         let condition = RemoteMediaSettleCondition.forCommand(command, value: value, previous: snapshot)
         do {
-            try await client.send(command, value: value, selection: selection, context: context)
+            try await burst.send(command, value: value, selection: selection, context: context)
         } catch {
             RemoteMediaLog.logger.error(
                 "command \(command.rawValue, privacy: .public) failed: \(error.localizedDescription, privacy: .public)"
             )
             throw error
         }
-        startReconciling(until: condition, generation: generation, context: context)
+        startReconciling(using: burst, until: condition, generation: generation, context: context)
     }
 
     private func startReconciling(
+        using burst: RemoteMediaCommandBurst,
         until condition: RemoteMediaSettleCondition,
         generation: Int,
         context: RemoteMediaTransportContext
     ) {
-        let reconciler = RemoteMediaReconciler { [client, selection] in
-            try await client.readState(selection: selection, context: context)
-        }
-        let task = Task { [weak self] in
-            await reconciler.reconcile(until: condition) { readback in
+        let task = Task { [weak self, selection] in
+            await burst.reconcile(selection: selection, context: context, until: condition) { readback in
                 await MainActor.run {
                     // A slow reply to an older command must not land on the track a newer one
                     // has since reached.
@@ -255,8 +260,6 @@ final class HomeAssistantRemoteMediaSession: RemoteMediaSessionRepresentable {
             await MainActor.run { [weak self] in
                 guard let self else { return }
                 gate.finish(generation)
-                // The command and its read-backs are done, so let go of the connection they shared.
-                client.endBurst()
             }
         }
         gate.track(task, for: generation)

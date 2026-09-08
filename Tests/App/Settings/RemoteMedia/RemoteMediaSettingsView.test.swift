@@ -26,9 +26,13 @@ struct RemoteMediaSettingsViewTests {
         let environment = AppEnvironment()
         environment.servers = FakeServerManager(initial: 0)
         await withCurrent(environment) {
-            let previousSelection = Current.settingsStore.remoteMediaSelection
-            defer { Current.settingsStore.remoteMediaSelection = previousSelection }
-            Current.settingsStore.remoteMediaSelection = following
+            let previousRecord = Current.settingsStore.remoteMediaFollowRecord
+            let previousSequence = Current.settingsStore.remoteMediaFollowSequence
+            defer {
+                Current.settingsStore.remoteMediaFollowRecord = previousRecord
+                Current.settingsStore.remoteMediaFollowSequence = previousSequence
+            }
+            Current.settingsStore.startRemoteMediaFollowLifetime(following: following)
             let coordinator = RemoteMediaCoordinator()
             assertLightDarkSnapshots(
                 of: NavigationStack { RemoteMediaSettingsView(coordinator: coordinator) },

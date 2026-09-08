@@ -82,7 +82,6 @@ final class RemoteMediaCoordinator: ObservableObject, ServerObserver {
         if let ending {
             Current.settingsStore.addRemoteMediaPendingDismissal(ending.pending)
         }
-        Current.settingsStore.remoteMediaSelection = selection
         // Each Follow is its own relationship. Re-following the same player reuses the session
         // identifier, so this is what lets the server retire the token the last one registered and
         // know which of the two came later.

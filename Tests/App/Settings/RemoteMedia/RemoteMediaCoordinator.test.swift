@@ -69,22 +69,19 @@ struct RemoteMediaCoordinatorTests {
         _ body: (RemoteMediaCoordinator, Driver, Dismissals, RemoteMediaSessionPublisher) async throws -> Void
     ) async rethrows {
         let store = Current.settingsStore
-        let previousSelection = store.remoteMediaSelection
-        let previousLifetime = store.remoteMediaFollowLifetime
+        let previousRecord = store.remoteMediaFollowRecord
         let previousSequence = store.remoteMediaFollowSequence
         let previousPending = store.remoteMediaPendingDismissals
         let previousStorage = RemoteMediaTransportStore.storage
         RemoteMediaTransportStore.storage = MemoryStorage()
         defer {
-            store.remoteMediaSelection = previousSelection
-            store.remoteMediaFollowLifetime = previousLifetime
+            store.remoteMediaFollowRecord = previousRecord
             store.remoteMediaFollowSequence = previousSequence
             store.remoteMediaPendingDismissals = previousPending
             RemoteMediaTransportStore.storage = previousStorage
         }
 
         store.remoteMediaPendingDismissals = []
-        store.remoteMediaSelection = selection
         store.startRemoteMediaFollowLifetime(following: selection)
         if let selection { try? RemoteMediaTransportStore.save(context(for: selection)) }
 

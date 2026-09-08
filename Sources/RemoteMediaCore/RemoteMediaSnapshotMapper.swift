@@ -77,6 +77,7 @@ public enum RemoteMediaSnapshotMapper {
     private static func finite(_ value: Any?) -> Double? {
         let candidate: Double?
         switch value {
+        case is Bool: candidate = nil
         case let number as NSNumber: candidate = number.doubleValue
         case let text as String: candidate = Double(text)
         default: candidate = nil
@@ -87,6 +88,7 @@ public enum RemoteMediaSnapshotMapper {
 
     private static func intValue(_ value: Any?) -> Int? {
         switch value {
+        case is Bool: return nil
         case let number as NSNumber: return number.intValue
         case let text as String: return Int(text)
         default: return nil

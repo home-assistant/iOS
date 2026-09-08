@@ -4822,8 +4822,6 @@ public enum L10n {
     public static var description: String { return L10n.tr("Localizable", "remote_media.description") }
     /// Following on iPhone
     public static var following: String { return L10n.tr("Localizable", "remote_media.following") }
-    /// Playback updates require Home Assistant to stay connected. Updates may stop while the app is in the background or closed. Open Home Assistant to refresh Now Playing.
-    public static var foregroundLimitation: String { return L10n.tr("Localizable", "remote_media.foreground_limitation") }
     /// Try again
     public static var retry: String { return L10n.tr("Localizable", "remote_media.retry") }
     /// Could not update Now Playing. Reopen Home Assistant or try again.

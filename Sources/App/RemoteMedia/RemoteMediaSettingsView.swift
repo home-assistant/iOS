@@ -50,10 +50,6 @@ struct RemoteMediaSettingsView: View {
                         Button(L10n.RemoteMedia.retry) { coordinator.refresh() }
                     }
                 }
-                Section {
-                    Text(L10n.RemoteMedia.foregroundLimitation)
-                        .foregroundStyle(.secondary)
-                }
             }
         } else {
             // No list, so no header to carry the title, and the screen still needs one.
