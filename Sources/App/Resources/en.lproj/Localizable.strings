@@ -299,6 +299,7 @@
 "app_migration.announcement.setup_moves.title" = "Your setup moves with you";
 "app_migration.announcement.title" = "Home Assistant has a new app";
 "app_migration.announcement.transfer_button" = "Transfer to the new app";
+"app_migration.get_new_app.back_button" = "Back";
 "app_migration.get_new_app.body" = "Install the new Home Assistant app from the App Store, then come back here. The transfer starts as soon as the new app is on this device.";
 "app_migration.get_new_app.installed_button" = "I have installed it";
 "app_migration.get_new_app.not_found.body" = "Install it from the App Store and open this screen again.";

@@ -69,7 +69,7 @@ struct AppMigrationScreensTests {
 
     @MainActor @Test func getNewApp() {
         assertLightDarkSnapshots(
-            of: AppMigrationGetNewAppView(transferStartedAction: {}),
+            of: AppMigrationGetNewAppView(backAction: {}, transferStartedAction: {}),
             named: "old-00b-get-new-app"
         )
     }
