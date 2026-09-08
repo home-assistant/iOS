@@ -322,11 +322,14 @@ final class WebRTCClient: NSObject {
         //
         // None of what is dropped here could carry the stream: a TCP host candidate on a private
         // cellular address is unreachable from the server (TURN over TCP is unaffected, it comes
-        // from the ICE server list), and so is a link-local one. Pruning redundant TURN ports cuts
-        // the relay set down to the ones actually in play.
+        // from the ICE server list), and so is a link-local one.
+        //
+        // Relay candidates are deliberately left alone. Behind carrier-grade NAT the relay is the
+        // only kind that can carry the stream at all — host addresses are private and the reflexive
+        // one is not reachable inbound — so every relay candidate is a separate chance for the
+        // stream to come up, not redundancy worth pruning.
         config.tcpCandidatePolicy = .disabled
         config.disableLinkLocalNetworks = true
-        config.shouldPruneTurnPorts = true
 
         // Gather a candidate up front rather than starting from cold when the offer is created, so
         // the offer carries one instead of the backend waiting on the first trickled candidate —
