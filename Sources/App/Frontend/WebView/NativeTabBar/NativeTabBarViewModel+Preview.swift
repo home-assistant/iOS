@@ -3,10 +3,9 @@ import Shared
 
 extension NativeTabBarViewModel {
     /// A tab bar over a fixed set of sidebar pages, for previews and snapshot tests. Nothing is fetched:
-    /// the pages come from a cached sidebar snapshot and the tab choice from an in-memory store.
+    /// the pages come from a cached sidebar snapshot.
     @MainActor
     static func preview(
-        tabItemIds: [String]? = nil,
         hiddenPanelPaths: [String] = [],
         isAdmin: Bool = true,
         suiteName: String = "NativeTabBarPreview"
@@ -26,11 +25,6 @@ extension NativeTabBarViewModel {
             for: server.identifier.rawValue
         )
 
-        let configurationStore = NativeTabBarConfigurationStore(userDefaults: userDefaults)
-        if let tabItemIds {
-            configurationStore.setItemIds(tabItemIds, for: server.identifier.rawValue)
-        }
-
         let overlayState = WebFrontendOverlayState()
         return NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(
@@ -39,7 +33,6 @@ extension NativeTabBarViewModel {
                 snapshotStore: snapshotStore
             ),
             overlayState: overlayState,
-            configurationStore: configurationStore,
             tabBarState: NativeTabBarState()
         )
     }

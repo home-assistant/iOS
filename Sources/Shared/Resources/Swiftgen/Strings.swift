@@ -4919,8 +4919,8 @@ public enum L10n {
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
       public enum IosNativeTabBar {
-        /// Replaces the Home Assistant sidebar with a native tab bar. Choose up to three tabs from the More tab. The page reloads when you change this setting.
-        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.footer") }
+        /// Replaces the Home Assistant sidebar with a native tab bar. The first three sidebar pages are the tabs; reorder or hide pages from the More tab. The page reloads when you change this setting.
+        public static var description: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.description") }
         /// Native tab bar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
       }
@@ -7440,12 +7440,8 @@ public enum L10n {
 
   public enum TabBar {
     public enum Customize {
-      /// Add
-      public static var add: String { return L10n.tr("Localizable", "tab_bar.customize.add") }
       /// Hide
       public static var hide: String { return L10n.tr("Localizable", "tab_bar.customize.hide") }
-      /// Remove
-      public static var remove: String { return L10n.tr("Localizable", "tab_bar.customize.remove") }
       /// Show
       public static var show: String { return L10n.tr("Localizable", "tab_bar.customize.show") }
       /// Customize Tabs
@@ -7456,21 +7452,11 @@ public enum L10n {
         /// Hidden
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
       }
-      public enum MoreSection {
-        /// Pages that are not tabs are listed in More.
-        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.footer") }
-        /// Remove a tab to add another one.
-        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.footer_full") }
-        /// More
-        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.more_section.header") }
-      }
-      public enum TabsSection {
-        /// No tabs. Add pages from the list below.
-        public static var empty: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.empty") }
-        /// Up to three pages show as tabs. Drag to reorder.
-        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.footer") }
-        /// Tabs
-        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.header") }
+      public enum PagesSection {
+        /// The first three pages are the tabs, the rest are listed in More. Drag to reorder.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.pages_section.footer") }
+        /// Pages
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.pages_section.header") }
       }
     }
     public enum More {

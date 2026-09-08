@@ -22,17 +22,6 @@ struct NativeTabBarSnapshotTests {
         )
     }
 
-    @Test func customizeViewWithRoomForMoreTabs() {
-        let viewModel = NativeTabBarViewModel.preview(
-            tabItemIds: ["home"],
-            suiteName: "NativeTabBarSnapshotTests.customizeRoom"
-        )
-        assertLightDarkSnapshots(
-            of: NavigationStack { NativeTabBarCustomizeView(viewModel: viewModel) },
-            drawHierarchyInKeyWindow: true
-        )
-    }
-
     @Test func customizeViewWithHiddenPages() {
         let viewModel = NativeTabBarViewModel.preview(
             hiddenPanelPaths: ["logbook", "history"],
