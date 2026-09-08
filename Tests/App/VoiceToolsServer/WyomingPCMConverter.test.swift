@@ -11,7 +11,8 @@ struct WyomingPCMConverterTests {
     @Test func convertsWholeFramesToTheRecognizerFormat() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 16000, width: 2, channels: 1))
 
-        let buffer = try #require(converter.convert(pcm([0, 1000, -1000, 32767])))
+        let converted = converter.convert(pcm([0, 1000, -1000, 32767]))
+        let buffer = try #require(converted)
 
         #expect(buffer.frameLength == 4)
         #expect(buffer.format.sampleRate == 16000)
@@ -24,7 +25,8 @@ struct WyomingPCMConverterTests {
     @Test func preservesTheSampleValues() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 16000, width: 2, channels: 1))
 
-        let buffer = try #require(converter.convert(pcm([0, 16384, -16384])))
+        let converted = converter.convert(pcm([0, 16384, -16384]))
+        let buffer = try #require(converted)
         let channel = try #require(buffer.floatChannelData)
 
         #expect(abs(channel[0][0]) < 0.01)
@@ -39,9 +41,11 @@ struct WyomingPCMConverterTests {
         let samples = pcm([1000, 2000])
 
         // One byte short of a whole frame: nothing to convert yet.
-        #expect(converter.convert(samples.prefix(3)) == nil)
+        let partial = converter.convert(samples.prefix(3))
+        #expect(partial == nil)
 
-        let buffer = try #require(converter.convert(samples.dropFirst(3)))
+        let converted = converter.convert(samples.dropFirst(3))
+        let buffer = try #require(converted)
         let channel = try #require(buffer.floatChannelData)
 
         #expect(buffer.frameLength == 2)
@@ -52,8 +56,11 @@ struct WyomingPCMConverterTests {
     @Test func waitsUntilThereIsAWholeFrame() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 16000, width: 2, channels: 1))
 
-        #expect(converter.convert(Data()) == nil)
-        #expect(converter.convert(Data([0x01])) == nil)
+        let empty = converter.convert(Data())
+        let singleByte = converter.convert(Data([0x01]))
+
+        #expect(empty == nil)
+        #expect(singleByte == nil)
     }
 
     /// Home Assistant records in mono, but a client is free to send stereo; the recogniser only
@@ -61,7 +68,8 @@ struct WyomingPCMConverterTests {
     @Test func downmixesStereoToMono() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 16000, width: 2, channels: 2))
 
-        let buffer = try #require(converter.convert(pcm([1000, 1000, 2000, 2000])))
+        let converted = converter.convert(pcm([1000, 1000, 2000, 2000]))
+        let buffer = try #require(converted)
 
         #expect(buffer.frameLength == 2)
         #expect(buffer.format.channelCount == 1)
@@ -70,7 +78,8 @@ struct WyomingPCMConverterTests {
     @Test func keepsTheClientsSampleRateRatherThanResampling() throws {
         var converter = try WyomingPCMConverter(format: .init(rate: 22050, width: 2, channels: 1))
 
-        let buffer = try #require(converter.convert(pcm([0, 1000])))
+        let converted = converter.convert(pcm([0, 1000]))
+        let buffer = try #require(converted)
 
         #expect(converter.outputFormat.sampleRate == 22050)
         #expect(buffer.frameLength == 2)
