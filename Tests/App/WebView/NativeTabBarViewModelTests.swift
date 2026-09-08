@@ -222,6 +222,70 @@ struct NativeTabBarViewModelTests {
         #expect(sut.showsFrontend)
     }
 
+    @Test("Notifications reveal the frontend and open the drawer; header pages open from More")
+    func headerItemsOpen() throws {
+        let sut = makeFixture("headerOpen").sut
+        var navigated: [String] = []
+        var notificationsShown = 0
+        sut.sidebar.onNavigate = { navigated.append($0) }
+        sut.sidebar.onShowNotifications = { notificationsShown += 1 }
+        let notifications = try #require(sut.notificationsItem)
+        let profile = try #require(sut.profileItem)
+
+        sut.didSelect(.more)
+        sut.open(notifications)
+        #expect(notificationsShown == 1)
+        #expect(sut.selection == .panel(id: "home"))
+
+        sut.open(profile)
+        #expect(navigated == ["/profile"])
+        #expect(sut.selection == .more)
+        #expect(sut.moreShowsFrontend)
+
+        sut.didSelect(.panel(id: "alpha"))
+        #expect(navigated == ["/profile", "/alpha"])
+        sut.didSelect(.panel(id: "alpha"))
+        #expect(navigated == ["/profile", "/alpha", "/alpha"])
+    }
+
+    @Test("App Settings goes through the app coordinator")
+    func showAppSettings() async {
+        let sut = makeFixture("appSettings").sut
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+
+        await withCheckedContinuation { continuation in
+            coordinator.onShowSettings = { continuation.resume() }
+            sut.showAppSettings()
+        }
+        #expect(coordinator.showSettingsCalled)
+        #expect(!coordinator.showSettingsPushedOntoNavigationStack)
+    }
+
+    @Test("Starting and stopping forwards to the sidebar without a connection")
+    func startStop() {
+        let sut = makeFixture("startStop").sut
+        sut.start()
+        sut.stop()
+        #expect(sut.tabItems.count == 3)
+    }
+
+    @Test("Unreadable stored tab choices are dropped instead of failing every launch")
+    func configurationStoreDropsCorruptData() {
+        let suiteName = "NativeTabBarViewModelTests.corrupt"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        defaults.set(Data("not json".utf8), forKey: NativeTabBarConfigurationStore.storageKey)
+
+        let store = NativeTabBarConfigurationStore(userDefaults: defaults)
+        #expect(store.itemIds(for: "server") == nil)
+        #expect(defaults.data(forKey: NativeTabBarConfigurationStore.storageKey) == nil)
+
+        store.setItemIds(["a"], for: "server")
+        store.setItemIds(["a"], for: "server")
+        #expect(NativeTabBarConfigurationStore(userDefaults: defaults).itemIds(for: "server") == ["a"])
+    }
+
     @Test("The configuration store caps and persists per server")
     func configurationStore() {
         let suiteName = "NativeTabBarViewModelTests.store"
