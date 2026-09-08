@@ -273,6 +273,7 @@ final class WebRTCClient: NSObject {
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
     private static let factory: RTCPeerConnectionFactory = {
+        WebRTCFieldTrials.registerBeforeCreatingFactory()
         RTCInitializeSSL()
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
@@ -320,9 +321,13 @@ final class WebRTCClient: NSObject {
         // A browser never offers that set, which is why the frontend connects on the same network
         // while this took ten seconds or gave up.
         //
-        // None of what is dropped here could carry the stream: a TCP host candidate on a private
-        // cellular address is unreachable from the server (TURN over TCP is unaffected, it comes
-        // from the ICE server list), and so is a link-local one.
+        // The interfaces themselves are trimmed by `WebRTCFieldTrials`: with the path monitor on,
+        // libwebrtc ignores every interface that is not part of the current network path, which
+        // on cellular leaves the one pdp_ip that can actually reach anything — the same set the
+        // frontend's player gets, since WKWebView only gathers on the default route. What is left
+        // to drop here is the flavour of candidate that could never carry the stream even there: a
+        // TCP host candidate on a private cellular address is unreachable from the server (TURN
+        // over TCP is unaffected, it comes from the ICE server list), and so is a link-local one.
         //
         // Relay candidates are deliberately left alone. Behind carrier-grade NAT the relay is the
         // only kind that can carry the stream at all — host addresses are private and the reflexive
