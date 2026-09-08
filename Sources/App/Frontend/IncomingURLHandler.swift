@@ -25,6 +25,7 @@ class IncomingURLHandler {
         case navigate
         case invite
         case createCustomWidget = "createcustomwidget"
+        case camera
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -73,6 +74,16 @@ class IncomingURLHandler {
                     message: L10n.UrlHandler.SendLocation.Confirm.message,
                     handler: { self.sendLocationURLHandler() }
                 )
+            case .camera:
+                guard let entityId = serviceData["entityId"],
+                      let destination = AppConstants.openEntityDestinationURL(
+                          entityId: entityId,
+                          serverId: serviceData["serverId"] ?? ""
+                      ) else {
+                    Current.Log.error("No entity found for open camera URL: \(url)")
+                    return false
+                }
+                return handle(url: destination)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false

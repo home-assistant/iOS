@@ -20,7 +20,7 @@ struct ShowEntityDetailsAppIntent: OpenIntent {
     var target: HAAppEntityAppIntentEntity
 
     func perform() async throws -> some IntentResult {
-        guard let url = AppConstants.openEntityDeeplinkURL(
+        guard let url = AppConstants.openEntityDestinationURL(
             entityId: target.entityId,
             serverId: target.serverId
         ) else {
