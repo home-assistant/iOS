@@ -18,6 +18,11 @@ public struct RemoteMediaWebhookClient: Sendable {
     /// How long a system media control may wait before the command reports failure.
     public static let timeout: TimeInterval = 10
 
+    /// Statuses that mean the request was turned away before Home Assistant could act on it, so
+    /// trying the next route cannot repeat an action. Deliberately narrow: `400` is absent because
+    /// it means the server read the payload and refused it, which every route would.
+    static let provesNonDelivery: Set<Int> = [401, 403, 404, 405, 410]
+
     public typealias Perform = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
     public typealias EndBurst = @Sendable () -> Void
 
@@ -166,6 +171,12 @@ public struct RemoteMediaWebhookClient: Sendable {
         context: RemoteMediaTransportContext
     ) async throws -> RemoteMediaStateReadback {
         guard context.selection == selection else { throw RemoteMediaError.noLongerFollowing }
+        // The entity id is interpolated into a Jinja template the server executes, so it is
+        // checked here as well as where it was chosen: this selection may have been persisted by
+        // a build that only checked the domain prefix.
+        guard RemoteMediaEntityId.isValid(selection.entityId) else {
+            throw RemoteMediaError.invalidSelection
+        }
 
         let data: [String: Any] = [
             RemoteMediaStateTemplate.resultKey: [
@@ -233,7 +244,16 @@ public struct RemoteMediaWebhookClient: Sendable {
         case let ClientError.unacceptableStatus(code):
             // A gateway failure is safe to replay only for idempotent payloads: the gateway may
             // have lost Home Assistant's response after a service call already executed.
-            return policy == .idempotent && (code == 502 || code == 503 || code == 504)
+            if policy == .idempotent {
+                return code == 502 || code == 503 || code == 504
+            }
+            // For a service call the status has to *prove* Home Assistant never ran the service,
+            // because replaying next, seek or volume could apply the action twice. A gateway 5xx
+            // does not prove it. These do: they are the route refusing to carry the request at
+            // all, which is exactly what a cloudhook returns once it has been deleted — and
+            // without this, a stale cloudhook (tried first) fails every command on the card while
+            // the external and internal routes behind it would have worked.
+            return Self.provesNonDelivery.contains(code)
         case let error as URLError:
             guard error.code != .cancelled else { return false }
             if policy == .idempotent { return true }

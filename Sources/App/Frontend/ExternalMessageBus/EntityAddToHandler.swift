@@ -59,7 +59,7 @@ final class EntityAddToHandler {
                 #if !targetEnvironment(macCatalyst)
                 if #available(iOS 27.0, *), !Current.isCatalyst,
                    UIDevice.current.userInterfaceIdiom == .phone,
-                   domain == .mediaPlayer, let serverId {
+                   domain == .mediaPlayer, RemoteMediaEntityId.isValid(entityId), let serverId {
                     let selection = RemoteMediaSelection(serverId: serverId, entityId: entityId)
                     actions.append(RemoteNowPlayingAction(
                         isFollowing: Current.settingsStore.remoteMediaSelection == selection

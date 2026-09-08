@@ -17,4 +17,18 @@ public enum RemoteMediaCommand: String, CaseIterable, Sendable {
         case .volume: return "volume_set"
         }
     }
+
+    /// `value` as this command will actually be sent, clamped to the range the service accepts.
+    ///
+    /// One definition because two consumers have to agree on it: `RemoteMediaServiceCall` sends
+    /// the clamped value, and `RemoteMediaSettleCondition` waits for the player to report it. When
+    /// only the first clamped, an out-of-range request could never settle, and the read-back
+    /// ladder spent all four of its attempts confirming a value nobody had asked for.
+    public func clamped(_ value: Double) -> Double {
+        switch self {
+        case .seek: return max(0, value)
+        case .volume: return min(1, max(0, value))
+        case .play, .pause, .togglePlayPause, .stop, .previous, .next: return value
+        }
+    }
 }

@@ -61,9 +61,10 @@ public enum RemoteMediaSettleCondition: Equatable, Sendable {
         case .stop:
             return .stopped
         case .seek:
-            return .position(value ?? 0)
+            // Clamped through the command, so this waits for the value that was actually sent.
+            return .position(command.clamped(value ?? 0))
         case .volume:
-            return .volume(value ?? 0)
+            return .volume(command.clamped(value ?? 0))
         }
     }
 }

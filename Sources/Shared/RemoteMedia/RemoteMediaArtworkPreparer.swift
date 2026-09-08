@@ -9,7 +9,6 @@ public actor RemoteMediaArtworkPreparer {
     /// Now Playing renders artwork at screen size at most; anything larger is wasted bytes in the
     /// group container and wasted decode in the extension.
     static let maximumPixelSize = RemoteMediaArtworkDownsampler.maximumPixelSize
-    static let compressionQuality = RemoteMediaArtworkDownsampler.compressionQuality
     static let timeout: TimeInterval = 15
     /// Home Assistant proxies album art from the player, which is screen-sized at worst.
     static let maximumSourceBytes = 10 * 1024 * 1024

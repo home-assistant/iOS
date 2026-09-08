@@ -16,10 +16,10 @@ public struct RemoteMediaServiceCall: Equatable, Sendable {
         switch command {
         case .seek:
             guard let value, value.isFinite else { throw RemoteMediaError.invalidCommand }
-            data["seek_position"] = .number(max(0, value))
+            data["seek_position"] = .number(command.clamped(value))
         case .volume:
             guard let value, value.isFinite else { throw RemoteMediaError.invalidCommand }
-            data["volume_level"] = .number(min(1, max(0, value)))
+            data["volume_level"] = .number(command.clamped(value))
         case .play, .pause, .togglePlayPause, .stop, .previous, .next:
             break
         }

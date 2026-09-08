@@ -17,7 +17,7 @@ public enum RemoteMediaSnapshotMapper {
         attributes: [String: Any],
         serverId: String
     ) -> RemoteMediaEntityState? {
-        guard entityId.hasPrefix("media_player.") else { return nil }
+        guard RemoteMediaEntityId.isValid(entityId) else { return nil }
         let duration = finite(attributes["media_duration"]).flatMap { $0 > 0 ? $0 : nil }
         let position = finite(attributes["media_position"])
             .map { min(duration ?? .greatestFiniteMagnitude, max(0, $0)) }
@@ -42,16 +42,30 @@ public enum RemoteMediaSnapshotMapper {
         return .init(snapshot: snapshot, artworkSource: nonEmpty(attributes["entity_picture"]))
     }
 
-    /// Home Assistant timestamps carry fractional seconds, but not always, and a template renders
-    /// them through `isoformat()` which uses a `+00:00` offset rather than `Z`.
+    /// A Home Assistant timestamp in any of the shapes it reaches us in.
+    ///
+    /// A template renders one through `isoformat()`, which uses a `+00:00` offset rather than `Z`
+    /// and includes fractional seconds only when there are any.
+    static func date(from text: String) -> Date? {
+        if let date = parseISO8601(text) { return date }
+        // `datetime.isoformat(sep=' ')` and `str(datetime)` put a space where ISO-8601 wants a
+        // `T`, which templates can also produce. Normalizing the separator and reusing the ladder
+        // above covers the fractional and whole-second forms both; a `DateFormatter` of its own
+        // would only ever match whichever of the two its format string spelled out.
+        guard let separator = text.firstIndex(of: " ") else { return nil }
+        var normalized = text
+        normalized.replaceSubrange(separator ... separator, with: "T")
+        return parseISO8601(normalized)
+    }
+
+    /// Home Assistant timestamps carry fractional seconds, but not always, and
     /// `ISO8601DateFormatter` rejects a string whose precision does not match its options, so each
     /// shape gets its own attempt.
-    static func date(from text: String) -> Date? {
+    private static func parseISO8601(_ text: String) -> Date? {
         for formatter in [fractionalSecondsFormatter, wholeSecondsFormatter] {
             if let date = formatter.date(from: text) { return date }
         }
-        // `datetime.isoformat()` with a space separator, which templates can also produce.
-        return spaceSeparatedFormatter.date(from: text)
+        return nil
     }
 
     private static let fractionalSecondsFormatter: ISO8601DateFormatter = {
@@ -63,14 +77,6 @@ public enum RemoteMediaSnapshotMapper {
     private static let wholeSecondsFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
-        return formatter
-    }()
-
-    private static let spaceSeparatedFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSXXXXX"
         return formatter
     }()
 

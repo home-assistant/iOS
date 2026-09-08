@@ -130,9 +130,4 @@ struct RemoteMediaSnapshotReducerTests {
         let result = try #require(reduce(blank, snapshot()))
         #expect(result.title == "Track")
     }
-
-    @Test func onlyAMissingEntityIsTerminal() {
-        #expect(RemoteMediaSnapshotReducer.isTerminal(entityExists: false))
-        #expect(!RemoteMediaSnapshotReducer.isTerminal(entityExists: true))
-    }
 }

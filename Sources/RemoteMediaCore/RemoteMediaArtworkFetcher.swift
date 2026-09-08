@@ -123,19 +123,36 @@ public enum RemoteMediaArtworkFetcher {
         }
     }
 
+    /// How many bytes are gathered before being handed to `Data`. `AsyncBytes` only yields one
+    /// byte at a time, but appending one byte at a time to `Data` is the expensive half: at the
+    /// 2 MB ceiling that is two million capacity-and-uniqueness checks, and the whole fetch has
+    /// three seconds of `timeoutIntervalForResource` to finish inside.
+    static let readBlockSize = 16 * 1024
+
     /// Reads no more than one byte beyond the limit, which is enough to prove the body is too big.
+    ///
+    /// The cap is still enforced as bytes arrive rather than from `Content-Length`, so a server
+    /// that understates the size cannot stream an unbounded body into a process with a 6144 KB
+    /// ledger. Blocking the appends does not weaken that: the counter still moves per byte.
     static func boundedData<Bytes: AsyncSequence>(
         from bytes: Bytes,
         maximumBytes: Int
     ) async throws -> BodyRead where Bytes.Element == UInt8 {
         var data = Data()
         data.reserveCapacity(min(maximumBytes, 64 * 1024))
+        var block = [UInt8]()
+        block.reserveCapacity(readBlockSize)
         var count = 0
         for try await byte in bytes {
             count += 1
             guard count <= maximumBytes else { return .tooLarge(byteCount: count) }
-            data.append(byte)
+            block.append(byte)
+            if block.count == readBlockSize {
+                data.append(contentsOf: block)
+                block.removeAll(keepingCapacity: true)
+            }
         }
+        data.append(contentsOf: block)
         return .complete(data)
     }
 
@@ -146,11 +163,6 @@ public enum RemoteMediaArtworkFetcher {
     ) async -> Bool {
         guard let url = request.url else { return false }
         return await validator.allows(url)
-    }
-
-    /// The image bytes, or `nil`. Kept for callers that have nothing to say about a failure.
-    public static func data(from url: URL) async -> Data? {
-        await fetch(from: url).data
     }
 
     private static func sessionConfiguration() -> URLSessionConfiguration {

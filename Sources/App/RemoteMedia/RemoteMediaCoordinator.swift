@@ -69,7 +69,10 @@ final class RemoteMediaCoordinator: ObservableObject, ServerObserver {
     /// exiting, a player pausing or dropping to `unavailable`, or Home Assistant being unreachable
     /// all leave the relationship intact, which is the whole point of following one.
     func follow(_ selection: RemoteMediaSelection?) {
-        guard selection == nil || selection?.entityId.hasPrefix("media_player.") == true else { return }
+        // Validated rather than merely domain-checked: a followed id is persisted and later
+        // interpolated into the `render_template` query the extension reads state back with.
+        // `nil` is always allowed — it is how the user stops following.
+        if let selection, !RemoteMediaEntityId.isValid(selection.entityId) { return }
         // Taken before anything it depends on is torn down, and used only after: stopping is a user
         // action, so it must not wait for the network.
         let ending = RemoteMediaFollowEnd.capture(
@@ -210,13 +213,15 @@ final class RemoteMediaCoordinator: ObservableObject, ServerObserver {
                     return
                 }
                 // A fetchable source remains useful to the extension even if host preparation
-                // failed. Only withdraw a host-only descriptor that can never answer a cold request.
+                // failed: it can still fetch that source itself, so the descriptor stays.
                 guard source == nil else { return }
-                // Preparation failed, so withdraw the promise rather than leaving the extension
-                // waiting on a file that will never appear.
-                Current.Log.info("Remote media artwork unavailable; withdrawing its key")
+                // Host-only artwork that failed to prepare. Nothing is published: a host-only
+                // descriptor is only ever advertised once its file exists, and preparation only
+                // ran because it did not, so there is nothing on the card to take back. Releasing
+                // the key is the whole point — it lets the next state delivery try again, which
+                // a descriptor that matched `artworkKey` would otherwise skip.
+                Current.Log.info("Remote media artwork unavailable; releasing its key to retry")
                 self.artworkKey = nil
-                self.publish(current.withArtwork(nil))
             }
         }
     }

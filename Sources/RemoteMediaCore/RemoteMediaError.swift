@@ -2,9 +2,9 @@ import Foundation
 
 public enum RemoteMediaError: Error {
     case invalidCommand
-    case noServer
+    /// The followed entity id is not one this feature may act on. See `RemoteMediaEntityId`.
+    case invalidSelection
     case noLongerFollowing
     case unavailable
     case invalidArtwork
-    case timedOut
 }

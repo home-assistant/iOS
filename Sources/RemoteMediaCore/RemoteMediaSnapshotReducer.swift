@@ -39,18 +39,9 @@ public enum RemoteMediaSnapshotReducer {
 
         // Retain the media and describe the transition. `indeterminate` (`unavailable`/`unknown`)
         // means the integration stopped reporting, which is not the same as having stopped, so the
-        // last known playback state is kept rather than inventing one.
+        // last known playback state is kept rather than inventing one. The position rides along
+        // untouched: it belongs to the media being retained, not to the report that lacked it.
         let retainedState = playback == .indeterminate ? previous.state : incoming.state
-        return previous
-            .withState(retainedState)
-            .withPosition(previous.position, updatedAtUnix: previous.positionUpdatedAtUnix)
-    }
-
-    /// Whether a selection should stop being followed altogether.
-    ///
-    /// Only a selection that can never report again is terminal. `unavailable` is not: an Echo
-    /// drops off and comes back, and tearing the session down would lose the card for good.
-    public static func isTerminal(entityExists: Bool) -> Bool {
-        !entityExists
+        return previous.withState(retainedState)
     }
 }
