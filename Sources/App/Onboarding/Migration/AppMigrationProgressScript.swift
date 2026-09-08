@@ -7,7 +7,7 @@ enum AppMigrationProgressScript {
     case export
     case `import`
 
-    static let duration: TimeInterval = 3.6
+    static let duration: TimeInterval = 7.2
 
     var stages: [String] {
         switch self {

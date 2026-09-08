@@ -31,7 +31,7 @@ struct AppMigrationCompleteView: View {
             content: {
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                     HASectionPill(L10n.AppMigration.Complete.Section.nextSteps)
-                    CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                    CardView(cornerRadius: DesignSystem.CornerRadius.two) {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                             ForEach(AppMigrationFollowUpItem.allCases) { item in
                                 AppMigrationItemRow(

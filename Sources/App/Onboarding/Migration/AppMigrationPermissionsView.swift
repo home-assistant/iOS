@@ -25,7 +25,7 @@ struct AppMigrationPermissionsView: View {
             content: {
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                     HASectionPill(L10n.AppMigration.Permissions.Section.previousApp)
-                    CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                    CardView(cornerRadius: DesignSystem.CornerRadius.two) {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                             ForEach(viewModel.permissions) { permission in
                                 let status = viewModel.status(for: permission)

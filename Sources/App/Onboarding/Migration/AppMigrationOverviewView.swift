@@ -20,7 +20,7 @@ struct AppMigrationOverviewView: View {
                     icon: .checkmarkCircleFill,
                     tint: .haSuccessColor
                 )
-                CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                CardView(cornerRadius: DesignSystem.CornerRadius.two) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                         ForEach(AppMigrationTransferredItem.allCases) { item in
                             AppMigrationItemRow(
@@ -35,7 +35,7 @@ struct AppMigrationOverviewView: View {
 
                 HASectionPill(L10n.AppMigration.Overview.Section.followUp, icon: .arrowUturnBackwardCircleFill)
                     .padding(.top, DesignSystem.Spaces.half)
-                CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                CardView(cornerRadius: DesignSystem.CornerRadius.two) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                         ForEach(AppMigrationFollowUpItem.beforeTransfer) { item in
                             AppMigrationItemRow(

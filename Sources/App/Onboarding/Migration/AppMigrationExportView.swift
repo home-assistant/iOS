@@ -51,7 +51,7 @@ struct AppMigrationExportView: View {
                                 icon: .checkmarkCircleFill,
                                 tint: .haSuccessColor
                             )
-                            CardView(cornerRadius: DesignSystem.CornerRadius.five) {
+                            CardView(cornerRadius: DesignSystem.CornerRadius.two) {
                                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                                     ForEach(AppMigrationTransferredItem.allCases) { item in
                                         AppMigrationItemRow(
