@@ -12,7 +12,6 @@ struct AppMigrationExportContainerView: View {
             transferAction: coordinator.transfer,
             openNewAppAction: coordinator.openNewApp,
             transferAgainAction: coordinator.transferAgain,
-            eraseAction: coordinator.eraseApp,
             cancelAction: coordinator.declineExport
         )
     }

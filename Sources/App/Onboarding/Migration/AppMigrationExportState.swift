@@ -5,6 +5,5 @@ enum AppMigrationExportState: Equatable {
     case idle
     case preparing
     case handedOff
-    case erased
     case failed(message: String)
 }

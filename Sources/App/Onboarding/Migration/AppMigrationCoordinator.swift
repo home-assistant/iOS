@@ -5,7 +5,7 @@ import UIKit
 
 /// Drives the handoff on whichever side this build is. The new app mints a session, asks the previous
 /// app for its setup and applies what comes back; the previous app hands control to the transfer
-/// screen on request, packages its setup, and stays on that screen until it is erased.
+/// screen on request, packages its setup, and stays on that screen until the app is deleted.
 @MainActor
 final class AppMigrationCoordinator: ObservableObject {
     static let shared = AppMigrationCoordinator()
@@ -28,8 +28,6 @@ final class AppMigrationCoordinator: ObservableObject {
             self.exportRequest = request
         case .handedOff:
             self.exportState = .handedOff
-        case .erased:
-            self.exportState = .erased
         case nil:
             break
         }
@@ -47,11 +45,8 @@ final class AppMigrationCoordinator: ObservableObject {
     func restoreHandoffIfNeeded() {
         guard role == .previousApp, handoffPhase != nil else { return }
         HomeAssistantAPI.connectionsSuspended = true
-        switch handoffPhase {
-        case .handedOff, .erased:
+        if case .handedOff = handoffPhase {
             releasePushRegistration()
-        case .requested, nil:
-            break
         }
     }
 
@@ -67,11 +62,7 @@ final class AppMigrationCoordinator: ObservableObject {
         case (.newApp, .restart):
             restartImport()
         case let (.previousApp, .request(requested)):
-            if case .erased = handoffPhase {
-                Task { _ = await open(AppMigrationLink.declined(sessionID: requested.id).url(to: .newApp)) }
-            } else {
-                enterTakeover(with: requested)
-            }
+            enterTakeover(with: requested)
         default:
             return false
         }
@@ -220,7 +211,7 @@ final class AppMigrationCoordinator: ObservableObject {
         Task { _ = await open(AppMigrationLink.restart.url(to: .newApp)) }
     }
 
-    /// Leaves the takeover: tells the new app, forgets the handoff and lets this app reconnect.
+    /// Leaves the takeover for now: tells the new app, forgets the handoff and lets this app reconnect.
     func declineExport() {
         if let request = exportRequest {
             Task { _ = await open(AppMigrationLink.declined(sessionID: request.id).url(to: .newApp)) }
@@ -229,13 +220,6 @@ final class AppMigrationCoordinator: ObservableObject {
         exportState = .idle
         setHandoffPhase(nil)
         resumeConnections()
-    }
-
-    func eraseApp() {
-        wipeLocalData()
-        exportRequest = nil
-        exportState = .erased
-        setHandoffPhase(.erased)
     }
 
     /// Once the setup has left this app, pushes must not land here even if Home Assistant still holds
@@ -281,6 +265,9 @@ final class AppMigrationCoordinator: ObservableObject {
         Current.modelManager.subscribe(isAppInForeground: { UIApplication.shared.applicationState == .active })
         for api in Current.apis {
             _ = api.Connect(reason: .warm)
+        }
+        Current.sceneManager.webViewControllerPromise.done { controller in
+            controller.loadActiveURLIfNeeded()
         }
     }
 
