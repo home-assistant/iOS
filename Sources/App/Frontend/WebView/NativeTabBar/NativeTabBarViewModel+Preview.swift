@@ -29,13 +29,14 @@ extension NativeTabBarViewModel {
             configurationStore.setItemIds(tabItemIds, for: server.identifier.rawValue)
         }
 
+        let overlayState = WebFrontendOverlayState()
         return NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(
                 server: server,
-                overlayState: WebFrontendOverlayState(),
+                overlayState: overlayState,
                 snapshotStore: snapshotStore
             ),
-            overlayState: WebFrontendOverlayState(),
+            overlayState: overlayState,
             configurationStore: configurationStore,
             tabBarState: NativeTabBarState()
         )
