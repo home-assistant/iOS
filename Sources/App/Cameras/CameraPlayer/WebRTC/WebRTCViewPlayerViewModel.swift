@@ -48,6 +48,16 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// state resets the count, so a long watch isn't limited by an interruption it recovered from.
     private static let maxConnectionRetries = 2
 
+    /// How long a signaling command may go unanswered before the socket carrying it is treated as
+    /// dead.
+    ///
+    /// `HAConnectionState` cannot answer this on its own: a socket whose network was taken away
+    /// still reports itself ready, because nothing has tried to use it since, and HAKit needs some
+    /// forty-five seconds to find out. Device logs show this command answered in 43ms on a working
+    /// connection and never on a dead one, so silence this long is not slowness — it is the socket
+    /// having gone without saying so.
+    private static let signalingStallTimeout: TimeInterval = 8
+
     /// How long the stream waits for a server connection that is down before giving up on it.
     ///
     /// Long, because it is HAKit's own reconnect being waited on: device logs show it takes some
@@ -70,6 +80,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// a socket that cannot answer it.
     private var connectionGate: WebRTCServerConnectionGate?
     private var connectionWaitWorkItem: DispatchWorkItem?
+    private var signalingStallWorkItem: DispatchWorkItem?
+    /// Set once a signaling command has gone unanswered, so the next attempt waits for a connection
+    /// that has genuinely been re-established rather than believing the stale one.
+    private var didStallOnSignaling = false
     /// Regenerated on every start/teardown so async setup steps (config fetch, offer creation)
     /// from a previous attempt are ignored instead of resurrecting a torn-down connection.
     private var connectionToken = UUID()
@@ -109,6 +123,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         timeoutWorkItem?.cancel()
         disconnectRecoveryWorkItem?.cancel()
         connectionWaitWorkItem?.cancel()
+        signalingStallWorkItem?.cancel()
         connectionGate?.cancel()
         webRTCClient?.closeConnection()
     }
@@ -145,6 +160,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     func start() {
         isActive = true
         connectionRetries = 0
+        didStallOnSignaling = false
         cancelTimeout()
         beginConnection()
     }
@@ -204,7 +220,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         let gate = WebRTCServerConnectionGate(connection: api.connection)
         connectionGate = gate
         scheduleConnectionWaitTimeout()
-        gate.whenReady { [weak self] isReady in
+        gate.whenReady(requiringFreshConnection: didStallOnSignaling) { [weak self] isReady in
             guard let self, token == connectionToken else { return }
             cancelConnectionWait()
             connectionGate = nil
@@ -224,6 +240,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private func fetchClientConfiguration(api: HomeAssistantAPI, token: UUID) {
         cancelTimeout()
         scheduleTimeout()
+        scheduleSignalingStall(token: token)
 
         // Same flow as the frontend player: ask the server for the client configuration — the ICE
         // servers, including any user-configured TURN, and the data channel some cameras need —
@@ -233,6 +250,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         ])) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self, token == self.connectionToken else { return }
+                self.cancelSignalingStall()
                 switch result {
                 case let .success(data):
                     self.startConnection(configuration: .init(data: data), api: api, token: token)
@@ -257,6 +275,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     private func startConnection(configuration: WebRTCClientConfiguration, api: HomeAssistantAPI, token: UUID) {
         guard token == connectionToken else { return }
+        // The server answered, so whatever killed the last socket is behind us and a later attempt
+        // has no reason to distrust the connection state again.
+        didStallOnSignaling = false
         let client = WebRTCClient(configuration: configuration)
         webRTCClient = client
         client.delegate = self
@@ -325,6 +346,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private func tearDownConnection() {
         connectionToken = UUID()
         cancelConnectionWait()
+        cancelSignalingStall()
         connectionGate?.cancel()
         connectionGate = nil
         offerSubscription?.cancel()
@@ -371,6 +393,39 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private func cancelConnectionWait() {
         connectionWaitWorkItem?.cancel()
         connectionWaitWorkItem = nil
+    }
+
+    /// Watches a signaling command for the silence that means the socket underneath it is gone.
+    private func scheduleSignalingStall(token: UUID) {
+        signalingStallWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, token == connectionToken else { return }
+            signalingStallWorkItem = nil
+            handleSignalingStall()
+        }
+        signalingStallWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.signalingStallTimeout, execute: workItem)
+    }
+
+    private func cancelSignalingStall() {
+        signalingStallWorkItem?.cancel()
+        signalingStallWorkItem = nil
+    }
+
+    /// A signaling command went unanswered, so the socket is dead whatever it claims. Start over
+    /// against a connection that has actually been re-established; cascading instead would only
+    /// hand the next player the same dead socket.
+    private func handleSignalingStall() {
+        guard connectionRetries < Self.maxConnectionRetries else {
+            Current.Log.error("Signaling for \(cameraEntityId) kept stalling, giving up on WebRTC")
+            handleFailure(reason: nil)
+            return
+        }
+        connectionRetries += 1
+        didStallOnSignaling = true
+        Current.Log.error("Signaling for \(cameraEntityId) went unanswered, waiting for a live connection")
+        cancelTimeout()
+        beginConnection()
     }
 
     /// Waits out a short interruption before rebuilding the stream, so WebRTC gets the chance to

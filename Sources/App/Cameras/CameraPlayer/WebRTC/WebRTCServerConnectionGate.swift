@@ -15,6 +15,9 @@ final class WebRTCServerConnectionGate {
     /// A socket that stays idle after being asked to connect is one the reconnect logic owns now;
     /// asking again on every state change would only hammer it.
     private var hasRequestedConnect = false
+    /// Set while a ready state is not to be trusted, until the connection has actually dropped and
+    /// come back.
+    private var needsReconnectFirst = false
 
     init(connection: HAConnection) {
         self.connection = connection
@@ -27,10 +30,16 @@ final class WebRTCServerConnectionGate {
     /// Calls back with `true` once the connection is ready to carry signaling, or `false` if the
     /// server rejected us and waiting would be pointless. A gate already waiting replaces its
     /// pending handler, so a restarted stream never leaves an older attempt armed behind it.
-    func whenReady(_ handler: @escaping (Bool) -> Void) {
+    ///
+    /// `requiringFreshConnection` is for the case where the state cannot be believed: a socket
+    /// whose network was taken away still reports itself ready, because nothing has tried to use
+    /// it since. Setting it makes the gate ignore the connection it finds and wait for one that
+    /// has actually been re-established — the state leaving ready and coming back.
+    func whenReady(requiringFreshConnection: Bool = false, _ handler: @escaping (Bool) -> Void) {
         cancel()
         self.handler = handler
         hasRequestedConnect = false
+        needsReconnectFirst = requiringFreshConnection
 
         observer = NotificationCenter.default.addObserver(
             forName: HAConnectionState.didTransitionToStateNotification,
@@ -52,8 +61,17 @@ final class WebRTCServerConnectionGate {
     private func evaluate() {
         guard handler != nil else { return }
 
-        switch WebRTCServerConnectionReadiness(state: connection.state) {
+        let readiness = WebRTCServerConnectionReadiness(state: connection.state)
+
+        // A connection that has left ready is the reconnect this gate was told to wait for; from
+        // here the states mean what they say again.
+        if needsReconnectFirst, readiness != .ready {
+            needsReconnectFirst = false
+        }
+
+        switch readiness {
         case .ready:
+            guard !needsReconnectFirst else { return }
             finish(isReady: true)
         case .unusable:
             finish(isReady: false)
