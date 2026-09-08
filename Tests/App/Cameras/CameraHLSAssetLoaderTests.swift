@@ -1,3 +1,4 @@
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import XCTest
@@ -91,6 +92,10 @@ final class CameraHLSAssetLoaderTests: XCTestCase {
         if let configure {
             configure(&server.info.connection)
         }
-        return (HomeAssistantAPI(server: server), { Current.servers = previousServers })
+        let api = HomeAssistantAPI(server: server)
+        // Without this the API keeps its real connection and tries to reach a server that is not
+        // there, leaving retries running in the background of every test that follows.
+        api.connection = HAMockConnection()
+        return (api, { Current.servers = previousServers })
     }
 }
