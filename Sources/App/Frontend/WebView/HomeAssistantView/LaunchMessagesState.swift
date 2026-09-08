@@ -1,17 +1,20 @@
 import Foundation
 import Shared
 
-/// Queues the launch messages (What's-New, then TestFlight) that `HomeAssistantView` presents over the
+/// Queues the launch messages (the new-app announcement, What's-New, then TestFlight) that `HomeAssistantView` presents
+/// over the
 /// web frontend. Owned by the web view screen so the sheets can never appear over onboarding — they only
 /// exist once a server's frontend is on screen.
 @MainActor
 final class LaunchMessagesState: ObservableObject {
     enum Message: Identifiable {
+        case appMigration
         case whatsNew(WhatsNewRelease)
         case testFlight(TestFlightMessage)
 
         var id: String {
             switch self {
+            case .appMigration: return "appMigration"
             case let .whatsNew(release): return "whatsNew-\(release.id)"
             case let .testFlight(message): return "testFlight-\(message.id.rawValue)"
             }
@@ -31,6 +34,9 @@ final class LaunchMessagesState: ObservableObject {
         Self.didEvaluate = true
 
         var queue: [Message] = []
+        if AppMigrationAnnouncement.shouldPresentAtLaunch {
+            queue.append(.appMigration)
+        }
         if let release = WhatsNewEngine().releaseToShow() {
             queue.append(.whatsNew(release))
         }

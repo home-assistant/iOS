@@ -7,8 +7,9 @@ enum AppMigrationLink: Equatable {
 
     /// New app → previous app: please package your setup for this session.
     case request(AppMigrationSession)
-    /// Previous app → new app: the sealed payload is on the pasteboard.
-    case payloadReady(sessionID: UUID)
+    /// Previous app → new app: the sealed payload is on the pasteboard. The key rides along only when
+    /// the previous app started the transfer itself and the new app has no session to match it to.
+    case payloadReady(sessionID: UUID, key: String?)
     /// Previous app → new app: the user cancelled.
     case declined(sessionID: UUID)
     /// Previous app → new app: drop everything you received and ask for the setup again.
@@ -31,7 +32,7 @@ enum AppMigrationLink: Equatable {
                   let session = AppMigrationSession(id: sessionID, keyString: keyString) else { return nil }
             self = .request(session)
         case "/payload":
-            self = .payloadReady(sessionID: sessionID)
+            self = .payloadReady(sessionID: sessionID, key: query["key"])
         case "/declined":
             self = .declined(sessionID: sessionID)
         default:
@@ -50,9 +51,12 @@ enum AppMigrationLink: Equatable {
                 URLQueryItem(name: "session", value: session.id.uuidString),
                 URLQueryItem(name: "key", value: session.keyString),
             ]
-        case let .payloadReady(sessionID):
+        case let .payloadReady(sessionID, key):
             components.path = "/payload"
             components.queryItems = [URLQueryItem(name: "session", value: sessionID.uuidString)]
+            if let key {
+                components.queryItems?.append(URLQueryItem(name: "key", value: key))
+            }
         case let .declined(sessionID):
             components.path = "/declined"
             components.queryItems = [URLQueryItem(name: "session", value: sessionID.uuidString)]

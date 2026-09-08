@@ -1136,6 +1136,38 @@ public enum L10n {
   }
 
   public enum AppMigration {
+    public enum Announcement {
+      /// Home Assistant is moving to a new app on the App Store. Transfer your servers and settings to it in a few seconds. Everything stays on this device.
+      public static var body: String { return L10n.tr("Localizable", "app_migration.announcement.body") }
+      /// Not now
+      public static var laterButton: String { return L10n.tr("Localizable", "app_migration.announcement.later_button") }
+      /// Home Assistant has a new app
+      public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.title") }
+      /// Transfer to the new app
+      public static var transferButton: String { return L10n.tr("Localizable", "app_migration.announcement.transfer_button") }
+      public enum FollowUp {
+        /// Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the new app.
+        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.explanation") }
+        /// A few things to set up again
+        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.title") }
+      }
+      public enum NewApp {
+        /// The app is now published by the Open Home Foundation. This app will stop receiving updates.
+        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.explanation") }
+        /// A new app, the same Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.title") }
+      }
+      public enum Section {
+        /// What this means
+        public static var whatChanges: String { return L10n.tr("Localizable", "app_migration.announcement.section.what_changes") }
+      }
+      public enum SetupMoves {
+        /// Servers, sign-ins, settings, and your Watch, CarPlay and widget setup come with you.
+        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.setup_moves.explanation") }
+        /// Your setup moves with you
+        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.setup_moves.title") }
+      }
+    }
     public enum Complete {
       /// Your setup is now in this app and you are signed in.
       public static var body: String { return L10n.tr("Localizable", "app_migration.complete.body") }
@@ -1240,6 +1272,22 @@ public enum L10n {
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.explanation") }
         /// Apple Watch app
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.title") }
+      }
+    }
+    public enum GetNewApp {
+      /// Install the new Home Assistant app from the App Store, then come back here. The transfer starts as soon as the new app is on this device.
+      public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.body") }
+      /// I have installed it
+      public static var installedButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.installed_button") }
+      /// Get the new app
+      public static var storeButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.store_button") }
+      /// Get the new app first
+      public static var title: String { return L10n.tr("Localizable", "app_migration.get_new_app.title") }
+      public enum NotFound {
+        /// Install it from the App Store and open this screen again.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.not_found.body") }
+        /// The new app is not on this device yet
+        public static var title: String { return L10n.tr("Localizable", "app_migration.get_new_app.not_found.title") }
       }
     }
     public enum Import {
@@ -6568,6 +6616,10 @@ public enum L10n {
     public enum TestFlightCommunication {
       /// Beta Tester Updates
       public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
+    }
+    public enum TransferToNewApp {
+      /// Transfer to the new app
+      public static var title: String { return L10n.tr("Localizable", "settings.transfer_to_new_app.title") }
     }
     public enum WhatsNew {
       /// What's new?

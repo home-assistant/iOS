@@ -7,9 +7,10 @@ enum AppMigrationHandoffStore {
     private static let phaseKey = "appMigrationHandoffPhase"
     private static let sessionIDKey = "appMigrationHandoffSessionID"
     private static let sessionKeyKey = "appMigrationHandoffSessionKey"
+    private static let startedHereKey = "appMigrationHandoffStartedHere"
 
     /// The keys above: they describe this app's own handoff and must never travel to the new app.
-    static let defaultsKeys: Set<String> = [phaseKey, sessionIDKey, sessionKeyKey]
+    static let defaultsKeys: Set<String> = [phaseKey, sessionIDKey, sessionKeyKey, startedHereKey]
 
     private static var defaults: UserDefaults? {
         UserDefaults(suiteName: AppConstants.AppGroupID)
@@ -25,7 +26,7 @@ enum AppMigrationHandoffStore {
             guard let id = defaults?.string(forKey: sessionIDKey).flatMap(UUID.init(uuidString:)),
                   let key = defaults?.string(forKey: sessionKeyKey),
                   let session = AppMigrationSession(id: id, keyString: key) else { return nil }
-            return .requested(session)
+            return .requested(session, startedHere: defaults?.bool(forKey: startedHereKey) ?? false)
         case "handedOff":
             return .handedOff
         default:
@@ -37,11 +38,13 @@ enum AppMigrationHandoffStore {
         guard let defaults else { return }
         defaults.removeObject(forKey: sessionIDKey)
         defaults.removeObject(forKey: sessionKeyKey)
+        defaults.removeObject(forKey: startedHereKey)
         switch phase {
-        case let .requested(session):
+        case let .requested(session, startedHere):
             defaults.set("requested", forKey: phaseKey)
             defaults.set(session.id.uuidString, forKey: sessionIDKey)
             defaults.set(session.keyString, forKey: sessionKeyKey)
+            defaults.set(startedHere, forKey: startedHereKey)
         case .handedOff:
             defaults.set("handedOff", forKey: phaseKey)
         case nil:
