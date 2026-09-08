@@ -13,6 +13,9 @@ struct CameraStreamHLSView: View {
     private let controlsVisible: Binding<Bool>?
 
     @State private var player: AVPlayer?
+    /// The asset does not retain its resource loader delegate, so hold it for as long as the player
+    /// lives or the stream stops mid-load on a server that needs a client certificate.
+    @State private var assetLoader: CameraHLSAssetLoader?
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var hasCalledFallback = false
@@ -72,6 +75,7 @@ struct CameraStreamHLSView: View {
         .onDisappear {
             player?.pause()
             player = nil
+            assetLoader = nil
         }
     }
 
@@ -84,7 +88,7 @@ struct CameraStreamHLSView: View {
         Task {
             do {
                 let streamURL = try await fetchStreamURL(api: api)
-                setupPlayer(with: streamURL)
+                setupPlayer(with: streamURL, api: api)
             } catch {
                 await MainActor.run {
                     Current.Log.error("Failed to load HLS stream: \(error.localizedDescription)")
@@ -131,14 +135,17 @@ struct CameraStreamHLSView: View {
     }
 
     @MainActor
-    private func setupPlayer(with url: URL) {
+    private func setupPlayer(with url: URL, api: HomeAssistantAPI) {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {
             Current.Log.error("Failed to set audio session category: \(error.localizedDescription)")
         }
 
-        let asset = AVURLAsset(url: url)
+        // A server behind a client certificate, or reached with a security exception, needs its
+        // requests to go through the app's own session; AVFoundation cannot present either itself.
+        let (asset, loader) = CameraHLSAssetLoader.asset(for: url, api: api)
+        assetLoader = loader
         let playerItem = AVPlayerItem(asset: asset)
         let avPlayer = AVPlayer(playerItem: playerItem)
 
