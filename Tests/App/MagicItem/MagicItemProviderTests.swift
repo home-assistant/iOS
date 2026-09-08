@@ -8,11 +8,17 @@ struct MagicItemProviderTests {
         self.sut = MagicItemProvider()
     }
 
-    private static func entity(entityId: String, domain: String, name: String, icon: String?) -> HAAppEntity {
+    private static func entity(
+        entityId: String,
+        domain: String,
+        name: String,
+        icon: String?,
+        serverId: String = "1"
+    ) -> HAAppEntity {
         .init(
-            id: "1-\(entityId)",
+            id: "\(serverId)-\(entityId)",
             entityId: entityId,
-            serverId: "1",
+            serverId: serverId,
             domain: domain,
             name: name,
             icon: icon,
@@ -107,6 +113,55 @@ struct MagicItemProviderTests {
             // No replacement provided so item stays the same
             .init(id: "light.one", serverId: "1", type: .entity),
         ])
+    }
+
+    /// Two servers can hold the same entity id — two homes, each with a `cover.garage_door`. An item
+    /// that can't be resolved must stay on its own server rather than being re-pointed at the
+    /// identically named entity next door, and it must not drag the items that *did* resolve along
+    /// with it.
+    @Test mutating func migrateKeepsItemsOnTheirOwnServerWhenServersShareEntityIds() async throws {
+        var carPlayConfig = CarPlayConfig()
+        let expectedItems: [MagicItem] = [
+            .init(id: "cover.garage_door", serverId: "1", type: .entity),
+            .init(id: "cover.garage_door", serverId: "2", type: .entity),
+            // Gone from server 2, so nothing resolves it: this is the item whose absence used to
+            // send every other item to whichever server held its entity id first.
+            .init(id: "light.gone", serverId: "2", type: .entity),
+        ]
+        carPlayConfig.quickAccessItems = expectedItems
+
+        try await Current.database().write { [carPlayConfig] db in
+            try CarPlayConfig.deleteAll(db)
+            try carPlayConfig.insert(db)
+        }
+
+        sut.entitiesPerServer = [
+            "1": [Self.entity(
+                entityId: "cover.garage_door",
+                domain: "cover",
+                name: "Garage Door",
+                icon: nil,
+                serverId: "1"
+            )],
+            "2": [Self.entity(
+                entityId: "cover.garage_door",
+                domain: "cover",
+                name: "Garage Door",
+                icon: nil,
+                serverId: "2"
+            )],
+        ]
+
+        await withCheckedContinuation { continuation in
+            sut.migrateCarPlayConfig {
+                continuation.resume()
+            }
+        }
+
+        // `MagicItem`'s equality compares id, serverId and type, so this asserts the server each
+        // item points at is untouched.
+        let newCarPlayConfig = try CarPlayConfig.config()
+        #expect(newCarPlayConfig?.quickAccessItems == expectedItems)
     }
 
     /// `getInfo` resolves entity-backed items through the per-server entity index rather than scanning
