@@ -83,12 +83,8 @@ struct ContainerView: View {
         }
     }
 
-    /// The frontend, and the navigation stack Settings is pushed onto when the frontend's external bus asks
-    /// for it. The stack deliberately wraps only this screen: onboarding hosts a `NavigationStack` of its
-    /// own, and nesting two of them makes SwiftUI compare their differently-typed paths and fatally error
-    /// (`AnyNavigationPath.Error.comparisonTypeMismatch`) as the app lays out for the first time on iOS 16.
-    /// It stays out of the size-class branch it used to live in — rebuilding it on rotation reloaded the
-    /// frontend.
+    /// The frontend, in the stack Settings is pushed onto. Only this screen: onboarding brings its own
+    /// `NavigationStack`, and SwiftUI crashes on the two nested.
     private func frontend(server: Server, initialPath: String?) -> some View {
         NavigationStack(path: $appSettings.pushPath) {
             HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
