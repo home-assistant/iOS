@@ -25,7 +25,6 @@ class IncomingURLHandler {
         case navigate
         case invite
         case createCustomWidget = "createcustomwidget"
-        case camera
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -74,32 +73,6 @@ class IncomingURLHandler {
                     message: L10n.UrlHandler.SendLocation.Confirm.message,
                     handler: { self.sendLocationURLHandler() }
                 )
-            case .camera:
-                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-                    return false
-                }
-                components.scheme = nil
-                components.host = nil
-
-                let queryParameters = components.queryItems
-                let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
-                let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
-
-                guard let entityId,
-                      let server = Current.servers.all.first(where: { server in
-                          server.identifier.rawValue == serverId
-                      }) else {
-                    Current.Log.error("No server found for open camera URL: \(url)")
-                    return false
-                }
-                presentOverFrontend { webViewController in
-                    let view = CameraPlayerView(
-                        server: server,
-                        cameraEntityId: entityId
-                    ).embeddedInHostingController()
-                    view.modalPresentationStyle = .overFullScreen
-                    webViewController.present(view, animated: true)
-                }
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false

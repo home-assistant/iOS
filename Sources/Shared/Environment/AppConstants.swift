@@ -187,22 +187,9 @@ public enum AppConstants {
         pageDeeplinkURL(path: path)?.appending(queryItems: [URLQueryItem(name: "server", value: serverName)])
     }
 
-    /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
-    /// dialog for everything else.
+    /// Where tapping an entity lands: the frontend's more-info dialog, cameras included.
     public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
-        if Domain(entityId: entityId) == .camera {
-            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
-        }
-        return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
-    }
-
-    /// The deep link host that opens the native camera player.
-    public static let cameraDeeplinkHost = "camera"
-
-    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)\(cameraDeeplinkHost)/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        )
+        openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
     }
 
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
