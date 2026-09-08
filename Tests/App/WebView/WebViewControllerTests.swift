@@ -876,12 +876,15 @@ final class WebViewControllerTests: XCTestCase {
     func testPrefersStatusBarHiddenTracksKioskAndFullScreenSettings() throws {
         let previousDatabase = Current.database
         let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
         let previousFullScreen = Current.settingsStore.fullScreen
         defer {
             Current.database = previousDatabase
             Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
             Current.settingsStore.fullScreen = previousFullScreen
         }
+        Current.sensors = SensorContainer()
 
         let database = try DatabaseQueue()
         try KioskSettingsTable().createIfNeeded(database: database)
