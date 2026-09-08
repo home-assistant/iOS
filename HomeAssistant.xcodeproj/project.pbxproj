@@ -2425,6 +2425,7 @@
 		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
+		42FD0000009100510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
@@ -2510,6 +2511,7 @@
 		42EDE917300315A50051FC9B /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42EDE91C300315A50051FC9B /* TestFlightCommunication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestFlightCommunication; sourceTree = "<group>"; };
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
+		42FD0000009000510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
 		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
@@ -2871,6 +2873,7 @@
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
 				42EDE930300315A50051FC9B /* Utilities */,
+				42FD0000009000510051FC9B /* VoiceToolsServer */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
 				42EDE940300315A50051FC9B /* AppDelegate.swift */,
@@ -2961,6 +2964,7 @@
 				42EDBBF63002FBC90051FC9B /* Resources */,
 				42EDBBDB3002FBC90051FC9B /* Scenes */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
+				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				42EDBBE23002FBC90051FC9B /* Thread */,
 				42EDBBBC3002FBC90051FC9B /* Utilities */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
@@ -3437,6 +3441,7 @@
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
 				42EDE930300315A50051FC9B /* Utilities */,
+				42FD0000009000510051FC9B /* VoiceToolsServer */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
 			);
@@ -3477,6 +3482,7 @@
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
+				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				42CE0001300000000051FC9B /* Container */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
 				42DF4F00302CACC600589E49 /* Templating */,
