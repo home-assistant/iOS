@@ -360,6 +360,18 @@ final class E2EDriver {
         return true
     }
 
+    /// Allows the pasteboard read iOS asks about when this app was not the one that put the payload
+    /// there and was not in the foreground moments before; nothing to do when no alert comes up.
+    @discardableResult
+    func allowPasteIfAsked() -> Bool {
+        let allow = NSPredicate(format: "label == 'Allow Paste'")
+        guard let button = systemAlertButton(matching: allow, timeout: Timeout.screen) else {
+            return false
+        }
+        button.tap()
+        return true
+    }
+
     private func systemAlertButton(matching predicate: NSPredicate, timeout: TimeInterval) -> XCUIElement? {
         let hosted = springboard.alerts.firstMatch.buttons.matching(predicate).firstMatch
         if hosted.waitForExistence(timeout: timeout) {

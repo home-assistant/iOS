@@ -56,13 +56,7 @@ struct AppMigrationAnnouncementView: View {
                 },
                 secondaryActionIdentifier: AccessibilityIdentifier.migrationAnnouncementLater.rawValue
             )
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    CloseButton {
-                        dismiss()
-                    }
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(isPresented: $showsGetNewApp) {
                 AppMigrationGetNewAppView(transferStartedAction: { dismiss() })
             }
