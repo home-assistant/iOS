@@ -122,13 +122,21 @@ struct MagicItemProviderTests {
     /// identically named entity next door, and it must not drag the items that *did* resolve along
     /// with it.
     @Test mutating func migrateKeepsItemsOnTheirOwnServerWhenServersShareEntityIds() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+
+        let servers = FakeServerManager()
+        let firstServerId = servers.addFake().identifier.rawValue
+        let secondServerId = servers.addFake().identifier.rawValue
+        Current.servers = servers
+
         var carPlayConfig = CarPlayConfig()
         let expectedItems: [MagicItem] = [
-            .init(id: "cover.garage_door", serverId: "1", type: .entity),
-            .init(id: "cover.garage_door", serverId: "2", type: .entity),
-            // Gone from server 2, so nothing resolves it: this is the item whose absence used to
-            // send every other item to whichever server held its entity id first.
-            .init(id: "light.gone", serverId: "2", type: .entity),
+            .init(id: "cover.garage_door", serverId: firstServerId, type: .entity),
+            .init(id: "cover.garage_door", serverId: secondServerId, type: .entity),
+            // Gone from the second server, so nothing resolves it: this is the item whose absence
+            // used to send every other item to whichever server held its entity id first.
+            .init(id: "light.gone", serverId: secondServerId, type: .entity),
         ]
         carPlayConfig.quickAccessItems = expectedItems
 
@@ -137,23 +145,23 @@ struct MagicItemProviderTests {
             try carPlayConfig.insert(db)
         }
 
-        let garageDoorOnServerOne = Self.entity(
+        let garageDoorOnFirstServer = Self.entity(
             entityId: "cover.garage_door",
             domain: "cover",
             name: "Garage Door",
             icon: nil,
-            serverId: "1"
+            serverId: firstServerId
         )
-        let garageDoorOnServerTwo = Self.entity(
+        let garageDoorOnSecondServer = Self.entity(
             entityId: "cover.garage_door",
             domain: "cover",
             name: "Garage Door",
             icon: nil,
-            serverId: "2"
+            serverId: secondServerId
         )
         sut.entitiesPerServer = [
-            "1": [garageDoorOnServerOne],
-            "2": [garageDoorOnServerTwo],
+            firstServerId: [garageDoorOnFirstServer],
+            secondServerId: [garageDoorOnSecondServer],
         ]
 
         await withCheckedContinuation { continuation in

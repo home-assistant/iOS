@@ -198,8 +198,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         // Rebuilt on every load so complication renames and deletions surface without a relaunch.
         complicationConfigIndex = Self.loadComplicationConfigIndex()
         // Drop servers that are no longer configured: a long-lived provider (the CarPlay template
-        // keeps one) would otherwise keep resolving their entities, and `getSimilarItem` reads the
-        // absence of a server here as "this item's server is gone" before re-pointing an item.
+        // keeps one) would otherwise keep resolving their entities, which makes an item pointing at
+        // a removed server look resolved and stops the migration from re-pointing it.
         let configuredServerIds = Set(servers.map(\.identifier.rawValue))
         entitiesPerServer = entitiesPerServer.filter { configuredServerIds.contains($0.key) }
         areasPerServer = areasPerServer.filter { configuredServerIds.contains($0.key) }

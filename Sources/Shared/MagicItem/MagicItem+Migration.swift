@@ -74,11 +74,15 @@ extension MagicItemProvider {
     /// orphaning every item that referenced the old one.
     ///
     /// Nothing is re-pointed while the item's server is still configured. Two servers can hold the
-    /// same entity id (two homes, each with a `cover.garage_door`), and there an item that doesn't
-    /// resolve means that entity is gone from *its* server — the identically named one next door is
-    /// a different device, not a replacement.
+    /// same entity id — two homes, each with a `cover.garage_door` — so an item that doesn't resolve
+    /// means that entity is gone from its own server. The identically named one next door is a
+    /// different device, not a replacement.
+    ///
+    /// Whether the server is gone is asked of the server list rather than of the entity cache: a
+    /// server whose entities simply failed to load has no entry there either, and an item must not
+    /// move to another server because of a failed read.
     private func getSimilarItem(for item: MagicItem) -> MagicItem? {
-        guard entitiesPerServer[item.serverId] == nil else { return nil }
+        guard Current.servers.server(for: .init(rawValue: item.serverId)) == nil else { return nil }
 
         // Sorted so the pick stays stable when more than one server holds the entity id; dictionary
         // iteration order is not.
