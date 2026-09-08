@@ -65,12 +65,17 @@ struct WyomingConnectionTests {
 
         func send(_ event: WyomingEvent) async throws {
             let data = try WyomingEventCodec.encode(event)
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
+                let pending = Pending(continuation)
+                let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
+                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+
                 connection.send(content: data, completion: .contentProcessed { error in
+                    deadline.cancel()
                     if let error {
-                        continuation.resume(throwing: error)
+                        pending.resume(with: .failure(error))
                     } else {
-                        continuation.resume()
+                        pending.resume(with: .success(Data()))
                     }
                 })
             }
@@ -343,15 +348,17 @@ struct WyomingConnectionTests {
         let boundPort = try await recorder.boundPort()
         let port = try #require(NWEndpoint.Port(rawValue: boundPort))
 
-        // One more than the cap, all held open at once.
+        // One more than the cap, all held open at once. Only the first is written to: accepting the
+        // socket is what the cap acts on, and a send to a refused connection has nobody to complete
+        // it.
         var clients: [Client] = []
         for _ in 0 ... 8 {
-            let client = Client(port: port)
-            clients.append(client)
-            try await client.send(WyomingEvent(kind: .ping))
+            clients.append(Client(port: port))
         }
 
-        // The ones within the cap still answer, which is what proves the refusal was selective.
+        // The connection within the cap still answers, which is what proves the refusal was
+        // selective rather than the listener falling over.
+        try await clients[0].send(WyomingEvent(kind: .ping))
         let firstReply = try await clients[0].receive()
         #expect(firstReply.kind == .pong)
 
