@@ -17,6 +17,14 @@ struct AppMigrationExportView: View {
     @State private var showsTransferAgainConfirmation = false
 
     var body: some View {
+        if state == .preparing {
+            AppMigrationProgressView(script: .export)
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spaces.three) {
                 MaterialDesignIconsImage(icon: headerIcon, size: 96)
@@ -120,20 +128,17 @@ struct AppMigrationExportView: View {
                     .accessibilityIdentifier(AccessibilityIdentifier.migrationExportOpenNewApp.rawValue)
                 case .idle, .preparing, .failed:
                     HAProgressButton(
-                        state == .preparing ? L10n.AppMigration.Export.Preparing.title : L10n.AppMigration.Export
-                            .transferButton,
+                        L10n.AppMigration.Export.transferButton,
                         icon: .transferIcon,
                         state: progressButtonState,
                         action: transferAction
                     )
                     .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransfer.rawValue)
-                    .disabled(state == .preparing)
                     Button(action: cancelAction) {
                         Text(L10n.AppMigration.Export.cancelButton)
                     }
                     .buttonStyle(.secondaryButton)
                     .tint(Color.haPrimary)
-                    .disabled(state == .preparing)
                 }
             }
             .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
@@ -195,6 +200,18 @@ struct AppMigrationExportView: View {
 #Preview("Ready") {
     AppMigrationExportView(
         state: .idle,
+        summary: .preview,
+        transferAction: {},
+        openNewAppAction: {},
+        transferAgainAction: {},
+        eraseAction: {},
+        cancelAction: {}
+    )
+}
+
+#Preview("Preparing") {
+    AppMigrationExportView(
+        state: .preparing,
         summary: .preview,
         transferAction: {},
         openNewAppAction: {},

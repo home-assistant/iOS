@@ -6,14 +6,30 @@ import SwiftUI
 struct AppMigrationFlowView: View {
     @ObservedObject private var coordinator = AppMigrationCoordinator.shared
     @State private var showsOverview = false
+    @State private var permissionsToAllow: [SensorPermission]?
     let skipAction: () -> Void
     let finishAction: () -> Void
 
     var body: some View {
-        if let summary = coordinator.completedSummary {
-            AppMigrationCompleteView(summary: summary) {
+        if let permissionsToAllow {
+            AppMigrationPermissionsView(permissions: permissionsToAllow) {
                 coordinator.finishImport()
                 finishAction()
+            }
+            .navigationBarBackButtonHidden(true)
+            .onChange(of: coordinator.completedSummary) { summary in
+                if summary == nil {
+                    self.permissionsToAllow = nil
+                }
+            }
+        } else if let summary = coordinator.completedSummary {
+            AppMigrationCompleteView(summary: summary) {
+                if summary.grantedPermissions.isEmpty {
+                    coordinator.finishImport()
+                    finishAction()
+                } else {
+                    permissionsToAllow = summary.grantedPermissions
+                }
             }
             .navigationBarBackButtonHidden(true)
         } else if let state = coordinator.importState {

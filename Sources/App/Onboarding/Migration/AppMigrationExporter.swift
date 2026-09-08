@@ -10,14 +10,15 @@ struct AppMigrationExporter {
     static let excludedDefaultsKeys: Set<String> = Set(["pushID", "FASTLANE_SNAPSHOT"])
         .union(AppMigrationHandoffStore.defaultsKeys)
 
-    func makePayload(sessionID: UUID) throws -> AppMigrationPayload {
+    func makePayload(sessionID: UUID, grantedPermissions: [SensorPermission]) throws -> AppMigrationPayload {
         try AppMigrationPayload(
             version: AppMigrationPayload.currentVersion,
             sessionID: sessionID,
             serverNames: Current.servers.all.map(\.info.name),
             database: databaseSnapshot(),
             appGroupDefaults: defaultsSnapshot(),
-            keychainItems: keychainItems()
+            keychainItems: keychainItems(),
+            grantedPermissions: grantedPermissions.map(\.rawValue)
         )
     }
 

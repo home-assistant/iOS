@@ -1213,10 +1213,6 @@ public enum L10n {
         /// Transfer again
         public static var transferAgainButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.transfer_again_button") }
       }
-      public enum Preparing {
-        /// Preparing your setup…
-        public static var title: String { return L10n.tr("Localizable", "app_migration.export.preparing.title") }
-      }
       public enum Section {
         /// This transfer includes
         public static var includes: String { return L10n.tr("Localizable", "app_migration.export.section.includes") }
@@ -1271,10 +1267,6 @@ public enum L10n {
     public enum Import {
       /// Cancel
       public static var cancelButton: String { return L10n.tr("Localizable", "app_migration.import.cancel_button") }
-      public enum Applying {
-        /// Applying your setup…
-        public static var title: String { return L10n.tr("Localizable", "app_migration.import.applying.title") }
-      }
       public enum Failed {
         /// Set up manually
         public static var manualButton: String { return L10n.tr("Localizable", "app_migration.import.failed.manual_button") }
@@ -1282,10 +1274,6 @@ public enum L10n {
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.failed.retry_button") }
         /// The transfer did not complete
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.failed.title") }
-      }
-      public enum Receiving {
-        /// Receiving your setup…
-        public static var title: String { return L10n.tr("Localizable", "app_migration.import.receiving.title") }
       }
       public enum Waiting {
         /// Confirm the transfer in the previous Home Assistant app. You will be brought back here automatically.
@@ -1348,6 +1336,46 @@ public enum L10n {
         public static var followUp: String { return L10n.tr("Localizable", "app_migration.overview.section.follow_up") }
         /// Comes with you
         public static var moves: String { return L10n.tr("Localizable", "app_migration.overview.section.moves") }
+      }
+    }
+    public enum Permissions {
+      /// Allow all
+      public static var allowAllButton: String { return L10n.tr("Localizable", "app_migration.permissions.allow_all_button") }
+      /// Allow
+      public static var allowButton: String { return L10n.tr("Localizable", "app_migration.permissions.allow_button") }
+      /// iOS treats this as a brand new app, so what you allowed in the previous app has to be allowed here once more.
+      public static var body: String { return L10n.tr("Localizable", "app_migration.permissions.body") }
+      /// Continue
+      public static var continueButton: String { return L10n.tr("Localizable", "app_migration.permissions.continue_button") }
+      /// Settings
+      public static var settingsButton: String { return L10n.tr("Localizable", "app_migration.permissions.settings_button") }
+      /// Not now
+      public static var skipButton: String { return L10n.tr("Localizable", "app_migration.permissions.skip_button") }
+      /// Allow permissions again
+      public static var title: String { return L10n.tr("Localizable", "app_migration.permissions.title") }
+      public enum Section {
+        /// Allowed in the previous app
+        public static var previousApp: String { return L10n.tr("Localizable", "app_migration.permissions.section.previous_app") }
+      }
+    }
+    public enum Progress {
+      /// This takes a few seconds. Nothing leaves this device.
+      public static var footnote: String { return L10n.tr("Localizable", "app_migration.progress.footnote") }
+      public enum Export {
+        /// Copying your settings…
+        public static var copying: String { return L10n.tr("Localizable", "app_migration.progress.export.copying") }
+        /// Handing over to the new app…
+        public static var handingOver: String { return L10n.tr("Localizable", "app_migration.progress.export.handing_over") }
+        /// Packaging your servers and sign-ins…
+        public static var packaging: String { return L10n.tr("Localizable", "app_migration.progress.export.packaging") }
+      }
+      public enum Import {
+        /// Applying your settings…
+        public static var applying: String { return L10n.tr("Localizable", "app_migration.progress.import.applying") }
+        /// Receiving your setup…
+        public static var receiving: String { return L10n.tr("Localizable", "app_migration.progress.import.receiving") }
+        /// Restoring servers and sign-ins…
+        public static var restoring: String { return L10n.tr("Localizable", "app_migration.progress.import.restoring") }
       }
     }
   }

@@ -26,23 +26,7 @@ struct AppMigrationImportView: View {
                 secondaryAction: cancelAction
             )
         case .receiving, .applying:
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Spacer()
-                ProgressView()
-                    .controlSize(.large)
-                    .tint(.haPrimary)
-                Text(
-                    state == .receiving
-                        ? L10n.AppMigration.Import.Receiving.title
-                        : L10n.AppMigration.Import.Applying.title
-                )
-                .font(DesignSystem.Font.title2.bold())
-                .multilineTextAlignment(.center)
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(DesignSystem.Spaces.two)
-            .background(Color(uiColor: .systemBackground))
+            AppMigrationProgressView(script: .import)
         case let .failed(message):
             BaseOnboardingView(
                 illustration: {
