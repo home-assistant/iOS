@@ -50,15 +50,10 @@ struct NativeTabBarMoreView: View {
                         if viewModel.hasMultipleServers {
                             Menu {
                                 ForEach(viewModel.servers, id: \.identifier) { server in
-                                    Button {
-                                        viewModel.open(server: server)
-                                    } label: {
-                                        if server.identifier == viewModel.sidebar.server.identifier {
-                                            Label(server.info.name, systemSymbol: .checkmark)
-                                        } else {
-                                            Text(server.info.name)
-                                        }
-                                    }
+                                    Toggle(server.info.name, isOn: Binding(
+                                        get: { server.identifier == viewModel.sidebar.server.identifier },
+                                        set: { _ in viewModel.open(server: server) }
+                                    ))
                                 }
                                 Divider()
                                 Button {

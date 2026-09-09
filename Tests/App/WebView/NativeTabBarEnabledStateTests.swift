@@ -15,6 +15,12 @@ struct NativeTabBarEnabledStateTests {
         try #require(AppLabsFeature.iosNativeTabBar.isEnabled == enabled)
     }
 
+    @Test("The App Labs row describes the tab bar with its own title and description")
+    func labsCopy() {
+        #expect(AppLabsFeature.iosNativeTabBar.title == L10n.Settings.AppLabs.IosNativeTabBar.title)
+        #expect(AppLabsFeature.iosNativeTabBar.footer == L10n.Settings.AppLabs.IosNativeTabBar.description)
+    }
+
     @Test("The shared state and the hamburger gesture follow the App Labs flag")
     func stateFollowsTheFlag() async throws {
         let previousIsTestFlight = Current.isTestFlight

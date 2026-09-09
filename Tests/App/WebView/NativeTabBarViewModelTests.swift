@@ -341,6 +341,17 @@ struct NativeTabBarViewModelTests {
         #expect(coordinator.openedServers.map(\.identifier) == [other.identifier])
     }
 
+    @Test("Without an injected list the servers are the app's registered servers")
+    func defaultServers() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = NativeTabBarViewModel(
+            sidebar: MacSidebarViewModel(server: ServerFixture.standard, overlayState: overlayState),
+            overlayState: overlayState,
+            tabBarState: NativeTabBarState()
+        )
+        #expect(sut.servers.map(\.identifier) == Current.servers.all.map(\.identifier))
+    }
+
     @Test("Starting and stopping forwards to the sidebar without a connection")
     func startStop() {
         let sut = makeFixture("startStop").sut

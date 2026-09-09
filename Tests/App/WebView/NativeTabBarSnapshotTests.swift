@@ -47,6 +47,24 @@ struct NativeTabBarSnapshotTests {
     }
 
     @available(iOS 26, *)
+    @Test func tabBarWithMoreShowingTheFrontend() throws {
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarMoreFrontend")
+        viewModel.didSelect(.more)
+        try viewModel.open(#require(viewModel.moreItems.first))
+        assertLightDarkSnapshots(
+            of: NativeTabBarContainerView(
+                viewModel: viewModel,
+                webViewController: nil,
+                frontendOpacity: 1,
+                frontendIgnoredSafeAreaEdges: .all,
+                onNeedsWebViewController: {},
+                frontendOverlay: { Color.clear }
+            ),
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
     @Test func tabBarWithMoreSelected() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarMore")
         viewModel.didSelect(.more)
