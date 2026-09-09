@@ -9,6 +9,7 @@ final class KioskSettingsViewModel: ObservableObject {
     @Published var servers: [Server] = []
     @Published var panels: [AppPanel] = []
     @Published var showError = false
+    @Published var isShowingHideSettingsEntryConfirmation = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var isUnlocked = true
 
@@ -74,6 +75,20 @@ final class KioskSettingsViewModel: ObservableObject {
                 self?.isUnlocked = success
             }
         }
+    }
+
+    /// Hiding the settings entry is the one setting that can lock a user out of their own kiosk, so the
+    /// switch only asks for confirmation here — nothing is stored until `confirmHidingSettingsEntry()`.
+    func settingsEntryHiddenDidChange(_ isHidden: Bool) {
+        if isHidden {
+            isShowingHideSettingsEntryConfirmation = true
+        } else {
+            settings.settingsEntryHidden = false
+        }
+    }
+
+    func confirmHidingSettingsEntry() {
+        settings.settingsEntryHidden = true
     }
 
     func reloadPanels() {

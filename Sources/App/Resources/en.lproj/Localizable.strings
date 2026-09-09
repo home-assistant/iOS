@@ -898,6 +898,11 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.display.title" = "Display";
 "kiosk.enabled" = "Enabled";
 "kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
+"kiosk.hide_settings_entry.alert.confirm" = "Hide button";
+"kiosk.hide_settings_entry.alert.message" = "The button will no longer be drawn on screen. It stays tappable in the corner you picked, so make sure you remember which one: it is the only way back into these settings.";
+"kiosk.hide_settings_entry.alert.title" = "Hide the settings entry?";
+"kiosk.hide_settings_entry.footer" = "Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.";
+"kiosk.hide_settings_entry.title" = "Hide entry button";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
 "kiosk.push_command.default_dashboard" = "Returning to dashboard";

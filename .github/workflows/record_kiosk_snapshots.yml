@@ -1,0 +1,99 @@
+name: Record Kiosk Snapshots
+
+# Temporary workflow: lints the branch and records the reference images for the kiosk
+# settings-entry snapshot tests on a macOS runner, uploading them as an artifact so they can be
+# committed. Delete once the snapshots are in.
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - claude/kiosk-entry-button-toggle-denenw
+  workflow_dispatch:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: YamlLint
+        run: yamllint --strict --format github .
+      - name: SwiftLint
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/realm/swiftlint:0.54.0 \
+            swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
+      - name: SwiftFormat
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/nicklockwood/swiftformat:0.53.1 \
+            --lint --config .swiftformat .
+
+  record:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      # The reference images don't exist yet, so snapshot-testing writes them and fails the run:
+      # that failure is the expected outcome here, the artifact below is what matters.
+      - name: Record snapshots
+        run: |
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:HomeAssistant-Tests-App/KioskHideSettingsEntryTests \
+            -only-testing:HomeAssistant-Tests-App/KioskSettingsEntryIconTests \
+            COMPILER_INDEX_STORE_ENABLE=NO > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || true
+          echo "::group::Compiler and test failures"
+          grep -nE "error:|error generated|Test Case .* failed|recorded a new reference|Testing failed" \
+            "$RUNNER_TEMP/xcodebuild.log" | head -n 100 || echo "none matched"
+          echo "::endgroup::"
+          echo "::group::Log tail"
+          tail -n 120 "$RUNNER_TEMP/xcodebuild.log"
+          echo "::endgroup::"
+
+      - name: List what was recorded
+        if: always()
+        run: find Tests -name '*.png' -newermt '-2 hours' -print
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: always()
+        with:
+          name: kiosk-snapshots
+          path: Tests/App/Kiosk/__Snapshots__
+          if-no-files-found: warn
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: always()
+        with:
+          name: xcodebuild-log
+          path: ${{ runner.temp }}/xcodebuild.log
+          if-no-files-found: warn

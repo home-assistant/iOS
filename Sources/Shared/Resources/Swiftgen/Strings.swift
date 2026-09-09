@@ -3184,6 +3184,20 @@ public enum L10n {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
+    public enum HideSettingsEntry {
+      /// Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.footer") }
+      /// Hide entry button
+      public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.title") }
+      public enum Alert {
+        /// Hide button
+        public static var confirm: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.confirm") }
+        /// The button will no longer be drawn on screen. It stays tappable in the corner you picked, so make sure you remember which one: it is the only way back into these settings.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.message") }
+        /// Hide the settings entry?
+        public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.title") }
+      }
+    }
     public enum PushCommand {
       /// Returning to dashboard
       public static var defaultDashboard: String { return L10n.tr("Localizable", "kiosk.push_command.default_dashboard") }
