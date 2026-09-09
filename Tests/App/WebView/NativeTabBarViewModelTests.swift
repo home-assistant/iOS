@@ -307,18 +307,19 @@ struct NativeTabBarViewModelTests {
         #expect(navigated == ["/profile", "/alpha", "/alpha"])
     }
 
-    @Test("App Settings goes through the app coordinator")
-    func showAppSettings() async {
+    @Test("App Settings opens the settings sheet zooming out of the More tab's gear")
+    func showAppSettings() {
         let sut = makeFixture("appSettings").sut
-        let coordinator = MockAppCoordinator()
-        Current.sceneManager.registerAppCoordinator(coordinator)
-
-        await withCheckedContinuation { continuation in
-            coordinator.onShowSettings = { continuation.resume() }
-            sut.showAppSettings()
+        let presenter = AppSettingsPresenter.shared
+        defer {
+            presenter.isSheetPresented = false
+            presenter.sheetDismissed()
         }
-        #expect(coordinator.showSettingsCalled)
-        #expect(!coordinator.showSettingsPushedOntoNavigationStack)
+
+        sut.showAppSettings()
+        #expect(presenter.isSheetPresented)
+        #expect(presenter.mode == .full)
+        #expect(presenter.zoomSourceID == NativeTabBarViewModel.appSettingsTransitionID)
     }
 
     @Test("Switching to another server goes through the app coordinator; the current one is left alone")

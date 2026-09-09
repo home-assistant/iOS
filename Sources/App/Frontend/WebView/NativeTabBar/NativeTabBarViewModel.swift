@@ -7,6 +7,7 @@ import Shared
 @MainActor
 final class NativeTabBarViewModel: ObservableObject {
     static let maximumTabs = 3
+    static let appSettingsTransitionID = "nativeTabBarAppSettings"
 
     @Published private(set) var tabItems: [MacSidebarItem] = []
     /// Sidebar pages that did not make it into the bar, in sidebar order.
@@ -157,7 +158,7 @@ final class NativeTabBarViewModel: ObservableObject {
     }
 
     func showAppSettings() {
-        Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: false) }
+        AppSettingsPresenter.shared.presentSettings(zoomingFrom: Self.appSettingsTransitionID)
     }
 
     // MARK: - Servers
