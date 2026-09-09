@@ -28,7 +28,7 @@ extension WebViewController: WebViewControllerProtocol {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
                 guard let self else { return }
-                if view.window == nil, let presenter = Self.topMostPresenter() {
+                if view.window == nil, NativeTabBarState.shared.isEnabled, let presenter = Self.topMostPresenter() {
                     detachedOverlayController = controller
                     presenter.present(controller, animated: animated, completion: nil)
                 } else {

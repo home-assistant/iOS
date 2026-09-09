@@ -2,8 +2,7 @@ import Foundation
 import Shared
 
 extension NativeTabBarViewModel {
-    /// A tab bar over a fixed set of sidebar pages, for previews and snapshot tests. Nothing is fetched:
-    /// the pages come from a cached sidebar snapshot.
+    /// A tab bar over a fixed set of sidebar pages, for previews and snapshot tests.
     @MainActor
     static func preview(
         hiddenPanelPaths: [String] = [],

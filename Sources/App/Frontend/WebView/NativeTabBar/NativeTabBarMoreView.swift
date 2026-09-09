@@ -2,9 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The More tab: the sidebar pages that are not in the bar and the button that customises the bar, under a
-/// navigation bar with the profile (a server picker when there is more than one server), notifications and
-/// settings.
+/// The More tab: the rest of the list under a bar with the profile picker, notifications and settings.
 @available(iOS 26, *)
 struct NativeTabBarMoreView: View {
     private enum Constants {

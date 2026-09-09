@@ -2,8 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Edits the list the tab bar is laid out from: the first `NativeTabBarViewModel.maximumTabs` entries are the
-/// tabs, the rest fill More, and hidden entries wait at the bottom to be shown again.
+/// Edits the list the tab bar is laid out from.
 struct NativeTabBarCustomizeView: View {
     private enum Constants {
         static let hiddenRowOpacity: Double = 0.6

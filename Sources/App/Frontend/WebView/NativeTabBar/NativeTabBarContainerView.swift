@@ -2,10 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The App Labs native iOS tab bar: the first entries of the list as tabs, More, and Search or Assist in the
-/// iOS 26 search role when one of them holds the last slot. One `WebViewController` moves between tabs through
-/// `NativeTabBarFrontendSlot`;
-/// `frontendOverlay` (the stand-by loader) covers that slot alone, never the bar or the More list.
+/// The App Labs native iOS tab bar.
 @available(iOS 26, *)
 struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     private enum Constants {

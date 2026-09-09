@@ -2,8 +2,7 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Hosts the single web frontend inside a tab: the slot whose tab is selected adopts the `WebViewController`,
-/// so the frontend moves between tabs instead of being rebuilt, which would be a full page load.
+/// Hosts the single web frontend inside a tab.
 struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
     let controller: WebViewController?
     let isActive: Bool

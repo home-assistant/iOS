@@ -84,10 +84,7 @@ struct ContainerView: View {
         }
     }
 
-    /// The frontend, in the stack Settings is pushed onto. Only this screen: onboarding brings its own
-    /// `NavigationStack`, and SwiftUI crashes on the two nested. The native tab bar's More tab brings its own
-    /// stack too, which the outer one would swallow, so with the tab bar on the frontend stands alone and
-    /// Settings always opens as a sheet.
+    /// The frontend, in the stack Settings is pushed onto; with the App Labs tab bar on it stands alone.
     @ViewBuilder
     private func frontend(server: Server, initialPath: String?) -> some View {
         let homeAssistant = HomeAssistantView(server: server, initialPath: initialPath) { webViewController in

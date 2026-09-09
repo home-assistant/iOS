@@ -2,9 +2,7 @@ import Combine
 import Foundation
 import Shared
 
-/// Lays the sidebar's pages, Search and Assist out as tabs (the first `maximumTabs` entries of the list, then
-/// More) and decides in which tab, if any, the single web frontend is on screen. Search or Assist in the last
-/// slot takes the bar's search role.
+/// Lays the list's first entries out as tabs, then More, and tracks in which tab the single web frontend shows.
 @MainActor
 final class NativeTabBarViewModel: ObservableObject {
     static let maximumTabs = 4
@@ -133,8 +131,7 @@ final class NativeTabBarViewModel: ObservableObject {
 
     // MARK: - Selection
 
-    /// The tab bar's own taps. Re-selecting a page tab returns it to its root, re-selecting More closes the
-    /// page it was showing, and Search opens Home Assistant's quick search over the frontend.
+    /// The tab bar's own taps.
     func didSelect(_ tab: NativeTabBarTab) {
         switch tab {
         case let .panel(id):
@@ -152,8 +149,7 @@ final class NativeTabBarViewModel: ObservableObject {
             if tab == .search {
                 revealFrontend()
             }
-            // The bar has already highlighted the tab. Taking the selection there and handing it back on the
-            // next turn is what makes SwiftUI move the bar back; an unchanged selection is never re-applied.
+            // Moving the selection there and back on the next turn is what makes SwiftUI un-highlight the tab.
             let previousTab = selection
             selection = tab
             let tapped = tabItems.first { $0.tab == tab }
@@ -318,8 +314,7 @@ final class NativeTabBarViewModel: ObservableObject {
         syncSelectionWithCurrentPath()
     }
 
-    /// Follows navigation inside the visible frontend: landing on a pinned page selects its tab. A hidden
-    /// frontend is left alone, so a page load finishing behind the More list does not yank the user out.
+    /// Follows navigation inside the visible frontend.
     private func syncSelectionWithCurrentPath() {
         guard showsFrontend, let itemId = MacSidebarItemsBuilder.itemId(forPath: currentPath),
               tabItems.contains(where: { $0.id == itemId }) else { return }
@@ -329,8 +324,7 @@ final class NativeTabBarViewModel: ObservableObject {
         lastFrontendTab = tab
     }
 
-    /// Puts the frontend back on screen where it last was, for navigation that happens outside the bar
-    /// (deep links, notifications) and for the Search tab's quick search.
+    /// Puts the frontend back on screen where it last was, for navigation that happens outside the bar.
     private func revealFrontend() {
         guard !showsFrontend else { return }
         if case let .panel(id) = lastFrontendTab, tabItems.contains(where: { $0.id == id }) {

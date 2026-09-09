@@ -1,7 +1,6 @@
 import Foundation
 
-/// Where the app's own entries sit in the tab bar's list, per server. `nil` means the entry is hidden. Search
-/// starts in the fourth slot, the search role of the bar; Assist starts at the end of the list.
+/// Where the app's own entries sit in the tab bar's list, per server.
 struct NativeTabBarExtras: Codable, Equatable {
     static let standard = NativeTabBarExtras(searchPosition: 3, assistPosition: Int.max)
 

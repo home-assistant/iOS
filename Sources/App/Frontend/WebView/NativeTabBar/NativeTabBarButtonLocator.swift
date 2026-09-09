@@ -1,8 +1,6 @@
 import UIKit
 
-/// Finds where the tab bar draws a tab, in window coordinates, so a presentation can zoom out of it. UIKit's
-/// tab buttons expose no accessibility labels, so the tab is found through the label showing its title; the
-/// button in the bar's search role shows no title, so it is found as the trailing-most control instead.
+/// Finds where the tab bar draws a tab, in window coordinates, so a presentation can zoom out of it.
 enum NativeTabBarButtonLocator {
     static func frame(ofButtonTitled title: String, trailing: Bool, in window: UIWindow? = keyWindow) -> CGRect? {
         guard let window, let tabBar = firstView(in: window, where: { $0 is UITabBar }) else { return nil }

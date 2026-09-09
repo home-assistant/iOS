@@ -25,8 +25,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
-    /// An overlay presented from the window's top controller while this view was off screen (a native tab bar
-    /// tab other than the frontend's was showing), so `overlayedController` still finds it.
+    /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
