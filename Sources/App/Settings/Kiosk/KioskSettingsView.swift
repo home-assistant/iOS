@@ -99,11 +99,28 @@ struct KioskSettingsView: View {
                         Text(position.title).tag(position)
                     }
                 }
+                Toggle(isOn: viewModel.settingsEntryHidden) {
+                    KioskRow.label(L10n.Kiosk.HideSettingsEntry.title, icon: .eyeOffOutlineIcon)
+                }
+                .alert(
+                    L10n.Kiosk.HideSettingsEntry.Alert.title,
+                    isPresented: $viewModel.isShowingHideSettingsEntryConfirmation
+                ) {
+                    Button(L10n.cancelLabel, role: .cancel) {}
+                    Button(
+                        L10n.Kiosk.HideSettingsEntry.Alert.confirm,
+                        action: viewModel.confirmHidingSettingsEntry
+                    )
+                } message: {
+                    Text(L10n.Kiosk.HideSettingsEntry.Alert.message)
+                }
                 NavigationLink {
                     KioskSettingsEntryCustomizationView(viewModel: viewModel)
                 } label: {
                     KioskRow.label(L10n.Kiosk.Customize.title, icon: .paletteIcon)
                 }
+            } footer: {
+                Text(L10n.Kiosk.HideSettingsEntry.footer)
             }
         }
         .onChange(of: viewModel.settings.serverId) { _ in
@@ -222,6 +239,7 @@ extension KioskSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Kiosk.keepScreenOn),
             SettingsSearchEntry(L10n.Kiosk.removeHeaderAndSidebar),
             SettingsSearchEntry(L10n.Kiosk.hideStatusBar),
+            SettingsSearchEntry(L10n.Kiosk.HideSettingsEntry.title),
             SettingsSearchEntry(L10n.Kiosk.Screensaver.title),
         ]
     }

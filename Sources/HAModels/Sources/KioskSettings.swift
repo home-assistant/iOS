@@ -17,6 +17,9 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var hideStatusBar: Bool
     public var autoReload: KioskAutoReloadInterval
     public var settingsEntryPosition: KioskCornerPosition
+    /// A hidden entry is drawn fully transparent, but stays in place and stays tappable, so the corner
+    /// still opens kiosk settings for whoever set the device up.
+    public var settingsEntryHidden: Bool
     public var settingsEntryBackgroundColor: String?
     public var settingsEntryIconColor: String?
     public var screensaver: KioskScreensaverSettings
@@ -33,6 +36,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         hideStatusBar: Bool = false,
         autoReload: KioskAutoReloadInterval = .never,
         settingsEntryPosition: KioskCornerPosition = .bottomTrailing,
+        settingsEntryHidden: Bool = false,
         settingsEntryBackgroundColor: String? = nil,
         settingsEntryIconColor: String? = nil,
         screensaver: KioskScreensaverSettings = KioskScreensaverSettings()
@@ -48,6 +52,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.hideStatusBar = hideStatusBar
         self.autoReload = autoReload
         self.settingsEntryPosition = settingsEntryPosition
+        self.settingsEntryHidden = settingsEntryHidden
         self.settingsEntryBackgroundColor = settingsEntryBackgroundColor
         self.settingsEntryIconColor = settingsEntryIconColor
         self.screensaver = screensaver
@@ -70,6 +75,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
             KioskCornerPosition.self,
             forKey: .settingsEntryPosition
         ) ?? .bottomTrailing
+        self.settingsEntryHidden = try container.decodeIfPresent(Bool.self, forKey: .settingsEntryHidden) ?? false
         self.settingsEntryBackgroundColor = try container.decodeIfPresent(
             String.self,
             forKey: .settingsEntryBackgroundColor
