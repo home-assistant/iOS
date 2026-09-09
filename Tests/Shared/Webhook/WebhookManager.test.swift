@@ -959,6 +959,118 @@ class WebhookManagerTests: XCTestCase {
         try await adoptedDelivery.value
     }
 
+    func testCancelledPersistedTaskRejectsAttachedCallerExactlyOnce() async throws {
+        let requestStarted = expectation(description: "request started")
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            requestStarted.fulfill()
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        defer { networkSemaphore.signal() }
+
+        let startResult = await MainActor.run {
+            manager.startPersistedBackground(
+                server: api1.server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true]),
+                requestIdentifier: "cancelled-zone-event"
+            )
+        }
+        guard case let .success(delivery) = startResult else {
+            return XCTFail("Expected a background upload task to start")
+        }
+        await fulfillment(of: [requestStarted], timeout: 1)
+
+        let taskExpectation = expectation(description: "persisted task found")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            guard let task = tasks.first(where: {
+                $0.webhookPersisted?.requestIdentifier == "cancelled-zone-event"
+            }) else {
+                XCTFail("Expected the persisted task")
+                taskExpectation.fulfill()
+                return
+            }
+            task.cancel()
+            networkSemaphore.signal()
+            taskExpectation.fulfill()
+        }
+        await fulfillment(of: [taskExpectation], timeout: 1)
+
+        for _ in 0 ..< 2 {
+            do {
+                try await delivery.value
+                XCTFail("Expected cancellation to reject the attached caller")
+            } catch {
+                XCTAssertEqual((error as? URLError)?.code, .cancelled)
+            }
+        }
+    }
+
+    func testReconcilePersistedBackgroundResolvesSupersededDuplicateCallers() async throws {
+        let requestStarted = (0 ..< 3).map { expectation(description: "request \($0) started") }
+        let networkSemaphores = (0 ..< 3).map { _ in DispatchSemaphore(value: 0) }
+        let invocationLock = NSLock()
+        var invocationIndex = 0
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            invocationLock.lock()
+            let index = invocationIndex
+            invocationIndex += 1
+            invocationLock.unlock()
+            requestStarted[index].fulfill()
+            networkSemaphores[index].wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        defer {
+            networkSemaphores.forEach { $0.signal() }
+        }
+
+        var deliveries = [Task<Void, Error>]()
+        for index in 0 ..< 3 {
+            let result = await MainActor.run {
+                manager.startPersistedBackground(
+                    server: api1.server,
+                    request: WebhookRequest(type: "webhook_name", data: ["index": index]),
+                    requestIdentifier: "duplicate-zone-event"
+                )
+            }
+            guard case let .success(delivery) = result else {
+                return XCTFail("Expected background upload \(index) to start")
+            }
+            deliveries.append(delivery)
+            await fulfillment(of: [requestStarted[index]], timeout: 1)
+        }
+
+        networkSemaphores[2].signal()
+        try await deliveries[2].value
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "duplicate-zone-event")
+        guard case let .running(adoptedDelivery) = state else {
+            return XCTFail("Expected one of the remaining tasks to be adopted")
+        }
+
+        for delivery in deliveries.prefix(2) {
+            do {
+                try await delivery.value
+                XCTFail("Expected the superseded caller to be rejected")
+            } catch {
+                XCTAssertEqual(error as? WebhookError, .replaced)
+            }
+        }
+
+        networkSemaphores[0].signal()
+        networkSemaphores[1].signal()
+        try await adoptedDelivery.value
+
+        for delivery in deliveries.prefix(2) {
+            do {
+                try await delivery.value
+                XCTFail("Expected the superseded caller to remain rejected")
+            } catch {
+                XCTAssertEqual(error as? WebhookError, .replaced)
+            }
+        }
+    }
+
     func testReconcilePersistedBackgroundAdoptsRestoredSessionTask() async throws {
         let networkSemaphore = DispatchSemaphore(value: 0)
         stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in

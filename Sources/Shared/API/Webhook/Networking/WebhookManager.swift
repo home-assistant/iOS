@@ -517,7 +517,9 @@ public class WebhookManager: NSObject {
                             return
                         }
                         if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
-                            matchingTasks.forEach { $0.cancel() }
+                            matchingTasks.forEach {
+                                cancelPersistedTask($0, sessionInfo: sessionInfo, resolvingWith: result)
+                            }
                             continuation.resume(returning: .completed(result))
                             return
                         }
@@ -528,10 +530,15 @@ public class WebhookManager: NSObject {
                         }
 
                         for duplicate in matchingTasks where duplicate != task {
-                            duplicate.cancel()
+                            cancelPersistedTask(
+                                duplicate,
+                                sessionInfo: sessionInfo,
+                                resolvingWith: .failure(WebhookError.replaced)
+                            )
                         }
 
                         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+                        resolvePersistedTask(taskKey, with: .failure(WebhookError.replaced))
                         let (promise, seal) = Promise<Void>.pending()
                         resolverForTask[taskKey] = seal
                         registerActivePersistedRequest(promise, requestIdentifier: requestIdentifier)
@@ -547,10 +554,39 @@ public class WebhookManager: NSObject {
         requestIdentifier: String
     ) {
         activePersistedRequests[requestIdentifier] = promise
-        promise.pipe { [weak self] _ in
+        promise.pipe { [weak self, weak promise] _ in
             self?.dataQueue.async {
+                guard self?.activePersistedRequests[requestIdentifier] === promise else {
+                    return
+                }
                 self?.activePersistedRequests.removeValue(forKey: requestIdentifier)
             }
+        }
+    }
+
+    private func cancelPersistedTask(
+        _ task: URLSessionTask,
+        sessionInfo: WebhookSessionInfo,
+        resolvingWith result: Swift.Result<Void, Error>
+    ) {
+        let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+        resolvePersistedTask(taskKey, with: result)
+        pendingDataForTask.removeValue(forKey: taskKey)
+        task.cancel()
+    }
+
+    private func resolvePersistedTask(
+        _ taskKey: TaskKey,
+        with result: Swift.Result<Void, Error>
+    ) {
+        guard let resolver = resolverForTask.removeValue(forKey: taskKey) else {
+            return
+        }
+        switch result {
+        case .success:
+            resolver.fulfill(())
+        case let .failure(error):
+            resolver.reject(error)
         }
     }
 
@@ -857,9 +893,10 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
         let statusCode = (task.response as? HTTPURLResponse)?.statusCode
 
-        guard error?.isCancelled != true else {
+        if let error, error.isCancelled {
             Current.Log.info("ignoring cancelled task \(taskKey)")
             pendingDataForTask.removeValue(forKey: taskKey)
+            resolverForTask.removeValue(forKey: taskKey)?.reject(error)
             return
         }
 
