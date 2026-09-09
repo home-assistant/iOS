@@ -1,4 +1,3 @@
-import Foundation
 @testable import HomeAssistant
 import Testing
 import UIKit

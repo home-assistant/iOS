@@ -13,7 +13,7 @@ struct NativeTabBarMoreView: View {
 
     @ObservedObject var viewModel: NativeTabBarViewModel
     @State private var rowFrames: [String: CGRect] = [:]
-    @Environment(\.serverSelectionNamespace) private var settingsTransitionNamespace
+    @Environment(\.serverSelectionNamespace) private var transitionNamespace
 
     var body: some View {
         List {
@@ -55,10 +55,10 @@ struct NativeTabBarMoreView: View {
                 }
                 .buttonStyle(.plain)
                 .modify { view in
-                    if let settingsTransitionNamespace {
+                    if let transitionNamespace {
                         view.matchedTransitionSource(
                             id: NativeTabBarViewModel.customizeTransitionID,
-                            in: settingsTransitionNamespace
+                            in: transitionNamespace
                         )
                     } else {
                         view
@@ -163,10 +163,10 @@ struct NativeTabBarMoreView: View {
                 }
                 .accessibilityLabel(L10n.Mac.Sidebar.settings)
                 .modify { view in
-                    if let settingsTransitionNamespace {
+                    if let transitionNamespace {
                         view.matchedTransitionSource(
                             id: NativeTabBarViewModel.appSettingsTransitionID,
-                            in: settingsTransitionNamespace
+                            in: transitionNamespace
                         )
                     } else {
                         view
