@@ -47,7 +47,7 @@ struct KioskPushPresentationTests {
 
     @available(iOS 18, *)
     @MainActor
-    @Test func runsTheCommandAndConfirmsItWithAToast() async throws {
+    @Test func runsTheCommandAndConfirmsItWithAToast() throws {
         ToastPresenter.shared.hideCurrent()
         let commands = ScreensaverCommandRecorder()
         try withKiosk(settings: KioskSettings()) { manager in
@@ -62,7 +62,7 @@ struct KioskPushPresentationTests {
             #expect(presentation.isEmpty)
         }
 
-        await drainMainActorWork()
+        spinMainRunLoop(untilToastAppears: true)
         #expect(ToastPresenter.shared.toast?.id == "confirmed-command")
         #expect(ToastPresenter.shared.toast?.title == L10n.Kiosk.PushCommand.showScreensaver)
         ToastPresenter.shared.hideCurrent()
@@ -70,7 +70,7 @@ struct KioskPushPresentationTests {
 
     @available(iOS 18, *)
     @MainActor
-    @Test func runsTheCommandWithoutAToastWhenConfirmationsAreDisabled() async throws {
+    @Test func runsTheCommandWithoutAToastWhenConfirmationsAreDisabled() throws {
         ToastPresenter.shared.hideCurrent()
         let commands = ScreensaverCommandRecorder()
         try withKiosk(settings: KioskSettings(showRemoteCommandConfirmations: false)) { manager in
@@ -85,7 +85,7 @@ struct KioskPushPresentationTests {
             #expect(presentation.isEmpty)
         }
 
-        await drainMainActorWork()
+        spinMainRunLoop(untilToastAppears: false)
         #expect(ToastPresenter.shared.toast?.id != "silent-command")
     }
 
@@ -108,10 +108,20 @@ struct KioskPushPresentationTests {
         return UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
     }
 
-    /// Lets the main-actor task the presentation path enqueues for the toast run before asserting.
-    private func drainMainActorWork() async {
-        for _ in 0 ..< 10 {
-            await MainActor.run {}
+    /// Runs the main run loop so the main-actor task the presentation path enqueues for the toast gets
+    /// to run. Spinning rather than awaiting keeps the test synchronous: this bundle also holds XCTest
+    /// cases that block the main thread, and a suspended main-actor test has nothing to resume it.
+    @available(iOS 18, *)
+    @MainActor
+    private func spinMainRunLoop(untilToastAppears: Bool) {
+        // A toast that should appear is waited for; one that should not gets a fixed window to fail to
+        // appear in.
+        let deadline = Date().addingTimeInterval(untilToastAppears ? 2 : 0.5)
+        while Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.02))
+            if untilToastAppears, ToastPresenter.shared.toast != nil {
+                return
+            }
         }
     }
 
