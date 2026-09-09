@@ -1,15 +1,18 @@
 name: TEMP Record Snapshots
 
 # Temporary workflow: records the reference images for the kiosk settings snapshot tests on the
-# same simulator the `test` job verifies them on, then pushes them back to the branch. Snapshot
-# tests record whatever reference is missing and fail while doing it, so this job tolerates the
-# failure and commits what was written. Once the images are on the branch a rerun records nothing,
-# finds nothing to commit and stops. Delete this file once the snapshots are in.
+# same simulator the `test` job of ci.yml verifies them on, checks they reproduce, then pushes
+# them back to the branch. Snapshot tests record whatever reference is missing and fail while
+# doing it, so the recording step tolerates that failure and the verifying step does not. The
+# commit it pushes only touches `__Snapshots__`, which this workflow ignores, so it does not
+# trigger itself. Delete this file once the snapshots are in.
 
 on:
   push:
     branches:
       - claude/kiosk-push-notification-toggle-hd5lc7
+    paths-ignore:
+      - "**/__Snapshots__/**"
 
 permissions:
   contents: write
@@ -100,20 +103,9 @@ jobs:
             -skipMacroValidation \
             COMPILER_INDEX_STORE_ENABLE=NO
 
-      - name: Commit recorded snapshots
-        run: |
-          if [ -z "$(git status --porcelain Tests)" ]; then
-            echo "No snapshots were recorded, nothing to commit."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Tests
-          git commit -m "Record kiosk settings snapshot references"
-          git push origin HEAD:${{ github.ref_name }}
-
       # Runs the kiosk tests again, now that the references exist, so the run also proves the
-      # snapshots match and the touched unit tests pass. This one is not tolerated.
+      # snapshots reproduce and the touched unit tests pass. This one is not tolerated, and a
+      # reference that does not reproduce is never committed.
       - name: Verify kiosk tests against the recorded snapshots
         env:
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: never
@@ -128,6 +120,18 @@ jobs:
             -skipPackagePluginValidation \
             -skipMacroValidation \
             COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Commit recorded snapshots
+        run: |
+          if [ -z "$(git status --porcelain Tests)" ]; then
+            echo "No snapshots were recorded, nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Tests
+          git commit -m "Record kiosk settings snapshot references"
+          git push origin HEAD:${{ github.ref_name }}
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Recorded Snapshots"
