@@ -2,15 +2,17 @@ import Combine
 import Foundation
 import Shared
 
-/// Lays the sidebar's pages out as tabs (up to `NativeTabBarConfigurationStore.maximumTabs`, then More and
-/// Search) and decides in which tab, if any, the single web frontend is on screen.
+/// Lays the sidebar's pages out as tabs (the first `maximumTabs` of the sidebar order, then More and Search)
+/// and decides in which tab, if any, the single web frontend is on screen.
 @MainActor
 final class NativeTabBarViewModel: ObservableObject {
+    static let maximumTabs = 3
+
     @Published private(set) var tabItems: [MacSidebarItem] = []
     /// Sidebar pages that did not make it into the bar, in sidebar order.
     @Published private(set) var moreItems: [MacSidebarItem] = []
-    /// Settings, Notifications and Profile, minus any pinned to the bar.
     @Published private(set) var fixedItems: [MacSidebarItem] = []
+    @Published private(set) var hiddenItems: [MacSidebarItem] = []
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
@@ -19,10 +21,8 @@ final class NativeTabBarViewModel: ObservableObject {
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
     var onQuickSearch: (() -> Void)?
 
-    private let configurationStore: NativeTabBarConfigurationStore
-    private var configuredItemIds: [String]?
+    private let allServers: () -> [Server]
     private var mainItems: [MacSidebarItem] = []
-    private var allFixedItems: [MacSidebarItem] = []
     private var currentPath: String?
     private var lastFrontendTab: NativeTabBarTab?
     private var cancellables = Set<AnyCancellable>()
@@ -30,27 +30,27 @@ final class NativeTabBarViewModel: ObservableObject {
     init(
         sidebar: MacSidebarViewModel,
         overlayState: WebFrontendOverlayState,
-        configurationStore: NativeTabBarConfigurationStore? = nil,
-        tabBarState: NativeTabBarState? = nil
+        tabBarState: NativeTabBarState? = nil,
+        servers: @escaping () -> [Server] = { Current.servers.all }
     ) {
-        let configurationStore = configurationStore ?? .shared
         let tabBarState = tabBarState ?? .shared
         self.sidebar = sidebar
-        self.configurationStore = configurationStore
-        self.configuredItemIds = configurationStore.itemIds(for: sidebar.server.identifier.rawValue)
+        self.allServers = servers
         self.selection = .more
         self.mainItems = sidebar.mainItems
-        self.allFixedItems = sidebar.fixedItems
+        self.fixedItems = sidebar.fixedItems
+        self.hiddenItems = sidebar.hiddenItems
         rebuild()
         self.selection = tabItems.first.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
 
         sidebar.$mainItems
-            .combineLatest(sidebar.$fixedItems)
+            .combineLatest(sidebar.$fixedItems, sidebar.$hiddenItems)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] mainItems, fixedItems in
+            .sink { [weak self] mainItems, fixedItems, hiddenItems in
                 self?.mainItems = mainItems
-                self?.allFixedItems = fixedItems
+                self?.fixedItems = fixedItems
+                self?.hiddenItems = hiddenItems
                 self?.rebuild()
             }
             .store(in: &cancellables)
@@ -86,30 +86,17 @@ final class NativeTabBarViewModel: ObservableObject {
         }
     }
 
-    /// Every page that can be pinned to the bar. Notifications is a drawer over the current page and Profile
-    /// lives in the More header, so only the sidebar pages and Settings qualify.
-    var pinnableItems: [MacSidebarItem] {
-        mainItems + allFixedItems.filter { item in
-            if case .panel = item.kind { return true }
-            return false
-        }
-    }
-
     /// The More header's rows: the user's profile, the notifications drawer and, for admins, Settings.
     var profileItem: MacSidebarItem? {
-        allFixedItems.first { $0.kind == .profile }
+        fixedItems.first { $0.kind == .profile }
     }
 
     var notificationsItem: MacSidebarItem? {
-        allFixedItems.first { $0.kind == .notifications }
+        fixedItems.first { $0.kind == .notifications }
     }
 
     var settingsItem: MacSidebarItem? {
-        allFixedItems.first { $0.id == MacSidebarItemsBuilder.settingsPanelPath }
-    }
-
-    var canAddTab: Bool {
-        tabItems.count < NativeTabBarConfigurationStore.maximumTabs
+        fixedItems.first { $0.id == MacSidebarItemsBuilder.settingsPanelPath }
     }
 
     func start() {
@@ -173,47 +160,47 @@ final class NativeTabBarViewModel: ObservableObject {
         Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: false) }
     }
 
+    // MARK: - Servers
+
+    var servers: [Server] {
+        allServers()
+    }
+
+    var hasMultipleServers: Bool {
+        servers.count > 1
+    }
+
+    func open(server: Server) {
+        guard server.identifier != sidebar.server.identifier else { return }
+        Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+    }
+
     // MARK: - Customisation
 
-    func isTab(_ item: MacSidebarItem) -> Bool {
-        tabItems.contains(where: { $0.id == item.id })
+    func moveItems(fromOffsets source: IndexSet, toOffset destination: Int) {
+        sidebar.moveItems(fromOffsets: source, toOffset: destination)
     }
 
-    func addTab(_ item: MacSidebarItem) {
-        guard canAddTab, !isTab(item), pinnableItems.contains(where: { $0.id == item.id }) else { return }
-        saveTabs(tabItems.map(\.id) + [item.id])
+    // MARK: - Visibility
+
+    func canHide(_ item: MacSidebarItem) -> Bool {
+        mainItems.contains(where: { $0.id == item.id }) && sidebar.canHide(item)
     }
 
-    func removeTab(_ item: MacSidebarItem) {
-        guard isTab(item) else { return }
-        saveTabs(tabItems.map(\.id).filter { $0 != item.id })
+    func hide(_ item: MacSidebarItem) {
+        guard canHide(item) else { return }
+        sidebar.hide(itemId: item.id)
     }
 
-    func moveTabs(fromOffsets source: IndexSet, toOffset destination: Int) {
-        var ids = tabItems.map(\.id)
-        ids.move(fromOffsets: source, toOffset: destination)
-        saveTabs(ids)
+    func show(_ item: MacSidebarItem) {
+        sidebar.show(itemId: item.id)
     }
 
     // MARK: - Private
 
-    private func saveTabs(_ itemIds: [String]) {
-        configuredItemIds = itemIds
-        configurationStore.setItemIds(itemIds, for: sidebar.server.identifier.rawValue)
-        rebuild()
-    }
-
     private func rebuild() {
-        let pinnable = pinnableItems
-        let tabIds: [String]
-        if let configuredItemIds {
-            tabIds = configuredItemIds.filter { id in pinnable.contains(where: { $0.id == id }) }
-        } else {
-            tabIds = mainItems.prefix(NativeTabBarConfigurationStore.maximumTabs).map(\.id)
-        }
-        let tabItems = tabIds.compactMap { id in pinnable.first(where: { $0.id == id }) }
-        let moreItems = mainItems.filter { !tabIds.contains($0.id) }
-        let fixedItems = allFixedItems.filter { !tabIds.contains($0.id) }
+        let tabItems = Array(mainItems.prefix(Self.maximumTabs))
+        let moreItems = Array(mainItems.dropFirst(Self.maximumTabs))
 
         if self.tabItems != tabItems {
             self.tabItems = tabItems
@@ -221,11 +208,8 @@ final class NativeTabBarViewModel: ObservableObject {
         if self.moreItems != moreItems {
             self.moreItems = moreItems
         }
-        if self.fixedItems != fixedItems {
-            self.fixedItems = fixedItems
-        }
 
-        if case let .panel(id) = selection, !tabIds.contains(id) {
+        if case let .panel(id) = selection, !tabItems.contains(where: { $0.id == id }) {
             // The selected page left the bar: keep showing it, from More.
             selection = .more
             moreShowsFrontend = true
