@@ -47,7 +47,7 @@ struct KioskPushPresentationTests {
 
     @available(iOS 18, *)
     @MainActor
-    @Test func runsTheCommandAndConfirmsItWithAToast() throws {
+    @Test func runsTheCommandAndConfirmsItWithAToast() async throws {
         ToastPresenter.shared.hideCurrent()
         let commands = ScreensaverCommandRecorder()
         try withKiosk(settings: KioskSettings()) { manager in
@@ -62,7 +62,7 @@ struct KioskPushPresentationTests {
             #expect(presentation.isEmpty)
         }
 
-        spinMainRunLoop(untilToastAppears: true)
+        try await waitForToast(id: "confirmed-command")
         #expect(ToastPresenter.shared.toast?.id == "confirmed-command")
         #expect(ToastPresenter.shared.toast?.title == L10n.Kiosk.PushCommand.showScreensaver)
         ToastPresenter.shared.hideCurrent()
@@ -70,7 +70,7 @@ struct KioskPushPresentationTests {
 
     @available(iOS 18, *)
     @MainActor
-    @Test func runsTheCommandWithoutAToastWhenConfirmationsAreDisabled() throws {
+    @Test func runsTheCommandWithoutAToastWhenConfirmationsAreDisabled() async throws {
         ToastPresenter.shared.hideCurrent()
         let commands = ScreensaverCommandRecorder()
         try withKiosk(settings: KioskSettings(showRemoteCommandConfirmations: false)) { manager in
@@ -85,7 +85,8 @@ struct KioskPushPresentationTests {
             #expect(presentation.isEmpty)
         }
 
-        spinMainRunLoop(untilToastAppears: false)
+        // Give a toast that should never come the same window the confirmed one needs to arrive in.
+        try await Task.sleep(for: .milliseconds(500))
         #expect(ToastPresenter.shared.toast?.id != "silent-command")
     }
 
@@ -108,20 +109,17 @@ struct KioskPushPresentationTests {
         return UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
     }
 
-    /// Runs the main run loop so the main-actor task the presentation path enqueues for the toast gets
-    /// to run. Spinning rather than awaiting keeps the test synchronous: this bundle also holds XCTest
-    /// cases that block the main thread, and a suspended main-actor test has nothing to resume it.
+    /// The presentation path hands the toast to the presenter from a main-actor task, so it lands a hop
+    /// later than the call returns. Sleeping yields the main actor to that task; a run-loop spin does
+    /// not, which is why this waits rather than spins.
     @available(iOS 18, *)
     @MainActor
-    private func spinMainRunLoop(untilToastAppears: Bool) {
-        // A toast that should appear is waited for; one that should not gets a fixed window to fail to
-        // appear in.
-        let deadline = Date().addingTimeInterval(untilToastAppears ? 2 : 0.5)
-        while Date() < deadline {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.02))
-            if untilToastAppears, ToastPresenter.shared.toast != nil {
+    private func waitForToast(id: String?) async throws {
+        for _ in 0 ..< 100 {
+            if ToastPresenter.shared.toast?.id == id {
                 return
             }
+            try await Task.sleep(for: .milliseconds(20))
         }
     }
 
