@@ -27,6 +27,7 @@ struct NativeTabBarLongPressInstallerTests {
         installer.handle(state: .began)
         installer.handle(state: .changed)
         installer.handle(state: .ended)
+        installer.handleRecognizer(recognizer)
         #expect(presses == 1)
 
         let detached = NativeTabBarLongPressInstaller.InstallerView()
