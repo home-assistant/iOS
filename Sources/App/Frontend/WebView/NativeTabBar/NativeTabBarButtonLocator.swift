@@ -2,8 +2,12 @@ import UIKit
 
 /// Finds where the tab bar draws a tab, in window coordinates, so a presentation can zoom out of it.
 enum NativeTabBarButtonLocator {
+    static func tabBar(in window: UIWindow) -> UITabBar? {
+        firstView(in: window, where: { $0 is UITabBar }) as? UITabBar
+    }
+
     static func frame(ofButtonTitled title: String, trailing: Bool, in window: UIWindow? = keyWindow) -> CGRect? {
-        guard let window, let tabBar = firstView(in: window, where: { $0 is UITabBar }) else { return nil }
+        guard let window, let tabBar = tabBar(in: window) else { return nil }
         let button = firstView(in: tabBar, where: { ($0 as? UILabel)?.text == title }).map(control(enclosing:))
             ?? (trailing ? trailingControl(in: tabBar) : nil)
         guard let button else { return nil }

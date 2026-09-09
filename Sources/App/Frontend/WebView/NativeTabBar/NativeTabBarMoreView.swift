@@ -11,12 +11,8 @@ struct NativeTabBarMoreView: View {
         static let badgeOffset: CGFloat = 6
     }
 
-    private static let customizeTransitionID = "customizeTabs"
-
     @ObservedObject var viewModel: NativeTabBarViewModel
-    @State private var showsCustomize = false
     @State private var rowFrames: [String: CGRect] = [:]
-    @Namespace private var customizeNamespace
     @Environment(\.serverSelectionNamespace) private var settingsTransitionNamespace
 
     var body: some View {
@@ -45,7 +41,7 @@ struct NativeTabBarMoreView: View {
             }
             Section {
                 Button {
-                    showsCustomize = true
+                    viewModel.showCustomize(zoomingFromButton: true)
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.one) {
                         Image(systemSymbol: .pencil)
@@ -58,7 +54,16 @@ struct NativeTabBarMoreView: View {
                     .background(Capsule().fill(Color(uiColor: .secondarySystemFill)))
                 }
                 .buttonStyle(.plain)
-                .matchedTransitionSource(id: Self.customizeTransitionID, in: customizeNamespace)
+                .modify { view in
+                    if let settingsTransitionNamespace {
+                        view.matchedTransitionSource(
+                            id: NativeTabBarViewModel.customizeTransitionID,
+                            in: settingsTransitionNamespace
+                        )
+                    } else {
+                        view
+                    }
+                }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
@@ -168,19 +173,6 @@ struct NativeTabBarMoreView: View {
                     }
                 }
             }
-        }
-        .sheet(isPresented: $showsCustomize) {
-            NavigationStack {
-                NativeTabBarCustomizeView(viewModel: viewModel)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton {
-                                showsCustomize = false
-                            }
-                        }
-                    }
-            }
-            .navigationTransition(.zoom(sourceID: Self.customizeTransitionID, in: customizeNamespace))
         }
     }
 }

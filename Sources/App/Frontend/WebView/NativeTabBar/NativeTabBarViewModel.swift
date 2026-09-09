@@ -7,6 +7,7 @@ import Shared
 final class NativeTabBarViewModel: ObservableObject {
     static let maximumTabs = 4
     static let appSettingsTransitionID = "nativeTabBarAppSettings"
+    static let customizeTransitionID = "nativeTabBarCustomize"
 
     @Published private(set) var tabItems: [NativeTabBarItem] = []
     /// Entries that did not make it into the bar, in list order.
@@ -16,6 +17,8 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
+    @Published var showsCustomize = false
+    private(set) var customizeZoomsFromButton = true
 
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
@@ -221,6 +224,12 @@ final class NativeTabBarViewModel: ObservableObject {
     }
 
     // MARK: - Customisation
+
+    /// Opens Customize Tabs, zooming out of the More tab's button when that is what was tapped.
+    func showCustomize(zoomingFromButton: Bool) {
+        customizeZoomsFromButton = zoomingFromButton
+        showsCustomize = true
+    }
 
     func moveItems(fromOffsets source: IndexSet, toOffset destination: Int) {
         var items = tabItems + moreItems
