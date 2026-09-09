@@ -56,7 +56,8 @@ struct NativeTabBarSnapshotTests {
                 webViewController: nil,
                 frontendOpacity: 1,
                 frontendIgnoredSafeAreaEdges: .all,
-                onNeedsWebViewController: {}
+                onNeedsWebViewController: {},
+                frontendOverlay: { EmptyView() }
             ),
             drawHierarchyInKeyWindow: true
         )

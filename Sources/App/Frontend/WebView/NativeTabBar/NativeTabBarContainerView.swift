@@ -3,11 +3,12 @@ import Shared
 import SwiftUI
 
 /// The App Labs native iOS tab bar: pinned sidebar pages, More and the iOS 26 search tab (which opens the
-/// frontend's quick search). One `WebViewController` moves between tabs through `NativeTabBarFrontendSlot`.
+/// frontend's quick search). One `WebViewController` moves between tabs through `NativeTabBarFrontendSlot`;
+/// `frontendOverlay` (the stand-by loader) covers that slot alone, never the bar or the More list.
 @available(iOS 26, *)
-struct NativeTabBarContainerView: View {
+struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     private enum Constants {
-        static let tabIconSize: CGFloat = 24
+        static var tabIconSize: CGFloat { 24 }
     }
 
     @ObservedObject var viewModel: NativeTabBarViewModel
@@ -15,6 +16,7 @@ struct NativeTabBarContainerView: View {
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
     let onNeedsWebViewController: () -> Void
+    @ViewBuilder let frontendOverlay: () -> FrontendOverlay
 
     var body: some View {
         TabView(selection: Binding(
@@ -23,13 +25,16 @@ struct NativeTabBarContainerView: View {
         )) {
             ForEach(viewModel.tabItems) { item in
                 Tab(value: NativeTabBarTab.panel(id: item.id)) {
-                    NativeTabBarFrontendSlot(
-                        controller: webViewController,
-                        isActive: viewModel.selection == .panel(id: item.id),
-                        onNeedsController: onNeedsWebViewController
-                    )
-                    .opacity(frontendOpacity)
-                    .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                    ZStack {
+                        NativeTabBarFrontendSlot(
+                            controller: webViewController,
+                            isActive: viewModel.selection == .panel(id: item.id),
+                            onNeedsController: onNeedsWebViewController
+                        )
+                        .opacity(frontendOpacity)
+                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                        frontendOverlay()
+                    }
                 } label: {
                     Label {
                         Text(item.title)
@@ -48,13 +53,16 @@ struct NativeTabBarContainerView: View {
                         NativeTabBarMoreView(viewModel: viewModel)
                     }
                     if viewModel.moreShowsFrontend {
-                        NativeTabBarFrontendSlot(
-                            controller: webViewController,
-                            isActive: viewModel.selection == .more,
-                            onNeedsController: onNeedsWebViewController
-                        )
-                        .opacity(frontendOpacity)
-                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                        ZStack {
+                            NativeTabBarFrontendSlot(
+                                controller: webViewController,
+                                isActive: viewModel.selection == .more,
+                                onNeedsController: onNeedsWebViewController
+                            )
+                            .opacity(frontendOpacity)
+                            .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                            frontendOverlay()
+                        }
                         .transition(.move(edge: .trailing))
                     }
                 }
@@ -81,5 +89,7 @@ struct NativeTabBarContainerView: View {
         frontendOpacity: 1,
         frontendIgnoredSafeAreaEdges: .all,
         onNeedsWebViewController: {}
-    )
+    ) {
+        EmptyView()
+    }
 }
