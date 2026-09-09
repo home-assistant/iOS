@@ -17,6 +17,7 @@ final class KioskSettingsTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.KioskSettings.enabled.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.requireAuthentication.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.acceptRemoteCommands.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.showRemoteCommandConfirmations.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.serverId.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.dashboard.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.keepScreenOn.rawValue, .boolean)
