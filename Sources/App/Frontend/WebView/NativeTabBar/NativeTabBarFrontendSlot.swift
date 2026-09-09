@@ -36,6 +36,11 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             apply()
         }
 
+        override func didMove(toParent parent: UIViewController?) {
+            super.didMove(toParent: parent)
+            updateContentScrollView()
+        }
+
         private func apply() {
             if let hostedController, hostedController !== controller {
                 detach(hostedController)
@@ -63,8 +68,16 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
                 controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
             controller.didMove(toParent: self)
-            setContentScrollView(controller.webView?.scrollView, for: .bottom)
             hostedController = controller
+            updateContentScrollView()
+        }
+
+        private func updateContentScrollView() {
+            var target: UIViewController = self
+            while let parent = target.parent, !(parent is UITabBarController) {
+                target = parent
+            }
+            target.setContentScrollView(hostedController?.webView?.scrollView, for: .bottom)
         }
 
         private func detach(_ controller: WebViewController) {
@@ -75,8 +88,8 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             controller.willMove(toParent: nil)
             controller.view.removeFromSuperview()
             controller.removeFromParent()
-            setContentScrollView(nil, for: .bottom)
             hostedController = nil
+            updateContentScrollView()
         }
     }
 }

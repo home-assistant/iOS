@@ -175,6 +175,11 @@ final class NativeTabBarViewModel: ObservableObject {
         Current.sceneManager.appCoordinator.done { $0.open(server: server) }
     }
 
+    func open(serverIdentifier: Identifier<Server>) {
+        guard let server = servers.first(where: { $0.identifier == serverIdentifier }) else { return }
+        open(server: server)
+    }
+
     // MARK: - Customisation
 
     func moveItems(fromOffsets source: IndexSet, toOffset destination: Int) {
