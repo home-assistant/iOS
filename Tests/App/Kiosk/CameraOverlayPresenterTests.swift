@@ -7,6 +7,7 @@ import XCTest
 @MainActor
 final class CameraOverlayPresenterTests: XCTestCase {
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousSensors: SensorContainer!
     private var kiosk: KioskModeManager!
     private var presenter: CameraOverlayPresenter!
     private var webViewController: MockWebViewController!
@@ -18,6 +19,8 @@ final class CameraOverlayPresenterTests: XCTestCase {
         try KioskSettingsTable().createIfNeeded(database: database)
         previousDatabase = Current.database
         Current.database = { database }
+        previousSensors = Current.sensors
+        Current.sensors = SensorContainer()
         SensorEnablementStore.resetForTesting()
 
         kiosk = KioskModeManager()
@@ -26,6 +29,7 @@ final class CameraOverlayPresenterTests: XCTestCase {
     }
 
     override func tearDown() {
+        Current.sensors = previousSensors
         Current.database = previousDatabase
         SensorEnablementStore.resetForTesting()
         super.tearDown()

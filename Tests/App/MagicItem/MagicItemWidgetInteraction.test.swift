@@ -430,9 +430,9 @@ struct MagicItemWidgetInteractionTests {
         #expect(item.widgetTapInteractionType.opensEntityInApp)
     }
 
-    /// A camera opens in the app's own player rather than the frontend's more-info dialog, and that
-    /// is still only opening the entity, so it is exempt from confirmation too.
-    @Test func cameraOpensTheNativePlayer() {
+    /// A camera opens the frontend's more-info dialog like any other entity, and that is only
+    /// opening the entity, so it is exempt from confirmation too.
+    @Test func cameraOpensTheMoreInfoDialog() {
         let camera = MagicItem(id: "camera.porch", serverId: "1", type: .entity)
 
         #expect(camera.defaultIconAction == .moreInfoDialog)
@@ -444,8 +444,8 @@ struct MagicItemWidgetInteractionTests {
             Issue.record("Expected a deep link, got \(camera.widgetInteractionType)")
             return
         }
-        #expect(url.host == AppConstants.cameraDeeplinkHost)
-        #expect(url.absoluteString.contains("entityId=camera.porch"))
+        #expect(url.host == "navigate")
+        #expect(url.absoluteString.contains("\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=camera.porch"))
     }
 
     /// A `url` action opens exactly what was typed, and an address typed without a scheme still

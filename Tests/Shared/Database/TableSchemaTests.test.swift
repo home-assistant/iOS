@@ -317,13 +317,24 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 31 tables create successfully together")
+    @Test("VoiceToolsServerConfigurationTable schema validation")
+    func voiceToolsServerConfigurationTableSchema() throws {
+        let table = VoiceToolsServerConfigurationTable()
+        let expectedColumns = DatabaseTables.VoiceToolsServerConfiguration.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.voiceToolsServerConfiguration.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
+    @Test("All 32 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 31 tables
-        #expect(tables.count == 31, "Should have exactly 31 tables, but found \(tables.count)")
+        // Verify we have exactly 32 tables
+        #expect(tables.count == 32, "Should have exactly 32 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

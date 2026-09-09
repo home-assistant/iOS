@@ -25,28 +25,42 @@ struct AppLabsView: View {
             }
 
             let features = AppLabsFeature.availableFeatures
-            if features.isEmpty {
-                Section(header: Text(L10n.Settings.AppLabs.FeaturesSection.header)) {
-                    Text(L10n.Settings.AppLabs.emptyState)
-                        .foregroundColor(.secondary)
-                }
-            } else {
-                ForEach(features) { feature in
-                    Section {
-                        Toggle(isOn: .init(get: {
-                            feature.isEnabled(in: appLabs.enabledFeatureIds)
-                        }, set: { newValue in
-                            feature.isEnabled = newValue
-                        })) {
-                            Text(feature.title)
-                        }
-                    } header: {
-                        if feature == features.first {
-                            Text(L10n.Settings.AppLabs.FeaturesSection.header)
-                        }
-                    } footer: {
-                        Text(feature.footer)
+            ForEach(features) { feature in
+                Section {
+                    Toggle(isOn: .init(get: {
+                        feature.isEnabled(in: appLabs.enabledFeatureIds)
+                    }, set: { newValue in
+                        feature.isEnabled = newValue
+                    })) {
+                        Text(feature.title)
                     }
+                } header: {
+                    if feature == features.first {
+                        Text(L10n.Settings.AppLabs.FeaturesSection.header)
+                    }
+                } footer: {
+                    Text(feature.footer)
+                }
+            }
+
+            Section {
+                NavigationLink {
+                    VoiceToolsServerSettingsView()
+                } label: {
+                    Label {
+                        VStack(alignment: .leading) {
+                            Text(L10n.Settings.VoiceToolsServer.title)
+                            Text(L10n.Settings.VoiceToolsServer.body)
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                    } icon: {
+                        MaterialDesignIconsImage(icon: .accountVoiceIcon, size: SettingsItem.iconSize)
+                    }
+                }
+            } header: {
+                if features.isEmpty {
+                    Text(L10n.Settings.AppLabs.FeaturesSection.header)
                 }
             }
         }
@@ -56,7 +70,13 @@ struct AppLabsView: View {
 
 extension AppLabsView: SettingsScreenSearchable {
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        AppLabsFeature.allCases.map { SettingsSearchEntry($0.title) }
+        let voiceToolsServerKeywords = L10n.Settings.SearchKeywords.voiceToolsServer
+            .components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        return AppLabsFeature.allCases.map { SettingsSearchEntry($0.title) }
+            + [SettingsSearchEntry(L10n.Settings.VoiceToolsServer.title, keywords: voiceToolsServerKeywords)]
+            + VoiceToolsServerSettingsView.settingsSearchEntries
     }
 }
 
