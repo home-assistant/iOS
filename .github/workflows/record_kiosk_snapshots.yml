@@ -56,9 +56,9 @@ jobs:
             runner.os,
             env.DEVELOPER_DIR) }}
 
-      # The reference images don't exist yet, so snapshot-testing writes them into the checkout and
-      # fails the test run: that failure is the expected outcome here, the recorded files are the point.
-      - name: Record snapshots
+      # First run records the missing reference images into the checkout (and fails the test run
+      # doing so); once they are committed, the same run asserts against them instead.
+      - name: Record or verify snapshots
         run: |
           xcodebuild test \
             -project HomeAssistant.xcodeproj \
@@ -84,11 +84,13 @@ jobs:
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       # Last, so a tail of the job log is the interesting part.
-      - name: Report failures
+      - name: Report the outcome
         if: always()
         run: |
-          echo "===== error lines ====="
-          grep -nE "error:|error generated|Testing failed|Failing tests|Unable to find|not a valid" \
+          echo "===== test results ====="
+          grep -nE "error:|error generated|✘|Test run with|TEST (FAILED|SUCCEEDED)" \
             "$RUNNER_TEMP/xcodebuild.log" | head -n 60 || echo "none matched"
           echo "===== log tail ====="
-          tail -n 60 "$RUNNER_TEMP/xcodebuild.log"
+          tail -n 30 "$RUNNER_TEMP/xcodebuild.log"
+          # Now that the references are committed, anything short of a pass is a real failure.
+          grep -q '\*\* TEST SUCCEEDED \*\*' "$RUNNER_TEMP/xcodebuild.log"
