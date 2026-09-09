@@ -43,6 +43,24 @@ struct NativeTabBarFrontendSlotTests {
         #expect(slot.contentScrollView(for: .bottom) == nil)
     }
 
+    @Test("A tapped tab bar spot becomes the next Assist zoom source, parked in the window at that frame")
+    func assistZoomOrigin() {
+        let controller = WebViewController(server: ServerFixture.standard)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = controller
+        let frame = CGRect(x: 300, y: 780, width: 56, height: 56)
+
+        controller.setAssistZoomOrigin(frame, in: window)
+        let anchor = controller.pendingAssistZoomSourceView
+        #expect(anchor?.frame == frame)
+        #expect(anchor?.superview === window)
+
+        controller.setAssistZoomOrigin(frame.offsetBy(dx: -100, dy: 0), in: window)
+        #expect(controller.pendingAssistZoomSourceView === anchor)
+        #expect(anchor?.frame.minX == 200)
+        #expect(NativeTabBarButtonLocator.frame(ofButtonTitled: "Assist", in: window) == nil)
+    }
+
     @Test("An inactive slot leaves the frontend alone")
     func inactiveSlotDoesNothing() {
         let controller = WebViewController(server: ServerFixture.standard)

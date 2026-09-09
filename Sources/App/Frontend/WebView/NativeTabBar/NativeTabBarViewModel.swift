@@ -22,7 +22,9 @@ final class NativeTabBarViewModel: ObservableObject {
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
     var onQuickSearch: (() -> Void)?
-    var onAssist: (() -> Void)?
+    /// Opens Assist, zooming out of the given window frame when the tap has one.
+    var onAssist: ((CGRect?) -> Void)?
+    var locateTabButton: (String) -> CGRect? = { NativeTabBarButtonLocator.frame(ofButtonTitled: $0) }
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -150,7 +152,7 @@ final class NativeTabBarViewModel: ObservableObject {
             // next turn is what makes SwiftUI move the bar back; an unchanged selection is never re-applied.
             let frontendTab = selection
             selection = tab
-            perform(tab)
+            perform(tab, sourceFrame: tabItems.first { $0.tab == tab }.flatMap { locateTabButton($0.title) })
             DispatchQueue.main.async { [weak self] in
                 guard let self, selection == tab else { return }
                 selection = frontendTab
@@ -158,8 +160,8 @@ final class NativeTabBarViewModel: ObservableObject {
         }
     }
 
-    /// An entry picked from the More list.
-    func open(_ item: NativeTabBarItem) {
+    /// An entry picked from the More list; `sourceFrame` is the row's window frame, for Assist to zoom out of.
+    func open(_ item: NativeTabBarItem, sourceFrame: CGRect? = nil) {
         if tabItems.contains(where: { $0.id == item.id }) {
             didSelect(item.tab)
             return
@@ -169,7 +171,7 @@ final class NativeTabBarViewModel: ObservableObject {
             open(sidebarItem)
         case .search, .assist:
             revealFrontend()
-            perform(item.tab)
+            perform(item.tab, sourceFrame: sourceFrame)
         }
     }
 
@@ -268,10 +270,10 @@ final class NativeTabBarViewModel: ObservableObject {
         rebuild()
     }
 
-    private func perform(_ tab: NativeTabBarTab) {
+    private func perform(_ tab: NativeTabBarTab, sourceFrame: CGRect?) {
         switch tab {
         case .search: onQuickSearch?()
-        case .assist: onAssist?()
+        case .assist: onAssist?(sourceFrame)
         case .panel, .more: break
         }
     }

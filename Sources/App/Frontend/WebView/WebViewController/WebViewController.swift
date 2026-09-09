@@ -24,6 +24,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
+    var pendingAssistZoomSourceView: UIView?
+    var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?

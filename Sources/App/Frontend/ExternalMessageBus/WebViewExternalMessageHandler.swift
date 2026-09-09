@@ -534,12 +534,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 focusInputOnAppear: focusInputOnAppear
             ))
             assistView.modalPresentationStyle = .fullScreen
-            if #available(iOS 18.0, *), webViewController?.assistZoomAnchorView != nil {
+            let tappedSource = webViewController?.pendingAssistZoomSourceView
+            webViewController?.pendingAssistZoomSourceView = nil
+            if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
                 // The request comes over the external bus, so there is no touched view to zoom out of: the
-                // anchor standing in for the frontend's Assist button plays that part. Resolved on every call
-                // because the transition asks again while presenting, dismissing and interactively dragging.
+                // anchor standing in for the frontend's Assist button plays that part, unless the native tab
+                // bar left the spot it was tapped at. Resolved on every call because the transition asks again
+                // while presenting, dismissing and interactively dragging.
                 assistView.preferredTransition = .zoom { [weak self] _ in
-                    self?.webViewController?.assistZoomAnchorView
+                    tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
                 assistView.modalTransitionStyle = .crossDissolve

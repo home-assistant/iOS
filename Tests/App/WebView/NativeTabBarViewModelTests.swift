@@ -177,16 +177,18 @@ struct NativeTabBarViewModelTests {
     @Test("Assist as a tab runs the action and hands the selection back; from More it leaves the selection alone")
     func assistActions() async throws {
         let sut = makeFixture("assistActions").sut
-        var assistCount = 0
-        sut.onAssist = { assistCount += 1 }
+        var sourceFrames: [CGRect?] = []
+        sut.onAssist = { sourceFrames.append($0) }
+        sut.locateTabButton = { $0 == L10n.TabBar.Item.assist ? CGRect(x: 1, y: 2, width: 3, height: 4) : nil }
 
-        try sut.open(item(assist, in: sut))
-        #expect(assistCount == 1)
+        try sut.open(item(assist, in: sut), sourceFrame: CGRect(x: 5, y: 6, width: 7, height: 8))
+        #expect(sourceFrames == [CGRect(x: 5, y: 6, width: 7, height: 8)])
         #expect(sut.selection == .panel(id: "home"))
 
         sut.moveItems(fromOffsets: IndexSet(integer: 5), toOffset: 3)
         sut.didSelect(.assist)
-        #expect(assistCount == 2)
+        #expect(sourceFrames.count == 2)
+        #expect(sourceFrames.last == CGRect(x: 1, y: 2, width: 3, height: 4))
         #expect(sut.selection == .assist)
         #expect(!sut.showsFrontend)
 

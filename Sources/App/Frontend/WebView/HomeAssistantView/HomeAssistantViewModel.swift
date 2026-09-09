@@ -89,7 +89,10 @@ final class HomeAssistantViewModel: ObservableObject {
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
         }
-        tabBar.onAssist = { [weak self] in
+        tabBar.onAssist = { [weak self] sourceFrame in
+            if let sourceFrame {
+                self?.webViewController?.setAssistZoomOrigin(sourceFrame)
+            }
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.assist)
         }
         sidebar.onShowNotifications = { [weak self] in

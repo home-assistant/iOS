@@ -17,6 +17,7 @@ struct NativeTabBarMoreView: View {
 
     @ObservedObject var viewModel: NativeTabBarViewModel
     @State private var showsCustomize = false
+    @State private var assistRowFrame: CGRect?
     @Namespace private var customizeNamespace
     @Environment(\.serverSelectionNamespace) private var settingsTransitionNamespace
 
@@ -26,13 +27,24 @@ struct NativeTabBarMoreView: View {
                 Section {
                     ForEach(viewModel.moreItems) { item in
                         Button {
-                            viewModel.open(item)
+                            viewModel.open(item, sourceFrame: item.kind == .assist ? assistRowFrame : nil)
                         } label: {
                             NativeTabBarItemLabel(
                                 item: item,
                                 server: viewModel.sidebar.server,
                                 user: viewModel.sidebar.user
                             )
+                        }
+                        .modify { view in
+                            if item.kind == .assist {
+                                view.onGeometryChange(for: CGRect.self) { proxy in
+                                    proxy.frame(in: .global)
+                                } action: { frame in
+                                    assistRowFrame = frame
+                                }
+                            } else {
+                                view
+                            }
                         }
                     }
                 }
