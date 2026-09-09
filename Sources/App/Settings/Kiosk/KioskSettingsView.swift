@@ -31,6 +31,18 @@ struct KioskSettingsView: View {
                 Text(L10n.Kiosk.AcceptRemoteCommands.footer)
             }
 
+            // The confirmation is the toast overlay, which only exists on iOS 18 and up, and there is
+            // nothing to confirm while remote commands are refused.
+            if #available(iOS 18, *), viewModel.settings.acceptRemoteCommands {
+                Section {
+                    Toggle(isOn: $viewModel.settings.showRemoteCommandConfirmations) {
+                        KioskRow.label(L10n.Kiosk.CommandConfirmation.title, systemSymbol: .checkmarkCircle)
+                    }
+                } footer: {
+                    Text(L10n.Kiosk.CommandConfirmation.footer)
+                }
+            }
+
             Section {
                 KioskRow.picker(
                     L10n.Kiosk.Display.server,
@@ -218,6 +230,7 @@ extension KioskSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Kiosk.enabled),
             SettingsSearchEntry(L10n.Kiosk.Authentication.title),
             SettingsSearchEntry(L10n.Kiosk.AcceptRemoteCommands.title),
+            SettingsSearchEntry(L10n.Kiosk.CommandConfirmation.title),
             SettingsSearchEntry(L10n.Kiosk.Display.dashboard),
             SettingsSearchEntry(L10n.Kiosk.keepScreenOn),
             SettingsSearchEntry(L10n.Kiosk.removeHeaderAndSidebar),
