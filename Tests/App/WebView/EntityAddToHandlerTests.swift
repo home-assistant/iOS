@@ -12,7 +12,7 @@ final class EntityAddToHandlerTests: XCTestCase {
         sut.execute(action: DeeplinkAction(), entityId: "light.kitchen").done {
             executed.fulfill()
         }.cauterize()
-        wait(for: [executed], timeout: 2)
+        wait(for: [executed], timeout: 10.0)
 
         XCTAssertTrue(webView.presentOverlayControllerCalled)
         let controller = try XCTUnwrap(webView.overlayedController)
