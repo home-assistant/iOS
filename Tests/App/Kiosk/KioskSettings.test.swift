@@ -20,6 +20,7 @@ struct KioskSettingsTests {
             hideStatusBar: true,
             autoReload: .minutes10,
             settingsEntryPosition: .topLeading,
+            settingsEntryHidden: true,
             screensaver: KioskScreensaverSettings(
                 enabled: true,
                 mode: .clock,
@@ -70,6 +71,7 @@ struct KioskSettingsTests {
         #expect(loaded?.showRemoteCommandConfirmations == true)
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
+        #expect(loaded?.settingsEntryHidden == false)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
     }
 

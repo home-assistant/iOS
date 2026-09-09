@@ -291,6 +291,7 @@ public enum DatabaseTables {
         case hideStatusBar
         case autoReload
         case settingsEntryPosition
+        case settingsEntryHidden
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver
