@@ -521,6 +521,43 @@ final class AssistViewModelTests: XCTestCase {
         sut.assistWithText()
     }
 
+    // MARK: - Switching to text input
+
+    @MainActor
+    func testSwitchToTextInput_stopsListeningAndRequestsInputFocus() {
+        sut.isRecording = true
+
+        sut.switchToTextInput()
+
+        XCTAssertFalse(sut.isRecording)
+        XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
+    /// The keyboard takes over a request that was already half spoken, rather than sending it or
+    /// throwing it away.
+    @MainActor
+    func testSwitchToTextInput_keepsTheTranscriptSoFarWithoutSubmittingIt() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+        mockTranscriber.simulateTranscriptUpdate("Turn on the por", isFinal: false)
+        await Task.yield()
+        XCTAssertEqual(sut.chatItems.last?.itemType, .pending)
+
+        sut.switchToTextInput()
+
+        XCTAssertTrue(mockTranscriber.stopListeningCalled)
+        XCTAssertEqual(sut.inputText, "Turn on the por")
+        XCTAssertNotEqual(sut.chatItems.last?.itemType, .pending)
+        XCTAssertNil(mockAssistService.assistSource)
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
     @MainActor
     func testOnDeviceTTS_onFinished_triggersRecordingAgainWhenNeeded() async {
         let mockSynthesizer = MockSpeechSynthesizer()

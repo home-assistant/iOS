@@ -335,6 +335,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         Current.Log.info("Stop recording audio for Assist")
     }
 
+    /// Leaves the listening state for typing: the recording is dropped without being submitted and the
+    /// input row is asked for focus, so the keyboard comes up. Whatever was transcribed so far stays in
+    /// the input, which is what lets a half-spoken request be finished by hand.
+    @MainActor func switchToTextInput() {
+        stopStreaming()
+        focusOnInput = true
+    }
+
     // MARK: - On-Device TTS Methods
 
     private func speakWithOnDeviceTTS(_ text: String) {

@@ -94,8 +94,14 @@ struct AssistView: View {
                 viewModel.subscribeForConfigChanges()
             }
             .onChange(of: viewModel.focusOnInput) { newValue in
-                if newValue {
+                guard newValue else { return }
+                // The input row is invisible and hit testing is off while Assist listens, and a focus
+                // request made in the same runloop turn as the state that brings the row back gets
+                // dropped, so it is applied once that state has been rendered. Clearing the request as
+                // it is taken is what lets the next one publish a change of its own.
+                Task { @MainActor in
                     isFirstResponder = true
+                    viewModel.focusOnInput = false
                 }
             }
             .onDisappear {
@@ -496,27 +502,30 @@ struct AssistView: View {
         .padding(.bottom, barBottomPadding)
     }
 
+    /// The frame and the circle live inside the label, with a content shape to match, because hit
+    /// testing only covers what a button's label draws: wrapped around the button instead, they left
+    /// the keyboard glyph as the only part of the visible circle that answered a tap.
     private var keyboardButton: some View {
         Button {
             feedbackGenerator.notificationOccurred(.success)
-            viewModel.stopStreaming()
-            isFirstResponder = true
+            viewModel.switchToTextInput()
         } label: {
             Image(systemSymbol: .keyboard)
                 .font(.system(size: Constants.keyboardIconFontSize, weight: .medium))
                 .foregroundStyle(.primary)
                 .frame(width: Constants.keyboardButtonSize, height: Constants.keyboardButtonSize)
+                .modify { view in
+                    if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                        view.glassEffect(.regular.interactive(), in: .circle)
+                    } else {
+                        view
+                            .background(.regularMaterial, in: Circle())
+                            .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
+                    }
+                }
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
-                view.glassEffect(.regular.interactive(), in: .circle)
-            } else {
-                view
-                    .background(.regularMaterial, in: Circle())
-                    .overlay(Circle().strokeBorder(.tileBorder, lineWidth: Constants.borderWidth))
-            }
-        }
     }
 
     private var assistSendTextButton: some View {
