@@ -339,6 +339,13 @@ struct NativeTabBarViewModelTests {
             sut.open(server: other)
         }
         #expect(coordinator.openedServers.map(\.identifier) == [other.identifier])
+
+        sut.open(serverIdentifier: "unknown")
+        await withCheckedContinuation { continuation in
+            coordinator.onOpenServer = { continuation.resume() }
+            sut.open(serverIdentifier: other.identifier)
+        }
+        #expect(coordinator.openedServers.map(\.identifier) == [other.identifier, other.identifier])
     }
 
     @Test("Without an injected list the servers are the app's registered servers")

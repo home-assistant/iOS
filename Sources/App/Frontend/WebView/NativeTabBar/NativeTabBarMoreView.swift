@@ -49,12 +49,15 @@ struct NativeTabBarMoreView: View {
                         }
                         if viewModel.hasMultipleServers {
                             Menu {
-                                ForEach(viewModel.servers, id: \.identifier) { server in
-                                    Toggle(server.info.name, isOn: Binding(
-                                        get: { server.identifier == viewModel.sidebar.server.identifier },
-                                        set: { _ in viewModel.open(server: server) }
-                                    ))
+                                Picker(L10n.ServersSelection.title, selection: Binding(
+                                    get: { viewModel.sidebar.server.identifier },
+                                    set: { viewModel.open(serverIdentifier: $0) }
+                                )) {
+                                    ForEach(viewModel.servers, id: \.identifier) { server in
+                                        Text(server.info.name).tag(server.identifier)
+                                    }
                                 }
+                                .pickerStyle(.inline)
                                 Divider()
                                 Button {
                                     viewModel.open(profile)
