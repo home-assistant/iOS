@@ -25,6 +25,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ci.yml only runs on pull requests and `main`, so mirror its lint gate here while this
+  # branch has no pull request open.
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+      - name: YamlLint
+        run: yamllint --strict --format github .
+      - name: RuboCop
+        run: bundle exec rubocop --format github
+      - name: SwiftLint
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/realm/swiftlint:0.54.0 \
+            swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
+      - name: SwiftFormat
+        run: |
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/nicklockwood/swiftformat:0.53.1 \
+            --lint --config .swiftformat .
+
   record:
     runs-on: macos-26
     timeout-minutes: 90
@@ -86,6 +111,23 @@ jobs:
           git add Tests
           git commit -m "Record kiosk settings snapshot references"
           git push origin HEAD:${{ github.ref_name }}
+
+      # Runs the kiosk tests again, now that the references exist, so the run also proves the
+      # snapshots match and the touched unit tests pass. This one is not tolerated.
+      - name: Verify kiosk tests against the recorded snapshots
+        env:
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: never
+        run: |
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:Tests-App/KioskSettingsViewTests \
+            -only-testing:Tests-App/KioskPushCommandTests \
+            -only-testing:Tests-App/KioskSettingsTests \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Recorded Snapshots"
