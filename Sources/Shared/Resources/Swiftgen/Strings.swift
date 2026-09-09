@@ -4939,8 +4939,8 @@ public enum L10n {
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
       public enum IosNativeTabBar {
-        /// Replaces the Home Assistant sidebar with a native tab bar. The first three sidebar dashboards are the tabs; reorder or hide dashboards from the More tab. The page reloads when you change this setting.
-        public static var description: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.description") }
+        /// Replaces the Home Assistant sidebar with a native tab bar. The first four entries of the More tab's list are the tabs; reorder or hide them from the More tab. The page reloads when you change this setting.
+        public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.summary") }
         /// Native tab bar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
       }
@@ -7471,8 +7471,8 @@ public enum L10n {
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
       public enum DashboardsSection {
-        /// The first three dashboards are the tabs, the rest are listed in More. Drag to reorder.
-        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer") }
+        /// The first four entries are the tabs, the rest are listed in More. Drag to reorder.
+        public static var footerFourTabs: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer_four_tabs") }
         /// Dashboards
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.header") }
       }
@@ -7483,9 +7483,17 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
       }
     }
+    public enum Item {
+      /// Assist
+      public static var assist: String { return L10n.tr("Localizable", "tab_bar.item.assist") }
+      /// Search
+      public static var search: String { return L10n.tr("Localizable", "tab_bar.item.search") }
+    }
     public enum More {
       /// App Settings
       public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
+      /// Customize
+      public static var customize: String { return L10n.tr("Localizable", "tab_bar.more.customize") }
       /// Home Assistant Settings
       public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
       /// More

@@ -89,6 +89,18 @@ final class HomeAssistantViewModel: ObservableObject {
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
         }
+        tabBar.onAssist = { [weak self] sourceFrame in
+            guard let self, let webViewController else { return }
+            if let sourceFrame {
+                webViewController.setAssistZoomOrigin(sourceFrame)
+            }
+            webViewController.webViewExternalMessageHandler.showAssist(
+                server: server,
+                pipeline: "",
+                autoStartRecording: false,
+                focusInputOnAppear: false
+            )
+        }
         sidebar.onShowNotifications = { [weak self] in
             self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
                 command: .showNotifications,

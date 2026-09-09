@@ -22,7 +22,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
     var footer: String {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.footer
-        case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.description
+        case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.summary
         }
     }
 

@@ -61,6 +61,8 @@ struct ConditionalContainerView: View {
                         sourceID: HomeAssistantStandByView.serverSelectionTransitionID,
                         in: serverSelectionNamespace
                     ))
+                } else if #available(iOS 18.0, *), let sourceID = appSettings.zoomSourceID {
+                    view.navigationTransition(.zoom(sourceID: sourceID, in: serverSelectionNamespace))
                 } else {
                     view
                 }
