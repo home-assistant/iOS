@@ -184,6 +184,15 @@ jobs:
             runner.os,
             env.DEVELOPER_DIR) }}
 
+      # A fallback restore carries precompiled Clang modules for whatever binary dependency
+      # versions `main` had. When a PR moves one of those pins, the freshly checked out
+      # headers are newer than the module built from the old ones and the build fails with
+      # "has been modified since the module file was built" instead of rebuilding it. Drop
+      # the modules so they are rebuilt against the headers actually present.
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
         if: ${{ false }}

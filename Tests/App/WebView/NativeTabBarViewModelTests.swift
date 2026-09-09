@@ -32,10 +32,16 @@ struct NativeTabBarViewModelTests {
         let sut: NativeTabBarViewModel
         let overlayState: WebFrontendOverlayState
         let tabBarState: NativeTabBarState
-        let configurationStore: NativeTabBarConfigurationStore
+        let snapshotStore: MacSidebarSnapshotStore
     }
 
-    private func makeFixture(_ name: String, tabItemIds: [String]? = nil, isAdmin: Bool = true) -> Fixture {
+    private func makeFixture(
+        _ name: String,
+        panelOrder: [String]? = nil,
+        hiddenPanels: [String]? = nil,
+        isAdmin: Bool = true,
+        additionalServers: [Server] = []
+    ) -> Fixture {
         let suiteName = "NativeTabBarViewModelTests.\(name)"
         let defaults = UserDefaults(suiteName: suiteName)!
         defaults.removePersistentDomain(forName: suiteName)
@@ -43,26 +49,28 @@ struct NativeTabBarViewModelTests {
 
         let snapshotStore = MacSidebarSnapshotStore(userDefaults: defaults)
         snapshotStore.store(
-            MacSidebarSnapshot(panels: panels, isAdmin: isAdmin, userName: "Bruno"),
+            MacSidebarSnapshot(
+                panels: panels,
+                panelOrder: panelOrder,
+                hiddenPanels: hiddenPanels,
+                isAdmin: isAdmin,
+                userName: "Bruno"
+            ),
             for: server.identifier.rawValue
         )
-        let configurationStore = NativeTabBarConfigurationStore(userDefaults: defaults)
-        if let tabItemIds {
-            configurationStore.setItemIds(tabItemIds, for: server.identifier.rawValue)
-        }
         let overlayState = WebFrontendOverlayState()
         let tabBarState = NativeTabBarState()
         let sut = NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(server: server, overlayState: overlayState, snapshotStore: snapshotStore),
             overlayState: overlayState,
-            configurationStore: configurationStore,
-            tabBarState: tabBarState
+            tabBarState: tabBarState,
+            servers: { [server] + additionalServers }
         )
         return Fixture(
             sut: sut,
             overlayState: overlayState,
             tabBarState: tabBarState,
-            configurationStore: configurationStore
+            snapshotStore: snapshotStore
         )
     }
 
@@ -78,43 +86,119 @@ struct NativeTabBarViewModelTests {
         #expect(sut.showsFrontend)
     }
 
-    @Test("A saved choice keeps its order and skips pages that no longer exist")
-    func savedTabs() {
-        let sut = makeFixture("saved", tabItemIds: ["map", "gone", "config"]).sut
+    @Test("The sidebar order decides which pages are tabs")
+    func sidebarOrderDecidesTabs() {
+        let sut = makeFixture("order", panelOrder: ["map", "energy", "home", "alpha"]).sut
 
-        #expect(sut.tabItems.map(\.id) == ["map", "config"])
-        #expect(sut.moreItems.map(\.id) == ["home", "alpha", "energy"])
-        #expect(sut.fixedItems.map(\.id) == ["notifications", "profile"])
+        #expect(sut.tabItems.map(\.id) == ["map", "energy", "home"])
+        #expect(sut.moreItems.map(\.id) == ["alpha"])
+        #expect(sut.selection == .panel(id: "map"))
     }
 
-    @Test("Adding stops at the maximum, removing frees a slot, and both persist")
-    func addAndRemove() throws {
-        let fixture = makeFixture("addRemove")
+    @Test("Reordering pages moves them in and out of the bar and is saved with the sidebar preferences")
+    func reorder() async throws {
+        let fixture = makeFixture("reorder")
         let sut = fixture.sut
-        let map = try #require(sut.pinnableItems.first { $0.id == "map" })
-        let alpha = try #require(sut.pinnableItems.first { $0.id == "alpha" })
-        let notifications = try #require(sut.sidebar.fixedItems.first { $0.id == "notifications" })
-        let profile = try #require(sut.sidebar.fixedItems.first { $0.id == "profile" })
 
-        #expect(!sut.canAddTab)
-        sut.addTab(map)
+        sut.moveItems(fromOffsets: IndexSet(integer: 3), toOffset: 0)
+        await Task.yield()
+        #expect(sut.tabItems.map(\.id) == ["map", "home", "alpha"])
+        #expect(sut.moreItems.map(\.id) == ["energy"])
+        #expect(fixture.snapshotStore.snapshot(for: ServerFixture.standard.identifier.rawValue)?.panelOrder == [
+            "map",
+            "home",
+            "alpha",
+            "energy",
+        ])
+    }
+
+    @Test("Moving the selected tab out of the bar keeps its page on screen from More")
+    func reorderingSelectedTabOut() async throws {
+        let sut = makeFixture("reorderSelected").sut
+
+        sut.didSelect(.panel(id: "alpha"))
+        sut.moveItems(fromOffsets: IndexSet(integer: 1), toOffset: 4)
+        await Task.yield()
+
+        #expect(sut.tabItems.map(\.id) == ["home", "energy", "map"])
+        #expect(sut.selection == .more)
+        #expect(sut.moreShowsFrontend)
+    }
+
+    @Test("Pages hidden in the sidebar preferences stay out of the bar and More but are listed as hidden")
+    func hiddenPagesStayOut() {
+        let sut = makeFixture("hidden", hiddenPanels: ["alpha"]).sut
+
+        #expect(sut.tabItems.map(\.id) == ["home", "energy", "map"])
+        #expect(sut.moreItems.isEmpty)
+        #expect(sut.hiddenItems.map(\.id) == ["alpha"])
+    }
+
+    @Test("Only sidebar pages other than the default dashboard can be hidden")
+    func canHide() throws {
+        let sut = makeFixture("canHide").sut
+        let home = try #require(sut.tabItems.first { $0.id == "home" })
+        let map = try #require(sut.moreItems.first { $0.id == "map" })
+        let settings = try #require(sut.settingsItem)
+        let profile = try #require(sut.profileItem)
+
+        #expect(!sut.canHide(home))
+        #expect(sut.canHide(map))
+        #expect(!sut.canHide(settings))
+        #expect(!sut.canHide(profile))
+    }
+
+    @Test("Hiding a page removes it from More; showing it again appends it to More")
+    func hideAndShowFromMore() async throws {
+        let fixture = makeFixture("hideShow")
+        let sut = fixture.sut
+        let map = try #require(sut.moreItems.first { $0.id == "map" })
+
+        sut.hide(map)
+        await Task.yield()
+        #expect(sut.moreItems.isEmpty)
+        #expect(sut.hiddenItems.map(\.id) == ["map"])
         #expect(sut.tabItems.map(\.id) == ["home", "alpha", "energy"])
 
-        sut.removeTab(alpha)
-        #expect(sut.canAddTab)
-        sut.addTab(map)
-        #expect(sut.tabItems.map(\.id) == ["home", "energy", "map"])
-        #expect(fixture.configurationStore.itemIds(for: sut.sidebar.server.identifier.rawValue) == [
-            "home",
-            "energy",
-            "map",
-        ])
+        let hiddenMap = try #require(sut.hiddenItems.first)
+        sut.show(hiddenMap)
+        await Task.yield()
+        #expect(sut.moreItems.map(\.id) == ["map"])
+        #expect(sut.hiddenItems.isEmpty)
+    }
 
-        sut.removeTab(map)
-        sut.addTab(notifications)
-        sut.addTab(profile)
-        #expect(sut.tabItems.map(\.id) == ["home", "energy"])
-        #expect(sut.pinnableItems.map(\.id) == ["home", "alpha", "energy", "map", "config"])
+    @Test("Hiding the selected tab promotes the next page and keeps the hidden page on screen from More")
+    func hideTab() async throws {
+        let fixture = makeFixture("hideTab")
+        let sut = fixture.sut
+        let alpha = try #require(sut.tabItems.first { $0.id == "alpha" })
+
+        sut.didSelect(.panel(id: "alpha"))
+        sut.hide(alpha)
+        await Task.yield()
+        #expect(sut.tabItems.map(\.id) == ["home", "energy", "map"])
+        #expect(sut.hiddenItems.map(\.id) == ["alpha"])
+        #expect(sut.selection == .more)
+        #expect(sut.moreShowsFrontend)
+
+        let hiddenAlpha = try #require(sut.hiddenItems.first)
+        sut.show(hiddenAlpha)
+        await Task.yield()
+        #expect(sut.tabItems.map(\.id) == ["home", "energy", "map"])
+        #expect(sut.moreItems.map(\.id) == ["alpha"])
+    }
+
+    @Test("The default dashboard and header pages ignore hide requests")
+    func hideIgnoresProtectedPages() async throws {
+        let sut = makeFixture("hideProtected").sut
+        let home = try #require(sut.tabItems.first { $0.id == "home" })
+        let settings = try #require(sut.settingsItem)
+
+        sut.hide(home)
+        sut.hide(settings)
+        await Task.yield()
+        #expect(sut.hiddenItems.isEmpty)
+        #expect(sut.tabItems.map(\.id) == ["home", "alpha", "energy"])
     }
 
     @Test("The More header exposes profile, notifications and, for admins only, Settings")
@@ -127,19 +211,6 @@ struct NativeTabBarViewModelTests {
         let user = makeFixture("headerUser", isAdmin: false).sut
         #expect(user.settingsItem == nil)
         #expect(user.profileItem != nil)
-    }
-
-    @Test("Reordering persists the new order")
-    func reorder() {
-        let fixture = makeFixture("reorder")
-        fixture.sut.moveTabs(fromOffsets: IndexSet(integer: 2), toOffset: 0)
-
-        #expect(fixture.sut.tabItems.map(\.id) == ["energy", "home", "alpha"])
-        #expect(fixture.configurationStore.itemIds(for: ServerFixture.standard.identifier.rawValue) == [
-            "energy",
-            "home",
-            "alpha",
-        ])
     }
 
     @Test("Navigating the visible frontend to a pinned page selects its tab; hidden, it is left alone")
@@ -192,18 +263,6 @@ struct NativeTabBarViewModelTests {
         fixture.overlayState.externalNavigationRequests.send()
         await Task.yield()
         #expect(sut.selection == .panel(id: "alpha"))
-    }
-
-    @Test("Removing the selected tab keeps its page on screen from More")
-    func removingSelectedTab() throws {
-        let sut = makeFixture("removeSelected").sut
-        let alpha = try #require(sut.tabItems.first { $0.id == "alpha" })
-
-        sut.didSelect(.panel(id: "alpha"))
-        sut.removeTab(alpha)
-
-        #expect(sut.selection == .more)
-        #expect(sut.moreShowsFrontend)
     }
 
     @Test("The Search tab opens the frontend's quick search and hands the selection back to the frontend")
@@ -262,42 +321,42 @@ struct NativeTabBarViewModelTests {
         #expect(!coordinator.showSettingsPushedOntoNavigationStack)
     }
 
+    @Test("Switching to another server goes through the app coordinator; the current one is left alone")
+    func openServer() async {
+        let other = ServerFixture.withRemoteConnection
+        let single = makeFixture("singleServer").sut
+        #expect(!single.hasMultipleServers)
+
+        let sut = makeFixture("openServer", additionalServers: [other]).sut
+        #expect(sut.hasMultipleServers)
+        #expect(sut.servers.map(\.identifier) == [ServerFixture.standard.identifier, other.identifier])
+
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        sut.open(server: ServerFixture.standard)
+        await withCheckedContinuation { continuation in
+            coordinator.onOpenServer = { continuation.resume() }
+            sut.open(server: other)
+        }
+        #expect(coordinator.openedServers.map(\.identifier) == [other.identifier])
+    }
+
+    @Test("Without an injected list the servers are the app's registered servers")
+    func defaultServers() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = NativeTabBarViewModel(
+            sidebar: MacSidebarViewModel(server: ServerFixture.standard, overlayState: overlayState),
+            overlayState: overlayState,
+            tabBarState: NativeTabBarState()
+        )
+        #expect(sut.servers.map(\.identifier) == Current.servers.all.map(\.identifier))
+    }
+
     @Test("Starting and stopping forwards to the sidebar without a connection")
     func startStop() {
         let sut = makeFixture("startStop").sut
         sut.start()
         sut.stop()
         #expect(sut.tabItems.count == 3)
-    }
-
-    @Test("Unreadable stored tab choices are dropped instead of failing every launch")
-    func configurationStoreDropsCorruptData() {
-        let suiteName = "NativeTabBarViewModelTests.corrupt"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        defaults.removePersistentDomain(forName: suiteName)
-        defaults.set(Data("not json".utf8), forKey: NativeTabBarConfigurationStore.storageKey)
-
-        let store = NativeTabBarConfigurationStore(userDefaults: defaults)
-        #expect(store.itemIds(for: "server") == nil)
-        #expect(defaults.data(forKey: NativeTabBarConfigurationStore.storageKey) == nil)
-
-        store.setItemIds(["a"], for: "server")
-        store.setItemIds(["a"], for: "server")
-        #expect(NativeTabBarConfigurationStore(userDefaults: defaults).itemIds(for: "server") == ["a"])
-    }
-
-    @Test("The configuration store caps and persists per server")
-    func configurationStore() {
-        let suiteName = "NativeTabBarViewModelTests.store"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        defaults.removePersistentDomain(forName: suiteName)
-
-        let store = NativeTabBarConfigurationStore(userDefaults: defaults)
-        store.setItemIds(["a", "b", "c", "d"], for: "server")
-        #expect(store.itemIds(for: "server") == ["a", "b", "c"])
-        #expect(store.itemIds(for: "other") == nil)
-
-        let reloaded = NativeTabBarConfigurationStore(userDefaults: defaults)
-        #expect(reloaded.itemIds(for: "server") == ["a", "b", "c"])
     }
 }

@@ -578,6 +578,8 @@ public class HomeAssistantAPI {
                         case let .success(data):
                             if let image = UIImage(data: data) {
                                 seal.fulfill(image)
+                            } else {
+                                seal.reject(APIError.invalidResponse)
                             }
                         case let .failure(error):
                             Current.Log.error("Error when attemping to GetCameraImage(): \(error)")

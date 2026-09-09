@@ -33,6 +33,16 @@ struct NativeTabBarFrontendSlotTests {
         #expect(controller.parent === second)
     }
 
+    @Test("The hosting slot hands the web view's scroll view to the tab bar and lets go of it on detach")
+    func contentScrollViewFollowsTheFrontend() {
+        let controller = WebViewController(server: ServerFixture.standard)
+        let slot = makeSlot(controller: controller, isActive: true)
+        #expect(slot.contentScrollView(for: .bottom) === controller.webView.scrollView)
+
+        slot.update(controller: nil, isActive: false, onNeedsController: {})
+        #expect(slot.contentScrollView(for: .bottom) == nil)
+    }
+
     @Test("An inactive slot leaves the frontend alone")
     func inactiveSlotDoesNothing() {
         let controller = WebViewController(server: ServerFixture.standard)
