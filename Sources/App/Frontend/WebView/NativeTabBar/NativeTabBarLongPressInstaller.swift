@@ -35,7 +35,7 @@ struct NativeTabBarLongPressInstaller: UIViewRepresentable {
         func installIfNeeded(in window: UIWindow? = nil) {
             guard recognizer == nil, let window = window ?? self.window,
                   let tabBar = NativeTabBarButtonLocator.tabBar(in: window) else { return }
-            let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(handle(_:)))
+            let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleRecognizer(_:)))
             recognizer.minimumPressDuration = Self.minimumPressDuration
             recognizer.delegate = self
             tabBar.addGestureRecognizer(recognizer)
@@ -48,7 +48,7 @@ struct NativeTabBarLongPressInstaller: UIViewRepresentable {
             onLongPress?()
         }
 
-        @objc private func handle(_ recognizer: UILongPressGestureRecognizer) {
+        @objc func handleRecognizer(_ recognizer: UILongPressGestureRecognizer) {
             handle(state: recognizer.state)
         }
 
