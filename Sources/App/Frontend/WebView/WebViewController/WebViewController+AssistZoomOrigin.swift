@@ -13,4 +13,16 @@ extension WebViewController {
         anchor.frame = frame
         pendingAssistZoomSourceView = anchor
     }
+
+    func openAssist(zoomingFrom frame: CGRect?) {
+        if let frame {
+            setAssistZoomOrigin(frame)
+        }
+        webViewExternalMessageHandler.showAssist(
+            server: server,
+            pipeline: "",
+            autoStartRecording: false,
+            focusInputOnAppear: false
+        )
+    }
 }

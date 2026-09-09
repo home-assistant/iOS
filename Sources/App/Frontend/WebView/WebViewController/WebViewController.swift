@@ -27,6 +27,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var pendingAssistZoomSourceView: UIView?
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?
+    var presentsDetachedOverlays: () -> Bool = { NativeTabBarState.shared.isEnabled }
+    var detachedOverlayPresenter: () -> UIViewController? = { WebViewController.topMostPresenter() }
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()

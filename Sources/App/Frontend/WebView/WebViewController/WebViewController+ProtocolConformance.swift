@@ -28,7 +28,7 @@ extension WebViewController: WebViewControllerProtocol {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
                 guard let self else { return }
-                if view.window == nil, NativeTabBarState.shared.isEnabled, let presenter = Self.topMostPresenter() {
+                if view.window == nil, presentsDetachedOverlays(), let presenter = detachedOverlayPresenter() {
                     detachedOverlayController = controller
                     presenter.present(controller, animated: animated, completion: nil)
                 } else {
@@ -38,7 +38,7 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
-    private static func topMostPresenter() -> UIViewController? {
+    static func topMostPresenter() -> UIViewController? {
         var presenter = NativeTabBarButtonLocator.keyWindow?.rootViewController
         while let presented = presenter?.presentedViewController {
             presenter = presented

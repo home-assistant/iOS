@@ -453,6 +453,23 @@ struct NativeTabBarViewModelTests {
         #expect(coordinator.openedServers.map(\.identifier) == [other.identifier, other.identifier])
     }
 
+    @Test("Opening a tab's entry from More selects the tab; Search from More reveals the frontend and searches")
+    func openTabAndSearchFromMore() throws {
+        let sut = makeFixture("openTabSearch").sut
+        var quickSearchCount = 0
+        sut.onQuickSearch = { quickSearchCount += 1 }
+
+        sut.didSelect(.more)
+        try sut.open(item("alpha", in: sut))
+        #expect(sut.selection == .panel(id: "alpha"))
+
+        sut.moveItems(fromOffsets: IndexSet(integer: 3), toOffset: 6)
+        sut.didSelect(.more)
+        try sut.open(item(search, in: sut))
+        #expect(quickSearchCount == 1)
+        #expect(sut.showsFrontend)
+    }
+
     @Test("Without an injected list the servers are the app's registered servers")
     func defaultServers() {
         let overlayState = WebFrontendOverlayState()

@@ -65,6 +65,45 @@ struct NativeTabBarSnapshotTests {
     }
 
     @available(iOS 26, *)
+    @Test func tabBarWithAssistInTheSearchRole() {
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarAssistRole")
+        viewModel.moveItems(
+            fromOffsets: IndexSet(integer: viewModel.tabItems.count + viewModel.moreItems.count - 1),
+            toOffset: 3
+        )
+        viewModel.didSelect(.more)
+        assertLightDarkSnapshots(
+            of: NativeTabBarContainerView(
+                viewModel: viewModel,
+                webViewController: nil,
+                frontendOpacity: 1,
+                frontendIgnoredSafeAreaEdges: .all,
+                onNeedsWebViewController: {},
+                frontendOverlay: { EmptyView() }
+            ),
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
+    @Test func tabBarWithSearchAsAPlainTab() {
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarSearchPlain")
+        viewModel.moveItems(fromOffsets: IndexSet(integer: 3), toOffset: 0)
+        viewModel.didSelect(.more)
+        assertLightDarkSnapshots(
+            of: NativeTabBarContainerView(
+                viewModel: viewModel,
+                webViewController: nil,
+                frontendOpacity: 1,
+                frontendIgnoredSafeAreaEdges: .all,
+                onNeedsWebViewController: {},
+                frontendOverlay: { EmptyView() }
+            ),
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
     @Test func tabBarWithMoreSelected() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarMore")
         viewModel.didSelect(.more)
