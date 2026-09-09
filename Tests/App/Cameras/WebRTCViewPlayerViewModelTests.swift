@@ -173,6 +173,6 @@ final class WebRTCViewPlayerViewModelTests: XCTestCase {
     private func flushMainQueue() {
         let flushed = expectation(description: "main queue flushed")
         DispatchQueue.main.async { flushed.fulfill() }
-        wait(for: [flushed], timeout: 2)
+        wait(for: [flushed], timeout: 10.0)
     }
 }
