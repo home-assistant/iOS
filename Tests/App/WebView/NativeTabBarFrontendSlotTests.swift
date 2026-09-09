@@ -61,6 +61,18 @@ struct NativeTabBarFrontendSlotTests {
         #expect(NativeTabBarButtonLocator.frame(ofButtonTitled: "Assist", trailing: true, in: window) == nil)
     }
 
+    @Test("A released frontend takes its Assist zoom anchor out of the window")
+    func assistZoomAnchorIsRemovedWithTheFrontend() {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        var controller: WebViewController? = WebViewController(server: ServerFixture.standard)
+        controller?.setAssistZoomOrigin(CGRect(x: 0, y: 0, width: 40, height: 40), in: window)
+        let anchor = controller?.pendingAssistZoomSourceView
+        #expect(anchor?.superview === window)
+
+        controller = nil
+        #expect(anchor?.superview == nil)
+    }
+
     @Test("An inactive slot leaves the frontend alone")
     func inactiveSlotDoesNothing() {
         let controller = WebViewController(server: ServerFixture.standard)

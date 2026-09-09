@@ -219,6 +219,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
+        tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
