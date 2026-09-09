@@ -1,6 +1,7 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
