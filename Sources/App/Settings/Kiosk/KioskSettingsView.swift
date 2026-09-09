@@ -31,9 +31,7 @@ struct KioskSettingsView: View {
                 Text(L10n.Kiosk.AcceptRemoteCommands.footer)
             }
 
-            // The confirmation is the toast overlay, which only exists on iOS 18 and up, and there is
-            // nothing to confirm while remote commands are refused.
-            if #available(iOS 18, *), viewModel.settings.acceptRemoteCommands {
+            if Self.showsCommandConfirmationRow(acceptRemoteCommands: viewModel.settings.acceptRemoteCommands) {
                 Section {
                     Toggle(isOn: $viewModel.settings.showRemoteCommandConfirmations) {
                         KioskRow.label(L10n.Kiosk.CommandConfirmation.title, systemSymbol: .checkmarkCircle)
@@ -132,6 +130,14 @@ struct KioskSettingsView: View {
         .listTopContentMargin()
     }
 
+    /// The confirmation row exists only where the toast it configures does — iOS 18 and up — and only
+    /// while the kiosk accepts the commands it would confirm. The screen and the settings search index
+    /// share this predicate so search never advertises a row that is not on screen.
+    static func showsCommandConfirmationRow(acceptRemoteCommands: Bool) -> Bool {
+        guard #available(iOS 18, *) else { return false }
+        return acceptRemoteCommands
+    }
+
     private var lockOverlay: some View {
         ZStack {
             Color(uiColor: .systemGroupedBackground)
@@ -226,16 +232,20 @@ private extension View {
 
 extension KioskSettingsView: SettingsScreenSearchable {
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        let showsCommandConfirmation = showsCommandConfirmationRow(
+            acceptRemoteCommands: Current.kiosk.settings.acceptRemoteCommands
+        )
+        let entries: [SettingsSearchEntry?] = [
             SettingsSearchEntry(L10n.Kiosk.enabled),
             SettingsSearchEntry(L10n.Kiosk.Authentication.title),
             SettingsSearchEntry(L10n.Kiosk.AcceptRemoteCommands.title),
-            SettingsSearchEntry(L10n.Kiosk.CommandConfirmation.title),
+            showsCommandConfirmation ? SettingsSearchEntry(L10n.Kiosk.CommandConfirmation.title) : nil,
             SettingsSearchEntry(L10n.Kiosk.Display.dashboard),
             SettingsSearchEntry(L10n.Kiosk.keepScreenOn),
             SettingsSearchEntry(L10n.Kiosk.removeHeaderAndSidebar),
             SettingsSearchEntry(L10n.Kiosk.hideStatusBar),
             SettingsSearchEntry(L10n.Kiosk.Screensaver.title),
         ]
+        return entries.compactMap { $0 }
     }
 }

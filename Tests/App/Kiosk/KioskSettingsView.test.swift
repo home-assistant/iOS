@@ -27,17 +27,41 @@ struct KioskSettingsViewTests {
         }
     }
 
+    @available(iOS 18, *)
+    @MainActor
+    @Test func settingsSearchIndexesTheConfirmationRowWhileItIsShown() throws {
+        try withKiosk(settings: KioskSettings(acceptRemoteCommands: true)) {
+            let titles = KioskSettingsView.settingsSearchEntries.map(\.title)
+            #expect(titles.contains(L10n.Kiosk.CommandConfirmation.title))
+        }
+    }
+
+    @MainActor
+    @Test func settingsSearchSkipsTheConfirmationRowWhileItIsHidden() throws {
+        // Search must not advertise Kiosk for a row the screen does not show.
+        try withKiosk(settings: KioskSettings(acceptRemoteCommands: false)) {
+            let titles = KioskSettingsView.settingsSearchEntries.map(\.title)
+            #expect(!titles.contains(L10n.Kiosk.CommandConfirmation.title))
+            #expect(titles.contains(L10n.Kiosk.AcceptRemoteCommands.title))
+        }
+    }
+
     /// Points `Current` at a fresh in-memory database holding `settings`, so the screen's view model
-    /// loads them instead of whatever the shared test database happens to carry.
+    /// and the settings search read them instead of whatever the shared test database happens to carry.
     @MainActor
     private func withKiosk(settings: KioskSettings, _ body: () throws -> Void) throws {
         let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
         let previousServers = Current.servers
         defer {
             Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
             Current.servers = previousServers
         }
 
+        Current.sensors = SensorContainer()
         Current.servers = FakeServerManager(initial: 1)
         let database = try DatabaseQueue()
         for table in DatabaseQueue.tables() {
@@ -50,6 +74,7 @@ struct KioskSettingsViewTests {
         try database.write { db in
             try settings.insert(db, onConflict: .replace)
         }
+        Current.kiosk = KioskModeManager()
 
         try body()
     }
