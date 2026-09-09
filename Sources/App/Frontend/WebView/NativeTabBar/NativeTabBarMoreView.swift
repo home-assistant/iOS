@@ -2,8 +2,9 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The More tab: a profile / notifications / settings header, the sidebar pages that are not pinned to
-/// the bar, and the button that customises the bar.
+/// The More tab: a profile / notifications / settings header (the profile doubles as a server picker when
+/// there is more than one server), the sidebar pages that are not in the bar, and the button that
+/// customises the bar.
 @available(iOS 26, *)
 struct NativeTabBarMoreView: View {
     private enum Constants {
@@ -24,28 +25,59 @@ struct NativeTabBarMoreView: View {
             Section {
                 HStack(spacing: DesignSystem.Spaces.two) {
                     if let profile = viewModel.profileItem {
-                        Button {
-                            viewModel.open(profile)
-                        } label: {
-                            HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
-                                MacSidebarAvatarView(
-                                    server: viewModel.sidebar.server,
-                                    title: profile.title,
-                                    user: viewModel.sidebar.user,
-                                    size: Constants.avatarSize
-                                )
-                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
-                                    Text(profile.title)
-                                        .font(.headline)
-                                        .foregroundStyle(Color.primary)
-                                    Text(viewModel.sidebar.server.info.name)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .lineLimit(1)
+                        let header = HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+                            MacSidebarAvatarView(
+                                server: viewModel.sidebar.server,
+                                title: profile.title,
+                                user: viewModel.sidebar.user,
+                                size: Constants.avatarSize
+                            )
+                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
+                                Text(profile.title)
+                                    .font(.headline)
+                                    .foregroundStyle(Color.primary)
+                                Text(viewModel.sidebar.server.info.name)
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.secondary)
+                            }
+                            .lineLimit(1)
+                            if viewModel.hasMultipleServers {
+                                Image(systemSymbol: .chevronUpChevronDown)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Color.secondary)
                             }
                         }
-                        .buttonStyle(.plain)
+                        if viewModel.hasMultipleServers {
+                            Menu {
+                                ForEach(viewModel.servers, id: \.identifier) { server in
+                                    Button {
+                                        viewModel.open(server: server)
+                                    } label: {
+                                        if server.identifier == viewModel.sidebar.server.identifier {
+                                            Label(server.info.name, systemSymbol: .checkmark)
+                                        } else {
+                                            Text(server.info.name)
+                                        }
+                                    }
+                                }
+                                Divider()
+                                Button {
+                                    viewModel.open(profile)
+                                } label: {
+                                    Label(FrontendStrings.panelProfile, systemSymbol: .personCropCircle)
+                                }
+                            } label: {
+                                header
+                            }
+                            .accessibilityLabel(L10n.ServersSelection.title)
+                        } else {
+                            Button {
+                                viewModel.open(profile)
+                            } label: {
+                                header
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                     Spacer(minLength: 0)
                     if let notifications = viewModel.notificationsItem {

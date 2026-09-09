@@ -39,7 +39,8 @@ struct NativeTabBarViewModelTests {
         _ name: String,
         panelOrder: [String]? = nil,
         hiddenPanels: [String]? = nil,
-        isAdmin: Bool = true
+        isAdmin: Bool = true,
+        additionalServers: [Server] = []
     ) -> Fixture {
         let suiteName = "NativeTabBarViewModelTests.\(name)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -62,7 +63,8 @@ struct NativeTabBarViewModelTests {
         let sut = NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(server: server, overlayState: overlayState, snapshotStore: snapshotStore),
             overlayState: overlayState,
-            tabBarState: tabBarState
+            tabBarState: tabBarState,
+            servers: { [server] + additionalServers }
         )
         return Fixture(
             sut: sut,
@@ -317,6 +319,26 @@ struct NativeTabBarViewModelTests {
         }
         #expect(coordinator.showSettingsCalled)
         #expect(!coordinator.showSettingsPushedOntoNavigationStack)
+    }
+
+    @Test("Switching to another server goes through the app coordinator; the current one is left alone")
+    func openServer() async {
+        let other = ServerFixture.withRemoteConnection
+        let single = makeFixture("singleServer").sut
+        #expect(!single.hasMultipleServers)
+
+        let sut = makeFixture("openServer", additionalServers: [other]).sut
+        #expect(sut.hasMultipleServers)
+        #expect(sut.servers.map(\.identifier) == [ServerFixture.standard.identifier, other.identifier])
+
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        sut.open(server: ServerFixture.standard)
+        await withCheckedContinuation { continuation in
+            coordinator.onOpenServer = { continuation.resume() }
+            sut.open(server: other)
+        }
+        #expect(coordinator.openedServers.map(\.identifier) == [other.identifier])
     }
 
     @Test("Starting and stopping forwards to the sidebar without a connection")

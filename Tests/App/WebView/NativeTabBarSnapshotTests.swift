@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import SharedTesting
 import SwiftUI
 import Testing
@@ -8,6 +9,18 @@ struct NativeTabBarSnapshotTests {
     @available(iOS 26, *)
     @Test func moreView() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.more")
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
+    @Test func moreViewWithMultipleServers() {
+        let viewModel = NativeTabBarViewModel.preview(
+            additionalServers: [ServerFixture.withRemoteConnection],
+            suiteName: "NativeTabBarSnapshotTests.moreServers"
+        )
         assertLightDarkSnapshots(
             of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel) },
             drawHierarchyInKeyWindow: true

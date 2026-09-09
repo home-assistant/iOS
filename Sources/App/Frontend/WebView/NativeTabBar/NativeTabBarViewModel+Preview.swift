@@ -7,6 +7,7 @@ extension NativeTabBarViewModel {
     @MainActor
     static func preview(
         hiddenPanelPaths: [String] = [],
+        additionalServers: [Server] = [],
         isAdmin: Bool = true,
         suiteName: String = "NativeTabBarPreview"
     ) -> NativeTabBarViewModel {
@@ -33,7 +34,8 @@ extension NativeTabBarViewModel {
                 snapshotStore: snapshotStore
             ),
             overlayState: overlayState,
-            tabBarState: NativeTabBarState()
+            tabBarState: NativeTabBarState(),
+            servers: { [server] + additionalServers }
         )
     }
 

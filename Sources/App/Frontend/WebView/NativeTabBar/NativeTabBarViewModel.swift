@@ -21,6 +21,7 @@ final class NativeTabBarViewModel: ObservableObject {
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
     var onQuickSearch: (() -> Void)?
 
+    private let allServers: () -> [Server]
     private var mainItems: [MacSidebarItem] = []
     private var currentPath: String?
     private var lastFrontendTab: NativeTabBarTab?
@@ -29,10 +30,12 @@ final class NativeTabBarViewModel: ObservableObject {
     init(
         sidebar: MacSidebarViewModel,
         overlayState: WebFrontendOverlayState,
-        tabBarState: NativeTabBarState? = nil
+        tabBarState: NativeTabBarState? = nil,
+        servers: @escaping () -> [Server] = { Current.servers.all }
     ) {
         let tabBarState = tabBarState ?? .shared
         self.sidebar = sidebar
+        self.allServers = servers
         self.selection = .more
         self.mainItems = sidebar.mainItems
         self.fixedItems = sidebar.fixedItems
@@ -155,6 +158,21 @@ final class NativeTabBarViewModel: ObservableObject {
 
     func showAppSettings() {
         Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: false) }
+    }
+
+    // MARK: - Servers
+
+    var servers: [Server] {
+        allServers()
+    }
+
+    var hasMultipleServers: Bool {
+        servers.count > 1
+    }
+
+    func open(server: Server) {
+        guard server.identifier != sidebar.server.identifier else { return }
+        Current.sceneManager.appCoordinator.done { $0.open(server: server) }
     }
 
     // MARK: - Customisation
