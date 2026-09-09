@@ -11,13 +11,9 @@ struct NativeTabBarMoreView: View {
         static let badgeOffset: CGFloat = 6
     }
 
-    private static let customizeTransitionID = "customizeTabs"
-
     @ObservedObject var viewModel: NativeTabBarViewModel
-    @State private var showsCustomize = false
     @State private var rowFrames: [String: CGRect] = [:]
-    @Namespace private var customizeNamespace
-    @Environment(\.serverSelectionNamespace) private var settingsTransitionNamespace
+    @Environment(\.serverSelectionNamespace) private var transitionNamespace
 
     var body: some View {
         List {
@@ -45,7 +41,7 @@ struct NativeTabBarMoreView: View {
             }
             Section {
                 Button {
-                    showsCustomize = true
+                    viewModel.showCustomize(zoomingFromButton: true)
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.one) {
                         Image(systemSymbol: .pencil)
@@ -58,7 +54,16 @@ struct NativeTabBarMoreView: View {
                     .background(Capsule().fill(Color(uiColor: .secondarySystemFill)))
                 }
                 .buttonStyle(.plain)
-                .matchedTransitionSource(id: Self.customizeTransitionID, in: customizeNamespace)
+                .modify { view in
+                    if let transitionNamespace {
+                        view.matchedTransitionSource(
+                            id: NativeTabBarViewModel.customizeTransitionID,
+                            in: transitionNamespace
+                        )
+                    } else {
+                        view
+                    }
+                }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
@@ -158,29 +163,16 @@ struct NativeTabBarMoreView: View {
                 }
                 .accessibilityLabel(L10n.Mac.Sidebar.settings)
                 .modify { view in
-                    if let settingsTransitionNamespace {
+                    if let transitionNamespace {
                         view.matchedTransitionSource(
                             id: NativeTabBarViewModel.appSettingsTransitionID,
-                            in: settingsTransitionNamespace
+                            in: transitionNamespace
                         )
                     } else {
                         view
                     }
                 }
             }
-        }
-        .sheet(isPresented: $showsCustomize) {
-            NavigationStack {
-                NativeTabBarCustomizeView(viewModel: viewModel)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton {
-                                showsCustomize = false
-                            }
-                        }
-                    }
-            }
-            .navigationTransition(.zoom(sourceID: Self.customizeTransitionID, in: customizeNamespace))
         }
     }
 }

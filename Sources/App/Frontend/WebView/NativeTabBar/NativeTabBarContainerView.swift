@@ -10,6 +10,7 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     }
 
     @ObservedObject var viewModel: NativeTabBarViewModel
+    @Environment(\.serverSelectionNamespace) private var transitionNamespace
     let webViewController: WebViewController?
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
@@ -96,6 +97,31 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
         }
         .tabViewSearchActivation(.searchTabSelection)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .background(NativeTabBarLongPressInstaller {
+            viewModel.showCustomize(zoomingFromButton: false)
+        })
+        .sheet(isPresented: $viewModel.showsCustomize) {
+            NavigationStack {
+                NativeTabBarCustomizeView(viewModel: viewModel)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton {
+                                viewModel.showsCustomize = false
+                            }
+                        }
+                    }
+            }
+            .modify { view in
+                if viewModel.customizeZoomsFromButton, let transitionNamespace {
+                    view.navigationTransition(.zoom(
+                        sourceID: NativeTabBarViewModel.customizeTransitionID,
+                        in: transitionNamespace
+                    ))
+                } else {
+                    view
+                }
+            }
+        }
         .onAppear { viewModel.start() }
         .onDisappear { viewModel.stop() }
     }

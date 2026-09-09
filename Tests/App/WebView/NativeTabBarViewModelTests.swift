@@ -453,6 +453,21 @@ struct NativeTabBarViewModelTests {
         #expect(coordinator.openedServers.map(\.identifier) == [other.identifier, other.identifier])
     }
 
+    @Test("Customize opens from the More button with a zoom and from a long press without one")
+    func showCustomize() {
+        let sut = makeFixture("customize").sut
+        #expect(!sut.showsCustomize)
+
+        sut.showCustomize(zoomingFromButton: false)
+        #expect(sut.showsCustomize)
+        #expect(!sut.customizeZoomsFromButton)
+
+        sut.showsCustomize = false
+        sut.showCustomize(zoomingFromButton: true)
+        #expect(sut.showsCustomize)
+        #expect(sut.customizeZoomsFromButton)
+    }
+
     @Test("Without an injected list the servers are the app's registered servers")
     func defaultServers() {
         let overlayState = WebFrontendOverlayState()
