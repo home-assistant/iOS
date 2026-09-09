@@ -183,9 +183,11 @@ struct NativeTabBarViewModelTests {
             title == L10n.TabBar.Item.assist && trailing ? CGRect(x: 1, y: 2, width: 3, height: 4) : nil
         }
 
+        sut.didSelect(.more)
         try sut.open(item(assist, in: sut), sourceFrame: CGRect(x: 5, y: 6, width: 7, height: 8))
         #expect(sourceFrames == [CGRect(x: 5, y: 6, width: 7, height: 8)])
-        #expect(sut.selection == .panel(id: "home"))
+        #expect(sut.selection == .more)
+        #expect(!sut.moreShowsFrontend)
 
         sut.moveItems(fromOffsets: IndexSet(integer: 5), toOffset: 3)
         sut.didSelect(.assist)
@@ -195,7 +197,8 @@ struct NativeTabBarViewModelTests {
         #expect(!sut.showsFrontend)
 
         try await Task.sleep(for: .milliseconds(50))
-        #expect(sut.selection == .panel(id: "home"))
+        #expect(sut.selection == .more)
+        #expect(!sut.moreShowsFrontend)
     }
 
     @Test("The extras store keeps positions per server and drops unreadable data")

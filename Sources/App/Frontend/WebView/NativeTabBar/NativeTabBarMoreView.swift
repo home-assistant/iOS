@@ -17,7 +17,7 @@ struct NativeTabBarMoreView: View {
 
     @ObservedObject var viewModel: NativeTabBarViewModel
     @State private var showsCustomize = false
-    @State private var assistRowFrame: CGRect?
+    @State private var rowFrames: [String: CGRect] = [:]
     @Namespace private var customizeNamespace
     @Environment(\.serverSelectionNamespace) private var settingsTransitionNamespace
 
@@ -27,7 +27,7 @@ struct NativeTabBarMoreView: View {
                 Section {
                     ForEach(viewModel.moreItems) { item in
                         Button {
-                            viewModel.open(item, sourceFrame: item.kind == .assist ? assistRowFrame : nil)
+                            viewModel.open(item, sourceFrame: rowFrames[item.id])
                         } label: {
                             NativeTabBarItemLabel(
                                 item: item,
@@ -35,18 +35,14 @@ struct NativeTabBarMoreView: View {
                                 user: viewModel.sidebar.user
                             )
                         }
-                        .modify { view in
-                            if item.kind == .assist {
-                                view.onGeometryChange(for: CGRect.self) { proxy in
-                                    proxy.frame(in: .global)
-                                } action: { frame in
-                                    assistRowFrame = frame
-                                }
-                            } else {
-                                view
-                            }
+                        .onGeometryChange(for: CGRect.self) { proxy in
+                            proxy.frame(in: .global)
+                        } action: { frame in
+                            rowFrames[item.id] = frame
                         }
                     }
+                } header: {
+                    Text(L10n.TabBar.Customize.DashboardsSection.header)
                 }
             }
             Section {
@@ -54,8 +50,8 @@ struct NativeTabBarMoreView: View {
                     showsCustomize = true
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.one) {
-                        Image(systemSymbol: .squareGrid2x2)
-                        Text(L10n.TabBar.Customize.title)
+                        Image(systemSymbol: .pencil)
+                        Text(L10n.TabBar.More.customize)
                     }
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(Color.primary)
@@ -72,6 +68,7 @@ struct NativeTabBarMoreView: View {
             }
             .listSectionSpacing(DesignSystem.Spaces.two)
         }
+        .contentMargins(.top, DesignSystem.Spaces.two, for: .scrollContent)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 if let profile = viewModel.profileItem {

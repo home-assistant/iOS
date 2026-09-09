@@ -2288,6 +2288,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "tab_bar.item.assist" = "Assist";
 "tab_bar.item.search" = "Search";
 "tab_bar.more.app_settings" = "App Settings";
+"tab_bar.more.customize" = "Customize";
 "tab_bar.more.home_assistant_settings" = "Home Assistant Settings";
 "tab_bar.more.title" = "More";
 "tags.allowed.delete_all" = "Delete all";

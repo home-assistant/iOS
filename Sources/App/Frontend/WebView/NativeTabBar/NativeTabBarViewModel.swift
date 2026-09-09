@@ -149,16 +149,18 @@ final class NativeTabBarViewModel: ObservableObject {
                 moreShowsFrontend = false
             }
         case .search, .assist:
-            revealFrontend()
+            if tab == .search {
+                revealFrontend()
+            }
             // The bar has already highlighted the tab. Taking the selection there and handing it back on the
             // next turn is what makes SwiftUI move the bar back; an unchanged selection is never re-applied.
-            let frontendTab = selection
+            let previousTab = selection
             selection = tab
             let tapped = tabItems.first { $0.tab == tab }
             perform(tab, sourceFrame: tapped.flatMap { locateTabButton($0.title, $0.id == searchRoleItem?.id) })
             DispatchQueue.main.async { [weak self] in
                 guard let self, selection == tab else { return }
-                selection = frontendTab
+                selection = previousTab
             }
         }
     }
@@ -172,8 +174,10 @@ final class NativeTabBarViewModel: ObservableObject {
         switch item.kind {
         case let .panel(sidebarItem):
             open(sidebarItem)
-        case .search, .assist:
+        case .search:
             revealFrontend()
+            perform(item.tab, sourceFrame: sourceFrame)
+        case .assist:
             perform(item.tab, sourceFrame: sourceFrame)
         }
     }
