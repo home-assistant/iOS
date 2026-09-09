@@ -517,8 +517,8 @@ public class WebhookManager: NSObject {
                             return
                         }
                         if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
-                            matchingTasks.forEach {
-                                cancelPersistedTask($0, sessionInfo: sessionInfo, resolvingWith: result)
+                            for task in matchingTasks {
+                                cancelPersistedTask(task, sessionInfo: sessionInfo, resolvingWith: result)
                             }
                             continuation.resume(returning: .completed(result))
                             return
@@ -592,16 +592,7 @@ public class WebhookManager: NSObject {
 
     private static func asyncTask(for promise: Promise<Void>) -> Task<Void, Error> {
         Task {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                promise.pipe { result in
-                    switch result {
-                    case .fulfilled:
-                        continuation.resume()
-                    case let .rejected(error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
+            try await promise.asyncValue()
         }
     }
 
@@ -970,47 +961,45 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         Current.Log.notify("starting \(request.type) to \(server.identifier) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        let invocation: Promise<Void>
-        if let api = Current.api(for: server) {
-            let handler = handlerType.init(api: api)
-            let handlerPromise = firstly {
-                handler.handle(request: .value(request), result: result)
-            }.done { [weak self] result in
-                // keep the handler around until it finishes
-                withExtendedLifetime(handler) {
-                    self?.handle(result: result)
-                }
-            }
-            invocation = firstly {
-                when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
-            }
-        } else {
-            invocation = .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-        }
-
-        let trackedInvocation = invocation.tap(on: dataQueue) { [weak self] result in
-            resolver?.resolve(result)
-            if let self,
-               let requestIdentifier,
-               restoredPersistedRequestIDs.remove(requestIdentifier) != nil {
-                activePersistedRequests.removeValue(forKey: requestIdentifier)
-                switch result {
-                case .fulfilled:
-                    completedPersistedRequests[requestIdentifier] = .success(())
-                case let .rejected(error):
-                    completedPersistedRequests[requestIdentifier] = .failure(error)
-                }
-            }
-        }.ensure {
-            Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
-            sessionInfo.eventGroup.leave()
-        }
-
         // URLSession delegate callbacks run on dataQueue. Acquire UIKit execution time asynchronously
-        // on main so this queue can never synchronously wait on a main thread waiting for dataQueue.
-        DispatchQueue.main.async {
+        // on main before constructing the hot response-handler chain.
+        DispatchQueue.main.async { [self] in
             Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ in
-                trackedInvocation
+                let invocation: Promise<Void>
+                if let api = Current.api(for: server) {
+                    let handler = handlerType.init(api: api)
+                    let handlerPromise = firstly {
+                        handler.handle(request: .value(request), result: result)
+                    }.done { [weak self] result in
+                        // keep the handler around until it finishes
+                        withExtendedLifetime(handler) {
+                            self?.handle(result: result)
+                        }
+                    }
+                    invocation = firstly {
+                        when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+                    }
+                } else {
+                    invocation = .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+                }
+
+                return invocation.tap(on: dataQueue) { [weak self] result in
+                    resolver?.resolve(result)
+                    if let self,
+                       let requestIdentifier,
+                       restoredPersistedRequestIDs.remove(requestIdentifier) != nil {
+                        activePersistedRequests.removeValue(forKey: requestIdentifier)
+                        switch result {
+                        case .fulfilled:
+                            completedPersistedRequests[requestIdentifier] = .success(())
+                        case let .rejected(error):
+                            completedPersistedRequests[requestIdentifier] = .failure(error)
+                        }
+                    }
+                }.ensure {
+                    Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
+                    sessionInfo.eventGroup.leave()
+                }
             }.cauterize()
         }
     }

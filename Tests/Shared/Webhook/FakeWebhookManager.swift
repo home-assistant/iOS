@@ -31,16 +31,7 @@ class FakeWebhookManager: WebhookManager {
         let (promise, seal) = Promise<Void>.pending()
         sendRequestHandler?(identifier, server, request, seal)
         return .success(Task {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                promise.pipe { result in
-                    switch result {
-                    case .fulfilled:
-                        continuation.resume()
-                    case let .rejected(error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
+            try await promise.asyncValue()
         })
     }
 }
