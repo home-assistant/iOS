@@ -488,7 +488,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
-        if let options = kioskPushPresentationOptions(for: notification) {
+        if let options = kioskPushPresentationOptions(for: notification.request) {
             completionHandler(options)
             return
         }
@@ -512,21 +512,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         return completionHandler(methods)
     }
 
-    private func kioskPushPresentationOptions(
-        for notification: UNNotification
-    ) -> UNNotificationPresentationOptions? {
-        kioskPushPresentationOptions(
-            identifier: notification.request.identifier,
-            content: notification.request.content
-        )
-    }
-
-    /// Split from the `UNNotification` entry point above because a `UNNotification` cannot be built
-    /// outside the notification system, and this is the part worth testing.
-    func kioskPushPresentationOptions(
-        identifier: String,
-        content: UNNotificationContent
-    ) -> UNNotificationPresentationOptions? {
+    /// Takes the request rather than the `UNNotification` wrapping it: everything here needs only the
+    /// request, and unlike a notification a request can be built in tests.
+    func kioskPushPresentationOptions(for request: UNNotificationRequest) -> UNNotificationPresentationOptions? {
+        let content = request.content
         let message = content.body
         guard KioskPushCommand.isKioskCommand(message: message) else {
             return nil
@@ -548,7 +537,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // The command already ran above; the toast is only its visual confirmation, which the user can
         // switch off for a kiosk that should react silently.
         if #available(iOS 18, *),
-           let toast = command.confirmationToast(id: identifier, settings: kioskSettings) {
+           let toast = command.confirmationToast(id: request.identifier, settings: kioskSettings) {
             Task { @MainActor in
                 ToastPresenter.shared.show(toast: toast, duration: 4)
             }

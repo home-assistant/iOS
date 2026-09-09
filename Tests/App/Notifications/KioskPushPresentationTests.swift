@@ -13,8 +13,7 @@ struct KioskPushPresentationTests {
     @Test func ignoresMessagesThatAreNotKioskCommands() throws {
         try withKiosk(settings: KioskSettings()) { manager in
             let options = manager.kioskPushPresentationOptions(
-                identifier: "notification-1",
-                content: content(body: "Motion detected")
+                for: request(identifier: "notification-1", body: "Motion detected")
             )
 
             #expect(options == nil)
@@ -27,8 +26,7 @@ struct KioskPushPresentationTests {
         try withKiosk(settings: KioskSettings(acceptRemoteCommands: false)) { manager in
             commands.record()
             let options = manager.kioskPushPresentationOptions(
-                identifier: "notification-1",
-                content: content(body: "kiosk_show_screensaver")
+                for: request(identifier: "notification-1", body: "kiosk_show_screensaver")
             )
 
             #expect(options == nil)
@@ -40,8 +38,7 @@ struct KioskPushPresentationTests {
     @Test func fallsBackToTheDefaultPresentationForAnUnknownKioskCommand() throws {
         try withKiosk(settings: KioskSettings()) { manager in
             let options = manager.kioskPushPresentationOptions(
-                identifier: "notification-1",
-                content: content(body: "kiosk_teleport")
+                for: request(identifier: "notification-1", body: "kiosk_teleport")
             )
 
             #expect(options == nil)
@@ -56,8 +53,7 @@ struct KioskPushPresentationTests {
         try withKiosk(settings: KioskSettings()) { manager in
             commands.record()
             let options = manager.kioskPushPresentationOptions(
-                identifier: "confirmed-command",
-                content: content(body: "kiosk_show_screensaver")
+                for: request(identifier: "confirmed-command", body: "kiosk_show_screensaver")
             )
 
             #expect(commands.received == [.show])
@@ -80,8 +76,7 @@ struct KioskPushPresentationTests {
         try withKiosk(settings: KioskSettings(showRemoteCommandConfirmations: false)) { manager in
             commands.record()
             let options = manager.kioskPushPresentationOptions(
-                identifier: "silent-command",
-                content: content(body: "kiosk_show_screensaver")
+                for: request(identifier: "silent-command", body: "kiosk_show_screensaver")
             )
 
             // The command still ran and the banner is still suppressed; only the toast is skipped.
@@ -107,10 +102,10 @@ struct KioskPushPresentationTests {
         }
     }
 
-    private func content(body: String) -> UNNotificationContent {
+    private func request(identifier: String, body: String) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.body = body
-        return content
+        return UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
     }
 
     /// Lets the main-actor task the presentation path enqueues for the toast run before asserting.
