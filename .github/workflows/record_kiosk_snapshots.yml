@@ -1,11 +1,10 @@
 name: Record Kiosk Snapshots
 
-# Temporary workflow: lints the branch and records the reference images for the kiosk
-# settings-entry snapshot tests on a macOS runner, uploading them as an artifact so they can be
-# committed. Delete once the snapshots are in.
+# Temporary workflow: lints the branch, records the reference images for the kiosk settings-entry
+# snapshot tests on a macOS runner and commits them back to the branch. Delete once they are in.
 
 permissions:
-  contents: read
+  contents: write
 
 on:
   push:
@@ -43,10 +42,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
-        with:
-          ruby-version: .ruby-version
-
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Restore: DerivedData"
         with:
@@ -61,8 +56,8 @@ jobs:
             runner.os,
             env.DEVELOPER_DIR) }}
 
-      # The reference images don't exist yet, so snapshot-testing writes them and fails the run:
-      # that failure is the expected outcome here, the artifact below is what matters.
+      # The reference images don't exist yet, so snapshot-testing writes them into the checkout and
+      # fails the test run: that failure is the expected outcome here, the recorded files are the point.
       - name: Record snapshots
         run: |
           xcodebuild test \
@@ -71,29 +66,29 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             -only-testing:HomeAssistant-Tests-App/KioskHideSettingsEntryTests \
             -only-testing:HomeAssistant-Tests-App/KioskSettingsEntryIconTests \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
             COMPILER_INDEX_STORE_ENABLE=NO > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || true
-          echo "::group::Compiler and test failures"
-          grep -nE "error:|error generated|Test Case .* failed|recorded a new reference|Testing failed" \
-            "$RUNNER_TEMP/xcodebuild.log" | head -n 100 || echo "none matched"
-          echo "::endgroup::"
-          echo "::group::Log tail"
-          tail -n 120 "$RUNNER_TEMP/xcodebuild.log"
-          echo "::endgroup::"
 
-      - name: List what was recorded
+      - name: Commit recorded snapshots
         if: always()
-        run: find Tests -name '*.png' -newermt '-2 hours' -print
+        run: |
+          if [ -z "$(git status --porcelain Tests/App/Kiosk)" ]; then
+            echo "nothing was recorded"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Tests/App/Kiosk
+          git commit -m "Record the kiosk settings-entry snapshots"
+          git push origin "HEAD:$GITHUB_REF_NAME"
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      # Last, so a tail of the job log is the interesting part.
+      - name: Report failures
         if: always()
-        with:
-          name: kiosk-snapshots
-          path: Tests/App/Kiosk/__Snapshots__
-          if-no-files-found: warn
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        if: always()
-        with:
-          name: xcodebuild-log
-          path: ${{ runner.temp }}/xcodebuild.log
-          if-no-files-found: warn
+        run: |
+          echo "===== error lines ====="
+          grep -nE "error:|error generated|Testing failed|Failing tests|Unable to find|not a valid" \
+            "$RUNNER_TEMP/xcodebuild.log" | head -n 60 || echo "none matched"
+          echo "===== log tail ====="
+          tail -n 60 "$RUNNER_TEMP/xcodebuild.log"
