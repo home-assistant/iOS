@@ -58,7 +58,7 @@ struct NativeTabBarFrontendSlotTests {
         controller.setAssistZoomOrigin(frame.offsetBy(dx: -100, dy: 0), in: window)
         #expect(controller.pendingAssistZoomSourceView === anchor)
         #expect(anchor?.frame.minX == 200)
-        #expect(NativeTabBarButtonLocator.frame(ofButtonTitled: "Assist", in: window) == nil)
+        #expect(NativeTabBarButtonLocator.frame(ofButtonTitled: "Assist", trailing: true, in: window) == nil)
     }
 
     @Test("An inactive slot leaves the frontend alone")

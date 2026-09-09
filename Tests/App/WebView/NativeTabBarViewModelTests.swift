@@ -179,7 +179,9 @@ struct NativeTabBarViewModelTests {
         let sut = makeFixture("assistActions").sut
         var sourceFrames: [CGRect?] = []
         sut.onAssist = { sourceFrames.append($0) }
-        sut.locateTabButton = { $0 == L10n.TabBar.Item.assist ? CGRect(x: 1, y: 2, width: 3, height: 4) : nil }
+        sut.locateTabButton = { title, trailing in
+            title == L10n.TabBar.Item.assist && trailing ? CGRect(x: 1, y: 2, width: 3, height: 4) : nil
+        }
 
         try sut.open(item(assist, in: sut), sourceFrame: CGRect(x: 5, y: 6, width: 7, height: 8))
         #expect(sourceFrames == [CGRect(x: 5, y: 6, width: 7, height: 8)])

@@ -24,7 +24,9 @@ final class NativeTabBarViewModel: ObservableObject {
     var onQuickSearch: (() -> Void)?
     /// Opens Assist, zooming out of the given window frame when the tap has one.
     var onAssist: ((CGRect?) -> Void)?
-    var locateTabButton: (String) -> CGRect? = { NativeTabBarButtonLocator.frame(ofButtonTitled: $0) }
+    var locateTabButton: (_ title: String, _ trailing: Bool) -> CGRect? = {
+        NativeTabBarButtonLocator.frame(ofButtonTitled: $0, trailing: $1)
+    }
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -152,7 +154,8 @@ final class NativeTabBarViewModel: ObservableObject {
             // next turn is what makes SwiftUI move the bar back; an unchanged selection is never re-applied.
             let frontendTab = selection
             selection = tab
-            perform(tab, sourceFrame: tabItems.first { $0.tab == tab }.flatMap { locateTabButton($0.title) })
+            let tapped = tabItems.first { $0.tab == tab }
+            perform(tab, sourceFrame: tapped.flatMap { locateTabButton($0.title, $0.id == searchRoleItem?.id) })
             DispatchQueue.main.async { [weak self] in
                 guard let self, selection == tab else { return }
                 selection = frontendTab
