@@ -64,8 +64,8 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/KioskHideSettingsEntryTests \
-            -only-testing:HomeAssistant-Tests-App/KioskSettingsEntryIconTests \
+            -only-testing:Tests-App/KioskHideSettingsEntryTests \
+            -only-testing:Tests-App/KioskSettingsEntryIconTests \
             -skipPackagePluginValidation \
             -skipMacroValidation \
             COMPILER_INDEX_STORE_ENABLE=NO > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || true
