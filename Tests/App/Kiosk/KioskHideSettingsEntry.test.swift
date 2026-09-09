@@ -1,6 +1,7 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SnapshotTesting
 import SwiftUI
 import Testing
 
@@ -59,7 +60,10 @@ struct KioskHideSettingsEntryTests {
         try withKioskDatabase { _ in
             assertLightDarkSnapshots(
                 of: NavigationView { KioskSettingsView() },
-                drawHierarchyInKeyWindow: true
+                drawHierarchyInKeyWindow: true,
+                // Tall enough for the whole list: the settings-entry section this covers sits well
+                // below the fold of a phone-sized frame.
+                layout: .fixed(width: 390, height: 2200)
             )
         }
     }
@@ -72,7 +76,10 @@ struct KioskHideSettingsEntryTests {
 
             assertLightDarkSnapshots(
                 of: NavigationView { KioskSettingsView() },
-                drawHierarchyInKeyWindow: true
+                drawHierarchyInKeyWindow: true,
+                // Tall enough for the whole list: the settings-entry section this covers sits well
+                // below the fold of a phone-sized frame.
+                layout: .fixed(width: 390, height: 2200)
             )
         }
     }

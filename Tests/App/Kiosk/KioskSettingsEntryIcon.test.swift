@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
+import SnapshotTesting
 import SwiftUI
 import Testing
 
@@ -21,6 +22,6 @@ struct KioskSettingsEntryIconTests {
         }
         .padding(DesignSystem.Spaces.two)
 
-        assertLightDarkSnapshots(of: view)
+        assertLightDarkSnapshots(of: view, layout: .sizeThatFits)
     }
 }
