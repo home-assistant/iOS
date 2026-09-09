@@ -2,8 +2,8 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Edits the sidebar order the tab bar is laid out from: the first `NativeTabBarViewModel.maximumTabs`
-/// dashboards are the tabs, the rest fill More, and hidden dashboards wait at the bottom to be shown again.
+/// Edits the list the tab bar is laid out from: the first `NativeTabBarViewModel.maximumTabs` entries are the
+/// tabs, the rest fill More, and hidden entries wait at the bottom to be shown again.
 struct NativeTabBarCustomizeView: View {
     private enum Constants {
         static let hiddenRowOpacity: Double = 0.6
@@ -48,7 +48,7 @@ struct NativeTabBarCustomizeView: View {
             } header: {
                 Text(L10n.TabBar.Customize.DashboardsSection.header)
             } footer: {
-                Text(L10n.TabBar.Customize.DashboardsSection.footer)
+                Text(L10n.TabBar.Customize.DashboardsSection.footerFourTabs)
             }
 
             if !viewModel.hiddenItems.isEmpty {

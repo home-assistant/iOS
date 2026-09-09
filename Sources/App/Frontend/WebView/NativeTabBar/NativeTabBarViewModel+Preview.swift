@@ -35,6 +35,7 @@ extension NativeTabBarViewModel {
             ),
             overlayState: overlayState,
             tabBarState: NativeTabBarState(),
+            extrasStore: NativeTabBarExtrasStore(userDefaults: userDefaults),
             servers: { [server] + additionalServers }
         )
     }

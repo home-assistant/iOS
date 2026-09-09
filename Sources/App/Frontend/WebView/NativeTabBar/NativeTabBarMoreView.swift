@@ -175,7 +175,6 @@ struct NativeTabBarMoreView: View {
             }
             .navigationTransition(.zoom(sourceID: Self.customizeTransitionID, in: customizeNamespace))
         }
-        .navigationTitle(L10n.TabBar.More.title)
     }
 }
 

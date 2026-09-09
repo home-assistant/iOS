@@ -2,18 +2,19 @@ import Combine
 import Foundation
 import Shared
 
-/// Lays the sidebar's pages out as tabs (the first `maximumTabs` of the sidebar order, then More and Search)
-/// and decides in which tab, if any, the single web frontend is on screen.
+/// Lays the sidebar's pages, Search and Assist out as tabs (the first `maximumTabs` entries of the list, then
+/// More) and decides in which tab, if any, the single web frontend is on screen. Search or Assist in the last
+/// slot takes the bar's search role.
 @MainActor
 final class NativeTabBarViewModel: ObservableObject {
-    static let maximumTabs = 3
+    static let maximumTabs = 4
     static let appSettingsTransitionID = "nativeTabBarAppSettings"
 
-    @Published private(set) var tabItems: [MacSidebarItem] = []
-    /// Sidebar pages that did not make it into the bar, in sidebar order.
-    @Published private(set) var moreItems: [MacSidebarItem] = []
+    @Published private(set) var tabItems: [NativeTabBarItem] = []
+    /// Entries that did not make it into the bar, in list order.
+    @Published private(set) var moreItems: [NativeTabBarItem] = []
     @Published private(set) var fixedItems: [MacSidebarItem] = []
-    @Published private(set) var hiddenItems: [MacSidebarItem] = []
+    @Published private(set) var hiddenItems: [NativeTabBarItem] = []
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
@@ -21,9 +22,13 @@ final class NativeTabBarViewModel: ObservableObject {
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
     var onQuickSearch: (() -> Void)?
+    var onAssist: (() -> Void)?
 
     private let allServers: () -> [Server]
+    private let extrasStore: NativeTabBarExtrasStore
+    private var extras: NativeTabBarExtras
     private var mainItems: [MacSidebarItem] = []
+    private var hiddenSidebarItems: [MacSidebarItem] = []
     private var currentPath: String?
     private var lastFrontendTab: NativeTabBarTab?
     private var cancellables = Set<AnyCancellable>()
@@ -32,17 +37,21 @@ final class NativeTabBarViewModel: ObservableObject {
         sidebar: MacSidebarViewModel,
         overlayState: WebFrontendOverlayState,
         tabBarState: NativeTabBarState? = nil,
+        extrasStore: NativeTabBarExtrasStore? = nil,
         servers: @escaping () -> [Server] = { Current.servers.all }
     ) {
         let tabBarState = tabBarState ?? .shared
+        let extrasStore = extrasStore ?? .shared
         self.sidebar = sidebar
         self.allServers = servers
+        self.extrasStore = extrasStore
+        self.extras = extrasStore.extras(for: sidebar.server.identifier.rawValue)
         self.selection = .more
         self.mainItems = sidebar.mainItems
         self.fixedItems = sidebar.fixedItems
-        self.hiddenItems = sidebar.hiddenItems
+        self.hiddenSidebarItems = sidebar.hiddenItems
         rebuild()
-        self.selection = tabItems.first.map { .panel(id: $0.id) } ?? .more
+        self.selection = tabItems.first?.sidebarItem.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
 
         sidebar.$mainItems
@@ -51,7 +60,7 @@ final class NativeTabBarViewModel: ObservableObject {
             .sink { [weak self] mainItems, fixedItems, hiddenItems in
                 self?.mainItems = mainItems
                 self?.fixedItems = fixedItems
-                self?.hiddenItems = hiddenItems
+                self?.hiddenSidebarItems = hiddenItems
                 self?.rebuild()
             }
             .store(in: &cancellables)
@@ -83,8 +92,18 @@ final class NativeTabBarViewModel: ObservableObject {
         switch selection {
         case .panel: return true
         case .more: return moreShowsFrontend
-        case .search: return false
+        case .search, .assist: return false
         }
+    }
+
+    /// Search or Assist in the last slot of the bar, shown in the bar's search role rather than as a plain tab.
+    var searchRoleItem: NativeTabBarItem? {
+        guard tabItems.count == Self.maximumTabs, let last = tabItems.last, last.sidebarItem == nil else { return nil }
+        return last
+    }
+
+    var regularTabItems: [NativeTabBarItem] {
+        tabItems.filter { $0.id != searchRoleItem?.id }
     }
 
     /// The More header's rows: the user's profile, the notifications drawer and, for admins, Settings.
@@ -125,21 +144,36 @@ final class NativeTabBarViewModel: ObservableObject {
                 selection = .more
                 moreShowsFrontend = false
             }
-        case .search:
+        case .search, .assist:
             revealFrontend()
-            // The bar has already highlighted Search. Taking the selection there and handing it back on the
+            // The bar has already highlighted the tab. Taking the selection there and handing it back on the
             // next turn is what makes SwiftUI move the bar back; an unchanged selection is never re-applied.
             let frontendTab = selection
-            selection = .search
-            onQuickSearch?()
+            selection = tab
+            perform(tab)
             DispatchQueue.main.async { [weak self] in
-                guard let self, selection == .search else { return }
+                guard let self, selection == tab else { return }
                 selection = frontendTab
             }
         }
     }
 
-    /// A page picked from the More or Search lists.
+    /// An entry picked from the More list.
+    func open(_ item: NativeTabBarItem) {
+        if tabItems.contains(where: { $0.id == item.id }) {
+            didSelect(item.tab)
+            return
+        }
+        switch item.kind {
+        case let .panel(sidebarItem):
+            open(sidebarItem)
+        case .search, .assist:
+            revealFrontend()
+            perform(item.tab)
+        }
+    }
+
+    /// A sidebar row: the More header's profile, notifications and Settings, or a page from the More list.
     func open(_ item: MacSidebarItem) {
         if tabItems.contains(where: { $0.id == item.id }) {
             didSelect(.panel(id: item.id))
@@ -184,35 +218,86 @@ final class NativeTabBarViewModel: ObservableObject {
     // MARK: - Customisation
 
     func moveItems(fromOffsets source: IndexSet, toOffset destination: Int) {
-        sidebar.moveItems(fromOffsets: source, toOffset: destination)
+        var items = tabItems + moreItems
+        items.move(fromOffsets: source, toOffset: destination)
+        var extras = extras
+        for (index, item) in items.enumerated() where item.sidebarItem == nil {
+            extras.setPosition(index, of: item.kind)
+        }
+        saveExtras(extras)
+        sidebar.reorderItems(to: items.compactMap { $0.sidebarItem?.id })
     }
 
     // MARK: - Visibility
 
-    func canHide(_ item: MacSidebarItem) -> Bool {
-        mainItems.contains(where: { $0.id == item.id }) && sidebar.canHide(item)
+    func canHide(_ item: NativeTabBarItem) -> Bool {
+        guard let sidebarItem = item.sidebarItem else { return true }
+        return mainItems.contains(where: { $0.id == sidebarItem.id }) && sidebar.canHide(sidebarItem)
     }
 
-    func hide(_ item: MacSidebarItem) {
+    func hide(_ item: NativeTabBarItem) {
         guard canHide(item) else { return }
-        sidebar.hide(itemId: item.id)
+        if let sidebarItem = item.sidebarItem {
+            sidebar.hide(itemId: sidebarItem.id)
+        } else {
+            var extras = extras
+            extras.setPosition(nil, of: item.kind)
+            saveExtras(extras)
+        }
     }
 
-    func show(_ item: MacSidebarItem) {
-        sidebar.show(itemId: item.id)
+    func show(_ item: NativeTabBarItem) {
+        if let sidebarItem = item.sidebarItem {
+            sidebar.show(itemId: sidebarItem.id)
+        } else if extras.position(of: item.kind) == nil {
+            var extras = extras
+            let visible = tabItems + moreItems
+            for (index, visibleItem) in visible.enumerated() where visibleItem.sidebarItem == nil {
+                extras.setPosition(index, of: visibleItem.kind)
+            }
+            extras.setPosition(visible.count, of: item.kind)
+            saveExtras(extras)
+        }
     }
 
     // MARK: - Private
 
+    private func saveExtras(_ extras: NativeTabBarExtras) {
+        self.extras = extras
+        extrasStore.setExtras(extras, for: sidebar.server.identifier.rawValue)
+        rebuild()
+    }
+
+    private func perform(_ tab: NativeTabBarTab) {
+        switch tab {
+        case .search: onQuickSearch?()
+        case .assist: onAssist?()
+        case .panel, .more: break
+        }
+    }
+
     private func rebuild() {
-        let tabItems = Array(mainItems.prefix(Self.maximumTabs))
-        let moreItems = Array(mainItems.dropFirst(Self.maximumTabs))
+        var items = mainItems.map { NativeTabBarItem(kind: .panel($0)) }
+        let extraKinds: [NativeTabBarItem.Kind] = [.search, .assist]
+        let positioned = extraKinds
+            .compactMap { kind in extras.position(of: kind).map { (kind: kind, position: $0) } }
+            .sorted { $0.position < $1.position }
+        for extra in positioned {
+            items.insert(NativeTabBarItem(kind: extra.kind), at: min(extra.position, items.count))
+        }
+        let tabItems = Array(items.prefix(Self.maximumTabs))
+        let moreItems = Array(items.dropFirst(Self.maximumTabs))
+        let hiddenItems = hiddenSidebarItems.map { NativeTabBarItem(kind: .panel($0)) }
+            + extraKinds.filter { extras.position(of: $0) == nil }.map { NativeTabBarItem(kind: $0) }
 
         if self.tabItems != tabItems {
             self.tabItems = tabItems
         }
         if self.moreItems != moreItems {
             self.moreItems = moreItems
+        }
+        if self.hiddenItems != hiddenItems {
+            self.hiddenItems = hiddenItems
         }
 
         if case let .panel(id) = selection, !tabItems.contains(where: { $0.id == id }) {
