@@ -294,6 +294,43 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         XCTAssertEqual(clientConfigRequests.count, 2)
     }
 
+    func testSignalingThatKeepsStallingGivesUpOnWebRTC() {
+        viewModel.start()
+
+        for attempt in 1 ... 2 {
+            spinMain(for: timing.signalingStallTimeout * 2)
+            XCTAssertFalse(viewModel.didFail, "Stall \(attempt) is retried, not fatal")
+            connection.setState(.connecting, waitForQueue: false)
+            connection.setState(.ready(version: "1.0-mock"), waitForQueue: false)
+            flushMainQueue()
+            XCTAssertEqual(clientConfigRequests.count, attempt + 1)
+        }
+
+        spinMain(for: timing.signalingStallTimeout * 2)
+
+        XCTAssertTrue(viewModel.didFail)
+        XCTAssertEqual(clientConfigRequests.count, 3, "Nothing more is sent once the retries are spent")
+    }
+
+    func testCandidateDeliveryOutcomesAreAbsorbed() throws {
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+        offer.handler(offer.cancellable, .init(value: ["type": "session", "session_id": "abc"]))
+        flushMainQueue()
+
+        client.discoverLocalCandidate("candidate:1 1 udp 1 10.0.0.2 5000 typ host")
+        client.discoverLocalCandidate("candidate:2 1 udp 1 10.0.0.3 5001 typ host")
+        flushMainQueue()
+
+        let requests = candidateRequests
+        XCTAssertEqual(requests.count, 2)
+        requests[0].completion(.success(.empty))
+        requests[1].completion(.failure(.internal(debugDescription: "session gone")))
+        flushMainQueue()
+
+        XCTAssertFalse(viewModel.didFail, "A candidate the server would not take does not end the stream")
+    }
+
     // MARK: - Lifecycle
 
     func testForegroundingRestartsAStreamWhoseConnectionDied() throws {
