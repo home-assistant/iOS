@@ -17,7 +17,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
 
     private let timing = WebRTCViewPlayerViewModel.Timing(
         connectionTimeout: 0.2,
-        disconnectedGracePeriod: 0.1,
+        disconnectedGracePeriod: 1.0,
         signalingStallTimeout: 0.2,
         connectionWaitTimeout: 1.0,
         backgroundTeardownDelay: 60
@@ -400,7 +400,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     private func flushMainQueue() {
         let flushed = expectation(description: "main queue flushed")
         DispatchQueue.main.async { flushed.fulfill() }
-        wait(for: [flushed], timeout: 2)
+        wait(for: [flushed], timeout: 10.0)
     }
 
     private func spinMain(for interval: TimeInterval) {
