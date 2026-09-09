@@ -61,6 +61,48 @@ struct NativeTabBarFrontendSlotTests {
         #expect(NativeTabBarButtonLocator.frame(ofButtonTitled: "Assist", trailing: true, in: window) == nil)
     }
 
+    @Test("Opening Assist from the tab bar goes through the external message handler after placing the zoom source")
+    func openAssist() {
+        let controller = WebViewController(server: ServerFixture.standard)
+        let handler = MockWebViewExternalMessageHandler()
+        controller.webViewExternalMessageHandler = handler
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = controller
+
+        controller.openAssist(zoomingFrom: nil)
+        #expect(handler.showAssistCalled)
+        #expect(controller.pendingAssistZoomSourceView == nil)
+
+        controller.openAssist(zoomingFrom: CGRect(x: 10, y: 20, width: 30, height: 40))
+        #expect(controller.pendingAssistZoomSourceView?.frame == CGRect(x: 10, y: 20, width: 30, height: 40))
+        #expect(handler.showAssistParams?.server.identifier == ServerFixture.standard.identifier)
+    }
+
+    @Test("An overlay for an off-screen frontend is presented from the window and dismissed from there")
+    func detachedOverlayPresentation() async throws {
+        let controller = WebViewController(server: ServerFixture.standard)
+        controller.loadViewIfNeeded()
+        let host = UIViewController()
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = host
+        window.isHidden = false
+        controller.presentsDetachedOverlays = { true }
+        controller.detachedOverlayPresenter = { host }
+        let overlay = UIViewController()
+
+        controller.presentOverlayController(controller: overlay, animated: false)
+        try await Task.sleep(for: .milliseconds(100))
+        #expect(host.presentedViewController === overlay)
+        #expect(controller.overlayedController === overlay)
+
+        await withCheckedContinuation { continuation in
+            controller.dismissOverlayController(animated: false) { continuation.resume() }
+        }
+        #expect(controller.detachedOverlayController == nil)
+        #expect(host.presentedViewController == nil)
+        #expect(WebViewController.topMostPresenter() != nil)
+    }
+
     @Test("A released frontend takes its Assist zoom anchor out of the window")
     func assistZoomAnchorIsRemovedWithTheFrontend() {
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
