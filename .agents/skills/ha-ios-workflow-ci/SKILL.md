@@ -1,6 +1,6 @@
 ---
 name: ha-ios-workflow-ci
-description: The end-to-end change workflow, TestFlight feature gating, and CI gates. Use when preparing a change for commit, understanding the order of lint/autocorrect/test steps, gating a feature behind TestFlight with `Current.isTestFlight`, or knowing what GitHub Actions checks before a PR can merge.
+description: The end-to-end change workflow, TestFlight feature gating, CI gates, and the manual Xcode Cloud path. Use when preparing a change for commit, understanding the order of lint/autocorrect/test steps, gating a feature behind TestFlight with `Current.isTestFlight`, knowing what GitHub Actions checks before a PR can merge, or building and shipping through Xcode Cloud when the runners lack the Xcode you need.
 ---
 
 # Workflow & Continuous Integration
@@ -90,3 +90,87 @@ Pushing tests that cover the missing lines dismisses the review automatically. W
 code genuinely cannot be unit tested — UIKit plumbing, a system framework wrapper — a
 maintainer dismisses the review to let the change land; write the reason into the PR
 description so the next reader knows why.
+
+## Xcode Cloud, for when the runners lack the Xcode you need
+
+`ci.yml` and `distribute.yml` pin `DEVELOPER_DIR` to a specific Xcode on the GitHub-hosted
+runner image. Every year the image lags Apple by weeks around the new OS release, and during
+that window there is no way to compile against the new SDK on Actions. Xcode Cloud is the
+standby for that: it offers `Latest Release`, `Latest Beta` and specific versions on Apple's
+own schedule.
+
+Nothing about it runs automatically. Every workflow has a **manual** start condition, so
+Actions remains the pipeline of record and Xcode Cloud costs nothing until you reach for it.
+
+### What is in the repo
+
+| Path | Role |
+|------|------|
+| `Configuration/HomeAssistant.cloudsigning.xcconfig` | Automatic signing, because Xcode Cloud will not App Store-sign a manually signed project |
+| `ci_scripts/ci_pre_xcodebuild.sh` | Copies that file to the gitignored `HomeAssistant.cloud.xcconfig`, which `HomeAssistant.release.xcconfig` optionally includes, and stamps the build number |
+| `ci_scripts/ci_post_xcodebuild.sh` | Zips the notarized Developer ID app and stages it on a draft GitHub release |
+| `ci_scripts/upload_macos_release_asset.py` | The GitHub API half of that upload |
+
+Because the include target only ever exists on an Xcode Cloud machine, local builds,
+`fastlane ios build` and `distribute.yml` all keep signing manually against the profiles in
+`Configuration/Provisioning`. Nothing about the Actions path changed.
+
+### The four workflows
+
+All four use the shared `App-Release` scheme, the `Release` configuration, and a shared
+custom Xcode alias so raising the toolchain is one edit rather than four.
+
+| Workflow | Platform | Action | Post-action |
+|----------|----------|--------|-------------|
+| New SDK check | iOS | Build + Test | none |
+| iOS App Store | iOS | Archive, TestFlight and App Store | TestFlight |
+| macOS App Store | macOS | Archive, TestFlight and App Store | TestFlight |
+| macOS Developer ID | macOS | Archive, Developer ID | Notarize |
+
+"New SDK check" involves no signing at all, since simulator builds skip provisioning. It is
+the cheap one to run repeatedly through beta season, and it is what surfaces SDK-level
+breakage (the Xcode 27 RealmSwift `@State` macro, the `.calendar` App Schema domain) while
+there is still time to do something about it.
+
+### Build numbers
+
+App Store Connect keeps one build train per marketing version, so the two pipelines must not
+fight over it. `distribute.yml` produces `2026.<GITHUB_RUN_NUMBER>`, while `CI_BUILD_NUMBER`
+starts at 1 on a new Xcode Cloud product. `XC_BUILD_OFFSET`, an Xcode Cloud environment
+variable, lifts the Xcode Cloud numbers clear:
+
+1. Run "New SDK check" once and note the `CI_BUILD_NUMBER` it reports, call it `N`.
+2. Look up the latest `distribute.yml` run number, call it `R`.
+3. Set `XC_BUILD_OFFSET` to `R + 10 - N`.
+
+Later runs increment from there on their own. Keep the margin small (`R + 10`, never
+`R + 900000`): while the Xcode Cloud numbers sit above the Actions ones, Actions cannot ship
+again *within that same marketing version*. `MARKETING_VERSION` rolls monthly so the train
+resets by itself, and bumping the base `CURRENT_PROJECT_VERSION` in
+`Configuration/Version.xcconfig` forces a reset sooner.
+
+### Shipping a release from Xcode Cloud
+
+1. Point the Xcode alias at the version you need.
+2. Run "New SDK check" and fix whatever the new SDK broke.
+3. Set `XC_BUILD_OFFSET` as above.
+4. Run the archive workflows. The two App Store ones deliver to TestFlight themselves.
+5. For the Mac direct download, dispatch `tag_macos_release.yml` with `source: xcode-cloud`.
+   `release_macos.yml` also auto-detects: it looks for a draft release tagged
+   `xcode-cloud/<version>/<build>` and falls back to Distribute artifacts when there is
+   none, so a plain `release/*/*` tag push still does the right thing.
+
+The staging draft is left in place on purpose, so re-running `release_macos.yml` still finds
+its asset. Delete it by hand once the real release is published.
+
+### Watch for
+
+- The entitlements `Configuration/Entitlements/activate_special_entitlements.sh` injects
+  (critical alerts, push provider, thread credentials, both CarPlay ones, device name) live
+  in no `.entitlements` file. Codesign only accepts them if the cloud-minted profile carries
+  them too, and a mismatch shows up as `0xe8008015` at install time rather than as a build
+  failure. The script also skips every one of them when `$CI` is set and the configuration is
+  not `Release`, which is why the archive workflows must stay on `Release`.
+- `DEVELOPMENT_TEAM` is hardcoded in `Configuration/HomeAssistant.xcconfig` and an Xcode Cloud
+  product binds to one App Store Connect team. Both the product and the GitHub authorisation
+  need redoing if the team changes.

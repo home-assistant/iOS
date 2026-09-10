@@ -1,0 +1,10 @@
+// Copied to HomeAssistant.cloud.xcconfig by ci_scripts/ci_pre_xcodebuild.sh, which only runs on
+// Xcode Cloud. Xcode Cloud signs with its own cloud-managed certificates and profiles, so the
+// manual identities and profile names in HomeAssistant.release.xcconfig have to be stood down.
+
+CODE_SIGN_STYLE = Automatic
+
+PROVISIONING_PROFILE_SPECIFIER =
+PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*] =
+PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*] =
+PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*] =

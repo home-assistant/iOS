@@ -81,6 +81,9 @@ dSYMs/
 # Local configuration overrides
 Configuration/HomeAssistant.overrides.xcconfig
 
+# Written by ci_scripts/ci_pre_xcodebuild.sh on Xcode Cloud
+Configuration/HomeAssistant.cloud.xcconfig
+
 *.profraw
 Brewfile.lock.json
 vendor/bundle

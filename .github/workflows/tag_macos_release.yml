@@ -11,6 +11,14 @@ on:
         description: Commit SHA to tag
         required: true
         type: string
+      source:
+        description: Which pipeline built the macOS app
+        required: false
+        default: actions
+        type: choice
+        options:
+          - actions
+          - xcode-cloud
 
 permissions:
   actions: write
@@ -58,7 +66,7 @@ jobs:
 
           case "$display_build" in
             ''|*[!0-9]*)
-              echo "The release tag must end with a numeric Distribute run number."
+              echo "The release tag must end with a numeric build number."
               exit 1
               ;;
           esac
@@ -68,6 +76,7 @@ jobs:
 
       - name: Resolve Distribute run
         id: find_run
+        if: ${{ inputs.source == 'actions' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           EXPECTED_RUN_NUMBER: ${{ steps.parse_inputs.outputs.run_number }}
@@ -168,6 +177,7 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
+          BUILD_SOURCE: ${{ inputs.source }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
@@ -177,5 +187,6 @@ jobs:
               ref: 'main',
               inputs: {
                 release_tag: process.env.RELEASE_TAG,
+                source: process.env.BUILD_SOURCE,
               },
             });

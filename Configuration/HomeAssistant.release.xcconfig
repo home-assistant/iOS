@@ -17,3 +17,7 @@ LLVM_LTO = YES
 SWIFT_OPTIMIZATION_LEVEL = -O
 GCC_OPTIMIZATION_LEVEL = s
 SWIFT_COMPILATION_MODE = wholemodule
+
+// Created by ci_scripts/ci_pre_xcodebuild.sh on Xcode Cloud only, to switch this configuration over
+// to cloud-managed signing. Absent everywhere else, so local and GitHub Actions builds stay manual.
+#include? "HomeAssistant.cloud.xcconfig"

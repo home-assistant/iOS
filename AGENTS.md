@@ -33,7 +33,7 @@ These apply to every change, even if you don't load the matching skill:
 | [`ha-ios-push-live-activities`](.agents/skills/ha-ios-push-live-activities/SKILL.md) | Implementing or fixing push notifications or Live Activities across the local-push and remote-push flows |
 | [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) | Building UI, choosing SwiftUI vs UIKit, or following the one-struct-per-file, inline-body, and `#Preview` rules |
 | [`ha-ios-testing`](.agents/skills/ha-ios-testing/SKILL.md) | Writing unit or snapshot tests, or mocking dependencies by overriding `Current` |
-| [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) | Preparing a change for commit, gating a feature behind TestFlight, or understanding the CI gates that must pass before merge |
+| [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) | Preparing a change for commit, gating a feature behind TestFlight, understanding the CI gates that must pass before merge, or building through Xcode Cloud when the GitHub runners lack the Xcode you need |
 | [`ha-ios-skill-maintenance`](.agents/skills/ha-ios-skill-maintenance/SKILL.md) | Adding, editing, or reorganizing these skills, or updating this router |
 
 ## Additional Resources

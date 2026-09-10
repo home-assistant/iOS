@@ -7,6 +7,15 @@ on:
         description: Release tag to publish, for example release/2026.5.0/2026.1985
         required: true
         type: string
+      source:
+        description: Which pipeline built the macOS app
+        required: false
+        default: auto
+        type: choice
+        options:
+          - auto
+          - actions
+          - xcode-cloud
   push:
     tags:
       - 'release/*/*'
@@ -71,8 +80,62 @@ jobs:
             exit 1
           fi
 
+      - name: Resolve build source
+        id: build_source
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          REQUESTED_SOURCE: ${{ inputs.source || 'auto' }}
+          VERSION: ${{ steps.parse_tag.outputs.version }}
+          BUILD: ${{ steps.parse_tag.outputs.build }}
+        with:
+          script: |
+            const requested = process.env.REQUESTED_SOURCE;
+            const stagingTag = `xcode-cloud/${process.env.VERSION}/${process.env.BUILD}`;
+
+            if (requested === 'actions') {
+              core.info('Build source forced to actions.');
+              core.setOutput('source', 'actions');
+              return;
+            }
+
+            // Draft releases have no git tag yet, so they cannot be fetched by tag.
+            const releases = await github.paginate(github.rest.repos.listReleases, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            const staged = releases.find((release) => release.tag_name === stagingTag);
+
+            if (!staged) {
+              if (requested === 'xcode-cloud') {
+                core.setFailed(
+                  `No Xcode Cloud staging release ${stagingTag} found. ` +
+                  'Check that the macOS Developer ID workflow finished and uploaded its asset.'
+                );
+                return;
+              }
+
+              core.info(`No ${stagingTag} staging release, using Distribute artifacts.`);
+              core.setOutput('source', 'actions');
+              return;
+            }
+
+            const asset = staged.assets.find((candidate) => candidate.name === 'home-assistant-mac.zip');
+
+            if (!asset) {
+              core.setFailed(`Staging release ${stagingTag} has no home-assistant-mac.zip asset.`);
+              return;
+            }
+
+            core.info(`Using Xcode Cloud staging release ${staged.html_url}`);
+            core.setOutput('source', 'xcode-cloud');
+            core.setOutput('asset_id', String(asset.id));
+            core.setOutput('staging_url', staged.html_url);
+
       - name: Wait for successful distribute run
         id: find_run
+        if: ${{ steps.build_source.outputs.source == 'actions' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           EXPECTED_RUN_NUMBER: ${{ steps.parse_tag.outputs.run_number }}
@@ -177,6 +240,7 @@ jobs:
 
       - name: Resolve artifact
         id: find_artifact
+        if: ${{ steps.build_source.outputs.source == 'actions' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
@@ -206,12 +270,37 @@ jobs:
             core.setOutput('artifact_name', artifact.name);
 
       - name: Download release asset
+        if: ${{ steps.build_source.outputs.source == 'actions' }}
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           run-id: ${{ steps.find_run.outputs.run_id }}
           name: ${{ steps.find_artifact.outputs.artifact_name }}
           path: release-artifact/extracted
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Xcode Cloud staged asset
+        if: ${{ steps.build_source.outputs.source == 'xcode-cloud' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          ASSET_ID: ${{ steps.build_source.outputs.asset_id }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const { data } = await github.request(
+              'GET /repos/{owner}/{repo}/releases/assets/{asset_id}',
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                asset_id: Number(process.env.ASSET_ID),
+                headers: { accept: 'application/octet-stream' },
+              }
+            );
+
+            fs.mkdirSync('release-artifact/extracted', { recursive: true });
+            fs.writeFileSync('release-artifact/extracted/home-assistant-mac.zip', Buffer.from(data));
+
+            core.info(`Downloaded ${Buffer.from(data).length} bytes from the staging release.`);
 
       - name: Prepare release asset
         id: download_asset
@@ -357,11 +446,22 @@ jobs:
           DISPLAY_BUILD: ${{ steps.parse_tag.outputs.display_build }}
           DISTRIBUTE_RUN_URL: ${{ steps.find_run.outputs.run_url }}
           RELEASE_URL: ${{ steps.release.outputs.release_url }}
+          BUILD_SOURCE: ${{ steps.build_source.outputs.source }}
+          STAGING_URL: ${{ steps.build_source.outputs.staging_url }}
         run: |
           {
             echo "## macOS release created"
             echo
             echo "- Version: ${VERSION} (${DISPLAY_BUILD})"
-            echo "- Distribution run: ${DISTRIBUTE_RUN_URL}"
+            echo "- Built by: ${BUILD_SOURCE}"
+
+            if [ -n "${DISTRIBUTE_RUN_URL}" ]; then
+              echo "- Distribution run: ${DISTRIBUTE_RUN_URL}"
+            fi
+
+            if [ -n "${STAGING_URL}" ]; then
+              echo "- Xcode Cloud staging release: ${STAGING_URL}"
+            fi
+
             echo "- Release: ${RELEASE_URL}"
           } >> "$GITHUB_STEP_SUMMARY"
