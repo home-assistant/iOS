@@ -4,6 +4,7 @@ import Shared
 final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
     enum OutboxError: Error {
         case capacityExceeded
+        case coordinationDidNotRun
     }
 
     private let fileURL: URL
@@ -26,24 +27,26 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
     }
 
     func pendingEvents() throws -> [PendingZoneEvent] {
-        try queue.sync {
-            let storedEvents = try load()
+        try coordinatedAccess { url in
+            let storedEvents = try load(at: url)
             let pendingEvents = freshEvents(from: storedEvents, at: date())
             if pendingEvents != storedEvents {
-                try save(pendingEvents)
+                try save(pendingEvents, at: url)
             }
             return pendingEvents
         }
     }
 
     func append(_ event: PendingZoneEvent) throws {
-        try queue.sync {
+        try coordinatedAccess { url in
             let now = date()
+            let storedEvents = try load(at: url)
             guard isFresh(event, at: now) else { return }
 
-            var events = try freshEvents(from: load(), at: now)
+            var events = freshEvents(from: storedEvents, at: now)
             guard !events.contains(where: { $0.id == event.id }) else { return }
             if event.isBeacon == true,
+               event.deliveryStartedAt == nil,
                let previous = events.last,
                previous.deliveryStartedAt == nil,
                previous.eventType == event.eventType,
@@ -59,7 +62,7 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
                 events.remove(at: index)
             }
             events.append(event)
-            try save(events)
+            try save(events, at: url)
         }
     }
 
@@ -72,25 +75,50 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
     }
 
     func remove(id: UUID) throws {
-        try queue.sync {
-            var events = try load()
+        try coordinatedAccess { url in
+            var events = try load(at: url)
             events.removeAll { $0.id == id }
-            try save(events)
+            try save(events, at: url)
         }
     }
 
     private func update(id: UUID, mutation: (inout PendingZoneEvent) -> Void) throws {
-        try queue.sync {
-            var events = try load()
-            guard let index = events.firstIndex(where: { $0.id == id }) else { return }
+        try coordinatedAccess { url in
+            let storedEvents = try load(at: url)
+            var events = freshEvents(from: storedEvents, at: date())
+            guard let index = events.firstIndex(where: { $0.id == id }) else {
+                if events != storedEvents {
+                    try save(events, at: url)
+                }
+                return
+            }
             mutation(&events[index])
-            try save(events)
+            try save(events, at: url)
         }
     }
 
-    private func load() throws -> [PendingZoneEvent] {
+    private func coordinatedAccess<T>(_ operation: (URL) throws -> T) throws -> T {
+        try queue.sync {
+            var result: Result<T, Error>?
+            var coordinationError: NSError?
+            // Atomic replacement alone does not protect a read-modify-write transaction.
+            // Coordinate the entire operation across instances and cooperating processes.
+            NSFileCoordinator().coordinate(
+                writingItemAt: fileURL,
+                options: [],
+                error: &coordinationError
+            ) { url in
+                result = Result { try operation(url) }
+            }
+            if let coordinationError { throw coordinationError }
+            guard let result else { throw OutboxError.coordinationDidNotRun }
+            return try result.get()
+        }
+    }
+
+    private func load(at url: URL) throws -> [PendingZoneEvent] {
         do {
-            let data = try Data(contentsOf: fileURL)
+            let data = try Data(contentsOf: url)
             return try JSONDecoder().decode([PendingZoneEvent].self, from: data)
         } catch let error as CocoaError where error.code == .fileReadNoSuchFile {
             return []
@@ -114,7 +142,7 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
         return lhsZone == rhsZone
     }
 
-    private func save(_ events: [PendingZoneEvent]) throws {
-        try writeData(JSONEncoder().encode(events), fileURL)
+    private func save(_ events: [PendingZoneEvent], at url: URL) throws {
+        try writeData(JSONEncoder().encode(events), url)
     }
 }
