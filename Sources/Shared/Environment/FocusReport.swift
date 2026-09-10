@@ -45,19 +45,17 @@ public struct FocusReport: Equatable {
         let liveStatus = liveIsFocused()
 
         let isFocused: Bool?
-        if let filterState, !filterState.name?.isEmpty,
+        if let filterState, let name = filterState.name, !name.isEmpty,
            !hasEnded(filterState: filterState, receivedStatus: receivedStatus) {
             // A filter only runs with a name when a Focus starts — the nil-name run iOS makes on
             // deactivation must not count — and nothing has told us it ended since.
             isFocused = true
-        } else if let receivedStatus, receivedStatus.isFocused, !liveStatus,
+        } else if let receivedStatus, let pushSaysFocused = receivedStatus.isFocused, pushSaysFocused,
+                  let liveSaysFocused = liveStatus, !liveSaysFocused,
                   Current.date().timeIntervalSince(receivedStatus.date) > switchGracePeriod {
-            // iOS wakes us when a Focus starts but not reliably when one ends, so the "ended" push
-            // can simply never arrive and the last push would stand until the next Focus starts.
-            // A pushed "running" only ever describes a Focus whose status the user shares, which
-            // is the one case where asking iOS directly answers truthfully — so once that push has
-            // had the switch window to settle, a live "nothing is running" is the ending we were
-            // never told about.
+            // Rely on iOS's live Focus state, not the Focus name: whatever iOS answers is the
+            // source of truth, so a live "not focused" ends a pushed "running" once that push has
+            // had the switch window to settle.
             isFocused = false
         } else {
             isFocused = receivedStatus?.isFocused ?? liveStatus
