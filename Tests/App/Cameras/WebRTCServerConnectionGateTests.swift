@@ -5,6 +5,7 @@ import XCTest
 
 /// A camera stream set up while the server's WebSocket is down never gets an answer to anything it
 /// sends, so the gate has to hold it until the socket is back — and let it go once it is.
+@MainActor
 final class WebRTCServerConnectionGateTests: XCTestCase {
     private var connection: HAMockConnection!
     private var gate: WebRTCServerConnectionGate!
@@ -33,7 +34,8 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
 
     /// The case the device logs caught: the socket died with the Wi-Fi, HAKit had not noticed yet,
     /// and the stream that went out over it was answered by nothing at all.
-    func testAStreamWaitsWhileTheConnectionIsComingBackAndStartsWhenItDoes() {
+    func testAStreamWaitsWhileTheConnectionIsComingBackAndStartsWhenItDoes() async throws {
+        let connection = try XCTUnwrap(connection)
         connection.setState(.connecting, waitForQueue: false)
 
         var result: Bool?
@@ -41,11 +43,11 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
         XCTAssertNil(result, "The stream should be held while the connection is not ready")
 
         let ready = expectation(description: "gate opens once the connection is ready")
-        DispatchQueue.main.async {
-            self.connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
+        DispatchQueue.main.async { [connection] in
+            connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
             DispatchQueue.main.async { ready.fulfill() }
         }
-        wait(for: [ready], timeout: 2)
+        await fulfillment(of: [ready], timeout: 2)
 
         XCTAssertEqual(result, true)
     }
@@ -62,7 +64,7 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
     /// Nothing brings an idle socket back on its own, so the gate asks for it instead of waiting
     /// for a reconnect that was never scheduled. The connection reaching ready is what shows it
     /// asked — left alone, the mock stays disconnected forever.
-    func testAnIdleConnectionIsReconnectedRatherThanWaitedOn() {
+    func testAnIdleConnectionIsReconnectedRatherThanWaitedOn() async {
         connection.setState(.disconnected(reason: .disconnected), waitForQueue: false)
 
         let opened = expectation(description: "gate opens after asking for a reconnect")
@@ -71,7 +73,7 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
             opened.fulfill()
         }
 
-        wait(for: [opened], timeout: 2)
+        await fulfillment(of: [opened], timeout: 2)
     }
 
     /// The failure the gate could not catch on its own: the phone left Wi-Fi five milliseconds
@@ -87,7 +89,8 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
         XCTAssertNil(result, "A ready state that was already there proves nothing after a stall")
     }
 
-    func testAConnectionThatDropsAndComesBackIsTrustedAgain() {
+    func testAConnectionThatDropsAndComesBackIsTrustedAgain() async throws {
+        let connection = try XCTUnwrap(connection)
         connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
 
         var result: Bool?
@@ -95,14 +98,14 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
         XCTAssertNil(result)
 
         let reconnected = expectation(description: "gate opens on a re-established connection")
-        DispatchQueue.main.async {
-            self.connection.setState(.connecting, waitForQueue: false)
+        DispatchQueue.main.async { [connection] in
+            connection.setState(.connecting, waitForQueue: false)
             DispatchQueue.main.async {
-                self.connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
+                connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
                 DispatchQueue.main.async { reconnected.fulfill() }
             }
         }
-        wait(for: [reconnected], timeout: 2)
+        await fulfillment(of: [reconnected], timeout: 2)
 
         XCTAssertEqual(result, true)
     }
@@ -111,11 +114,11 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
     /// that drops and is back within one turn of the main queue reports two transitions that both
     /// read ready by the time they arrive. The gate must still count that as the reconnect it was
     /// waiting for, or a stalled stream waits on a connection that already came back.
-    func testAConnectionThatDropsAndComesBackWithinOneTurnIsTrustedAgain() {
+    func testAConnectionThatDropsAndComesBackWithinOneTurnIsTrustedAgain() async {
         connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
         let settled = expectation(description: "initial state is delivered")
         DispatchQueue.main.async { settled.fulfill() }
-        wait(for: [settled], timeout: 2)
+        await fulfillment(of: [settled], timeout: 2)
 
         var result: Bool?
         gate.whenReady(requiringFreshConnection: true) { result = $0 }
@@ -126,12 +129,13 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
 
         let delivered = expectation(description: "both transitions are delivered")
         DispatchQueue.main.async { delivered.fulfill() }
-        wait(for: [delivered], timeout: 2)
+        await fulfillment(of: [delivered], timeout: 2)
 
         XCTAssertEqual(result, true)
     }
 
-    func testACancelledGateNeverCallsBack() {
+    func testACancelledGateNeverCallsBack() async throws {
+        let connection = try XCTUnwrap(connection)
         connection.setState(.connecting, waitForQueue: false)
 
         var result: Bool?
@@ -139,11 +143,11 @@ final class WebRTCServerConnectionGateTests: XCTestCase {
         gate.cancel()
 
         let settled = expectation(description: "state change is observed")
-        DispatchQueue.main.async {
-            self.connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
+        DispatchQueue.main.async { [connection] in
+            connection.setState(.ready(version: "2026.9.1"), waitForQueue: false)
             DispatchQueue.main.async { settled.fulfill() }
         }
-        wait(for: [settled], timeout: 2)
+        await fulfillment(of: [settled], timeout: 2)
 
         XCTAssertNil(result, "A torn-down stream should not be resumed by the gate")
     }

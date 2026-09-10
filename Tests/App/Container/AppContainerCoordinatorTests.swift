@@ -21,6 +21,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
     }
 
     override func tearDown() {
+        frontend.onOpen = nil
         AppSettingsPresenter.shared.isSheetPresented = false
         AppSettingsPresenter.shared.isPushPresented = false
         AppSettingsPresenter.shared.sheetDismissed()
@@ -43,7 +44,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
         XCTAssertEqual(frontend.dismissOverlayControllerCallCount, 1)
     }
 
-    func testDeepLinkNavigatesTheFrontendWhileASheetIsPresented() {
+    func testDeepLinkNavigatesTheFrontendWhileASheetIsPresented() async {
         AppSettingsPresenter.shared.isSheetPresented = true
         let navigated = expectation(description: "frontend navigated")
         frontend.onOpen = { _ in navigated.fulfill() }
@@ -56,13 +57,13 @@ final class AppContainerCoordinatorTests: XCTestCase {
             isComingFromAppIntent: false
         )
 
-        wait(for: [navigated], timeout: 5)
+        await fulfillment(of: [navigated], timeout: 5)
         XCTAssertEqual(frontend.openedInlineURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedPanelURLs.isEmpty)
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
     }
 
-    func testAppIntentOpensThePanelWhileASheetIsPresented() {
+    func testAppIntentOpensThePanelWhileASheetIsPresented() async {
         AppSettingsPresenter.shared.isSheetPresented = true
         let navigated = expectation(description: "frontend navigated")
         frontend.onOpen = { _ in navigated.fulfill() }
@@ -75,7 +76,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
             isComingFromAppIntent: true
         )
 
-        wait(for: [navigated], timeout: 5)
+        await fulfillment(of: [navigated], timeout: 5)
         XCTAssertEqual(frontend.openedPanelURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedInlineURLs.isEmpty)
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
@@ -102,7 +103,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
         XCTAssertEqual(frontend.navigateToRootCallCount, 0)
     }
 
-    func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() {
+    func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() async {
         AppSettingsPresenter.shared.isSheetPresented = true
 
         coordinator.selectServer(prompt: nil) { _ in }
@@ -113,7 +114,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
         let presented = expectation(description: "picker presented")
         DispatchQueue.main.async { presented.fulfill() }
-        wait(for: [presented], timeout: 5)
+        await fulfillment(of: [presented], timeout: 5)
 
         XCTAssertTrue(AppSettingsPresenter.shared.isSheetPresented)
     }
