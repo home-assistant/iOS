@@ -10,6 +10,9 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var enabled: Bool
     public var requireAuthentication: Bool
     public var acceptRemoteCommands: Bool
+    /// Whether a kiosk command arriving over push shows its toast confirmation. Off still runs the
+    /// command, it just does so silently.
+    public var showRemoteCommandConfirmations: Bool
     public var serverId: String?
     public var dashboard: String?
     public var keepScreenOn: Bool
@@ -29,6 +32,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         enabled: Bool = false,
         requireAuthentication: Bool = false,
         acceptRemoteCommands: Bool = true,
+        showRemoteCommandConfirmations: Bool = true,
         serverId: String? = nil,
         dashboard: String? = nil,
         keepScreenOn: Bool = false,
@@ -45,6 +49,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.enabled = enabled
         self.requireAuthentication = requireAuthentication
         self.acceptRemoteCommands = acceptRemoteCommands
+        self.showRemoteCommandConfirmations = showRemoteCommandConfirmations
         self.serverId = serverId
         self.dashboard = dashboard
         self.keepScreenOn = keepScreenOn
@@ -64,6 +69,10 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
         self.requireAuthentication = try container.decodeIfPresent(Bool.self, forKey: .requireAuthentication) ?? false
         self.acceptRemoteCommands = try container.decodeIfPresent(Bool.self, forKey: .acceptRemoteCommands) ?? true
+        self.showRemoteCommandConfirmations = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .showRemoteCommandConfirmations
+        ) ?? true
         self.serverId = try container.decodeIfPresent(String.self, forKey: .serverId)
         self.dashboard = try container.decodeIfPresent(String.self, forKey: .dashboard)
         self.keepScreenOn = try container.decodeIfPresent(Bool.self, forKey: .keepScreenOn) ?? false
