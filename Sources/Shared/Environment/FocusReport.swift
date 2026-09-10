@@ -45,7 +45,7 @@ public struct FocusReport: Equatable {
         let liveStatus = liveIsFocused()
 
         let isFocused: Bool?
-        if let filterState, filterState.name?.isEmpty == false,
+        if let filterState, !filterState.name?.isEmpty,
            !hasEnded(filterState: filterState, receivedStatus: receivedStatus) {
             // A filter only runs with a name when a Focus starts — the nil-name run iOS makes on
             // deactivation must not count — and nothing has told us it ended since.
