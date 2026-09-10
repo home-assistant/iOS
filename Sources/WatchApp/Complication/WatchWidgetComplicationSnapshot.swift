@@ -37,6 +37,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var textColor: String?
         /// Per-slot color override for the bottom text; nil falls back to `textColor`.
         var bottomTextColor: String? = nil
+        /// Per-slot color overrides for the title and value; nil falls back to `textColor`.
+        var titleColor: String? = nil
+        var valueColor: String? = nil
         /// Resolved slot texts (slot/formula model); optional so older widget builds ignore them.
         var title: String?
         var subtitle: String?
@@ -48,6 +51,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         /// Corner only: whether the corner's own text rides the outer curve (default true, the modern
         /// layout) or sits flat in the corner tip, the way ClockKit drew a Graphic Corner's outer text.
         var curvesText: Bool? = nil
+        /// Rectangular only: whether the value rides the gauge as its thumb (default true, the modern
+        /// layout) or sits as its own line above a plain bar, the way ClockKit's "Text Gauge" drew it.
+        var valueRidesGauge: Bool? = nil
     }
 
     let id: String
@@ -335,7 +341,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         let render = LegacyComplicationRender(complication: complication)
         let iconData = Self.iconData(name: render.iconName, colorHex: render.iconColor)
 
-        let options = PerFamily(
+        var options = PerFamily(
             fraction: render.fraction,
             tint: render.tint,
             showValue: !render.value.isEmpty,
@@ -344,13 +350,16 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             gaugeStyle: render.gaugeStyle,
             minLabel: render.minLabel,
             maxLabel: render.maxLabel,
-            textColor: render.textColor,
+            textColor: nil,
             bottomTextColor: render.bottomTextColor,
             title: render.title,
             value: render.value,
             bottomText: render.bottomText,
             showBottomText: !render.bottomText.isEmpty
         )
+        options.titleColor = render.titleColor
+        options.valueColor = render.valueColor
+        options.valueRidesGauge = false
         // Inline is a single system-tinted line with no icon or gauge, and resolves that whole line
         // from the title slot — so it gets every area joined together rather than just one of them.
         var inlineOptions = options
