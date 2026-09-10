@@ -129,7 +129,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
 
     /// The value/text color for a given family, or nil to use the default.
     func textColor(for widgetFamily: WidgetFamily) -> Color? {
-        options(for: widgetFamily)?.textColor.flatMap { Color(hex: $0) }
+        guard let options = options(for: widgetFamily) else { return nil }
+        return predatesSlotColors(options, for: widgetFamily) ? nil : options.textColor.flatMap { Color(hex: $0) }
     }
 
     /// The bottom text's color override for a given family, or nil to fall back to `textColor`.
@@ -142,14 +143,27 @@ struct WatchWidgetComplicationSnapshot: Codable {
     }
 
     func valueColor(for widgetFamily: WidgetFamily) -> Color? {
-        options(for: widgetFamily)?.valueColor.flatMap { Color(hex: $0) }
+        guard let options = options(for: widgetFamily) else { return nil }
+        let hex = options.valueColor ?? (predatesSlotColors(options, for: widgetFamily) ? options.textColor : nil)
+        return hex.flatMap { Color(hex: $0) }
     }
 
     /// Whether the rectangular value rides the gauge as its thumb (default true). Legacy complications
     /// drew it as a text line above a plain bar and opt out.
     func valueRidesGauge(for widgetFamily: WidgetFamily) -> Bool {
-        options(for: widgetFamily)?.valueRidesGauge ?? true
+        options(for: widgetFamily)?.valueRidesGauge ?? !isLegacy
     }
+
+    /// A legacy rectangular payload written before per-slot colors existed carried the body's color as
+    /// the one shared text color, so it is read back as the value's color rather than everyone's.
+    private func predatesSlotColors(_ options: PerFamily, for widgetFamily: WidgetFamily) -> Bool {
+        isLegacy && widgetFamily == .accessoryRectangular && options.titleColor == nil
+            && options.valueColor == nil && options.textColor != nil
+    }
+
+    /// Legacy (ClockKit-era) complications carry their ClockKit family; modern configs and the
+    /// built-ins leave it empty.
+    private var isLegacy: Bool { !family.isEmpty }
 
     /// Whether to show the state value as text for a given family (default true).
     func showsValue(for widgetFamily: WidgetFamily) -> Bool {
