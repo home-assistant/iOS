@@ -1,6 +1,5 @@
 import Foundation
 import HAKit
-import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WebRTC
@@ -25,21 +24,96 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     }
 
     /// How long to wait for the first rendered frame before giving up so callers can fall back
-    /// to HLS instead of showing a spinner forever (e.g. remote connections that need TURN).
-    private static let connectionTimeout: TimeInterval = 15
+    /// to HLS instead of showing a spinner forever (e.g. remote connections that need TURN, or a
+    /// camera whose video codec the bundled WebRTC build has no decoder for).
+    ///
+    /// Generous, because it is the whole negotiation being measured: gathering relay candidates
+    /// over cellular and checking them takes the better part of ten seconds on a healthy 5G link,
+    /// and cutting that short sends a camera that would have played to a lesser stream.
+    private static let connectionTimeout: TimeInterval = 25
 
-    var webRTCClient: WebRTCClient?
+    /// How long a dropped connection is given to mend itself before the stream is rebuilt.
+    ///
+    /// WebRTC re-checks its candidates after a brief interruption and often recovers on its own,
+    /// so an immediate rebuild would throw away a stream that was coming back. A connection lost
+    /// because the phone actually moved between networks — cellular to Wi-Fi and back — never
+    /// returns on its own, and sitting on it is what leaves a frozen picture until the player is
+    /// reopened.
+    private static let disconnectedGracePeriod: TimeInterval = 5
+
+    /// How many times a broken connection is rebuilt before the player gives up and cascades to the
+    /// next streaming method. The frontend restarts ICE on the same peer connection; core mints a
+    /// session per offer, so the app starts a fresh one instead — the effect is the same, another
+    /// pass at gathering candidates before anything is declared unplayable. Reaching a connected
+    /// state resets the count, so a long watch isn't limited by an interruption it recovered from.
+    private static let maxConnectionRetries = 2
+
+    /// How long a signaling command may go unanswered before the socket carrying it is treated as
+    /// dead.
+    ///
+    /// `HAConnectionState` cannot answer this on its own: a socket whose network was taken away
+    /// still reports itself ready, because nothing has tried to use it since, and HAKit needs some
+    /// forty-five seconds to find out. Device logs show this command answered in 43ms on a working
+    /// connection and never on a dead one, so silence this long is not slowness — it is the socket
+    /// having gone without saying so.
+    private static let signalingStallTimeout: TimeInterval = 8
+
+    /// How long the stream waits for a server connection that is down before giving up on it.
+    ///
+    /// Long, because it is HAKit's own reconnect being waited on: device logs show it takes some
+    /// forty-five seconds to notice a socket died with the network under it, and failing sooner
+    /// would cascade to a stream that needs exactly the same socket. Bounded all the same, so a
+    /// server that is simply unreachable reports that instead of spinning forever.
+    private static let connectionWaitTimeout: TimeInterval = 60
+
+    /// Mirrors `HIDDEN_CLEANUP_DELAY` in the frontend player: a stream gets this long out of sight
+    /// before coming back to the foreground counts as needing a fresh one.
+    private static let backgroundTeardownDelay: TimeInterval = 60
+
+    struct Timing {
+        var connectionTimeout: TimeInterval
+        var disconnectedGracePeriod: TimeInterval
+        var signalingStallTimeout: TimeInterval
+        var connectionWaitTimeout: TimeInterval
+        var backgroundTeardownDelay: TimeInterval
+
+        static let production = Timing(
+            connectionTimeout: WebRTCViewPlayerViewModel.connectionTimeout,
+            disconnectedGracePeriod: WebRTCViewPlayerViewModel.disconnectedGracePeriod,
+            signalingStallTimeout: WebRTCViewPlayerViewModel.signalingStallTimeout,
+            connectionWaitTimeout: WebRTCViewPlayerViewModel.connectionWaitTimeout,
+            backgroundTeardownDelay: WebRTCViewPlayerViewModel.backgroundTeardownDelay
+        )
+    }
+
+    var webRTCClient: WebRTCStreamClient?
     private var sessionId: String?
     private var pendingCandidates: [RTCIceCandidate] = []
     private var offerSubscription: HACancellable?
     private var timeoutWorkItem: DispatchWorkItem?
+    private var disconnectRecoveryWorkItem: DispatchWorkItem?
+    /// Holds an attempt back while the server's WebSocket is down, so signaling is never sent into
+    /// a socket that cannot answer it.
+    private var connectionGate: WebRTCServerConnectionGate?
+    private var connectionWaitWorkItem: DispatchWorkItem?
+    private var signalingStallWorkItem: DispatchWorkItem?
+    /// Set once a signaling command has gone unanswered, so the next attempt waits for a connection
+    /// that has genuinely been re-established rather than believing the stale one.
+    private var didStallOnSignaling = false
     /// Regenerated on every start/teardown so async setup steps (config fetch, offer creation)
     /// from a previous attempt are ignored instead of resurrecting a torn-down connection.
     private var connectionToken = UUID()
+    private var connectionRetries = 0
     private weak var renderer: RTCVideoRenderer?
+    /// Set while the player is meant to be streaming — between `start()` and `stop()` — so the
+    /// scene-phase hooks know whether there is anything to suspend or resume.
+    private var isActive = false
+    private var backgroundedAt: Date?
     private let server: Server
     private let cameraEntityId: String
     private let supportsTalkback: Bool
+    private let makeClient: (WebRTCClientConfiguration) -> WebRTCStreamClient
+    private let timing: Timing
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
@@ -56,15 +130,27 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// published properties instead.
     var onFailure: (() -> Void)?
 
-    init(server: Server, cameraEntityId: String, supportsTalkback: Bool = false) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        supportsTalkback: Bool = false,
+        makeClient: @escaping (WebRTCClientConfiguration) -> WebRTCStreamClient = { WebRTCClient(configuration: $0) },
+        timing: Timing = .production
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.supportsTalkback = supportsTalkback
+        self.makeClient = makeClient
+        self.timing = timing
     }
 
     deinit {
         offerSubscription?.cancel()
         timeoutWorkItem?.cancel()
+        disconnectRecoveryWorkItem?.cancel()
+        connectionWaitWorkItem?.cancel()
+        signalingStallWorkItem?.cancel()
+        connectionGate?.cancel()
         webRTCClient?.closeConnection()
     }
 
@@ -98,6 +184,46 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     // MARK: - WebRTC
 
     func start() {
+        isActive = true
+        connectionRetries = 0
+        didStallOnSignaling = false
+        cancelTimeout()
+        beginConnection()
+    }
+
+    func stop() {
+        isActive = false
+        backgroundedAt = nil
+        cancelTimeout()
+        cancelDisconnectRecovery()
+        tearDownConnection()
+    }
+
+    /// Called when the app leaves the foreground. Nothing is torn down here: iOS keeps the app
+    /// running for a short while, and a stream that survives a quick trip away should still be
+    /// playing when the user comes back, as it is in the frontend.
+    func handleAppBackgrounded() {
+        guard isActive, backgroundedAt == nil else { return }
+        backgroundedAt = Current.date()
+    }
+
+    /// Called when the app returns to the foreground, mirroring the frontend player's
+    /// `visibilitychange` handling: a stream that outlived being hidden keeps playing, and one that
+    /// did not is started again rather than leaving the last frame frozen on screen.
+    func handleAppForegrounded() {
+        guard isActive, let hiddenSince = backgroundedAt else { return }
+        let hiddenDuration = Current.date().timeIntervalSince(hiddenSince)
+        backgroundedAt = nil
+        // A connection still being set up has no client yet; restarting would throw away an attempt
+        // that is still in flight, which matters because `.inactive` also covers a passing overlay.
+        guard let webRTCClient else { return }
+        guard hiddenDuration >= timing.backgroundTeardownDelay || !webRTCClient.isConnectionAlive else { return }
+        Current.Log.info("Restarting WebRTC stream for \(cameraEntityId) after \(Int(hiddenDuration))s hidden")
+        start()
+    }
+
+    private func beginConnection() {
+        cancelDisconnectRecovery()
         tearDownConnection()
         showLoader = true
         failureReason = nil
@@ -111,39 +237,80 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             return
         }
 
-        scheduleTimeout()
         let token = connectionToken
 
-        // Same flow as the frontend player: ask the server for the client configuration (ICE
-        // servers, including any user-configured TURN, and trickle-ICE support) before creating
-        // the peer connection.
+        // Signaling only works over a live WebSocket, and after a network change that socket stays
+        // dead for as long as HAKit takes to notice — commands sent meanwhile are answered by
+        // nothing at all. Waiting for it here is what makes a stream survive moving between Wi-Fi
+        // and cellular instead of spinning until it gives up on WebRTC entirely.
+        let gate = WebRTCServerConnectionGate(connection: api.connection)
+        connectionGate = gate
+        scheduleConnectionWaitTimeout()
+        gate.whenReady(requiringFreshConnection: didStallOnSignaling) { [weak self] isReady in
+            guard let self, token == connectionToken else { return }
+            cancelConnectionWait()
+            connectionGate = nil
+            guard isReady else {
+                Current.Log.error("Server connection is unusable, cannot stream \(cameraEntityId) over WebRTC")
+                handleFailure(reason: nil)
+                return
+            }
+            fetchClientConfiguration(api: api, token: token)
+        }
+    }
+
+    /// Starts the attempt proper, once the server is known to be reachable. The stream's time
+    /// budget starts here rather than at `start()`: a wait on the connection is not the camera
+    /// failing to answer, and charging it to the same clock is what cascaded a perfectly good
+    /// camera to a lesser stream after a network change.
+    private func fetchClientConfiguration(api: HomeAssistantAPI, token: UUID) {
+        cancelTimeout()
+        scheduleTimeout()
+        scheduleSignalingStall(token: token)
+
+        // Same flow as the frontend player: ask the server for the client configuration — the ICE
+        // servers, including any user-configured TURN, and the data channel some cameras need —
+        // before creating the peer connection.
         api.connection.send(.init(type: .webSocket(Constants.clientConfig.rawValue), data: [
             "entity_id": cameraEntityId,
-        ])).promise.pipe { [weak self] result in
-            switch result {
-            case let .fulfilled(data):
-                self?.startConnection(configuration: .init(data: data), api: api, token: token)
-            case let .rejected(error):
-                Current.Log.error("WebRTC client config fetch failed, using fallback: \(error.localizedDescription)")
-                self?.startConnection(configuration: .fallback, api: api, token: token)
+        ])) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self, token == self.connectionToken else { return }
+                self.cancelSignalingStall()
+                switch result {
+                case let .success(data):
+                    self.startConnection(configuration: .init(data: data), api: api, token: token)
+                case let .failure(error):
+                    // Core guards this command with the same `require_webrtc_support` check as the
+                    // offer, so a rejection here already tells us the camera has no WebRTC stream
+                    // type. Cascading now beats sending an offer that is certain to be refused.
+                    if Self.isWebRTCUnsupported(error: error) {
+                        Current.Log.info("Camera \(self.cameraEntityId) does not support WebRTC")
+                        self.isWebRTCUnsupported = true
+                        self.handleFailure(reason: nil)
+                        return
+                    }
+                    Current.Log.error(
+                        "WebRTC client config fetch failed, using fallback: \(error.localizedDescription)"
+                    )
+                    self.startConnection(configuration: .fallback, api: api, token: token)
+                }
             }
         }
     }
 
-    func stop() {
-        cancelTimeout()
-        tearDownConnection()
-    }
-
     private func startConnection(configuration: WebRTCClientConfiguration, api: HomeAssistantAPI, token: UUID) {
         guard token == connectionToken else { return }
-        let client = WebRTCClient(configuration: configuration)
+        // The server answered, so whatever killed the last socket is behind us and a later attempt
+        // has no reason to distrust the connection state again.
+        didStallOnSignaling = false
+        let client = makeClient(configuration)
         webRTCClient = client
         client.delegate = self
         if let renderer {
             client.renderRemoteVideo(to: renderer)
         }
-        client.offer(waitForCandidates: configuration.getCandidatesUpfront) { [weak self] sdp in
+        client.offer { [weak self] sdp in
             DispatchQueue.main.async {
                 guard let self, token == self.connectionToken else { return }
                 self.sendOffer(sdp, api: api)
@@ -161,9 +328,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 Current.Log.verbose("WebRTC offer sent successfully: \(data)")
             case let .failure(error):
                 Current.Log.error("Failed to send WebRTC offer: \(error.localizedDescription)")
-                // Check if the error indicates WebRTC is not supported
-                if error.localizedDescription.contains("does not support WebRTC") ||
-                    error.localizedDescription.contains("frontend_stream_types") {
+                if Self.isWebRTCUnsupported(error: error) {
                     self?.isWebRTCUnsupported = true
                 }
                 self?.handleFailure(reason: error.localizedDescription)
@@ -190,8 +355,26 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         })
     }
 
+    /// Whether an error from core means this camera has no WebRTC stream type at all, as opposed
+    /// to a stream that could not be established. Core reports both from `camera/webrtc/*` under
+    /// the same error code, so the message is what separates them.
+    private static func isWebRTCUnsupported(error: Error) -> Bool {
+        if let haError = error as? HAError, case let .external(external) = haError {
+            return isWebRTCUnsupported(message: external.message)
+        }
+        return isWebRTCUnsupported(message: error.localizedDescription)
+    }
+
+    private static func isWebRTCUnsupported(message: String) -> Bool {
+        message.contains("does not support WebRTC") || message.contains("frontend_stream_types")
+    }
+
     private func tearDownConnection() {
         connectionToken = UUID()
+        cancelConnectionWait()
+        cancelSignalingStall()
+        connectionGate?.cancel()
+        connectionGate = nil
         offerSubscription?.cancel()
         offerSubscription = nil
         webRTCClient?.closeConnection()
@@ -209,7 +392,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             handleFailure(reason: nil)
         }
         timeoutWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectionTimeout, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.connectionTimeout, execute: workItem)
     }
 
     private func cancelTimeout() {
@@ -217,8 +400,99 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         timeoutWorkItem = nil
     }
 
+    /// Bounds the wait on a server connection so an unreachable server ends in a reported failure
+    /// rather than a loader that never resolves.
+    private func scheduleConnectionWaitTimeout() {
+        connectionWaitWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            connectionWaitWorkItem = nil
+            Current.Log.error("Server connection never came back, giving up on \(cameraEntityId) over WebRTC")
+            connectionGate?.cancel()
+            connectionGate = nil
+            handleFailure(reason: nil)
+        }
+        connectionWaitWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.connectionWaitTimeout, execute: workItem)
+    }
+
+    private func cancelConnectionWait() {
+        connectionWaitWorkItem?.cancel()
+        connectionWaitWorkItem = nil
+    }
+
+    /// Watches a signaling command for the silence that means the socket underneath it is gone.
+    private func scheduleSignalingStall(token: UUID) {
+        signalingStallWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, token == connectionToken else { return }
+            signalingStallWorkItem = nil
+            handleSignalingStall()
+        }
+        signalingStallWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.signalingStallTimeout, execute: workItem)
+    }
+
+    private func cancelSignalingStall() {
+        signalingStallWorkItem?.cancel()
+        signalingStallWorkItem = nil
+    }
+
+    /// A signaling command went unanswered, so the socket is dead whatever it claims. Start over
+    /// against a connection that has actually been re-established; cascading instead would only
+    /// hand the next player the same dead socket.
+    private func handleSignalingStall() {
+        guard connectionRetries < Self.maxConnectionRetries else {
+            Current.Log.error("Signaling for \(cameraEntityId) kept stalling, giving up on WebRTC")
+            handleFailure(reason: nil)
+            return
+        }
+        connectionRetries += 1
+        didStallOnSignaling = true
+        Current.Log.error("Signaling for \(cameraEntityId) went unanswered, waiting for a live connection")
+        cancelTimeout()
+        beginConnection()
+    }
+
+    /// Waits out a short interruption before rebuilding the stream, so WebRTC gets the chance to
+    /// re-check its candidates and carry on. Scheduled once per interruption; reaching a connected
+    /// state again cancels it.
+    private func scheduleDisconnectRecovery() {
+        guard disconnectRecoveryWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            disconnectRecoveryWorkItem = nil
+            Current.Log.info("WebRTC stream for \(cameraEntityId) stayed disconnected, rebuilding it")
+            handleConnectionFailure()
+        }
+        disconnectRecoveryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.disconnectedGracePeriod, execute: workItem)
+    }
+
+    private func cancelDisconnectRecovery() {
+        disconnectRecoveryWorkItem?.cancel()
+        disconnectRecoveryWorkItem = nil
+    }
+
+    /// A connection that broke gets rebuilt before the player gives up on WebRTC, the way the
+    /// frontend restarts ICE instead of surrendering the stream on the first failure.
+    private func handleConnectionFailure() {
+        cancelDisconnectRecovery()
+        guard connectionRetries < Self.maxConnectionRetries else {
+            handleFailure(reason: nil)
+            return
+        }
+        connectionRetries += 1
+        Current.Log.info("WebRTC connection for \(cameraEntityId) failed, rebuilding it")
+        // The rebuild arms its own timeout once the server answers, so a retry that waits on a
+        // socket the network took away is not charged for the wait.
+        cancelTimeout()
+        beginConnection()
+    }
+
     private func handleFailure(reason: String?) {
         cancelTimeout()
+        cancelConnectionWait()
         showLoader = false
         if let reason {
             failureReason = reason
@@ -259,8 +533,13 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
             // An empty/null candidate signals end-of-candidates; nothing to add.
             return
         }
-        let sdpMLineIndex = candidateDict["sdpMLineIndex"] as? Int32 ?? 0
-        let sdpMid = candidateDict["sdpMid"] as? String
+        // JSON numbers arrive bridged, so read the index through NSNumber rather than casting
+        // straight to Int32 — a failed cast would silently file a video candidate under the audio
+        // m-line. When the backend sends neither field the frontend defaults `sdpMid` to "0",
+        // because a candidate needs one of the two to be accepted at all.
+        let sdpMLineIndex = (candidateDict["sdpMLineIndex"] as? NSNumber)?.int32Value ?? 0
+        let sdpMidFallback: String? = candidateDict["sdpMLineIndex"] == nil ? "0" : nil
+        let sdpMid = candidateDict["sdpMid"] as? String ?? sdpMidFallback
         let candidate = RTCIceCandidate(
             sdp: candidateStr,
             sdpMLineIndex: sdpMLineIndex,
@@ -277,6 +556,12 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         let code: String? = try? data.decode("code")
         let message: String? = try? data.decode("message")
         Current.Log.error("WebRTC signaling error (\(code ?? "unknown")): \(message ?? "no message")")
+        // A camera that passes core's `require_webrtc_support` check but has no WebRTC provider
+        // behind it reports "Camera does not support WebRTC" here, as a signaling event rather
+        // than a rejected request, so this path needs the same check the request path makes.
+        if let message, Self.isWebRTCUnsupported(message: message) {
+            isWebRTCUnsupported = true
+        }
         handleFailure(reason: message ?? code)
     }
 
@@ -299,11 +584,11 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 "sdpMid": candidate.sdpMid ?? "0",
                 "sdpMLineIndex": candidate.sdpMLineIndex,
             ],
-        ])).promise.pipe { result in
+        ])) { result in
             switch result {
-            case let .fulfilled(data):
+            case let .success(data):
                 Current.Log.verbose("Sent candidate: \(data)")
-            case let .rejected(error):
+            case let .failure(error):
                 Current.Log.error("Failed to send candidate: \(error.localizedDescription)")
             }
         }
@@ -311,7 +596,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 }
 
 extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
-    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
+    func webRTCClient(_ client: WebRTCStreamClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         // WebRTC delegate callbacks arrive on its signaling thread; all view model state is
         // main-thread confined.
         DispatchQueue.main.async { [weak self] in
@@ -319,18 +604,32 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
         }
     }
 
-    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
+    func webRTCClient(_ client: WebRTCStreamClient, didChangeConnectionState state: RTCIceConnectionState) {
         Current.Log.info("WebRTC connection state changed to: \(state)")
-        guard state == .failed else { return }
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             // Ignore state changes from a connection that was already torn down/replaced.
             guard client === webRTCClient else { return }
-            handleFailure(reason: nil)
+            switch state {
+            case .connected, .completed:
+                // Back on its feet, and the attempts it took to get here shouldn't count against a
+                // later interruption in what may be a long watch.
+                cancelDisconnectRecovery()
+                connectionRetries = 0
+            case .failed:
+                handleConnectionFailure()
+            case .disconnected:
+                // Not fatal on its own: WebRTC re-checks and often recovers. Moving between
+                // networks lands here too and never recovers, which is what the grace period sorts
+                // out one way or the other.
+                scheduleDisconnectRecovery()
+            default:
+                break
+            }
         }
     }
 
-    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
+    func webRTCClient(_ client: WebRTCStreamClient, didReceiveData data: Data) {
         Current.Log.info("WebRTC client received data of size: \(data.count) bytes")
     }
 }

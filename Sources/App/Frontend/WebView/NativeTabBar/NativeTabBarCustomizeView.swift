@@ -2,75 +2,87 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Picks which sidebar pages sit in the tab bar: the pinned pages, reorderable, over the pages left
-/// to add. The bar holds `NativeTabBarConfigurationStore.maximumTabs` pages at most.
+/// Edits the list the tab bar is laid out from.
 struct NativeTabBarCustomizeView: View {
+    private enum Constants {
+        static let hiddenRowOpacity: Double = 0.6
+    }
+
     @ObservedObject var viewModel: NativeTabBarViewModel
 
     var body: some View {
         List {
             Section {
-                if viewModel.tabItems.isEmpty {
-                    Text(L10n.TabBar.Customize.TabsSection.empty)
-                        .foregroundStyle(.secondary)
-                }
-                ForEach(viewModel.tabItems) { item in
+                ForEach(viewModel.tabItems + viewModel.moreItems) { item in
                     HStack(spacing: DesignSystem.Spaces.one) {
                         Button {
-                            viewModel.removeTab(item)
+                            viewModel.hide(item)
                         } label: {
                             Image(systemSymbol: .minusCircleFill)
                                 .font(.title3)
-                                .foregroundStyle(Color.red)
+                                .foregroundStyle(viewModel.canHide(item) ? Color.red : Color.secondary)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(L10n.TabBar.Customize.remove)
+                        .disabled(!viewModel.canHide(item))
+                        .accessibilityLabel(L10n.TabBar.Customize.hide)
                         NativeTabBarItemLabel(
                             item: item,
                             server: viewModel.sidebar.server,
                             user: viewModel.sidebar.user
                         )
+                        if let index = viewModel.tabItems.firstIndex(where: { $0.id == item.id }) {
+                            Spacer(minLength: 0)
+                            Text(L10n.TabBar.Customize.tabNumberD(index + 1))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.haPrimary)
+                                .padding(.horizontal, DesignSystem.Spaces.one)
+                                .padding(.vertical, DesignSystem.Spaces.micro)
+                                .background(Capsule().fill(Color.haPrimaryLightFill))
+                        }
                     }
                 }
                 .onMove { source, destination in
-                    viewModel.moveTabs(fromOffsets: source, toOffset: destination)
+                    viewModel.moveItems(fromOffsets: source, toOffset: destination)
                 }
             } header: {
-                Text(L10n.TabBar.Customize.TabsSection.header)
+                Text(L10n.TabBar.Customize.DashboardsSection.header)
             } footer: {
-                Text(L10n.TabBar.Customize.TabsSection.footer)
+                Text(L10n.TabBar.Customize.DashboardsSection.footerFourTabs)
             }
 
-            Section {
-                ForEach(viewModel.pinnableItems.filter { !viewModel.isTab($0) }) { item in
-                    HStack(spacing: DesignSystem.Spaces.one) {
-                        Button {
-                            viewModel.addTab(item)
-                        } label: {
-                            Image(systemSymbol: .plusCircleFill)
-                                .font(.title3)
-                                .foregroundStyle(viewModel.canAddTab ? Color.green : Color.secondary)
+            if !viewModel.hiddenItems.isEmpty {
+                Section {
+                    ForEach(viewModel.hiddenItems) { item in
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            Button {
+                                viewModel.show(item)
+                            } label: {
+                                Image(systemSymbol: .plusCircleFill)
+                                    .font(.title3)
+                                    .foregroundStyle(Color.green)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(L10n.TabBar.Customize.show)
+                            NativeTabBarItemLabel(
+                                item: item,
+                                server: viewModel.sidebar.server,
+                                user: viewModel.sidebar.user
+                            )
+                            .opacity(Constants.hiddenRowOpacity)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(!viewModel.canAddTab)
-                        .accessibilityLabel(L10n.TabBar.Customize.add)
-                        NativeTabBarItemLabel(
-                            item: item,
-                            server: viewModel.sidebar.server,
-                            user: viewModel.sidebar.user
-                        )
                     }
-                }
-            } header: {
-                Text(L10n.TabBar.Customize.AvailableSection.header)
-            } footer: {
-                if !viewModel.canAddTab {
-                    Text(L10n.TabBar.Customize.AvailableSection.footerFull)
+                } header: {
+                    Text(L10n.TabBar.Customize.HiddenSection.header)
+                } footer: {
+                    Text(L10n.TabBar.Customize.HiddenSection.footer)
                 }
             }
         }
         .environment(\.editMode, .constant(.active))
-        .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.tabItems.map(\.id))
+        .animation(
+            DesignSystem.Animation.easeInOutFaster,
+            value: viewModel.tabItems.map(\.id) + viewModel.moreItems.map(\.id) + viewModel.hiddenItems.map(\.id)
+        )
         .navigationTitle(L10n.TabBar.Customize.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -78,6 +90,6 @@ struct NativeTabBarCustomizeView: View {
 
 #Preview {
     NavigationStack {
-        NativeTabBarCustomizeView(viewModel: .preview())
+        NativeTabBarCustomizeView(viewModel: .preview(hiddenPanelPaths: ["logbook"]))
     }
 }

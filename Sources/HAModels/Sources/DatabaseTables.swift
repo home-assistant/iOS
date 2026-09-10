@@ -283,6 +283,7 @@ public enum DatabaseTables {
         case enabled
         case requireAuthentication
         case acceptRemoteCommands
+        case showRemoteCommandConfirmations
         case serverId
         case dashboard
         case keepScreenOn
@@ -290,6 +291,7 @@ public enum DatabaseTables {
         case hideStatusBar
         case autoReload
         case settingsEntryPosition
+        case settingsEntryHidden
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver

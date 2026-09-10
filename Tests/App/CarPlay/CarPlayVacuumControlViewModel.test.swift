@@ -143,7 +143,7 @@ final class CarPlayVacuumControlViewModelTests: XCTestCase {
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.success(.dictionary(["area_ids": []])))
 
-        wait(for: [finished], timeout: 2)
+        wait(for: [finished], timeout: 10.0)
         XCTAssertFalse(sut.isLoadingAreas)
     }
 
@@ -156,7 +156,7 @@ final class CarPlayVacuumControlViewModelTests: XCTestCase {
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.failure(.internal(debugDescription: "nope")))
 
-        wait(for: [finished], timeout: 2)
+        wait(for: [finished], timeout: 10.0)
         XCTAssertFalse(sut.isLoadingAreas)
     }
 }

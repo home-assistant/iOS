@@ -8,6 +8,8 @@ protocol WebViewControllerProtocol: AnyObject {
     /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
     /// frontend isn't on screen to zoom out of, in which case Assist cross-dissolves in instead.
     var assistZoomAnchorView: UIView? { get }
+    /// A one-off zoom source for the next Assist presentation, set by the App Labs tab bar.
+    var pendingAssistZoomSourceView: UIView? { get set }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }

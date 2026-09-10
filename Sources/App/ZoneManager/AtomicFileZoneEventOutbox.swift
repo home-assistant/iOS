@@ -2,6 +2,10 @@ import Foundation
 import Shared
 
 final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
+    enum OutboxError: Error {
+        case capacityExceeded
+    }
+
     private let fileURL: URL
     private let date: () -> Date
     private let writeData: (Data, URL) throws -> Void
@@ -46,8 +50,15 @@ final class AtomicFileZoneEventOutbox: ZoneEventOutbox {
                isSameBeaconZone(previous, event) {
                 events.removeLast()
             }
+            // Started deliveries must remain available for reconciliation after relaunch.
+            // If every slot is in flight, reject the new event without changing the store.
+            while events.count >= maximumEventCount {
+                guard let index = events.firstIndex(where: { $0.deliveryStartedAt == nil }) else {
+                    throw OutboxError.capacityExceeded
+                }
+                events.remove(at: index)
+            }
             events.append(event)
-            events = Array(events.suffix(maximumEventCount))
             try save(events)
         }
     }

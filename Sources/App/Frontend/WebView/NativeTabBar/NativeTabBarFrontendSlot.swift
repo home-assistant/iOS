@@ -2,8 +2,7 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Hosts the single web frontend inside a tab: the slot whose tab is selected adopts the `WebViewController`,
-/// so the frontend moves between tabs instead of being rebuilt, which would be a full page load.
+/// Hosts the single web frontend inside a tab.
 struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
     let controller: WebViewController?
     let isActive: Bool
@@ -36,6 +35,11 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             apply()
         }
 
+        override func didMove(toParent parent: UIViewController?) {
+            super.didMove(toParent: parent)
+            updateContentScrollView()
+        }
+
         private func apply() {
             if let hostedController, hostedController !== controller {
                 detach(hostedController)
@@ -64,6 +68,15 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             ])
             controller.didMove(toParent: self)
             hostedController = controller
+            updateContentScrollView()
+        }
+
+        private func updateContentScrollView() {
+            var target: UIViewController = self
+            while let parent = target.parent, !(parent is UITabBarController) {
+                target = parent
+            }
+            target.setContentScrollView(hostedController?.webView?.scrollView, for: .bottom)
         }
 
         private func detach(_ controller: WebViewController) {
@@ -75,6 +88,7 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
             controller.view.removeFromSuperview()
             controller.removeFromParent()
             hostedController = nil
+            updateContentScrollView()
         }
     }
 }

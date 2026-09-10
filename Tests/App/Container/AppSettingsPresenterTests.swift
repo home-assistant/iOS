@@ -14,6 +14,28 @@ final class AppSettingsPresenterTests: XCTestCase {
         super.tearDown()
     }
 
+    func testZoomSourceLastsUntilTheSheetIsDismissed() {
+        let presenter = AppSettingsPresenter.shared
+        defer {
+            presenter.isSheetPresented = false
+            presenter.sheetDismissed()
+        }
+
+        presenter.presentSettings(zoomingFrom: "gear")
+        XCTAssertEqual(presenter.zoomSourceID, "gear")
+
+        presenter.isSheetPresented = false
+        presenter.sheetDismissed()
+        XCTAssertNil(presenter.zoomSourceID)
+
+        presenter.presentSettings()
+        XCTAssertNil(presenter.zoomSourceID)
+
+        presenter.presentSettings(zoomingFrom: "gear")
+        presenter.presentServerSelection(.init(prompt: nil, zoomsFromStandBy: false, onSelect: { _ in }))
+        XCTAssertNil(presenter.zoomSourceID)
+    }
+
     func testPushingSettingsPutsItAtTheRootOfThePushPath() {
         AppSettingsPresenter.shared.isPushPresented = true
 

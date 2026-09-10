@@ -10,6 +10,9 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var enabled: Bool
     public var requireAuthentication: Bool
     public var acceptRemoteCommands: Bool
+    /// Whether a kiosk command arriving over push shows its toast confirmation. Off still runs the
+    /// command, it just does so silently.
+    public var showRemoteCommandConfirmations: Bool
     public var serverId: String?
     public var dashboard: String?
     public var keepScreenOn: Bool
@@ -17,6 +20,9 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var hideStatusBar: Bool
     public var autoReload: KioskAutoReloadInterval
     public var settingsEntryPosition: KioskCornerPosition
+    /// A hidden entry is drawn fully transparent, but stays in place and stays tappable, so the corner
+    /// still opens kiosk settings for whoever set the device up.
+    public var settingsEntryHidden: Bool
     public var settingsEntryBackgroundColor: String?
     public var settingsEntryIconColor: String?
     public var screensaver: KioskScreensaverSettings
@@ -26,6 +32,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         enabled: Bool = false,
         requireAuthentication: Bool = false,
         acceptRemoteCommands: Bool = true,
+        showRemoteCommandConfirmations: Bool = true,
         serverId: String? = nil,
         dashboard: String? = nil,
         keepScreenOn: Bool = false,
@@ -33,6 +40,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         hideStatusBar: Bool = false,
         autoReload: KioskAutoReloadInterval = .never,
         settingsEntryPosition: KioskCornerPosition = .bottomTrailing,
+        settingsEntryHidden: Bool = false,
         settingsEntryBackgroundColor: String? = nil,
         settingsEntryIconColor: String? = nil,
         screensaver: KioskScreensaverSettings = KioskScreensaverSettings()
@@ -41,6 +49,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.enabled = enabled
         self.requireAuthentication = requireAuthentication
         self.acceptRemoteCommands = acceptRemoteCommands
+        self.showRemoteCommandConfirmations = showRemoteCommandConfirmations
         self.serverId = serverId
         self.dashboard = dashboard
         self.keepScreenOn = keepScreenOn
@@ -48,6 +57,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.hideStatusBar = hideStatusBar
         self.autoReload = autoReload
         self.settingsEntryPosition = settingsEntryPosition
+        self.settingsEntryHidden = settingsEntryHidden
         self.settingsEntryBackgroundColor = settingsEntryBackgroundColor
         self.settingsEntryIconColor = settingsEntryIconColor
         self.screensaver = screensaver
@@ -59,6 +69,10 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
         self.requireAuthentication = try container.decodeIfPresent(Bool.self, forKey: .requireAuthentication) ?? false
         self.acceptRemoteCommands = try container.decodeIfPresent(Bool.self, forKey: .acceptRemoteCommands) ?? true
+        self.showRemoteCommandConfirmations = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .showRemoteCommandConfirmations
+        ) ?? true
         self.serverId = try container.decodeIfPresent(String.self, forKey: .serverId)
         self.dashboard = try container.decodeIfPresent(String.self, forKey: .dashboard)
         self.keepScreenOn = try container.decodeIfPresent(Bool.self, forKey: .keepScreenOn) ?? false
@@ -70,6 +84,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
             KioskCornerPosition.self,
             forKey: .settingsEntryPosition
         ) ?? .bottomTrailing
+        self.settingsEntryHidden = try container.decodeIfPresent(Bool.self, forKey: .settingsEntryHidden) ?? false
         self.settingsEntryBackgroundColor = try container.decodeIfPresent(
             String.self,
             forKey: .settingsEntryBackgroundColor

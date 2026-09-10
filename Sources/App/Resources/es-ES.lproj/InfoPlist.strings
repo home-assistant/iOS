@@ -3,7 +3,7 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionalmente, active el seguimiento entre sitios web si su configuración lo requiere.";
 "NSFocusStatusUsageDescription" = "Informar de tu estado de Concentración como un sensor.";
 "NSHealthShareUsageDescription" = "Lee los datos seleccionados de Apple Health para poder compartirlos con Home Assistant como sensores.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthUpdateUsageDescription" = "Home Assistant no envía ningún dato a Apple Health.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  También necesitamos permiso para acceder a la ubicación \"Siempre\", para que la aplicación pueda realizar operaciones en segundo plano. \n\n ⚠️  Sin ese permiso, la aplicación no podrá decidir qué conexión (local o remota) utilizar en segundo plano y utilizará siempre la remota.";
 "NSLocationAlwaysUsageDescription" = "Siempre necesitamos tener acceso a tu ubicación para funciones como iBeacons, geovallas, actualizaciones de ubicación en segundo plano e informes precisos.";
