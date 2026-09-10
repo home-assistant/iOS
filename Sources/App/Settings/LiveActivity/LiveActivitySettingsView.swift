@@ -146,8 +146,14 @@ struct LiveActivitySettingsView: View {
         }
     }
 
+    /// iPad only gained Live Activities in iPadOS 26; earlier iPads have nowhere to display them.
     private var isLiveActivitySupportedOnDevice: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
+        guard UIDevice.current.userInterfaceIdiom == .pad else { return true }
+        if #available(iOS 26.0, *) {
+            return true
+        } else {
+            return false
+        }
     }
 
     private var samplesSection: some View {
