@@ -2,8 +2,8 @@
 @testable import Shared
 import Testing
 
-/// The `camera` deep link used to open the native camera player; it now lands on the entity's
-/// more-info dialog, so links created before the change keep working.
+/// Routing of `homeassistant://` deep links. The `camera` link used to open the native camera player;
+/// it now lands on the entity's more-info dialog, so links created before the change keep working.
 struct IncomingURLHandlerTests {
     private func withFakeServer(_ body: (Server, MockAppCoordinator, IncomingURLHandler) throws -> Void) throws {
         let previousServers = Current.servers
@@ -39,6 +39,19 @@ struct IncomingURLHandlerTests {
             ))
 
             #expect(!handler.handle(url: url))
+            #expect(coordinator.openedDeeplinks.isEmpty)
+            #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
+        }
+    }
+
+    @Test func settingsDeeplinkShowsAppSettings() throws {
+        try withFakeServer { _, coordinator, handler in
+            let url = try #require(URL(string: "\(AppConstants.deeplinkURL.absoluteString)settings"))
+
+            #expect(handler.handle(url: url))
+
+            #expect(coordinator.showSettingsCalled)
+            #expect(!coordinator.showSettingsPushedOntoNavigationStack)
             #expect(coordinator.openedDeeplinks.isEmpty)
             #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
         }

@@ -26,6 +26,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case settings
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -213,6 +214,8 @@ class IncomingURLHandler {
                 Current.sceneManager.appCoordinator.done { coordinator in
                     coordinator.presentInvitation(url: inviteUrl)
                 }
+            case .settings:
+                coordinator.showSettings()
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
