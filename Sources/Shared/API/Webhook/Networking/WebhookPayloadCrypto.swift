@@ -3,6 +3,10 @@ import Sodium
 
 /// The secretbox encryption Home Assistant's `mobile_app` webhook wraps payloads in, shared by the
 /// phone's `WebhookRequest` path and the watch's own webhook client so both encode the same way.
+///
+/// The primitive itself lives in `WebhookSecretBox`, which the RemoteMedia extension also
+/// compiles: that process cannot link this module, and two implementations of a wire format is how
+/// they drift apart. This keeps the error types the webhook stack already throws.
 enum WebhookPayloadCrypto {
     enum CryptoError: Error, Equatable {
         case encode
@@ -13,24 +17,15 @@ enum WebhookPayloadCrypto {
     /// `data` (a JSON object) sealed with `secret` and base64-encoded, ready to be sent as the
     /// request's `encrypted_data` value.
     static func encrypt(_ data: Any, secret: [UInt8], sodium: Sodium = Sodium()) throws -> String {
-        let jsonData = try JSONSerialization.data(withJSONObject: data, options: [.sortedKeys])
-
-        guard let jsonStr = String(data: jsonData, encoding: .utf8) else {
+        do {
+            return try WebhookSecretBox.seal(data, secret: secret, sodium: sodium)
+        } catch WebhookSecretBox.CryptoError.encode {
             throw CryptoError.encode
-        }
-
-        guard let encryptedData: Bytes = sodium.secretBox.seal(
-            message: jsonStr.bytes,
-            secretKey: .init(secret)
-        ) else {
+        } catch WebhookSecretBox.CryptoError.seal {
             throw CryptoError.seal
-        }
-
-        guard let b64payload = sodium.utils.bin2base64(encryptedData, variant: .ORIGINAL) else {
+        } catch WebhookSecretBox.CryptoError.base64 {
             throw CryptoError.base64
         }
-
-        return b64payload
     }
 
     /// The JSON a response's `encrypted_data` value holds, or `()` when the server sealed an empty
@@ -41,21 +36,12 @@ enum WebhookPayloadCrypto {
         sodium: Sodium = Sodium(),
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) throws -> Any {
-        guard let decoded = sodium.utils.base642bin(encoded, variant: .ORIGINAL, ignore: nil) else {
+        do {
+            return try WebhookSecretBox.open(encoded, secret: secret, sodium: sodium, options: options)
+        } catch WebhookSecretBox.CryptoError.decode {
             throw WebhookJsonParseError.base64
-        }
-
-        guard let decrypted = sodium.secretBox.open(
-            nonceAndAuthenticatedCipherText: decoded,
-            secretKey: .init(secret)
-        ) else {
+        } catch WebhookSecretBox.CryptoError.open {
             throw WebhookJsonParseError.decrypt
-        }
-
-        if decrypted.isEmpty {
-            return ()
-        } else {
-            return try JSONSerialization.jsonObject(with: Data(decrypted), options: options)
         }
     }
 }

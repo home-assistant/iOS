@@ -27,7 +27,7 @@ enum SettingsSection: String, CaseIterable, Hashable {
     var allItems: [SettingsItem] {
         switch self {
         case .customizeExperience: return [.general, .gestures, .greetings, .kiosk, .macToolbar]
-        case .stayInformed: return [.notifications, .liveActivities]
+        case .stayInformed: return [.notifications, .liveActivities, .remoteMedia]
         case .shareFromDevice: return [.location, .sensors, .remindersSync]
         case .quickAccess: return [.widgets, .appIconShortcuts, .siri, .nfc]
         case .otherDevices: return [.watch, .complications, .carPlay]

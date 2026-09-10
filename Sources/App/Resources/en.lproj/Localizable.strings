@@ -1439,6 +1439,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.settings.sync_now" = "Sync now";
 "reminders_sync.settings.synced_lists.header" = "Synced lists";
 "reminders_sync.settings.syncing" = "Syncing…";
+"remote_media.description" = "The player you follow appears in iPhone Now Playing, so you can control it from the system media controls.";
+"remote_media.empty.instructions" = "To follow a media player, open it in Home Assistant and choose Add to → Follow in Now Playing.";
+"remote_media.empty.title" = "No player is currently being followed";
+"remote_media.following" = "Following on iPhone";
+"remote_media.retry" = "Try again";
+"remote_media.session_error" = "Could not update Now Playing. Reopen Home Assistant or try again.";
+"remote_media.stop_following" = "Stop following";
+"remote_media.title" = "Remote Now Playing";
+"remote_media.waiting" = "Waiting for this player to play or pause. Check that the player and its server are available.";
 "requires_version" = "Requires %@ or later.";
 "retry_label" = "Retry";
 "room_view.section.hidden" = "Hidden";
@@ -1891,6 +1900,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.permissions" = "permissions, access, camera, microphone, location, bluetooth, notifications, motion, speech, focus";
 "settings.search_keywords.privacy" = "analytics, crash reports, data collection, consent";
 "settings.search_keywords.reminders_sync" = "reminders, todo, to-do, tasks, lists, shopping list, sync";
+"settings.search_keywords.remote_media" = "now playing, media, music, lock screen, control center, media player, speaker";
 "settings.search_keywords.sensors" = "battery, motion, pedometer, focus, device data";
 "settings.search_keywords.servers" = "connection, url, account, instance, add server";
 "settings.search_keywords.siri" = "siri, shortcuts, spotlight, voice, assistant";
@@ -2887,6 +2897,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
+"web_view.add_to.option.RemoteNowPlaying.details" = "Show this player in iPhone system media controls";
+"web_view.add_to.option.RemoteNowPlaying.stop_details" = "Currently shown in iPhone system media controls";
+"web_view.add_to.option.RemoteNowPlaying.stop_title" = "Stop following in Now Playing";
+"web_view.add_to.option.RemoteNowPlaying.title" = "Follow in Now Playing";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

@@ -212,6 +212,7 @@
 		42F384052FB49C9500390AFC /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42F384042FB49C9500390AFC /* DebugSwift */; };
 		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
 		42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0008 /* SFSafeSymbols */; };
+		42FE0003300000000000RM03 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42FE0002300000000000RM02 /* Sodium */; };
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
@@ -235,6 +236,7 @@
 		A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7FBFE016210544989AFC7F64 /* SFSafeSymbols */; };
 		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
 		A307E253426FAE95903A3493 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; };
+		A3F731850E1942FC942596E9 /* HomeAssistant-Extensions-RemoteMedia.appex in Embed Remote Media Extension */ = {isa = PBXBuildFile; fileRef = 01A62DD833CDC9BA1CB2239E /* HomeAssistant-Extensions-RemoteMedia.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
 		B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 638EC9AD85B8C58C9C77DCC7 /* GRDB */; };
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
@@ -410,6 +412,13 @@
 			remoteGlobalIDString = D03D891620E0A85200D4F28D;
 			remoteInfo = "Shared-iOS";
 		};
+		9F4B0A2BD7FF3ED0A44190F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5CC01D2733C949F8B5D0EDA1;
+			remoteInfo = "Extensions-RemoteMedia";
+		};
 		B627CB131D83C87B0057173E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -533,6 +542,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		71EBA75842FCB2AA21C4CFCE /* Embed Remote Media Extension */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Extensions";
+			dstSubfolderSpec = 16;
+			files = (
+				A3F731850E1942FC942596E9 /* HomeAssistant-Extensions-RemoteMedia.appex in Embed Remote Media Extension */,
+			);
+			name = "Embed Remote Media Extension";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B61DA2A7221E8D8F00AADEDD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -577,6 +597,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01A62DD833CDC9BA1CB2239E /* HomeAssistant-Extensions-RemoteMedia.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-RemoteMedia.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.test.swift; sourceTree = "<group>"; };
 		110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.test.swift; sourceTree = "<group>"; };
 		1112EA92271B78690038BBFC /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
@@ -1017,12 +1038,23 @@
 				NotificationService/Resources/Info.plist,
 				PushProvider/PushProvider.swift,
 				PushProvider/Resources/Info.plist,
+				RemoteMedia/HomeAssistantRemoteMediaExtension.swift,
+				RemoteMedia/HomeAssistantRemoteMediaSession.swift,
+				RemoteMedia/Resources/Info.plist,
 				Share/Resources/Info.plist,
 				Share/ShareViewController.swift,
 				"Widgets/Common/WidgetFamily+AppPreview.swift",
 				Widgets/Resources/Info.plist,
 			);
 			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
+		};
+		4283C1B03004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RemoteMedia/HomeAssistantRemoteMediaExtension.swift,
+				RemoteMedia/HomeAssistantRemoteMediaSession.swift,
+			);
+			target = 5CC01D2733C949F8B5D0EDA1 /* Extensions-RemoteMedia */;
 		};
 		4283E1713004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -2420,11 +2452,12 @@
 		11AF1EC52528FB2300AAE364 /* Entitlements */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Entitlements; sourceTree = "<group>"; };
 		11B38EE0275C545C00205C7B /* Intents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Intents; sourceTree = "<group>"; };
 		11F2F28D2587285300F61F7C /* NotificationAttachment */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationAttachment; sourceTree = "<group>"; };
+		1786D9816CD0FE7344F88EED /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
 		420E64B72D676A4200A31E86 /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
 		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
 		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
 		42479B4630013FE300F7FCD3 /* WatchApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42479B7630013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchApp; sourceTree = "<group>"; };
-		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
+		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1B03004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		4283E0D53004DCF4004D1061 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283E1713004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1723004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1733004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1743004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1753004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1763004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (gallery.ckcomplication, ); path = Resources; sourceTree = "<group>"; };
 		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
@@ -2520,7 +2553,11 @@
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
 		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
+		42FE0001300000000000RM01 /* RemoteMediaCore */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMediaCore; sourceTree = "<group>"; };
+		42FE0004300000000000RM04 /* WebhookCrypto */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WebhookCrypto; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
+		5060F82CECB5EBB60A3B1147 /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
+		76BBD9F0E0301B66C72F7851 /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -2587,6 +2624,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		381AA880A11E4FBC4FFB356F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				42FE0003300000000000RM03 /* Sodium in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2811,6 +2856,8 @@
 				4283C0A63004CD31004D1061 /* Extensions */,
 				42EDB61A3002FB9A0051FC9B /* Launcher */,
 				42EDB6803002FB9A0051FC9B /* MacBridge */,
+				42FE0001300000000000RM01 /* RemoteMediaCore */,
+				42FE0004300000000000RM04 /* WebhookCrypto */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				42EDBB4B3002FB9A0051FC9B /* SharedTesting */,
 				42479B4630013FE300F7FCD3 /* WatchApp */,
@@ -2861,6 +2908,7 @@
 		42EDE945300315A50051FC9B /* App */ = {
 			isa = PBXGroup;
 			children = (
+				5060F82CECB5EBB60A3B1147 /* RemoteMedia */,
 				42E2E0000000000000000006 /* Accessibility */,
 				42EDE685300315A50051FC9B /* Assist */,
 				42EDE68E300315A50051FC9B /* BarcodeScanner */,
@@ -2942,6 +2990,7 @@
 				46C62B882D8A3687002C0001 /* SharedTesting.framework */,
 				423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */,
 				42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */,
+				01A62DD833CDC9BA1CB2239E /* HomeAssistant-Extensions-RemoteMedia.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3002,6 +3051,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				76BBD9F0E0301B66C72F7851 /* RemoteMedia */,
 				42EDBE083002FC020051FC9B /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
@@ -3055,6 +3105,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1786D9816CD0FE7344F88EED /* RemoteMedia */,
 				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
 				42EDBC163002FBD10051FC9B /* Models */,
@@ -3362,6 +3413,30 @@
 			productReference = 46C62B882D8A3687002C0001 /* SharedTesting.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		5CC01D2733C949F8B5D0EDA1 /* Extensions-RemoteMedia */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A34338CAF59C2D5C9C755B86 /* Build configuration list for PBXNativeTarget "Extensions-RemoteMedia" */;
+			buildPhases = (
+				D137B127E9A62B59E7C58F00 /* Sources */,
+				381AA880A11E4FBC4FFB356F /* Frameworks */,
+				2C573DD3A30A26AF7318E935 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				42FE0001300000000000RM01 /* RemoteMediaCore */,
+				42FE0004300000000000RM04 /* WebhookCrypto */,
+			);
+			name = "Extensions-RemoteMedia";
+			packageProductDependencies = (
+				42FE0002300000000000RM02 /* Sodium */,
+			);
+			productName = "Extensions-RemoteMedia";
+			productReference = 01A62DD833CDC9BA1CB2239E /* HomeAssistant-Extensions-RemoteMedia.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B627CB061D83C87B0057173E /* Extensions-NotificationContent */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "Extensions-NotificationContent" */;
@@ -3406,6 +3481,7 @@
 				9C08D123229F187E001B4F73 /* Enable Special Entitlements */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
 				429FB0412DC0D729000E3372 /* Swiftlint */,
+				71EBA75842FCB2AA21C4CFCE /* Embed Remote Media Extension */,
 			);
 			buildRules = (
 			);
@@ -3420,6 +3496,7 @@
 				11DE9F9825B6173D0081C0ED /* PBXTargetDependency */,
 				11B92912266F145000786588 /* PBXTargetDependency */,
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
+				362B642CB87F525EA72C4A0D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4283E0D53004DCF4004D1061 /* Resources */,
@@ -3450,6 +3527,7 @@
 				42FD0000009000510051FC9B /* VoiceToolsServer */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
+				5060F82CECB5EBB60A3B1147 /* RemoteMedia */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -3608,6 +3686,7 @@
 				42EDC09B3002FC090051FC9B /* Resources */,
 				42EDC0AD3002FC090051FC9B /* Assets */,
 				42EDE917300315A50051FC9B /* Settings */,
+				42FE0004300000000000RM04 /* WebhookCrypto */,
 				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = "Shared-watchOS";
@@ -3726,6 +3805,9 @@
 				42EDC0AD3002FC090051FC9B /* Assets */,
 				42EDE72C300315A50051FC9B /* Onboarding */,
 				42EDE917300315A50051FC9B /* Settings */,
+				42FE0001300000000000RM01 /* RemoteMediaCore */,
+				42FE0004300000000000RM04 /* WebhookCrypto */,
+				76BBD9F0E0301B66C72F7851 /* RemoteMedia */,
 				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = "Shared-iOS";
@@ -3769,6 +3851,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
+				1786D9816CD0FE7344F88EED /* RemoteMedia */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				42EDBC003002FBD10051FC9B /* Webhook */,
 				42EDBC163002FBD10051FC9B /* Models */,
@@ -4063,6 +4146,7 @@
 				1171506824DFCDE60065E874 /* Extensions-Widgets */,
 				423FB76B2FFFDFDE000CB8FD /* Extensions-WatchWidgets */,
 				42D14C6C301BB6330058088E /* HomeAssistant-WatchAppTests */,
+				5CC01D2733C949F8B5D0EDA1 /* Extensions-RemoteMedia */,
 			);
 		};
 /* End PBXProject section */
@@ -4104,6 +4188,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		11DE9D8125B6103C0081C0ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2C573DD3A30A26AF7318E935 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4598,6 +4689,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D137B127E9A62B59E7C58F00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -4669,6 +4767,13 @@
 			platformFilter = maccatalyst;
 			target = 11DE9D8225B6103C0081C0ED /* Launcher */;
 			targetProxy = 11DE9F9725B6173D0081C0ED /* PBXContainerItemProxy */;
+		};
+		362B642CB87F525EA72C4A0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Extensions-RemoteMedia";
+			platformFilter = ios;
+			target = 5CC01D2733C949F8B5D0EDA1 /* Extensions-RemoteMedia */;
+			targetProxy = 9F4B0A2BD7FF3ED0A44190F2 /* PBXContainerItemProxy */;
 		};
 		423FB77C2FFFDFDF000CB8FD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5397,6 +5502,27 @@
 			};
 			name = Release;
 		};
+		749977E47CE978DBACAD0D82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/RemoteMedia-ios.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/RemoteMedia/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PROVISIONING_SUFFIX = .RemoteMedia;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		B627CB161D83C87B0057173E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5814,6 +5940,27 @@
 			};
 			name = Release;
 		};
+		F423B43E43EED0250F740FC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/RemoteMedia-ios.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/RemoteMedia/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PROVISIONING_SUFFIX = .RemoteMedia;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -5903,6 +6050,15 @@
 			buildConfigurations = (
 				46C62B902D8A3687002C0001 /* Debug */,
 				46C62B912D8A3687002C0001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A34338CAF59C2D5C9C755B86 /* Build configuration list for PBXNativeTarget "Extensions-RemoteMedia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F423B43E43EED0250F740FC5 /* Release */,
+				749977E47CE978DBACAD0D82 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6542,6 +6698,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		42FE0002300000000000RM02 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
 		};
 		46C62B952D8A3730002C0001 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
