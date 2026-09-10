@@ -62,6 +62,8 @@ public struct RectangularProgressView: View {
 
     @Environment(\.widgetRenderingMode) private var renderingMode
 
+    private var trackHeight: CGFloat { valueLabel == nil ? Self.barHeight : Self.thumbHeight }
+
     /// Full color: the complication's own text color when it has one, else black on light tints and
     /// white on dark ones. In accented (tinted) mode the pill fill is placed in the accent group and
     /// the text is left in the default group, so the system renders them in two distinct tint shades;
@@ -144,9 +146,9 @@ public struct RectangularProgressView: View {
                             )
                     }
                 }
-                .frame(height: Self.thumbHeight)
+                .frame(height: trackHeight)
             }
-            .frame(height: Self.thumbHeight)
+            .frame(height: trackHeight)
             if minLabel != nil || maxLabel != nil {
                 HStack {
                     Text(verbatim: minLabel ?? " ")
