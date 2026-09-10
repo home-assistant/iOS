@@ -3130,6 +3130,12 @@ public enum L10n {
         public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
       }
     }
+    public enum CommandConfirmation {
+      /// When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.command_confirmation.footer") }
+      /// Show command confirmation
+      public static var title: String { return L10n.tr("Localizable", "kiosk.command_confirmation.title") }
+    }
     public enum Corner {
       /// Bottom leading
       public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }

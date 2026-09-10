@@ -283,6 +283,7 @@ public enum DatabaseTables {
         case enabled
         case requireAuthentication
         case acceptRemoteCommands
+        case showRemoteCommandConfirmations
         case serverId
         case dashboard
         case keepScreenOn
