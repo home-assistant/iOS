@@ -34,7 +34,10 @@ extension WatchWidgetComplicationSnapshot {
             showsBottomText: options.showBottomText ?? false,
             tint: Self.color(hex: options.tint ?? tint) ?? .complicationDefaultTint,
             textColor: Self.color(hex: options.textColor),
-            bottomTextColor: Self.color(hex: options.bottomTextColor)
+            bottomTextColor: Self.color(hex: options.bottomTextColor),
+            titleColor: Self.color(hex: options.titleColor),
+            valueColor: Self.color(hex: options.valueColor),
+            valueRidesGauge: options.valueRidesGauge ?? true
         )
     }
 

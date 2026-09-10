@@ -21,9 +21,11 @@ public struct LegacyComplicationRender: Equatable {
     public let bottomText: String
     /// Every area joined onto one line, for the single-line inline family.
     public let inlineText: String
+    /// Hex color for `title`, or nil to use the face's default.
+    public let titleColor: String?
     /// Hex color for `value`, or nil to use the face's default.
-    public let textColor: String?
-    /// Hex color for `bottomText`, or nil to fall back to `textColor`.
+    public let valueColor: String?
+    /// Hex color for `bottomText`, or nil to use the face's default.
     public let bottomTextColor: String?
     /// Gauge/ring fill (0...1), or nil when the template has neither.
     public let fraction: Double?
@@ -111,7 +113,8 @@ public struct LegacyComplicationRender: Equatable {
             default: return nil
             }
         }
-        self.textColor = graphicOnly(resolved.count > 1 ? resolved[1].color : resolved.first?.color)
+        self.titleColor = graphicOnly(resolved.count > 1 ? resolved[0].color : nil)
+        self.valueColor = graphicOnly(resolved.count > 1 ? resolved[1].color : resolved.first?.color)
         self.bottomTextColor = graphicOnly(resolved.dropFirst(2).first?.color)
         self.contentLed = ContentLed(
             value: resolved.first?.text ?? "",
