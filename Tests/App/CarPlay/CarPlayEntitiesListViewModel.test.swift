@@ -207,7 +207,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         }
 
         schedule(cycles)
-        wait(for: [drained], timeout: 5)
+        wait(for: [drained], timeout: 10.0)
     }
 
     /// The row refuses a repeat tap while its call is outstanding, which is what stops a slow

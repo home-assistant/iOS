@@ -72,8 +72,6 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
-		42DA0000000000010000AF01 /* DomainStatesAfter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */; };
-		42DA0000000000030000AF03 /* AreaTarget.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000040000AF04 /* AreaTarget.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -189,6 +187,8 @@
 		42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C90301BAF950058088E /* HAWatchComplications */; };
 		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
 		42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */; };
+		42DA0000000000010000AF01 /* DomainStatesAfter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */; };
+		42DA0000000000030000AF03 /* AreaTarget.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000040000AF04 /* AreaTarget.test.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
@@ -652,6 +652,8 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
+		42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStatesAfter.test.swift; sourceTree = "<group>"; };
+		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
@@ -703,8 +705,6 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
-		42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStatesAfter.test.swift; sourceTree = "<group>"; };
-		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -739,21 +739,21 @@
 				AppIntents/Assist/AssistPipelineEntity.swift,
 				AppIntents/Assist/AssistPipelineEntityQuery.swift,
 				AppIntents/AssistPromptAppIntent.swift,
-				"AppIntents/Control/ControlEntityIntentRunner+Snippet.swift",
 				AppIntents/Control/ControlEntityIntentRunner.swift,
-				AppIntents/Control/ControlResultSnippet.swift,
-				AppIntents/Control/ControlResultSnippetView.swift,
+				"AppIntents/Control/ControlEntityIntentRunner+Snippet.swift",
 				AppIntents/Control/ControllableEntityAppEntity.swift,
 				AppIntents/Control/ControllableEntityAppEntityQuery.swift,
+				AppIntents/Control/ControlResultSnippet.swift,
+				AppIntents/Control/ControlResultSnippetView.swift,
 				AppIntents/Control/DimmableLightAppEntity.swift,
 				AppIntents/Control/DimmableLightAppEntityQuery.swift,
 				AppIntents/Control/LockAppEntity.swift,
 				AppIntents/Control/LockAppEntityQuery.swift,
 				AppIntents/Control/LockEntityAppIntent.swift,
-				AppIntents/Control/OpenCloseActionAppEnum.swift,
-				AppIntents/Control/OpenCloseEntityAppIntent.swift,
 				AppIntents/Control/OpenableEntityAppEntity.swift,
 				AppIntents/Control/OpenableEntityAppEntityQuery.swift,
+				AppIntents/Control/OpenCloseActionAppEnum.swift,
+				AppIntents/Control/OpenCloseEntityAppIntent.swift,
 				AppIntents/Control/SetBrightnessAppIntent.swift,
 				AppIntents/Control/SetTemperatureAppIntent.swift,
 				AppIntents/Control/ThermostatAppEntity.swift,
@@ -762,9 +762,9 @@
 				AppIntents/Control/TurnOnOffEntityAppIntent.swift,
 				AppIntents/EntityState/EntityStateSnippetView.swift,
 				AppIntents/EntityState/GetEntityStateAppIntent.swift,
+				AppIntents/EntityState/HAEntityStateAppEntity.swift,
 				AppIntents/EntityState/ReadableEntityAppEntity.swift,
 				AppIntents/EntityState/ReadableEntityAppEntityQuery.swift,
-				AppIntents/EntityState/HAEntityStateAppEntity.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
@@ -846,12 +846,12 @@
 				Widgets/Controls/Fan/IntentFanEntity.swift,
 				Widgets/Controls/Light/IntentLightEntity.swift,
 				Widgets/Controls/Light/LightIntent.swift,
+				Widgets/Controls/OnOffIntentDialog.swift,
 				Widgets/Controls/OpenEntity/ControlOpenCamera/ControlOpenCamera.swift,
 				Widgets/Controls/OpenEntity/ControlOpenCamera/ControlOpenCameraValueProvider.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntity.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntityValueProvider.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/OpenEntityAppIntent.swift,
-				Widgets/Controls/OnOffIntentDialog.swift,
 				Widgets/Controls/Switch/IntentSwitchEntity.swift,
 				Widgets/Controls/Switch/SwitchIntent.swift,
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
@@ -1086,10 +1086,10 @@
 				AppIntents/Control/LockAppEntity.swift,
 				AppIntents/Control/LockAppEntityQuery.swift,
 				AppIntents/Control/LockEntityAppIntent.swift,
-				AppIntents/Control/OpenCloseActionAppEnum.swift,
-				AppIntents/Control/OpenCloseEntityAppIntent.swift,
 				AppIntents/Control/OpenableEntityAppEntity.swift,
 				AppIntents/Control/OpenableEntityAppEntityQuery.swift,
+				AppIntents/Control/OpenCloseActionAppEnum.swift,
+				AppIntents/Control/OpenCloseEntityAppIntent.swift,
 				AppIntents/Control/SetBrightnessAppIntent.swift,
 				AppIntents/Control/SetTemperatureAppIntent.swift,
 				AppIntents/Control/ThermostatAppEntity.swift,
@@ -1459,11 +1459,13 @@
 				Gestures/GesturesSetupViewModel.swift,
 				Gestures/ListPicker.swift,
 				KeychainExplorer/KeychainExplorerView.swift,
+				Kiosk/ConditionalContainerView.swift,
 				Kiosk/KioskScreensaverSettingsView.swift,
 				Kiosk/KioskScreensaverView.swift,
 				Kiosk/KioskSensorsView.swift,
 				Kiosk/KioskSensorsViewModel.swift,
 				Kiosk/KioskSettingsEntryCustomizationView.swift,
+				Kiosk/KioskSettingsEntryIcon.swift,
 				Kiosk/KioskSettingsView.swift,
 				Kiosk/KioskSettingsViewModel.swift,
 				Kiosk/KioskView.swift,
@@ -1676,11 +1678,13 @@
 				Gestures/GesturesSetupViewModel.swift,
 				Gestures/ListPicker.swift,
 				KeychainExplorer/KeychainExplorerView.swift,
+				Kiosk/ConditionalContainerView.swift,
 				Kiosk/KioskScreensaverSettingsView.swift,
 				Kiosk/KioskScreensaverView.swift,
 				Kiosk/KioskSensorsView.swift,
 				Kiosk/KioskSensorsViewModel.swift,
 				Kiosk/KioskSettingsEntryCustomizationView.swift,
+				Kiosk/KioskSettingsEntryIcon.swift,
 				Kiosk/KioskSettingsView.swift,
 				Kiosk/KioskSettingsViewModel.swift,
 				Kiosk/KioskView.swift,
@@ -1941,12 +1945,6 @@
 				__Snapshots__/GesturesSetupView.test/testActionsPickerUI.light.png,
 				__Snapshots__/GesturesSetupView.test/testUI.dark.png,
 				__Snapshots__/GesturesSetupView.test/testUI.light.png,
-				__Snapshots__/ManageStorageView.test/testUI.dark.png,
-				__Snapshots__/ManageStorageView.test/testUI.light.png,
-				__Snapshots__/ManageStorageView.test/testUIFilteredToRemovableRows.dark.png,
-				__Snapshots__/ManageStorageView.test/testUIFilteredToRemovableRows.light.png,
-				__Snapshots__/ManageStorageView.test/testUIWithNoMatches.dark.png,
-				__Snapshots__/ManageStorageView.test/testUIWithNoMatches.light.png,
 				__Snapshots__/PrivacyView.test/testUI.dark.png,
 				__Snapshots__/PrivacyView.test/testUI.light.png,
 				__Snapshots__/SensorRow.test/testRowView.dark.png,
@@ -2398,9 +2396,11 @@
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.custom-text-color.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.full-fraction.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.icon-name-gauge.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.legacy-text-gauge.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.long-text.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-icon.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-name.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.per-slot-colors.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.text-only.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.value-as-text.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.zero-fraction.png",
@@ -2425,7 +2425,6 @@
 		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
-		42FD0000009100510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
@@ -2512,10 +2511,11 @@
 		42EDE917300315A50051FC9B /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000700510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42EDE91C300315A50051FC9B /* TestFlightCommunication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestFlightCommunication; sourceTree = "<group>"; };
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
-		42FD0000009000510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
 		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
+		42FD0000009000510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
+		42FD0000009100510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
@@ -3443,9 +3443,9 @@
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
 				42EDE930300315A50051FC9B /* Utilities */,
-				42FD0000009000510051FC9B /* VoiceToolsServer */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
+				42FD0000009000510051FC9B /* VoiceToolsServer */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -3484,7 +3484,6 @@
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
-				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				42CE0001300000000051FC9B /* Container */,
 				42CE0002300000000051FC9B /* Cameras */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
@@ -3511,6 +3510,7 @@
 				42EDBBEB3002FBC90051FC9B /* Webhook */,
 				42EDBBEF3002FBC90051FC9B /* Notifications */,
 				42EDBBF33002FBC90051FC9B /* WhatsNew */,
+				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 			);
 			name = "Tests-App";

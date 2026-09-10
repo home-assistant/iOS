@@ -3130,6 +3130,12 @@ public enum L10n {
         public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
       }
     }
+    public enum CommandConfirmation {
+      /// When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.command_confirmation.footer") }
+      /// Show command confirmation
+      public static var title: String { return L10n.tr("Localizable", "kiosk.command_confirmation.title") }
+    }
     public enum Corner {
       /// Bottom leading
       public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
@@ -3183,6 +3189,20 @@ public enum L10n {
     public enum Footer {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
+    }
+    public enum HideSettingsEntry {
+      /// Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.footer") }
+      /// Hide entry button
+      public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.title") }
+      public enum Alert {
+        /// Hide button
+        public static var confirm: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.confirm") }
+        /// The button will no longer be drawn on screen. It stays tappable in the corner you picked, so make sure you remember which one: it is the only way back into these settings.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.message") }
+        /// Hide the settings entry?
+        public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.title") }
+      }
     }
     public enum PushCommand {
       /// Returning to dashboard
@@ -4939,6 +4959,8 @@ public enum L10n {
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
       public enum IosNativeTabBar {
+        /// Replaces the Home Assistant sidebar with a native tab bar. Choose up to three tabs from the More tab. The page reloads when you change this setting.
+        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.footer") }
         /// Replaces the Home Assistant sidebar with a native tab bar. The first four entries of the More tab's list are the tabs; reorder or hide them from the More tab. The page reloads when you change this setting.
         public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.summary") }
         /// Native tab bar
@@ -7460,16 +7482,26 @@ public enum L10n {
 
   public enum TabBar {
     public enum Customize {
+      /// Add
+      public static var add: String { return L10n.tr("Localizable", "tab_bar.customize.add") }
       /// Hide
       public static var hide: String { return L10n.tr("Localizable", "tab_bar.customize.hide") }
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "tab_bar.customize.remove") }
       /// Show
       public static var show: String { return L10n.tr("Localizable", "tab_bar.customize.show") }
-      /// Tab %d
+      /// Tab %li
       public static func tabNumberD(_ p1: Int) -> String {
         return L10n.tr("Localizable", "tab_bar.customize.tab_number_%d", p1)
       }
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
+      public enum AvailableSection {
+        /// Remove a tab to add another one.
+        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
+        /// Available
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
+      }
       public enum DashboardsSection {
         /// The first four entries are the tabs, the rest are listed in More. Drag to reorder.
         public static var footerFourTabs: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer_four_tabs") }
@@ -7481,6 +7513,14 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.footer") }
         /// Hidden
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
+      }
+      public enum TabsSection {
+        /// No tabs. Add pages from the list below.
+        public static var empty: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.empty") }
+        /// Up to three pages show as tabs. Drag to reorder.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.footer") }
+        /// Tabs
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.header") }
       }
     }
     public enum Item {
