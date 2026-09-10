@@ -24,6 +24,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
+    var pendingAssistZoomSourceView: UIView?
+    /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
+    weak var detachedOverlayController: UIViewController?
+    var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
@@ -215,6 +219,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
+        tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()

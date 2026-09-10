@@ -2,8 +2,7 @@ import Combine
 import Foundation
 import Shared
 
-/// Shared state of the App Labs native iOS tab bar: whether the feature is on, and the frontend's requests
-/// to open the sidebar, which the tab bar answers by showing the More tab.
+/// Shared state of the App Labs native iOS tab bar.
 final class NativeTabBarState: ObservableObject {
     static let shared = NativeTabBarState()
 

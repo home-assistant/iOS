@@ -3184,6 +3184,20 @@ public enum L10n {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
+    public enum HideSettingsEntry {
+      /// Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.footer") }
+      /// Hide entry button
+      public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.title") }
+      public enum Alert {
+        /// Hide button
+        public static var confirm: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.confirm") }
+        /// The button will no longer be drawn on screen. It stays tappable in the corner you picked, so make sure you remember which one: it is the only way back into these settings.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.message") }
+        /// Hide the settings entry?
+        public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.title") }
+      }
+    }
     public enum PushCommand {
       /// Returning to dashboard
       public static var defaultDashboard: String { return L10n.tr("Localizable", "kiosk.push_command.default_dashboard") }
@@ -4939,8 +4953,8 @@ public enum L10n {
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
       public enum IosNativeTabBar {
-        /// Replaces the Home Assistant sidebar with a native tab bar. The first three sidebar dashboards are the tabs; reorder or hide dashboards from the More tab. The page reloads when you change this setting.
-        public static var description: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.description") }
+        /// Replaces the Home Assistant sidebar with a native tab bar. The first four entries of the More tab's list are the tabs; reorder or hide them from the More tab. The page reloads when you change this setting.
+        public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.summary") }
         /// Native tab bar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
       }
@@ -7471,8 +7485,8 @@ public enum L10n {
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
       public enum DashboardsSection {
-        /// The first three dashboards are the tabs, the rest are listed in More. Drag to reorder.
-        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer") }
+        /// The first four entries are the tabs, the rest are listed in More. Drag to reorder.
+        public static var footerFourTabs: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer_four_tabs") }
         /// Dashboards
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.header") }
       }
@@ -7483,9 +7497,17 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
       }
     }
+    public enum Item {
+      /// Assist
+      public static var assist: String { return L10n.tr("Localizable", "tab_bar.item.assist") }
+      /// Search
+      public static var search: String { return L10n.tr("Localizable", "tab_bar.item.search") }
+    }
     public enum More {
       /// App Settings
       public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
+      /// Customize
+      public static var customize: String { return L10n.tr("Localizable", "tab_bar.more.customize") }
       /// Home Assistant Settings
       public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
       /// More

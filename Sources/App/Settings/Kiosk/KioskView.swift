@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 import UIKit
@@ -61,6 +60,8 @@ struct ConditionalContainerView: View {
                         sourceID: HomeAssistantStandByView.serverSelectionTransitionID,
                         in: serverSelectionNamespace
                     ))
+                } else if #available(iOS 18.0, *), let sourceID = appSettings.zoomSourceID {
+                    view.navigationTransition(.zoom(sourceID: sourceID, in: serverSelectionNamespace))
                 } else {
                     view
                 }
@@ -190,7 +191,8 @@ struct KioskView: View {
                 iconColor: Color(
                     hex: kiosk.settings.settingsEntryIconColor ?? KioskSettingsEntryIcon
                         .defaultIconColorHex
-                )
+                ),
+                isHidden: kiosk.settings.settingsEntryHidden
             )
         }
         .buttonStyle(.plain)
@@ -207,22 +209,5 @@ struct KioskView: View {
             .clipShape(Capsule())
             .padding(DesignSystem.Spaces.two)
             .allowsHitTesting(false)
-    }
-}
-
-struct KioskSettingsEntryIcon: View {
-    static let defaultBackgroundColorHex = "000000"
-    static let defaultIconColorHex = "FFFFFF"
-
-    var backgroundColor: Color
-    var iconColor: Color
-
-    var body: some View {
-        Image(systemSymbol: .gearshapeFill)
-            .font(.body)
-            .foregroundStyle(iconColor)
-            .padding(DesignSystem.Spaces.one)
-            .background(backgroundColor)
-            .clipShape(.circle)
     }
 }

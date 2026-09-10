@@ -7,6 +7,7 @@ struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
     @ObservedObject private var appSettings = AppSettingsPresenter.shared
+    @ObservedObject private var nativeTabBar = NativeTabBarState.shared
     @State private var coordinator = AppContainerCoordinator()
 
     var body: some View {
@@ -30,7 +31,7 @@ struct ContainerView: View {
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
                 // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
-                if pushOntoNavigationStack, sizeClass == .compact {
+                if pushOntoNavigationStack, sizeClass == .compact, !NativeTabBarState.shared.isEnabled {
                     AppSettingsPresenter.shared.isPushPresented = true
                 } else {
                     AppSettingsPresenter.shared.presentSettings()
@@ -83,25 +84,31 @@ struct ContainerView: View {
         }
     }
 
-    /// The frontend, in the stack Settings is pushed onto. Only this screen: onboarding brings its own
-    /// `NavigationStack`, and SwiftUI crashes on the two nested.
+    /// The frontend, in the stack Settings is pushed onto; with the App Labs tab bar on it stands alone.
+    @ViewBuilder
     private func frontend(server: Server, initialPath: String?) -> some View {
-        NavigationStack(path: $appSettings.pushPath) {
-            HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
-                coordinator.setFrontend(webViewController)
-                Current.sceneManager.setWebViewController(webViewController)
-            }
-            .id(server.identifier.rawValue)
-            .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: AppSettingsPushRoute.self) { route in
-                switch route {
-                case .settings:
-                    SettingsView(embedInOwnNavigation: false)
-                        .injectingViewControllerProvider()
-                case let .item(item):
-                    item.destinationView
-                        .injectingViewControllerProvider()
-                }
+        let homeAssistant = HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
+            coordinator.setFrontend(webViewController)
+            Current.sceneManager.setWebViewController(webViewController)
+        }
+        .id(server.identifier.rawValue)
+
+        if #available(iOS 26, *), nativeTabBar.isEnabled {
+            homeAssistant
+        } else {
+            NavigationStack(path: $appSettings.pushPath) {
+                homeAssistant
+                    .toolbar(.hidden, for: .navigationBar)
+                    .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                        switch route {
+                        case .settings:
+                            SettingsView(embedInOwnNavigation: false)
+                                .injectingViewControllerProvider()
+                        case let .item(item):
+                            item.destinationView
+                                .injectingViewControllerProvider()
+                        }
+                    }
             }
         }
     }

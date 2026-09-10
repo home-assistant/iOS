@@ -88,6 +88,12 @@ final class EntityPickerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
+        $entities
+            .sink { [weak self] _ in
+                self?.cachedEntitiesByServer.removeAll()
+            }
+            .store(in: &cancellables)
+
         // Recompute area-based caches when area data changes
         $areaData
             .sink { [weak self] _ in

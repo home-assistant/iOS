@@ -2,9 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The App Labs native iOS tab bar: pinned sidebar pages, More and the iOS 26 search tab (which opens the
-/// frontend's quick search). One `WebViewController` moves between tabs through `NativeTabBarFrontendSlot`;
-/// `frontendOverlay` (the stand-by loader) covers that slot alone, never the bar or the More list.
+/// The App Labs native iOS tab bar.
 @available(iOS 26, *)
 struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     private enum Constants {
@@ -12,6 +10,7 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     }
 
     @ObservedObject var viewModel: NativeTabBarViewModel
+    @Environment(\.serverSelectionNamespace) private var transitionNamespace
     let webViewController: WebViewController?
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
@@ -23,17 +22,21 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
             get: { viewModel.selection },
             set: { viewModel.didSelect($0) }
         )) {
-            ForEach(viewModel.tabItems) { item in
-                Tab(value: NativeTabBarTab.panel(id: item.id)) {
-                    ZStack {
-                        NativeTabBarFrontendSlot(
-                            controller: webViewController,
-                            isActive: viewModel.selection == .panel(id: item.id),
-                            onNeedsController: onNeedsWebViewController
-                        )
-                        .opacity(frontendOpacity)
-                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
-                        frontendOverlay()
+            ForEach(viewModel.regularTabItems) { item in
+                Tab(value: item.tab) {
+                    if item.sidebarItem != nil {
+                        ZStack {
+                            NativeTabBarFrontendSlot(
+                                controller: webViewController,
+                                isActive: viewModel.selection == item.tab,
+                                onNeedsController: onNeedsWebViewController
+                            )
+                            .opacity(frontendOpacity)
+                            .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                            frontendOverlay()
+                        }
+                    } else {
+                        Color.clear
                     }
                 } label: {
                     Label {
@@ -70,12 +73,55 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
             } label: {
                 Label(L10n.TabBar.More.title, systemSymbol: .ellipsis)
             }
-            Tab(value: NativeTabBarTab.search, role: .search) {
-                Color.clear
+            if let searchRoleItem = viewModel.searchRoleItem {
+                if searchRoleItem.kind == .search {
+                    Tab(value: NativeTabBarTab.search, role: .search) {
+                        Color.clear
+                    }
+                } else {
+                    Tab(value: searchRoleItem.tab, role: .search) {
+                        Color.clear
+                    } label: {
+                        Label {
+                            Text(searchRoleItem.title)
+                        } icon: {
+                            Image(uiImage: searchRoleItem.icon.image(
+                                ofSize: .init(width: Constants.tabIconSize, height: Constants.tabIconSize),
+                                color: .label
+                            ))
+                            .renderingMode(.template)
+                        }
+                    }
+                }
             }
         }
         .tabViewSearchActivation(.searchTabSelection)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .background(NativeTabBarLongPressInstaller {
+            viewModel.showCustomize(zoomingFromButton: false)
+        })
+        .sheet(isPresented: $viewModel.showsCustomize) {
+            NavigationStack {
+                NativeTabBarCustomizeView(viewModel: viewModel)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton {
+                                viewModel.showsCustomize = false
+                            }
+                        }
+                    }
+            }
+            .modify { view in
+                if viewModel.customizeZoomsFromButton, let transitionNamespace {
+                    view.navigationTransition(.zoom(
+                        sourceID: NativeTabBarViewModel.customizeTransitionID,
+                        in: transitionNamespace
+                    ))
+                } else {
+                    view
+                }
+            }
+        }
         .onAppear { viewModel.start() }
         .onDisappear { viewModel.stop() }
     }

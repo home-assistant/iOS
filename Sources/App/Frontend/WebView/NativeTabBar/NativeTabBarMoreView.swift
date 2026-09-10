@@ -2,135 +2,26 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The More tab: a profile / notifications / settings header (the profile doubles as a server picker when
-/// there is more than one server), the sidebar pages that are not in the bar, and the button that
-/// customises the bar.
+/// The More tab: the rest of the list under a bar with the profile picker, notifications and settings.
 @available(iOS 26, *)
 struct NativeTabBarMoreView: View {
     private enum Constants {
-        static let avatarSize: CGFloat = 44
-        static let headerIconSize: CGFloat = 40
+        static let avatarSize: CGFloat = 28
         static let badgeMinWidth: CGFloat = 18
         static let badgeOffset: CGFloat = 6
     }
 
-    private static let customizeTransitionID = "customizeTabs"
-
     @ObservedObject var viewModel: NativeTabBarViewModel
-    @State private var showsCustomize = false
-    @Namespace private var customizeNamespace
+    @State private var rowFrames: [String: CGRect] = [:]
+    @Environment(\.serverSelectionNamespace) private var transitionNamespace
 
     var body: some View {
         List {
-            Section {
-                HStack(spacing: DesignSystem.Spaces.two) {
-                    if let profile = viewModel.profileItem {
-                        let header = HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
-                            MacSidebarAvatarView(
-                                server: viewModel.sidebar.server,
-                                title: profile.title,
-                                user: viewModel.sidebar.user,
-                                size: Constants.avatarSize
-                            )
-                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
-                                Text(profile.title)
-                                    .font(.headline)
-                                    .foregroundStyle(Color.primary)
-                                Text(viewModel.sidebar.server.info.name)
-                                    .font(.subheadline)
-                                    .foregroundStyle(Color.secondary)
-                            }
-                            .lineLimit(1)
-                            if viewModel.hasMultipleServers {
-                                Image(systemSymbol: .chevronUpChevronDown)
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color.secondary)
-                            }
-                        }
-                        if viewModel.hasMultipleServers {
-                            Menu {
-                                ForEach(viewModel.servers, id: \.identifier) { server in
-                                    Toggle(server.info.name, isOn: Binding(
-                                        get: { server.identifier == viewModel.sidebar.server.identifier },
-                                        set: { _ in viewModel.open(server: server) }
-                                    ))
-                                }
-                                Divider()
-                                Button {
-                                    viewModel.open(profile)
-                                } label: {
-                                    Label(FrontendStrings.panelProfile, systemSymbol: .personCropCircle)
-                                }
-                            } label: {
-                                header
-                            }
-                            .accessibilityLabel(L10n.ServersSelection.title)
-                        } else {
-                            Button {
-                                viewModel.open(profile)
-                            } label: {
-                                header
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    Spacer(minLength: 0)
-                    if let notifications = viewModel.notificationsItem {
-                        Button {
-                            viewModel.open(notifications)
-                        } label: {
-                            Image(systemSymbol: .bell)
-                                .font(.title3)
-                                .foregroundStyle(Color.primary)
-                                .frame(width: Constants.headerIconSize, height: Constants.headerIconSize)
-                                .background(Circle().fill(Color(uiColor: .tertiarySystemFill)))
-                                .overlay(alignment: .topTrailing) {
-                                    if notifications.badge > 0 {
-                                        Text(notifications.badge, format: .number)
-                                            .font(.caption2.bold())
-                                            .foregroundStyle(.white)
-                                            .padding(.horizontal, DesignSystem.Spaces.half)
-                                            .frame(
-                                                minWidth: Constants.badgeMinWidth,
-                                                minHeight: Constants.badgeMinWidth
-                                            )
-                                            .background(Capsule().fill(Color.red))
-                                            .offset(x: Constants.badgeOffset, y: -Constants.badgeOffset)
-                                    }
-                                }
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(notifications.title)
-                    }
-                    Menu {
-                        if let settings = viewModel.settingsItem {
-                            Button {
-                                viewModel.open(settings)
-                            } label: {
-                                Label(L10n.TabBar.More.homeAssistantSettings, systemSymbol: .gearshape)
-                            }
-                        }
-                        Button {
-                            viewModel.showAppSettings()
-                        } label: {
-                            Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
-                        }
-                    } label: {
-                        Image(systemSymbol: .gearshape)
-                            .font(.title3)
-                            .foregroundStyle(Color.primary)
-                            .frame(width: Constants.headerIconSize, height: Constants.headerIconSize)
-                            .background(Circle().fill(Color(uiColor: .tertiarySystemFill)))
-                    }
-                    .accessibilityLabel(L10n.Mac.Sidebar.settings)
-                }
-                .padding(.vertical, DesignSystem.Spaces.half)
-            }
             if !viewModel.moreItems.isEmpty {
                 Section {
                     ForEach(viewModel.moreItems) { item in
                         Button {
-                            viewModel.open(item)
+                            viewModel.open(item, sourceFrame: rowFrames[item.id])
                         } label: {
                             NativeTabBarItemLabel(
                                 item: item,
@@ -138,22 +29,41 @@ struct NativeTabBarMoreView: View {
                                 user: viewModel.sidebar.user
                             )
                         }
+                        .onGeometryChange(for: CGRect.self) { proxy in
+                            proxy.frame(in: .global)
+                        } action: { frame in
+                            rowFrames[item.id] = frame
+                        }
                     }
+                } header: {
+                    Text(L10n.TabBar.Customize.DashboardsSection.header)
                 }
             }
             Section {
                 Button {
-                    showsCustomize = true
+                    viewModel.showCustomize(zoomingFromButton: true)
                 } label: {
-                    Label(L10n.TabBar.Customize.title, systemSymbol: .squareGrid2x2)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(Color.primary)
-                        .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
-                        .padding(.vertical, DesignSystem.Spaces.one)
-                        .background(Capsule().fill(Color(uiColor: .secondarySystemFill)))
+                    HStack(spacing: DesignSystem.Spaces.one) {
+                        Image(systemSymbol: .pencil)
+                        Text(L10n.TabBar.More.customize)
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.primary)
+                    .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
+                    .padding(.vertical, DesignSystem.Spaces.one)
+                    .background(Capsule().fill(Color(uiColor: .secondarySystemFill)))
                 }
                 .buttonStyle(.plain)
-                .matchedTransitionSource(id: Self.customizeTransitionID, in: customizeNamespace)
+                .modify { view in
+                    if let transitionNamespace {
+                        view.matchedTransitionSource(
+                            id: NativeTabBarViewModel.customizeTransitionID,
+                            in: transitionNamespace
+                        )
+                    } else {
+                        view
+                    }
+                }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
@@ -161,20 +71,109 @@ struct NativeTabBarMoreView: View {
             }
             .listSectionSpacing(DesignSystem.Spaces.two)
         }
-        .sheet(isPresented: $showsCustomize) {
-            NavigationStack {
-                NativeTabBarCustomizeView(viewModel: viewModel)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton {
-                                showsCustomize = false
-                            }
+        .contentMargins(.top, DesignSystem.Spaces.two, for: .scrollContent)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if let profile = viewModel.profileItem {
+                    let header = HStack(spacing: DesignSystem.Spaces.one) {
+                        MacSidebarAvatarView(
+                            server: viewModel.sidebar.server,
+                            title: profile.title,
+                            user: viewModel.sidebar.user,
+                            size: Constants.avatarSize
+                        )
+                        Text(viewModel.sidebar.server.info.name)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(Color.primary)
+                            .lineLimit(1)
+                        if viewModel.hasMultipleServers {
+                            Image(systemSymbol: .chevronUpChevronDown)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.secondary)
                         }
                     }
+                    if viewModel.hasMultipleServers {
+                        Menu {
+                            Picker(L10n.ServersSelection.title, selection: Binding(
+                                get: { viewModel.sidebar.server.identifier },
+                                set: { viewModel.open(serverIdentifier: $0) }
+                            )) {
+                                ForEach(viewModel.servers, id: \.identifier) { server in
+                                    Text(server.info.name).tag(server.identifier)
+                                }
+                            }
+                            .pickerStyle(.inline)
+                            Divider()
+                            Button {
+                                viewModel.open(profile)
+                            } label: {
+                                Label(FrontendStrings.panelProfile, systemSymbol: .personCropCircle)
+                            }
+                        } label: {
+                            header
+                        }
+                        .accessibilityLabel(L10n.ServersSelection.title)
+                    } else {
+                        Button {
+                            viewModel.open(profile)
+                        } label: {
+                            header
+                        }
+                    }
+                }
             }
-            .navigationTransition(.zoom(sourceID: Self.customizeTransitionID, in: customizeNamespace))
+            if let notifications = viewModel.notificationsItem {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.open(notifications)
+                    } label: {
+                        Image(systemSymbol: .bell)
+                            .overlay(alignment: .topTrailing) {
+                                if notifications.badge > 0 {
+                                    Text(notifications.badge, format: .number)
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, DesignSystem.Spaces.half)
+                                        .frame(minWidth: Constants.badgeMinWidth, minHeight: Constants.badgeMinWidth)
+                                        .background(Capsule().fill(Color.red))
+                                        .offset(x: Constants.badgeOffset, y: -Constants.badgeOffset)
+                                }
+                            }
+                    }
+                    .accessibilityLabel(notifications.title)
+                }
+                ToolbarSpacer(.fixed, placement: .topBarTrailing)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    if let settings = viewModel.settingsItem {
+                        Button {
+                            viewModel.open(settings)
+                        } label: {
+                            Label(L10n.TabBar.More.homeAssistantSettings, systemSymbol: .gearshape)
+                        }
+                    }
+                    Button {
+                        viewModel.showAppSettings()
+                    } label: {
+                        Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
+                    }
+                } label: {
+                    Image(systemSymbol: .gearshape)
+                }
+                .accessibilityLabel(L10n.Mac.Sidebar.settings)
+                .modify { view in
+                    if let transitionNamespace {
+                        view.matchedTransitionSource(
+                            id: NativeTabBarViewModel.appSettingsTransitionID,
+                            in: transitionNamespace
+                        )
+                    } else {
+                        view
+                    }
+                }
+            }
         }
-        .navigationTitle(L10n.TabBar.More.title)
     }
 }
 
