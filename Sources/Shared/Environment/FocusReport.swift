@@ -50,7 +50,7 @@ public struct FocusReport: Equatable {
             // A filter only runs with a name when a Focus starts — the nil-name run iOS makes on
             // deactivation must not count — and nothing has told us it ended since.
             isFocused = true
-        } else if let receivedStatus, receivedStatus.isFocused == true, liveStatus == false,
+        } else if let receivedStatus, receivedStatus.isFocused, !liveStatus,
                   Current.date().timeIntervalSince(receivedStatus.date) > switchGracePeriod {
             // iOS wakes us when a Focus starts but not reliably when one ends, so the "ended" push
             // can simply never arrive and the last push would stand until the next Focus starts.
