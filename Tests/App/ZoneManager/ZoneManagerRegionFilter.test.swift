@@ -130,6 +130,35 @@ class ZoneManagerRegionFilterTests: XCTestCase {
         XCTAssertEqual(result.filter { $0 is CLCircularRegion }.count, 0)
     }
 
+    func testMixedRegionsRespectTotalLimitBelowBothPerTypeLimits() {
+        let zones = AnyCollection(beaconZones.prefix(3) + circularZones.prefix(3))
+        let filter = ZoneManagerRegionFilterImpl(
+            limits: .init(beacon: 20, circular: 20),
+            maximumTotalRegionCount: 5
+        )
+        let result = Array(filter.regions(
+            from: zones,
+            currentRegions: AnyCollection([]),
+            lastLocation: locationInStart
+        ))
+
+        XCTAssertEqual(result.count, 5)
+        XCTAssertTrue(result.contains { $0 is CLBeaconRegion })
+        XCTAssertTrue(result.contains { $0 is CLCircularRegion })
+    }
+
+    func testMixedRegionsAtTotalLimitRemainUnchanged() {
+        let zones = AnyCollection(beaconZones.prefix(3) + circularZones.prefix(3))
+        let expected = monitoredRegions(for: zones)
+        let filter = ZoneManagerRegionFilterImpl(
+            limits: .init(beacon: 20, circular: 20),
+            maximumTotalRegionCount: 6
+        )
+        let result = filter.regions(from: zones, currentRegions: AnyCollection(expected), lastLocation: nil)
+
+        XCTAssertEqual(Set(result), expected)
+    }
+
     func testAtCountProducesSameRegardlessOfLocatio() {
         let zones = AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3])
         let regions = monitoredRegions(for: zones)

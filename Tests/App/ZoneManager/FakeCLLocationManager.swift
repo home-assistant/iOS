@@ -9,6 +9,7 @@ class FakeCLLocationManager: CLLocationManager {
     var requestedRegions = [CLRegion]()
     var monitoredRegionsReadsWereOnMainThread = [Bool]()
     var startMonitoringCallsWereOnMainThread = [Bool]()
+    var onStartRanging: (() -> Void)?
     var startedRangingConstraints = [CLBeaconIdentityConstraint]()
     var stoppedRangingConstraints = [CLBeaconIdentityConstraint]()
     var requestAlwaysAuthorizationCount = 0
@@ -53,6 +54,7 @@ class FakeCLLocationManager: CLLocationManager {
     }
 
     override func startRangingBeacons(satisfying constraint: CLBeaconIdentityConstraint) {
+        onStartRanging?()
         startedRangingConstraints.append(constraint)
     }
 

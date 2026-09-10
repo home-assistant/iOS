@@ -8,6 +8,7 @@ import XCTest
 class ZoneManagerCollectorTests: XCTestCase {
     private final class FakeBeaconScanBackgroundExecution: BeaconScanBackgroundExecution {
         private var expirationHandler: (() -> Void)?
+        var expiresOnBegin = false
         private(set) var beginCount = 0
         private(set) var endCount = 0
 
@@ -15,6 +16,9 @@ class ZoneManagerCollectorTests: XCTestCase {
             guard self.expirationHandler == nil else { return }
             beginCount += 1
             self.expirationHandler = expirationHandler
+            if expiresOnBegin {
+                expire()
+            }
         }
 
         func end() {
@@ -29,6 +33,29 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
     }
 
+    private final class TestScheduler {
+        private(set) var now = Date(timeIntervalSince1970: 1000)
+        private var jobs: [(deadline: Date, work: DispatchWorkItem)] = []
+
+        func schedule(after delay: TimeInterval, work: DispatchWorkItem) {
+            jobs.append((now.addingTimeInterval(delay), work))
+        }
+
+        func advance(by interval: TimeInterval) {
+            let target = now.addingTimeInterval(interval)
+            while let index = jobs.indices.filter({ jobs[$0].deadline <= target })
+                .min(by: { jobs[$0].deadline < jobs[$1].deadline }) {
+                let job = jobs.remove(at: index)
+                now = job.deadline
+                if !job.work.isCancelled {
+                    job.work.perform()
+                }
+            }
+            now = target
+        }
+    }
+
+    private var scheduler: TestScheduler!
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var delegate: FakeZoneManagerCollectorDelegate!
@@ -48,10 +75,11 @@ class ZoneManagerCollectorTests: XCTestCase {
         previousDatabase = Current.database
         Current.database = { self.database }
 
+        scheduler = TestScheduler()
         locationManager = FakeCLLocationManager()
         delegate = FakeZoneManagerCollectorDelegate()
         backgroundExecution = FakeBeaconScanBackgroundExecution()
-        collector = ZoneManagerCollectorImpl(backgroundExecution: backgroundExecution)
+        collector = makeCollector(backgroundExecution: backgroundExecution)
         collector.delegate = delegate
     }
 
@@ -59,6 +87,29 @@ class ZoneManagerCollectorTests: XCTestCase {
         Current.database = previousDatabase
 
         super.tearDown()
+    }
+
+    private func makeCollector(
+        beaconVerificationTimeout: TimeInterval = 25,
+        opportunisticBeaconScanDuration: TimeInterval = 25,
+        beaconExitReconciliationDuration: TimeInterval = 8,
+        beaconExitMinimumEmptySamples: Int = 3,
+        beaconRangingRetryLimit: Int = 2,
+        beaconRangingRetryDelay: TimeInterval = 1,
+        backgroundExecution: BeaconScanBackgroundExecution? = nil
+    ) -> ZoneManagerCollectorImpl {
+        let scheduler = scheduler!
+        return ZoneManagerCollectorImpl(
+            beaconVerificationTimeout: beaconVerificationTimeout,
+            opportunisticBeaconScanDuration: opportunisticBeaconScanDuration,
+            beaconExitReconciliationDuration: beaconExitReconciliationDuration,
+            beaconExitMinimumEmptySamples: beaconExitMinimumEmptySamples,
+            beaconRangingRetryLimit: beaconRangingRetryLimit,
+            beaconRangingRetryDelay: beaconRangingRetryDelay,
+            backgroundExecution: backgroundExecution ?? self.backgroundExecution,
+            now: { scheduler.now },
+            schedule: { scheduler.schedule(after: $0, work: $1) }
+        )
     }
 
     func testDidFailDoesLog() {
@@ -114,7 +165,7 @@ class ZoneManagerCollectorTests: XCTestCase {
 
     func testRangingFailureRetriesActiveConstraintAtMostTwice() {
         let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
-        collector = ZoneManagerCollectorImpl(beaconRangingRetryLimit: 2, beaconRangingRetryDelay: 0)
+        collector = makeCollector(beaconRangingRetryLimit: 2, beaconRangingRetryDelay: 0)
         collector.delegate = delegate
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
 
@@ -123,26 +174,26 @@ class ZoneManagerCollectorTests: XCTestCase {
             rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
             withError: TestError.anyError
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        scheduler.advance(by: 0.01)
         collector.locationManager(
             locationManager,
             rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
             withError: TestError.anyError
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        scheduler.advance(by: 0.01)
         collector.locationManager(
             locationManager,
             rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
             withError: TestError.anyError
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        scheduler.advance(by: 0.01)
 
         XCTAssertEqual(locationManager.startedRangingConstraints.count, 3)
     }
 
     func testRangingRetryBudgetResetsAfterFinalOwnerStops() {
         let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconVerificationTimeout: 0.01,
             beaconRangingRetryLimit: 1,
             beaconRangingRetryDelay: 0
@@ -155,7 +206,7 @@ class ZoneManagerCollectorTests: XCTestCase {
             rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
             withError: TestError.anyError
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.03))
+        scheduler.advance(by: 0.03)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
         collector.locationManager(
@@ -163,7 +214,7 @@ class ZoneManagerCollectorTests: XCTestCase {
             rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
             withError: TestError.anyError
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        scheduler.advance(by: 0.01)
 
         XCTAssertEqual(locationManager.startedRangingConstraints.count, 4)
     }
@@ -255,14 +306,14 @@ class ZoneManagerCollectorTests: XCTestCase {
 
     func testBackgroundBeaconMonitoringStopsAtBoundedTimeout() throws {
         let region = try storedBeaconRegion(entityId: "beacon_region")
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             opportunisticBeaconScanDuration: 0.01,
             backgroundExecution: backgroundExecution
         )
         collector.delegate = delegate
 
         collector.startBackgroundBeaconMonitoring(in: [region], manager: locationManager)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.03))
+        scheduler.advance(by: 0.03)
 
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
         XCTAssertEqual(backgroundExecution.endCount, 1)
@@ -270,14 +321,14 @@ class ZoneManagerCollectorTests: XCTestCase {
 
     func testSameBackgroundRegionsStartNewBoundedScanAfterTimeout() throws {
         let region = try storedBeaconRegion(entityId: "beacon_region")
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             opportunisticBeaconScanDuration: 0.01,
             backgroundExecution: backgroundExecution
         )
         collector.delegate = delegate
 
         collector.startBackgroundBeaconMonitoring(in: [region], manager: locationManager)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.03))
+        scheduler.advance(by: 0.03)
         collector.startBackgroundBeaconMonitoring(in: [region], manager: locationManager)
 
         XCTAssertEqual(locationManager.startedRangingConstraints, [
@@ -676,7 +727,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
         let farBeacon = RangedBeaconSample(proximity: .far, rssi: -85)
         let nearBeacon = RangedBeaconSample(proximity: .near, rssi: -55)
-        collector = ZoneManagerCollectorImpl(beaconVerificationTimeout: 0.1)
+        collector = makeCollector(beaconVerificationTimeout: 0.1)
         collector.delegate = delegate
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -685,7 +736,7 @@ class ZoneManagerCollectorTests: XCTestCase {
             satisfying: region.beaconIdentityConstraint,
             manager: locationManager
         )
-        RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        scheduler.advance(by: 0.05)
         collector.didRange(
             samples: [nearBeacon],
             satisfying: region.beaconIdentityConstraint,
@@ -744,7 +795,7 @@ class ZoneManagerCollectorTests: XCTestCase {
     func testBeaconEntryIsIgnoredWhenRangingTimesOut() {
         let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
         let timeoutExpectation = expectation(description: "ranging timeout")
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconVerificationTimeout: 0.01,
             backgroundExecution: backgroundExecution
         )
@@ -757,6 +808,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         collector.delegate = delegate
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        scheduler.advance(by: 0.02)
         wait(for: [timeoutExpectation], timeout: 1)
 
         XCTAssertTrue(delegate.events.isEmpty)
@@ -908,7 +960,7 @@ class ZoneManagerCollectorTests: XCTestCase {
             try zone.save(db)
         }
         let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconExitReconciliationDuration: 0,
             beaconExitMinimumEmptySamples: 3
         )
@@ -946,7 +998,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
         let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
         let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconExitReconciliationDuration: 0,
             beaconExitMinimumEmptySamples: 3
         )
@@ -1006,7 +1058,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
         let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
         let beacon = RangedBeaconSample(proximity: .far, rssi: -90)
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconExitReconciliationDuration: 0,
             beaconExitMinimumEmptySamples: 3
         )
@@ -1027,7 +1079,7 @@ class ZoneManagerCollectorTests: XCTestCase {
     func testStoredInsideZoneAcceptsCurrentSampleWithoutDuplicateEntryThenAllowsExit() throws {
         let region = try storedBeaconRegion(entityId: "beacon_region", inRegion: true)
         let sample = RangedBeaconSample(proximity: .near, rssi: -60)
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             beaconExitReconciliationDuration: 0,
             beaconExitMinimumEmptySamples: 3,
             backgroundExecution: backgroundExecution
@@ -1098,15 +1150,11 @@ class ZoneManagerCollectorTests: XCTestCase {
             try zone.save(db)
         }
         let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
-        let timeoutExpectation = expectation(description: "opportunistic scan timeout")
-        collector = ZoneManagerCollectorImpl(opportunisticBeaconScanDuration: 0.01)
+        collector = makeCollector(opportunisticBeaconScanDuration: 0.01)
         collector.delegate = delegate
 
         collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-            timeoutExpectation.fulfill()
-        }
-        wait(for: [timeoutExpectation], timeout: 1)
+        scheduler.advance(by: 0.02)
 
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
         XCTAssertTrue(delegate.events.isEmpty)
@@ -1124,7 +1172,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
         let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
         locationManager.overrideMonitoredRegions = [region]
-        collector = ZoneManagerCollectorImpl(
+        collector = makeCollector(
             opportunisticBeaconScanDuration: 0.02,
             beaconExitReconciliationDuration: 0.01,
             beaconExitMinimumEmptySamples: 3
@@ -1135,11 +1183,167 @@ class ZoneManagerCollectorTests: XCTestCase {
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.04))
+        scheduler.advance(by: 0.04)
 
         XCTAssertTrue(delegate.events.isEmpty)
         XCTAssertEqual(locationManager.requestedRegions, [])
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+    }
+
+    func testOpportunisticScanAcquiresLeaseBeforeStartingRanging() throws {
+        let region = try storedBeaconRegion(entityId: "lease_order")
+        locationManager.onStartRanging = { [backgroundExecution] in
+            XCTAssertEqual(backgroundExecution?.beginCount, 1)
+            XCTAssertEqual(backgroundExecution?.endCount, 0)
+        }
+
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+
+        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        backgroundExecution.expire()
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+    }
+
+    func testImmediateLeaseExpirationDoesNotStartPendingRanging() {
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "expired_pending_lease")
+        backgroundExecution.expiresOnBegin = true
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        scheduler.advance(by: 30)
+
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+        XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testImmediateLeaseExpirationDoesNotStartOpportunisticRanging() throws {
+        let region = try storedBeaconRegion(entityId: "expired_lease")
+        backgroundExecution.expiresOnBegin = true
+
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+        scheduler.advance(by: 30)
+
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertEqual(backgroundExecution.beginCount, 1)
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+        XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testReplacedScanIsNotStoppedByPreviousTimeout() throws {
+        let first = try storedBeaconRegion(entityId: "first_window")
+        let second = try storedBeaconRegion(entityId: "second_window")
+        collector.startOpportunisticBeaconScanning(in: [first], manager: locationManager)
+        scheduler.advance(by: 10)
+        collector.startOpportunisticBeaconScanning(in: [second], manager: locationManager)
+        locationManager.stoppedRangingConstraints.removeAll()
+
+        scheduler.advance(by: 15)
+        XCTAssertTrue(locationManager.stoppedRangingConstraints.isEmpty)
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+
+        scheduler.advance(by: 10)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [second.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.endCount, 2)
+    }
+
+    func testOpportunisticScanWithoutBeaconsDoesNotAcquireLease() {
+        collector.startOpportunisticBeaconScanning(in: [CLCircularRegion()], manager: locationManager)
+
+        XCTAssertEqual(backgroundExecution.beginCount, 0)
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+    }
+
+    func testSuccessfulSampleCancelsScheduledRetryAndVerificationTimeout() {
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "retry_success")
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.locationManager(
+            locationManager,
+            rangingBeaconsDidFailFor: region.beaconIdentityConstraint,
+            withError: TestError.anyError
+        )
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        let logCount = delegate.states.count
+        scheduler.advance(by: 30)
+
+        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(delegate.events.count, 1)
+        XCTAssertEqual(delegate.states.count, logCount)
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+    }
+
+    func testReconciliationWaitsForElapsedDurationAsWellAsEmptySamples() throws {
+        let region = try storedBeaconRegion(entityId: "elapsed_exit", inRegion: true)
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        for _ in 0 ..< 3 {
+            collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        }
+        scheduler.advance(by: 7)
+        collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertTrue(delegate.events.isEmpty)
+
+        scheduler.advance(by: 1)
+        collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside)])
+    }
+
+    func testForegroundScanUsesUpdatedStoredStateForReentry() throws {
+        let region = try storedBeaconRegion(entityId: "reentry", inRegion: true)
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+        var zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        zone.inRegion = false
+        try database.write { try zone.save($0) }
+        delegate.events.removeAll()
+
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside), associatedZone: zone)])
+    }
+
+    func testForegroundScanDoesNotRepeatEntryPersistedAfterScanStarted() throws {
+        let region = try storedBeaconRegion(entityId: "updated_inside")
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        var zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        zone.inRegion = true
+        try database.write { try zone.save($0) }
+
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testForegroundScanDoesNotEmitForDeletedZone() throws {
+        let region = try storedBeaconRegion(entityId: "deleted_zone")
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        let zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        _ = try database.write { try zone.delete($0) }
+
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertTrue(delegate.events.isEmpty)
     }
 
     func testIgnoredRegions() {
