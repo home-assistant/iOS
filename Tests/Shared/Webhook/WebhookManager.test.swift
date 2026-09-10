@@ -21,6 +21,96 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
+    private final class CausallyGatedInputStream: InputStream {
+        private let lock = NSLock()
+        private let payload: [UInt8]
+        private var payloadOffset = 0
+        private var released = false
+        private var status = Stream.Status.notOpen
+
+        init(payload: Data) {
+            self.payload = Array(payload)
+            super.init(data: Data())
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        func release() {
+            lock.lock()
+            released = true
+            lock.unlock()
+        }
+
+        var isReleased: Bool {
+            lock.lock()
+            let currentValue = released
+            lock.unlock()
+            return currentValue
+        }
+
+        override var streamStatus: Stream.Status {
+            lock.lock()
+            let currentStatus = status
+            lock.unlock()
+            return currentStatus
+        }
+
+        override var hasBytesAvailable: Bool {
+            lock.lock()
+            let hasBytes = status == .open && (!released || payloadOffset < payload.count)
+            lock.unlock()
+            return hasBytes
+        }
+
+        override var streamError: Error? {
+            nil
+        }
+
+        override func open() {
+            lock.lock()
+            status = .open
+            lock.unlock()
+        }
+
+        override func close() {
+            lock.lock()
+            status = .closed
+            lock.unlock()
+        }
+
+        override func read(_ buffer: UnsafeMutablePointer<UInt8>, maxLength len: Int) -> Int {
+            lock.lock()
+            defer { lock.unlock() }
+            guard status == .open else {
+                return -1
+            }
+            guard released else {
+                buffer.initialize(repeating: 0x20, count: len)
+                return len
+            }
+
+            let count = min(len, payload.count - payloadOffset)
+            for index in 0 ..< count {
+                buffer[index] = payload[payloadOffset + index]
+            }
+            payloadOffset += count
+            if payloadOffset == payload.count {
+                status = .atEnd
+            }
+            return count
+        }
+
+        override func getBuffer(
+            _ buffer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>,
+            length len: UnsafeMutablePointer<Int>
+        ) -> Bool {
+            false
+        }
+    }
+
     private var manager: WebhookManager!
     private var api1: FakeHassAPI!
     private var api2: FakeHassAPI!
@@ -1012,13 +1102,47 @@ class WebhookManagerTests: XCTestCase {
         let requestURLs = baseURLs.map {
             $0.appendingPathComponent(api1.server.info.connection.webhookPath, isDirectory: false)
         }
+        let gateLock = NSLock()
+        var responseGates = [Int: CausallyGatedInputStream]()
+        var startCounts = [Int: Int]()
         for index in requestURLs.indices {
             stub(condition: { request in request.url == requestURLs[index] }, response: { _ in
-                requestStarted[index].fulfill()
-                let response = HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
-                response.requestTime = index < 2 ? 2 : 0
+                let gate = index < 2
+                    ? CausallyGatedInputStream(payload: Data(#"{"result":true}"#.utf8))
+                    : nil
+                gateLock.lock()
+                let count = startCounts[index, default: 0] + 1
+                startCounts[index] = count
+                if let gate {
+                    responseGates[index] = gate
+                }
+                gateLock.unlock()
+
+                if count == 1 {
+                    requestStarted[index].fulfill()
+                } else {
+                    XCTFail("Request \(index) started \(count) times")
+                }
+                guard let gate else {
+                    return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+                }
+
+                let response = HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: nil)
+                response.httpHeaders = ["Content-Type": "application/json"]
+                response.inputStream = gate
+                response.dataSize = 16
+                // This only paces whitespace chunks; release() is the sole completion signal.
+                response.responseTime = 0.25
                 return response
             })
+        }
+        defer {
+            gateLock.lock()
+            let gates = Array(responseGates.values)
+            gateLock.unlock()
+            for gate in gates {
+                gate.release()
+            }
         }
 
         var deliveries = [Task<Void, Error>]()
@@ -1038,7 +1162,15 @@ class WebhookManagerTests: XCTestCase {
             }
             deliveries.append(delivery)
         }
-        await fulfillment(of: requestStarted, timeout: 1)
+
+        await fulfillment(of: requestStarted, timeout: 10)
+        gateLock.lock()
+        let observedStartCounts = startCounts
+        let pendingGates = responseGates
+        gateLock.unlock()
+        XCTAssertEqual(observedStartCounts, [0: 1, 1: 1, 2: 1])
+        XCTAssertEqual(pendingGates.keys.sorted(), [0, 1])
+        XCTAssertTrue(pendingGates.values.allSatisfy { !$0.isReleased })
         try await deliveries[2].value
 
         let state = await manager.reconcilePersistedBackground(requestIdentifier: "duplicate-zone-event")
@@ -1055,8 +1187,15 @@ class WebhookManagerTests: XCTestCase {
             }
         }
 
+        for gate in pendingGates.values {
+            gate.release()
+        }
         try await adoptedDelivery.value
 
+        gateLock.lock()
+        let finalStartCounts = startCounts
+        gateLock.unlock()
+        XCTAssertEqual(finalStartCounts, [0: 1, 1: 1, 2: 1])
         for delivery in deliveries.prefix(2) {
             do {
                 try await delivery.value
