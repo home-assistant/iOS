@@ -500,8 +500,44 @@ struct LegacyComplicationRenderTests {
             ]
         ))
 
-        #expect(render.textColor == "#00FF00FF")
+        #expect(render.titleColor == "#FFFFFFFF")
+        #expect(render.valueColor == "#00FF00FF")
         #expect(render.bottomTextColor == "#FF0000FF")
+    }
+
+    /// Each area keeps the color that was picked for it. Painting the header in the body's color, as the
+    /// single shared text color did, recolored every header whose body had a color of its own.
+    @Test func headerKeepsItsOwnColor() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicRectangular,
+            template: .GraphicRectangularTextGauge,
+            textAreas: [
+                "Header": ("2.9 kWh / 1.4 kW", "#FFFFFFFF"),
+                "Body1": ("S 8.4 °C / D 6.9 °C", "#FF6A00FF"),
+            ],
+            extra: ["gauge": ["gauge": "0.75", "gauge_color": "#30D158FF", "gauge_type": "open"]]
+        ))
+
+        #expect(render.title == "2.9 kWh / 1.4 kW")
+        #expect(render.titleColor == "#FFFFFFFF")
+        #expect(render.value == "S 8.4 °C / D 6.9 °C")
+        #expect(render.valueColor == "#FF6A00FF")
+        #expect(render.fraction == 0.75)
+        #expect(render.minLabel == nil)
+        #expect(render.maxLabel == nil)
+    }
+
+    /// A lone area is the value, so it carries the color and there is no header to color.
+    @Test func singleAreaColorGoesToTheValue() {
+        let render = LegacyComplicationRender(complication: complication(
+            family: .graphicRectangular,
+            template: .GraphicRectangularLargeImage,
+            textAreas: ["Header": ("Rain", "#00FF00FF")],
+            extra: ["icon": ["icon": "mdi:home", "icon_color": "#FFFFFFFF"]]
+        ))
+
+        #expect(render.titleColor == nil)
+        #expect(render.valueColor == "#00FF00FF")
     }
 
     /// ClockKit tinted the non-graphic families itself and ignored the picked color, so honoring it
@@ -517,7 +553,8 @@ struct LegacyComplicationRenderTests {
             ]
         ))
 
-        #expect(render.textColor == nil)
+        #expect(render.titleColor == nil)
+        #expect(render.valueColor == nil)
         #expect(render.bottomTextColor == nil)
     }
 }

@@ -87,6 +87,24 @@ struct RectangularComplicationSnapshotTests {
                 bottomText: "Peak 4.2 kW",
                 textColor: .yellow
             )),
+            ("per-slot-colors", .sample(
+                icon: false,
+                title: "Rain",
+                fraction: nil,
+                value: "▁▂▃▄▅▆▇█",
+                bottomText: "in 45m",
+                titleColor: .white,
+                valueColor: .green
+            )),
+            ("legacy-text-gauge", .sample(
+                icon: false,
+                title: "2.9 kWh / 1.4 kW",
+                fraction: 0.9,
+                value: "S 8.4 °C / D 6.9 °C",
+                showMinMax: false,
+                valueColor: .orange,
+                valueRidesGauge: false
+            )),
         ]
     }
 }

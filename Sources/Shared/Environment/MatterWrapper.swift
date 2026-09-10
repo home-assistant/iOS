@@ -38,7 +38,7 @@ public class MatterWrapper {
     }
 
     public lazy var commission: (_ server: Server) -> Promise<String?> = { [self] server in
-        #if canImport(MatterSupport)
+        #if canImport(MatterSupport) && !targetEnvironment(macCatalyst)
         lastCommissionServerIdentifier = server.identifier
         Current.settingsStore.matterLastCommissionedDeviceName = nil
 

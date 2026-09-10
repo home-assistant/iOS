@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import SharedTesting
 import SwiftUI
 import Testing
@@ -14,6 +15,18 @@ struct NativeTabBarSnapshotTests {
         )
     }
 
+    @available(iOS 26, *)
+    @Test func moreViewWithMultipleServers() {
+        let viewModel = NativeTabBarViewModel.preview(
+            additionalServers: [ServerFixture.withRemoteConnection],
+            suiteName: "NativeTabBarSnapshotTests.moreServers"
+        )
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
     @Test func customizeView() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.customize")
         assertLightDarkSnapshots(
@@ -22,13 +35,31 @@ struct NativeTabBarSnapshotTests {
         )
     }
 
-    @Test func customizeViewWithRoomForMoreTabs() {
+    @Test func customizeViewWithHiddenPages() {
         let viewModel = NativeTabBarViewModel.preview(
-            tabItemIds: ["home"],
-            suiteName: "NativeTabBarSnapshotTests.customizeRoom"
+            hiddenPanelPaths: ["logbook", "history"],
+            suiteName: "NativeTabBarSnapshotTests.customizeHidden"
         )
         assertLightDarkSnapshots(
             of: NavigationStack { NativeTabBarCustomizeView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
+    @Test func tabBarWithMoreShowingTheFrontend() throws {
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarMoreFrontend")
+        viewModel.didSelect(.more)
+        try viewModel.open(#require(viewModel.moreItems.first))
+        assertLightDarkSnapshots(
+            of: NativeTabBarContainerView(
+                viewModel: viewModel,
+                webViewController: nil,
+                frontendOpacity: 1,
+                frontendIgnoredSafeAreaEdges: .all,
+                onNeedsWebViewController: {},
+                frontendOverlay: { Color.clear }
+            ),
             drawHierarchyInKeyWindow: true
         )
     }
@@ -43,7 +74,8 @@ struct NativeTabBarSnapshotTests {
                 webViewController: nil,
                 frontendOpacity: 1,
                 frontendIgnoredSafeAreaEdges: .all,
-                onNeedsWebViewController: {}
+                onNeedsWebViewController: {},
+                frontendOverlay: { EmptyView() }
             ),
             drawHierarchyInKeyWindow: true
         )

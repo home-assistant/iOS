@@ -10,10 +10,12 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var showAssistSettingsCalled = false
     private(set) var dismissPresentedContentCallCount = 0
     private(set) var activatedServers: [Server] = []
+    private(set) var openedServers: [Server] = []
     private(set) var openedDeeplinks: [(server: Server, urlString: String)] = []
     private(set) var openedDeeplinksSelectingServer: [String] = []
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
+    var onOpenServer: (() -> Void)?
 
     var presentedViewController: UIViewController?
     var window: UIWindow?
@@ -36,7 +38,9 @@ final class MockAppCoordinator: AppCoordinator {
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]) {}
 
     func open(server: Server) -> Guarantee<any WebFrontend> {
-        Guarantee<any WebFrontend> { _ in }
+        openedServers.append(server)
+        onOpenServer?()
+        return Guarantee<any WebFrontend> { _ in }
     }
 
     func activate(server: Server) {
