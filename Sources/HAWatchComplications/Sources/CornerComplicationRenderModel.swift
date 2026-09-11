@@ -19,8 +19,8 @@ public struct CornerComplicationRenderModel {
     /// nil resolves to `.primary` (white on the black watch face).
     public var textColor: Color?
     /// Whether the corner's own text rides the outer curve (the modern layout) or sits flat and large in
-    /// the corner tip, the way ClockKit drew a Graphic Corner's outer text. Legacy complications whose
-    /// template drew its text flat opt out of the curve.
+    /// the corner tip, the way ClockKit drew a Graphic Corner "Gauge Text" outer text. Legacy
+    /// complications whose template drew its text flat opt out of the curve.
     public var curvesText: Bool
 
     public init(
