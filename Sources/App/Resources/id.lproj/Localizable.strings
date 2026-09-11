@@ -878,6 +878,8 @@ Server ini memerlukan sertifikat klien (mTLS) tetapi operasi dibatalkan.";
 "kiosk.clock.style" = "Clock Style";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Large";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "Bottom leading";
 "kiosk.corner.bottom_left" = "Bottom Left";
 "kiosk.corner.bottom_right" = "Bottom Right";

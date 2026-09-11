@@ -878,6 +878,8 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.clock.style" = "Klokstijl";
 "kiosk.clock.style.digital" = "Digitaal";
 "kiosk.clock.style.large" = "Groot";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "Onderkant, vooraan";
 "kiosk.corner.bottom_left" = "Linksonder";
 "kiosk.corner.bottom_right" = "Rechtsonder";
