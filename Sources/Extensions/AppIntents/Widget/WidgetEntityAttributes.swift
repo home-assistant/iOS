@@ -15,8 +15,13 @@ enum WidgetEntityAttributes {
     }
 
     /// Resolves the displayed value + unit for a widget's entity source. When `attribute` is set, reads
-    /// that attribute (unit via the shared `attributeUnit` map); otherwise reads the entity state (which
-    /// already carries Home Assistant's precision + unit). Returns nil when the value can't be fetched.
+    /// that attribute (unit via the shared `attributeUnit` map); otherwise reads the entity state.
+    ///
+    /// Numeric values are rounded the way the frontend rounds them, to the entity's display precision
+    /// from the entity registry mirrored in GRDB. The state provider already does that for the state;
+    /// an attribute gets the same treatment here, as on the watch, so a unit-converted temperature such
+    /// as `78.99999999999999` reads `79.0` like it does in the app and the web UI. Returns nil when the
+    /// value can't be fetched.
     static func resolvedValue(
         entityId: String,
         attribute: String?,
@@ -33,7 +38,12 @@ enum WidgetEntityAttributes {
                 attributes: attributes,
                 domain: entityId.components(separatedBy: ".").first
             )
-            return (String(describing: raw), unit)
+            let value = StatePrecision.adjustPrecision(
+                serverId: server.identifier.rawValue,
+                entityId: entityId,
+                stateValue: String(describing: raw)
+            )
+            return (value, unit)
         }
         guard let state = await provider.state(server: server, entityId: entityId) else {
             return nil
