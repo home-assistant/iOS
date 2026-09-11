@@ -33,6 +33,15 @@ final class AssistEntryPointsTests: XCTestCase {
         Current.servers = servers
     }
 
+    /// `webView` is created in `viewDidLoad`, and an unloaded controller handed to the scene manager
+    /// trips over it the next time something asks it to refresh.
+    @MainActor
+    private func makeWebViewController() -> WebViewController {
+        let controller = WebViewController(server: server)
+        controller.loadViewIfNeeded()
+        return controller
+    }
+
     @MainActor
     override func tearDown() async throws {
         AssistSession.shared.delegate = nil
@@ -61,7 +70,7 @@ final class AssistEntryPointsTests: XCTestCase {
 
     @MainActor
     func testTabBarAssistButtonOpensAssistForItsServer() {
-        let webViewController = WebViewController(server: server)
+        let webViewController = makeWebViewController()
         let viewModel = HomeAssistantViewModel(server: server)
         viewModel.webViewController = webViewController
 
@@ -78,7 +87,7 @@ final class AssistEntryPointsTests: XCTestCase {
     @available(iOS 18, *)
     @MainActor
     func testAssistAppIntentOpensAssistForItsPipeline() {
-        Current.sceneManager.setWebViewController(WebViewController(server: server))
+        Current.sceneManager.setWebViewController(makeWebViewController())
 
         let requested = expectation(description: "session requested")
         delegate.onContext = { requested.fulfill() }
@@ -98,7 +107,7 @@ final class AssistEntryPointsTests: XCTestCase {
     @MainActor
     func testAssistDeeplinkOpensAssistWithItsQueryParameters() throws {
         let handler = IncomingURLHandler(coordinator: MockAppCoordinator())
-        Current.sceneManager.setWebViewController(WebViewController(server: server))
+        Current.sceneManager.setWebViewController(makeWebViewController())
 
         let url = try XCTUnwrap(URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist/?serverId=\(server.identifier.rawValue)"
