@@ -878,6 +878,8 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "kiosk.clock.style" = "Style d'horloge";
 "kiosk.clock.style.digital" = "Numérique";
 "kiosk.clock.style.large" = "Grand";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "En bas au début";
 "kiosk.corner.bottom_left" = "En bas à gauche";
 "kiosk.corner.bottom_right" = "En bas à droite";
