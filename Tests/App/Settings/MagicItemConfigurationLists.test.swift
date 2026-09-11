@@ -100,14 +100,16 @@ struct MagicItemConfigurationListsTests {
         ),
     ]
 
+    private static let complicationItem = MagicItem(id: "complication-1", serverId: "1", type: .complication)
+
     private static let items: [MagicItem] = plainItems + [
-        .init(id: "complication-1", serverId: "1", type: .complication),
+        complicationItem,
         .init(
             id: folderId,
             serverId: "",
             type: .folder,
             displayText: "Downstairs",
-            items: plainItems
+            items: plainItems + [complicationItem]
         ),
     ]
 

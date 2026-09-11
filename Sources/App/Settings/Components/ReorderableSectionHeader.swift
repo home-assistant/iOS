@@ -17,9 +17,7 @@ struct ReorderableSectionHeader: View {
                 Text(title)
             }
             Spacer()
-            Button {
-                toggleEditing()
-            } label: {
+            Button(action: toggleEditing) {
                 Text(isEditing ? L10n.doneLabel : L10n.editLabel)
                     .textCase(nil)
             }
