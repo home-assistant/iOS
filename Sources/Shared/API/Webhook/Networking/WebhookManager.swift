@@ -99,7 +99,12 @@ public class WebhookManager: NSObject {
 
     // Bound results that no caller ever reconciles. Eviction permits a later retry, so this
     // transport does not provide exactly-once delivery across relaunches or unbounded delays.
-    var completedPersistedRequestLimit = 100
+    private var storedCompletionLimit = 100
+    var completedPersistedRequestLimit: Int {
+        get { onDataQueue { storedCompletionLimit } }
+        set { onDataQueue { storedCompletionLimit = newValue } }
+    }
+
     private var nextCompletionSequence: UInt64 = 0
     private var completedPersistedRequests = [String: (result: Swift.Result<Void, Error>, sequence: UInt64)]() {
         willSet {
@@ -107,11 +112,27 @@ public class WebhookManager: NSObject {
         }
     }
 
-    var persistedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void = {
+    private var storedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void = {
         $0.getAllTasks(completionHandler: $1)
     }
 
-    var persistedReconciliationTimeout: TimeInterval = 30
+    var persistedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void {
+        get { onDataQueue { storedTaskLookup } }
+        set { onDataQueue { storedTaskLookup = newValue } }
+    }
+
+    private var storedReconciliationTimeout: TimeInterval = 30
+    var persistedReconciliationTimeout: TimeInterval {
+        get { onDataQueue { storedReconciliationTimeout } }
+        set { onDataQueue { storedReconciliationTimeout = newValue } }
+    }
+
+    private func onDataQueue<Value>(_ operation: () -> Value) -> Value {
+        if DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true {
+            return operation()
+        }
+        return dataQueue.sync(execute: operation)
+    }
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 

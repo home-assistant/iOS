@@ -25,7 +25,7 @@ struct BackgroundTaskTests {
             workerFinished.signal()
         }
         // Deliberately occupy main while the worker acquires its lease. This bounded gate
-        // reproduces the production main -> dataQueue -> main cycle without hanging the suite.
+        // proves the runner itself does not require main; the webhook integration is tested separately.
         #expect(wrapped.wait(timeout: .now() + 2) == .success)
         await withCheckedContinuation { continuation in
             DispatchQueue.global().async {

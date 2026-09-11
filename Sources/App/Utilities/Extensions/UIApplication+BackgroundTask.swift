@@ -30,7 +30,13 @@ class ApplicationBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
                 // UIKit permits begin/endBackgroundTask from any thread. Only the optional
                 // remaining-time hint requires main; never wait on main from a caller's queue.
                 let identifier = beginTask(name, expirationHandler)
-                let remaining = Thread.isMainThread ? remainingTime() : nil
+                let remaining: TimeInterval?
+                if Thread.isMainThread {
+                    remaining = remainingTime()
+                } else {
+                    Current.Log.debug("Background task \(name): skipping remaining-time hint off main")
+                    remaining = nil
+                }
                 return (identifier == .invalid ? nil : identifier, remaining.flatMap { $0 < 100 ? $0 : nil })
             },
             endBackgroundTask: endTask,
