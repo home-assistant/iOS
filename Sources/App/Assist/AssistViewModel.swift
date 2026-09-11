@@ -86,12 +86,14 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         loadCachedPipelines()
 
+        focusOnInput = !autoStartRecording
+
         if pipelines.isEmpty {
             fetchPipelines { [weak self] in
-                Task { @MainActor in self?.checkForAutoRecordingAndStart() }
+                Task { @MainActor in self?.startRecordingIfNeeded() }
             }
         } else {
-            checkForAutoRecordingAndStart()
+            startRecordingIfNeeded()
             fetchPipelines()
         }
     }
@@ -346,15 +348,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         speechSynthesizer?.speak(text)
     }
 
-    @MainActor private func checkForAutoRecordingAndStart() {
-        if autoStartRecording {
-            Current.Log.info("Auto start recording triggered in Assist")
-            autoStartRecording = false
-            focusOnInput = false
-            assistWithAudio()
-        } else {
-            focusOnInput = true
-        }
+    @MainActor private func startRecordingIfNeeded() {
+        guard autoStartRecording else { return }
+        Current.Log.info("Auto start recording triggered in Assist")
+        autoStartRecording = false
+        assistWithAudio()
     }
 
     private func updateAudioLevel(_ level: Float) {

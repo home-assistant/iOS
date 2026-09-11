@@ -66,6 +66,19 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func testOnAppearFocusesInputBeforePipelinesLoad() async throws {
+        mockAssistService.holdsPipelinesCompletion = true
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        XCTAssertTrue(sut.focusOnInput)
+
+        mockAssistService.completePendingPipelinesFetch()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
+    @MainActor
     func testOnAppearAutoStartRecordingDoesNotFocusInput() async throws {
         sut = makeSut(autoStartRecording: true)
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
@@ -74,6 +87,23 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
         XCTAssertFalse(sut.focusOnInput)
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testNewSessionWithAutoStartRecordingRemovesInputFocus() async throws {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+
+        sut.didRequestNewSession(.init(
+            server: ServerFixture.standard,
+            pipelineId: "",
+            autoStartRecording: true
+        ))
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
     }
 
     @MainActor
