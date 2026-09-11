@@ -25,25 +25,6 @@ struct AssistAppIntent: AppIntent {
     )
     var withVoice: Bool
 
-    func perform() async throws -> some IntentResult {
-        #if os(watchOS)
-        // The watch has no web frontend: Assist is its own full-screen cover, owned by the home
-        // screen. It always opens ready to record with a text fallback, so `withVoice` has no
-        // watch equivalent to honour.
-        guard let server = Current.servers.all
-            .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current.servers.all.first else {
-            return .result()
-        }
-        WatchAssistLaunch.request(
-            serverId: server.identifier.rawValue,
-            pipelineId: pipeline.pipelineId ?? ""
-        )
-        #elseif !WIDGET_EXTENSION
-        Self.openAssist(serverId: pipeline.serverId, pipelineId: pipeline.pipelineId ?? "", withVoice: withVoice)
-        #endif
-        return .result()
-    }
-
     #if !os(watchOS) && !WIDGET_EXTENSION
     /// Split out of `perform()` so the frontend hand-off can be exercised on its own: a foreground
     /// intent traps when its `perform()` runs outside the App Intents runtime.
@@ -63,4 +44,23 @@ struct AssistAppIntent: AppIntent {
         }
     }
     #endif
+
+    func perform() async throws -> some IntentResult {
+        #if os(watchOS)
+        // The watch has no web frontend: Assist is its own full-screen cover, owned by the home
+        // screen. It always opens ready to record with a text fallback, so `withVoice` has no
+        // watch equivalent to honour.
+        guard let server = Current.servers.all
+            .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current.servers.all.first else {
+            return .result()
+        }
+        WatchAssistLaunch.request(
+            serverId: server.identifier.rawValue,
+            pipelineId: pipeline.pipelineId ?? ""
+        )
+        #elseif !WIDGET_EXTENSION
+        Self.openAssist(serverId: pipeline.serverId, pipelineId: pipeline.pipelineId ?? "", withVoice: withVoice)
+        #endif
+        return .result()
+    }
 }
