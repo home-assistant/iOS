@@ -131,13 +131,15 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         guard let resolved = await WidgetEntityAttributes.resolvedValue(
             entityId: entity.entityId,
             attribute: configuration.attribute?.id,
+            decimalPlaces: configuration.decimalPlaces,
             server: server
         ) else {
             Current.Log.error("Failed to fetch value for gauge widget entity \(entity.entityId)")
             throw WidgetGaugeDataError.apiError
         }
 
-        let numericValue = Double(resolved.value.replacingOccurrences(of: ",", with: ".")) ?? 0
+        // The fill comes from the raw number, not the rounded, locale-formatted label.
+        let numericValue = resolved.number ?? 0
         let range = configuration.maxValue - configuration.minValue
         let fraction = range != 0 ? Swift.min(Swift.max((numericValue - configuration.minValue) / range, 0), 1) : 0
 
