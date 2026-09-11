@@ -878,6 +878,8 @@
 "kiosk.clock.style" = "Saat Stili";
 "kiosk.clock.style.digital" = "Dijital";
 "kiosk.clock.style.large" = "Büyük";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "Alttan hizalama";
 "kiosk.corner.bottom_left" = "Sol Alt";
 "kiosk.corner.bottom_right" = "Sağ Alt";

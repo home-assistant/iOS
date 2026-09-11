@@ -878,6 +878,8 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.clock.style" = "Óra stílusa";
 "kiosk.clock.style.digital" = "Digitális";
 "kiosk.clock.style.large" = "Nagy";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "Bal alsó sarok";
 "kiosk.corner.bottom_left" = "Bal alsó";
 "kiosk.corner.bottom_right" = "Jobb alsó";

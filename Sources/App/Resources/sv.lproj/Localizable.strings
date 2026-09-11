@@ -876,6 +876,8 @@
 "kiosk.clock.style" = "Klockstil";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Stor";
+"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
+"kiosk.command_confirmation.title" = "Show command confirmation";
 "kiosk.corner.bottom_leading" = "Nederst först";
 "kiosk.corner.bottom_left" = "Vänster nere";
 "kiosk.corner.bottom_right" = "Höger nere";
