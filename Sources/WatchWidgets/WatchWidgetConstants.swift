@@ -12,8 +12,6 @@ enum WatchWidgetConstants {
     static let logoAssetName = "Logo"
     static let templateLogoAssetName = "TemplateLogo"
     static let assistIconAssetName = "message-processing-outline"
-    static let assistTitle = "Assist"
-    static let assistControlDescription = "Opens Assist on your Apple Watch"
     static let placeholderSubtitle = "Complication"
     /// Neutral value shown in the complication picker's preview instead of a possibly-stale
     /// live value (see `WatchWidgetComplicationSnapshot.previewVariant`).

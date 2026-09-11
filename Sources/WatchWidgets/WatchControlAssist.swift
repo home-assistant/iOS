@@ -7,11 +7,11 @@ struct WatchControlAssist: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: WatchWidgetConstants.controlAssistKind) {
             ControlWidgetButton(action: WatchAssistAppIntent()) {
-                Label(WatchWidgetConstants.assistTitle, image: WatchWidgetConstants.assistIconAssetName)
+                Label(WatchWidgetStrings.assistTitle, image: WatchWidgetConstants.assistIconAssetName)
             }
             .tint(.haPrimary)
         }
-        .displayName(.init(stringLiteral: WatchWidgetConstants.assistTitle))
-        .description(.init(stringLiteral: WatchWidgetConstants.assistControlDescription))
+        .displayName(.init(stringLiteral: WatchWidgetStrings.assistTitle))
+        .description(.init(stringLiteral: WatchWidgetStrings.assistControlDescription))
     }
 }
