@@ -137,7 +137,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             throw WidgetGaugeDataError.apiError
         }
 
-        let numericValue = Double(resolved.value.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let numericValue = resolved.number ?? 0
         let range = configuration.maxValue - configuration.minValue
         let fraction = range != 0 ? Swift.min(Swift.max((numericValue - configuration.minValue) / range, 0), 1) : 0
 

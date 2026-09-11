@@ -7,9 +7,11 @@ import XCTest
 
 /// The value the Details and Gauge widgets show for a picked entity, resolved against a mock
 /// connection and an in-memory copy of the entity registry that carries the display precision.
+@available(iOS 17, *)
 final class WidgetEntityAttributesTests: XCTestCase {
     private var previousServers: ServerManager!
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var server: Server!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
@@ -18,6 +20,7 @@ final class WidgetEntityAttributesTests: XCTestCase {
         try super.setUpWithError()
         previousServers = Current.servers
         previousDatabase = Current.database
+        previousCachedApis = Current.cachedApis
 
         let database = try DatabaseQueue(path: ":memory:")
         try DisplayEntityRegistryTable().createIfNeeded(database: database)
@@ -29,7 +32,7 @@ final class WidgetEntityAttributesTests: XCTestCase {
         api = HomeAssistantAPI(server: server)
         connection = HAMockConnection()
         api.connection = connection
-        Current.cachedApis[server.identifier] = api
+        Current.setCachedApi(api, for: server.identifier)
 
         try database.write { db in
             try EntityRegistryListForDisplay.Entity(
@@ -41,7 +44,7 @@ final class WidgetEntityAttributesTests: XCTestCase {
     }
 
     override func tearDown() {
-        Current.cachedApis = [:]
+        Current.cachedApis = previousCachedApis
         Current.servers = previousServers
         Current.database = previousDatabase
         api = nil
@@ -78,6 +81,7 @@ final class WidgetEntityAttributesTests: XCTestCase {
         )
         XCTAssertFalse(resolved.value.contains("9999"))
         XCTAssertEqual(resolved.unit, "°F")
+        XCTAssertEqual(resolved.number, 78.99999999999999)
     }
 
     /// A non-numeric attribute has nothing to round and passes through as the server sent it.
@@ -100,6 +104,7 @@ final class WidgetEntityAttributesTests: XCTestCase {
         let resolved = try XCTUnwrap(value)
         XCTAssertEqual(resolved.value, "heating")
         XCTAssertNil(resolved.unit)
+        XCTAssertNil(resolved.number)
     }
 
     /// The resolver runs off this test's own execution context, so wait for the `/states` request to
