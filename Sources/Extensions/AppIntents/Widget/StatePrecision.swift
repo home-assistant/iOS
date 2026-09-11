@@ -25,9 +25,7 @@ public enum StatePrecision {
         }
     }
 
-    /// Formats a numeric `stateValue` with exactly `decimalPlaces` decimals in `locale`; anything that
-    /// isn't a number passes through unchanged.
-    public static func adjustPrecision(
+    static func adjustPrecision(
         stateValue: String,
         decimalPlaces: Int,
         locale: Locale = .current

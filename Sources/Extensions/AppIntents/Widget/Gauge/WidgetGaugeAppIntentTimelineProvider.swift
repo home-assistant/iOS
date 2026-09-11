@@ -131,7 +131,6 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         guard let resolved = await WidgetEntityAttributes.resolvedValue(
             entityId: entity.entityId,
             attribute: configuration.attribute?.id,
-            decimalPlaces: configuration.decimalPlaces,
             server: server
         ) else {
             Current.Log.error("Failed to fetch value for gauge widget entity \(entity.entityId)")

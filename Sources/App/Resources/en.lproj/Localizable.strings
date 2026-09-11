@@ -3137,8 +3137,6 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.param.server.title" = "Server";
 "widgets.parameters.attribute" = "Attribute";
 "widgets.parameters.complication" = "Complication";
-"widgets.parameters.decimal_places.description" = "Leave empty to use Home Assistant's display precision";
-"widgets.parameters.decimal_places.title" = "Decimal Places";
 "widgets.parameters.domain" = "Domain";
 "widgets.parameters.entity" = "Entity";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";

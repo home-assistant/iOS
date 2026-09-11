@@ -10079,12 +10079,6 @@ public enum L10n {
       public static var domain: String { return L10n.tr("Localizable", "widgets.parameters.domain") }
       /// Entity
       public static var entity: String { return L10n.tr("Localizable", "widgets.parameters.entity") }
-      public enum DecimalPlaces {
-        /// Leave empty to use Home Assistant's display precision
-        public static var description: String { return L10n.tr("Localizable", "widgets.parameters.decimal_places.description") }
-        /// Decimal Places
-        public static var title: String { return L10n.tr("Localizable", "widgets.parameters.decimal_places.title") }
-      }
     }
     public enum Preview {
       public enum Custom {

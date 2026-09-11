@@ -122,7 +122,6 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         guard let resolved = await WidgetEntityAttributes.resolvedValue(
             entityId: entity.entityId,
             attribute: configuration.attribute?.id,
-            decimalPlaces: configuration.decimalPlaces,
             server: server
         ) else {
             Current.Log.error("Failed to fetch value for details widget entity \(entity.entityId)")

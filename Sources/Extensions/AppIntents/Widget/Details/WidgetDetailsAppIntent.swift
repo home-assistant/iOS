@@ -28,17 +28,6 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     @Parameter(title: .init("widgets.parameters.attribute", defaultValue: "Attribute"))
     var attribute: WidgetDetailsAttributeAppEntity?
 
-    /// Decimal places shown for a numeric value. Empty follows Home Assistant's display precision for
-    /// the entity, the same rounding the frontend applies; a number overrides it, like the watch builder.
-    @Parameter(
-        title: LocalizedStringResource("widgets.parameters.decimal_places.title", defaultValue: "Decimal Places"),
-        description: LocalizedStringResource(
-            "widgets.parameters.decimal_places.description",
-            defaultValue: "Leave empty to use Home Assistant's display precision"
-        )
-    )
-    var decimalPlaces: Int?
-
     /// Rectangular watch complication mirrored when `source` is `.complication`, rendered through the
     /// very same content view the watch and the complication editor use.
     @Parameter(title: .init("widgets.parameters.complication", defaultValue: "Complication"))
@@ -119,7 +108,6 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
                         \.$source
                         \.$entity
                         \.$attribute
-                        \.$decimalPlaces
 
                         \.$runScript
                         \.$script
@@ -130,7 +118,6 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
                         \.$source
                         \.$entity
                         \.$attribute
-                        \.$decimalPlaces
 
                         \.$runScript
                     }
