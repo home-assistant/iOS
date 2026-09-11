@@ -159,6 +159,7 @@ final class NotificationSettingsViewModel: ObservableObject {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
         }
     }
+
     @Published var forceCloseWarningEnabled: Bool = Current.settingsStore.forceCloseWarningEnabled {
         didSet {
             Current.settingsStore.forceCloseWarningEnabled = forceCloseWarningEnabled

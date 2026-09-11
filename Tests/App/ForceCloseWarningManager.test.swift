@@ -1,7 +1,7 @@
 @testable import HomeAssistant
+@testable import Shared
 import Testing
 import UserNotifications
-@testable import Shared
 
 struct ForceCloseWarningManagerTests {
     @Test func settingsStoreDefaultsToDisabled() {
