@@ -668,6 +668,7 @@
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";
 "download_manager.finished.title" = "Download finished";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "All areas";
 "entity_picker.filter.area.title" = "Area";
