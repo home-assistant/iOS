@@ -118,7 +118,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     /// Builds the gauge from a single picked entity's live state, fetched over the REST `/states`
     /// endpoint (no admin required). The 0…1 fill maps the numeric state across the configured
     /// `minValue`…`maxValue` range; labels are generated from the state, unit and range.
-    private func entityEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
+    func entityEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
         guard let entity = configuration.entity else {
             Current.Log.error("Failed to fetch data for gauge widget: No entity selected")
             throw WidgetGaugeDataError.noEntity

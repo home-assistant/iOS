@@ -84,6 +84,33 @@ final class WidgetEntityAttributesTests: XCTestCase {
         XCTAssertEqual(resolved.number, 78.99999999999999)
     }
 
+    /// Without an attribute the entity state is read, already rounded by the state provider, with the
+    /// number behind it for the gauge.
+    func testStateValueCarriesItsUnitAndNumber() async throws {
+        let task = Task { [server] in
+            await WidgetEntityAttributes.resolvedValue(
+                entityId: "climate.living_room",
+                attribute: nil,
+                server: server!
+            )
+        }
+
+        let request = try await stateRequest()
+        request.completion(.success(.init(value: [
+            "state": "78.99999999999999",
+            "attributes": ["unit_of_measurement": "°F"],
+        ])))
+
+        let value = await task.value
+        let resolved = try XCTUnwrap(value)
+        XCTAssertEqual(
+            resolved.value,
+            StatePrecision.adjustPrecision(stateValue: "78.99999999999999", decimalPlaces: 1)
+        )
+        XCTAssertEqual(resolved.unit, "°F")
+        XCTAssertEqual(resolved.number, 78.99999999999999)
+    }
+
     /// A non-numeric attribute has nothing to round and passes through as the server sent it.
     func testNonNumericAttributeValuePassesThrough() async throws {
         let task = Task { [server] in
