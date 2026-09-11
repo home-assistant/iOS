@@ -388,11 +388,35 @@ final class ZoneEventOutboxTests: XCTestCase {
     }
 
     func testInvalidEventPayloadIsRejected() {
-        XCTAssertThrowsError(try PendingZoneEvent(
+        let invalidPayloads: [[String: Any]] = [
+            ["invalid": Date()],
+            ["nested": ["values": [Date()]]],
+            ["invalid": Double.nan],
+            ["invalid": Double.infinity],
+        ]
+        for payload in invalidPayloads {
+            XCTAssertThrowsError(try PendingZoneEvent(
+                serverIdentifier: "server-id",
+                eventType: "ios.zone_entered",
+                eventData: payload
+            )) { error in
+                XCTAssertEqual(error as? PendingZoneEvent.PayloadError, .invalidJSONObject)
+            }
+        }
+    }
+
+    func testValidNestedEventPayloadRoundTrips() throws {
+        let payload: [String: Any] = [
+            "zone": "zone.home",
+            "nested": ["values": [true, 42, "text", NSNull()] as [Any]],
+        ]
+        let event = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
-            eventData: ["invalid": Date()]
-        ))
+            eventData: payload
+        )
+        let decoded = try XCTUnwrap(event.decodedEventData)
+        XCTAssertTrue(NSDictionary(dictionary: payload).isEqual(to: decoded))
     }
 
     func testStartedBeaconIsNotCoalescedWithSameTransition() throws {

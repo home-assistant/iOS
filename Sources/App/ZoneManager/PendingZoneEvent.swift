@@ -1,6 +1,10 @@
 import Foundation
 
 struct PendingZoneEvent: Codable, Equatable {
+    enum PayloadError: Error {
+        case invalidJSONObject
+    }
+
     let id: UUID
     let serverIdentifier: String
     let eventType: String
@@ -18,6 +22,10 @@ struct PendingZoneEvent: Codable, Equatable {
         isBeacon: Bool = false,
         deliveryStartedAt: Date? = nil
     ) throws {
+        // Invalid Foundation objects raise an Objective-C exception, not a Swift error.
+        guard JSONSerialization.isValidJSONObject(eventData) else {
+            throw PayloadError.invalidJSONObject
+        }
         self.id = id
         self.serverIdentifier = serverIdentifier
         self.eventType = eventType
