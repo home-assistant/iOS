@@ -1,6 +1,6 @@
+import CoreLocation
 @testable import HomeAssistant
 @testable import Shared
-import CoreLocation
 import Testing
 import UserNotifications
 
