@@ -39,20 +39,28 @@ struct AssistAppIntent: AppIntent {
             pipelineId: pipeline.pipelineId ?? ""
         )
         #elseif !WIDGET_EXTENSION
+        Self.openAssist(serverId: pipeline.serverId, pipelineId: pipeline.pipelineId ?? "", withVoice: withVoice)
+        #endif
+        return .result()
+    }
+
+    #if !os(watchOS) && !WIDGET_EXTENSION
+    /// Split out of `perform()` so the frontend hand-off can be exercised on its own: a foreground
+    /// intent traps when its `perform()` runs outside the App Intents runtime.
+    static func openAssist(serverId: String, pipelineId: String, withVoice: Bool) {
         DispatchQueue.main.async {
             guard let server = Current.servers.all
-                .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
+                .first(where: { $0.identifier.rawValue == serverId }) ?? Current
                 .servers.all.first else { return }
             Current.sceneManager.webViewControllerPromise
                 .done { webViewController in
                     webViewController.webViewExternalMessageHandler.showAssist(
                         server: server,
-                        pipeline: pipeline.pipelineId ?? "",
+                        pipeline: pipelineId,
                         autoStartRecording: withVoice
                     )
                 }
         }
-        #endif
-        return .result()
     }
+    #endif
 }
