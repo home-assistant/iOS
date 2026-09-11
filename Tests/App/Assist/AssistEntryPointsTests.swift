@@ -1,0 +1,116 @@
+import AppIntents
+@testable import HomeAssistant
+import Improv_iOS
+@testable import Shared
+import XCTest
+
+/// Every way into Assist funnels through `showAssist`, which hands a running session its new context
+/// rather than presenting a second one.
+final class AssistEntryPointsTests: XCTestCase {
+    private final class SessionDelegate: AssistSessionDelegate {
+        var contexts: [AssistSessionContext] = []
+        var onContext: (() -> Void)?
+
+        func didRequestNewSession(_ context: AssistSessionContext) {
+            contexts.append(context)
+            onContext?()
+        }
+    }
+
+    private var delegate: SessionDelegate!
+    private var previousServers: ServerManager!
+    private var servers: FakeServerManager!
+    private var server: Server!
+
+    @MainActor
+    override func setUp() async throws {
+        delegate = SessionDelegate()
+        AssistSession.shared.delegate = delegate
+        AssistSession.shared.inProgress = true
+
+        previousServers = Current.servers
+        servers = FakeServerManager(initial: 0)
+        server = servers.addFake()
+        Current.servers = servers
+    }
+
+    @MainActor
+    override func tearDown() async throws {
+        AssistSession.shared.delegate = nil
+        AssistSession.shared.inProgress = false
+        Current.servers = previousServers
+        previousServers = nil
+        servers = nil
+        server = nil
+        delegate = nil
+    }
+
+    @MainActor
+    func testShowAssistHandsARunningSessionTheNewContext() {
+        let handler = WebViewExternalMessageHandler(improvManager: ImprovManager.shared)
+        handler.webViewController = MockWebViewController()
+
+        handler.showAssist(server: server, pipeline: "pipeline-1", autoStartRecording: true)
+
+        XCTAssertEqual(delegate.contexts.count, 1)
+        XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
+        XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-1")
+        XCTAssertEqual(delegate.contexts.first?.autoStartRecording, true)
+    }
+
+    @MainActor
+    func testTabBarAssistButtonOpensAssistForItsServer() {
+        let viewModel = HomeAssistantViewModel(server: server)
+        viewModel.webViewController = WebViewController(server: server)
+
+        viewModel.tabBar.onAssist?(nil)
+
+        XCTAssertEqual(delegate.contexts.count, 1)
+        XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
+        XCTAssertEqual(delegate.contexts.first?.pipelineId, "")
+        XCTAssertEqual(delegate.contexts.first?.autoStartRecording, false)
+    }
+
+    @MainActor
+    func testAssistDeeplinkOpensAssistWithItsQueryParameters() throws {
+        let handler = IncomingURLHandler(coordinator: MockAppCoordinator())
+        Current.sceneManager.setWebViewController(WebViewController(server: server))
+
+        let url = try XCTUnwrap(URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)assist/?serverId=\(server.identifier.rawValue)"
+                + "&pipelineId=pipeline-2&startListening=true"
+        ))
+
+        let requested = expectation(description: "session requested")
+        delegate.onContext = { requested.fulfill() }
+
+        XCTAssertTrue(handler.handle(url: url))
+        wait(for: [requested], timeout: 2)
+
+        XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
+        XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-2")
+        XCTAssertEqual(delegate.contexts.first?.autoStartRecording, true)
+    }
+
+    @MainActor
+    func testAssistAppIntentOpensAssistWithoutVoiceWhenAskedForText() async throws {
+        guard #available(iOS 18, *) else {
+            throw XCTSkip("AssistAppIntent requires iOS 18")
+        }
+        Current.sceneManager.setWebViewController(WebViewController(server: server))
+
+        let intent = AssistAppIntent()
+        intent.pipeline = .init(id: "pipeline-3", serverId: server.identifier.rawValue, name: "Pipeline")
+        intent.withVoice = false
+
+        let requested = expectation(description: "session requested")
+        delegate.onContext = { requested.fulfill() }
+
+        _ = try await intent.perform()
+        await fulfillment(of: [requested], timeout: 2)
+
+        XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
+        XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-3")
+        XCTAssertEqual(delegate.contexts.first?.autoStartRecording, false)
+    }
+}
