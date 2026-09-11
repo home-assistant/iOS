@@ -26,6 +26,8 @@ public enum L10n {
   public static var delete: String { return L10n.tr("Localizable", "delete") }
   /// Done
   public static var doneLabel: String { return L10n.tr("Localizable", "done_label") }
+  /// Edit
+  public static var editLabel: String { return L10n.tr("Localizable", "edit_label") }
   /// Error
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
   /// Help
@@ -1150,6 +1152,12 @@ public enum L10n {
       public static var success: String { return L10n.tr("Localizable", "app_intents.update_sensors.success") }
       /// Update sensors
       public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
+    }
+    public enum WatchAssist {
+      /// Opens Assist using the pipeline configured for the watch
+      public static var description: String { return L10n.tr("Localizable", "app_intents.watch_assist.description") }
+      /// Assist
+      public static var title: String { return L10n.tr("Localizable", "app_intents.watch_assist.title") }
     }
   }
 
