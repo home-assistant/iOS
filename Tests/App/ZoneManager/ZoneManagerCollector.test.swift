@@ -239,10 +239,10 @@ class ZoneManagerCollectorTests: XCTestCase {
         ])
     }
 
-    func testSharedBeaconConstraintRoutesEntryToEveryRegion() {
+    func testSharedBeaconConstraintRoutesEntryToEveryRegion() throws {
         let uuid = UUID()
-        let first = CLBeaconRegion(uuid: uuid, identifier: "first")
-        let second = CLBeaconRegion(uuid: uuid, identifier: "second")
+        let first = try storedBeaconRegion(entityId: "first", uuid: uuid)
+        let second = try storedBeaconRegion(entityId: "second", uuid: uuid)
         let beacon = RangedBeaconSample(proximity: .near, rssi: -55)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: first)
@@ -254,8 +254,14 @@ class ZoneManagerCollectorTests: XCTestCase {
         )
 
         XCTAssertEqual(Set(delegate.events.map(\.description)), Set([
-            ZoneManagerEvent(eventType: .region(first, .inside)).description,
-            ZoneManagerEvent(eventType: .region(second, .inside)).description,
+            ZoneManagerEvent(
+                eventType: .region(first, .inside),
+                associatedZone: AppZone.zone(identifier: first.identifier)
+            ).description,
+            ZoneManagerEvent(
+                eventType: .region(second, .inside),
+                associatedZone: AppZone.zone(identifier: second.identifier)
+            ).description,
         ]))
     }
 
@@ -354,13 +360,17 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(locationManager.activityType, .fitness)
     }
 
-    private func storedBeaconRegion(entityId: String, inRegion: Bool = false) throws -> CLBeaconRegion {
+    private func storedBeaconRegion(
+        entityId: String,
+        inRegion: Bool = false,
+        uuid: UUID = UUID()
+    ) throws -> CLBeaconRegion {
         let server = Server.fake()
         let zone = AppZone(
             entityId: entityId,
             serverIdentifier: server.identifier.rawValue,
             inRegion: inRegion,
-            beaconUUID: UUID().uuidString
+            beaconUUID: uuid.uuidString
         )
         try database.write { db in
             try zone.save(db)
@@ -691,8 +701,8 @@ class ZoneManagerCollectorTests: XCTestCase {
         ])
     }
 
-    func testBeaconEntryIsCollectedAfterRangingConfirmation() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
+    func testBeaconEntryIsCollectedAfterRangingConfirmation() throws {
+        let region = try storedBeaconRegion(entityId: "beacon_region")
         let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -702,7 +712,10 @@ class ZoneManagerCollectorTests: XCTestCase {
             manager: locationManager
         )
 
-        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside))])
+        XCTAssertEqual(
+            delegate.events,
+            [.init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier))]
+        )
         XCTAssertEqual(delegate.events.first?.beaconDiagnostic?.proximity, "near")
         XCTAssertEqual(delegate.events.first?.beaconDiagnostic?.rssi, -60)
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
@@ -723,8 +736,8 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertTrue(locationManager.stoppedRangingConstraints.isEmpty)
     }
 
-    func testFarBeaconCanBecomeNearDuringExtendedVerificationWindow() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
+    func testFarBeaconCanBecomeNearDuringExtendedVerificationWindow() throws {
+        let region = try storedBeaconRegion(entityId: "beacon_region")
         let farBeacon = RangedBeaconSample(proximity: .far, rssi: -85)
         let nearBeacon = RangedBeaconSample(proximity: .near, rssi: -55)
         collector = makeCollector(beaconVerificationTimeout: 0.1)
@@ -743,11 +756,14 @@ class ZoneManagerCollectorTests: XCTestCase {
             manager: locationManager
         )
 
-        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside))])
+        XCTAssertEqual(
+            delegate.events,
+            [.init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier))]
+        )
     }
 
-    func testStrongFarBeaconCreatesEntryWithoutWaitingForNearClassification() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
+    func testStrongFarBeaconCreatesEntryWithoutWaitingForNearClassification() throws {
+        let region = try storedBeaconRegion(entityId: "beacon_region")
         let beacon = RangedBeaconSample(proximity: .far, rssi: -82)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -757,13 +773,16 @@ class ZoneManagerCollectorTests: XCTestCase {
             manager: locationManager
         )
 
-        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside))])
+        XCTAssertEqual(
+            delegate.events,
+            [.init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier))]
+        )
         XCTAssertEqual(delegate.events.first?.beaconDiagnostic?.proximity, "far")
         XCTAssertEqual(delegate.events.first?.beaconDiagnostic?.rssi, -82)
     }
 
-    func testBeaconEntryKeepsBackgroundExecutionUntilVerified() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
+    func testBeaconEntryKeepsBackgroundExecutionUntilVerified() throws {
+        let region = try storedBeaconRegion(entityId: "beacon_region")
         let beacon = RangedBeaconSample(proximity: .near, rssi: -55)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -778,7 +797,10 @@ class ZoneManagerCollectorTests: XCTestCase {
         )
 
         XCTAssertEqual(backgroundExecution.endCount, 1)
-        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside))])
+        XCTAssertEqual(
+            delegate.events,
+            [.init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier))]
+        )
     }
 
     func testBackgroundExecutionExpirationStopsPendingRanging() {
@@ -840,8 +862,8 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
     }
 
-    func testBeaconCanEnterAgainAfterExit() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "beacon_region")
+    func testBeaconCanEnterAgainAfterExit() throws {
+        let region = try storedBeaconRegion(entityId: "beacon_region")
         let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -859,9 +881,9 @@ class ZoneManagerCollectorTests: XCTestCase {
         )
 
         XCTAssertEqual(delegate.events, [
-            .init(eventType: .region(region, .inside)),
-            .init(eventType: .region(region, .outside)),
-            .init(eventType: .region(region, .inside)),
+            .init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier)),
+            .init(eventType: .region(region, .outside), associatedZone: AppZone.zone(identifier: region.identifier)),
+            .init(eventType: .region(region, .inside), associatedZone: AppZone.zone(identifier: region.identifier)),
         ])
     }
 
@@ -1254,8 +1276,8 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
     }
 
-    func testSuccessfulSampleCancelsScheduledRetryAndVerificationTimeout() {
-        let region = CLBeaconRegion(uuid: UUID(), identifier: "retry_success")
+    func testSuccessfulSampleCancelsScheduledRetryAndVerificationTimeout() throws {
+        let region = try storedBeaconRegion(entityId: "retry_success")
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
         collector.locationManager(
             locationManager,
@@ -1344,6 +1366,112 @@ class ZoneManagerCollectorTests: XCTestCase {
         )
 
         XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testUnknownBeaconDoesNotEmitOrSuppressEntryAfterZoneIsCreated() throws {
+        let region = try storedBeaconRegion(entityId: "unknown_then_created")
+        let zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        _ = try database.write { try zone.delete($0) }
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertTrue(delegate.events.isEmpty)
+
+        try database.write { try zone.save($0) }
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside), associatedZone: zone)])
+    }
+
+    func testDeletedForegroundZoneDoesNotSuppressEntryAfterRestoration() throws {
+        let region = try storedBeaconRegion(entityId: "deleted_restored")
+        let zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        _ = try database.write { try zone.delete($0) }
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertTrue(delegate.events.isEmpty)
+        try database.write { try zone.save($0) }
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events, [.init(eventType: .region(region, .inside), associatedZone: zone)])
+    }
+
+    func testOpportunisticScanAddsDifferentBeaconWhileForegroundScanIsActive() throws {
+        let foreground = try storedBeaconRegion(entityId: "continuous")
+        let opportunistic = try storedBeaconRegion(entityId: "bounded")
+        collector.startForegroundBeaconScanning(in: [foreground], manager: locationManager)
+        collector.startOpportunisticBeaconScanning(in: [foreground, opportunistic], manager: locationManager)
+        XCTAssertEqual(Set(locationManager.startedRangingConstraints), [
+            foreground.beaconIdentityConstraint, opportunistic.beaconIdentityConstraint,
+        ])
+        XCTAssertEqual(locationManager.startedRangingConstraints.count, 2)
+        scheduler.advance(by: 25)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [opportunistic.beaconIdentityConstraint])
+        collector.stopForegroundBeaconScanning(manager: locationManager)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints.last, foreground.beaconIdentityConstraint)
+    }
+
+    func testRepeatedLocationUpdatesDoNotExtendActiveScanWindow() throws {
+        let region = try storedBeaconRegion(entityId: "bounded_updates")
+        locationManager.overrideMonitoredRegions = [region]
+        collector.locationManager(locationManager, didUpdateLocations: [])
+        for _ in 0 ..< 4 {
+            scheduler.advance(by: 5)
+            collector.locationManager(locationManager, didUpdateLocations: [])
+        }
+        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.beginCount, 1)
+        scheduler.advance(by: 5)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+    }
+
+    func testChangedConstraintCancelsOldPendingSampleAndRetry() throws {
+        let oldRegion = try storedBeaconRegion(entityId: "changed_constraint")
+        collector.startForegroundBeaconScanning(in: [oldRegion], manager: locationManager)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: oldRegion)
+        collector.locationManager(
+            locationManager, rangingBeaconsDidFailFor: oldRegion.beaconIdentityConstraint,
+            withError: TestError.anyError
+        )
+        var zone = try XCTUnwrap(AppZone.zone(identifier: oldRegion.identifier))
+        let newUUID = UUID()
+        zone.beaconUUID = newUUID.uuidString
+        try database.write { try zone.save($0) }
+        let newRegion = CLBeaconRegion(uuid: newUUID, identifier: oldRegion.identifier)
+        collector.startForegroundBeaconScanning(in: [newRegion], manager: locationManager)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: oldRegion.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        scheduler.advance(by: 25)
+        XCTAssertTrue(delegate.events.isEmpty)
+        XCTAssertEqual(locationManager.startedRangingConstraints, [
+            oldRegion.beaconIdentityConstraint, newRegion.beaconIdentityConstraint,
+        ])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.endCount, 1)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: newRegion.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events, [.init(eventType: .region(newRegion, .inside), associatedZone: zone)])
     }
 
     func testIgnoredRegions() {

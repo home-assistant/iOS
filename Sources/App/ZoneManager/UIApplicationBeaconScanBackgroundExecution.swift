@@ -4,8 +4,7 @@ final class UIApplicationBeaconScanBackgroundExecution: BeaconScanBackgroundExec
     private var identifier = UIBackgroundTaskIdentifier.invalid
 
     func begin(expirationHandler: @escaping () -> Void) {
-        guard UIApplication.shared.applicationState != .active,
-              identifier == .invalid else { return }
+        guard identifier == .invalid else { return }
 
         identifier = UIApplication.shared.beginBackgroundTask(
             withName: "ZoneManagerBeaconScan",
