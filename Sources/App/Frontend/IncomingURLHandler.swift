@@ -173,8 +173,7 @@ class IncomingURLHandler {
                     webViewController.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipelineId,
-                        autoStartRecording: startlistening,
-                        focusInputOnAppear: false
+                        autoStartRecording: startlistening
                     )
                 }
             case .createCustomWidget:
