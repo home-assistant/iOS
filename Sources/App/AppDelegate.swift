@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
+    private let forceCloseWarningManager = ForceCloseWarningManager()
     let notificationManager = NotificationManager()
 
     override init() {
@@ -256,6 +257,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        // Fires when the user swipes the app away while it is running in the background:
+        // deliver the force-close warning immediately (see ForceCloseWarningManager).
+        forceCloseWarningManager.postImmediateWarning()
     }
 
     func application(

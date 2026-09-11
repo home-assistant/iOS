@@ -20,6 +20,7 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
+            forceCloseWarningSection
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -120,6 +121,17 @@ struct NotificationSettingsView: View {
         }
     }
 
+    private var forceCloseWarningSection: some View {
+        Section {
+            SwiftUI.Toggle(
+                L10n.SettingsDetails.Notifications.ForceCloseWarning.title,
+                isOn: $viewModel.forceCloseWarningEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.ForceCloseWarning.footer)
+        }
+    }
+
     // MARK: - Actions
 
     private func handlePermissionTap() {
@@ -145,6 +157,18 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
+        }
+    }
+    @Published var forceCloseWarningEnabled: Bool = Current.settingsStore.forceCloseWarningEnabled {
+        didSet {
+            Current.settingsStore.forceCloseWarningEnabled = forceCloseWarningEnabled
+            if forceCloseWarningEnabled {
+                PermissionType.notification.request { [weak self] _, _ in
+                    Task { @MainActor [weak self] in
+                        self?.refreshPermissionStatus()
+                    }
+                }
+            }
         }
     }
 

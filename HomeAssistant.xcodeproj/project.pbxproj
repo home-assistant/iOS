@@ -202,6 +202,8 @@
 		42EDEB11300315A50051FC9B /* HAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE941300315A50051FC9B /* HAApp.swift */; };
 		42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */; };
 		42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE943300315A50051FC9B /* LifecycleManager.swift */; };
+		F1CE71F928BB4071BA95FA95 /* ForceCloseWarningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6685DAEFD95F4284B5E0CE57 /* ForceCloseWarningManager.swift */; };
+		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
 		42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
@@ -659,6 +661,8 @@
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		42EDE943300315A50051FC9B /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
+		6685DAEFD95F4284B5E0CE57 /* ForceCloseWarningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceCloseWarningManager.swift; sourceTree = "<group>"; };
+		74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceCloseWarningManager.test.swift; sourceTree = "<group>"; };
 		42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowGroupCommands.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
@@ -2892,6 +2896,7 @@
 				42EDE941300315A50051FC9B /* HAApp.swift */,
 				42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */,
 				42EDE943300315A50051FC9B /* LifecycleManager.swift */,
+				6685DAEFD95F4284B5E0CE57 /* ForceCloseWarningManager.swift */,
 				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
 				42DF4EF6302CACC200589E49 /* Templating */,
@@ -2959,6 +2964,7 @@
 				42EDBB773002FBBE0051FC9B /* Kiosk */,
 				42EDBB663002FBBE0051FC9B /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
+				74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */,
 				42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				42EDBB963002FBBE0051FC9B /* Additions */,
@@ -4450,6 +4456,7 @@
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
+				F1CE71F928BB4071BA95FA95 /* ForceCloseWarningManager.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
 			);
@@ -4461,6 +4468,7 @@
 			files = (
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */,
 				42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
