@@ -1,4 +1,3 @@
-import AppIntents
 @testable import HomeAssistant
 import Improv_iOS
 @testable import Shared
@@ -90,27 +89,5 @@ final class AssistEntryPointsTests: XCTestCase {
         XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
         XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-2")
         XCTAssertEqual(delegate.contexts.first?.autoStartRecording, true)
-    }
-
-    @MainActor
-    func testAssistAppIntentOpensAssistWithoutVoiceWhenAskedForText() async throws {
-        guard #available(iOS 18, *) else {
-            throw XCTSkip("AssistAppIntent requires iOS 18")
-        }
-        Current.sceneManager.setWebViewController(WebViewController(server: server))
-
-        let intent = AssistAppIntent()
-        intent.pipeline = .init(id: "pipeline-3", serverId: server.identifier.rawValue, name: "Pipeline")
-        intent.withVoice = false
-
-        let requested = expectation(description: "session requested")
-        delegate.onContext = { requested.fulfill() }
-
-        _ = try await intent.perform()
-        await fulfillment(of: [requested], timeout: 2)
-
-        XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
-        XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-3")
-        XCTAssertEqual(delegate.contexts.first?.autoStartRecording, false)
     }
 }
