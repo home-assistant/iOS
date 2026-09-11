@@ -368,7 +368,7 @@ final class CarPlayAssistSession: NSObject {
         if presentTemplate {
             interfaceController?.presentTemplate(template, animated: true, completion: nil)
         }
-        playProcessingIndicatorToneIfNeeded()
+        playProcessingTone()
         assistService.assist(source: .text(
             input: prompt,
             pipelineId: pipelineId,
@@ -547,10 +547,10 @@ final class CarPlayAssistSession: NSObject {
     // when the iPhone ring/silent switch is muted, like any other media playback.
     private func playRecordingIndicatorToneIfNeeded() {
         guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
-        tonePlayer.play(.startRecording)
+        tonePlayer.play(.listening)
     }
 
-    private func playProcessingIndicatorToneIfNeeded() {
+    private func playProcessingTone() {
         tonePlayer.play(.processing)
     }
 
@@ -573,6 +573,9 @@ final class CarPlayAssistSession: NSObject {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
 
+        // The response takes over from the processing cue, and a still-playing cue would
+        // keep the session's I/O running while a debug reconfigure tries to deactivate it.
+        tonePlayer.stop()
         configureAudioSessionForTTSIfNeeded()
         logCurrentAudioRoute(context: "before tts playback")
 
@@ -872,7 +875,7 @@ final class CarPlayAssistSession: NSObject {
             return
         }
 
-        playProcessingIndicatorToneIfNeeded()
+        playProcessingTone()
         activateVoiceControlState(for: .processing)
         assistService.assist(source: .text(
             input: input,
@@ -1104,7 +1107,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
             guard shouldHandleSttEnd else { return }
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
-            playProcessingIndicatorToneIfNeeded()
+            playProcessingTone()
             activateVoiceControlState(for: .processing)
             armResponseWatchdog()
         } else {
