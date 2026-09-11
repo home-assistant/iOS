@@ -49,9 +49,10 @@ struct CornerComplicationView: View {
             cornerLabel(text.isEmpty ? WatchWidgetConstants.appName : text, complication)
                 .widgetCurvesContent()
         } else {
-            // Flat, the way ClockKit drew a Graphic Corner's outer text and the system still draws its
-            // gauge complications (UV Index, Battery): a large number in the corner tip, with the bezel
-            // label riding the arc below it. Curving it instead re-typesets it small along the bezel.
+            // Flat, the way ClockKit drew a Graphic Corner "Gauge Text" outer text and the system still
+            // draws its gauge complications (UV Index, Battery): a large number in the corner tip, with
+            // the bezel label riding the arc below it. Curving it instead re-typesets it small along
+            // the bezel.
             cornerLabel(text.isEmpty ? WatchWidgetConstants.appName : text, complication)
                 .font(CornerComplicationTypography.flatTextFont)
         }

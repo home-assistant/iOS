@@ -45,7 +45,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var showSubtitle: Bool?
         var showBottomText: Bool?
         /// Corner only: whether the corner's own text rides the outer curve (default true, the modern
-        /// layout) or sits flat in the corner tip, the way ClockKit drew a Graphic Corner's outer text.
+        /// layout) or sits flat in the corner tip, the way ClockKit drew a "Gauge Text" corner's outer text.
         /// Defaulted so payloads written before this field still decode and construct.
         var curvesText: Bool? = nil
         /// Rectangular only: whether the value rides the gauge as its thumb (default true, the modern

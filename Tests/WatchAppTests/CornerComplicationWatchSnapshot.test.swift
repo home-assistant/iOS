@@ -39,6 +39,9 @@ struct CornerComplicationWatchSnapshotTests {
             // A legacy Graphic Corner "Gauge Text" complication: ClockKit drew its outer text flat and
             // large in the corner tip, so it opts out of the curve and keeps that size.
             ("flat-outer-text-gauge", .sample(icon: false, value: "16.6", title: nil, curvesText: false)),
+            // A legacy Graphic Corner "Stack Text" complication: ClockKit curved both of its lines, so its
+            // Outer area rides the corner's own curve and its Inner area the arc, with no gauge.
+            ("legacy-stack-text", .sample(icon: false, value: "Living Room", title: "21.5°", fraction: nil)),
         ]
     }
 }
