@@ -8,24 +8,57 @@ import UserNotifications
 import XCTest
 
 final class MockClientEventStore: ClientEventStoreProtocol {
-    let addEventAction: (ClientEvent) -> Void
-
-    var addedEvents: [ClientEvent] = []
+    private let lock = NSLock()
+    private let addEventAction: (ClientEvent) -> Void
+    private var addedEvents: [ClientEvent] = []
+    private var processedEventObserver: (count: Int, completion: () -> Void)?
 
     init(addEventAction: @escaping (ClientEvent) -> Void) {
         self.addEventAction = addEventAction
     }
 
+    private func processedCount() -> Int {
+        addedEvents.filter { $0.jsonPayloadJSONObject()["event"] != nil }.count
+    }
+
+    var processorCompletionCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return processedCount()
+    }
+
+    func observeProcessorCompletions(count: Int, completion: @escaping () -> Void) {
+        lock.lock()
+        let alreadyComplete = processedCount() >= count
+        if !alreadyComplete { processedEventObserver = (count, completion) }
+        lock.unlock()
+        if alreadyComplete { completion() }
+    }
+
     func addEvent(_ event: ClientEvent) {
+        lock.lock()
         addedEvents.append(event)
+        let completion: (() -> Void)?
+        if let observer = processedEventObserver, processedCount() >= observer.count {
+            completion = observer.completion
+            processedEventObserver = nil
+        } else {
+            completion = nil
+        }
+        lock.unlock()
         addEventAction(event)
+        completion?()
     }
 
     func getEvents() -> [ClientEvent] {
-        addedEvents
+        lock.lock()
+        defer { lock.unlock() }
+        return addedEvents
     }
 
     func clearAllEvents() {
+        lock.lock()
+        defer { lock.unlock() }
         addedEvents = []
     }
 }
@@ -157,13 +190,31 @@ class ZoneManagerTests: XCTestCase {
     private var previousNotificationDispatcher: LocalNotificationDispatcherProtocol!
     private var notificationDispatcher: ZoneManagerNotificationDispatcher!
     private var managers = [ZoneManager]()
-    private var loggedEventsUpdatedExpectation: XCTestExpectation?
-    private var loggedEvents: [ClientEvent]! {
-        didSet {
-            let expectation = loggedEventsUpdatedExpectation
-            loggedEventsUpdatedExpectation = nil
-            expectation?.fulfill()
+    private var clientEventStore: MockClientEventStore!
+    private var previousClientEventStore: ClientEventStoreProtocol!
+    private let logExpectationLock = NSLock()
+    private var storedLogExpectation: XCTestExpectation?
+    private var loggedEventsUpdatedExpectation: XCTestExpectation? {
+        get {
+            logExpectationLock.lock()
+            defer { logExpectationLock.unlock() }
+            return storedLogExpectation
         }
+        set {
+            logExpectationLock.lock()
+            defer { logExpectationLock.unlock() }
+            storedLogExpectation = newValue
+        }
+    }
+
+    private var loggedEvents: [ClientEvent] { clientEventStore.getEvents() }
+
+    private func didLogEvent() {
+        logExpectationLock.lock()
+        let expectation = storedLogExpectation
+        storedLogExpectation = nil
+        logExpectationLock.unlock()
+        expectation?.fulfill()
     }
 
     enum TestError: Error {
@@ -188,11 +239,12 @@ class ZoneManagerTests: XCTestCase {
         Current.servers = servers
         Current.cachedApis = [server1.identifier: apis[0], server2.identifier: apis[1]]
 
-        loggedEvents = []
         Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
-        Current.clientEventStore = MockClientEventStore(addEventAction: { event in
-            self.loggedEvents.append(event)
+        previousClientEventStore = Current.clientEventStore
+        clientEventStore = MockClientEventStore(addEventAction: { [weak self] _ in
+            self?.didLogEvent()
         })
+        Current.clientEventStore = clientEventStore
         Current.location.oneShotLocation = { _, _ in .value(.init(latitude: 0, longitude: 0)) }
         previousNotificationDispatcher = Current.notificationDispatcher
         notificationDispatcher = ZoneManagerNotificationDispatcher()
@@ -203,14 +255,23 @@ class ZoneManagerTests: XCTestCase {
         locationManager = FakeCLLocationManager()
     }
 
-    override func tearDown() {
-        loggedEventsUpdatedExpectation = nil
-        managers.removeAll()
-        Current.database = previousDatabase
-        Current.clientEventStore.clearAllEvents()
-        Current.notificationDispatcher = previousNotificationDispatcher
+    override func tearDown() async throws {
+        // Upload completion is separate from the processor's asynchronous SSID/logging chain.
+        // Drain every chain before the next test replaces the global Current event store.
+        let completed = expectation(description: "all processor logs completed before teardown")
+        let expectedCount = processor.performCount
+        clientEventStore.observeProcessorCompletions(count: expectedCount) { completed.fulfill() }
+        await fulfillment(of: [completed], timeout: 10)
+        await MainActor.run {
+            XCTAssertEqual(clientEventStore.processorCompletionCount, expectedCount)
+            loggedEventsUpdatedExpectation = nil
+            managers.removeAll()
+            Current.database = previousDatabase
+            Current.clientEventStore = previousClientEventStore
+            Current.notificationDispatcher = previousNotificationDispatcher
+        }
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     private func newZoneManager(
@@ -1432,8 +1493,10 @@ private class FakeProcessor: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
     var promiseToReturn: Promise<Void>?
+    private(set) var performCount = 0
     var performEvent: ZoneManagerEvent?
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
+        performCount += 1
         performEvent = event
         return promiseToReturn!
     }
