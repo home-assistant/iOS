@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 import Shared
 import UserNotifications
@@ -13,17 +14,32 @@ import UserNotifications
 final class ForceCloseWarningManager {
     static let notificationIdentifier = "force-close-warning"
 
+    private let addRequest: (UNNotificationRequest) -> Void
+
+    init(addRequest: @escaping (UNNotificationRequest) -> Void = { Current.userNotificationCenter.add($0) }) {
+        self.addRequest = addRequest
+    }
+
     /// Called from `applicationWillTerminate`: posts the warning for immediate delivery.
+    /// Reads authorization live rather than from a cache: a cache goes stale exactly when
+    /// it matters (permission changed while suspended), and the app queries this status
+    /// throughout its lifetime, so by termination time this is the fast path.
     func postImmediateWarning() {
         guard Self.isEnabled else { return }
         let content = Self.makeContent(title: L10n.ForceCloseWarning.title, body: L10n.ForceCloseWarning.body)
-        Current.userNotificationCenter.add(Self.makeImmediateRequest(content: content))
+        addRequest(Self.makeImmediateRequest(content: content))
     }
 
     static var isEnabled: Bool {
         guard !Current.isCatalyst else { return false }
         guard Current.settingsStore.forceCloseWarningEnabled else { return false }
-        return Current.settingsStore.isLocationEnabled(for: .background)
+        return readBackgroundLocationEnabled()
+    }
+
+    /// Injectable (`Current.location.permissionStatus`) so tests can stub it, unlike
+    /// `SettingsStore.isLocationEnabled`, which builds its own `CLLocationManager`.
+    static func readBackgroundLocationEnabled() -> Bool {
+        Current.location.permissionStatus() == .authorizedAlways
     }
 
     static func makeContent(title: String, body: String) -> UNMutableNotificationContent {

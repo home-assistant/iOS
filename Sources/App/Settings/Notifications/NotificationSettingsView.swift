@@ -20,7 +20,10 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
-            forceCloseWarningSection
+            // The manager is hard-disabled on Catalyst, so don't offer a toggle that could never fire.
+            if !Current.isCatalyst {
+                forceCloseWarningSection
+            }
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -206,8 +209,9 @@ final class NotificationSettingsViewModel: ObservableObject {
 }
 
 extension NotificationSettingsView: SettingsScreenSearchable {
+    /// Only index rows the screen can actually present: the force-close toggle is absent on Catalyst.
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        var entries = [
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.Permission.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.History.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.SnoozeActions.header),
@@ -215,5 +219,9 @@ extension NotificationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
         ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.Notifications.ForceCloseWarning.title))
+        }
+        return entries
     }
 }
