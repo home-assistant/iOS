@@ -7,16 +7,49 @@ import PromiseKit
 import XCTest
 
 class WebhookManagerTests: XCTestCase {
+    private final class DelayedTaskLookup {
+        private let lock = NSLock()
+        private var callback: (([URLSessionTask]) -> Void)?
+
+        func capture(_ callback: @escaping ([URLSessionTask]) -> Void) {
+            lock.lock()
+            self.callback = callback
+            lock.unlock()
+        }
+
+        func complete() {
+            lock.lock()
+            let callback = callback
+            self.callback = nil
+            lock.unlock()
+            callback?([])
+        }
+    }
+
     private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
-        private(set) var names = [String]()
-        private(set) var invocationsWereOnMainThread = [Bool]()
+        private let lock = NSLock()
+        private var recordedNames = [String]()
+        private var recordedThreads = [Bool]()
+        var names: [String] {
+            lock.lock()
+            defer { lock.unlock() }
+            return recordedNames
+        }
+
+        var invocationsWereOnMainThread: [Bool] {
+            lock.lock()
+            defer { lock.unlock() }
+            return recordedThreads
+        }
 
         func callAsFunction<PromiseValue>(
             withName name: String,
             wrapping: (TimeInterval?) -> Promise<PromiseValue>
         ) -> Promise<PromiseValue> {
-            names.append(name)
-            invocationsWereOnMainThread.append(Thread.isMainThread)
+            lock.lock()
+            recordedNames.append(name)
+            recordedThreads.append(Thread.isMainThread)
+            lock.unlock()
             return wrapping(nil)
         }
     }
@@ -1294,7 +1327,7 @@ class WebhookManagerTests: XCTestCase {
         manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
         let handlerStarted = expectation(description: "handler started after background task")
         ReplacingTestHandler.onInit = {
-            XCTAssertTrue(Thread.isMainThread)
+            XCTAssertFalse(Thread.isMainThread)
             XCTAssertEqual(
                 backgroundTask.names,
                 [BackgroundTask.webhookSend.rawValue, BackgroundTask.webhookInvoke.rawValue]
@@ -1318,6 +1351,74 @@ class WebhookManagerTests: XCTestCase {
 
         await fulfillment(of: [handlerStarted], timeout: 1)
         try await delivery.value
+    }
+
+    func testReconciliationTimeoutIsUnknownNotAbsent() async {
+        manager.persistedReconciliationTimeout = 0
+        manager.persistedTaskLookup = { _, _ in /* Simulate an invalidated session omitting its callback. */ }
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "unknown-upload")
+        guard case let .unavailable(error) = state else {
+            return XCTFail("A lookup timeout must not authorize a duplicate upload")
+        }
+        XCTAssertEqual((error as? URLError)?.code, .timedOut)
+    }
+
+    func testReconciliationIgnoresLateCallbackAfterTimeout() async {
+        let lookup = DelayedTaskLookup()
+        manager.persistedReconciliationTimeout = 0
+        manager.persistedTaskLookup = { _, completion in lookup.capture(completion) }
+        guard case .unavailable = await manager.reconcilePersistedBackground(requestIdentifier: "late-lookup") else {
+            return XCTFail("Expected lookup timeout")
+        }
+        lookup.complete()
+        // Queue a new lookup after the late callback. It must not resume the old continuation again.
+        manager.persistedReconciliationTimeout = 30
+        manager.persistedTaskLookup = { _, completion in completion([]) }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "next-lookup") else {
+            return XCTFail("A late callback must not corrupt a subsequent lookup")
+        }
+    }
+
+    func testReconciliationIgnoresDuplicateLookupCallbacks() async {
+        manager.persistedTaskLookup = { _, completion in
+            completion([])
+            completion([])
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "missing-upload") else {
+            return XCTFail("The successful lookup should settle once")
+        }
+        // A second lookup crosses dataQueue after both callbacks of the first lookup.
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "still-missing") else {
+            return XCTFail("A duplicate callback must not corrupt later lookups")
+        }
+    }
+
+    func testCompletedRestoredCacheEvictsOldestAndKeepsRecentResults() async {
+        manager.completedPersistedRequestLimit = 2
+        let identifier = WebhookResponseIdentifier(rawValue: "bounded-restored-results")
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        for index in 0 ..< 3 {
+            let started = expectation(description: "restored handler \(index)")
+            ReplacingTestHandler.onInit = { started.fulfill() }
+            startRestoredTask(identifier: identifier, requestIdentifier: "bounded-\(index)")
+            await fulfillment(of: [started], timeout: 5)
+            await waitForBackgroundInvocations()
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "bounded-0") else {
+            return XCTFail("Oldest unconsumed result should be evicted at the bound")
+        }
+        for index in 1 ... 2 {
+            guard case .completed(.success) = await manager
+                .reconcilePersistedBackground(requestIdentifier: "bounded-\(index)") else {
+                return XCTFail("Recent completed results must remain available")
+            }
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "bounded-2") else {
+            return XCTFail("Results must still be consumed exactly once")
+        }
     }
 
     private func startRestoredTask(

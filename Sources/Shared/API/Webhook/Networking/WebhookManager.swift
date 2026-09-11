@@ -29,6 +29,7 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
         case .unmappableValue:
             return L10n.HaApi.ApiError.invalidResponse
         case .requiresMainThread:
+            // Programmer precondition, not a user-facing error.
             return "Persisted background requests must start on the main thread"
         case .replaced:
             // this shouldn't be user-facing
@@ -96,11 +97,21 @@ public class WebhookManager: NSObject {
         }
     }
 
-    private var completedPersistedRequests = [String: Swift.Result<Void, Error>]() {
+    // Bound results that no caller ever reconciles. Eviction permits a later retry, so this
+    // transport does not provide exactly-once delivery across relaunches or unbounded delays.
+    var completedPersistedRequestLimit = 100
+    private var nextCompletionSequence: UInt64 = 0
+    private var completedPersistedRequests = [String: (result: Swift.Result<Void, Error>, sequence: UInt64)]() {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
     }
+
+    var persistedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void = {
+        $0.getAllTasks(completionHandler: $1)
+    }
+
+    var persistedReconciliationTimeout: TimeInterval = 30
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 
@@ -412,8 +423,8 @@ public class WebhookManager: NSObject {
             return .failure(WebhookError.requiresMainThread)
         }
 
-        // Acquire execution time before the main thread waits for dataQueue. The production runner
-        // may synchronously query UIApplication on main and must never be entered from dataQueue.sync.
+        // Acquire execution time before synchronously handing the upload to URLSession.
+        // ApplicationBackgroundTaskRunner must never synchronously hop back to main.
         let (backgroundTaskPromise, backgroundTaskSeal) = Promise<Void>.pending()
         Current.backgroundTask(withName: BackgroundTask.webhookSend.rawValue) { _ in
             backgroundTaskPromise
@@ -501,13 +512,23 @@ public class WebhookManager: NSObject {
                     return
                 }
                 if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
-                    continuation.resume(returning: .completed(result))
+                    continuation.resume(returning: .completed(result.result))
                     return
                 }
 
                 let sessionInfo = currentBackgroundSessionInfo
-                sessionInfo.session.getAllTasks { tasks in
+                // Both timeout and completion are serialized on dataQueue. A late or duplicate
+                // callback must neither resume twice nor mutate adoption/cancellation state.
+                var pending = true
+                dataQueue.asyncAfter(deadline: .now() + persistedReconciliationTimeout) {
+                    guard pending else { return }
+                    pending = false
+                    continuation.resume(returning: .unavailable(URLError(.timedOut)))
+                }
+                persistedTaskLookup(sessionInfo.session) { tasks in
                     self.dataQueue.async { [self] in
+                        guard pending else { return }
+                        pending = false
                         let matchingTasks = tasks.filter {
                             $0.webhookPersisted?.requestIdentifier == requestIdentifier
                         }
@@ -518,9 +539,9 @@ public class WebhookManager: NSObject {
                         }
                         if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
                             for task in matchingTasks {
-                                cancelPersistedTask(task, sessionInfo: sessionInfo, resolvingWith: result)
+                                cancelPersistedTask(task, sessionInfo: sessionInfo, resolvingWith: result.result)
                             }
-                            continuation.resume(returning: .completed(result))
+                            continuation.resume(returning: .completed(result.result))
                             return
                         }
 
@@ -546,6 +567,15 @@ public class WebhookManager: NSObject {
                     }
                 }
             }
+        }
+    }
+
+    private func cachePersistedCompletion(_ result: Swift.Result<Void, Error>, requestIdentifier: String) {
+        nextCompletionSequence &+= 1
+        completedPersistedRequests[requestIdentifier] = (result, nextCompletionSequence)
+        while completedPersistedRequests.count > max(0, completedPersistedRequestLimit),
+              let oldest = completedPersistedRequests.min(by: { $0.value.sequence < $1.value.sequence })?.key {
+            completedPersistedRequests.removeValue(forKey: oldest)
         }
     }
 
@@ -961,47 +991,44 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         Current.Log.notify("starting \(request.type) to \(server.identifier) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        // URLSession delegate callbacks run on dataQueue. Acquire UIKit execution time asynchronously
-        // on main before constructing the hot response-handler chain.
-        DispatchQueue.main.async { [self] in
-            Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ in
-                let invocation: Promise<Void>
-                if let api = Current.api(for: server) {
-                    let handler = handlerType.init(api: api)
-                    let handlerPromise = firstly {
-                        handler.handle(request: .value(request), result: result)
-                    }.done { [weak self] result in
-                        // keep the handler around until it finishes
-                        withExtendedLifetime(handler) {
-                            self?.handle(result: result)
-                        }
+        // The runner acquires execution time on this queue without synchronously waiting on main.
+        Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ in
+            let invocation: Promise<Void>
+            if let api = Current.api(for: server) {
+                let handler = handlerType.init(api: api)
+                let handlerPromise = firstly {
+                    handler.handle(request: .value(request), result: result)
+                }.done { [weak self] result in
+                    // keep the handler around until it finishes
+                    withExtendedLifetime(handler) {
+                        self?.handle(result: result)
                     }
-                    invocation = firstly {
-                        when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
-                    }
-                } else {
-                    invocation = .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
                 }
+                invocation = firstly {
+                    when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+                }
+            } else {
+                invocation = .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            }
 
-                return invocation.tap(on: dataQueue) { [weak self] result in
-                    resolver?.resolve(result)
-                    if let self,
-                       let requestIdentifier,
-                       restoredPersistedRequestIDs.remove(requestIdentifier) != nil {
-                        activePersistedRequests.removeValue(forKey: requestIdentifier)
-                        switch result {
-                        case .fulfilled:
-                            completedPersistedRequests[requestIdentifier] = .success(())
-                        case let .rejected(error):
-                            completedPersistedRequests[requestIdentifier] = .failure(error)
-                        }
+            return invocation.tap(on: dataQueue) { [weak self] result in
+                resolver?.resolve(result)
+                if let self,
+                   let requestIdentifier,
+                   restoredPersistedRequestIDs.remove(requestIdentifier) != nil {
+                    activePersistedRequests.removeValue(forKey: requestIdentifier)
+                    switch result {
+                    case .fulfilled:
+                        cachePersistedCompletion(.success(()), requestIdentifier: requestIdentifier)
+                    case let .rejected(error):
+                        cachePersistedCompletion(.failure(error), requestIdentifier: requestIdentifier)
                     }
-                }.ensure {
-                    Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
-                    sessionInfo.eventGroup.leave()
                 }
-            }.cauterize()
-        }
+            }.ensure {
+                Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
+                sessionInfo.eventGroup.leave()
+            }
+        }.cauterize()
     }
 }
 
