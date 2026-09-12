@@ -55,13 +55,21 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         var eventPayload: [String: String] { [
             "beacon": String(beacon),
             "circular": String(circular),
+            "total": String(total),
         ] }
+
+        var total: Int { beacon + circular }
     }
 
     let limits: Counts
+    let maximumTotalRegionCount: Int
 
-    init(limits: Counts = Counts(beacon: 20, circular: 20)) {
+    init(
+        limits: Counts = Counts(beacon: 20, circular: 20),
+        maximumTotalRegionCount: Int = 20
+    ) {
         self.limits = limits
+        self.maximumTotalRegionCount = maximumTotalRegionCount
     }
 
     func regions(
@@ -74,7 +82,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         let startRegions = segmented.values.flatMap({ $0 })
         let startCounts = Counts(startRegions)
 
-        if startCounts < limits {
+        if startCounts < limits, startCounts.total <= maximumTotalRegionCount {
             // We're starting out with a small enough count
             return AnyCollection(startRegions)
         }
@@ -112,7 +120,8 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
             let currentCount = Counts(segmented.values.flatMap { $0 })
             let optionCount = Counts(option.value)
 
-            if currentCount.shouldReduce(option: optionCount, comparedTo: limits) {
+            if currentCount.total > maximumTotalRegionCount ||
+                currentCount.shouldReduce(option: optionCount, comparedTo: limits) {
                 // We strip off entire zones at a time if they contain any region which exceeds the count.
                 strippedZones.append(option.key)
                 segmented[option.key] = nil
