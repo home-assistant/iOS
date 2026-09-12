@@ -212,22 +212,22 @@ struct LegacyComplicationRenderTests {
         #expect(render.contentLed.value == "16.6")
     }
 
-    /// "Stack Text" drew its Outer area flat too, with only the Inner area curved along the arc — which
-    /// is where the bezel label already puts the title.
-    @Test func cornerStackTextKeepsItsOuterTextFlat() {
+    /// "Stack Text" curved both of its lines around the corner: the Outer area along the outer edge and
+    /// the Inner area on the arc inside it. Leaving the Outer area flat clips it to its first few
+    /// characters in the corner tip, so it keeps the curve, with the Inner area on the bezel label.
+    @Test func cornerStackTextCurvesItsOuterText() {
         let render = LegacyComplicationRender(complication: complication(
             family: .graphicCorner,
             template: .GraphicCornerStackText,
-            textAreas: ["Outer": ("21.5°", "#FFFFFFFF"), "Inner": ("Living Room", "#FFFFFFFF")]
+            textAreas: ["Outer": ("Living Room", "#FFFFFFFF"), "Inner": ("21.5°", "#FFFFFFFF")]
         ))
 
-        #expect(render.curvesCornerText == false)
-        #expect(render.contentLed.value == "21.5°")
-        #expect(render.contentLed.title == "Living Room")
+        #expect(render.curvesCornerText)
+        #expect(render.contentLed.value == "Living Room")
+        #expect(render.contentLed.title == "21.5°")
     }
 
-    /// "Text Image" is the one corner template whose text ClockKit did curve, along the arc beside its
-    /// image, so it keeps the curve.
+    /// "Text Image" curved its text along the arc beside its image, so it keeps the curve.
     @Test func cornerTextImageCurvesItsText() {
         let render = LegacyComplicationRender(complication: complication(
             family: .graphicCorner,

@@ -2393,6 +2393,7 @@
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-name-value-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.legacy-stack-text.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.name-only-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-no-gauge.png",
