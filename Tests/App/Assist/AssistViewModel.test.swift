@@ -20,7 +20,6 @@ final class AssistViewModelTests: XCTestCase {
 
     private func makeSut(
         autoStartRecording: Bool = false,
-        focusInputOnAppear: Bool = false,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) -> AssistViewModel {
@@ -30,7 +29,6 @@ final class AssistViewModelTests: XCTestCase {
             audioPlayer: mockAudioPlayer,
             assistService: mockAssistService,
             autoStartRecording: autoStartRecording,
-            focusInputOnAppear: focusInputOnAppear,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer
         )
@@ -58,26 +56,54 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func testOnAppearFocusInput() async throws {
-        sut = makeSut(focusInputOnAppear: true)
+    func testOnAppearWithoutAutoStartRecordingFocusesInput() async throws {
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
         await Task.yield()
         XCTAssertTrue(sut.focusOnInput)
-        XCTAssertFalse(sut.focusInputOnAppear)
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
     }
 
     @MainActor
-    func testOnAppearAutoStartRecordingIgnoresFocusInput() async throws {
-        sut = makeSut(autoStartRecording: true, focusInputOnAppear: true)
+    func testOnAppearFocusesInputBeforePipelinesLoad() async throws {
+        mockAssistService.holdsPipelinesCompletion = true
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        XCTAssertTrue(sut.focusOnInput)
+
+        mockAssistService.completePendingPipelinesFetch()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
+    @MainActor
+    func testOnAppearAutoStartRecordingDoesNotFocusInput() async throws {
+        sut = makeSut(autoStartRecording: true)
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
         await Task.yield()
         XCTAssertFalse(sut.focusOnInput)
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testNewSessionWithAutoStartRecordingRemovesInputFocus() async throws {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+
+        sut.didRequestNewSession(.init(
+            server: ServerFixture.standard,
+            pipelineId: "",
+            autoStartRecording: true
+        ))
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
     }
 
     @MainActor

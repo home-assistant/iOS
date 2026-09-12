@@ -38,7 +38,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
-    private(set) var focusInputOnAppear: Bool
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
@@ -60,7 +59,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
         autoStartRecording: Bool,
-        focusInputOnAppear: Bool = false,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) {
@@ -70,7 +68,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
-        self.focusInputOnAppear = focusInputOnAppear
         self.speechTranscriber = speechTranscriber
         self.speechSynthesizer = speechSynthesizer
         self.configuration = AssistConfiguration.config
@@ -89,12 +86,14 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         loadCachedPipelines()
 
+        focusOnInput = !autoStartRecording
+
         if pipelines.isEmpty {
             fetchPipelines { [weak self] in
-                Task { @MainActor in self?.checkForAutoRecordingAndStart() }
+                Task { @MainActor in self?.startRecordingIfNeeded() }
             }
         } else {
-            checkForAutoRecordingAndStart()
+            startRecordingIfNeeded()
             fetchPipelines()
         }
     }
@@ -349,16 +348,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         speechSynthesizer?.speak(text)
     }
 
-    @MainActor private func checkForAutoRecordingAndStart() {
-        if autoStartRecording {
-            Current.Log.info("Auto start recording triggered in Assist")
-            autoStartRecording = false
-            focusInputOnAppear = false
-            assistWithAudio()
-        } else if focusInputOnAppear || Current.isCatalyst {
-            focusInputOnAppear = false
-            focusOnInput = true
-        }
+    @MainActor private func startRecordingIfNeeded() {
+        guard autoStartRecording else { return }
+        Current.Log.info("Auto start recording triggered in Assist")
+        autoStartRecording = false
+        assistWithAudio()
     }
 
     private func updateAudioLevel(_ level: Float) {
@@ -547,7 +541,6 @@ extension AssistViewModel: AssistSessionDelegate {
             }
             preferredPipelineId = context.pipelineId
             autoStartRecording = context.autoStartRecording
-            focusInputOnAppear = context.focusInputOnAppear
             initialRoutine()
         }
     }
