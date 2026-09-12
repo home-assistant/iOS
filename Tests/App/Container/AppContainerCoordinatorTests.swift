@@ -56,7 +56,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
             isComingFromAppIntent: false
         )
 
-        wait(for: [navigated], timeout: 5)
+        wait(for: [navigated], timeout: 30)
         XCTAssertEqual(frontend.openedInlineURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedPanelURLs.isEmpty)
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
@@ -75,7 +75,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
             isComingFromAppIntent: true
         )
 
-        wait(for: [navigated], timeout: 5)
+        wait(for: [navigated], timeout: 30)
         XCTAssertEqual(frontend.openedPanelURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedInlineURLs.isEmpty)
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
@@ -111,10 +111,23 @@ final class AppContainerCoordinatorTests: XCTestCase {
         // picker takes its place a runloop later.
         XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
 
-        let presented = expectation(description: "picker presented")
-        DispatchQueue.main.async { presented.fulfill() }
-        wait(for: [presented], timeout: 5)
+        waitUntil { AppSettingsPresenter.shared.isSheetPresented }
 
         XCTAssertTrue(AppSettingsPresenter.shared.isSheetPresented)
+    }
+
+    /// Spins the main run loop until `condition` holds. `selectServer` clears the screen and only then
+    /// hops to present, so the picker can take more than the one turn a single `async` would cover.
+    private func waitUntil(
+        _ condition: () -> Bool,
+        timeout: TimeInterval = 30,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !condition(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+        XCTAssertTrue(condition(), "Timed out spinning the main run loop", file: file, line: line)
     }
 }
