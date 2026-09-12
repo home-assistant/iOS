@@ -30,6 +30,27 @@ jobs:
         with:
           ruby-version: .ruby-version
 
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: >-
+          rm -rf
+          ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 
