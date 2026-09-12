@@ -7,6 +7,143 @@ import PromiseKit
 import XCTest
 
 class WebhookManagerTests: XCTestCase {
+    private final class DelayedTaskLookup {
+        private let lock = NSLock()
+        private var callback: (([URLSessionTask]) -> Void)?
+
+        func capture(_ callback: @escaping ([URLSessionTask]) -> Void) {
+            lock.lock()
+            self.callback = callback
+            lock.unlock()
+        }
+
+        func complete() {
+            lock.lock()
+            let callback = callback
+            self.callback = nil
+            lock.unlock()
+            callback?([])
+        }
+    }
+
+    private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        private let lock = NSLock()
+        private var recordedNames = [String]()
+        private var recordedThreads = [Bool]()
+        var names: [String] {
+            lock.lock()
+            defer { lock.unlock() }
+            return recordedNames
+        }
+
+        var invocationsWereOnMainThread: [Bool] {
+            lock.lock()
+            defer { lock.unlock() }
+            return recordedThreads
+        }
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            lock.lock()
+            recordedNames.append(name)
+            recordedThreads.append(Thread.isMainThread)
+            lock.unlock()
+            return wrapping(nil)
+        }
+    }
+
+    private final class CausallyGatedInputStream: InputStream {
+        private let lock = NSLock()
+        private let payload: [UInt8]
+        private var payloadOffset = 0
+        private var released = false
+        private var status = Stream.Status.notOpen
+
+        init(payload: Data) {
+            self.payload = Array(payload)
+            super.init(data: Data())
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        func release() {
+            lock.lock()
+            released = true
+            lock.unlock()
+        }
+
+        var isReleased: Bool {
+            lock.lock()
+            let currentValue = released
+            lock.unlock()
+            return currentValue
+        }
+
+        override var streamStatus: Stream.Status {
+            lock.lock()
+            let currentStatus = status
+            lock.unlock()
+            return currentStatus
+        }
+
+        override var hasBytesAvailable: Bool {
+            lock.lock()
+            let hasBytes = status == .open && (!released || payloadOffset < payload.count)
+            lock.unlock()
+            return hasBytes
+        }
+
+        override var streamError: Error? {
+            nil
+        }
+
+        override func open() {
+            lock.lock()
+            status = .open
+            lock.unlock()
+        }
+
+        override func close() {
+            lock.lock()
+            status = .closed
+            lock.unlock()
+        }
+
+        override func read(_ buffer: UnsafeMutablePointer<UInt8>, maxLength len: Int) -> Int {
+            lock.lock()
+            defer { lock.unlock() }
+            guard status == .open else {
+                return -1
+            }
+            guard released else {
+                buffer.initialize(repeating: 0x20, count: len)
+                return len
+            }
+
+            let count = min(len, payload.count - payloadOffset)
+            for index in 0 ..< count {
+                buffer[index] = payload[payloadOffset + index]
+            }
+            payloadOffset += count
+            if payloadOffset == payload.count {
+                status = .atEnd
+            }
+            return count
+        }
+
+        override func getBuffer(
+            _ buffer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>,
+            length len: UnsafeMutablePointer<Int>
+        ) -> Bool {
+            false
+        }
+    }
+
     private var manager: WebhookManager!
     private var api1: FakeHassAPI!
     private var api2: FakeHassAPI!
@@ -811,6 +948,505 @@ class WebhookManagerTests: XCTestCase {
         wait(for: [networkExpectation], timeout: 10.0)
     }
 
+    func testStartPersistedBackgroundCreatesUploadTaskBeforeReturning() async throws {
+        let previousBackgroundTask = Current.backgroundTask
+        let backgroundTask = RecordingBackgroundTaskRunner()
+        Current.backgroundTask = backgroundTask
+        defer { Current.backgroundTask = previousBackgroundTask }
+        let request = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let result = await MainActor.run {
+            manager.startPersistedBackground(
+                identifier: .unhandled,
+                server: api1.server,
+                request: request,
+                requestIdentifier: "zone-event-id",
+                requestTimeout: 30
+            )
+        }
+        guard case let .success(delivery) = result else {
+            return XCTFail("Expected a background upload task to start synchronously")
+        }
+
+        let taskCreated = expectation(description: "background upload task exists")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            XCTAssertEqual(tasks.count, 1)
+            XCTAssertNotNil(tasks.first as? URLSessionUploadTask)
+            XCTAssertEqual(tasks.first?.state, .running)
+            XCTAssertEqual(tasks.first?.originalRequest?.timeoutInterval, 30)
+            XCTAssertEqual(tasks.first?.webhookPersisted?.request.type, "webhook_name")
+            XCTAssertEqual(tasks.first?.webhookPersisted?.requestIdentifier, "zone-event-id")
+            taskCreated.fulfill()
+        }
+        await fulfillment(of: [taskCreated], timeout: 1)
+        XCTAssertEqual(backgroundTask.names, [BackgroundTask.webhookSend.rawValue])
+        XCTAssertEqual(backgroundTask.invocationsWereOnMainThread, [true])
+
+        networkSemaphore.signal()
+        try await delivery.value
+    }
+
+    func testStartPersistedBackgroundOffMainReturnsTypedFailure() async {
+        let manager = manager!
+        let server = api1.server
+        let receivedExpectedError: Bool = await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                let result = manager.startPersistedBackground(
+                    server: server,
+                    request: WebhookRequest(type: "webhook_name", data: ["json": true])
+                )
+                guard case let .failure(error) = result else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                continuation.resume(returning: error as? WebhookError == .requiresMainThread)
+            }
+        }
+
+        XCTAssertTrue(receivedExpectedError)
+    }
+
+    func testStartPersistedBackgroundPrefersRemoteURLWhenCachedNetworkStateIsInternal() async throws {
+        let internalURL = URL(string: "http://homeassistant.local:8123")!
+        let externalURL = URL(string: "https://ha.example.com")!
+        let server = Server.fake { info in
+            info.connection.set(address: internalURL, for: .internal)
+            info.connection.set(address: externalURL, for: .external)
+            info.connection.internalSSIDs = ["MyWifi"]
+        }
+        let expectedURL = externalURL.appendingPathComponent(
+            server.info.connection.webhookPath,
+            isDirectory: false
+        )
+        let networkExpectation = expectation(description: "remote webhook was invoked")
+        stub(condition: { request in request.url == expectedURL }, response: { _ in
+            networkExpectation.fulfill()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let result = await MainActor.run {
+            manager.startPersistedBackground(
+                identifier: .unhandled,
+                server: server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true])
+            )
+        }
+        guard case let .success(delivery) = result else {
+            return XCTFail("Expected the remote background upload to start")
+        }
+
+        await fulfillment(of: [networkExpectation], timeout: 1)
+        try await delivery.value
+    }
+
+    func testReconcilePersistedBackgroundReturnsSameActiveRequestWithoutReplacement() async throws {
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let startResult = await MainActor.run {
+            manager.startPersistedBackground(
+                server: api1.server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true]),
+                requestIdentifier: "stable-zone-event"
+            )
+        }
+        guard case let .success(originalDelivery) = startResult else {
+            return XCTFail("Expected a background upload task to start")
+        }
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "stable-zone-event")
+        guard case let .running(adoptedDelivery) = state else {
+            networkSemaphore.signal()
+            return XCTFail("Expected the existing task to be adopted")
+        }
+
+        let tasksExpectation = expectation(description: "one persisted task remains")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            XCTAssertEqual(tasks.filter {
+                $0.webhookPersisted?.requestIdentifier == "stable-zone-event"
+            }.count, 1)
+            tasksExpectation.fulfill()
+        }
+        await fulfillment(of: [tasksExpectation], timeout: 1)
+
+        networkSemaphore.signal()
+        try await originalDelivery.value
+        try await adoptedDelivery.value
+    }
+
+    func testCancelledPersistedTaskRejectsAttachedCallerExactlyOnce() async throws {
+        let requestStarted = expectation(description: "request started")
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            requestStarted.fulfill()
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        defer { networkSemaphore.signal() }
+
+        let startResult = await MainActor.run {
+            manager.startPersistedBackground(
+                server: api1.server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true]),
+                requestIdentifier: "cancelled-zone-event"
+            )
+        }
+        guard case let .success(delivery) = startResult else {
+            return XCTFail("Expected a background upload task to start")
+        }
+        await fulfillment(of: [requestStarted], timeout: 1)
+
+        let taskExpectation = expectation(description: "persisted task found")
+        manager.currentBackgroundSessionInfo.session.getAllTasks { tasks in
+            guard let task = tasks.first(where: {
+                $0.webhookPersisted?.requestIdentifier == "cancelled-zone-event"
+            }) else {
+                XCTFail("Expected the persisted task")
+                taskExpectation.fulfill()
+                return
+            }
+            task.cancel()
+            networkSemaphore.signal()
+            taskExpectation.fulfill()
+        }
+        await fulfillment(of: [taskExpectation], timeout: 1)
+
+        for _ in 0 ..< 2 {
+            do {
+                try await delivery.value
+                XCTFail("Expected cancellation to reject the attached caller")
+            } catch {
+                XCTAssertEqual((error as? URLError)?.code, .cancelled)
+            }
+        }
+    }
+
+    func testReconcilePersistedBackgroundResolvesSupersededDuplicateCallers() async throws {
+        let requestStarted = (0 ..< 3).map { expectation(description: "request \($0) started") }
+        let baseURLs = (0 ..< 3).map { URL(string: "https://webhook-\($0).example.com")! }
+        let requestURLs = baseURLs.map {
+            $0.appendingPathComponent(api1.server.info.connection.webhookPath, isDirectory: false)
+        }
+        let gateLock = NSLock()
+        var responseGates = [Int: CausallyGatedInputStream]()
+        var startCounts = [Int: Int]()
+        for index in requestURLs.indices {
+            stub(condition: { request in request.url == requestURLs[index] }, response: { _ in
+                let gate = index < 2
+                    ? CausallyGatedInputStream(payload: Data(#"{"result":true}"#.utf8))
+                    : nil
+                gateLock.lock()
+                let count = startCounts[index, default: 0] + 1
+                startCounts[index] = count
+                if let gate {
+                    responseGates[index] = gate
+                }
+                gateLock.unlock()
+
+                if count == 1 {
+                    requestStarted[index].fulfill()
+                } else {
+                    XCTFail("Request \(index) started \(count) times")
+                }
+                guard let gate else {
+                    return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+                }
+
+                let response = HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: nil)
+                response.httpHeaders = ["Content-Type": "application/json"]
+                response.inputStream = gate
+                response.dataSize = 16
+                // This only paces whitespace chunks; release() is the sole completion signal.
+                response.responseTime = 0.25
+                return response
+            })
+        }
+        defer {
+            gateLock.lock()
+            let gates = Array(responseGates.values)
+            gateLock.unlock()
+            for gate in gates {
+                gate.release()
+            }
+        }
+
+        var deliveries = [Task<Void, Error>]()
+        for index in baseURLs.indices {
+            let result = await MainActor.run {
+                api1.server.update { info in
+                    info.connection.set(address: baseURLs[index], for: .external)
+                }
+                return manager.startPersistedBackground(
+                    server: api1.server,
+                    request: WebhookRequest(type: "webhook_name", data: ["index": index]),
+                    requestIdentifier: "duplicate-zone-event"
+                )
+            }
+            guard case let .success(delivery) = result else {
+                return XCTFail("Expected background upload \(index) to start")
+            }
+            deliveries.append(delivery)
+        }
+
+        await fulfillment(of: requestStarted, timeout: 10)
+        gateLock.lock()
+        let observedStartCounts = startCounts
+        let pendingGates = responseGates
+        gateLock.unlock()
+        XCTAssertEqual(observedStartCounts, [0: 1, 1: 1, 2: 1])
+        XCTAssertEqual(pendingGates.keys.sorted(), [0, 1])
+        XCTAssertTrue(pendingGates.values.allSatisfy { !$0.isReleased })
+        try await deliveries[2].value
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "duplicate-zone-event")
+        guard case let .running(adoptedDelivery) = state else {
+            return XCTFail("Expected one of the remaining tasks to be adopted")
+        }
+
+        for delivery in deliveries.prefix(2) {
+            do {
+                try await delivery.value
+                XCTFail("Expected the superseded caller to be rejected")
+            } catch {
+                XCTAssertEqual(error as? WebhookError, .replaced)
+            }
+        }
+
+        for gate in pendingGates.values {
+            gate.release()
+        }
+        try await adoptedDelivery.value
+
+        gateLock.lock()
+        let finalStartCounts = startCounts
+        gateLock.unlock()
+        XCTAssertEqual(finalStartCounts, [0: 1, 1: 1, 2: 1])
+        for delivery in deliveries.prefix(2) {
+            do {
+                try await delivery.value
+                XCTFail("Expected the superseded caller to remain rejected")
+            } catch {
+                XCTAssertEqual(error as? WebhookError, .replaced)
+            }
+        }
+    }
+
+    func testReconcilePersistedBackgroundAdoptsRestoredSessionTask() async throws {
+        let networkSemaphore = DispatchSemaphore(value: 0)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            networkSemaphore.wait()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let webhookRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        var urlRequest = URLRequest(url: webhookURL1)
+        urlRequest.httpMethod = "POST"
+        let task = manager.currentBackgroundSessionInfo.session.uploadTask(with: urlRequest, from: Data())
+        task.webhookPersisted = WebhookPersisted(
+            server: api1.server.identifier,
+            request: webhookRequest,
+            identifier: .unhandled,
+            requestIdentifier: "restored-zone-event"
+        )
+        manager.serverCache[api1.server.identifier] = api1.server
+        task.resume()
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "restored-zone-event")
+        guard case let .running(delivery) = state else {
+            networkSemaphore.signal()
+            return XCTFail("Expected the restored task to be adopted")
+        }
+
+        networkSemaphore.signal()
+        try await delivery.value
+    }
+
+    func testReconcilePersistedBackgroundConsumesCompletedRestoredSuccess() async {
+        let identifier = WebhookResponseIdentifier(rawValue: "restored-completed-success")
+        let requestIdentifier = "restored-success"
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+        let handlerStarted = expectation(description: "restored handler started")
+        ReplacingTestHandler.onInit = { handlerStarted.fulfill() }
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        startRestoredTask(identifier: identifier, requestIdentifier: requestIdentifier)
+        await fulfillment(of: [handlerStarted], timeout: 1)
+        await waitForBackgroundInvocations()
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: requestIdentifier)
+        guard case .completed(.success) = state else {
+            return XCTFail("Expected the completed restored upload to return success")
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: requestIdentifier) else {
+            return XCTFail("Expected the completed result to be consumed")
+        }
+    }
+
+    func testReconcilePersistedBackgroundConsumesCompletedRestoredFailure() async {
+        let identifier = WebhookResponseIdentifier(rawValue: "restored-completed-failure")
+        let requestIdentifier = "restored-failure"
+        let expectedError = URLError(.notConnectedToInternet)
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+        let handlerStarted = expectation(description: "restored handler started")
+        ReplacingTestHandler.onInit = { handlerStarted.fulfill() }
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(error: expectedError)
+        })
+
+        startRestoredTask(identifier: identifier, requestIdentifier: requestIdentifier)
+        await fulfillment(of: [handlerStarted], timeout: 1)
+        await waitForBackgroundInvocations()
+
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: requestIdentifier)
+        guard case let .completed(.failure(error)) = state else {
+            return XCTFail("Expected the completed restored upload to return failure")
+        }
+        XCTAssertEqual((error as? URLError)?.code, expectedError.code)
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: requestIdentifier) else {
+            return XCTFail("Expected the completed result to be consumed")
+        }
+    }
+
+    func testInvokeAcquiresBackgroundTaskBeforeStartingHandler() async throws {
+        let previousBackgroundTask = Current.backgroundTask
+        let backgroundTask = RecordingBackgroundTaskRunner()
+        Current.backgroundTask = backgroundTask
+        defer { Current.backgroundTask = previousBackgroundTask }
+
+        let identifier = WebhookResponseIdentifier(rawValue: "protected-invoke")
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+        let handlerStarted = expectation(description: "handler started after background task")
+        ReplacingTestHandler.onInit = {
+            XCTAssertFalse(Thread.isMainThread)
+            XCTAssertEqual(
+                backgroundTask.names,
+                [BackgroundTask.webhookSend.rawValue, BackgroundTask.webhookInvoke.rawValue]
+            )
+            handlerStarted.fulfill()
+        }
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let result = await MainActor.run {
+            manager.startPersistedBackground(
+                identifier: identifier,
+                server: api1.server,
+                request: WebhookRequest(type: "webhook_name", data: ["json": true])
+            )
+        }
+        guard case let .success(delivery) = result else {
+            return XCTFail("Expected a background upload task to start")
+        }
+
+        await fulfillment(of: [handlerStarted], timeout: 1)
+        try await delivery.value
+    }
+
+    func testReconciliationTimeoutIsUnknownNotAbsent() async {
+        manager.persistedReconciliationTimeout = 0
+        manager.persistedTaskLookup = { _, _ in /* Simulate an invalidated session omitting its callback. */ }
+        let state = await manager.reconcilePersistedBackground(requestIdentifier: "unknown-upload")
+        guard case let .unavailable(error) = state else {
+            return XCTFail("A lookup timeout must not authorize a duplicate upload")
+        }
+        XCTAssertEqual((error as? URLError)?.code, .timedOut)
+    }
+
+    func testReconciliationIgnoresLateCallbackAfterTimeout() async {
+        let lookup = DelayedTaskLookup()
+        manager.persistedReconciliationTimeout = 0
+        manager.persistedTaskLookup = { _, completion in lookup.capture(completion) }
+        guard case .unavailable = await manager.reconcilePersistedBackground(requestIdentifier: "late-lookup") else {
+            return XCTFail("Expected lookup timeout")
+        }
+        lookup.complete()
+        // Queue a new lookup after the late callback. It must not resume the old continuation again.
+        manager.persistedReconciliationTimeout = 30
+        manager.persistedTaskLookup = { _, completion in completion([]) }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "next-lookup") else {
+            return XCTFail("A late callback must not corrupt a subsequent lookup")
+        }
+    }
+
+    func testReconciliationIgnoresDuplicateLookupCallbacks() async {
+        manager.persistedTaskLookup = { _, completion in
+            completion([])
+            completion([])
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "missing-upload") else {
+            return XCTFail("The successful lookup should settle once")
+        }
+        // A second lookup crosses dataQueue after both callbacks of the first lookup.
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "still-missing") else {
+            return XCTFail("A duplicate callback must not corrupt later lookups")
+        }
+    }
+
+    func testCompletedRestoredCacheEvictsOldestAndKeepsRecentResults() async {
+        manager.completedPersistedRequestLimit = 2
+        let identifier = WebhookResponseIdentifier(rawValue: "bounded-restored-results")
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+        stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        for index in 0 ..< 3 {
+            let started = expectation(description: "restored handler \(index)")
+            ReplacingTestHandler.onInit = { started.fulfill() }
+            startRestoredTask(identifier: identifier, requestIdentifier: "bounded-\(index)")
+            await fulfillment(of: [started], timeout: 5)
+            await waitForBackgroundInvocations()
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "bounded-0") else {
+            return XCTFail("Oldest unconsumed result should be evicted at the bound")
+        }
+        for index in 1 ... 2 {
+            guard case .completed(.success) = await manager
+                .reconcilePersistedBackground(requestIdentifier: "bounded-\(index)") else {
+                return XCTFail("Recent completed results must remain available")
+            }
+        }
+        guard case .absent = await manager.reconcilePersistedBackground(requestIdentifier: "bounded-2") else {
+            return XCTFail("Results must still be consumed exactly once")
+        }
+    }
+
+    private func startRestoredTask(
+        identifier: WebhookResponseIdentifier,
+        requestIdentifier: String
+    ) {
+        let webhookRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        var urlRequest = URLRequest(url: webhookURL1)
+        urlRequest.httpMethod = "POST"
+        let task = manager.currentBackgroundSessionInfo.session.uploadTask(with: urlRequest, from: Data())
+        task.webhookPersisted = WebhookPersisted(
+            server: api1.server.identifier,
+            request: webhookRequest,
+            identifier: identifier,
+            requestIdentifier: requestIdentifier
+        )
+        manager.serverCache[api1.server.identifier] = api1.server
+        task.resume()
+    }
+
+    private func waitForBackgroundInvocations() async {
+        let invocationsFinished = expectation(description: "background invocations finished")
+        manager.currentBackgroundSessionInfo.eventGroup.notify(queue: .main) {
+            invocationsFinished.fulfill()
+        }
+        await fulfillment(of: [invocationsFinished], timeout: 1)
+    }
+
     func testSendPersistentProtectionSpace() throws {
         // we want to fail through both regular & background, when failing
         Current.isBackgroundRequestsImmediate = { false }
@@ -932,10 +1568,12 @@ private class FakeHassAPI: HomeAssistantAPI {}
 class ReplacingTestHandler: WebhookResponseHandler {
     static var returnedResult: WebhookResponseHandlerResult?
     static var shouldReplace: Bool = true
+    static var onInit: (() -> Void)?
 
     static func reset() {
         returnedResult = nil
         shouldReplace = true
+        onInit = nil
         createdHandlers = []
         shouldReplaceInvocations = []
     }
@@ -943,6 +1581,7 @@ class ReplacingTestHandler: WebhookResponseHandler {
     static var createdHandlers = [ReplacingTestHandler]()
     required init(api: HomeAssistantAPI) {
         Self.createdHandlers.append(self)
+        Self.onInit?()
     }
 
     static var shouldReplaceInvocations = [(current: WebhookRequest, proposed: WebhookRequest)]()

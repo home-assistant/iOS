@@ -353,6 +353,16 @@ public extension Server {
         return url
     }
 
+    /// Returns a webhook URL suitable for immediate background delivery without consulting live
+    /// network state. A remote endpoint is preferred so stale SSID data cannot select a local URL.
+    func preferredBackgroundWebhookURL() -> URL? {
+        var url: URL?
+        update { info in
+            url = info.connection.preferredBackgroundWebhookURL()
+        }
+        return url
+    }
+
     /// Returns the active url with /api appended, refreshing network information (e.g. current
     /// SSID) before evaluating which URL is active.
     ///

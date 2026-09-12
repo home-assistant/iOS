@@ -8,6 +8,7 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
     case unexpectedType(given: String, desire: String)
     case unacceptableStatusCode(Int)
     case unmappableValue
+    case requiresMainThread
     case replaced
 
     var isCancelled: Bool {
@@ -27,6 +28,9 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
             return L10n.HaApi.ApiError.unacceptableStatusCode(statusCode)
         case .unmappableValue:
             return L10n.HaApi.ApiError.invalidResponse
+        case .requiresMainThread:
+            // Programmer precondition, not a user-facing error.
+            return "Persisted background requests must start on the main thread"
         case .replaced:
             // this shouldn't be user-facing
             return "<replaced>"
@@ -79,6 +83,55 @@ public class WebhookManager: NSObject {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
+    }
+
+    private var activePersistedRequests = [String: Promise<Void>]() {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
+    private var restoredPersistedRequestIDs = Set<String>() {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
+    // Bound results that no caller ever reconciles. Eviction permits a later retry, so this
+    // transport does not provide exactly-once delivery across relaunches or unbounded delays.
+    private var storedCompletionLimit = 100
+    var completedPersistedRequestLimit: Int {
+        get { onDataQueue { storedCompletionLimit } }
+        set { onDataQueue { storedCompletionLimit = newValue } }
+    }
+
+    private var nextCompletionSequence: UInt64 = 0
+    private var completedPersistedRequests = [String: (result: Swift.Result<Void, Error>, sequence: UInt64)]() {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
+    private var storedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void = {
+        $0.getAllTasks(completionHandler: $1)
+    }
+
+    var persistedTaskLookup: (URLSession, @escaping ([URLSessionTask]) -> Void) -> Void {
+        get { onDataQueue { storedTaskLookup } }
+        set { onDataQueue { storedTaskLookup = newValue } }
+    }
+
+    private var storedReconciliationTimeout: TimeInterval = 30
+    var persistedReconciliationTimeout: TimeInterval {
+        get { onDataQueue { storedReconciliationTimeout } }
+        set { onDataQueue { storedReconciliationTimeout = newValue } }
+    }
+
+    private func onDataQueue<Value>(_ operation: () -> Value) -> Value {
+        if DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true {
+            return operation()
+        }
+        return dataQueue.sync(execute: operation)
     }
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
@@ -374,6 +427,226 @@ public class WebhookManager: NSObject {
         return promise
     }
 
+    /// Creates and resumes a persisted background upload task before returning.
+    ///
+    /// This deliberately uses the last-known network state: refreshing connectivity or hopping
+    /// through Swift concurrency first can let iOS suspend a location wake before URLSession owns
+    /// the upload. A synchronous failure means no task was started and the caller may safely retry
+    /// during a later wake. Calls made off the main thread fail with `WebhookError.requiresMainThread`.
+    public func startPersistedBackground(
+        identifier: WebhookResponseIdentifier = .unhandled,
+        server: Server,
+        request: WebhookRequest,
+        requestIdentifier: String? = nil,
+        requestTimeout: TimeInterval? = nil
+    ) -> Swift.Result<Task<Void, Error>, Error> {
+        guard Thread.isMainThread else {
+            return .failure(WebhookError.requiresMainThread)
+        }
+
+        // Acquire execution time before synchronously handing the upload to URLSession.
+        // ApplicationBackgroundTaskRunner must never synchronously hop back to main.
+        let (backgroundTaskPromise, backgroundTaskSeal) = Promise<Void>.pending()
+        Current.backgroundTask(withName: BackgroundTask.webhookSend.rawValue) { _ in
+            backgroundTaskPromise
+        }.cauterize()
+
+        let start = { [self] () throws -> Promise<Void> in
+            guard let handlerType = responseHandlers[identifier] else {
+                throw WebhookError.unregisteredIdentifier(handler: identifier.rawValue)
+            }
+            guard let webhookURL = server.preferredBackgroundWebhookURL() else {
+                throw ServerConnectionError.noActiveURL(server.info.name)
+            }
+
+            var urlRequest = try URLRequest(url: webhookURL, method: .post)
+            if let requestTimeout {
+                urlRequest.timeoutInterval = requestTimeout
+            }
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
+                .toJSON(request)
+            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
+            urlRequest.httpBody = data
+
+            let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            let temporaryFile = temporaryDirectory
+                .appendingPathComponent(UUID().uuidString)
+                .appendingPathExtension("json")
+            try data.write(to: temporaryFile)
+
+            let sessionInfo = currentBackgroundSessionInfo
+            let task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
+            let persisted = WebhookPersisted(
+                server: server.identifier,
+                request: request,
+                identifier: identifier,
+                requestIdentifier: requestIdentifier
+            )
+            task.webhookPersisted = persisted
+
+            let (promise, seal) = Promise<Void>.pending()
+            let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+            serverCache[server.identifier] = server
+            evaluateCancellable(by: task, type: handlerType, persisted: persisted, with: promise)
+            resolverForTask[taskKey] = seal
+            if let requestIdentifier {
+                registerActivePersistedRequest(promise, requestIdentifier: requestIdentifier)
+            }
+
+            task.resume()
+            // URLSession owns the upload file after `resume()`. Cleanup failure must not turn a
+            // successfully started task into a reported start failure.
+            try? FileManager.default.removeItem(at: temporaryFile)
+
+            Current.Log.info("started immediate persisted request: \(taskKey)")
+            return promise
+        }
+
+        let result: Swift.Result<Promise<Void>, Error>
+        if DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true {
+            result = Swift.Result(catching: start)
+        } else {
+            result = dataQueue.sync {
+                Swift.Result(catching: start)
+            }
+        }
+
+        switch result {
+        case let .success(promise):
+            promise.pipe(to: backgroundTaskSeal.resolve)
+            return .success(Self.asyncTask(for: promise))
+        case let .failure(error):
+            backgroundTaskSeal.fulfill(())
+            return .failure(error)
+        }
+    }
+
+    public func reconcilePersistedBackground(
+        requestIdentifier: String
+    ) async -> PersistedBackgroundRequestState {
+        await withCheckedContinuation { continuation in
+            dataQueue.async { [self] in
+                if let promise = activePersistedRequests[requestIdentifier] {
+                    restoredPersistedRequestIDs.remove(requestIdentifier)
+                    continuation.resume(returning: .running(Self.asyncTask(for: promise)))
+                    return
+                }
+                if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
+                    continuation.resume(returning: .completed(result.result))
+                    return
+                }
+
+                let sessionInfo = currentBackgroundSessionInfo
+                // Both timeout and completion are serialized on dataQueue. A late or duplicate
+                // callback must neither resume twice nor mutate adoption/cancellation state.
+                var pending = true
+                dataQueue.asyncAfter(deadline: .now() + persistedReconciliationTimeout) {
+                    guard pending else { return }
+                    pending = false
+                    continuation.resume(returning: .unavailable(URLError(.timedOut)))
+                }
+                persistedTaskLookup(sessionInfo.session) { tasks in
+                    self.dataQueue.async { [self] in
+                        guard pending else { return }
+                        pending = false
+                        let matchingTasks = tasks.filter {
+                            $0.webhookPersisted?.requestIdentifier == requestIdentifier
+                        }
+                        if let promise = activePersistedRequests[requestIdentifier] {
+                            restoredPersistedRequestIDs.remove(requestIdentifier)
+                            continuation.resume(returning: .running(Self.asyncTask(for: promise)))
+                            return
+                        }
+                        if let result = completedPersistedRequests.removeValue(forKey: requestIdentifier) {
+                            for task in matchingTasks {
+                                cancelPersistedTask(task, sessionInfo: sessionInfo, resolvingWith: result.result)
+                            }
+                            continuation.resume(returning: .completed(result.result))
+                            return
+                        }
+
+                        guard let task = matchingTasks.min(by: { $0.taskIdentifier < $1.taskIdentifier }) else {
+                            continuation.resume(returning: .absent)
+                            return
+                        }
+
+                        for duplicate in matchingTasks where duplicate != task {
+                            cancelPersistedTask(
+                                duplicate,
+                                sessionInfo: sessionInfo,
+                                resolvingWith: .failure(WebhookError.replaced)
+                            )
+                        }
+
+                        let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+                        resolvePersistedTask(taskKey, with: .failure(WebhookError.replaced))
+                        let (promise, seal) = Promise<Void>.pending()
+                        resolverForTask[taskKey] = seal
+                        registerActivePersistedRequest(promise, requestIdentifier: requestIdentifier)
+                        continuation.resume(returning: .running(Self.asyncTask(for: promise)))
+                    }
+                }
+            }
+        }
+    }
+
+    private func cachePersistedCompletion(_ result: Swift.Result<Void, Error>, requestIdentifier: String) {
+        nextCompletionSequence &+= 1
+        completedPersistedRequests[requestIdentifier] = (result, nextCompletionSequence)
+        while completedPersistedRequests.count > max(0, completedPersistedRequestLimit),
+              let oldest = completedPersistedRequests.min(by: { $0.value.sequence < $1.value.sequence })?.key {
+            completedPersistedRequests.removeValue(forKey: oldest)
+        }
+    }
+
+    private func registerActivePersistedRequest(
+        _ promise: Promise<Void>,
+        requestIdentifier: String
+    ) {
+        activePersistedRequests[requestIdentifier] = promise
+        promise.pipe { [weak self, weak promise] _ in
+            self?.dataQueue.async {
+                guard self?.activePersistedRequests[requestIdentifier] === promise else {
+                    return
+                }
+                self?.activePersistedRequests.removeValue(forKey: requestIdentifier)
+            }
+        }
+    }
+
+    private func cancelPersistedTask(
+        _ task: URLSessionTask,
+        sessionInfo: WebhookSessionInfo,
+        resolvingWith result: Swift.Result<Void, Error>
+    ) {
+        let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+        resolvePersistedTask(taskKey, with: result)
+        pendingDataForTask.removeValue(forKey: taskKey)
+        task.cancel()
+    }
+
+    private func resolvePersistedTask(
+        _ taskKey: TaskKey,
+        with result: Swift.Result<Void, Error>
+    ) {
+        guard let resolver = resolverForTask.removeValue(forKey: taskKey) else {
+            return
+        }
+        switch result {
+        case .success:
+            resolver.fulfill(())
+        case let .failure(error):
+            resolver.reject(error)
+        }
+    }
+
+    private static func asyncTask(for promise: Promise<Void>) -> Task<Void, Error> {
+        Task {
+            try await promise.asyncValue()
+        }
+    }
+
     private func send(
         on sessionInfo: WebhookSessionInfo,
         server: Server,
@@ -453,7 +726,8 @@ public class WebhookManager: NSObject {
                 server: server,
                 request: request,
                 result: .init(error: error),
-                resolver: seal
+                resolver: seal,
+                requestIdentifier: nil
             )
         }.finally {
             if !waitForResponse {
@@ -661,9 +935,10 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
         let statusCode = (task.response as? HTTPURLResponse)?.statusCode
 
-        guard error?.isCancelled != true else {
+        if let error, error.isCancelled {
             Current.Log.info("ignoring cancelled task \(taskKey)")
             pendingDataForTask.removeValue(forKey: taskKey)
+            resolverForTask.removeValue(forKey: taskKey)?.reject(error)
             return
         }
 
@@ -700,13 +975,22 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                 Current.Log.error("failed request to \(server.identifier) for \(handlerType): \(error)")
             }
 
+            var resolver = resolverForTask[taskKey]
+            if resolver == nil, let requestIdentifier = persisted.requestIdentifier {
+                let (completion, completionSeal) = Promise<Void>.pending()
+                registerActivePersistedRequest(completion, requestIdentifier: requestIdentifier)
+                restoredPersistedRequestIDs.insert(requestIdentifier)
+                resolver = completionSeal
+            }
+
             invoke(
                 sessionInfo: sessionInfo,
                 handler: handlerType,
                 server: server,
                 request: persisted.request,
                 result: result,
-                resolver: resolverForTask[taskKey]
+                resolver: resolver,
+                requestIdentifier: persisted.requestIdentifier
             )
 
             resolverForTask.removeValue(forKey: taskKey)
@@ -722,29 +1006,45 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         server: Server,
         request: WebhookRequest,
         result: Promise<Any>,
-        resolver: Resolver<Void>?
+        resolver: Resolver<Void>?,
+        requestIdentifier: String?
     ) {
         Current.Log.notify("starting \(request.type) to \(server.identifier) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ -> Promise<Void> in
-            guard let api = Current.api(for: server) else {
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-            let handler = handlerType.init(api: api)
-            let handlerPromise = firstly {
-                handler.handle(request: .value(request), result: result)
-            }.done { [weak self] result in
-                // keep the handler around until it finishes
-                withExtendedLifetime(handler) {
-                    self?.handle(result: result)
+        // The runner acquires execution time on this queue without synchronously waiting on main.
+        Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ in
+            let invocation: Promise<Void>
+            if let api = Current.api(for: server) {
+                let handler = handlerType.init(api: api)
+                let handlerPromise = firstly {
+                    handler.handle(request: .value(request), result: result)
+                }.done { [weak self] result in
+                    // keep the handler around until it finishes
+                    withExtendedLifetime(handler) {
+                        self?.handle(result: result)
+                    }
                 }
+                invocation = firstly {
+                    when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+                }
+            } else {
+                invocation = .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }
 
-            return firstly {
-                when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
-            }.tap {
-                resolver?.resolve($0)
+            return invocation.tap(on: dataQueue) { [weak self] result in
+                resolver?.resolve(result)
+                if let self,
+                   let requestIdentifier,
+                   restoredPersistedRequestIDs.remove(requestIdentifier) != nil {
+                    activePersistedRequests.removeValue(forKey: requestIdentifier)
+                    switch result {
+                    case .fulfilled:
+                        cachePersistedCompletion(.success(()), requestIdentifier: requestIdentifier)
+                    case let .rejected(error):
+                        cachePersistedCompletion(.failure(error), requestIdentifier: requestIdentifier)
+                    }
+                }
             }.ensure {
                 Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
                 sessionInfo.eventGroup.leave()
