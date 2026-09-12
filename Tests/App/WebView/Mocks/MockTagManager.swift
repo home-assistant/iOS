@@ -5,11 +5,11 @@ import Shared
 /// Test double for `TagManager`, recording what the app asks it to write to an NFC tag.
 final class MockTagManager: TagManager {
     var isNFCAvailable = true
-    var writeURLResult: Promise<Void> = .value(())
+    var writeDeeplinkResult: Promise<Void> = .value(())
 
     private(set) var writtenValues: [String] = []
-    private(set) var writtenURLs: [URL] = []
-    private(set) var writeURLAlertMessages: [String] = []
+    private(set) var writtenDeeplinks: [URL] = []
+    private(set) var writeDeeplinkAlertMessages: [String] = []
 
     func readNFC() -> Promise<String> {
         .value("mock-tag")
@@ -20,10 +20,10 @@ final class MockTagManager: TagManager {
         return .value(value)
     }
 
-    func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
-        writtenURLs.append(url)
-        writeURLAlertMessages.append(alertMessage)
-        return writeURLResult
+    func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
+        writtenDeeplinks.append(deeplink)
+        writeDeeplinkAlertMessages.append(alertMessage)
+        return writeDeeplinkResult
     }
 
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult {

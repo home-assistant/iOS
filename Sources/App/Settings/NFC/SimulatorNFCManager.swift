@@ -16,8 +16,8 @@ final class SimulatorTagManager: iOSTagManager {
         .value(value)
     }
 
-    override func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
-        Current.Log.info("Simulator pretending to write \(url.absoluteString) to an NFC tag")
+    override func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
+        Current.Log.info("Simulator pretending to write \(deeplink.absoluteString) to an NFC tag")
         return .value(())
     }
 }

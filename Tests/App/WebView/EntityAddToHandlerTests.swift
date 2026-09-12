@@ -46,9 +46,9 @@ final class EntityAddToHandlerTests: XCTestCase {
         wait(for: [executed], timeout: 10.0)
 
         let expectedURL = try XCTUnwrap(DeeplinkTarget.entity(id: "light.kitchen").url(serverName: nil))
-        XCTAssertEqual(tags.writtenURLs, [expectedURL])
+        XCTAssertEqual(tags.writtenDeeplinks, [expectedURL])
         XCTAssertEqual(
-            tags.writeURLAlertMessages,
+            tags.writeDeeplinkAlertMessages,
             [L10n.Nfc.Write.Deeplink.startMessage(Current.device.inspecificModel())]
         )
         // The system NFC sheet is the whole interaction, so nothing of ours is presented on top of it.
@@ -56,8 +56,9 @@ final class EntityAddToHandlerTests: XCTestCase {
     }
 
     func testNFCTagActionFailsWhenTheTagCannotBeWritten() {
-        tags.writeURLResult = .init(error: TagManagerError.invalidURL)
-        let sut = EntityAddToHandler(webViewController: MockWebViewController())
+        tags.writeDeeplinkResult = .init(error: TagManagerError.invalidURL)
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
         let failed = expectation(description: "nfc tag action failed")
 
         sut.execute(action: NFCTagAction(), entityId: "light.kitchen").catch { error in
@@ -69,7 +70,8 @@ final class EntityAddToHandlerTests: XCTestCase {
 
     func testActionsForEntityIncludesNFCTagActionWhenNFCIsAvailable() {
         tags.isNFCAvailable = true
-        let sut = EntityAddToHandler(webViewController: MockWebViewController())
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
         let resolved = expectation(description: "actions resolved")
 
         sut.actionsForEntity(entityId: "light.kitchen").done { actions in
@@ -81,7 +83,8 @@ final class EntityAddToHandlerTests: XCTestCase {
 
     func testActionsForEntityOmitsNFCTagActionWhenNFCIsUnavailable() {
         tags.isNFCAvailable = false
-        let sut = EntityAddToHandler(webViewController: MockWebViewController())
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
         let resolved = expectation(description: "actions resolved")
 
         sut.actionsForEntity(entityId: "light.kitchen").done { actions in
@@ -93,7 +96,8 @@ final class EntityAddToHandlerTests: XCTestCase {
     }
 
     func testActionsForEntityOmitsBothLinkActionsForAnUnknownDomain() {
-        let sut = EntityAddToHandler(webViewController: MockWebViewController())
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
         let resolved = expectation(description: "actions resolved")
 
         sut.actionsForEntity(entityId: "not_a_domain.kitchen").done { actions in

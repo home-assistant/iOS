@@ -217,14 +217,14 @@ final class EntityAddToHandler {
     /// tag opens the entity's more info dialog. The system NFC sheet is the whole UI here: it asks for
     /// the tag, reports success, and shows any write failure.
     private func writeDeeplinkToNFCTag(entityId: String) -> Promise<Void> {
-        guard let url = DeeplinkTarget.entity(id: entityId).url(serverName: nil) else {
+        guard let deeplink = DeeplinkTarget.entity(id: entityId).url(serverName: nil) else {
             Current.Log.error("Could not build a deeplink for entity \(entityId) to write to an NFC tag")
             return .init(error: EntityAddToError.invalidPayload)
         }
 
         Current.Log.info("Writing deeplink for entity \(entityId) to an NFC tag")
         return Current.tags.writeNFC(
-            url: url,
+            deeplink: deeplink,
             alertMessage: L10n.Nfc.Write.Deeplink.startMessage(Current.device.inspecificModel())
         )
     }

@@ -18,7 +18,7 @@ class TagActivityManager: TagManager {
         .init(error: TagManagerError.nfcUnavailable)
     }
 
-    func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
+    func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
         .init(error: TagManagerError.nfcUnavailable)
     }
 
@@ -134,13 +134,23 @@ class iOSTagManager: TagActivityManager {
         }
     }
 
-    override func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
-        guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: url) else {
+    /// The record a deep link is written to a tag as.
+    ///
+    /// A tag holds the app's NFC universal link rather than the deep link itself: background tag reading
+    /// only routes the `https` links the app has claimed, so a bare `homeassistant://` record is ignored
+    /// on a scan.
+    static func deeplinkPayload(for deeplink: URL) -> NFCNDEFPayload? {
+        guard let tagURL = AppConstants.nfcTagURL(deeplink: deeplink) else {
+            return nil
+        }
+        return NFCNDEFPayload.wellKnownTypeURIPayload(url: tagURL)
+    }
+
+    override func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
+        guard let uriPayload = Self.deeplinkPayload(for: deeplink) else {
             return .init(error: TagManagerError.invalidURL)
         }
 
-        // No Android application record here: the URL is the whole point of the tag, and the
-        // companion app it should open is decided by whoever owns the link, not by us.
         let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [], alertMessage: alertMessage)
         var writerRetain: NFCWriter? = writer
 
