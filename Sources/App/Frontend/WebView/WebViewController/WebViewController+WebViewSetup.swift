@@ -50,13 +50,12 @@ extension WebViewController {
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self else { return }
 
-            guard let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
-                  let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme else {
+            guard let cleanURL = webView.url?.droppingExternalAuthQueryItem, let scheme = cleanURL.scheme else {
                 return
             }
 
             guard ["http", "https"].contains(scheme) else {
-                Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
+                Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(cleanURL.absoluteString)")
                 return
             }
 
@@ -70,20 +69,11 @@ extension WebViewController {
             // Persist the server and a host-agnostic path so cold launch reopens here; the base URL is
             // re-resolved from current connectivity at load time (see `resolvedLoadURL`).
             Current.settingsStore.lastActiveServerIdentifier = server.identifier.rawValue
-            if let components = URLComponents(url: cleanURL, resolvingAgainstBaseURL: false) {
-                let path = components.path.isEmpty ? "/" : components.path
-                Task { @MainActor [weak overlayState] in
-                    overlayState?.currentPath = path
-                }
-                var relative = path
-                if let query = components.query {
-                    relative += "?\(query)"
-                }
-                if let fragment = components.fragment {
-                    relative += "#\(fragment)"
-                }
-                Current.settingsStore.lastActiveURLPath = relative
+            let path = cleanURL.path.isEmpty ? "/" : cleanURL.path
+            Task { @MainActor [weak overlayState] in
+                overlayState?.currentPath = path
             }
+            Current.settingsStore.lastActiveURLPath = cleanURL.relativeReference
         }
     }
 }

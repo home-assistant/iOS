@@ -871,6 +871,93 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(restored, URL(string: "http://homeassistant.local:8123/"))
     }
 
+    /// The active base URL carries `external_auth=1`, which is how the frontend knows to authenticate
+    /// through the native bridge, so a restored path is appended to that query instead of replacing it.
+    func testRestoredURLKeepsExternalAuthFromTheActiveBase() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "https://ext.example.com/?external_auth=1")),
+            relativePath: "/config/dashboard?more-info-entity-id=update.core&more-info-view=info"
+        )
+
+        XCTAssertEqual(
+            restored,
+            URL(
+                string: "https://ext.example.com/config/dashboard?external_auth=1&more-info-entity-id=update.core&more-info-view=info"
+            )
+        )
+    }
+
+    func testRestoredURLDoesNotDuplicateExternalAuthStoredInThePath() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "https://ext.example.com/?external_auth=1")),
+            relativePath: "/lovelace/0?external_auth=1&edit=1"
+        )
+
+        XCTAssertEqual(restored, URL(string: "https://ext.example.com/lovelace/0?external_auth=1&edit=1"))
+    }
+
+    /// Paths persisted by earlier versions lost the `?` along with `external_auth=1`, leaving the
+    /// remaining parameters glued onto the path. Restoring one has to repair it: `/config/…` with a
+    /// bogus path segment renders a blank screen with no way back, and it would be persisted again.
+    func testRestoredURLRepairsAPathThatLostItsQuerySeparator() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "http://home.local:8123/?external_auth=1")),
+            relativePath: "/config/dashboard&more-info-entity-id=update.core&more-info-view=info"
+        )
+
+        XCTAssertEqual(
+            restored,
+            URL(
+                string: "http://home.local:8123/config/dashboard?external_auth=1&more-info-entity-id=update.core&more-info-view=info"
+            )
+        )
+    }
+
+    func testRestoredURLLeavesAmpersandsInsideAnIntactQueryAlone() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "http://home.local:8123/?external_auth=1")),
+            relativePath: "/history?back=1&x=2#anchor"
+        )
+
+        XCTAssertEqual(restored, URL(string: "http://home.local:8123/history?external_auth=1&back=1&x=2#anchor"))
+    }
+
+    func testRestoredURLKeepsPercentEncodedParameterValues() throws {
+        let restored = try WebViewController.restoredURL(
+            base: XCTUnwrap(URL(string: "http://home.local:8123/?external_auth=1")),
+            relativePath: "/lovelace/my%20view?name=a%26b"
+        )
+
+        XCTAssertEqual(restored, URL(string: "http://home.local:8123/lovelace/my%20view?external_auth=1&name=a%26b"))
+    }
+
+    /// The path persisted for the next cold launch is rebuilt from URL components, so dropping
+    /// `external_auth=1` can never take the `?` of the following parameters with it.
+    func testPersistedPathKeepsTheQuerySeparatorWhenExternalAuthIsDropped() async throws {
+        let previousPath = Current.settingsStore.lastActiveURLPath
+        let previousServer = Current.settingsStore.lastActiveServerIdentifier
+        defer {
+            Current.settingsStore.lastActiveURLPath = previousPath
+            Current.settingsStore.lastActiveServerIdentifier = previousServer
+        }
+        Current.settingsStore.lastActiveURLPath = nil
+
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.setupURLObserver()
+        let baseURL = try XCTUnwrap(URL(
+            string: "https://ext.example.com/config/dashboard?external_auth=1&more-info-entity-id=update.core&more-info-view=info"
+        ))
+
+        sut.webView.loadHTMLString("<html></html>", baseURL: baseURL)
+        await waitUntil { Current.settingsStore.lastActiveURLPath?.hasPrefix("/config/dashboard") == true }
+
+        XCTAssertEqual(
+            Current.settingsStore.lastActiveURLPath,
+            "/config/dashboard?more-info-entity-id=update.core&more-info-view=info"
+        )
+    }
+
     /// SwiftUI defers status-bar appearance to the embedded controller, so the UIKit override must
     /// resolve the kiosk hide-status-bar and full-screen settings itself.
     func testPrefersStatusBarHiddenTracksKioskAndFullScreenSettings() throws {

@@ -199,22 +199,10 @@ extension WebViewController {
             Current.Log.info("restoring last path: \(restored.path)")
             return restored
         }
-        if let currentURL = webView.url, currentURL.path.count > 1 {
-            // Preserve the current path when the base URL changes (e.g., switching between internal/external)
-            var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
-            components?.path = currentURL.path
-            if currentURL.query != nil {
-                // Preserve external_auth if present, add other query items
-                var queryItems = components?.queryItems ?? []
-                let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
-                    .queryItems ?? []
-                for item in currentQueryItems where item.name != "external_auth" {
-                    queryItems.append(item)
-                }
-                components?.queryItems = queryItems
-            }
-            components?.fragment = currentURL.fragment
-            let newURL = components?.url ?? webviewURL
+        // Preserve the current path when the base URL changes (e.g., switching between internal/external).
+        // Rebuilt the same way as a restore, so `external_auth` is handled identically in both directions.
+        if let currentURL = webView.url, currentURL.path.count > 1,
+           let newURL = Self.restoredURL(base: webviewURL, relativePath: currentURL.relativeReference) {
             Current.Log.info("preserving current path on base URL change: \(newURL.path)")
             return newURL
         }
@@ -226,13 +214,40 @@ extension WebViewController {
     /// a page saved on one network/location reopens correctly on another. Non-private for tests.
     static func restoredURL(base: URL, relativePath: String) -> URL? {
         guard var components = URLComponents(url: base, resolvingAgainstBaseURL: true),
-              let relative = URLComponents(string: relativePath) else {
+              let relative = URLComponents(string: repairedRelativePath(relativePath)) else {
             return nil
         }
-        components.path = relative.path
-        components.query = relative.query
-        components.fragment = relative.fragment
+        components.percentEncodedPath = relative.percentEncodedPath
+        // The base carries `external_auth=1`, which the frontend needs to authenticate through the
+        // native bridge, so the stored parameters are appended to it rather than replacing the query.
+        // Both sides stay percent-encoded: round-tripping through `queryItems` re-encodes the values
+        // and mangles any reserved character a stored parameter carries.
+        var queryPairs: [String] = []
+        if let baseQuery = components.percentEncodedQuery, !baseQuery.isEmpty {
+            queryPairs.append(baseQuery)
+        }
+        queryPairs.append(contentsOf: URL.queryPairsWithoutExternalAuth(relative.percentEncodedQuery))
+        components.percentEncodedQuery = queryPairs.isEmpty ? nil : queryPairs.joined(separator: "&")
+        components.percentEncodedFragment = relative.percentEncodedFragment
         return components.url
+    }
+
+    /// Repairs a stored path that earlier versions corrupted by removing `?external_auth=1` textually:
+    /// the app injects that item first, so the `?` went with it and the remaining parameters ended up
+    /// glued onto the path (`/config/dashboard&more-info-entity-id=…`). Such a path resolves to no
+    /// panel — `/config/…` renders a blank screen with no way back — and it is persisted again on every
+    /// launch, so a corrupted value has to be healed rather than only stopped from being written.
+    /// The frontend never puts a `&` in a path, so a `&` ahead of any `?` or `#` can only be that `?`.
+    static func repairedRelativePath(_ relativePath: String) -> String {
+        guard let separatorIndex = relativePath.firstIndex(of: "&") else { return relativePath }
+
+        let beforeSeparator = relativePath[relativePath.startIndex ..< separatorIndex]
+        guard !beforeSeparator.contains("?"), !beforeSeparator.contains("#") else { return relativePath }
+
+        var repaired = relativePath
+        repaired.replaceSubrange(separatorIndex ... separatorIndex, with: "?")
+        Current.Log.info("repairing stored path that lost its query separator")
+        return repaired
     }
 
     /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this

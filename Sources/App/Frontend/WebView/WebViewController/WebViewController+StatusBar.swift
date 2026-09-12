@@ -58,13 +58,7 @@ extension WebViewController {
     }
 
     var currentPageURL: URL? {
-        guard let url = webView.url,
-              var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return nil
-        }
-        urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
-        if urlComponents.queryItems?.isEmpty == true { urlComponents.queryItems = nil }
-        return urlComponents.url
+        webView.url?.droppingExternalAuthQueryItem
     }
 
     @objc func copyCurrentSelectedContent() {

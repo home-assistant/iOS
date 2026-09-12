@@ -43,7 +43,7 @@ extension Server {
         guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
             return nil
         }
-        components.queryItems = [URLQueryItem(name: "external_auth", value: "1")]
+        components.queryItems = [URLQueryItem(name: URL.externalAuthQueryItemName, value: "1")]
         return components
     }
 
