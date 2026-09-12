@@ -20,8 +20,8 @@ struct WatchVacuumCleanAreasView: View {
             } else if viewModel.cleanableAreas.isEmpty {
                 empty
             } else {
-                areas
                 startButton
+                areas
             }
         }
         .navigationTitle(Text(verbatim: L10n.Vacuum.Control.CleanAreas.title))
