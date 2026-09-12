@@ -21,6 +21,7 @@ struct WatchAreasServerPickerView: View {
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.selectServer))
+        .watchNativeNavigationBar()
     }
 
     private var servers: [Server] {

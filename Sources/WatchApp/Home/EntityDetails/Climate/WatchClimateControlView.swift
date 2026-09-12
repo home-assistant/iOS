@@ -302,6 +302,7 @@ struct WatchClimateControlView: View {
             }
         }
         .navigationTitle(Text(verbatim: viewModel.name))
+        .watchNativeNavigationBar()
         .alert(
             Text(verbatim: L10n.errorLabel),
             isPresented: Binding(
