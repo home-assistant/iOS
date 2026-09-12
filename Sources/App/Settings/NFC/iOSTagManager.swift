@@ -18,6 +18,10 @@ class TagActivityManager: TagManager {
         .init(error: TagManagerError.nfcUnavailable)
     }
 
+    func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
+        .init(error: TagManagerError.nfcUnavailable)
+    }
+
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult {
         guard let url = userActivity.webpageURL else {
             return .unhandled
@@ -111,7 +115,11 @@ class iOSTagManager: TagActivityManager {
             return .init(error: TagManagerError.notHomeAssistantTag)
         }
 
-        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
+        let writer = NFCWriter(
+            requiredPayload: [uriPayload],
+            optionalPayload: [aarPayload],
+            alertMessage: L10n.Nfc.Write.startMessage(Current.device.inspecificModel())
+        )
         var writerRetain: NFCWriter? = writer
 
         return firstly {
@@ -124,6 +132,25 @@ class iOSTagManager: TagActivityManager {
             // we use the same logic as reading, so we can be sure the identifier is right
             Self.identifier(from: message)
         }
+    }
+
+    override func writeNFC(url: URL, alertMessage: String) -> Promise<Void> {
+        guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: url) else {
+            return .init(error: TagManagerError.invalidURL)
+        }
+
+        // No Android application record here: the URL is the whole point of the tag, and the
+        // companion app it should open is decided by whoever owns the link, not by us.
+        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [], alertMessage: alertMessage)
+        var writerRetain: NFCWriter? = writer
+
+        return firstly {
+            writer.promise
+        }.ensure {
+            withExtendedLifetime(writerRetain) {
+                writerRetain = nil
+            }
+        }.asVoid()
     }
 
     override func handledType(from userActivity: NSUserActivity) -> TagManagerHandleResult.HandledType {
