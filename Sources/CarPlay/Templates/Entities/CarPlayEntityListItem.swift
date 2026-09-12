@@ -157,13 +157,6 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
         let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
-        // A color picked in the CarPlay configuration is the color the row keeps, whatever the
-        // entity's state: the driver chose it to tell rows apart at a glance, and the frontend tile
-        // card's rule — a picked color only paints while the entity is active — would turn it grey
-        // the moment the state arrives.
-        // Without one, the color comes from the entity's live state, the same palette the frontend,
-        // the widgets and the watch use. Only the *icon* is subject to the saved/customized choice:
-        // a user who picked a custom icon still wants to see whether the thing is on.
         let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
         let iconColor = customIconColor ?? entity.stateIconColor()
 
