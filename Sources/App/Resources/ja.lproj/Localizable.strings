@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "センサーの更新をHome Assistantに送信する";
 "app_intents.update_sensors.success" = "すべてのサーバーのセンサーを更新しました";
 "app_intents.update_sensors.title" = "センサーを更新";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "ダウンロード中";
 "download_manager.failed.title" = "ファイルのダウンロードに失敗しました。エラー: %@";
 "download_manager.finished.title" = "ダウンロードが完了しました";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "全エリア";
 "entity_picker.filter.area.title" = "エリア";

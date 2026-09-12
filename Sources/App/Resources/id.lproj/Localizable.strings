@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Send a sensor update to Home Assistant";
 "app_intents.update_sensors.success" = "Updated sensors on all servers";
 "app_intents.update_sensors.title" = "Update sensors";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Mengunduh";
 "download_manager.failed.title" = "Gagal mengunduh berkas, kesalahan: %@";
 "download_manager.finished.title" = "Unduhan selesai";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Semua area";
 "entity_picker.filter.area.title" = "Area";

@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Отправляет обновление датчика в Home Assistant";
 "app_intents.update_sensors.success" = "Датчики обновлены на всех серверах";
 "app_intents.update_sensors.title" = "Обновить датчики";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Закрыть";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Загрузка";
 "download_manager.failed.title" = "Не удалось загрузить файл, ошибка: %@";
 "download_manager.finished.title" = "Загрузка завершена";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Добавить %lld";
 "entity_picker.filter.area.all.title" = "Все пространства";
 "entity_picker.filter.area.title" = "Пространство";

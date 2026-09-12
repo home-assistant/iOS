@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "发送传感器更新到 Home Assistant";
 "app_intents.update_sensors.success" = "所有服务器上的传感器数据已更新";
 "app_intents.update_sensors.title" = "更新传感器";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "正在下载";
 "download_manager.failed.title" = "下载文件失败，错误：%@";
 "download_manager.finished.title" = "下载已完成";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "全部区域";
 "entity_picker.filter.area.title" = "区域";

@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Szenzorfrissítés küldése a Home Assistant-nak";
 "app_intents.update_sensors.success" = "Szenzorok frissítve az összes szerveren";
 "app_intents.update_sensors.title" = "Szenzorok frissítése";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Letöltés";
 "download_manager.failed.title" = "Nem sikerült letölteni a fájlt, hiba: %@";
 "download_manager.finished.title" = "Letöltés befejezve";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Minden területet";
 "entity_picker.filter.area.title" = "Területe";

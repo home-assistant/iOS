@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Αποστολή ενημέρωσης αισθητήρα στο Home Assistant";
 "app_intents.update_sensors.success" = "Ενημέρωση αισθητήρων σε όλους τους servers";
 "app_intents.update_sensors.title" = "Ενημέρωση αισθητήρων";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Λήψη";
 "download_manager.failed.title" = "Η λήψη του αρχείου απέτυχε, σφάλμα: %@";
 "download_manager.finished.title" = "Η λήψη ολοκληρώθηκε";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Ολες οι περιοχές";
 "entity_picker.filter.area.title" = "Περιοχή";

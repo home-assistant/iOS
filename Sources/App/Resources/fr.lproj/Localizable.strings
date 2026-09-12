@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Envoyer une mise à jour des capteurs à Home Assistant";
 "app_intents.update_sensors.success" = "Capteurs mis à jour sur tous les serveurs";
 "app_intents.update_sensors.title" = "Mettre à jour les capteurs";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Téléchargement";
 "download_manager.failed.title" = "Échec de téléchargement du fichier, erreur : %@";
 "download_manager.finished.title" = "Téléchargement terminé";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Add %lld";
 "entity_picker.filter.area.all.title" = "Toutes les pièces";
 "entity_picker.filter.area.title" = "Pièce";
