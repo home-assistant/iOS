@@ -34,6 +34,7 @@ struct WatchCoverControlsView: View {
             }
         }
         .navigationTitle(Text(verbatim: viewModel.name))
+        .watchNativeNavigationBar()
         .onAppear {
             viewModel.startStateUpdates()
         }

@@ -25,6 +25,7 @@ struct WatchVacuumCleanAreasView: View {
             }
         }
         .navigationTitle(Text(verbatim: L10n.Vacuum.Control.CleanAreas.title))
+        .watchNativeNavigationBar()
         .onAppear {
             viewModel.loadCleanableAreas()
         }
