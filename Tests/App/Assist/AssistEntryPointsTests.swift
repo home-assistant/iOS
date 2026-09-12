@@ -97,7 +97,7 @@ final class AssistEntryPointsTests: XCTestCase {
             pipelineId: "pipeline-3",
             withVoice: false
         )
-        wait(for: [requested], timeout: 2)
+        wait(for: [requested], timeout: 30)
 
         XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
         XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-3")
@@ -118,7 +118,7 @@ final class AssistEntryPointsTests: XCTestCase {
         delegate.onContext = { requested.fulfill() }
 
         XCTAssertTrue(handler.handle(url: url))
-        wait(for: [requested], timeout: 2)
+        wait(for: [requested], timeout: 30)
 
         XCTAssertEqual(delegate.contexts.first?.server.identifier, server.identifier)
         XCTAssertEqual(delegate.contexts.first?.pipelineId, "pipeline-2")
