@@ -22,9 +22,17 @@ struct CircularComplicationWatchSnapshotTests {
             .environment(\.colorScheme, .dark)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(_ model: CircularComplicationRenderModel) -> CircularComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, CircularComplicationRenderModel)] {
         [
             ("icon-value-name-open", .sample()),
+            ("custom-icon-color", customIconColor(.sample(value: "", showValue: false, title: nil, fraction: nil))),
             ("no-min-max", .sample(showMinMax: false)),
             ("value-only", .sample(icon: false, title: nil)),
             ("value-and-name-no-icon", .sample(icon: false)),

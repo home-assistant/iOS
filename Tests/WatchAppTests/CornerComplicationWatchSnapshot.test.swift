@@ -21,9 +21,17 @@ struct CornerComplicationWatchSnapshotTests {
             .environment(\.colorScheme, .dark)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(_ model: CornerComplicationRenderModel) -> CornerComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, CornerComplicationRenderModel)] {
         [
             ("icon-name-value-gauge", .sample()),
+            ("custom-icon-color", customIconColor(.sample(showValue: false, title: nil, fraction: nil))),
             ("value-name-gauge", .sample(icon: false)),
             ("value-name-no-gauge", .sample(icon: false, fraction: nil)),
             ("value-only", .sample(icon: false, title: nil, fraction: nil)),

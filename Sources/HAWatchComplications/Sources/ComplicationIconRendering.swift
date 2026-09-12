@@ -10,10 +10,10 @@ public enum ComplicationIconRendering {
     }
 
     public static func image(_ uiImage: UIImage, usesCustomColor: Bool) -> Image {
-        let image = Image(uiImage: uiImage).renderingMode(templateRenderingMode(usesCustomColor: usesCustomColor))
-        guard usesCustomColor else { return image }
-        if #available(iOS 18.0, watchOS 11.0, *) {
-            return image.widgetAccentedRenderingMode(.fullColor)
+        var image = Image(uiImage: uiImage).renderingMode(templateRenderingMode(usesCustomColor: usesCustomColor))
+        // A tinted face re-colors what it composes, which would undo `.original`.
+        if #available(iOS 18.0, watchOS 11.0, *), usesCustomColor {
+            image = image.widgetAccentedRenderingMode(.fullColor)
         }
         return image
     }
