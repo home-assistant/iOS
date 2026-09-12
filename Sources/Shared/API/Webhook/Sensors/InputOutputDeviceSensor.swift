@@ -160,14 +160,19 @@ public class InputOutputDeviceSensor: SensorProvider {
             (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
         }.get(on: queue) { cameras, audioInputs, audioOutputs in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
-            for audioInput in audioInputs {
-                updateSignaler.addCoreAudioObserver(for: audioInput.id, property: .isInputRunningSomewhere)
+            // kAudioDevicePropertyDeviceIsRunningSomewhere is only ever published in the global scope, so a
+            // listener scoped to input or output registers happily and then never fires. A device that both
+            // records and plays back needs a single listener here, and the direction sorted out on read.
+            for device in audioInputs + audioOutputs {
+                updateSignaler.addCoreAudioObserver(for: device.id, property: .isRunningSomewhere)
             }
-            for audioOutput in audioOutputs {
-                updateSignaler.addCoreAudioObserver(for: audioOutput.id, property: .isOutputRunningSomewhere)
-            }
-        }.map(on: queue) { cameras, audioInputs, audioOutputs -> [WebhookSensor] in
-            Self.sensors(cameras: cameras, audioInputs: audioInputs, audioOutputs: audioOutputs)
+        }.map(on: queue) { [audioSystemObject] cameras, audioInputs, audioOutputs -> [WebhookSensor] in
+            Self.sensors(
+                cameras: cameras,
+                audioInputs: audioInputs,
+                audioOutputs: audioOutputs,
+                runningDevices: audioSystemObject.runningDevices
+            )
         }
         #else
         sensors = .init(error: InputOutputDeviceError.noInputsOrOutputs)
@@ -180,11 +185,15 @@ public class InputOutputDeviceSensor: SensorProvider {
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
         audioInputs: [HACoreAudioObjectDevice],
-        audioOutputs: [HACoreAudioObjectDevice]
+        audioOutputs: [HACoreAudioObjectDevice],
+        runningDevices: HACoreAudioRunningDevices?
     ) -> [WebhookSensor] {
         let cameraFallback = "Unknown Camera"
         let audioInputFallback = "Unknown Audio Input"
         let audioOutputFallback = "Unknown Audio Output"
+
+        let activeAudioInputs = audioInputs.filter { $0.isInputOn(runningDevices: runningDevices) }
+        let activeAudioOutputs = audioOutputs.filter { $0.isOutputOn(runningDevices: runningDevices) }
 
         return Self.sensors(
             name: "Camera",
@@ -199,14 +208,14 @@ public class InputOutputDeviceSensor: SensorProvider {
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
             all: audioInputs.map { $0.name ?? audioInputFallback },
-            active: audioInputs.filter(\.isInputOn).map { $0.name ?? audioInputFallback }
+            active: activeAudioInputs.map { $0.name ?? audioInputFallback }
         ) + Self.sensors(
             name: "Audio Output",
             uniqueID: WebhookSensorId.audioOutput.rawValue,
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
             all: audioOutputs.map { $0.name ?? audioOutputFallback },
-            active: audioOutputs.filter(\.isOutputOn).map { $0.name ?? audioOutputFallback }
+            active: activeAudioOutputs.map { $0.name ?? audioOutputFallback }
         )
     }
 
