@@ -64,31 +64,41 @@ struct NFCDeeplinkTagTests {
 
     #if targetEnvironment(simulator)
     @Test("The simulator reports a deeplink tag as written without any hardware")
-    @MainActor
-    func simulatorWritesWithoutHardware() throws {
+    func simulatorWritesWithoutHardware() async throws {
         let deeplink = try #require(AppConstants.openEntityMoreInfoDeeplinkURL(entityId: "light.kitchen"))
 
-        try hang(SimulatorTagManager().writeNFC(deeplink: deeplink, alertMessage: ""))
+        let error = await rejection(of: SimulatorTagManager().writeNFC(deeplink: deeplink, alertMessage: ""))
+
+        #expect(error == nil)
     }
     #endif
 
-    // `hang` needs the main thread's run loop, so this test stays on it.
-    @MainActor
     @Test("Writing a deeplink tag fails where NFC is unavailable")
-    func writingFailsWithoutNFC() throws {
+    func writingFailsWithoutNFC() async throws {
         let deeplink = try #require(AppConstants.openEntityMoreInfoDeeplinkURL(entityId: "light.kitchen"))
 
-        #expect(throws: TagManagerError.nfcUnavailable) {
-            try hang(TagActivityManager().writeNFC(deeplink: deeplink, alertMessage: ""))
-        }
-        #expect(throws: TagManagerError.nfcUnavailable) {
-            try hang(EmptyTagManager().writeNFC(deeplink: deeplink, alertMessage: ""))
-        }
+        let onCatalyst = await rejection(of: TagActivityManager().writeNFC(deeplink: deeplink, alertMessage: ""))
+        #expect(onCatalyst as? TagManagerError == .nfcUnavailable)
+
+        let withoutNFC = await rejection(of: EmptyTagManager().writeNFC(deeplink: deeplink, alertMessage: ""))
+        #expect(withoutNFC as? TagManagerError == .nfcUnavailable)
     }
 
     private func activity(for url: URL) -> NSUserActivity {
         let activity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
         activity.webpageURL = url
         return activity
+    }
+
+    /// Why the promise was rejected, or `nil` if it was fulfilled. Waiting for it rather than blocking a
+    /// thread on it keeps the test off the run loop the promise may itself need to settle.
+    private func rejection(of promise: Promise<Void>) async -> (any Error)? {
+        await withCheckedContinuation { (continuation: CheckedContinuation<(any Error)?, Never>) in
+            promise.done {
+                continuation.resume(returning: nil)
+            }.catch { error in
+                continuation.resume(returning: error)
+            }
+        }
     }
 }
