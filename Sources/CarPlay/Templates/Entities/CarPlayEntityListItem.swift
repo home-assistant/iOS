@@ -158,7 +158,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
         let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
-        let iconColor = customIconColor ?? entity.stateIconColor()
+        let iconColor = entity.stateIconColor(customColor: customIconColor)
 
         var icon = entity.getMDI(componentIcons: componentIcons)
         if let magicItem, let magicItemInfo {
