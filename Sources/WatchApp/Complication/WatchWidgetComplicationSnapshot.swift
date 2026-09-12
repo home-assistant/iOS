@@ -415,8 +415,10 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 WatchComplicationConfig.Family.corner.rawValue: cornerOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
-            menuName: complication.displayName,
-            iconUsesCustomColor: render.iconColor != nil
+            // Never a custom color: the legacy editor always wrote `icon_color`, defaulting it to
+            // green, so its presence says nothing about the user having picked one. Templating it
+            // keeps these tinting with the face, the way they already do.
+            menuName: complication.displayName
         )
     }
 
