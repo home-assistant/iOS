@@ -16,7 +16,9 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         case invalid
 
         #if targetEnvironment(macCatalyst)
-        case coreAudio(AudioObjectID)
+        // Carries the property selector as well as the object, because the system object is observed
+        // for more than one property and the two registrations must not collapse into one.
+        case coreAudio(AudioObjectID, AudioObjectPropertySelector)
         #if canImport(CoreMediaIO)
         case coreMedia(CMIOObjectID)
         #endif
@@ -26,7 +28,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
             switch self {
             case .invalid: return .max
             #if targetEnvironment(macCatalyst)
-            case let .coreAudio(id): return id
+            case let .coreAudio(id, _): return id
             #if canImport(CoreMediaIO)
             case let .coreMedia(id): return id
             #endif
@@ -72,13 +74,14 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         for id: AudioObjectID,
         property: HACoreAudioProperty<some Any>
     ) {
-        addObserver(object: .coreAudio(id), property: property)
+        addObserver(object: .coreAudio(id, property.address.mSelector), property: property)
     }
 
     func removeCoreAudioObserver(
-        for id: AudioObjectID
+        for id: AudioObjectID,
+        property: HACoreAudioProperty<some Any>
     ) {
-        removeObserver(object: .coreAudio(id))
+        removeObserver(object: .coreAudio(id, property.address.mSelector))
     }
 
     func addCoreMediaObserver(
@@ -105,6 +108,11 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         #endif
 
         addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
+        // A device already running in one direction stays running as the other direction starts and
+        // stops, so the device flag alone misses that transition. The process object list changes
+        // whenever a process starts or stops doing IO, which covers one app recording while another
+        // plays back through the same device.
+        addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .processObjectList)
         #endif
         isObserving = true
     }
@@ -117,7 +125,8 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         removeCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject))
         #endif
 
-        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject))
+        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
+        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .processObjectList)
         #endif
         isObserving = false
     }
