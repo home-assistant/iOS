@@ -41,10 +41,10 @@ extension WatchWidgetComplicationSnapshot {
         )
     }
 
-    /// The rasterized icon the snapshot carries, as a template image so it tints with the row.
+    /// The rasterized icon the snapshot carries.
     private var iconImage: Image? {
         guard let iconData, let image = UIImage(data: iconData) else { return nil }
-        return Image(uiImage: image).renderingMode(.template)
+        return ComplicationIconRendering.image(image, usesCustomColor: iconUsesCustomColor == true)
     }
 
     /// Both edges or neither: a gauge with only one end labelled reads as a mislabelled scale, which

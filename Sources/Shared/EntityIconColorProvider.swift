@@ -5,10 +5,12 @@ import SwiftUI
 /// The color an entity's icon is drawn with, following home-assistant/frontend's tile card
 /// (`hui-tile-card`'s `_computeStateColor` plus the neutral defaults its stylesheet sets):
 ///
-/// 1. a light's own color, when it reports one;
-/// 2. the `--state-…` palette for the entity's domain, device class and state — see
+/// 1. a color the user picked for the item, whatever the entity's state — the one place this
+///    departs from the tile card, which drops a picked color while the entity is inactive;
+/// 2. a light's own color, when it reports one;
+/// 3. the `--state-…` palette for the entity's domain, device class and state — see
 ///    ``EntityStateColor``;
-/// 3. `--state-icon-color` when active and `--state-inactive-color` when not, for the domains that
+/// 4. `--state-icon-color` when active and `--state-inactive-color` when not, for the domains that
 ///    take no state color at all (sensors, numbers, scripts, …).
 public enum EntityIconColorProvider {
     /// The color for an entity whose live color (if any) has already been resolved.
@@ -32,10 +34,11 @@ public enum EntityIconColorProvider {
         let normalizedState = state.lowercased()
         let active = EntityStateActive.isActive(domain: domain, state: normalizedState)
 
-        // The tile card's `color` option: a picked color only applies while the entity is active,
-        // so an off light still reads as off.
+        // A color the user picked for this item wins outright. The frontend's tile card drops it
+        // while the entity is inactive; the companion app keeps it, because a picked color is how
+        // an item is told apart at a glance on a watch face, a widget or a CarPlay list.
         if let customColor {
-            return active ? customColor : neutralColor(active: false)
+            return customColor
         }
 
         // A light that is on shows its own color rather than the domain accent.
