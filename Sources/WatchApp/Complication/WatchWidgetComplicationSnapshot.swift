@@ -69,6 +69,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
     let menuName: String?
     /// Whether the complication is shown while the display is dimmed (default true).
     var showWhenInactive: Bool?
+    /// Whether `iconData`'s baked-in color is one the user picked. Optional and last, so older
+    /// payloads still decode.
+    var iconUsesCustomColor: Bool?
 
     init(
         id: String,
@@ -81,7 +84,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         iconData: Data?,
         perFamily: [String: PerFamily]? = nil,
         menuName: String? = nil,
-        showWhenInactive: Bool? = nil
+        showWhenInactive: Bool? = nil,
+        iconUsesCustomColor: Bool? = nil
     ) {
         self.id = id
         self.family = family
@@ -94,6 +98,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         self.perFamily = perFamily
         self.menuName = menuName
         self.showWhenInactive = showWhenInactive
+        self.iconUsesCustomColor = iconUsesCustomColor
     }
 
     /// Formats a numeric state with the entity's display precision and unit, mirroring the app.
@@ -309,7 +314,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 showBottomText: config.isSlotVisible(.bottomText, for: family)
             )
         }
-        let iconData = Self.iconData(config: config, iconColorHex: iconColorHex)
+        let customIconColor = iconColorHex ?? config.iconColor
+        let iconData = Self.iconData(config: config, colorHex: customIconColor)
 
         // Template kind resolves name and value to the same rendered text; joining both would
         // render it twice on the legacy inline line.
@@ -325,7 +331,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             iconData: iconData,
             perFamily: perFamily,
             menuName: config.displayName,
-            showWhenInactive: config.showsWhenInactive()
+            showWhenInactive: config.showsWhenInactive(),
+            iconUsesCustomColor: customIconColor != nil
         )
         return (snapshot, isLive, failureReason)
     }
@@ -408,6 +415,9 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 WatchComplicationConfig.Family.corner.rawValue: cornerOptions,
                 WatchComplicationConfig.Family.inline.rawValue: inlineOptions,
             ],
+            // Never a custom color: the legacy editor always wrote `icon_color`, defaulting it to
+            // green, so its presence says nothing about the user having picked one. Templating it
+            // keeps these tinting with the face, the way they already do.
             menuName: complication.displayName
         )
     }
@@ -445,11 +455,11 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
     /// gets the shared placeholder glyph, so turning "Show icon" on renders something before the user
     /// picks one. Skipped entirely when no size shows the icon — no point rasterizing a payload
     /// nothing renders.
-    private static func iconData(config: WatchComplicationConfig, iconColorHex: String?) -> Data? {
+    private static func iconData(config: WatchComplicationConfig, colorHex: String?) -> Data? {
         let familyShowsIcon = WatchComplicationConfig.Family.allCases
             .contains { config.isSlotVisible(.icon, for: $0) }
         guard familyShowsIcon else { return nil }
-        let color = (iconColorHex ?? config.iconColor).map { UIColor(hex: $0) } ?? AppConstants.tintColor
+        let color = colorHex.map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) }
             ?? ComplicationRenderContext.placeholderIcon
         return icon.image(ofSize: iconRenderSize, color: color).pngData()

@@ -69,6 +69,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
     let menuName: String?
     /// Whether the complication is shown while the display is dimmed (default true).
     var showWhenInactive: Bool?
+    /// Whether `iconData`'s baked-in color is one the user picked. Optional and last, so older
+    /// payloads still decode.
+    var iconUsesCustomColor: Bool?
 
     static var placeholder: Self {
         .init(
@@ -301,7 +304,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// renders a complication as a monochrome template, whereas an SF Symbol renders as a crisp glyph.
     var iconImage: Image? {
         guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
-        return Image(uiImage: image).renderingMode(.template)
+        return ComplicationIconRendering.image(image, usesCustomColor: iconUsesCustomColor == true)
     }
 
     /// The corner family's WidgetKit archiver enforces the smallest image cap of the accessory
@@ -316,9 +319,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// stays sharp at the watch's 2x scale.
     var cornerIconImage: Image? {
         guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
+        let usesCustomColor = iconUsesCustomColor == true
         let maxSide = max(image.size.width, image.size.height)
         guard maxSide > Self.cornerIconMaxDimension, maxSide > 0 else {
-            return Image(uiImage: image).renderingMode(.template)
+            return ComplicationIconRendering.image(image, usesCustomColor: usesCustomColor)
         }
         let ratio = Self.cornerIconMaxDimension / maxSide
         let target = CGSize(width: image.size.width * ratio, height: image.size.height * ratio)
@@ -328,9 +332,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
         defer { UIGraphicsEndImageContext() }
         image.draw(in: CGRect(origin: .zero, size: target))
         guard let resized = UIGraphicsGetImageFromCurrentImageContext() else {
-            return Image(uiImage: image).renderingMode(.template)
+            return ComplicationIconRendering.image(image, usesCustomColor: usesCustomColor)
         }
-        return Image(uiImage: resized).renderingMode(.template)
+        return ComplicationIconRendering.image(resized, usesCustomColor: usesCustomColor)
     }
 
     // Asset-catalog image used when there is no custom template icon: the Assist symbol for the Assist

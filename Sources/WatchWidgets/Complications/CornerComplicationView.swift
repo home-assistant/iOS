@@ -42,7 +42,7 @@ struct CornerComplicationView: View {
         if showsIconInCorner(complication), let iconImage = complication.cornerIconImage {
             // Un-curved: curving a raster image collapses it, so the icon lays out flat and the system
             // fits it into the corner.
-            iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
+            iconImage.resizable().scaledToFit().widgetAccentable()
         } else if complication.curvesCornerText(for: family) {
             // Nothing but text: curve it along the outer edge of the corner, the way the system's own
             // text-only corner complications do.
