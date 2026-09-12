@@ -20,8 +20,11 @@ struct WatchVacuumCleanAreasView: View {
             } else if viewModel.cleanableAreas.isEmpty {
                 empty
             } else {
-                areas
+                // Start sits above the areas so it stays in reach on the small screen: the list
+                // scrolls as far as the mapping is long, and a button at the end would mean
+                // scrolling back past every area just to start.
                 startButton
+                areas
             }
         }
         .navigationTitle(Text(verbatim: L10n.Vacuum.Control.CleanAreas.title))
