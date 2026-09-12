@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Skicka sensoruppdatering till Home Assistant";
 "app_intents.update_sensors.success" = "Uppdaterade sensorer på alla servrar";
 "app_intents.update_sensors.title" = "Uppdatera sensorer";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Laddar ner";
 "download_manager.failed.title" = "Det gick inte att ladda ner filen, fel: %@";
 "download_manager.finished.title" = "Nedladdning klar";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Lägg till %lld";
 "entity_picker.filter.area.all.title" = "Alla områden";
 "entity_picker.filter.area.title" = "Område";

@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "傳送感測器更新至 Home Assistant";
 "app_intents.update_sensors.success" = "已更新所有伺服器上的感測器";
 "app_intents.update_sensors.title" = "更新感測器";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "啟用場景";
 "app_shortcuts.ask_assist.title" = "詢問助理";
 "app_shortcuts.close.title" = "關閉";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "下載中";
 "download_manager.failed.title" = "下載檔案失敗、錯誤：%@";
 "download_manager.finished.title" = "下載完成";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "新增 %lld";
 "entity_picker.filter.area.all.title" = "所有分區";
 "entity_picker.filter.area.title" = "分區";
@@ -878,8 +881,8 @@
 "kiosk.clock.style" = "時鐘樣式";
 "kiosk.clock.style.digital" = "數位";
 "kiosk.clock.style.large" = "大型";
-"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
-"kiosk.command_confirmation.title" = "Show command confirmation";
+"kiosk.command_confirmation.footer" = "啟用後，每次執行資訊台指令時，畫面上都會短暫顯示確認訊息。關閉此功能可在不顯示任何視覺回饋的情況下執行指令。";
+"kiosk.command_confirmation.title" = "顯示命令確認";
 "kiosk.corner.bottom_leading" = "靠下對齊";
 "kiosk.corner.bottom_left" = "左下";
 "kiosk.corner.bottom_right" = "右下";

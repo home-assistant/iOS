@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Enviar una actualización del sensor a Home Assistant";
 "app_intents.update_sensors.success" = "Sensores actualizados en todos los servidores";
 "app_intents.update_sensors.title" = "Actualizar sensores";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activar escena";
 "app_shortcuts.ask_assist.title" = "Pregúntale a Assist";
 "app_shortcuts.close.title" = "Cerrar";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Descargando";
 "download_manager.failed.title" = "No se ha podido descargar el archivo, error: %@";
 "download_manager.finished.title" = "Descarga completada";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Añadir %lld";
 "entity_picker.filter.area.all.title" = "Todas las áreas";
 "entity_picker.filter.area.title" = "Área";
@@ -878,8 +881,8 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "kiosk.clock.style" = "Estilo de reloj";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Grande";
-"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
-"kiosk.command_confirmation.title" = "Show command confirmation";
+"kiosk.command_confirmation.footer" = "Cuando está activada, aparece un breve mensaje de confirmación en pantalla cada vez que se ejecuta un comando del quiosco. Desactívala para ejecutar comandos sin ningún tipo de respuesta visual.";
+"kiosk.command_confirmation.title" = "Mostrar confirmación de comando";
 "kiosk.corner.bottom_leading" = "Inferior inicial";
 "kiosk.corner.bottom_left" = "Abajo a la izquierda";
 "kiosk.corner.bottom_right" = "Abajo a la derecha";

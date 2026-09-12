@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Ein Sensor-Update an Home Assistant senden";
 "app_intents.update_sensors.success" = "Sensoren auf allen Servern aktualisiert";
 "app_intents.update_sensors.title" = "Sensoren aktualisieren";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Szene aktivieren";
 "app_shortcuts.ask_assist.title" = "Assist fragen";
 "app_shortcuts.close.title" = "Schließen";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Wird heruntergeladen";
 "download_manager.failed.title" = "Herunterladen der Datei fehlgeschlagen, Fehler: %@";
 "download_manager.finished.title" = "Download abgeschlossen";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "%lld hinzufügen";
 "entity_picker.filter.area.all.title" = "Alle Bereiche";
 "entity_picker.filter.area.title" = "Bereich";
@@ -878,8 +881,8 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.clock.style" = "Uhrenstil";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Groß";
-"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
-"kiosk.command_confirmation.title" = "Show command confirmation";
+"kiosk.command_confirmation.footer" = "Wenn diese Option aktiviert ist, erscheint bei jeder Ausführung eines Kiosk-Befehls eine kurze Bestätigung auf dem Bildschirm. Deaktiviere diese Option, um Befehle ohne visuelle Rückmeldung auszuführen.";
+"kiosk.command_confirmation.title" = "Befehlsbestätigung anzeigen";
 "kiosk.corner.bottom_leading" = "Vorspann unten";
 "kiosk.corner.bottom_left" = "unten links";
 "kiosk.corner.bottom_right" = "unten rechts";

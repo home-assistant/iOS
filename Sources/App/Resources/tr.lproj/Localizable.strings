@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Home Assistant'a bir sensör güncellemesi gönderin";
 "app_intents.update_sensors.success" = "Tüm sunuculardaki sensörler güncellendi";
 "app_intents.update_sensors.title" = "Sensörleri güncelle";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "İndiriliyor";
 "download_manager.failed.title" = "Dosya indirilemedi, hata: %@";
 "download_manager.finished.title" = "İndirme tamamlandı";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "%lld ekle";
 "entity_picker.filter.area.all.title" = "Tüm alanlar";
 "entity_picker.filter.area.title" = "Alan";

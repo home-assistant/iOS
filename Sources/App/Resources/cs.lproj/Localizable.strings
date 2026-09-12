@@ -294,6 +294,8 @@
 "app_intents.update_sensors.description" = "Odešle aktualizaci senzoru do Home Assistanta.";
 "app_intents.update_sensors.success" = "Senzory byly aktualizovány na všech serverech";
 "app_intents.update_sensors.title" = "Aktualizovat senzory";
+"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Aktivovat scénu";
 "app_shortcuts.ask_assist.title" = "Zeptat se Assist";
 "app_shortcuts.close.title" = "Zavřít";
@@ -668,6 +670,7 @@
 "download_manager.downloading.title" = "Stahování";
 "download_manager.failed.title" = "Stažení souboru se nezdařilo, chyba: %@";
 "download_manager.finished.title" = "Stahování dokončeno";
+"edit_label" = "Edit";
 "entity_picker.add_selected" = "Přidat %lld";
 "entity_picker.filter.area.all.title" = "Všechny oblasti";
 "entity_picker.filter.area.title" = "Oblast";
@@ -878,8 +881,8 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.clock.style" = "Styl hodin";
 "kiosk.clock.style.digital" = "Digitální";
 "kiosk.clock.style.large" = "Velké";
-"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
-"kiosk.command_confirmation.title" = "Show command confirmation";
+"kiosk.command_confirmation.footer" = "Pokud je povoleno, zobrazí se na obrazovce krátké potvrzení při každém spuštění příkazu kiosku. Vypnutím této volby se příkazy budou spouštět bez vizuální zpětné vazby.";
+"kiosk.command_confirmation.title" = "Zobrazit potvrzení příkazu";
 "kiosk.corner.bottom_leading" = "Vespodu na začátku";
 "kiosk.corner.bottom_left" = "Dole vlevo";
 "kiosk.corner.bottom_right" = "Dole vpravo";
