@@ -306,6 +306,33 @@ struct ConnectionURLsHowItWorksViewModelTests {
         }
     }
 
+    @Test func onMacAnUnlistedHardwareAddressLeavesTheDeviceOffTheHomeNetwork() {
+        let server = makeServer(
+            internalURL: URL(string: "http://internal.example.com:8123"),
+            externalURL: URL(string: "https://external.example.com"),
+            internalSSIDs: nil,
+            internalHardwareAddresses: ["aa:bb:cc:dd:ee:ff"]
+        )
+
+        let previousIsCatalyst = Current.isCatalyst
+        defer { Current.isCatalyst = previousIsCatalyst }
+        Current.isCatalyst = true
+
+        withEnvironment(
+            permissionState: .denied,
+            accuracy: .reducedAccuracy,
+            networkState: .init(hardwareAddress: "00:11:22:33:44:55")
+        ) {
+            let viewModel = ConnectionURLsHowItWorksViewModel(server: server)
+            let met = Dictionary(
+                uniqueKeysWithValues: viewModel.requirements.map { ($0.kind, $0.isMet) }
+            )
+            #expect(met[.listedNetworks] == true)
+            #expect(met[.onListedNetwork] == false)
+            #expect(viewModel.activeURLType == .external)
+        }
+    }
+
     @Test func fallsBackToTheExternalURLAwayFromAListedNetwork() {
         let server = makeServer(
             internalURL: URL(string: "http://internal.example.com:8123"),

@@ -55,108 +55,95 @@ struct ConnectionURLsHowItWorksView: View {
 
             Section {
                 ForEach(selectionSteps) { step in
-                    row(for: step)
+                    HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+                        Image(systemSymbol: step.symbol)
+                            .font(.title3)
+                            .foregroundStyle(.haPrimary)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(step.title)
+                                .font(.headline)
+                            Text(step.body)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, DesignSystem.Spaces.half)
                 }
             }
 
             Section {
                 ForEach(exampleSteps) { step in
-                    row(for: step)
+                    HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+                        Image(systemSymbol: step.symbol)
+                            .font(.title3)
+                            .foregroundStyle(.haPrimary)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(step.title)
+                                .font(.headline)
+                            Text(step.body)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, DesignSystem.Spaces.half)
                 }
             }
 
-            securityLevelSection
+            Section {
+                Text(viewModel.securityLevel.description)
+            } header: {
+                Text(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title)
+            } footer: {
+                Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.SecurityLevel.footer)
+            }
 
-            requirementsSection
+            Section {
+                ForEach(viewModel.requirements) { requirement in
+                    HStack(spacing: DesignSystem.Spaces.two) {
+                        Image(systemSymbol: requirement.isMet ? .checkmarkCircleFill : .circle)
+                            .font(.title3)
+                            .foregroundStyle(requirement.isMet ? Color.green : Color.secondary)
+                            .frame(width: 32)
+                        Text(requirement.title)
+                            .font(.subheadline)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("\(requirement.title), \(requirement.statusDescription)")
+                }
+            } header: {
+                Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.header)
+            } footer: {
+                Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.footer)
+            }
 
-            activeURLSection
+            Section {
+                Text(viewModel.activeURLType.description)
+
+                if let activeURL = viewModel.activeURL {
+                    Text(activeURL.absoluteString)
+                        .font(.footnote.monospaced())
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .textSelection(.enabled)
+                        .privacySensitive()
+                        .screenCaptureProtected()
+                } else {
+                    Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Active.none)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Active.header)
+            }
         }
         .navigationTitle(L10n.Settings.ConnectionSection.UrlsHowItWorks.title)
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.refresh()
         }
-    }
-
-    private var securityLevelSection: some View {
-        Section {
-            Text(viewModel.securityLevel.description)
-        } header: {
-            Text(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title)
-        } footer: {
-            Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.SecurityLevel.footer)
-        }
-    }
-
-    private var requirementsSection: some View {
-        Section {
-            ForEach(viewModel.requirements) { requirement in
-                row(for: requirement)
-            }
-        } header: {
-            Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.header)
-        } footer: {
-            Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.footer)
-        }
-    }
-
-    private var activeURLSection: some View {
-        Section {
-            Text(viewModel.activeURLType.description)
-
-            if let activeURL = viewModel.activeURL {
-                Text(activeURL.absoluteString)
-                    .font(.footnote.monospaced())
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .textSelection(.enabled)
-                    .privacySensitive()
-                    .screenCaptureProtected()
-            } else {
-                Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Active.none)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        } header: {
-            Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.Active.header)
-        }
-    }
-
-    private func row(for step: Step) -> some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: step.symbol)
-                .font(.title3)
-                .foregroundStyle(.haPrimary)
-                .frame(width: 32)
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                Text(step.title)
-                    .font(.headline)
-                Text(step.body)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, DesignSystem.Spaces.half)
-    }
-
-    private func status(of requirement: ConnectionURLsHowItWorksViewModel.Requirement) -> String {
-        requirement.isMet
-            ? L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.met
-            : L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.notMet
-    }
-
-    private func row(for requirement: ConnectionURLsHowItWorksViewModel.Requirement) -> some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: requirement.isMet ? .checkmarkCircleFill : .circle)
-                .font(.title3)
-                .foregroundStyle(requirement.isMet ? Color.green : Color.secondary)
-                .frame(width: 32)
-            Text(requirement.title)
-                .font(.subheadline)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(requirement.title), \(status(of: requirement))")
     }
 }
 

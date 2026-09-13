@@ -20,6 +20,13 @@ final class ConnectionURLsHowItWorksViewModel: ObservableObject {
         let isMet: Bool
 
         var id: String { kind.rawValue }
+
+        /// Spoken after the title: the checkmark carries no label of its own.
+        var statusDescription: String {
+            isMet
+                ? L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.met
+                : L10n.Settings.ConnectionSection.UrlsHowItWorks.Criteria.notMet
+        }
     }
 
     @Published private(set) var requirements: [Requirement] = []

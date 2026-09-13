@@ -1567,12 +1567,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.urls_how_it_works.active.header" = "In use right now";
 "settings.connection_section.urls_how_it_works.active.none" = "No URL can be used with the current settings";
-"settings.connection_section.urls_how_it_works.away.body" = "When no listed network matches, the external URL is used — or the Home Assistant Cloud URL, when cloud is turned on.";
+"settings.connection_section.urls_how_it_works.away.body" = "When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Anywhere else";
-"settings.connection_section.urls_how_it_works.background.body" = "Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so otherwise those requests go out over the external URL, even at home.";
+"settings.connection_section.urls_how_it_works.background.body" = "Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.";
 "settings.connection_section.urls_how_it_works.background.title" = "While the app is in the background";
 "settings.connection_section.urls_how_it_works.criteria.always_location" = "Location access is set to Always";
-"settings.connection_section.urls_how_it_works.criteria.footer" = "Until all of these are met, the app uses the external URL. The Precise Location switch is required whenever the network name is read; the Always option is required on top of it while the app is in the background.";
+"settings.connection_section.urls_how_it_works.criteria.footer" = "The Precise Location switch is needed whenever the Wi-Fi name is read. The Always option only adds the background, so without it the internal URL is still used while the app is open. When your network cannot be matched, the app falls back as described above.";
 "settings.connection_section.urls_how_it_works.criteria.hardware_addresses" = "At least one hardware address listed";
 "settings.connection_section.urls_how_it_works.criteria.header" = "On this device";
 "settings.connection_section.urls_how_it_works.criteria.internal_url" = "Internal URL is set";

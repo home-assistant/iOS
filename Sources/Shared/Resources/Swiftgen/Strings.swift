@@ -5250,13 +5250,13 @@ public enum L10n {
           public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.none") }
         }
         public enum Away {
-          /// When no listed network matches, the external URL is used — or the Home Assistant Cloud URL, when cloud is turned on.
+          /// When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.
           public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body") }
           /// Anywhere else
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
         }
         public enum Background {
-          /// Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so otherwise those requests go out over the external URL, even at home.
+          /// Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.
           public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.body") }
           /// While the app is in the background
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.title") }
@@ -5264,7 +5264,7 @@ public enum L10n {
         public enum Criteria {
           /// Location access is set to Always
           public static var alwaysLocation: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.always_location") }
-          /// Until all of these are met, the app uses the external URL. The Precise Location switch is required whenever the network name is read; the Always option is required on top of it while the app is in the background.
+          /// The Precise Location switch is needed whenever the Wi-Fi name is read. The Always option only adds the background, so without it the internal URL is still used while the app is open. When your network cannot be matched, the app falls back as described above.
           public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.footer") }
           /// At least one hardware address listed
           public static var hardwareAddresses: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.hardware_addresses") }
