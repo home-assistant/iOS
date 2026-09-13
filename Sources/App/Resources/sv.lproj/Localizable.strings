@@ -1192,8 +1192,10 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "nfc.tag_approval.tag_id.title" = "Identifiering av NFC-tagg";
 "nfc.tag_approval.title" = "Tillåt tagg?";
 "nfc.tag_read" = "NFC-tagg läst";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC-tagg har otillräcklig kapacitet: behöver %ld men har bara %ld";
 "nfc.write.error.invalid_format" = "NFC-tagg har inte NDEF-format";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC-tagg är skrivskyddad";
 "nfc.write.identifier_choice.manual" = "Manuell";
 "nfc.write.identifier_choice.message" = "Identifieraren hjälper till att skilja på olika taggar.";
@@ -2885,6 +2887,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Djuplänk";
 "web_view.add_to.option.MacToolbar.title" = "Mac-verktygsfältet";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Rensa cacheminnet och ladda om sidan";

@@ -1196,8 +1196,10 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "nfc.tag_approval.tag_id.title" = "Identifiant du tag";
 "nfc.tag_approval.title" = "Autoriser le tag ?";
 "nfc.tag_read" = "Balise NFC lue";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "La balise NFC a une capacité insuffisante : nécessite %ld mais n'a que %ld";
 "nfc.write.error.invalid_format" = "La balise NFC n'est pas au format NDEF";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "La balise NFC est en lecture seule";
 "nfc.write.identifier_choice.manual" = "Manuel";
 "nfc.write.identifier_choice.message" = "L'identifiant permet de différencier les différentes balises.";
@@ -2890,6 +2892,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Barre d'outils Mac";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Veuillez vérifier votre connexion ou réessayer plus tard. Si Home Assistant est en cours de redémarrage, la reconnexion s'effectuera une fois qu'il sera de nouveau en ligne.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Vider le cache et recharger";

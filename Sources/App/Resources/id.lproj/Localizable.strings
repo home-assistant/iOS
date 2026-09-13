@@ -1196,8 +1196,10 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "nfc.tag_approval.tag_id.title" = "Tag identifier";
 "nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Pembacaan Tag NFC";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "Kapasitas tag NFC tidak mencukupi: dibutuhkan %ld tetapi hanya tersedia %ld";
 "nfc.write.error.invalid_format" = "Tag NFC tidak dalam format NDEF";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "Tag NFC bersifat hanya baca";
 "nfc.write.identifier_choice.manual" = "Manual";
 "nfc.write.identifier_choice.message" = "Pengenal membantu untuk membedakan berbagai tag.";
@@ -2889,6 +2891,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Periksa koneksi Anda atau coba lagi nanti. Jika dimulai ulang, Home Assistant akan tersambung kembali setelah online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

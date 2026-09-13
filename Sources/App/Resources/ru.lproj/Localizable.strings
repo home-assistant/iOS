@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "Идентификатор метки";
 "nfc.tag_approval.title" = "Разрешить метку?";
 "nfc.tag_read" = "Чтение NFC-метки";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC-метка имеет недостаточную емкость: требуется %ld, но есть только %ld";
 "nfc.write.error.invalid_format" = "NFC-метка не является форматом NDEF (формат обмена данными NFC)";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC-метка доступна только для чтения";
 "nfc.write.identifier_choice.manual" = "Вручную";
 "nfc.write.identifier_choice.message" = "Идентификатор помогает различать различные метки.";
@@ -2888,6 +2890,7 @@ Importing replaces every category listed on this screen, including app settings.
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Виджет";
 "web_view.empty_state.body" = "Пожалуйста, проверьте ваше соединение или повторите попытку позже. Если Home Assistant перезагружается, соединение восстановится после его возвращения в сеть.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Очистить кэш и перезагрузить";

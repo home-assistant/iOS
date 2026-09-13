@@ -1196,8 +1196,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.tag_approval.tag_id.title" = "Tag identifier";
 "nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC Tag Read";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC tag has insufficient capacity: needs %ld but only has %ld";
 "nfc.write.error.invalid_format" = "NFC tag is not NDEF format";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC tag is read-only";
 "nfc.write.identifier_choice.manual" = "Manual";
 "nfc.write.identifier_choice.message" = "The identifier helps differentiate various tags.";
@@ -2890,6 +2892,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

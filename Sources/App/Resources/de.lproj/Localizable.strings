@@ -294,7 +294,7 @@
 "app_intents.update_sensors.description" = "Ein Sensor-Update an Home Assistant senden";
 "app_intents.update_sensors.success" = "Sensoren auf allen Servern aktualisiert";
 "app_intents.update_sensors.title" = "Sensoren aktualisieren";
-"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.description" = "Öffnet Assist mithilfe der für die Uhr konfigurierten Pipeline";
 "app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Szene aktivieren";
 "app_shortcuts.ask_assist.title" = "Assist fragen";
@@ -670,7 +670,7 @@
 "download_manager.downloading.title" = "Wird heruntergeladen";
 "download_manager.failed.title" = "Herunterladen der Datei fehlgeschlagen, Fehler: %@";
 "download_manager.finished.title" = "Download abgeschlossen";
-"edit_label" = "Edit";
+"edit_label" = "Bearbeiten";
 "entity_picker.add_selected" = "%lld hinzufügen";
 "entity_picker.filter.area.all.title" = "Alle Bereiche";
 "entity_picker.filter.area.title" = "Bereich";
@@ -1196,8 +1196,10 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "nfc.tag_approval.tag_id.title" = "Tag-Kennung";
 "nfc.tag_approval.title" = "Tag zulassen?";
 "nfc.tag_read" = "NFC-Tag lesen";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "Kapazität des NFC Tags zu gering: benötigt %ld, aber nur %ld vorhanden";
 "nfc.write.error.invalid_format" = "Das NFC-Tag ist nicht im NDEF-Format";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "Das NFC-Tag ist schreibgeschützt";
 "nfc.write.identifier_choice.manual" = "Manuell";
 "nfc.write.identifier_choice.message" = "Diese ID hilft bei der Unterscheidung mehrerer Tags.";
@@ -2891,6 +2893,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-Symbolleiste";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Bitte überprüfe deine Verbindung oder versuche es später erneut. Wenn Home Assistant neu gestartet wird, wird die Verbindung wiederhergestellt, sobald er wieder online ist.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Cache leeren und neu laden";

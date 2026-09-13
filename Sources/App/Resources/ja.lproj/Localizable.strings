@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "タグの識別子";
 "nfc.tag_approval.title" = "タグを許可しますか？";
 "nfc.tag_read" = "NFCタグ読み取り";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFCタグの容量が不足しています: %ld 必要ですが、%ld しかありません";
 "nfc.write.error.invalid_format" = "NFCタグが、NDEF形式ではありません";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFCタグは読み取り専用です";
 "nfc.write.identifier_choice.manual" = "マニュアル";
 "nfc.write.identifier_choice.message" = "識別子は、さまざまなタグを区別するのに役立ちます。";
@@ -2889,6 +2891,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Macツールバー";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "ウィジェット";
 "web_view.empty_state.body" = "接続を確認するか、しばらくしてからもう一度お試しください。Home Assistantが再起動している場合は、オンラインに戻った後に再接続されます。";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

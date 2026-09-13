@@ -1196,8 +1196,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "nfc.tag_approval.tag_id.title" = "Sildi ID";
 "nfc.tag_approval.title" = "Kas lubada märgis?";
 "nfc.tag_read" = "NFC märgise lugemine";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC-märgisel on ebapiisav maht: vajab %ld , kuid sellel on ainult %ld";
 "nfc.write.error.invalid_format" = "NFC-märgis ei ole NDEF-vormingus";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC-märgis on kirjutuskaitstud";
 "nfc.write.identifier_choice.manual" = "Käsitsi";
 "nfc.write.identifier_choice.message" = "Nimi aitab eristada erinevaid märgiseid.";
@@ -2890,6 +2892,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Maci tööriistariba";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Vidin";
 "web_view.empty_state.body" = "Kontrolli ühendust või proovi hiljem uuesti. Kui Home Assistant taaskäivitub, loob see pärast võrguühenduse taastamist uuesti ühenduse.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Puhasta vahemälu ja laadi uuesti";

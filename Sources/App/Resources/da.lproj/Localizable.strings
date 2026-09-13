@@ -1196,8 +1196,10 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "nfc.tag_approval.tag_id.title" = "Tag-ID";
 "nfc.tag_approval.title" = "Tillad tag?";
 "nfc.tag_read" = "NFC-tag læst";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC-tagget har utilstrækkelig kapacitet: har brug for %ld, men har kun %ld";
 "nfc.write.error.invalid_format" = "NFC-tag er ikke NDEF-format";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC-tag er skrivebeskyttet";
 "nfc.write.identifier_choice.manual" = "Manuel";
 "nfc.write.identifier_choice.message" = "Identifikatoren hjælper med at differentiere forskellige tags.";
@@ -2890,6 +2892,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-værktøjslinje";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genoprettes forbindelsen, når den er online igen.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Ryd cachen og genindlæs";
