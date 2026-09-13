@@ -17,8 +17,10 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
 
 concurrency:
+  # Queue rather than cancel: these builds are long, and a push landing mid-run should not
+  # throw away the answer the run was about to give.
   group: mac-catalyst-check-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Seconds, no project and no dependencies: type-checks the iOS 26 window-control reader
@@ -41,14 +43,25 @@ jobs:
           }
           SWIFT
 
+          # Catalyst reaches UIKit through the macOS SDK's iOSSupport tree, which the driver
+          # only looks in when it is pointed there.
+          macos_sdk="$(xcrun --sdk macosx --show-sdk-path)"
+
           echo "=== Mac Catalyst (arm64-apple-ios26.0-macabi) ==="
           xcrun --sdk macosx swiftc -typecheck \
-            -target arm64-apple-ios26.0-macabi probe.swift
+            -target arm64-apple-ios26.0-macabi \
+            -sdk "$macos_sdk" \
+            -F "$macos_sdk/System/iOSSupport/System/Library/Frameworks" \
+            -I "$macos_sdk/System/iOSSupport/usr/lib/swift" \
+            -Fsystem "$macos_sdk/System/iOSSupport/System/Library/Frameworks" \
+            probe.swift
           echo "Mac Catalyst: type-checks"
 
           echo "=== iOS, as a control (arm64-apple-ios26.0) ==="
           xcrun --sdk iphoneos swiftc -typecheck \
-            -target arm64-apple-ios26.0 probe.swift
+            -target arm64-apple-ios26.0 \
+            -sdk "$(xcrun --sdk iphoneos --show-sdk-path)" \
+            probe.swift
           echo "iOS: type-checks"
 
   # The Catalyst branch of `WebViewController` is reachable on the simulator by flipping
