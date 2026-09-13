@@ -29,6 +29,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
+    /// Pins the bottom of `statusBarView`; on iOS it follows the web view, so the view fills whatever
+    /// room the iPadOS window controls need (see `updateWindowControlsInset()`).
+    var statusBarBottomConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
 
@@ -82,6 +85,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// Reads how far down a view has to start to clear whatever the system draws in the window's top
+    /// corners — iPadOS 26's window controls. Replaceable in tests, which have no way to put real ones
+    /// on screen; see `windowControlsTopInset`.
+    var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
+        guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
+        return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+    }
 
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
@@ -298,8 +309,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupWebViewConstraints(statusBarView: statusBarView)
 
         // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
-        // so the button underneath keeps working.
-        assistZoomAnchorView = AssistZoomAnchorView.install(in: view)
+        // so the button underneath keeps working. Aligned to the web view rather than to `view`, so it
+        // follows the frontend when the iPadOS window controls push the web view down.
+        assistZoomAnchorView = AssistZoomAnchorView.install(in: view, alignedTo: webView)
 
         NotificationCenter.default.addObserver(
             self,
@@ -318,6 +330,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         checkForLocalSecurityLevelDecisionNeeded()
         onWebViewLoaded?(self)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateWindowControlsInset()
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateWindowControlsInset()
     }
 
     /// Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263

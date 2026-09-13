@@ -29,22 +29,25 @@ final class AssistZoomAnchorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Adds an anchor to `container`, pinned to the top trailing corner of its safe area. Trailing rather than
-    /// right so it follows the layout direction, as the frontend's own toolbar does.
+    /// Adds an anchor to `container`, pinned to the top trailing corner of the safe area of `alignedTo` —
+    /// the view the frontend's toolbar is drawn in, which is the container itself unless one is given.
+    /// Trailing rather than right so it follows the layout direction, as the frontend's own toolbar does.
     @discardableResult
-    static func install(in container: UIView) -> AssistZoomAnchorView {
+    static func install(in container: UIView, alignedTo alignmentView: UIView? = nil) -> AssistZoomAnchorView {
         let anchor = AssistZoomAnchorView(frame: .init(origin: .zero, size: size))
         anchor.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(anchor)
+
+        let alignmentGuide = (alignmentView ?? container).safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
             anchor.widthAnchor.constraint(equalToConstant: size.width),
             anchor.heightAnchor.constraint(equalToConstant: size.height),
             anchor.trailingAnchor.constraint(
-                equalTo: container.safeAreaLayoutGuide.trailingAnchor,
+                equalTo: alignmentGuide.trailingAnchor,
                 constant: -trailingInset
             ),
-            anchor.topAnchor.constraint(equalTo: container.safeAreaLayoutGuide.topAnchor, constant: topInset),
+            anchor.topAnchor.constraint(equalTo: alignmentGuide.topAnchor, constant: topInset),
         ])
 
         return anchor
