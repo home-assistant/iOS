@@ -38,12 +38,17 @@ extension WebViewController {
             // Catalyst always shows the native status-bar buttons; pin the web view below them.
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
         } else {
-            // iOS: the web view is always edge-to-edge. `HomeAssistantView` (SwiftUI) draws the themed
-            // status-bar bar and honours the edge-to-edge setting; the web content insets itself via CSS.
+            // iOS: the web view is edge-to-edge apart from the offset `updateWindowControlsInset()` gives it.
+            // `HomeAssistantView` (SwiftUI) draws the themed status-bar bar and honours the edge-to-edge
+            // setting; the web content insets itself via CSS.
             statusBarView.isHidden = true
+            statusBarBottomConstraint?.isActive = false
+            statusBarBottomConstraint = statusBarView.bottomAnchor.constraint(equalTo: webView.topAnchor)
+            statusBarBottomConstraint?.isActive = true
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
         }
         webViewTopConstraint?.isActive = true
+        updateWindowControlsInset()
     }
 
     func setupURLObserver() {

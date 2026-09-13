@@ -25,6 +25,36 @@ final class AssistZoomAnchorViewTests: XCTestCase {
         XCTAssertEqual(anchor.frame.minY, safeArea.top + AssistZoomAnchorView.topInset, accuracy: 0.5)
     }
 
+    /// The frontend's toolbar is drawn in the web view, so the anchor follows the web view's safe area.
+    @MainActor func testInstallAlignsAnchorToTheSafeAreaOfTheViewItIsAlignedTo() {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 820, height: 1180))
+        let viewController = UIViewController()
+        window.rootViewController = viewController
+        window.makeKeyAndVisible()
+
+        // Stands in for a web view pushed below the window controls.
+        let webViewStandIn = UIView()
+        webViewStandIn.translatesAutoresizingMaskIntoConstraints = false
+        viewController.view.addSubview(webViewStandIn)
+        let topOffset: CGFloat = 44
+        NSLayoutConstraint.activate([
+            webViewStandIn.topAnchor.constraint(equalTo: viewController.view.topAnchor, constant: topOffset),
+            webViewStandIn.leftAnchor.constraint(equalTo: viewController.view.leftAnchor),
+            webViewStandIn.rightAnchor.constraint(equalTo: viewController.view.rightAnchor),
+            webViewStandIn.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
+        ])
+
+        let anchor = AssistZoomAnchorView.install(in: viewController.view, alignedTo: webViewStandIn)
+        viewController.view.layoutIfNeeded()
+
+        XCTAssertEqual(
+            anchor.frame.minY,
+            webViewStandIn.frame.minY + webViewStandIn.safeAreaInsets.top + AssistZoomAnchorView.topInset,
+            accuracy: 0.5
+        )
+        XCTAssertGreaterThanOrEqual(anchor.frame.minY, topOffset)
+    }
+
     @MainActor func testTouchesOverTheAnchorReachTheViewBehindIt() {
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         let viewController = UIViewController()
