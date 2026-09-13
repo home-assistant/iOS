@@ -22,6 +22,7 @@ final class KioskSettingsTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.KioskSettings.dashboard.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.keepScreenOn.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.removeHeaderAndSidebar.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.hiddenFrontendElements.rawValue, .jsonText)
                     t.column(DatabaseTables.KioskSettings.hideStatusBar.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.autoReload.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.settingsEntryPosition.rawValue, .text)

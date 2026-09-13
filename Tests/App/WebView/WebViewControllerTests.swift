@@ -952,6 +952,60 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0")
     }
 
+    /// The payload the frontend reads: the elements the settings chose, plus `enable`, which is all
+    /// a frontend too old to understand the element list acts on.
+    func testUpdateFrontendKioskModeSendsTheChosenElements() throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
+        }
+        Current.sensors = SensorContainer()
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+
+        func setKiosk(_ settings: KioskSettings) throws {
+            try database.write { db in
+                try settings.insert(db, onConflict: .replace)
+            }
+            Current.kiosk = KioskModeManager()
+        }
+
+        let sut = makeSUT()
+        let handler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = handler
+
+        try setKiosk(KioskSettings(
+            enabled: true,
+            removeHeaderAndSidebar: true,
+            hiddenFrontendElements: [.sidebarButton, .dashboardTabs]
+        ))
+        sut.updateFrontendKioskMode()
+
+        XCTAssertTrue(handler.sendExternalBusCommandWithRetryCalled)
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryCommand, .kioskModeSet)
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool, true)
+        XCTAssertEqual(
+            handler.sendExternalBusCommandWithRetryPayload?["excluded_elements"] as? [String],
+            ["dashboard_tabs", "sidebar_button"]
+        )
+
+        // Nothing to hide is sent as such, so the old frontend does not fall back to hiding its set.
+        try setKiosk(KioskSettings(enabled: true, removeHeaderAndSidebar: false))
+        sut.updateFrontendKioskMode()
+
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool, false)
+        XCTAssertEqual(
+            handler.sendExternalBusCommandWithRetryPayload?["excluded_elements"] as? [String],
+            []
+        )
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))

@@ -74,6 +74,22 @@ struct KioskSettingsView: View {
                 Toggle(isOn: $viewModel.settings.removeHeaderAndSidebar) {
                     KioskRow.label(L10n.Kiosk.removeHeaderAndSidebar, icon: .dockLeftIcon)
                 }
+                if viewModel.settings.removeHeaderAndSidebar {
+                    NavigationLink {
+                        KioskFrontendElementsView(
+                            hiddenElements: $viewModel.settings.hiddenFrontendElements
+                        )
+                    } label: {
+                        KioskRow.label(
+                            L10n.Kiosk.HiddenElements.title,
+                            subtitle: L10n.Kiosk.HiddenElements.summary(
+                                viewModel.settings.hiddenFrontendElements.count,
+                                KioskFrontendElement.allCases.count
+                            ),
+                            icon: .formatListChecksIcon
+                        )
+                    }
+                }
                 Toggle(isOn: $viewModel.settings.hideStatusBar) {
                     KioskRow.label(L10n.Kiosk.hideStatusBar, systemSymbol: .menubarRectangle)
                 }
@@ -252,6 +268,7 @@ extension KioskSettingsView: SettingsScreenSearchable {
         let showsCommandConfirmation = showsCommandConfirmationRow(
             acceptRemoteCommands: Current.kiosk.settings.acceptRemoteCommands
         )
+        let showsHiddenElements = Current.kiosk.settings.removeHeaderAndSidebar
         let entries: [SettingsSearchEntry?] = [
             SettingsSearchEntry(L10n.Kiosk.enabled),
             SettingsSearchEntry(L10n.Kiosk.Authentication.title),
@@ -260,6 +277,7 @@ extension KioskSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Kiosk.Display.dashboard),
             SettingsSearchEntry(L10n.Kiosk.keepScreenOn),
             SettingsSearchEntry(L10n.Kiosk.removeHeaderAndSidebar),
+            showsHiddenElements ? SettingsSearchEntry(L10n.Kiosk.HiddenElements.title) : nil,
             SettingsSearchEntry(L10n.Kiosk.hideStatusBar),
             SettingsSearchEntry(L10n.Kiosk.HideSettingsEntry.title),
             SettingsSearchEntry(L10n.Kiosk.Screensaver.title),

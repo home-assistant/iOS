@@ -288,6 +288,7 @@ public enum DatabaseTables {
         case dashboard
         case keepScreenOn
         case removeHeaderAndSidebar
+        case hiddenFrontendElements
         case hideStatusBar
         case autoReload
         case settingsEntryPosition

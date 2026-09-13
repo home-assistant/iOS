@@ -17,6 +17,7 @@ struct KioskSettingsTests {
             dashboard: "lovelace/home",
             keepScreenOn: true,
             removeHeaderAndSidebar: true,
+            hiddenFrontendElements: [.sidebarButton, .dashboardTabs],
             hideStatusBar: true,
             autoReload: .minutes10,
             settingsEntryPosition: .topLeading,
@@ -72,6 +73,9 @@ struct KioskSettingsTests {
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
         #expect(loaded?.settingsEntryHidden == false)
+        // An install that predates the column keeps hiding exactly what the single switch hid, so
+        // updating the app never uncovers UI a wall panel was set up to hide.
+        #expect(loaded?.hiddenFrontendElements == KioskFrontendElement.defaultHidden)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
     }
 
