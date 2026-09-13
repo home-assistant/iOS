@@ -1,0 +1,92 @@
+name: Mac Catalyst check
+
+# Temporary: CI only ever builds for the iOS simulator, so a Mac Catalyst compile break is
+# not caught until the release lane archives the Mac app. This builds the Catalyst variant of
+# the app so a change meant for iPadOS can be checked against the Mac before it lands.
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'claude/**'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+
+concurrency:
+  group: mac-catalyst-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Show the Catalyst SDK in use
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i -E 'macos|iphoneos' || true
+
+      - name: Build the app for Mac Catalyst
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project HomeAssistant.xcodeproj \
+            -scheme App-Debug \
+            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
+            -skipMacroValidation \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            | tee catalyst-build.log \
+            | grep -E 'error:|warning:|BUILD|Compiling|Linking' || true
+          tail -n 40 catalyst-build.log
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload the build log"
+        if: ${{ always() }}
+        with:
+          name: catalyst-build-log
+          path: catalyst-build.log
+          if-no-files-found: ignore
+
+  # The Catalyst branch of `WebViewController` is reachable on the simulator by flipping
+  # `Current.isCatalyst`, so the layout it produces can be checked without a Mac at all.
+  catalyst-layout-tests:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Run the web view layout tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:Tests-App/WebViewControllerCatalystLayoutTests \
+            -only-testing:Tests-App/WebViewControllerWindowControlsTests \
+            -only-testing:Tests-App/AssistZoomAnchorViewTests \
+            -skipMacroValidation \
+            -skipPackagePluginValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            | tee catalyst-layout-tests.log \
+            | grep -E "error:|Test Case|Executed|BUILD|TEST" || true
+          tail -n 60 catalyst-layout-tests.log
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload the test log"
+        if: ${{ always() }}
+        with:
+          name: catalyst-layout-tests-log
+          path: catalyst-layout-tests.log
+          if-no-files-found: ignore
