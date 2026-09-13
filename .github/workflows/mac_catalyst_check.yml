@@ -1,8 +1,8 @@
 name: Mac Catalyst check
 
-# Temporary: CI only ever builds for the iOS simulator, so a Mac Catalyst compile break is
-# not caught until the release lane archives the Mac app. This builds the Catalyst variant of
-# the app so a change meant for iPadOS can be checked against the Mac before it lands.
+# Temporary: CI only ever builds and tests for the iOS simulator, so the Mac Catalyst
+# variant is not compiled until the release lane archives the Mac app. This checks the
+# Mac side of a change meant for iPadOS before it lands.
 
 permissions:
   contents: read
@@ -21,55 +21,69 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  # Seconds, no project and no dependencies: type-checks the iOS 26 window-control reader
+  # `WebViewController` uses against the Mac Catalyst triple, which is the one way the
+  # iPadOS fix could break the Mac build outright.
+  api-probe:
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Show the Catalyst SDK in use
+      - name: Type-check the corner-adapted safe area reader for Mac Catalyst
         run: |
-          xcodebuild -version
-          xcodebuild -showsdks | grep -i -E 'macos|iphoneos' || true
+          cat > probe.swift <<'SWIFT'
+          import UIKit
 
-      - name: Build the app for Mac Catalyst
-        run: |
-          set -o pipefail
-          xcodebuild build \
-            -project HomeAssistant.xcodeproj \
-            -scheme App-Debug \
-            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
-            -skipMacroValidation \
-            -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGN_ENTITLEMENTS="" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            | tee catalyst-build.log \
-            | grep -E 'error:|warning:|BUILD|Compiling|Linking' || true
-          tail -n 40 catalyst-build.log
+          func cornerAdaptedSafeAreaTop(_ view: UIView) -> CGFloat {
+              guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
+              return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+          }
+          SWIFT
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        name: "Upload the build log"
-        if: ${{ always() }}
-        with:
-          name: catalyst-build-log
-          path: catalyst-build.log
-          if-no-files-found: ignore
+          echo "=== Mac Catalyst (arm64-apple-ios26.0-macabi) ==="
+          xcrun --sdk macosx swiftc -typecheck \
+            -target arm64-apple-ios26.0-macabi probe.swift
+          echo "Mac Catalyst: type-checks"
+
+          echo "=== iOS, as a control (arm64-apple-ios26.0) ==="
+          xcrun --sdk iphoneos swiftc -typecheck \
+            -target arm64-apple-ios26.0 probe.swift
+          echo "iOS: type-checks"
 
   # The Catalyst branch of `WebViewController` is reachable on the simulator by flipping
   # `Current.isCatalyst`, so the layout it produces can be checked without a Mac at all.
-  catalyst-layout-tests:
+  layout-tests:
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
+      # Same cache `ci.yml` warms on `main`: a cold build of the pinned SPM graph does not
+      # finish in a sensible amount of time, which is what this restore exists to avoid.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
       - name: Run the web view layout tests
         run: |
-          set -o pipefail
-          xcodebuild test \
+          ./Tools/ci_xcodebuild_with_heartbeat.sh layout-tests.log \
+            test \
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
@@ -78,15 +92,69 @@ jobs:
             -only-testing:Tests-App/AssistZoomAnchorViewTests \
             -skipMacroValidation \
             -skipPackagePluginValidation \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            | tee catalyst-layout-tests.log \
-            | grep -E "error:|Test Case|Executed|BUILD|TEST" || true
-          tail -n 60 catalyst-layout-tests.log
+            COMPILER_INDEX_STORE_ENABLE=NO
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload the test log"
         if: ${{ always() }}
         with:
-          name: catalyst-layout-tests-log
-          path: catalyst-layout-tests.log
+          name: layout-tests-log
+          path: layout-tests.log
+          if-no-files-found: ignore
+
+  catalyst-build:
+    runs-on: macos-26
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-catalyst-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-catalyst-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Build the app for Mac Catalyst
+        run: |
+          ./Tools/ci_xcodebuild_with_heartbeat.sh catalyst-build.log \
+            build \
+            -project HomeAssistant.xcodeproj \
+            -target App \
+            -configuration Debug \
+            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
+            -destination-timeout 120 \
+            -skipMacroValidation \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Save: DerivedData"
+        if: ${{ always() && steps.derived_data.outputs.cache-hit != 'true' }}
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-catalyst-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload the build log"
+        if: ${{ always() }}
+        with:
+          name: catalyst-build-log
+          path: catalyst-build.log
           if-no-files-found: ignore
