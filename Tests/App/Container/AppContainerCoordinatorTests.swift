@@ -9,6 +9,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
     private var window: UIWindow!
     private var frontend: MockWebFrontend!
     private var coordinator: AppContainerCoordinator!
+    private var themeModeApplier: FrontendThemeModeApplier!
 
     override func setUp() {
         super.setUp()
@@ -16,7 +17,8 @@ final class AppContainerCoordinatorTests: XCTestCase {
         window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         window.rootViewController = UIViewController()
         frontend = MockWebFrontend(server: server, presentationWindow: window)
-        coordinator = AppContainerCoordinator()
+        themeModeApplier = FrontendThemeModeApplier(windowScenes: { [] })
+        coordinator = AppContainerCoordinator(themeModeApplier: themeModeApplier)
         coordinator.setFrontend(frontend)
     }
 
@@ -129,5 +131,23 @@ final class AppContainerCoordinatorTests: XCTestCase {
             RunLoop.main.run(until: Date().addingTimeInterval(0.01))
         }
         XCTAssertTrue(condition(), "Timed out spinning the main run loop", file: file, line: line)
+    }
+
+    func testTheSceneShowingAFrontendFollowsThatServersThemeMode() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let applier = FrontendThemeModeApplier(windowScenes: { [scene] })
+        let sceneWindow = UIWindow(windowScene: scene)
+        defer { scene.windows.forEach { $0.overrideUserInterfaceStyle = .unspecified } }
+
+        // Both held: the coordinator keeps only a weak frontend, and it is what resolves the scene.
+        let sceneFrontend = MockWebFrontend(server: server, presentationWindow: sceneWindow)
+        let sceneCoordinator = AppContainerCoordinator(themeModeApplier: applier)
+        sceneCoordinator.setFrontend(sceneFrontend)
+
+        applier.setMode(.dark, for: server.identifier)
+        // Another scene switching server must not take this one with it.
+        applier.setMode(.light, for: .init(rawValue: "another-scene"))
+
+        XCTAssertTrue(scene.windows.allSatisfy { $0.overrideUserInterfaceStyle == .dark })
     }
 }
