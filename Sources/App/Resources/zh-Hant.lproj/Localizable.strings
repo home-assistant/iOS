@@ -294,8 +294,8 @@
 "app_intents.update_sensors.description" = "傳送感測器更新至 Home Assistant";
 "app_intents.update_sensors.success" = "已更新所有伺服器上的感測器";
 "app_intents.update_sensors.title" = "更新感測器";
-"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
-"app_intents.watch_assist.title" = "Assist";
+"app_intents.watch_assist.description" = "使用為手錶設定的助理設定開啟助理";
+"app_intents.watch_assist.title" = "助理";
 "app_shortcuts.activate_scene.title" = "啟用場景";
 "app_shortcuts.ask_assist.title" = "詢問助理";
 "app_shortcuts.close.title" = "關閉";
@@ -670,7 +670,7 @@
 "download_manager.downloading.title" = "下載中";
 "download_manager.failed.title" = "下載檔案失敗、錯誤：%@";
 "download_manager.finished.title" = "下載完成";
-"edit_label" = "Edit";
+"edit_label" = "編輯";
 "entity_picker.add_selected" = "新增 %lld";
 "entity_picker.filter.area.all.title" = "所有分區";
 "entity_picker.filter.area.title" = "分區";
@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "標籤識別";
 "nfc.tag_approval.title" = "允許標籤？";
 "nfc.tag_read" = "NFC 標籤讀取";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC 標籤容量不足：需要 %ld 但僅剩下 %ld";
 "nfc.write.error.invalid_format" = "非 NDEF 格式 NFC 標籤";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "唯獨的NFC標籤";
 "nfc.write.identifier_choice.manual" = "手動";
 "nfc.write.identifier_choice.message" = "識別有助於區分不同的標籤。";
@@ -2890,6 +2892,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "深度連結";
 "web_view.add_to.option.MacToolbar.title" = "Mac 工具列";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "小工具";
 "web_view.empty_state.body" = "請檢查連線或稍後再試。如果 Home Assistant 正在重新啟動，恢復線上後將重新連線。";
 "web_view.empty_state.clean_cache_and_reload_button" = "清除暫存並重新載入";

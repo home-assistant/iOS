@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "标签标识符";
 "nfc.tag_approval.title" = "允许标签 ？";
 "nfc.tag_read" = "NFC 标签读取";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC 标签容量不足：需要 %ld 但只有 %ld";
 "nfc.write.error.invalid_format" = "NFC 标签不是 NDEF 格式";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC 标签是只读的";
 "nfc.write.identifier_choice.manual" = "手动输入";
 "nfc.write.identifier_choice.message" = "标识符有助于区分各种联动标签。";
@@ -2889,6 +2891,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac 工具栏";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "小部件";
 "web_view.empty_state.body" = "请检查您的连接或稍后重试。如果 Home Assistant 正在重启，它将在恢复在线后重新连接。";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

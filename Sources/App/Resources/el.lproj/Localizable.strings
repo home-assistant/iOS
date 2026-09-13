@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "Αναγνωριστικό tag";
 "nfc.tag_approval.title" = "Να επιτρέπεται το tag;";
 "nfc.tag_read" = "Ανάγνωση NFC tag";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "Το NFC tag έχει ανεπαρκή χωρητικότητα: χρειάζεται %ld αλλά έχει μόνο %ld";
 "nfc.write.error.invalid_format" = "Το NFC tag δεν έχει μορφή NDEF";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "Το NFC tag είναι μόνο για ανάγνωση";
 "nfc.write.identifier_choice.manual" = "Εγχειρίδιο";
 "nfc.write.identifier_choice.message" = "Το αναγνωριστικό βοηθά στη διαφοροποίηση διαφόρων tags.";
@@ -2890,6 +2892,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Γραμμή εργαλείων Mac";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Γραφικό στοιχείο";
 "web_view.empty_state.body" = "Ελέγξτε τη σύνδεσή σας ή προσπαθήστε ξανά αργότερα. Εάν το Home Assistant κάνει επανεκκίνηση, θα επανασυνδεθεί αφού επανέλθει σε λειτουργία.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

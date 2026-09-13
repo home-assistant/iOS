@@ -1196,8 +1196,10 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "nfc.tag_approval.tag_id.title" = "Identifikátor štítku";
 "nfc.tag_approval.title" = "Povolit značku?";
 "nfc.tag_read" = "Přečíst NFC štítek";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC štítek nemá dostatečnou kapacitu: potřebuje %ld, ale má jen %ld";
 "nfc.write.error.invalid_format" = "NFC štítek není ve formátu NDEF";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC štítek je jen pro čtení";
 "nfc.write.identifier_choice.manual" = "Ručně";
 "nfc.write.identifier_choice.message" = "Identifikátor pomáhá rozlišovat různé štítky.";
@@ -2890,6 +2892,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Hloubkový odkaz";
 "web_view.add_to.option.MacToolbar.title" = "Panel nástrojů Macu";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Vymazat  mezipaměť a znovu načíst";

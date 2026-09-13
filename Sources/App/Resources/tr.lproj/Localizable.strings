@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "Etiket tanımlayıcı";
 "nfc.tag_approval.title" = "Etikete izin verilsin mi?";
 "nfc.tag_read" = "NFC Etiketi Okuma";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC etiketi yetersiz kapasiteye sahiptir: ihtiyacı %ld ama sadece %ld vardır";
 "nfc.write.error.invalid_format" = "NFC etiketi NDEF formatında değildir";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC etiketi salt okunur";
 "nfc.write.identifier_choice.manual" = "Manuel";
 "nfc.write.identifier_choice.message" = "Tanımlayıcı, çeşitli etiketleri ayırt etmeye yardımcı olur.";
@@ -2890,6 +2892,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Derin bağlantı";
 "web_view.add_to.option.MacToolbar.title" = "Mac Araç Çubuğu";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Lütfen bağlantınızı kontrol edin veya daha sonra tekrar deneyin. Home Assistant yeniden başlatılıyorsa, tekrar çevrimiçi olduktan sonra yeniden bağlanacaktır.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Önbelleği temizle ve yeniden yükle";

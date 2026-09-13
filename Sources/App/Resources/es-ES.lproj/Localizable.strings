@@ -1196,8 +1196,10 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "nfc.tag_approval.tag_id.title" = "Identificador de etiqueta";
 "nfc.tag_approval.title" = "¿Permitir la etiqueta?";
 "nfc.tag_read" = "Etiqueta NFC leída";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "La etiqueta NFC no tiene capacidad suficiente: necesita %ld pero solo tiene %ld";
 "nfc.write.error.invalid_format" = "La etiqueta NFC no tiene formato NDEF";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "La etiqueta NFC es de sólo lectura";
 "nfc.write.identifier_choice.manual" = "Manual";
 "nfc.write.identifier_choice.message" = "El identificador ayuda a diferenciar varias etiquetas.";
@@ -2890,6 +2892,7 @@ Aunque ninguna URL se considera segura, los datos de este servidor no se sincron
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deep Link";
 "web_view.add_to.option.MacToolbar.title" = "Barra de herramientas de Mac";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Por favor, comprueba tu conexión o inténtalo de nuevo más adelante. Si Home Assistant se está reiniciando se reconectará cuando vuelva a esta en línea.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Borrar la caché y recargar";

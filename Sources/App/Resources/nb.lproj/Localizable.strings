@@ -1196,8 +1196,10 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "nfc.tag_approval.tag_id.title" = "Tag-identifikator";
 "nfc.tag_approval.title" = "Tillate tagg?";
 "nfc.tag_read" = "NFC Tag Les";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC-taggen har ikke nok kapasitet: trenger %ld men har bare %ld";
 "nfc.write.error.invalid_format" = "NFC-taggen er ikke NDEF-format";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC-taggen er skrivebeskyttet";
 "nfc.write.identifier_choice.manual" = "Manuell";
 "nfc.write.identifier_choice.message" = "Identifikatoren hjelper til med å skille forskjellige tagger.";
@@ -2890,6 +2892,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Clean cache and reload";

@@ -294,7 +294,7 @@
 "app_intents.update_sensors.description" = "Home Assistant에 센서 업데이트 보내기";
 "app_intents.update_sensors.success" = "모든 서버의 센서가 업데이트되었습니다";
 "app_intents.update_sensors.title" = "센서 업데이트";
-"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.description" = "시계에 구성된 파이프라인을 사용하여 Assist를 엽니다.";
 "app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "장면 활성화";
 "app_shortcuts.ask_assist.title" = "Assist에 물어보기";
@@ -670,7 +670,7 @@
 "download_manager.downloading.title" = "다운로드 중";
 "download_manager.failed.title" = "파일을 다운로드하지 못했습니다. 오류: %@";
 "download_manager.finished.title" = "다운로드 완료";
-"edit_label" = "Edit";
+"edit_label" = "편집";
 "entity_picker.add_selected" = "%lld개 추가";
 "entity_picker.filter.area.all.title" = "모든 영역";
 "entity_picker.filter.area.title" = "영역";
@@ -1196,8 +1196,10 @@
 "nfc.tag_approval.tag_id.title" = "태그 식별자";
 "nfc.tag_approval.title" = "태그를 허용하시겠습니까?";
 "nfc.tag_read" = "NFC 태그 읽기";
+"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
 "nfc.write.error.capacity" = "NFC 태그의 용량이 부족합니다: %ld가 필요하지만 %ld만 있습니다.";
 "nfc.write.error.invalid_format" = "NFC 태그가 NDEF 형식이 아닙니다.";
+"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
 "nfc.write.error.not_writable" = "NFC 태그가 읽기 전용입니다.";
 "nfc.write.identifier_choice.manual" = "수동";
 "nfc.write.identifier_choice.message" = "식별자는 다양한 태그를 구별하는 데 도움이 됩니다.";
@@ -2888,6 +2890,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "딥링크";
 "web_view.add_to.option.MacToolbar.title" = "Mac 도구 모음";
+"web_view.add_to.option.NfcTag.title" = "NFC Tag";
 "web_view.add_to.option.Widget.title" = "위젯";
 "web_view.empty_state.body" = "연결 상태를 확인하거나 나중에 다시 시도해 주세요. Home Assistant가 다시 시작되는 경우, 온라인 상태가 되면 다시 연결됩니다.";
 "web_view.empty_state.clean_cache_and_reload_button" = "캐시 정리 후 다시 로드";
