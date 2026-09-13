@@ -68,3 +68,31 @@ public extension KioskCornerPosition {
         }
     }
 }
+
+public extension KioskFrontendElement {
+    var title: String {
+        switch self {
+        case .sidebar: return L10n.Kiosk.FrontendElement.sidebar
+        case .sidebarButton: return L10n.Kiosk.FrontendElement.sidebarButton
+        case .dashboardTabs: return L10n.Kiosk.FrontendElement.dashboardTabs
+        case .dashboardAddButton: return L10n.Kiosk.FrontendElement.dashboardAddButton
+        case .dashboardSearchButton: return L10n.Kiosk.FrontendElement.dashboardSearchButton
+        case .dashboardAssistButton: return L10n.Kiosk.FrontendElement.dashboardAssistButton
+        case .dashboardEditButton: return L10n.Kiosk.FrontendElement.dashboardEditButton
+        case .appPanelHeader: return L10n.Kiosk.FrontendElement.appPanelHeader
+        }
+    }
+
+    var icon: MaterialDesignIcons {
+        switch self {
+        case .sidebar: return .dockLeftIcon
+        case .sidebarButton: return .menuIcon
+        case .dashboardTabs: return .tabIcon
+        case .dashboardAddButton: return .plusIcon
+        case .dashboardSearchButton: return .magnifyIcon
+        case .dashboardAssistButton: return .commentProcessingOutlineIcon
+        case .dashboardEditButton: return .pencilIcon
+        case .appPanelHeader: return .pageLayoutHeaderIcon
+        }
+    }
+}

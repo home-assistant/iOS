@@ -385,7 +385,7 @@ private extension Set<SettingsStore.MediaTypeRequiringUserActionForPlayback> {
 extension WebViewController {
     func setupKioskModeObservation() {
         Current.kiosk.settingsPublisher
-            .map { $0.enabled && $0.removeHeaderAndSidebar }
+            .map { $0.frontendElementsToHide(nativeTabBar: AppLabsFeature.iosNativeTabBar.isEnabled) }
             .removeDuplicates()
             .dropFirst()
             .receive(on: DispatchQueue.main)
@@ -436,14 +436,18 @@ extension WebViewController {
         }
     }
 
-    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
-    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
-            || AppLabsFeature.iosNativeTabBar.isEnabled
+        let elements = Current.kioskSettings.frontendElementsToHide(
+            nativeTabBar: AppLabsFeature.iosNativeTabBar.isEnabled
+        )
+        // A frontend too old to read `excluded_elements` falls back to `enable` alone and hides its
+        // own fixed set, which is what this device did before the elements became configurable.
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
-            payload: ["enable": enable]
+            payload: [
+                "enable": !elements.isEmpty,
+                "excluded_elements": elements.map(\.rawValue).sorted(),
+            ]
         )
     }
 }

@@ -17,6 +17,9 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var dashboard: String?
     public var keepScreenOn: Bool
     public var removeHeaderAndSidebar: Bool
+    /// Which parts of the frontend `removeHeaderAndSidebar` hides. Only consulted while that
+    /// switch is on, so turning it off still hides nothing.
+    public var hiddenFrontendElements: Set<KioskFrontendElement>
     public var hideStatusBar: Bool
     public var autoReload: KioskAutoReloadInterval
     public var settingsEntryPosition: KioskCornerPosition
@@ -37,6 +40,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         dashboard: String? = nil,
         keepScreenOn: Bool = false,
         removeHeaderAndSidebar: Bool = false,
+        hiddenFrontendElements: Set<KioskFrontendElement> = KioskFrontendElement.defaultHidden,
         hideStatusBar: Bool = false,
         autoReload: KioskAutoReloadInterval = .never,
         settingsEntryPosition: KioskCornerPosition = .bottomTrailing,
@@ -54,6 +58,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.dashboard = dashboard
         self.keepScreenOn = keepScreenOn
         self.removeHeaderAndSidebar = removeHeaderAndSidebar
+        self.hiddenFrontendElements = hiddenFrontendElements
         self.hideStatusBar = hideStatusBar
         self.autoReload = autoReload
         self.settingsEntryPosition = settingsEntryPosition
@@ -77,6 +82,10 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.dashboard = try container.decodeIfPresent(String.self, forKey: .dashboard)
         self.keepScreenOn = try container.decodeIfPresent(Bool.self, forKey: .keepScreenOn) ?? false
         self.removeHeaderAndSidebar = try container.decodeIfPresent(Bool.self, forKey: .removeHeaderAndSidebar) ?? false
+        self.hiddenFrontendElements = try container.decodeIfPresent(
+            Set<KioskFrontendElement>.self,
+            forKey: .hiddenFrontendElements
+        ) ?? KioskFrontendElement.defaultHidden
         self.hideStatusBar = try container.decodeIfPresent(Bool.self, forKey: .hideStatusBar) ?? false
         self.autoReload = try container.decodeIfPresent(String.self, forKey: .autoReload)
             .flatMap(KioskAutoReloadInterval.init(rawValue:)) ?? .never
@@ -94,6 +103,25 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
             KioskScreensaverSettings.self,
             forKey: .screensaver
         ) ?? KioskScreensaverSettings()
+    }
+}
+
+public extension KioskSettings {
+    /// The frontend elements this device wants hidden.
+    ///
+    /// `nativeTabBar` folds in the hamburger the native tab bar has to hide whether or not kiosk
+    /// mode is on: its tabs and More tab already reach every sidebar page, so the button would only
+    /// open More. It asks for nothing else, which is why it names the one element instead of
+    /// borrowing the full kiosk set.
+    func frontendElementsToHide(nativeTabBar: Bool) -> Set<KioskFrontendElement> {
+        var elements: Set<KioskFrontendElement> = []
+        if enabled, removeHeaderAndSidebar {
+            elements.formUnion(hiddenFrontendElements)
+        }
+        if nativeTabBar {
+            elements.insert(.sidebarButton)
+        }
+        return elements
     }
 }
 

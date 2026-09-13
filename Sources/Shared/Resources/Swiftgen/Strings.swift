@@ -3198,6 +3198,36 @@ public enum L10n {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
+    public enum FrontendElement {
+      /// Add-on page header
+      public static var appPanelHeader: String { return L10n.tr("Localizable", "kiosk.frontend_element.app_panel_header") }
+      /// Add button
+      public static var dashboardAddButton: String { return L10n.tr("Localizable", "kiosk.frontend_element.dashboard_add_button") }
+      /// Assist button
+      public static var dashboardAssistButton: String { return L10n.tr("Localizable", "kiosk.frontend_element.dashboard_assist_button") }
+      /// Edit dashboard button
+      public static var dashboardEditButton: String { return L10n.tr("Localizable", "kiosk.frontend_element.dashboard_edit_button") }
+      /// Search button
+      public static var dashboardSearchButton: String { return L10n.tr("Localizable", "kiosk.frontend_element.dashboard_search_button") }
+      /// Dashboard tabs
+      public static var dashboardTabs: String { return L10n.tr("Localizable", "kiosk.frontend_element.dashboard_tabs") }
+      /// Sidebar
+      public static var sidebar: String { return L10n.tr("Localizable", "kiosk.frontend_element.sidebar") }
+      /// Sidebar button
+      public static var sidebarButton: String { return L10n.tr("Localizable", "kiosk.frontend_element.sidebar_button") }
+    }
+    public enum HiddenElements {
+      /// Choose which parts of the Home Assistant interface this device hides.
+      public static var body: String { return L10n.tr("Localizable", "kiosk.hidden_elements.body") }
+      /// Home Assistant versions that cannot yet be told which elements to hide keep hiding the sidebar and top bar controls, as before.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.hidden_elements.footer") }
+      /// %li of %li hidden
+      public static func summary(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "kiosk.hidden_elements.summary", p1, p2)
+      }
+      /// Hidden elements
+      public static var title: String { return L10n.tr("Localizable", "kiosk.hidden_elements.title") }
+    }
     public enum HideSettingsEntry {
       /// Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.
       public static var footer: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.footer") }
