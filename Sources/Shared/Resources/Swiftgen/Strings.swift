@@ -4098,6 +4098,12 @@ public enum L10n {
       }
       /// Tag Written!
       public static var successMessage: String { return L10n.tr("Localizable", "nfc.write.success_message") }
+      public enum Deeplink {
+        /// Bring an NFC tag near your %@ to create a deeplink to this entity
+        public static func startMessage(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "nfc.write.deeplink.start_message", String(describing: p1))
+        }
+      }
       public enum Error {
         /// NFC tag has insufficient capacity: needs %ld but only has %ld
         public static func capacity(_ p1: Int, _ p2: Int) -> String {
@@ -4105,6 +4111,8 @@ public enum L10n {
         }
         /// NFC tag is not NDEF format
         public static var invalidFormat: String { return L10n.tr("Localizable", "nfc.write.error.invalid_format") }
+        /// This link cannot be written to an NFC tag
+        public static var invalidUrl: String { return L10n.tr("Localizable", "nfc.write.error.invalid_url") }
         /// NFC tag is read-only
         public static var notWritable: String { return L10n.tr("Localizable", "nfc.write.error.not_writable") }
       }
@@ -9352,6 +9360,10 @@ public enum L10n {
         public enum MacToolbar {
           /// Mac Toolbar
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.MacToolbar.title") }
+        }
+        public enum NfcTag {
+          /// NFC Tag
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.NfcTag.title") }
         }
         public enum Widget {
           /// Widget
