@@ -11,6 +11,12 @@ enum WatchWidgetConstants {
     static let refreshNotificationsKey = "complicationRefreshNotificationsEnabled"
     static let logoAssetName = "Logo"
     static let templateLogoAssetName = "TemplateLogo"
+    /// Custom SF Symbol for Assist. It has to be duplicated in `Sources/WatchApp/Assets.xcassets` as
+    /// well as this extension's catalog: the control gallery (Control Center and the Ultra's Action
+    /// button picker) renders `WatchControlAssist`'s label outside of the extension process and
+    /// resolves the symbol against the containing watch app's bundle, so an extension-only copy shows
+    /// the control with a blank icon. The iOS widget extension gets this for free because it shares
+    /// the app target's asset catalog.
     static let assistIconAssetName = "message-processing-outline"
     static let placeholderSubtitle = "Complication"
     /// Neutral value shown in the complication picker's preview instead of a possibly-stale
