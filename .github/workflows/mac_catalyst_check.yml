@@ -136,17 +136,22 @@ jobs:
             runner.os,
             env.DEVELOPER_DIR) }}
 
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
       - name: Build the app for Mac Catalyst
         run: |
           ./Tools/ci_xcodebuild_with_heartbeat.sh catalyst-build.log \
             build \
             -project HomeAssistant.xcodeproj \
-            -target App \
-            -configuration Debug \
-            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
+            -scheme App-Debug \
+            -destination 'platform=macOS,arch=arm64,variant=Mac Catalyst' \
             -destination-timeout 120 \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/spm" \
             -skipMacroValidation \
             -skipPackagePluginValidation \
+            ONLY_ACTIVE_ARCH=NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
