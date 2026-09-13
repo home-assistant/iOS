@@ -3,9 +3,9 @@
 import UIKit
 import XCTest
 
-/// macOS draws its window buttons in the title bar, above everything UIKit lays out, so the offset
-/// iPadOS 26's window controls need must never reach the Mac. These pin the Catalyst layout to what it
-/// was before that offset existed.
+/// macOS draws its window buttons in the title bar, above everything UIKit lays out, so the offset that
+/// iPadOS 26's window controls require must never reach the Mac. These pin the Catalyst layout to what
+/// it was before that offset existed.
 @MainActor
 final class WebViewControllerCatalystLayoutTests: XCTestCase {
     /// Stands in for the room Catalyst's title bar leaves at the top of the scene. Added to whatever the
