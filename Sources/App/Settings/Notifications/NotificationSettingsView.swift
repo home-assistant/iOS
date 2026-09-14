@@ -20,7 +20,6 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
-            // The manager is hard-disabled on Catalyst, so don't offer a toggle that could never fire.
             if !Current.isCatalyst {
                 forceCloseWarningSection
             }
@@ -115,7 +114,7 @@ struct NotificationSettingsView: View {
                 }
             }
 
-            SwiftUI.Toggle(
+            Toggle(
                 L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title,
                 isOn: $viewModel.clearBadgeAutomatically
             )
@@ -126,7 +125,7 @@ struct NotificationSettingsView: View {
 
     private var forceCloseWarningSection: some View {
         Section {
-            SwiftUI.Toggle(
+            Toggle(
                 L10n.SettingsDetails.Notifications.ForceCloseWarning.title,
                 isOn: $viewModel.forceCloseWarningEnabled
             )
