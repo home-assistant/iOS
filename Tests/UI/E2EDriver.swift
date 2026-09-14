@@ -362,10 +362,15 @@ final class E2EDriver {
 
     /// Allows the pasteboard read iOS asks about when this app was not the one that put the payload
     /// there and was not in the foreground moments before; nothing to do when no alert comes up.
+    ///
+    /// The prompt blocks the app's main thread until it is answered, so only SpringBoard is queried:
+    /// a query aimed at the app would hang along with it. It is also not exposed as an alert element,
+    /// so the whole SpringBoard tree is searched for the button.
     @discardableResult
     func allowPasteIfAsked() -> Bool {
         let allow = NSPredicate(format: "label == 'Allow Paste'")
-        guard let button = systemAlertButton(matching: allow, timeout: Timeout.screen) else {
+        let button = springboard.descendants(matching: .any).matching(allow).firstMatch
+        guard button.waitForExistence(timeout: Timeout.screen) else {
             return false
         }
         button.tap()
