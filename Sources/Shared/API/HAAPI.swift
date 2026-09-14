@@ -919,6 +919,17 @@ public class HomeAssistantAPI {
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
         }
 
+        /// Builds the same info for an action the app ran itself, without a `UNNotificationResponse`.
+        /// The watch needs this: watchOS never hands a text-input response back to the app for a
+        /// forwarded notification, so the watch collects the reply and fires the event on its own
+        /// (see `DynamicNotificationViewModel.perform(textInputAction:)`).
+        public init(content: UNNotificationContent, actionIdentifier: String, textInput: String?) {
+            self.identifier = UNNotificationContent.uncombinedAction(from: actionIdentifier)
+            self.category = content.categoryIdentifier
+            self.actionData = content.userInfo["homeassistant"]
+            self.textInput = textInput
+        }
+
         public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")

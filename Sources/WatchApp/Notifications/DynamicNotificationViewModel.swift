@@ -13,6 +13,13 @@ final class DynamicNotificationViewModel: ObservableObject {
         case movie(URL)
     }
 
+    /// How far a text-input action has got, so the row can show progress without a second screen.
+    enum TextInputActionState: Equatable {
+        case sending
+        case sent
+        case failed
+    }
+
     @Published private(set) var title = ""
     @Published private(set) var subtitle = ""
     @Published private(set) var message = ""
@@ -20,7 +27,19 @@ final class DynamicNotificationViewModel: ObservableObject {
     @Published private(set) var errorMessage: String?
     @Published private(set) var content: Content?
 
+    /// The text-input actions the long look renders itself rather than leaving to watchOS, keyed in
+    /// `textInputActionStates` by `NotificationAction.id`. See `DynamicNotificationHostingController`.
+    @Published private(set) var textInputActions: [NotificationAction] = []
+    @Published private(set) var textInputActionStates: [String: TextInputActionState] = [:]
+
+    /// Supplied by the hosting controller: presents watchOS's own text entry (dictation, scribble,
+    /// keyboard) and calls back with what the user wrote, or `nil` if they backed out.
+    var presentTextInput: ((@escaping (String?) -> Void) -> Void)?
+
     private var api: HomeAssistantAPI?
+    private var server: Server?
+    private var notificationContent: UNNotificationContent?
+    private var notificationIdentifier: String?
     private var cameraEntityId: String?
     private var streamer: MJPEGStreamer?
     private var securityScopedURL: URL?
@@ -29,7 +48,7 @@ final class DynamicNotificationViewModel: ObservableObject {
         securityScopedURL?.stopAccessingSecurityScopedResource()
     }
 
-    func didReceive(_ notification: UNNotification) {
+    func didReceive(_ notification: UNNotification, textInputActions: [NotificationAction] = []) {
         let notificationContent = notification.request.content
 
         reset()
@@ -39,10 +58,17 @@ final class DynamicNotificationViewModel: ObservableObject {
         title = notificationContent.title.isEmpty ? "Home Assistant" : notificationContent.title
         subtitle = notificationContent.subtitle
         message = notificationContent.body
+        self.notificationContent = notificationContent
+        notificationIdentifier = notification.request.identifier
 
         guard let server = Current.servers.server(for: notificationContent) else {
             return
         }
+
+        self.server = server
+        // Kept even when the API below is missing: a reply still reaches Home Assistant through the
+        // paired iPhone, which is the usual case when the watch has no API of its own.
+        self.textInputActions = textInputActions
 
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle didReceive(_ notification: UNNotification)")
@@ -87,6 +113,56 @@ final class DynamicNotificationViewModel: ObservableObject {
         streamer = nil
     }
 
+    /// Asks the user for a reply and fires the notification action with it. This exists because
+    /// watchOS drops text-input responses for forwarded notifications — see
+    /// `DynamicNotificationHostingController.didReceive(_:)`.
+    func perform(textInputAction action: NotificationAction) {
+        guard let presentTextInput, let notificationContent, let server else {
+            Current.Log.error("no way to collect a reply for \(action.identifier)")
+            return
+        }
+
+        presentTextInput { [weak self] text in
+            Task { @MainActor in
+                guard let self, let text, !text.isEmpty else { return }
+                send(textInputAction: action, text: text, content: notificationContent, server: server)
+            }
+        }
+    }
+
+    private func send(
+        textInputAction action: NotificationAction,
+        text: String,
+        content: UNNotificationContent,
+        server: Server
+    ) {
+        textInputActionStates[action.id] = .sending
+
+        let info = HomeAssistantAPI.PushActionInfo(
+            content: content,
+            actionIdentifier: action.identifier,
+            textInput: text
+        )
+
+        WatchPushActionSender.send(info, server: server).done { [weak self] in
+            Task { @MainActor in
+                guard let self else { return }
+                textInputActionStates[action.id] = .sent
+                // Matches what the system does after an action is chosen, so the notification does
+                // not sit in Notification Center already answered.
+                if let notificationIdentifier {
+                    UNUserNotificationCenter.current()
+                        .removeDeliveredNotifications(withIdentifiers: [notificationIdentifier])
+                }
+            }
+        }.catch { [weak self] error in
+            Current.Log.error("failed to send notification text input action: \(error)")
+            Task { @MainActor in
+                self?.textInputActionStates[action.id] = .failed
+            }
+        }
+    }
+
     private func reset() {
         streamer?.cancel()
         streamer = nil
@@ -96,6 +172,12 @@ final class DynamicNotificationViewModel: ObservableObject {
         content = nil
         errorMessage = nil
         isLoading = false
+        api = nil
+        server = nil
+        notificationContent = nil
+        notificationIdentifier = nil
+        textInputActions = []
+        textInputActionStates = [:]
     }
 
     private func startCameraStream() {
@@ -199,7 +281,9 @@ extension DynamicNotificationViewModel {
         message: String = "",
         isLoading: Bool = false,
         errorMessage: String? = nil,
-        content: Content? = nil
+        content: Content? = nil,
+        textInputActions: [NotificationAction] = [],
+        textInputActionStates: [String: TextInputActionState] = [:]
     ) -> DynamicNotificationViewModel {
         let viewModel = DynamicNotificationViewModel()
         viewModel.title = title
@@ -208,6 +292,8 @@ extension DynamicNotificationViewModel {
         viewModel.isLoading = isLoading
         viewModel.errorMessage = errorMessage
         viewModel.content = content
+        viewModel.textInputActions = textInputActions
+        viewModel.textInputActionStates = textInputActionStates
         return viewModel
     }
 }
