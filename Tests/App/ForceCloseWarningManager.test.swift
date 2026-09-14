@@ -108,3 +108,21 @@ struct ForceCloseWarningManagerTests {
         try body()
     }
 }
+
+// `AppDelegate.applicationWillTerminate` is the only caller of `ForceCloseWarningManager.postImmediateWarning`,
+// and it is the wiring this feature ships to production. Stub the manager through `Current` and assert the
+// delegate hands off when iOS terminates the app.
+@Suite(.serialized)
+struct AppDelegateForceCloseTerminationTests {
+    @Test func applicationWillTerminateHandsOffToTheWarningManager() {
+        let previousManager = Current.forceCloseWarningManager
+        var posted: [UNNotificationRequest] = []
+        Current.forceCloseWarningManager = ForceCloseWarningManager(addRequest: { posted.append($0) })
+        defer { Current.forceCloseWarningManager = previousManager }
+
+        AppDelegate().applicationWillTerminate(UIApplication.shared)
+
+        #expect(posted.count == 1)
+        #expect(posted.first?.identifier == ForceCloseWarningManager.notificationIdentifier)
+    }
+}
